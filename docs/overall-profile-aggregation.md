@@ -1323,21 +1323,69 @@ Deterministic tests cover:
 
 **Exit condition:** the radar accurately visualizes the M7.2 facet model across incomplete and complete profile states. ✅
 
-## M7.5 — Headspaces + Dynamic Modes
+## M7.5 — Headspaces + Dynamic Modes ✅
 
-### Scope
+M7.5 adds the dedicated recognizable-role layer beneath the broad M7.2/M7.4 facet model.
 
-- show a compact top set of receiving/submissive headspaces with percentages
-- provide in-place Show all / Show less for the full ranked receiving/submissive list
-- show strongest dynamic modes
-- preserve independent overlapping scores
-- defer giving/dominant headspace presentation to the broader future directional-profile enhancement
+### Headspaces
 
-### Test gate
+The main profile now shows ranked **submissive-oriented Headspaces** using the existing composed role definitions.
 
-Seed profiles with overlapping headspaces/modes and verify ranking, percentages, and expansion behavior.
+Presentation rules:
 
-**Exit condition:** recognizable headspaces and modes add useful detail without replacing the broad facet model.
+- show the top 5 by affinity in the compact view
+- expose the full known ranked list in-place with **Show all / Show less**
+- display the actual affinity percentage for each row
+- preserve overlapping results independently; there is no winner-takes-all identity
+- suppress composed results with less than 20% evidence coverage
+- keep 20–39.9% coverage visible but mark it **Limited evidence so far**
+- sort by affinity first, then coverage as the deterministic tie-breaker
+
+The dedicated profile section uses **submissive** language in the UI. The underlying implementation may still reference historical receiving-side IDs internally, but that vocabulary does not appear in normal presentation.
+
+Dominant-oriented Headspace presentation remains parked for the broader future directional-profile enhancement. This slice does not infer that a missing dominant list means absence of dominant interests.
+
+### Dynamic Modes
+
+The profile also shows the top 5 known Dynamic Modes.
+
+Dynamic Modes:
+
+- use the same canonical SignalId evidence underneath M7
+- remain independently overlapping
+- display affinity percentages
+- use the same 20% minimum display coverage
+- mark 20–39.9% coverage as limited evidence
+- do not replace Headspaces or broad overall facets
+
+The compact mode section intentionally shows only the strongest five rather than adding another long expansion surface.
+
+### Composition boundary
+
+M7.5 is derived from canonical signals and does not write anything back into:
+
+- canonical signals
+- facet scores
+- catalog preference state
+- quiz answers
+- This-or-That history
+
+Headspaces and modes are descriptive derived views only.
+
+### Test gate ✅
+
+Deterministic tests cover:
+
+- multiple overlapping Headspaces remaining independently scored
+- affinity ordering
+- coverage tie behavior
+- sparse 100% evidence suppression
+- limited-evidence qualification
+- compact top-5 vs full Headspace list
+- overlapping Dynamic Modes
+- compact top-5 mode selection
+
+**Exit condition:** recognizable Headspaces and Dynamic Modes add useful detail without replacing the broad facet model. ✅
 
 ## M7.6 — Top Overall catalog interests
 
