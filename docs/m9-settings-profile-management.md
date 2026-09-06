@@ -294,8 +294,8 @@ Because this file contains the full profile:
 - [x] export produces valid versioned JSON
 - [x] the export contains all authoritative profile data
 - [x] JSON can be parsed independently of browser storage key names
-- [ ] an export/import round trip restores equivalent source data — completed with M9.4 import
-- [ ] derived profile output after restore matches a fresh recomputation — completed with M9.4 import
+- [x] an export/import round trip restores equivalent source data
+- [x] derived profile output after restore matches a fresh recomputation
 
 ---
 
@@ -355,21 +355,23 @@ The preview proves the file is recognized before destructive replacement.
 
 ## Failure behavior
 
-Invalid or unsupported imports must leave the current profile untouched.
+Invalid or unsupported imports leave the current profile untouched.
 
-Avoid partial mutation. Validate everything practical before clearing/replacing existing stores.
+The v1 importer validates the complete envelope and all three authoritative nested stores before any replacement write occurs. It accepts only the exact supported `kink-profile` format version and supported nested storage schema versions; there is no best-guess migration in v1.
 
-If a migration fails, surface a clear error and preserve the current profile.
+Replacement writes the quiz, catalog, and profile-settings stores only after validation. If a storage write fails, the importer attempts to restore the previously loaded authoritative stores before surfacing the failure.
+
+After a successful restore, leaving Settings remounts the app from restored source data so M7 derived views recompute instead of trusting backup-time derived output.
 
 ## Acceptance criteria
 
-- malformed JSON is rejected safely
-- wrong format identifier is rejected
-- unsupported versions are rejected or migrated intentionally
-- import preview appears before replacement
-- successful import replaces the current profile
-- failed import does not partially overwrite the current profile
-- restored authoritative data recomputes into the expected M7 profile
+- [x] malformed JSON is rejected safely
+- [x] wrong format identifier is rejected
+- [x] unsupported versions are rejected or migrated intentionally
+- [x] import preview appears before replacement
+- [x] successful import replaces the current profile
+- [x] failed import does not partially overwrite the current profile
+- [x] restored authoritative data recomputes into the expected M7 profile
 
 ---
 

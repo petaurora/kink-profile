@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { ProfileResetPanel } from "./ProfileResetPanel";
 import { ProfileBackupPanel } from "./ProfileBackupPanel";
+import { ProfileImportPanel } from "./ProfileImportPanel";
 import {
   MAX_PROFILE_DISPLAY_NAME_LENGTH,
   normalizeProfileDisplayName,
@@ -39,6 +40,7 @@ export function ProfileSettingsPage({
   const [draftName, setDraftName] = useState(settings.displayName);
   const [resetOpen, setResetOpen] = useState(false);
   const [backupOpen, setBackupOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   useEffect(() => {
     setDraftName(settings.displayName);
@@ -148,7 +150,11 @@ export function ProfileSettingsPage({
             </div>
             <button
               className="secondary compact"
-              onClick={() => setResetOpen((open) => !open)}
+              onClick={() => {
+                setResetOpen((open) => !open);
+                setBackupOpen(false);
+                setImportOpen(false);
+              }}
             >
               {resetOpen ? "Close reset" : "Choose data"}
             </button>
@@ -162,15 +168,33 @@ export function ProfileSettingsPage({
             </div>
             <button
               className="secondary compact"
-              onClick={() => setBackupOpen((open) => !open)}
+              onClick={() => {
+                setBackupOpen((open) => !open);
+                setResetOpen(false);
+                setImportOpen(false);
+              }}
             >
               {backupOpen ? "Close backup" : "Download backup"}
             </button>
           </article>
-          <FutureAction
-            title="Import profile backup"
-            description="Validate and restore a complete profile backup without partially overwriting current data."
-          />
+          <article className="settings-action-row">
+            <div>
+              <strong>Import profile backup</strong>
+              <p>
+                Validate and restore a complete profile backup as a full-profile replacement.
+              </p>
+            </div>
+            <button
+              className="secondary compact"
+              onClick={() => {
+                setImportOpen((open) => !open);
+                setResetOpen(false);
+                setBackupOpen(false);
+              }}
+            >
+              {importOpen ? "Close restore" : "Choose backup"}
+            </button>
+          </article>
         </div>
 
         {resetOpen && (
@@ -181,6 +205,14 @@ export function ProfileSettingsPage({
         )}
 
         {backupOpen && <ProfileBackupPanel />}
+
+        {importOpen && (
+          <ProfileImportPanel
+            onSettingsChange={onChange}
+            onClose={() => setImportOpen(false)}
+            onDone={onClose}
+          />
+        )}
       </section>
 
       <section className="settings-section" aria-labelledby="settings-sharing-heading">
