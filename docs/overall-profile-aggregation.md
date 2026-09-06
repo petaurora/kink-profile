@@ -435,6 +435,41 @@ The radar answers:
 
 Detailed evidence, source provenance, confidence, direction, and lower-level signals belong in later sections or drill-down.
 
+## Parked future enhancement — orientation gauge
+
+A future profile presentation may include a playful **orientation gauge** summarizing the relative balance between giving/dominant and receiving/submissive expression.
+
+Conceptually:
+
+```text
+Dominant / Giving  ────────●────────  Submissive / Receiving
+                         Switch
+```
+
+This should not be implemented until the profile has robust cross-source directional support.
+
+Important semantic constraint:
+
+> The gauge represents **relative orientation/balance**, not total affinity and not a zero-sum model.
+
+A user may have strong evidence for both giving and receiving. The pointer should therefore answer something closer to:
+
+> "Which direction does this profile lean overall?"
+
+It must not imply that stronger submissive/receiving evidence means weaker dominant/giving capability or interest.
+
+If implemented, pair the gauge with enough supporting context to distinguish:
+
+- overall directional lean
+- strength of giving evidence
+- strength of receiving evidence
+- genuinely bidirectional/switch profiles
+- low-evidence/uncertain orientation
+
+This belongs with the broader future giving/receiving visualization work rather than the initial M7 UI.
+
+---
+
 ## Parked future enhancement — directional radar modes
 
 The initial aggregated radar should use the **overall** facet values only. M7 should not prematurely split every facet into receiving/giving variants before the underlying directional aggregation model has full support.
