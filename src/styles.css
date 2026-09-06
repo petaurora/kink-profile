@@ -908,6 +908,131 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   }
 }
 
+/* M7.6 — Top Overall direct interests */
+
+.profile-top-interests {
+  padding: clamp(24px, 4vw, 38px);
+}
+
+.profile-top-interests-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.profile-top-interests-heading h2 {
+  margin: 0;
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  letter-spacing: -.04em;
+}
+
+.profile-top-interests-heading > p {
+  max-width: 520px;
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  text-align: right;
+}
+
+.profile-top-interest-list {
+  display: grid;
+  margin-top: 26px;
+}
+
+.profile-top-interest-row {
+  display: grid;
+  grid-template-columns: 38px minmax(180px, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.profile-top-interest-rank {
+  color: var(--text-muted);
+  font-size: .72rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.profile-top-interest-row > strong {
+  font-size: .98rem;
+}
+
+.profile-top-interest-sources {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.profile-source-chip {
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  font-size: .7rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.profile-top-interests-empty {
+  margin: 24px 0 0;
+  border: 1px dashed var(--border-strong);
+  border-radius: 16px;
+  padding: 18px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.profile-top-interests-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.profile-top-interests-footer > span {
+  color: var(--text-muted);
+  font-size: .76rem;
+}
+
+@media (max-width: 720px) {
+  .profile-top-interests-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-top-interests-heading > p {
+    text-align: left;
+  }
+
+  .profile-top-interest-row {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .profile-top-interest-sources {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+
+  .profile-top-interests-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 560px) {
+  .profile-top-interests {
+    padding: 22px 20px;
+  }
+}
+
 /* M7.5 — headspaces + dynamic modes */
 
 .profile-role-detail-grid {
