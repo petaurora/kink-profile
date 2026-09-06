@@ -8,7 +8,7 @@ M6 is not starting from zero.
 
 The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-The next implementation slice is C3 explicit preference state.
+The next implementation slice is C3 explicit preference + catalog table.
 
 Current baseline on `main`:
 
@@ -420,9 +420,9 @@ Do not create a second competing inference system based on hand-authored role sc
 
 ---
 
-# Explicit preference state — C3 contract
+# Explicit preference + catalog table — C3 contract
 
-Concrete implementation scope: [M6 C3 — Explicit Preference State](m6-c3-explicit-preference.md).
+Concrete implementation scope: [M6 C3 — Explicit Preference + Catalog Table](m6-c3-explicit-preference.md).
 
 C3 turns direct catalog classification into first-class application state through a searchable catalog table/list, while keeping This-or-That focused on comparative discovery and ranking.
 
@@ -1070,7 +1070,7 @@ Unmapped means **unknown / not inferable from current quiz signals**, not 0% aff
 
 ## C3 — Explicit preference + catalog table 🧭 re-scoped for review
 
-See [M6 C3 — Explicit Preference State](m6-c3-explicit-preference.md) for the concrete implementation plan and acceptance scenarios.
+See [M6 C3 — Explicit Preference + Catalog Table](m6-c3-explicit-preference.md) for the concrete implementation plan and acceptance scenarios.
 
 - [ ] define the seven-state runtime enum
 - [ ] represent unanswered by absence
