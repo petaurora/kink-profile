@@ -487,7 +487,7 @@ Its durable outputs are useful independent evidence:
 
 C4 builds an evidence adapter/aggregation layer **around** those stores rather than turning the landed C3 feature into a different persistence model.
 
-C3's `pet-profile-catalog-v1` can remain the catalog user-data store unless C4 discovers a concrete versioning reason to introduce a migration.
+C3's `pet-profile-catalog-v1` remains the catalog user-data store; C4 did not introduce a competing persistence version because no concrete migration need emerged.
 
 The cleanup goal is semantic separation and provenance, not churn for its own sake.
 
