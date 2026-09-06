@@ -2,7 +2,7 @@
 
 ## Status
 
-Design contract for the post-C3 profile model.
+**Implemented C4 contract and M7 architecture boundary.**
 
 This document defines how quizzes, explicit catalog preferences, This-or-That ranking, inferred catalog affinity, and the overall profile interact without overwriting one another or creating circular scoring.
 
@@ -485,7 +485,7 @@ Its durable outputs are useful independent evidence:
 - stable Catalog IDs
 - eligibility/exclusion behavior
 
-C4 should build an evidence adapter/aggregation layer **around** those stores rather than turning the landed C3 feature into a different persistence model.
+C4 builds an evidence adapter/aggregation layer **around** those stores rather than turning the landed C3 feature into a different persistence model.
 
 C3's `pet-profile-catalog-v1` can remain the catalog user-data store unless C4 discovers a concrete versioning reason to introduce a migration.
 
