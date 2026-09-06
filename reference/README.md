@@ -32,21 +32,24 @@ These are tab-separated text exports so catalog changes are readable, searchable
 
 The original `master_pet_kink_catalog_expanded.xlsx` is retained as a historical/reference artifact, but application code should consume the TSV source instead.
 
-Catalog integration is now **in progress in M6**. The TSV runtime source + initial This-or-That ranking baseline are already implemented.
+Catalog integration is **implemented through M6**. The TSV runtime source, explicit preference model, hardened category/Overall ranking, source-aware inference/result views, and recommendation-suppression boundaries are all runtime capabilities.
 
 ## What the catalog is for
 
-The catalog is already a runtime data/ranking layer and M6 is expanding it to support:
+The catalog is a runtime data/ranking/evidence layer. M6 implemented:
 
 - stable item/category IDs ✅
 - domains/categories ✅
 - normalized receiving/giving/both direction ✅
 - aliases ✅
 - validated signal mappings ✅
-- role/headspace and dynamic-mode mappings where useful
-- context/intensity metadata
-- explicit user preference states
-- inferred exploration matches
+- context/intensity/risk metadata ✅
+- explicit user preference states ✅
+- inferred exploration matches + provenance ✅
+- hardened recommendation eligibility/suppression ✅
+- source-aware catalog result presentation ✅
+
+Role/headspace and dynamic-mode relationships remain primarily signal/profile concerns rather than requiring a second catalog identity model.
 
 ## What the catalog is not
 
@@ -82,7 +85,7 @@ Canonical runtime states:
 - hard limit
 - not applicable
 
-C7 must suppress Hard Limit items from inferred recommendation candidates. C6 explainability may still display the underlying derived affinity/provenance; suppression does not erase evidence.
+C7 suppresses Hard Limit / Not Interested / Not Applicable items from inferred recommendation candidates. C6 explainability may still display the underlying derived affinity/provenance; suppression does not erase evidence.
 
 ## Current use
 
