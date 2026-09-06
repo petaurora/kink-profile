@@ -14,7 +14,7 @@ A privacy-first React app for exploring BDSM, kink, power-dynamic, and headspace
 
 The app now supports all four core quiz sections plus a playable catalog-ranking flow. The 551-item catalog is sourced from repo-native TSV, generated into app-owned runtime data before dev/build, and can be ranked within categories and across the current Top-5-per-ranked-category finalist pool.
 
-The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. M6 is continuing with source-aware evidence, ranking confidence/finalists, result integration, affinity hardening, and the M7 handoff.
+The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. With source-aware evidence convergence implemented in C4, M6 now continues with ranking confidence/finalists, result integration, affinity hardening, and the M7 handoff.
 
 C1 durable IDs, C2 metadata/signal mappings, C3 explicit preference + catalog table, and C4 source-aware evidence convergence are implemented. The app can now derive quiz-based catalog inference with source provenance while preserving explicit preference and raw pairwise evidence as independent channels; inferred affinity cannot feed back into the signals that produced it. C5 ranking hardening is next.
 
