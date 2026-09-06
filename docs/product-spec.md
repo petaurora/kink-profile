@@ -4,8 +4,8 @@
 
 Living product direction.
 
-**Implemented through:** M5 — Sadism & Masochism  
-**Current:** M6 — Catalog Integration complete; M7 Full Overall Profile is next
+**Implemented through:** M6 — Catalog Integration  
+**Current:** M7 — Full Overall Profile
 
 The app is now structurally a collection of independently completable quizzes rather than one monolithic assessment.
 
@@ -356,7 +356,7 @@ The overall profile aggregates completed core sections.
 
 Unexplored sections remain explicitly unknown.
 
-M1 implements the profile/progress shell. Full cross-section aggregation is planned for M7.
+M1 implements the profile/progress shell. M7 is now the active milestone for full cross-section aggregation.
 
 ## Visualizations
 
@@ -366,12 +366,7 @@ Supported/current direction:
 - radar/spider charts
 - completion/progress state
 
-Future overall views may include:
-
-- Activities
-- D/s
-- Headspaces
-- Overall
+The active M7 presentation direction is a unified overall profile with drill-down, not four mandatory peer views. Section-local D/s / Headspaces / activity results remain available from their existing sections; future dedicated alternate views can be added only if they prove useful.
 
 ---
 
@@ -386,19 +381,18 @@ See:
 - [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
 - [Reference Data](../reference/README.md)
 
-The current app already has:
+M6 completed the catalog integration layer. The current app has:
 
-- a 551-item repo-native TSV runtime catalog source
-- build-time generation into app-owned runtime data
-- per-category This-or-That ranking
-- a Top-5-per-ranked-category Overall funnel
-- a category progress-map home with continue/next-category navigation
-- raw local pairwise-comparison persistence
-- separate category and Overall ranking results
+- a 551-item repo-native TSV runtime catalog source + build-time generated runtime data
+- durable Catalog/Category IDs, domains/display order, aliases, direction, and validated SignalId mappings
+- explicit seven-state catalog preferences in a shared local catalog-profile store
+- category + Overall This-or-That ranking with hardened meaningful-evidence/finalist/history semantics
+- source-aware quiz-derived affinity + provenance
+- catalog result views that keep explicit / pairwise / inferred evidence separate
+- recommendation eligibility/suppression that respects explicit exclusions without erasing explainability evidence
+- direct-evidence-only catalog → signal projection with no inferred feedback loop
 
-M6 is responsible for stabilizing and integrating that slice.
-
-C1 provides durable Catalog/Category IDs. C2 now provides category domains/display order, normalized receiving/giving/both direction, explicit aliases, and validated Catalog → SignalId mappings in generated runtime data.
+M7 consumes this completed M6 boundary rather than introducing another catalog model.
 
 ## Four independent catalog truths
 
