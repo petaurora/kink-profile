@@ -47,6 +47,7 @@ import {
   buildCanonicalSignalProfile,
   type CanonicalSignalSourceType,
 } from "./lib/overallProfileSignals";
+import { scoreOverallFacets } from "./lib/overallProfileFacets";
 import {
   scoreDsSignals,
   scoreHeadspaces,
@@ -433,6 +434,11 @@ export default function App() {
     [catalogProfileForInspection, profile],
   );
 
+  const overallFacets = useMemo(
+    () => scoreOverallFacets(canonicalSignals),
+    [canonicalSignals],
+  );
+
   const openQuiz = (quiz: QuizDefinition) => {
     if (quiz.availability !== "available") return;
 
@@ -668,6 +674,92 @@ export default function App() {
               })}
             </div>
           </div>
+
+          <article className="panel facet-inspector">
+            <div className="evidence-inspector-heading">
+              <div>
+                <p className="eyebrow">M7.2 inspection</p>
+                <h2>Overall facets</h2>
+                <p>
+                  Temporary testing view for the broad profile model. Missing signals reduce
+                  evidence coverage instead of counting as zero interest. Directional facets
+                  keep receiving and giving evidence separate underneath the overall score.
+                </p>
+              </div>
+              <button className="secondary compact" onClick={refreshCanonicalEvidence}>
+                Refresh evidence
+              </button>
+            </div>
+
+            <div className="facet-inspector-list">
+              {overallFacets.map((facet) => (
+                <details className="facet-inspector-row" key={facet.facetId}>
+                  <summary>
+                    <div className="facet-inspector-name">
+                      <strong>{facet.label}</strong>
+                      <span>{facet.description}</span>
+                    </div>
+                    <div className="evidence-signal-metrics">
+                      <span>
+                        <strong>{facet.affinity === null ? "—" : `${facet.affinity}%`}</strong>
+                        affinity
+                      </span>
+                      <span>
+                        <strong>{facet.coverage}%</strong>
+                        evidence
+                      </span>
+                    </div>
+                  </summary>
+
+                  <div className="facet-inspector-detail">
+                    {facet.direction && (
+                      <div className="facet-direction-grid">
+                        {(["receiving", "giving"] as const).map((direction) => {
+                          const result = facet.direction?.[direction];
+                          if (!result) return null;
+
+                          return (
+                            <div className="facet-direction-card" key={direction}>
+                              <span>{direction}</span>
+                              <strong>
+                                {result.affinity === null ? "—" : `${result.affinity}%`}
+                              </strong>
+                              <small>{result.coverage}% evidence</small>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {facet.components.length === 0 ? (
+                      <p className="facet-no-evidence">
+                        No canonical signals currently contribute evidence to this facet.
+                      </p>
+                    ) : (
+                      <div className="facet-component-list">
+                        {facet.components.map((component) => {
+                          const signal = signalDefinitionById.get(component.signalId);
+
+                          return (
+                            <div className="facet-component" key={component.signalId}>
+                              <div>
+                                <strong>{signal?.label ?? component.signalId}</strong>
+                                <code>{component.signalId}</code>
+                              </div>
+                              <span>
+                                {component.affinity}% affinity · {component.coverage}% evidence
+                              </span>
+                              <span>weight {component.configuredWeight}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </article>
 
           <article className="panel evidence-inspector">
             <div className="evidence-inspector-heading">
