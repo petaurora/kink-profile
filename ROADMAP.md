@@ -516,20 +516,22 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Exit condition:** broad profile facets are stable enough to present without depending on final profile UI. ✅
 
-### M7.3 — Profile header
+### M7.3 — Profile header ✅
 
 **Purpose:** answer "what are the biggest things about this profile?" before showing detail.
 
-- [ ] add concise human-readable strongest-theme summary
-- [ ] add compact Orientation trait
-- [ ] add compact Headspaces traits
-- [ ] add compact Dynamic Modes traits
-- [ ] avoid declaring one identity as the user's single result
-- [ ] keep completion/progress mechanics out of the profile header
+- [x] add concise human-readable strongest-theme summary
+- [x] add compact Orientation trait
+- [x] add compact Headspaces traits
+- [x] add compact Dynamic Modes traits
+- [x] preserve receiving/giving direction in headline headspaces
+- [x] distinguish receiving / giving / bidirectional / mixed / emerging orientation states
+- [x] suppress low-evidence composed labels rather than overclaim them
+- [x] avoid declaring one identity as the user's single result
+- [x] keep completion/progress mechanics out of the profile header
+- [x] test directional, bidirectional, mixed, sparse, and partial profile cases
 
-**Test before moving on:** compare complete, partial, directional, and mixed sample profiles for wording/trait quality.
-
-**Exit condition:** the header provides a useful standalone summary from real aggregated data.
+**Exit condition:** the header provides a useful standalone summary from real aggregated data. ✅
 
 ### M7.4 — Overall radar
 
@@ -763,6 +765,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.3 — Profile header**
+**M7.4 — Overall radar**
 
-Use the canonical-signal + M7.2 facet model to build the hybrid human-readable profile header with compact Orientation / Headspaces / Dynamic Modes traits. Keep progress/completion mechanics out of the presentation header.
+Render the locked M7.2 broad facets as the primary profile visualization beneath the M7.3 header. Test the real nine-facet model on desktop/mobile before deciding whether all nine remain simultaneous axes, and preserve unknown/low-coverage behavior rather than drawing unexplored facets as 0%.
