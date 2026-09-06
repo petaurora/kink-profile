@@ -541,30 +541,36 @@ export default function App() {
         <section className="hub-stack">
           <div className="hub-hero">
             <div>
-              <p className="eyebrow">Explore at your own pace</p>
+              <p className="eyebrow">Build it your way</p>
               <h1>Not one giant fucking test.</h1>
               <p className="hero-copy">
-                Pick a section, learn something useful, leave, come back later. Each finished
-                quiz adds another piece to your profile without treating unexplored areas as zero.
+                Use guided quizzes to spot patterns, This or That to compare what actually wins,
+                and the catalog to get specific. Start anywhere, revisit anything, and refine as
+                much or as little as you want.
               </p>
             </div>
 
             <button className="profile-summary" onClick={() => setScreen("profile")}>
-              <span className="eyebrow">Overall profile</span>
-              <strong>
-                {completedCore} / {coreQuizzes.length}
-              </strong>
-              <span>sections explored</span>
+              <span className="eyebrow">Your profile</span>
+              <strong>See the picture so far</strong>
+              <span>
+                {completedCore === 0
+                  ? "Ready when you are"
+                  : `${completedCore} of ${coreQuizzes.length} quiz sections complete`}
+              </span>
               <span className="summary-arrow">→</span>
             </button>
           </div>
 
           <div className="hub-section-heading">
             <div>
-              <p className="eyebrow">Core exploration</p>
-              <h2>Choose a section</h2>
+              <p className="eyebrow">01 · Guided exploration</p>
+              <h2>Start broad.</h2>
             </div>
-            <p>Short, focused quizzes. Your profile grows as you do them.</p>
+            <p>
+              Short, focused quizzes help surface the kinds of dynamics and experiences that
+              resonate with you. Do one, do them all, or come back later.
+            </p>
           </div>
 
           <div className="quiz-card-grid">
@@ -575,41 +581,41 @@ export default function App() {
 
           <div className="hub-section-heading catalog-hub-heading">
             <div>
-              <p className="eyebrow">551-item kink catalog</p>
-              <h2>Browse it or play with it.</h2>
+              <p className="eyebrow">02 · Refine the details</p>
+              <h2>Figure out what actually rises to the top.</h2>
             </div>
             <p>
-              Direct preferences and pairwise ranking are connected by the same catalog,
-              without pretending they're the same answer.
+              Compare interests against each other, then get as precise as you want about
+              individual preferences and limits.
             </p>
           </div>
 
           <div className="catalog-hub-grid">
-            <article className="catalog-hub-card panel">
+            <article className="catalog-hub-card catalog-hub-game panel">
               <div>
-                <span className="catalog-kicker">Direct preference management</span>
-                <h3>Browse & set preferences</h3>
+                <span className="catalog-kicker">Rank & compare</span>
+                <h3>Play This or That</h3>
                 <p>
-                  Search the catalog, filter it, read details, and explicitly mark anything
-                  you want as Love, Like, Curious, Unsure, Not Interested, Hard Limit, or N/A.
+                  Make quick pairwise choices to see what wins when two interests compete.
+                  Work within categories first, then compare the strongest choices overall.
                 </p>
               </div>
-              <button className="primary" onClick={() => setScreen("catalog")}>
-                Browse preferences
+              <button className="primary" onClick={() => setScreen("ranking")}>
+                Play This or That
               </button>
             </article>
 
-            <article className="catalog-hub-card catalog-hub-game panel">
+            <article className="catalog-hub-card panel">
               <div>
-                <span className="catalog-kicker">Comparative discovery mini-game</span>
-                <h3>Play This or That</h3>
+                <span className="catalog-kicker">Fine-tune directly</span>
+                <h3>Browse & set preferences</h3>
                 <p>
-                  Make tiny choices instead of rating 551 things one by one. Use contrast to
-                  discover what rises to the top within categories and overall.
+                  Search all 551 items and explicitly mark Love, Like, Curious, Unsure,
+                  Not Interested, Hard Limit, or N/A. Change anything whenever you want.
                 </p>
               </div>
-              <button className="secondary" onClick={() => setScreen("ranking")}>
-                Play This or That
+              <button className="secondary" onClick={() => setScreen("catalog")}>
+                Browse preferences
               </button>
             </article>
           </div>
