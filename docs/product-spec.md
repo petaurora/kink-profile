@@ -444,14 +444,15 @@ category progress home
         ↓
 rank a category
         ↓
-current Top 5 from ranked categories
+current evidenced Top 5 from ranked categories
         ↓
-Overall destination
+Overall candidate pool
+(current finalists + eligible prior Overall participants)
         ↓
 cross-category favorites
 ```
 
-Untouched categories contribute no finalists.
+Untouched categories contribute no finalists. Zero-evidence items do not enter the finalist pool, and prior meaningful Overall participants remain available even if a category's current Top 5 later changes.
 
 Pairwise ranking remains relative evidence; it does not replace explicit interest semantics.
 
