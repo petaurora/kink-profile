@@ -520,7 +520,37 @@ Prey                   87%
 Devotional Submissive  81%
 ```
 
-The profile should surface only a compact top set (for example, top 3) by default, with full detail available through expansion or drill-down.
+The profile should surface only a compact top set (for example, top 3) by default **with their percentages visible**, plus an in-place **Show all headspaces** action that expands to the full ranked receiving/submissive headspace list.
+
+Conceptual shape:
+
+```text
+ROLES & HEADSPACES
+
+Pet                    94%
+Prey                   87%
+Devotional Submissive  81%
+
+[ Show all headspaces ]
+```
+
+Expanded:
+
+```text
+ROLES & HEADSPACES
+
+Pet                    94%
+Prey                   87%
+Devotional Submissive  81%
+Service Submissive     74%
+Little                  62%
+Brat                    55%
+...
+
+[ Show less ]
+```
+
+The percentages are useful context because they show relative strength, but the default view should remain compact rather than rendering the full ranked list immediately.
 
 Do **not** present a parallel giving/dominant headspace block in the initial M7 UI merely for symmetry. The giving/dominant presentation should be revisited as part of the broader future directional-profile work, once cross-source giving/receiving aggregation is mature enough to support it consistently.
 
@@ -985,7 +1015,8 @@ The overall profile should preserve complexity while making it easier to underst
 
 ## O4 — Role / mode summary
 
-- show a compact top set of receiving/submissive headspaces in the initial M7 UI
+- show a compact top set of receiving/submissive headspaces with percentages in the initial M7 UI
+- provide an in-place Show all / Show less interaction for the full ranked receiving/submissive headspace list
 - park giving/dominant headspace presentation for the broader future directional-profile enhancement
 - strongest dynamic modes
 - preserve independent overlapping scores
