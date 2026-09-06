@@ -529,6 +529,48 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   pointer-events: none;
 }
 
+
+.quiz-card.quiz-card-complete {
+  min-height: 0;
+  padding: 17px 18px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  gap: 14px;
+  align-items: center;
+  overflow: visible;
+}
+
+.quiz-card.quiz-card-complete::after {
+  display: none;
+}
+
+.quiz-card-complete-copy {
+  min-width: 0;
+}
+
+.quiz-card-complete-copy .eyebrow {
+  margin-bottom: 4px;
+}
+
+.quiz-card-complete-copy h2 {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1rem;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+.quiz-card-complete .quiz-icon {
+  width: 38px;
+  border-radius: 12px;
+}
+
+.quiz-card-complete .status-chip {
+  white-space: nowrap;
+}
+
 .quiz-card-top,
 .quiz-card-footer {
   position: relative;
@@ -804,6 +846,20 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
   .quiz-card {
     min-height: 290px;
+  }
+
+  .quiz-card.quiz-card-complete {
+    min-height: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .quiz-card-complete .status-chip {
+    display: none;
+  }
+
+  .quiz-card-complete .secondary.compact {
+    grid-column: 2 / -1;
+    justify-self: start;
   }
 
   .sampler-profile-row {
