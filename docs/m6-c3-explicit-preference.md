@@ -2,11 +2,23 @@
 
 ## Status
 
-**Re-scoped for review after browser validation of the first contextual-editor implementation.**
+**Implemented and browser-validated.**
 
-The C3 data model remains useful, but the original plan to edit explicit preference directly on This-or-That comparison cards overloaded the ranking experience.
+C3 landed with the table-first UX that replaced the abandoned contextual editor on This-or-That comparison cards.
 
-This document replaces that UX direction.
+Verified implementation:
+
+- shared `pet-profile-catalog-v1` state + legacy ranking migration
+- seven-state explicit preference model with direction-capable storage
+- searchable/filterable catalog preference table/list
+- read-only ranking context by stable Catalog ID
+- explicit exclusions controlling new pair eligibility
+- This-or-That restored to a focused pairwise mini-game
+- all category sections collapsed on initial table load
+- per-category expand/collapse plus Expand all / Collapse all
+- floating Return to top action for long catalog navigation
+- 19 focused C3 tests passing
+- production TypeScript/Vite build passing
 
 ---
 
@@ -232,7 +244,7 @@ Important:
 - a Love item can still be relatively low-ranked among other loved items
 - a Hard Limit / Not Interested / Not Applicable item is excluded from new pairs but historical pairwise history is retained
 
-C4 remains responsible for making ranking confidence and finalist promotion trustworthy.
+C5 remains responsible for making ranking confidence and finalist promotion trustworthy. C4 now owns source-aware evidence convergence.
 
 ---
 
@@ -376,7 +388,7 @@ The table should not be hidden inside the This-or-That flow.
 
 ---
 
-# C3 implementation slices
+# Implemented C3 slices
 
 ## C3.1 — Shared state + migration
 
@@ -422,9 +434,9 @@ C3 intentionally stores the two forms of **direct catalog evidence** it owns:
 - explicit preference by stable Catalog ID/direction
 - raw pairwise comparison history
 
-It does **not** need to solve the larger profile-convergence problem while this slice is under implementation.
+It intentionally does **not** solve the larger profile-convergence problem.
 
-After C3 lands, M6 C4 introduces the source-aware evidence layer described in [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md).
+With C3 landed, M6 C4 introduces the source-aware evidence layer described in [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md).
 
 That cleanup will allow the same Catalog ID to expose, simultaneously:
 
@@ -443,7 +455,7 @@ Important compatibility rules:
 - future catalog → signal back-projection may consume **independent** explicit/pairwise evidence, never catalog affinity inferred from those signals
 - C4 should prefer adapters/selectors around C3's store over unnecessary persistence churn
 
-This keeps C3 a clean direct-preference/ranking foundation while leaving the profile free to become source-aware afterward.
+This keeps C3 as the durable direct-preference/ranking foundation while C4 adds source-aware derived evidence around it.
 
 ---
 
