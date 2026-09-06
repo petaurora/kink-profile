@@ -4,7 +4,7 @@
 
 **Implemented baseline with M6 hardening still in progress.**
 
-Current runtime behavior from PRs #18/#19/#20/#22 includes:
+Current imported runtime behavior includes:
 
 - category-first pairwise ranking
 - category progress-map home
