@@ -33,7 +33,7 @@ export const quizzes: QuizDefinition[] = [
     eyebrow: "Sampler",
     description:
       "A short cross-section of interests from the original prototype. Useful for trying the app while the deeper sections are built.",
-    icon: "♡",
+    icon: "heart",
     estimatedMinutes: 4,
     version: 1,
     availability: "available",
@@ -47,7 +47,7 @@ export const quizzes: QuizDefinition[] = [
     eyebrow: "Core section",
     description:
       "Explore receiving and giving restraint, positioning, physical constraint, discipline, accountability, ritual, structure, anticipation, and challenge — without treating discipline as pain.",
-    icon: "⛓",
+    icon: "adjustments-heart",
     estimatedMinutes: 9,
     version: 1,
     availability: "available",
@@ -61,7 +61,7 @@ export const quizzes: QuizDefinition[] = [
     eyebrow: "Core section",
     description:
       "Explore authority, control, service, obedience, autonomy, responsibility transfer, and the shape of power exchange.",
-    icon: "◆",
+    icon: "transfer",
     estimatedMinutes: 6,
     version: 1,
     availability: "available",
@@ -75,7 +75,7 @@ export const quizzes: QuizDefinition[] = [
     eyebrow: "Core section",
     description:
       "Explore giving and receiving intensity, pain, endurance, challenge, anticipation, and emotional intensity.",
-    icon: "✦",
+    icon: "bolt",
     estimatedMinutes: 9,
     version: 1,
     availability: "available",
@@ -89,7 +89,7 @@ export const quizzes: QuizDefinition[] = [
     eyebrow: "Core section",
     description:
       "Explore roles and headspaces like Pet, Slave, Little, Middle, Brat, Prey, Predator, Caregiver, Owner / Handler, Trainer, and more — plus the dynamic modes underneath them.",
-    icon: "◌",
+    icon: "masks-theater",
     estimatedMinutes: 11,
     version: 3,
     availability: "available",
