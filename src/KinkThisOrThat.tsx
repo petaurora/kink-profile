@@ -13,10 +13,11 @@ import {
   type KinkComparison,
   type RankingScope,
 } from "./lib/kinkRanking";
+import { filterEligibleCatalogItems } from "./lib/catalogProfile";
 import {
-  loadKinkRankingProgress,
-  saveKinkRankingProgress,
-} from "./lib/kinkRankingStorage";
+  loadCatalogProfile,
+  saveCatalogProfile,
+} from "./lib/catalogProfileStorage";
 
 type RankingMode = "category" | "overall";
 type SessionSize = 10 | 25 | 50 | "gremlin";
@@ -54,7 +55,7 @@ function comparisonCountForScope(
 }
 
 export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
-  const [progress, setProgress] = useState(() => loadKinkRankingProgress());
+  const [profile, setProfile] = useState(() => loadCatalogProfile());
   const [mode, setMode] = useState<RankingMode>("category");
   const [categoryId, setCategoryId] = useState<string>(kinkCategories[0]?.id ?? "");
   const [sessionSize, setSessionSize] = useState<SessionSize>(25);
@@ -64,35 +65,40 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
   const [categoryOpen, setCategoryOpen] = useState(false);
 
   useEffect(() => {
-    saveKinkRankingProgress(progress);
-  }, [progress]);
+    saveCatalogProfile(profile);
+  }, [profile]);
+
+  const eligibleCatalog = useMemo(
+    () => filterEligibleCatalogItems(kinkCatalog, profile.preferences),
+    [profile.preferences],
+  );
 
   const finalists = useMemo(
-    () => selectCategoryFinalists(kinkCatalog, progress.comparisons, 5),
-    [progress.comparisons],
+    () => selectCategoryFinalists(eligibleCatalog, profile.comparisons, 5),
+    [eligibleCatalog, profile.comparisons],
   );
 
   const activeCatalog = mode === "overall"
     ? finalists
-    : kinkCatalog.filter((item) => item.categoryId === categoryId);
+    : eligibleCatalog.filter((item) => item.categoryId === categoryId);
 
   const scope: RankingScope = mode === "overall"
     ? { type: "overall" }
     : { type: "category", categoryId };
 
   const snapshot = useMemo(
-    () => calculateRanking(activeCatalog, progress.comparisons, scope),
-    [activeCatalog, progress.comparisons, mode, categoryId],
+    () => calculateRanking(activeCatalog, profile.comparisons, scope),
+    [activeCatalog, profile.comparisons, mode, categoryId],
   );
 
   const basePair = useMemo(
-    () => selectNextPair(activeCatalog, progress.comparisons, scope),
-    [activeCatalog, progress.comparisons, mode, categoryId, pairNonce],
+    () => selectNextPair(activeCatalog, profile.comparisons, scope),
+    [activeCatalog, profile.comparisons, mode, categoryId, pairNonce],
   );
 
   const pair = useMemo(() => randomizePair(basePair), [basePair, pairNonce]);
 
-  const totalInScope = comparisonCountForScope(progress.comparisons, scope);
+  const totalInScope = comparisonCountForScope(profile.comparisons, scope);
   const sessionAnswered = Math.max(0, totalInScope - sessionStartCount);
   const sessionLimit = sessionSize === "gremlin" ? Infinity : sessionSize;
   const sessionComplete = sessionAnswered >= sessionLimit;
@@ -102,11 +108,13 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
     () =>
       kinkCategories.map((category) => {
         const categoryScope: RankingScope = { type: "category", categoryId: category.id };
-        const comparisons = comparisonCountForScope(progress.comparisons, categoryScope);
-        const categoryCatalog = kinkCatalog.filter((item) => item.categoryId === category.id);
+        const comparisons = comparisonCountForScope(profile.comparisons, categoryScope);
+        const categoryCatalog = eligibleCatalog.filter(
+          (item) => item.categoryId === category.id,
+        );
         const categorySnapshot = calculateRanking(
           categoryCatalog,
-          progress.comparisons,
+          profile.comparisons,
           categoryScope,
         );
 
@@ -117,17 +125,17 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
           confidenceLabel: comparisons === 0 ? "Not started" : confidenceLabel(categorySnapshot.confidence),
         };
       }),
-    [progress.comparisons],
+    [eligibleCatalog, profile.comparisons],
   );
 
   const lastRankedCategoryId = useMemo(() => {
-    const latest = progress.comparisons
+    const latest = profile.comparisons
       .filter((comparison) => comparison.scope.type === "category")
       .slice()
       .sort((a, b) => b.timestamp.localeCompare(a.timestamp))[0];
 
     return latest?.scope.type === "category" ? latest.scope.categoryId : null;
-  }, [progress.comparisons]);
+  }, [profile.comparisons]);
 
   const continueCategory = categorySummaries.find(
     (category) => category.id === lastRankedCategoryId,
@@ -187,7 +195,7 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
       timestamp: new Date().toISOString(),
     };
 
-    setProgress((current) => ({
+    setProfile((current) => ({
       ...current,
       comparisons: [...current.comparisons, comparison],
     }));
@@ -202,7 +210,7 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
     setShowResults(false);
     setPairNonce((value) => value + 1);
     setSessionStartCount(
-      comparisonCountForScope(progress.comparisons, { type: "overall" }),
+      comparisonCountForScope(profile.comparisons, { type: "overall" }),
     );
   };
 
@@ -219,7 +227,7 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
     setShowResults(false);
     setPairNonce((value) => value + 1);
     setSessionStartCount(
-      comparisonCountForScope(progress.comparisons, {
+      comparisonCountForScope(profile.comparisons, {
         type: "category",
         categoryId: nextCategoryId,
       }),
@@ -455,6 +463,44 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
         </article>
       )}
 
+      {(mode === "overall" || categoryOpen) &&
+        !showResults &&
+        !sessionComplete &&
+        !pair && (
+          <article className="ranking-empty panel">
+            <p className="eyebrow">
+              {mode === "overall" ? "Overall ranking" : activeCategory?.label}
+            </p>
+            <h2>Nothing else to compare here.</h2>
+            <p>
+              Fewer than two eligible items remain in this scope. Existing comparisons
+              are still saved, and excluded items stay out of new pairs.
+            </p>
+            <div className="ranking-empty-actions">
+              {snapshot.items.length > 0 && (
+                <button className="secondary" onClick={() => setShowResults(true)}>
+                  View current ranking
+                </button>
+              )}
+              {mode === "category" &&
+                nextCategory &&
+                nextCategory.id !== activeCategory?.id && (
+                  <button
+                    className="primary"
+                    onClick={() => changeCategory(nextCategory.id)}
+                  >
+                    Next category →
+                  </button>
+                )}
+              {mode === "overall" && (
+                <button className="secondary" onClick={returnToCategories}>
+                  Back to categories
+                </button>
+              )}
+            </div>
+          </article>
+        )}
+
       {(mode === "overall" || categoryOpen) && (sessionComplete || showResults) && (
         <article className="ranking-results panel">
           <div className="ranking-results-heading">
@@ -468,9 +514,11 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
               </p>
             </div>
             <div className="ranking-results-actions">
-              <button className="primary" onClick={() => startSession(sessionSize)}>
-                Keep ranking
-              </button>
+              {activeCatalog.length >= 2 && (
+                <button className="primary" onClick={() => startSession(sessionSize)}>
+                  Keep ranking
+                </button>
+              )}
               {mode === "category" && nextCategory && nextCategory.id !== activeCategory?.id && (
                 <button
                   className="secondary"
@@ -497,7 +545,10 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
         </article>
       )}
 
-      {(mode === "overall" || categoryOpen) && !sessionComplete && !showResults && (
+      {(mode === "overall" || categoryOpen) &&
+        !sessionComplete &&
+        !showResults &&
+        pair && (
         <div className="ranking-footer-actions">
           <button className="ranking-results-link" onClick={() => setShowResults(true)}>
             View current ranking
