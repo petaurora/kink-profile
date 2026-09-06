@@ -1,9 +1,41 @@
-import { getKnownRadarRuns } from "./lib/overallRadar";
 import type {
   ProfileShareSummaryModel,
   ShareRadarAxis,
 } from "./lib/profileShareSummary";
 import "./shareSummary.css";
+
+function getShareKnownRadarRuns(
+  axes: readonly ShareRadarAxis[],
+): readonly (readonly number[])[] {
+  if (axes.length === 0) return [];
+
+  const known = axes.map((axis) => axis.state !== "unknown");
+  if (known.every(Boolean)) return [axes.map((_, index) => index)];
+  if (!known.some(Boolean)) return [];
+
+  const firstUnknown = known.findIndex((value) => !value);
+  const rotatedIndexes = Array.from({ length: axes.length }, (_, offset) => (
+    (firstUnknown + 1 + offset) % axes.length
+  ));
+
+  const runs: number[][] = [];
+  let current: number[] = [];
+
+  for (const index of rotatedIndexes) {
+    if (known[index]) {
+      current.push(index);
+      continue;
+    }
+
+    if (current.length > 0) {
+      runs.push(current);
+      current = [];
+    }
+  }
+
+  if (current.length > 0) runs.push(current);
+  return runs;
+}
 
 function ShareRadar({ axes }: { axes: readonly ShareRadarAxis[] }) {
   const size = 360;
@@ -21,7 +53,7 @@ function ShareRadar({ axes }: { axes: readonly ShareRadarAxis[] }) {
   const ringPoints = (scale: number) =>
     axes.map((_, index) => pointFor(index, scale).join(",")).join(" ");
 
-  const knownRuns = getKnownRadarRuns(axes);
+  const knownRuns = getShareKnownRadarRuns(axes);
   const complete = axes.length > 0 && axes.every((axis) => axis.state !== "unknown");
 
   return (
