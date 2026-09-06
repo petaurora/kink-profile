@@ -156,6 +156,7 @@ export function ProfileSettingsPage({
                 setResetOpen((open) => !open);
                 setBackupOpen(false);
                 setImportOpen(false);
+                setSharePreviewOpen(false);
               }}
             >
               {resetOpen ? "Close reset" : "Choose data"}
@@ -174,6 +175,7 @@ export function ProfileSettingsPage({
                 setBackupOpen((open) => !open);
                 setResetOpen(false);
                 setImportOpen(false);
+                setSharePreviewOpen(false);
               }}
             >
               {backupOpen ? "Close backup" : "Download backup"}
@@ -192,6 +194,7 @@ export function ProfileSettingsPage({
                 setImportOpen((open) => !open);
                 setResetOpen(false);
                 setBackupOpen(false);
+                setSharePreviewOpen(false);
               }}
             >
               {importOpen ? "Close restore" : "Choose backup"}
@@ -238,7 +241,12 @@ export function ProfileSettingsPage({
             </div>
             <button
               className="secondary compact"
-              onClick={() => setSharePreviewOpen((open) => !open)}
+              onClick={() => {
+                setSharePreviewOpen((open) => !open);
+                setResetOpen(false);
+                setBackupOpen(false);
+                setImportOpen(false);
+              }}
             >
               {sharePreviewOpen ? "Close preview" : "Preview"}
             </button>
