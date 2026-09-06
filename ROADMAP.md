@@ -312,6 +312,8 @@ See [docs/m6-catalog-integration.md](docs/m6-catalog-integration.md) for the M6 
 
 The repository migration imported the already-working catalog/ranking baseline into the new `kink-profile` history. Old pull-request numbers are intentionally not used as implementation references here.
 
+The checklist below records the imported behavior **as it existed at migration time**. C3–C5 subsequently changed eligibility, meaningful-evidence confidence, finalist promotion, and Overall-candidate continuity without rewriting this historical baseline.
+
 - [x] export the workbook into repo-native TSV reference data
 - [x] make `reference/catalog/kink-catalog.tsv` the runtime catalog source
 - [x] generate app-owned runtime catalog data before dev/build
