@@ -42,6 +42,11 @@ import {
   type AnswerMap,
   type StoredProfile,
 } from "./lib/profileStorage";
+import { loadCatalogProfile } from "./lib/catalogProfileStorage";
+import {
+  buildCanonicalSignalProfile,
+  type CanonicalSignalSourceType,
+} from "./lib/overallProfileSignals";
 import {
   scoreDsSignals,
   scoreHeadspaces,
@@ -249,6 +254,9 @@ function QuizCard({
 
 export default function App() {
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
+  const [catalogProfileForInspection, setCatalogProfileForInspection] = useState(() =>
+    loadCatalogProfile(),
+  );
   const [screen, setScreen] = useState<Screen>("hub");
   const [activeQuizId, setActiveQuizId] = useState<QuizId>(starterQuiz.id);
   const [questionIndex, setQuestionIndex] = useState(0);
