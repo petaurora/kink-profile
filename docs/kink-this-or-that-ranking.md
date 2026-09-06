@@ -2,7 +2,7 @@
 
 ## Status
 
-**Implemented baseline with M6 hardening still in progress.**
+**Implemented and hardened through M6.**
 
 Current imported runtime behavior includes:
 
