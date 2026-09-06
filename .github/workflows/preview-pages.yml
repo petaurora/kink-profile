@@ -1,0 +1,141 @@
+name: Deploy PR Preview
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: pages-publish
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: github.event.action != 'closed'
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        if: github.event.action != 'closed'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install
+        if: github.event.action != 'closed'
+        run: npm install
+
+      - name: Build preview
+        if: github.event.action != 'closed'
+        run: npm run build
+        env:
+          VITE_BASE_PATH: /kink-profile/pr-${{ github.event.number }}/
+
+      - name: Deploy preview
+        if: github.event.action != 'closed'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: dist
+          target-folder: pr-${{ github.event.number }}
+          clean: true
+          force: false
+          commit-message: Deploy preview for PR #${{ github.event.number }}
+
+      - name: Add or update preview link
+        if: github.event.action != 'closed'
+        uses: actions/github-script@v7
+        env:
+          PREVIEW_URL: https://petaurora.github.io/kink-profile/pr-${{ github.event.number }}/
+        with:
+          script: |
+            const marker = "<!-- gh-pages-preview -->";
+            const body = `${marker}
+            🌐 **GitHub Pages preview:** ${process.env.PREVIEW_URL}
+
+            This preview updates whenever new commits are pushed to this PR.`;
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              { owner, repo, issue_number, per_page: 100 }
+            );
+            const existing = comments.find(
+              (comment) =>
+                comment.user?.type === "Bot" &&
+                comment.body?.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
+
+      - name: Prepare empty preview
+        if: github.event.action == 'closed'
+        run: mkdir -p empty-preview
+
+      - name: Remove preview
+        if: github.event.action == 'closed'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: empty-preview
+          target-folder: pr-${{ github.event.number }}
+          clean: true
+          force: false
+          commit-message: Remove preview for PR #${{ github.event.number }}
+
+      - name: Mark preview as removed
+        if: github.event.action == 'closed'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = "<!-- gh-pages-preview -->";
+            const body = `${marker}
+            ~~🌐 GitHub Pages preview~~ — removed because this PR was closed.`;
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              { owner, repo, issue_number, per_page: 100 }
+            );
+            const existing = comments.find(
+              (comment) =>
+                comment.user?.type === "Bot" &&
+                comment.body?.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            }
