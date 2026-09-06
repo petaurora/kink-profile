@@ -479,6 +479,32 @@ describe("catalog to signal projection contract", () => {
     ).toEqual([]);
   });
 
+  it("keeps directional explicit overrides out of opposite-direction signals", () => {
+    let profile = createEmptyCatalogProfileState();
+    profile = setCatalogPreference(
+      profile,
+      "item-both",
+      "receiving",
+      "love",
+      "2026-09-06T00:00:00.000Z",
+    );
+
+    const [evidence] = selectExplicitCatalogEvidence(profile, "item-both");
+    const projections = projectExplicitCatalogEvidenceToSignals(evidence, {
+      id: "item-both",
+      signalMappings: [
+        { signalId: "receiving_control", weight: 1 },
+        { signalId: "giving_control", weight: 1 },
+        { signalId: "structure", weight: 0.5 },
+      ],
+    });
+
+    expect(projections.map((projection) => projection.signalId)).toEqual([
+      "receiving_control",
+      "structure",
+    ]);
+  });
+
   it("keeps pairwise left/right/equal evidence relative", () => {
     const catalog = [
       receivingControlItem,
