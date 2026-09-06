@@ -680,6 +680,26 @@ That deeper experience may:
 
 This preserves the main profile as a readable presentation surface while still making the catalog detail accessible when someone wants it.
 
+### State-filter shortcuts
+
+Do not create a separate ranked **Curious / Exploring** section on the main profile.
+
+`Curious` is an explicit categorical preference state, not an inherently ordered result. Unless independent ranking evidence exists, the product should not invent a "Top Curious" ordering.
+
+Instead, provide compact navigation shortcuts into the existing catalog/list filtered by explicit state where useful.
+
+Conceptually:
+
+```text
+[ Curious (12) ]   [ Unsure (8) ]   [ Limits (3) ]
+```
+
+Selecting one should open the catalog/preferences experience with the corresponding state filter already applied.
+
+These shortcuts may live near **Interest Areas**, **Top Overall + Limits**, or in a small supporting action row, whichever fits the final visual layout best.
+
+Hard Limits may still have their own visible summary on the profile because they are important boundaries. The filtered shortcut is an additional way to inspect the full list.
+
 ---
 
 ## Strongest reusable signals
