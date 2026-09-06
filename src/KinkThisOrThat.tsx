@@ -72,6 +72,72 @@ function comparisonCountForScope(
   }).length;
 }
 
+
+function PreferenceComparisonCard({
+  item,
+  preference,
+  onPick,
+  onPreferenceChange,
+}: {
+  item: KinkCatalogItem;
+  preference: CatalogPreferenceState | undefined;
+  onPick: () => void;
+  onPreferenceChange: (state: CatalogPreferenceState | undefined) => void;
+}) {
+  return (
+    <article className="kink-choice-card">
+      <button type="button" className="kink-choice-main" onClick={onPick}>
+        <span className="choice-category">{item.categoryLabel}</span>
+        <strong>{item.label}</strong>
+        {item.description && <p>{item.description}</p>}
+        <span className="pick-label">Pick this</span>
+      </button>
+
+      <details
+        className={
+          preference === "hard_limit"
+            ? "preference-menu preference-hard-limit"
+            : preference
+              ? "preference-menu preference-set"
+              : "preference-menu"
+        }
+      >
+        <summary>
+          <span>Preference</span>
+          <strong>{preference ? preferenceLabels[preference] : "Not set"}</strong>
+        </summary>
+        <div className="preference-options">
+          {catalogPreferenceStates.map((state) => (
+            <button
+              type="button"
+              key={state}
+              className={
+                state === "hard_limit"
+                  ? "preference-option hard-limit"
+                  : preference === state
+                    ? "preference-option active"
+                    : "preference-option"
+              }
+              aria-pressed={preference === state}
+              onClick={() => onPreferenceChange(state)}
+            >
+              {preferenceLabels[state]}
+            </button>
+          ))}
+          <button
+            type="button"
+            className="preference-option clear"
+            disabled={!preference}
+            onClick={() => onPreferenceChange(undefined)}
+          >
+            Clear
+          </button>
+        </div>
+      </details>
+    </article>
+  );
+}
+
 export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
   const [profile, setProfile] = useState(() => loadCatalogProfile());
   const [mode, setMode] = useState<RankingMode>("category");
@@ -479,21 +545,27 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="versus-grid">
-            <button className="kink-choice" onClick={() => answer("left")}>
-              <span className="choice-category">{pair[0].categoryLabel}</span>
-              <strong>{pair[0].label}</strong>
-              {pair[0].description && <p>{pair[0].description}</p>}
-              <span className="pick-label">Pick this</span>
-            </button>
+            <PreferenceComparisonCard
+              item={pair[0]}
+              preference={getCatalogPreference(
+                profile.preferences[pair[0].id],
+                "overall",
+              )}
+              onPick={() => answer("left")}
+              onPreferenceChange={(state) => updatePreference(pair[0].id, state)}
+            />
 
             <div className="versus-or" aria-hidden="true">OR</div>
 
-            <button className="kink-choice" onClick={() => answer("right")}>
-              <span className="choice-category">{pair[1].categoryLabel}</span>
-              <strong>{pair[1].label}</strong>
-              {pair[1].description && <p>{pair[1].description}</p>}
-              <span className="pick-label">Pick this</span>
-            </button>
+            <PreferenceComparisonCard
+              item={pair[1]}
+              preference={getCatalogPreference(
+                profile.preferences[pair[1].id],
+                "overall",
+              )}
+              onPick={() => answer("right")}
+              onPreferenceChange={(state) => updatePreference(pair[1].id, state)}
+            />
           </div>
 
           <div className="comparison-actions">
@@ -503,6 +575,44 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
           </div>
         </article>
       )}
+
+      {(mode === "overall" || categoryOpen) &&
+        !showResults &&
+        !sessionComplete &&
+        !pair && (
+          <article className="ranking-empty panel">
+            <p className="eyebrow">
+              {mode === "overall" ? "Overall ranking" : activeCategory?.label}
+            </p>
+            <h2>Nothing else to compare here.</h2>
+            <p>
+              Fewer than two eligible items remain in this scope. Your existing
+              comparisons are still saved, and excluded items stay out of new pairs.
+            </p>
+            <div className="ranking-empty-actions">
+              {snapshot.items.length > 0 && (
+                <button className="secondary" onClick={() => setShowResults(true)}>
+                  View current ranking
+                </button>
+              )}
+              {mode === "category" &&
+                nextCategory &&
+                nextCategory.id !== activeCategory?.id && (
+                  <button
+                    className="primary"
+                    onClick={() => changeCategory(nextCategory.id)}
+                  >
+                    Next category →
+                  </button>
+                )}
+              {mode === "overall" && (
+                <button className="secondary" onClick={returnToCategories}>
+                  Back to categories
+                </button>
+              )}
+            </div>
+          </article>
+        )}
 
       {(mode === "overall" || categoryOpen) && (sessionComplete || showResults) && (
         <article className="ranking-results panel">
@@ -517,9 +627,11 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
               </p>
             </div>
             <div className="ranking-results-actions">
-              <button className="primary" onClick={() => startSession(sessionSize)}>
-                Keep ranking
-              </button>
+              {activeCatalog.length >= 2 && (
+                <button className="primary" onClick={() => startSession(sessionSize)}>
+                  Keep ranking
+                </button>
+              )}
               {mode === "category" && nextCategory && nextCategory.id !== activeCategory?.id && (
                 <button
                   className="secondary"
@@ -546,7 +658,10 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
         </article>
       )}
 
-      {(mode === "overall" || categoryOpen) && !sessionComplete && !showResults && (
+      {(mode === "overall" || categoryOpen) &&
+        !sessionComplete &&
+        !showResults &&
+        pair && (
         <div className="ranking-footer-actions">
           <button className="ranking-results-link" onClick={() => setShowResults(true)}>
             View current ranking
