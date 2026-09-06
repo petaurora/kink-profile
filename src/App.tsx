@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { KinkThisOrThat } from "./KinkThisOrThat";
 import {
   answerOptions,
@@ -47,7 +48,7 @@ import {
   scoreSignals,
 } from "./lib/scoring";
 
-type Screen = "hub" | "quiz" | "results" | "profile" | "ranking";
+type Screen = "hub" | "quiz" | "results" | "profile" | "catalog" | "ranking";
 type Score = {
   id: string;
   label: string;
@@ -523,29 +524,66 @@ export default function App() {
             ))}
           </div>
 
+          <div className="hub-section-heading catalog-hub-heading">
+            <div>
+              <p className="eyebrow">551-item kink catalog</p>
+              <h2>Browse it or play with it.</h2>
+            </div>
+            <p>
+              Direct preferences and pairwise ranking are connected by the same catalog,
+              without pretending they're the same answer.
+            </p>
+          </div>
+
+          <div className="catalog-hub-grid">
+            <article className="catalog-hub-card panel">
+              <div>
+                <span className="catalog-kicker">Direct preference management</span>
+                <h3>Browse & set preferences</h3>
+                <p>
+                  Search the catalog, filter it, read details, and explicitly mark anything
+                  you want as Love, Like, Curious, Unsure, Not Interested, Hard Limit, or N/A.
+                </p>
+              </div>
+              <button className="primary" onClick={() => setScreen("catalog")}>
+                Browse preferences
+              </button>
+            </article>
+
+            <article className="catalog-hub-card catalog-hub-game panel">
+              <div>
+                <span className="catalog-kicker">Comparative discovery mini-game</span>
+                <h3>Play This or That</h3>
+                <p>
+                  Make tiny choices instead of rating 551 things one by one. Use contrast to
+                  discover what rises to the top within categories and overall.
+                </p>
+              </div>
+              <button className="secondary" onClick={() => setScreen("ranking")}>
+                Play This or That
+              </button>
+            </article>
+          </div>
+
           <div className="hub-section-heading sampler-heading">
             <div>
-              <p className="eyebrow">Already playable</p>
+              <p className="eyebrow">Original prototype</p>
               <h2>Starter sampler</h2>
             </div>
-            <p>The original prototype stays available while we build the real sections.</p>
+            <p>The first 16-question sampler stays available separately.</p>
           </div>
 
           <div className="sampler-grid">
             <QuizCard quiz={starterQuiz} profile={profile} onOpen={openQuiz} />
-            <aside className="catalog-note panel">
-              <span className="catalog-kicker">551-item reference catalog</span>
-              <h3>The giant list is data, not homework.</h3>
-              <p>
-                Turn the full catalog into a useful preference ranking through tiny this-or-that
-                choices instead of 551 independent ratings.
-              </p>
-              <button className="primary compact" onClick={() => setScreen("ranking")}>
-                Rank the giant list
-              </button>
-            </aside>
           </div>
         </section>
+      )}
+
+      {screen === "catalog" && (
+        <KinkCatalogPreferences
+          onClose={() => setScreen("hub")}
+          onPlayRanking={() => setScreen("ranking")}
+        />
       )}
 
       {screen === "ranking" && (
