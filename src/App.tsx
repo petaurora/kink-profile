@@ -10,7 +10,6 @@ import {
 } from "@tabler/icons-react";
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { KinkThisOrThat } from "./KinkThisOrThat";
-import { ProfileSettingsPage } from "./ProfileSettingsPage";
 import {
   answerOptions,
   dimensions,
@@ -53,10 +52,6 @@ import {
 } from "./lib/profileStorage";
 import { loadCatalogProfile } from "./lib/catalogProfileStorage";
 import {
-  loadProfileSettings,
-  saveProfileSettings,
-} from "./lib/profileSettings";
-import {
   buildCanonicalSignalProfile,
   type CanonicalSignalSourceType,
 } from "./lib/overallProfileSignals";
@@ -67,7 +62,7 @@ import {
   scoreSignals,
 } from "./lib/scoring";
 
-type Screen = "hub" | "quiz" | "results" | "profile" | "catalog" | "ranking" | "settings";
+type Screen = "hub" | "quiz" | "results" | "profile" | "catalog" | "ranking";
 type Score = {
   id: string;
   label: string;
@@ -308,7 +303,6 @@ const defaultQuiz = quizzes.find((quiz) => quiz.contributesToOverall) ?? quizzes
 
 export default function App() {
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
-  const [profileSettings, setProfileSettings] = useState(() => loadProfileSettings());
   const [catalogProfileForInspection, setCatalogProfileForInspection] = useState(() =>
     loadCatalogProfile(),
   );
@@ -319,10 +313,6 @@ export default function App() {
   useEffect(() => {
     saveProfile(profile);
   }, [profile]);
-
-  useEffect(() => {
-    saveProfileSettings(profileSettings);
-  }, [profileSettings]);
 
   const activeQuiz = getQuiz(activeQuizId) ?? defaultQuiz;
   const activeQuestions = useMemo(() => getQuestionsForQuiz(activeQuiz), [activeQuiz]);
@@ -580,15 +570,12 @@ export default function App() {
           <span className="brand-mark">
             <IconPaw size={18} stroke={2} aria-hidden="true" />
           </span>
-          <span>Kink Profile</span>
+          <span>Pet Profile</span>
         </button>
 
         <div className="header-actions">
           <button className="header-link" onClick={openProfile}>
             My profile
-          </button>
-          <button className="header-link" onClick={() => setScreen("settings")}>
-            Settings
           </button>
         </div>
       </header>
@@ -607,7 +594,7 @@ export default function App() {
             </div>
 
             <button className="profile-summary" onClick={openProfile}>
-              <span className="eyebrow">{profileSettings.displayName + "'s profile"}</span>
+              <span className="eyebrow">Your profile</span>
               <span className="profile-summary-go">
                 View
                 <IconChevronRight size={17} stroke={2} aria-hidden="true" />
@@ -703,19 +690,11 @@ export default function App() {
         />
       )}
 
-      {screen === "settings" && (
-        <ProfileSettingsPage
-          settings={profileSettings}
-          onChange={setProfileSettings}
-          onClose={() => setScreen("hub")}
-        />
-      )}
-
       {screen === "profile" && (
         <section className="profile-stack">
           <div className="results-heading panel">
             <div>
-              <p className="eyebrow">{profileSettings.displayName + "'s overall profile"}</p>
+              <p className="eyebrow">Your overall profile</p>
               <h1>Built a section at a time.</h1>
               <p>
                 Unexplored sections stay unknown instead of quietly becoming zeroes. Completed
