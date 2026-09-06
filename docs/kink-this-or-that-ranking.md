@@ -16,7 +16,7 @@ Current imported runtime behavior includes:
 - browser-local raw comparison persistence
 - category and Overall ranking views
 
-See [M6 Catalog Integration](m6-catalog-integration.md) for the parent catalog contract and [M6 C3 Explicit Preference](m6-c3-explicit-preference.md) for the next storage/eligibility/comparison-card implementation slice.
+See [M6 Catalog Integration](m6-catalog-integration.md) for the parent catalog contract and [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md) for the direct preference-management surface.
 
 ---
 
@@ -237,7 +237,7 @@ The raw interaction may be retained to avoid immediately repeating an unhelpful 
 
 **Current implementation note:** Neither does not change Elo, but it currently increments item comparison counts and scope confidence. M6 should stop it from inflating ordering confidence.
 
-If explicit kink preference states exist, the UI may separately offer a way to mark those items as not interested. Ranking behavior must not silently overwrite explicit profile state.
+Direct explicit preference editing belongs in the catalog table/list. Ranking behavior must not silently overwrite explicit profile state.
 
 ### Skip / don't know
 
@@ -257,7 +257,9 @@ Useful when:
 
 # Relationship to explicit preference state
 
-C3 implementation details are scoped in [M6 C3 Explicit Preference](m6-c3-explicit-preference.md).
+C3 implementation details are scoped in [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md).
+
+This-or-That is intentionally a mini-game for comparative discovery/ranking. Direct preference assignment belongs in the separate catalog table/list.
 
 Relative ranking and explicit interest are different dimensions.
 
