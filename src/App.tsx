@@ -1,4 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  IconAdjustmentsHeart,
+  IconBolt,
+  IconChevronRight,
+  IconHeart,
+  IconMasksTheater,
+  IconPaw,
+  IconTransfer,
+} from "@tabler/icons-react";
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { KinkThisOrThat } from "./KinkThisOrThat";
 import {
@@ -32,7 +41,6 @@ import {
 import {
   getQuiz,
   quizzes,
-  starterQuiz,
   type QuizDefinition,
   type QuizId,
 } from "./data/quizzes";
@@ -63,6 +71,23 @@ type Score = {
   coverage?: number;
 };
 type QuizState = "not-started" | "in-progress" | "complete" | "coming-soon";
+
+function QuizGlyph({ name, size = 26 }: { name: string; size?: number }) {
+  const props = { size, stroke: 1.8, "aria-hidden": true as const };
+
+  switch (name) {
+    case "adjustments-heart":
+      return <IconAdjustmentsHeart {...props} />;
+    case "transfer":
+      return <IconTransfer {...props} />;
+    case "bolt":
+      return <IconBolt {...props} />;
+    case "masks-theater":
+      return <IconMasksTheater {...props} />;
+    default:
+      return <IconHeart {...props} />;
+  }
+}
 
 const signalDefinitionById = new Map(
   signalDefinitions.map((signal) => [signal.id, signal]),
@@ -205,11 +230,32 @@ function QuizCard({
   const progress =
     quiz.questionIds.length > 0 ? Math.round((answeredCount / quiz.questionIds.length) * 100) : 0;
 
+  if (state === "complete") {
+    return (
+      <article className="quiz-card quiz-card-complete panel quiz-state-complete">
+        <span className="quiz-icon" aria-hidden="true">
+          <QuizGlyph name={quiz.icon} />
+        </span>
+
+        <div className="quiz-card-complete-copy">
+          <p className="eyebrow">{quiz.eyebrow}</p>
+          <h2>{quiz.title}</h2>
+        </div>
+
+        <span className="status-chip status-complete">Complete</span>
+
+        <button className="secondary compact" onClick={() => onOpen(quiz)}>
+          View results
+        </button>
+      </article>
+    );
+  }
+
   return (
     <article className={`quiz-card panel quiz-state-${state}`}>
       <div className="quiz-card-top">
         <span className="quiz-icon" aria-hidden="true">
-          {quiz.icon}
+          <QuizGlyph name={quiz.icon} />
         </span>
         <span className={`status-chip status-${state}`}>{stateLabel(state)}</span>
       </div>
@@ -234,7 +280,7 @@ function QuizCard({
 
         {quiz.availability === "available" ? (
           <button className="primary compact" onClick={() => onOpen(quiz)}>
-            {state === "complete" ? "View / retake" : state === "in-progress" ? "Continue" : "Explore"}
+            {state === "in-progress" ? "Continue" : "Explore"}
           </button>
         ) : (
           <button className="secondary compact" disabled>
@@ -252,20 +298,22 @@ function QuizCard({
   );
 }
 
+const defaultQuiz = quizzes.find((quiz) => quiz.contributesToOverall) ?? quizzes[0];
+
 export default function App() {
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
   const [catalogProfileForInspection, setCatalogProfileForInspection] = useState(() =>
     loadCatalogProfile(),
   );
   const [screen, setScreen] = useState<Screen>("hub");
-  const [activeQuizId, setActiveQuizId] = useState<QuizId>(starterQuiz.id);
+  const [activeQuizId, setActiveQuizId] = useState<QuizId>(defaultQuiz.id);
   const [questionIndex, setQuestionIndex] = useState(0);
 
   useEffect(() => {
     saveProfile(profile);
   }, [profile]);
 
-  const activeQuiz = getQuiz(activeQuizId) ?? starterQuiz;
+  const activeQuiz = getQuiz(activeQuizId) ?? defaultQuiz;
   const activeQuestions = useMemo(() => getQuestionsForQuiz(activeQuiz), [activeQuiz]);
   const answers = profile.quizzes[activeQuiz.id]?.answers ?? {};
   const answeredCount = getAnsweredCount(activeQuiz, answers);
@@ -513,7 +561,9 @@ export default function App() {
     <main className="app-shell">
       <header className="site-header">
         <button className="brand" onClick={() => setScreen("hub")}>
-          <span className="brand-mark">♡</span>
+          <span className="brand-mark">
+            <IconPaw size={18} stroke={2} aria-hidden="true" />
+          </span>
           <span>Pet Profile</span>
         </button>
 
@@ -521,38 +571,40 @@ export default function App() {
           <button className="header-link" onClick={openProfile}>
             My profile
           </button>
-          <span className="privacy-pill">local only</span>
         </div>
       </header>
 
       {screen === "hub" && (
         <section className="hub-stack">
-          <div className="hub-hero panel">
+          <div className="hub-hero">
             <div>
-              <p className="eyebrow">Explore at your own pace</p>
+              <p className="eyebrow">Build it your way</p>
               <h1>Not one giant fucking test.</h1>
               <p className="hero-copy">
-                Pick a section, learn something useful, leave, come back later. Each finished
-                quiz adds another piece to your profile without treating unexplored areas as zero.
+                Use guided quizzes to spot patterns, This or That to compare what actually wins,
+                and the catalog to get specific. Start anywhere, revisit anything, and refine as
+                much or as little as you want.
               </p>
             </div>
 
             <button className="profile-summary" onClick={openProfile}>
-              <span className="eyebrow">Overall profile</span>
-              <strong>
-                {completedCore} / {coreQuizzes.length}
-              </strong>
-              <span>core areas explored</span>
-              <span className="summary-arrow">→</span>
+              <span className="eyebrow">Your profile</span>
+              <span className="profile-summary-go">
+                View
+                <IconChevronRight size={17} stroke={2} aria-hidden="true" />
+              </span>
             </button>
           </div>
 
           <div className="hub-section-heading">
             <div>
-              <p className="eyebrow">Core exploration</p>
-              <h2>Choose a section</h2>
+              <p className="eyebrow">01 · Guided exploration</p>
+              <h2>Start broad.</h2>
             </div>
-            <p>Short, focused quizzes. Your profile grows as you do them.</p>
+            <p>
+              Short, focused quizzes help surface the kinds of dynamics and experiences that
+              resonate with you. Do one, do them all, or come back later.
+            </p>
           </div>
 
           <div className="quiz-card-grid">
@@ -563,55 +615,56 @@ export default function App() {
 
           <div className="hub-section-heading catalog-hub-heading">
             <div>
-              <p className="eyebrow">551-item kink catalog</p>
-              <h2>Browse it or play with it.</h2>
+              <p className="eyebrow">02 · Rank & compare</p>
+              <h2>Figure out what actually rises to the top.</h2>
             </div>
             <p>
-              Direct preferences and pairwise ranking are connected by the same catalog,
-              without pretending they're the same answer.
+              Quick pairwise choices help reveal preference order without asking you to rate
+              everything in isolation.
             </p>
           </div>
 
-          <div className="catalog-hub-grid">
-            <article className="catalog-hub-card panel">
-              <div>
-                <span className="catalog-kicker">Direct preference management</span>
-                <h3>Browse & set preferences</h3>
-                <p>
-                  Search the catalog, filter it, read details, and explicitly mark anything
-                  you want as Love, Like, Curious, Unsure, Not Interested, Hard Limit, or N/A.
-                </p>
-              </div>
-              <button className="primary" onClick={() => setScreen("catalog")}>
-                Browse preferences
-              </button>
-            </article>
-
+          <div className="catalog-hub-grid catalog-hub-grid-single">
             <article className="catalog-hub-card catalog-hub-game panel">
               <div>
-                <span className="catalog-kicker">Comparative discovery mini-game</span>
+                <span className="catalog-kicker">Comparative discovery</span>
                 <h3>Play This or That</h3>
                 <p>
-                  Make tiny choices instead of rating 551 things one by one. Use contrast to
-                  discover what rises to the top within categories and overall.
+                  Make quick pairwise choices to see what wins when two interests compete.
+                  Work within categories first, then compare the strongest choices overall.
                 </p>
               </div>
-              <button className="secondary" onClick={() => setScreen("ranking")}>
+              <button className="primary" onClick={() => setScreen("ranking")}>
                 Play This or That
               </button>
             </article>
           </div>
 
-          <div className="hub-section-heading sampler-heading">
+          <div className="hub-section-heading catalog-hub-heading">
             <div>
-              <p className="eyebrow">Original prototype</p>
-              <h2>Starter sampler</h2>
+              <p className="eyebrow">03 · Detailed refinement</p>
+              <h2>Get specific.</h2>
             </div>
-            <p>The first 16-question sampler stays available separately.</p>
+            <p>
+              Fine-tune individual interests, curiosity, uncertainty, and limits directly in
+              the full catalog.
+            </p>
           </div>
 
-          <div className="sampler-grid sampler-grid-single">
-            <QuizCard quiz={starterQuiz} profile={profile} onOpen={openQuiz} />
+          <div className="catalog-hub-grid catalog-hub-grid-single">
+            <article className="catalog-hub-card panel">
+              <div>
+                <span className="catalog-kicker">Fine-tune directly</span>
+                <h3>Browse & set preferences</h3>
+                <p>
+                  Search all 551 items and explicitly mark Love, Like, Curious, Unsure,
+                  Not Interested, Hard Limit, or N/A. Change anything whenever you want.
+                </p>
+              </div>
+              <button className="secondary" onClick={() => setScreen("catalog")}>
+                Browse preferences
+              </button>
+            </article>
           </div>
         </section>
       )}
@@ -650,14 +703,16 @@ export default function App() {
           <div className="profile-overview panel">
             <div className="profile-number">
               <strong>{completedCore}</strong>
-              <span>of {coreQuizzes.length} core areas explored</span>
+              <span>of {coreQuizzes.length} sections explored</span>
             </div>
             <div className="profile-section-list">
               {coreQuizzes.map((quiz) => {
                 const state = getQuizState(quiz, profile);
                 return (
                   <div className="profile-section-row" key={quiz.id}>
-                    <span className="quiz-icon small">{quiz.icon}</span>
+                    <span className="quiz-icon small">
+                      <QuizGlyph name={quiz.icon} size={19} />
+                    </span>
                     <div>
                       <strong>{quiz.title}</strong>
                       <span>{stateLabel(state)}</span>
@@ -763,23 +818,6 @@ export default function App() {
             )}
           </article>
 
-          {getQuizState(starterQuiz, profile) !== "not-started" && (
-            <div className="panel sampler-profile-row">
-              <div>
-                <p className="eyebrow">Prototype data</p>
-                <h2>Starter Profile</h2>
-                <p>
-                  Your original sampler answers are preserved separately from future core quiz
-                  results.
-                </p>
-              </div>
-              <button className="secondary" onClick={() => openQuiz(starterQuiz)}>
-                {getQuizState(starterQuiz, profile) === "complete"
-                  ? "View sampler results"
-                  : "Continue sampler"}
-              </button>
-            </div>
-          )}
         </section>
       )}
 
@@ -867,7 +905,7 @@ export default function App() {
                       ? "Pain, physical intensity, endurance, challenge, anticipation, and emotional intensity are scored independently. Receiving and giving can differ sharply, and this section does not assign a Sadist or Masochist identity label."
                       : isDsQuiz
                         ? "These signals are scored independently. High receiving control, giving control, and autonomy can coexist — the shape is the result, not a forced role label."
-                        : "This sampler preserves the original prototype scoring model. Its results stay separate from the newer signal-weighted core quizzes."}
+                        : "This section shows your scored signals from the answers you provided."}
               </p>
             </div>
             <div className="results-heading-actions">
