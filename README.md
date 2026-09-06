@@ -16,6 +16,8 @@ The app now supports all four core quiz sections plus a playable catalog-ranking
 
 The ranking experience now uses a category progress-map home, continue/next-category navigation, and a separate Overall destination. Raw pairwise comparisons remain browser-local so rankings can be recalculated later. M6 is hardening that slice with durable catalog IDs, explicit preference state, mapping metadata, ranking eligibility/confidence rules, and clean M7 integration.
 
+C1 durable IDs are present on this repository's `main`. The pre-migration C2 metadata/mapping implementation was completed on a branch but was not included in the imported snapshot, so it still needs to be ported and verified here. The C3 explicit-preference contract is now documented for review before implementation.
+
 The original 16-question prototype remains available as the **Starter Profile** sampler. It is not intended to be the final scoring model.
 
 ## Core quiz sections

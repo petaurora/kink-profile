@@ -308,7 +308,9 @@ See [docs/m5-sm-design.md](docs/m5-sm-design.md) for the implemented contract.
 
 See [docs/m6-catalog-integration.md](docs/m6-catalog-integration.md) for the M6 contract and [docs/kink-this-or-that-ranking.md](docs/kink-this-or-that-ranking.md) for pairwise-ranking behavior.
 
-### Already landed baseline — PRs #18/#19/#20/#22
+### Imported pre-migration baseline
+
+The repository migration imported the already-working catalog/ranking baseline into the new `kink-profile` history. Old pull-request numbers are intentionally not used as implementation references here.
 
 - [x] export the workbook into repo-native TSV reference data
 - [x] make `reference/catalog/kink-catalog.tsv` the runtime catalog source
@@ -337,33 +339,40 @@ See [docs/m6-catalog-integration.md](docs/m6-catalog-integration.md) for the M6 
 - [x] preserve existing comparison compatibility
 - [x] define validated ID-replacement migration support for merged/deprecated items
 
-### C2 — Metadata + signal mappings
+### C2 — Metadata + signal mappings 🟠 Port pending
 
-- [ ] normalize aliases
-- [ ] define optional broad domains
-- [ ] normalize direction/role metadata where useful
-- [ ] add a repo-native catalog → SignalId mapping source
-- [ ] validate mapping SignalIds + weights at build time
-- [ ] emit mappings into generated runtime catalog
-- [ ] keep risk/context metadata separate from affinity scoring
+C2 design and implementation were completed before the repository migration, but that branch was not merged into the snapshot imported here. Do not redesign this slice; port and verify the existing implementation before marking C2 landed on `kink-profile/main`.
 
-### C3 — Explicit preference state
+- [ ] port category metadata for all 35 stable Category IDs
+- [ ] port broad domains + display order
+- [ ] port normalized receiving / giving / both direction
+- [ ] port explicit alias source
+- [ ] port category-default + item-specific Catalog → SignalId mappings
+- [ ] port build-time validation for scopes / IDs / direction / SignalIds / controlled weights
+- [ ] port generated runtime domains / direction / aliases / resolved mappings
+- [ ] verify risk/context metadata remains separate from affinity scoring
+- [ ] verify the seeded mapping coverage against the pre-migration implementation
 
-- [ ] love
-- [ ] like
-- [ ] curious
-- [ ] unsure
-- [ ] not interested
-- [ ] hard limit
-- [ ] not applicable
+### C3 — Explicit preference state 📋 Contract ready
+
+- [ ] define the canonical seven-state runtime enum
 - [ ] represent unanswered by absence rather than a fake "unknown" state
-- [ ] allow storage schema to support future receiving/giving overrides
-- [ ] migrate existing ranking history into a logical catalog-profile state
+- [ ] store optional `overall`, `receiving`, and `giving` values per Catalog ID
+- [ ] resolve directional state as direction override → overall → unanswered
+- [ ] never synthesize a generic overall state from directional overrides
+- [ ] create `pet-profile-catalog-v1` as the logical catalog-profile store
+- [ ] migrate raw comparisons from `pet-profile-kink-ranking-v1` without losing IDs, timestamps, scopes, or results
+- [ ] keep the old ranking key readable/untouched for the migration window; do not dual-write
 - [ ] add contextual explicit-state editing without requiring a 551-row checklist
+- [ ] keep pairwise choice actions independent from explicit-state actions
+- [ ] make Hard Limit visually distinct from ordinary disinterest
+- [ ] immediately exclude Hard Limit / Not Interested / Not Applicable items from new pair selection
+- [ ] preserve Love / Like / Curious / Unsure / unanswered as ranking-eligible
 
-### C4 — Ranking eligibility + hardening
+C3 owns explicit-state semantics, persistence, migration, and the minimum eligibility behavior required to make exclusions authoritative. C4 owns ranking-confidence and finalist hardening.
 
-- [ ] exclude hard limit / not interested / not applicable items by default
+### C4 — Ranking hardening
+
 - [ ] ensure pairwise choices never silently mutate explicit state
 - [ ] stop Skip from inflating ranking confidence
 - [ ] stop Neither from inflating ordering confidence
@@ -486,6 +495,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M6 — Catalog Integration / C2**
+**M6 — Catalog Integration / C2 port → C3**
 
-Add the catalog metadata/mapping layer on top of the now-stable IDs: normalize aliases/domains/direction metadata and define a repo-native Catalog → SignalId mapping source with build-time validation.
+First port and verify the already-completed pre-migration C2 metadata/mapping implementation so the new repository does not lose that work. Then implement the reviewed C3 explicit-preference contract: logical catalog-profile storage, ranking-history migration, contextual state editing, and authoritative exclusion from new pair selection.

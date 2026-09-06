@@ -72,7 +72,7 @@ M1 establishes the multi-quiz application architecture, M2 adds weighted D/s sig
 
 The four core section models are implemented through M5.
 
-PRs #18/#19/#20/#22 also established the current catalog-ranking baseline:
+The imported pre-migration baseline established:
 
 - TSV → generated runtime catalog
 - category ranking
@@ -81,7 +81,11 @@ PRs #18/#19/#20/#22 also established the current catalog-ranking baseline:
 - category progress-map navigation
 - locally persisted raw comparisons
 
-M6 C1 now provides durable explicit Catalog IDs + Category IDs and validated replacement-map support while preserving all existing comparison IDs. The next slice adds mapping metadata; later M6 slices add explicit preference state, ranking hardening, and the signal-affinity foundation while keeping explicit preference, relative ranking, and inferred affinity distinct.
+M6 C1 provides durable explicit Catalog IDs + Category IDs and validated replacement-map support while preserving all existing comparison IDs.
+
+The C2 metadata/mapping implementation was completed before the repository migration but was not included in the imported `kink-profile/main` snapshot. It still needs to be ported and verified here before the reference sources can be described as landed.
+
+C3 is now specified around explicit preference state, migration into one logical catalog-profile store, contextual editing, and authoritative exclusion semantics. Later M6 slices harden ranking confidence/finalists and add the signal-affinity foundation while keeping explicit preference, relative ranking, and inferred affinity distinct.
 
 See:
 
