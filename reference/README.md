@@ -95,7 +95,7 @@ M6 C2 now adds:
 
 The remaining 282 items are intentionally unmapped rather than assigned speculative core-signal affinities.
 
-C3 is next: explicit preference state, migration into one logical catalog-profile store, contextual editing, and authoritative exclusion semantics. Later M6 slices harden ranking confidence/finalists and add the signal-affinity foundation while keeping explicit preference, relative ranking, and inferred affinity distinct.
+M6 C3 now adds explicit preference state, migration into one logical catalog-profile store, contextual editing, and authoritative exclusion semantics. C4 is next for ranking-confidence/finalist hardening; later M6 slices add result integration and the signal-affinity foundation while keeping explicit preference, relative ranking, and inferred affinity distinct.
 
 See:
 
