@@ -491,7 +491,7 @@ export default function App() {
 
       {screen === "hub" && (
         <section className="hub-stack">
-          <div className="hub-hero panel">
+          <div className="hub-hero">
             <div>
               <p className="eyebrow">Explore at your own pace</p>
               <h1>Not one giant fucking test.</h1>
