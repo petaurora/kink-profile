@@ -569,20 +569,57 @@ Primal / Feral
 
 These help explain the radar and role results.
 
-## Favorite catalog interests
+## Top overall catalog interests + limits
 
-Once M6 ranking exists:
+Before drilling into category-level detail, the profile should surface the user's most concrete overall catalog results.
+
+### Top overall
+
+Show the current **Top 10 overall-ranked catalog items** when enough pairwise evidence exists.
+
+Conceptual shape:
 
 ```text
-Overall favorites
+TOP OVERALL
+
 1. Rope Bondage
 2. Collaring
 3. Pet Play
 4. Praise
 5. Impact Play
+6. ...
+10. ...
 ```
 
-This should use the explicit/pairwise catalog ranking, not inferred affinity.
+This should use **direct overall pairwise ranking evidence**, not inferred catalog affinity.
+
+If fewer than 10 items have meaningful overall ranking evidence, show only the supported results rather than padding the list with low-confidence/default ordering.
+
+### Limits
+
+Show explicit **Hard Limit** items as a separate adjacent/paired summary.
+
+Conceptual shape:
+
+```text
+LIMITS
+
+Breath Restriction
+Needle Play
+...
+```
+
+Hard Limits must remain visually and semantically distinct from:
+
+- Not Interested
+- Not Applicable
+- low-ranked items
+
+The profile should not imply that a low-ranked item is a limit, or that a limit is merely a low preference.
+
+If the limit list is long, show a compact subset with a **Show all limits** action.
+
+This concrete Top Overall + Limits section should appear **before category-level catalog detail** so the profile moves from broad interpretation into the clearest direct preferences first.
 
 ## Strongest reusable signals
 
@@ -930,6 +967,15 @@ The visualization choice can be decided during M7 implementation.
 
 # Front-page hierarchy
 
+Current agreed conceptual order:
+
+1. **Profile header** — hybrid human-readable summary + compact Orientation / Headspaces / Dynamic Modes
+2. **Overall Profile** — large broad-facet radar + compact strongest overall themes
+3. **Roles & Headspaces** — top receiving/submissive results with percentages + Show all
+4. **Top Overall + Limits** — Top 10 overall-ranked catalog items + explicit Hard Limits
+5. **Category detail** — deeper catalog browsing grouped by category/domain
+6. later supporting/detail sections as needed
+
 Conceptual layout:
 
 ```text
@@ -1023,10 +1069,12 @@ The overall profile should preserve complexity while making it easier to underst
 
 ## O5 — Catalog summary
 
-- show explicit catalog states
-- show category rankings
-- show overall this-or-that favorites
-- keep inferred catalog affinity visually distinct
+- show Top 10 overall-ranked catalog items when enough evidence exists
+- show explicit Hard Limits as a separate summary, with Show all when needed
+- keep Hard Limits distinct from Not Interested / Not Applicable / low rank
+- place Top Overall + Limits before deeper category-level catalog detail
+- show explicit catalog states and category rankings in the deeper category view
+- keep inferred catalog affinity visually distinct from direct ranking/preference evidence
 
 ## O6 — Exploration / coverage summary
 
