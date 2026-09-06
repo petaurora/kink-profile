@@ -257,7 +257,7 @@ Useful when:
 
 # Relationship to explicit preference state
 
-C3 implementation details are scoped in [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md).
+C3 implementation details are recorded in [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md). C5 owns remaining ranking-confidence/finalist hardening after the C4 source-aware evidence convergence slice.
 
 This-or-That is intentionally a mini-game for comparative discovery/ranking. Direct preference assignment belongs in the separate catalog table/list.
 
@@ -631,7 +631,7 @@ Implemented:
 M6 hardening:
 
 - [ ] C3 explicit-preference eligibility/exclusions
-- [ ] C4 confidence semantics based only on meaningful ordering evidence
+- [ ] C5 confidence semantics based only on meaningful ordering evidence
 
 ## R3 — Finalist selection 🟡
 
