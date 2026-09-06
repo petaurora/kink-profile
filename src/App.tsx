@@ -32,7 +32,6 @@ import {
 import {
   getQuiz,
   quizzes,
-  starterQuiz,
   type QuizDefinition,
   type QuizId,
 } from "./data/quizzes";
@@ -232,17 +231,19 @@ function QuizCard({
   );
 }
 
+const defaultQuiz = quizzes.find((quiz) => quiz.contributesToOverall) ?? quizzes[0];
+
 export default function App() {
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
   const [screen, setScreen] = useState<Screen>("hub");
-  const [activeQuizId, setActiveQuizId] = useState<QuizId>(starterQuiz.id);
+  const [activeQuizId, setActiveQuizId] = useState<QuizId>(defaultQuiz.id);
   const [questionIndex, setQuestionIndex] = useState(0);
 
   useEffect(() => {
     saveProfile(profile);
   }, [profile]);
 
-  const activeQuiz = getQuiz(activeQuizId) ?? starterQuiz;
+  const activeQuiz = getQuiz(activeQuizId) ?? defaultQuiz;
   const activeQuestions = useMemo(() => getQuestionsForQuiz(activeQuiz), [activeQuiz]);
   const answers = profile.quizzes[activeQuiz.id]?.answers ?? {};
   const answeredCount = getAnsweredCount(activeQuiz, answers);
@@ -565,17 +566,6 @@ export default function App() {
             </article>
           </div>
 
-          <div className="hub-section-heading sampler-heading">
-            <div>
-              <p className="eyebrow">Original prototype</p>
-              <h2>Starter sampler</h2>
-            </div>
-            <p>The first 16-question sampler stays available separately.</p>
-          </div>
-
-          <div className="sampler-grid sampler-grid-single">
-            <QuizCard quiz={starterQuiz} profile={profile} onOpen={openQuiz} />
-          </div>
         </section>
       )}
 
@@ -628,23 +618,6 @@ export default function App() {
             </div>
           </div>
 
-          {getQuizState(starterQuiz, profile) !== "not-started" && (
-            <div className="panel sampler-profile-row">
-              <div>
-                <p className="eyebrow">Prototype data</p>
-                <h2>Starter Profile</h2>
-                <p>
-                  Your original sampler answers are preserved separately from future core quiz
-                  results.
-                </p>
-              </div>
-              <button className="secondary" onClick={() => openQuiz(starterQuiz)}>
-                {getQuizState(starterQuiz, profile) === "complete"
-                  ? "View sampler results"
-                  : "Continue sampler"}
-              </button>
-            </div>
-          )}
         </section>
       )}
 
@@ -732,7 +705,7 @@ export default function App() {
                       ? "Pain, physical intensity, endurance, challenge, anticipation, and emotional intensity are scored independently. Receiving and giving can differ sharply, and this section does not assign a Sadist or Masochist identity label."
                       : isDsQuiz
                         ? "These signals are scored independently. High receiving control, giving control, and autonomy can coexist — the shape is the result, not a forced role label."
-                        : "This sampler preserves the original prototype scoring model. Its results stay separate from the newer signal-weighted core quizzes."}
+                        : "This section shows your scored signals from the answers you provided."}
               </p>
             </div>
             <div className="results-heading-actions">
