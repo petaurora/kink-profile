@@ -13,6 +13,8 @@ export type StoredProfile = {
   quizzes: Partial<Record<QuizId, QuizProgress>>;
 };
 
+export type StorageLike = Pick<Storage, "getItem" | "setItem">;
+
 export const PROFILE_STORAGE_KEY = "pet-profile-v2";
 const LEGACY_STORAGE_KEY = "pet-profile-quiz-v1";
 
@@ -23,9 +25,15 @@ export function createEmptyProfile(): StoredProfile {
   };
 }
 
-export function loadProfile(): StoredProfile {
+function browserStorage(): StorageLike {
+  return localStorage;
+}
+
+export function loadProfile(
+  storage: StorageLike = browserStorage(),
+): StoredProfile {
   try {
-    const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
+    const raw = storage.getItem(PROFILE_STORAGE_KEY);
 
     if (raw) {
       const parsed = JSON.parse(raw) as StoredProfile;
@@ -34,7 +42,7 @@ export function loadProfile(): StoredProfile {
       }
     }
 
-    const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+    const legacyRaw = storage.getItem(LEGACY_STORAGE_KEY);
     if (legacyRaw) {
       const legacy = JSON.parse(legacyRaw) as { answers?: AnswerMap };
       const answers = legacy.answers ?? {};
@@ -58,6 +66,9 @@ export function loadProfile(): StoredProfile {
   return createEmptyProfile();
 }
 
-export function saveProfile(profile: StoredProfile) {
-  localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+export function saveProfile(
+  profile: StoredProfile,
+  storage: StorageLike = browserStorage(),
+) {
+  storage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
 }
