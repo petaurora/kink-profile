@@ -22,7 +22,7 @@ This folder contains the product and scoring decisions that should guide impleme
 6. [M6 Catalog Integration](m6-catalog-integration.md)  
    The in-progress M6 contract: C1 stable IDs + C2 metadata/signal mappings are implemented; C3 is being re-scoped around a catalog preference table plus a separate This-or-That mini-game, followed by ranking hardening, result integration, affinity foundation, and the M7 boundary.
 
-7. [M6 C3 Explicit Preference](m6-c3-explicit-preference.md)  
+7. [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)  
    The revised C3 scope: shared Catalog-ID state, catalog-profile storage/migration, a searchable preference table/list, ranking interconnection, eligibility, tests, and acceptance scenarios.
 
 8. [Kink This-or-That Ranking](kink-this-or-that-ranking.md)  
@@ -50,7 +50,7 @@ This folder contains the product and scoring decisions that should guide impleme
 | How is M4 modeled? | [M4 Bondage & Discipline Contract](m4-bd-design.md) |
 | How is M5 modeled? | [M5 Sadism & Masochism Contract](m5-sm-design.md) |
 | How should M6 integrate the catalog? | [M6 Catalog Integration](m6-catalog-integration.md) |
-| What exactly should C3 implement next? | [M6 C3 Explicit Preference](m6-c3-explicit-preference.md) |
+| What exactly should C3 implement next? | [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md) |
 | How should catalog items be pairwise ranked? | [Kink This-or-That Ranking](kink-this-or-that-ranking.md) |
 | How should scoring and catalog affinity work generally? | [Scoring Model](scoring-model.md) |
 | How should the overall front-page profile aggregate everything? | [Overall Profile Aggregation](overall-profile-aggregation.md) |
