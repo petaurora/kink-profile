@@ -1113,22 +1113,22 @@ See [M6 C3 — Explicit Preference + Catalog Table](m6-c3-explicit-preference.md
 - [x] handle scopes with fewer than two eligible items without a blank/dead ranking state
 - [x] add focused preference/storage/migration/eligibility tests
 
-## C4 — Source-aware evidence convergence
+## C4 — Source-aware evidence convergence ✅
 
 See [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md).
 
-- [ ] define source-aware evidence IDs/types for quiz, explicit catalog, pairwise, and derived inference
-- [ ] wrap C3 explicit state + raw comparisons as independent evidence sources
-- [ ] expose a per-Catalog-ID evidence snapshot without collapsing source values
-- [ ] centralize coverage-aware quiz-signal → catalog inference
-- [ ] never persist inferred affinity as explicit preference
-- [ ] retain matched SignalIds/provenance for inference
-- [ ] define catalog → signal projection semantics for independent explicit/pairwise evidence
-- [ ] prohibit inferred affinity/resolved values from feeding back into signals
-- [ ] define quiz-retake replacement/deduplication behavior
-- [ ] recompute derived catalog views without destroying unrelated source evidence
-- [ ] retain affinity separately from confidence/coverage
-- [ ] add source-isolation, exclusion-authority, and no-feedback-loop tests
+- [x] define source-aware evidence IDs/types for quiz, explicit catalog, pairwise, and derived inference
+- [x] wrap C3 explicit state + raw comparisons as independent evidence sources
+- [x] expose a per-Catalog-ID evidence snapshot without collapsing source values
+- [x] centralize coverage-aware quiz-signal → catalog inference
+- [x] never persist inferred affinity as explicit preference
+- [x] retain matched SignalIds/provenance for inference
+- [x] define catalog → signal projection semantics for independent explicit/pairwise evidence
+- [x] prohibit inferred affinity/resolved values from feeding back into signals
+- [x] define quiz-retake replacement/deduplication behavior
+- [x] recompute derived catalog views without destroying unrelated source evidence
+- [x] retain affinity separately from confidence/coverage
+- [x] add source-isolation, exclusion-authority, and no-feedback-loop tests
 
 ## C5 — Ranking hardening
 - [ ] stop skip from increasing ranking confidence

@@ -257,7 +257,7 @@ Useful when:
 
 # Relationship to explicit preference state
 
-C3 implementation details are recorded in [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md). C5 owns remaining ranking-confidence/finalist hardening after the C4 source-aware evidence convergence slice.
+C3 implementation details are recorded in [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md). C4 source-aware evidence convergence is implemented; C5 now owns the remaining ranking-confidence/finalist hardening.
 
 This-or-That is intentionally a mini-game for comparative discovery/ranking. Direct preference assignment belongs in the separate catalog table/list.
 

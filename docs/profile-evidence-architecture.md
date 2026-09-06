@@ -6,7 +6,7 @@ Design contract for the post-C3 profile model.
 
 This document defines how quizzes, explicit catalog preferences, This-or-That ranking, inferred catalog affinity, and the overall profile interact without overwriting one another or creating circular scoring.
 
-M6 C3 may finish against its current explicit-preference + raw-comparison persistence contract. **C4 is the cleanup/convergence slice that introduces the source-aware evidence layer on top of that data.**
+M6 C3 persists explicit preference + raw comparison evidence. **C4 now implements the source-aware evidence layer on top of that data without introducing a competing persistence model.**
 
 ---
 
@@ -495,29 +495,49 @@ The cleanup goal is semantic separation and provenance, not churn for its own sa
 
 # M6 C4 — Source-aware evidence convergence
 
-C4 is the current post-C3 convergence slice.
+C4 is implemented as the post-C3 source-aware convergence layer.
 
 ## Contract
 
-- [ ] define source-aware evidence types/IDs for quiz, explicit catalog, pairwise, and derived inference
-- [ ] treat C3 explicit state + raw comparisons as independent evidence sources
-- [ ] add a derived Catalog ID evidence snapshot/selectors without collapsing sources
-- [ ] implement/centralize coverage-aware quiz-signal → catalog inference using existing C2 mappings
-- [ ] ensure inferred catalog values are never persisted as explicit preference
-- [ ] preserve matched SignalIds/provenance for catalog inference
-- [ ] define the catalog → signal projection contract for **independent** explicit/pairwise evidence
-- [ ] explicitly exclude inferred catalog affinity from catalog → signal projection
-- [ ] define source deduplication/replacement semantics for quiz retakes
-- [ ] define deterministic recomputation after quiz, explicit-preference, and pairwise changes
-- [ ] retain affinity separately from confidence/coverage
-- [ ] add tests proving one source can change without destroying unrelated evidence
-- [ ] add tests proving quiz-derived catalog inference cannot feed back into quiz/canonical signals
-- [ ] add tests proving explicit exclusions remain authoritative even when inference is high
-- [ ] keep the final M7 cross-source signal merge/radar UI out of C4 unless needed to prove the contract
+- [x] define source-aware evidence types/IDs for quiz, explicit catalog, pairwise, and derived inference
+- [x] treat C3 explicit state + raw comparisons as independent evidence sources
+- [x] add a derived Catalog ID evidence snapshot/selectors without collapsing sources
+- [x] implement/centralize coverage-aware quiz-signal → catalog inference using existing C2 mappings
+- [x] ensure inferred catalog values are never persisted as explicit preference
+- [x] preserve matched SignalIds/provenance for catalog inference
+- [x] define the catalog → signal projection contract for **independent** explicit/pairwise evidence
+- [x] explicitly exclude inferred catalog affinity from catalog → signal projection
+- [x] define source deduplication/replacement semantics for quiz retakes
+- [x] define deterministic recomputation after quiz, explicit-preference, and pairwise changes
+- [x] retain affinity separately from confidence/coverage
+- [x] add tests proving one source can change without destroying unrelated evidence
+- [x] add tests proving quiz-derived catalog inference cannot feed back into quiz/canonical signals
+- [x] add tests proving explicit exclusions remain authoritative even when inference is high
+- [x] keep the final M7 cross-source signal merge/radar UI out of C4 unless needed to prove the contract
 
-## C4 exit condition
+## Implemented C4 semantics
 
-For any Catalog ID, the app can represent quiz-derived inference, direct explicit preference, and pairwise evidence simultaneously; changing one source preserves the others; all derived views can be recomputed; and the architecture makes circular evidence impossible by construction.
+Runtime implementation lives in `src/lib/profileEvidence.ts`.
+
+C4 now provides:
+
+- stable quiz-signal evidence IDs keyed by quiz + SignalId, with quiz version retained as provenance
+- retake deduplication/replacement semantics for the same quiz source
+- a quiz-only inference signal profile that is explicitly **not** the final M7 canonical cross-source profile
+- coverage-aware Catalog → SignalId inference with affinity and coverage kept separate
+- matched SignalId + contributing quiz evidence provenance
+- per-Catalog-ID snapshots that preserve explicit, pairwise, inferred, and resolved presentation channels simultaneously
+- semantic explicit catalog → signal projections without inventing final numeric M7 weighting
+- direction-aware explicit projections that exclude opposite-direction SignalIds
+- relative pairwise projections for left/right/equal
+- Skip/Neither withheld from signal projection pending C5 ranking semantics
+- direct-projection APIs that accept only independent explicit/pairwise catalog evidence, preventing inference feedback by construction
+
+Verification: 38 tests pass across the catalog/profile evidence suites, including 19 focused C4 tests, and the production TypeScript/Vite build passes.
+
+## C4 exit condition ✅
+
+For any Catalog ID, the app can represent quiz-derived inference, direct explicit preference, and pairwise evidence simultaneously; changing one source preserves the others; all derived views are recomputable; and the architecture makes circular evidence impossible by construction.
 
 ---
 
