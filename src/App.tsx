@@ -4,6 +4,7 @@ import {
   IconBolt,
   IconHeart,
   IconMasksTheater,
+  IconPaw,
   IconTransfer,
 } from "@tabler/icons-react";
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
@@ -503,7 +504,7 @@ export default function App() {
       <header className="site-header">
         <button className="brand" onClick={() => setScreen("hub")}>
           <span className="brand-mark">
-            <IconHeart size={18} stroke={2} aria-hidden="true" />
+            <IconPaw size={18} stroke={2} aria-hidden="true" />
           </span>
           <span>Pet Profile</span>
         </button>
