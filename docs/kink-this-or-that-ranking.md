@@ -686,12 +686,15 @@ Implemented:
 - [x] Overall favorites
 - [x] confidence labels
 
-Still needed:
+C6 integration still needed:
 
 - [ ] explicit preference state beside rankings
-- [ ] exclusion/hard-limit summaries
+- [ ] exclusion/hard-limit summaries separate from favorites
+- [ ] inferred affinity shown as a separate derived channel, never as rank
+- [ ] source-aware catalog detail/explainability
 - [ ] optional tiers if they prove useful
-- [ ] M7 profile integration
+
+M7 remains responsible for any new presentation-level aggregate that combines multiple independent direct evidence sources into a broader profile "Top Overall" result.
 
 ---
 
@@ -701,7 +704,6 @@ These should be decided using real catalog sizes and hands-on testing rather tha
 
 - Is Top 5 the right default finalist count?
 - Should finalist count scale with category size?
-- Is one category comparison enough to make its Top 5 eligible for Overall, or should promotion require more evidence?
 - How aggressively should the system resolve the Top 25 vs the rest of the finalist pool?
 - Should `curious` and `unsure` always participate, or be an optional ranking mode?
 - Should ranking begin before a user has explicitly classified all items in a category?

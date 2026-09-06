@@ -76,7 +76,7 @@ M1 establishes the multi-quiz application architecture, M2 adds weighted D/s sig
 
 The four core section models are implemented through M5.
 
-The imported pre-migration baseline established:
+The imported pre-migration baseline established the original ranking behavior below; C3–C5 later hardened eligibility, meaningful ordering evidence, finalist promotion, and Overall-candidate continuity:
 
 - TSV → generated runtime catalog
 - category ranking
@@ -95,7 +95,7 @@ M6 C2 now adds:
 
 The remaining 282 items are intentionally unmapped rather than assigned speculative core-signal affinities.
 
-M6 C3 provides explicit preference state, migration into one logical catalog-profile store, the searchable catalog table/list, and authoritative exclusion semantics while keeping This-or-That focused on relative ranking. C4 added source-aware quiz/catalog evidence, recomputable inferred affinity, provenance, and no-feedback-loop guarantees. C5 now hardens meaningful ordering confidence, finalist promotion, and Overall history preservation. C6 result integration is next, followed by C7 affinity hardening.
+M6 C3 provides explicit preference state, migration into one logical catalog-profile store, the searchable catalog table/list, and authoritative exclusion semantics while keeping This-or-That focused on relative ranking. C4 added source-aware quiz/catalog evidence, recomputable inferred affinity, provenance, and no-feedback-loop guarantees. C5 hardened meaningful ordering confidence, finalist promotion, and Overall history preservation. C6 result integration is next, followed by C7 affinity hardening.
 
 See:
 

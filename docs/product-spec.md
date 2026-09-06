@@ -433,7 +433,7 @@ The storage schema should remain capable of future receiving/giving overrides be
 
 This-or-That remains a separate low-friction comparison mini-game. Pairwise choices do not create explicit state, and positive explicit state does not seed ranking.
 
-Once explicit state exists, `hard_limit`, `not_interested`, and `not_applicable` are excluded from new pair selection immediately. This minimum eligibility behavior belongs with C3 so explicit exclusions are actually authoritative; C4 implements source-aware evidence convergence, and ranking-confidence/finalist hardening follows in C5.
+Once explicit state exists, `hard_limit`, `not_interested`, and `not_applicable` are excluded from new pair selection immediately. This minimum eligibility behavior belongs with C3 so explicit exclusions are actually authoritative; C4 implements source-aware evidence convergence, and C5 implements ranking-confidence/finalist/history hardening.
 
 ## Pairwise ranking
 
@@ -444,14 +444,15 @@ category progress home
         ↓
 rank a category
         ↓
-current Top 5 from ranked categories
+current evidenced Top 5 from ranked categories
         ↓
-Overall destination
+Overall candidate pool
+(current finalists + eligible prior Overall participants)
         ↓
 cross-category favorites
 ```
 
-Untouched categories contribute no finalists.
+Untouched categories contribute no finalists. Zero-evidence items do not enter the finalist pool, and prior meaningful Overall participants remain available even if a category's current Top 5 later changes.
 
 Pairwise ranking remains relative evidence; it does not replace explicit interest semantics.
 

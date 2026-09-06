@@ -1155,14 +1155,37 @@ Verification: 50 tests pass across the ranking/catalog/evidence suites, includin
 
 ## C6 — Catalog result integration
 
+C6 is a **source-aware presentation/integration slice**, not a new scoring merge.
+
+It should surface the channels already established by C3–C5 without collapsing them:
+
+- explicit preference
+- category pairwise rank
+- Overall pairwise rank
+- quiz-derived inferred affinity
+- exclusions / hard limits
+- source provenance where useful
+
+C6 does **not** create a new presentation-level "Top Overall" score by combining explicit preference and pairwise ranking. A broader profile aggregate that combines multiple independent direct evidence sources belongs to M7.
+
 - [ ] show explicit state alongside category rank
 - [ ] show explicit state alongside overall rank
 - [ ] expose category ranking independently
 - [ ] expose overall favorites independently
-- [ ] show inference-only starting affinity separately from direct evidence
+- [ ] show inference-only starting affinity separately from direct evidence/rank
 - [ ] preserve source provenance/explainability in catalog result views
 - [ ] expose hard-limit/exclusion summaries without mixing them into favorites
 - [ ] keep exact ranks derived rather than persisted where practical
+- [ ] preserve explicit / pairwise / inferred labels in every combined catalog result surface
+- [ ] do not synthesize an M7-style merged Top Overall list inside C6
+
+### C6 / C7 / M7 boundary
+
+- **C6** shows the evidence channels already available and keeps their provenance/semantics visible.
+- **C7** hardens the inference matcher/recommendation behavior itself: suppression, mapping/coverage edge cases, matched-signal explainability, and tentative language.
+- **M7** may derive new profile-level aggregates from multiple independent direct evidence sources, including a presentation-level Top Overall list, without mutating the underlying explicit or pairwise evidence.
+
+This avoids implementing the same merged profile result twice under different milestone names.
 
 ## C7 — Signal affinity hardening
 
@@ -1206,12 +1229,12 @@ The decisions below are implemented and formed the C3 → C4 handoff contract:
 2. **Unknown semantics:** unanswered is absence; clearing the last stored state removes the preference record.
 3. **Direction model:** persist optional overall / receiving / giving values now; initial C3 UI edits overall only.
 4. **Direction resolution:** receiving/giving overrides beat overall only in that directional context; directional values never synthesize a generic overall state.
-5. **Storage boundary:** create `pet-profile-catalog-v1` with preferences + raw comparisons; do not persist Overall finalist membership yet.
+5. **Storage boundary:** create `pet-profile-catalog-v1` with preferences + raw comparisons. C5 later resolved Overall continuity by deriving the active candidate pool from current eligible finalists + prior meaningful Overall participants, so no separate finalist-membership persistence was required.
 6. **Migration:** preserve raw ranking evidence exactly, canonicalize item IDs through the C1 replacement map, leave the legacy key untouched for one migration window, and do not dual-write.
 7. **Editing UX:** explicit preference lives in a searchable/filterable catalog table/list; This-or-That stays a simple ranking mini-game.
 8. **Interconnection:** table rows may show read-only category/overall rank context by the same Catalog ID without collapsing the signals.
 9. **Safety/exclusion semantics:** Hard Limit is visually distinct and, along with Not Interested / Not Applicable, immediately removes the item from future pair selection.
 10. **Evidence separation:** pairwise choices never infer explicit state, explicit-state edits never create pairwise wins, and positive explicit state does not seed rank.
-11. **Post-C3 boundary:** C4 added source-aware evidence convergence, quiz-derived catalog inference, provenance, retake/recompute semantics, and the no-feedback-loop contract. Ranking confidence/finalist hardening is now C5.
+11. **Post-C3 boundary:** C4 added source-aware evidence convergence, quiz-derived catalog inference, provenance, retake/recompute semantics, and the no-feedback-loop contract. C5 then completed ranking confidence/finalist/history hardening.
 
 These decisions define the durable C3 boundary. C4 builds source-aware adapters/selectors and derived evidence around this store without rewriting C3 persistence.
