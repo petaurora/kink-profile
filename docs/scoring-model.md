@@ -33,17 +33,32 @@ See [m2-ds-design.md](m2-ds-design.md) for the first concrete implementation of 
 
 # Concept hierarchy
 
+The quiz scoring hierarchy remains:
+
 ```text
 Answer
   ↓
 Signal
   ↓
 Dimension / Dynamic Mode / Role-Headspace
-  ↓
-Catalog affinity
-  ↓
-Profile visualization
 ```
+
+The broader evolving-profile graph is source-aware:
+
+```text
+quiz answers ───────────────► signal evidence ─────┐
+                                                   │
+explicit catalog preference ─► mapped evidence ────┼──► canonical signals
+                                                   │
+pairwise catalog choices ─────► mapped evidence ───┘
+                                                            │
+                                                            ├──► profile/radars
+                                                            └──► inferred catalog affinity
+```
+
+Inferred catalog affinity is derived from signals and is not allowed to feed back into them.
+
+See [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md).
 
 ## Answer
 
@@ -351,13 +366,13 @@ Affinity should retain coverage/evidence strength separately from match percenta
 
 ## Catalog evidence boundaries
 
-The catalog has three different user-facing evidence channels:
+The catalog has three different user-facing channels:
 
-- explicit preference
-- pairwise ranking
-- inferred affinity
+- explicit preference — independent direct evidence
+- pairwise ranking — independent relative evidence
+- inferred affinity — derived evidence from known signals
 
-Do not average these into one opaque "kink score."
+Do not average these into one opaque "kink score" or persist a resolved display value as though it were a new observation.
 
 Constraints:
 
@@ -365,10 +380,27 @@ Constraints:
 2. hard limits exclude inferred recommendations
 3. not interested / not applicable are excluded from recommendations by default
 4. pairwise rankings do not silently mutate explicit preference
-5. low-evidence affinity produces tentative exploration language
-6. risk metadata does not reduce preference/affinity scores
-7. M7 supplies the canonical deduplicated cross-quiz signal profile; M6 must not invent its own aggregation
+5. quiz-derived inferred affinity never writes an explicit preference
+6. low-evidence affinity produces tentative exploration language
+7. risk metadata does not reduce preference/affinity scores
+8. independent explicit/pairwise catalog evidence may later project back to mapped SignalIds
+9. inferred catalog affinity must never project back to signals because that would create a feedback loop
+10. M6 C4 defines the source-aware evidence/projection contract; M7 supplies the final canonical cross-source signal profile and radar/facet aggregation
 
+
+---
+
+# Source-aware recomputation
+
+Profile calculations must be recomputable by source.
+
+A quiz retake replaces/supersedes that quiz's contribution and recalculates dependent catalog inference, while preserving explicit catalog and pairwise evidence.
+
+A manual catalog change updates only that Catalog ID/direction's explicit evidence and any downstream mapped signal/profile views.
+
+Additional pairwise comparisons update ranking evidence without rewriting explicit preference.
+
+Derived values — inferred catalog affinity, resolved catalog views, roles/headspaces, and overall facets — must never be treated as new independent evidence.
 
 ---
 
