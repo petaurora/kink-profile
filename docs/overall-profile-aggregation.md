@@ -1145,21 +1145,106 @@ Seed intentionally different canonical-signal combinations and verify:
 
 **Exit condition:** broad profile facets are stable enough to present independently of UI code.
 
-## M7.3 — Profile header
+## M7.3 — Profile header ✅
 
-### Scope
+M7.3 implements the hybrid profile header as a **pure derived model + presentation surface**.
 
-- implement the hybrid human-readable profile summary
-- expose compact Orientation / Headspaces / Dynamic Modes traits
-- keep receiving/giving direction visible when it materially shapes the profile
-- avoid declaring a single identity such as "You are a Pet"
-- keep quiz/catalog/ranking completion statistics out of the header
+Runtime model:
 
-### Test gate
+`src/lib/profileHeader.ts`
 
-Compare complete, partial, directional, bidirectional, and mixed/context-dependent sample profiles for wording and trait quality.
+### Implemented header output
 
-**Exit condition:** the header answers "what are the biggest things about this profile?" using real aggregated data.
+The header now contains:
+
+- a concise human-readable interpretation of the strongest overall themes
+- **Orientation**
+- up to 3 strongest recognizable **Headspaces**
+- up to 3 strongest **Dynamic Modes**
+
+The compact header intentionally omits percentages. Detailed percentages remain in lower-level profile/result views and are owned more explicitly by M7.5.
+
+### Orientation semantics
+
+Orientation is derived across the **directional M7.2 facets**, not from one D/s score and not from a zero-sum receiving-vs-giving slider.
+
+Possible compact user-facing results:
+
+- **Submissive**
+- **Dominant**
+- **Dominant + submissive**
+- **Context-dependent**
+- **Still emerging**
+
+The internal evidence model still uses receiving/giving direction keys because they are useful, neutral plumbing across different facet types. Those terms should not leak into normal profile copy.
+
+Strong evidence on both sides can coexist. When both are meaningfully supported, the header says **Dominant + submissive** rather than assigning a "switch" identity.
+
+When different directional facets materially lean opposite ways, the header uses **Context-dependent**.
+
+### User-facing terminology boundary
+
+For M7 presentation:
+
+- keep `receiving` / `giving` as internal model vocabulary where useful
+- prefer **submissive** / **dominant** in the profile header when describing orientation
+- do not add receiving/giving badges to Headspace chips
+- do not write prose such as "giving and receiving shift..."
+- temporary debug/inspection surfaces may still expose internal SignalIds, but normal presentation should describe the person's profile rather than the aggregation plumbing
+
+### Headline-theme semantics
+
+Headline theme selection considers both:
+
+- facet affinity
+- facet evidence coverage
+
+A nearly unexplored 100% facet therefore does not automatically become the defining sentence ahead of a well-evidenced strong facet.
+
+Low-evidence themes are allowed to remain absent/emerging rather than being overclaimed.
+
+### Headspaces + Dynamic Modes
+
+Compact Headspaces and Dynamic Modes are composed from **canonical primitive SignalIds** using the existing role/mode definitions.
+
+They do not feed back into:
+
+- canonical signals
+- overall facets
+- catalog inference
+
+Low-coverage composed labels are suppressed from the compact header.
+
+Headspace direction is retained so receiving-side and giving-side role/headspace results remain distinguishable.
+
+### Presentation boundary
+
+The top profile header no longer displays quiz/catalog/ranking completion mechanics.
+
+Those mechanics remain status/dashboard concerns. M7.3 answers:
+
+> "What are the biggest things about this profile?"
+
+rather than:
+
+> "How much of the app has been completed?"
+
+### Test gate ✅
+
+Deterministic coverage includes:
+
+- insufficient evidence
+- receiving-oriented
+- giving-oriented
+- bidirectional
+- mixed/context-dependent
+- low-coverage headline suppression
+- coverage-aware strongest-theme selection
+- recognizable headspace composition + direction
+- dynamic-mode composition
+- no percentage leakage into the headline summary
+
+**Exit condition:** the header provides a useful standalone summary from real aggregated data. ✅
 
 ## M7.4 — Overall radar
 
