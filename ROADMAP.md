@@ -402,13 +402,13 @@ See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.m
 
 **C4 exit condition:** quiz-derived inference, explicit preference, and pairwise evidence can coexist for the same Catalog ID; changing one preserves the others; derived values are recomputable; and circular evidence is impossible by construction.
 
-### C5 — Ranking hardening
+### C5 — Ranking hardening ✅
 
-- [ ] stop Skip from inflating ranking confidence
-- [ ] stop Neither from inflating ordering confidence
-- [ ] decide whether one category comparison is sufficient for Top-5 promotion
-- [ ] preserve prior Overall participants/history when a category Top 5 shifts
-- [ ] add focused ranking tests
+- [x] stop Skip from inflating ranking confidence
+- [x] stop Neither from inflating ordering confidence
+- [x] decide whether one category comparison is sufficient for Top-5 promotion
+- [x] preserve prior Overall participants/history when a category Top 5 shifts
+- [x] add focused ranking tests
 
 ### C6 — Catalog result integration
 
@@ -536,6 +536,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M6 — Catalog Integration / C5 ranking hardening**
+**M6 — Catalog Integration / C6 catalog result integration**
 
-Harden the This-or-That evidence model: stop Skip/Neither from inflating ordering confidence, define meaningful finalist-promotion evidence, preserve prior Overall participants/history as category Top 5 changes, and add focused ranking tests.
+Surface the catalog evidence already available: show explicit preference beside category/Overall rankings, expose exclusions separately from favorites, show inference-only starting affinity separately from direct evidence, and preserve source provenance/explainability.
