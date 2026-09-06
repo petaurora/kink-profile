@@ -16,7 +16,7 @@ The app now supports all four core quiz sections plus a playable catalog-ranking
 
 The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. M6 is continuing with source-aware evidence, ranking confidence/finalists, result integration, affinity hardening, and the M7 handoff.
 
-C1 durable IDs, C2 metadata/signal mappings, and C3 explicit preference + catalog table are implemented. The catalog now has two complementary experiences: a searchable direct-management table/list and the This-or-That comparative ranking mini-game, connected through stable Catalog IDs. C4 is next: source-aware evidence convergence so quiz inference, explicit preference, and pairwise evidence can coexist and recompute without overwriting one another or creating feedback loops.
+C1 durable IDs, C2 metadata/signal mappings, C3 explicit preference + catalog table, and C4 source-aware evidence convergence are implemented. The app can now derive quiz-based catalog inference with source provenance while preserving explicit preference and raw pairwise evidence as independent channels; inferred affinity cannot feed back into the signals that produced it. C5 ranking hardening is next.
 
 The original 16-question prototype remains available as the **Starter Profile** sampler. It is not intended to be the final scoring model.
 
