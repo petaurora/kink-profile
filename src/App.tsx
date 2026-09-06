@@ -485,7 +485,6 @@ export default function App() {
           <button className="header-link" onClick={() => setScreen("profile")}>
             My profile
           </button>
-          <span className="privacy-pill">local only</span>
         </div>
       </header>
 
