@@ -709,14 +709,14 @@ M8 is not a prerequisite for M9. The share-summary slices depend on the stable M
 - [x] keep recomputable derived values non-authoritative
 - [x] produce a portable JSON file suitable for later restore
 
-### M9.4 — Full profile import
+### M9.4 — Full profile import ✅
 
-- [ ] validate file shape + supported schema/export version before changing local data
-- [ ] show an import preview/summary before replacement
-- [ ] import as a full-profile replacement in the initial implementation
-- [ ] do not attempt merge-import in the first version
-- [ ] reject invalid/incompatible files without partially mutating the current profile
-- [ ] recompute derived profile state after successful import
+- [x] validate file shape + supported schema/export version before changing local data
+- [x] show an import preview/summary before replacement
+- [x] import as a full-profile replacement in the initial implementation
+- [x] do not attempt merge-import in the first version
+- [x] reject invalid/incompatible files without partially mutating the current profile
+- [x] recompute derived profile state after successful import
 
 ### M9.5 — Shareable profile summary
 
