@@ -599,18 +599,21 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Exit condition:** limits are clearly visible without being conflated with ranking or low affinity. ✅
 
-### M7.8 — Interest Areas
+### M7.8 — Interest Areas ✅
 
 **Purpose:** summarize the catalog by useful themes without dumping every category onto the profile.
 
-- [ ] derive the top approximately 4–6 strongest/relevant catalog categories
-- [ ] show a few representative top items for each Interest Area
-- [ ] define category relevance/strength behavior from direct evidence
-- [ ] keep the main profile intentionally compact
+- [x] derive category relevance from positive direct evidence
+- [x] exclude inference-only and exclusion/disinterest-only items
+- [x] use up to 3 representative direct interests per category
+- [x] apply breadth-aware relevance
+- [x] show at most 6 strongest/relevant categories
+- [x] show fewer rather than padding sparse profiles
+- [x] keep relevance scores internal
+- [x] keep full category exploration out of the main profile
+- [x] add deterministic dense/sparse/category-selection tests
 
-**Test before moving on:** use dense and sparse catalog data to tune category selection, representative items, and visual density.
-
-**Exit condition:** Interest Areas provide useful category-level shape without making the profile busy.
+**Exit condition:** Interest Areas provide useful category-level shape without making the profile busy. ✅
 
 ### M7.9 — Explore / catalog drill-down
 
@@ -777,6 +780,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.8 — Interest Areas**
+**M7.9 — Explore / catalog drill-down**
 
-Build the compact category-level profile summary using only the strongest/relevant catalog categories. Show approximately 4–6 interest areas with 2–3 representative concrete items each, avoid rendering all 35 categories inline, and keep the result useful without pretending every category has a precise #1–#35 rank.
+Add the separate category explorer/detail path behind Interest Areas instead of expanding all categories on the profile. Support opening one category at a time, richer within-category direct preference/ranking context, and compact state-filter shortcuts such as Curious / Unsure / Limits where useful.
