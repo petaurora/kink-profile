@@ -159,137 +159,112 @@ The recognizable labels remain visible elsewhere in the overall result.
 
 ---
 
-# Candidate overall facets
+# Overall facet vocabulary — locked in M7.2
 
-These are **candidate M7 axes**, not yet locked.
+M7.2 locks **nine distinct broad facets**. The model deliberately keeps all nine instead of merging unrelated concepts merely to hit a visualization count.
 
-A practical radar should probably target around **7–8 axes** for readability, especially on mobile. The current nine-facet vocabulary is still useful as a candidate set, but M7 should test whether all nine deserve simultaneous visual treatment rather than forcing every valid facet onto the first radar.
+Facet composition consumes **canonical primitive `SignalId` values only**. Composed roles/headspaces/dynamic modes are presentation results and never feed back into facet scoring.
+
+Affinity and coverage remain separate:
+
+- **affinity** is calculated only from known canonical evidence
+- **coverage** is reduced when configured component signals are missing or weakly evidenced
+- an unexplored component never enters the affinity calculation as 0%
+- a genuinely known 0% affinity remains distinguishable from unexplored evidence
+- component contribution uses both the configured semantic weight and canonical signal coverage
+- source evidence IDs remain traceable through facet components
+
+The exact runtime contract lives in `src/data/overallFacets.ts`.
 
 ## 1. Power Exchange
 
-Represents interest in meaningful transfer, exercise, or surrender of authority.
+Represents meaningful surrender, exercise, or transfer of negotiated authority and responsibility.
 
-Potential source signals:
+| SignalId | Weight | Direction |
+| --- | ---: | --- |
+| `receiving_control` | 1.00 | receiving |
+| `giving_control` | 1.00 | giving |
+| `responsibility_transfer` | 0.90 | receiving |
+| `responsibility_holding` | 0.80 | giving |
+| `obedience` | 0.65 | receiving |
 
-- receiving control
-- giving control
-- responsibility transfer
-- obedience
-- authority
-- surrender
-
-### Direction metadata
-
-Power exchange should not be treated as one dominant/submissive slider.
-
-The overall facet can represent **strength of power-exchange interest**, while retaining direction separately.
-
-Example:
-
-```text
-Power Exchange: 91%
-Direction: bidirectional
-
-Receiving: 94%
-Giving: 86%
-```
-
-Possible direction labels:
-
-- receiving-leaning
-- giving-leaning
-- bidirectional
-- mixed / context-dependent
-- insufficient evidence
+Direction metadata preserves independent receiving and giving affinity/coverage. The facet is **not** a dominant/submissive slider.
 
 ---
 
 ## 2. Structure & Protocol
 
-Represents enjoyment of deliberate structure around the dynamic.
+Represents rules, ritual, accountability, discipline, and deliberate frameworks around a dynamic.
 
-Potential source signals:
+| SignalId | Weight |
+| --- | ---: |
+| `structure` | 1.00 |
+| `ritual_significance` | 0.80 |
+| `accountability` | 0.75 |
+| `guidance_shaping` | 0.55 |
+| `receiving_discipline` | 0.70 |
+| `giving_discipline` | 0.70 |
 
-- structure
-- ritual
-- protocol
-- rules
-- accountability
-- discipline
-- training / shaping
-
-This facet is intentionally distinct from raw power exchange.
-
-Someone may strongly enjoy rules, ritual, and protocol without wanting broad authority transfer.
+This remains distinct from raw power exchange.
 
 ---
 
 ## 3. Ownership & Belonging
 
-Represents symbolic possession, claiming, belonging, and property-oriented dynamics.
+Represents symbolic possession, claiming, belonging, and consensual property-oriented meaning.
 
-Potential source signals / modes:
+| SignalId | Weight |
+| --- | ---: |
+| `ownership_symbolism` | 1.00 |
+| `belonging` | 0.90 |
+| `objectification` | 0.45 |
 
-- ownership symbolism
-- claiming
-- belonging
-- property / object evidence
-- collar/marking-related catalog mappings where explicit
-
-This should remain distinct from ordinary affection or commitment.
+This remains distinct from ordinary affection or commitment.
 
 ---
 
 ## 4. Service & Devotion
 
-Represents fulfillment through doing, serving, pleasing, dedication, or ritualized devotion.
+Represents fulfillment through serving, pleasing, dedication, loyalty, and relationship-centered devotion.
 
-Potential sources:
+| SignalId | Weight |
+| --- | ---: |
+| `service` | 1.00 |
+| `devotion` | 1.00 |
+| `obedience` | 0.50 |
+| `ritual_significance` | 0.35 |
+| `praise_approval` | 0.30 |
 
-- service
-- obedience where service-driven
-- devotion
-- approval/praise as reinforcing context
-- Service Submissive / Devotional Submissive compositions
-
-This facet should not become a proxy for submission generally.
+This does not act as a generic proxy for submission.
 
 ---
 
 ## 5. Care & Nurture
 
-Represents receiving or providing care, guidance, protection, soothing, and nurtured relational energy.
+Represents receiving or providing care, soothing, guidance, protection, and nurtured relational energy.
 
-Potential sources:
+| SignalId | Weight | Direction |
+| --- | ---: | --- |
+| `care_receiving` | 1.00 | receiving |
+| `care_giving` | 1.00 | giving |
+| `guidance_shaping` | 0.55 | giving |
+| `responsibility_holding` | 0.45 | giving |
+| `praise_approval` | 0.30 | shared |
 
-- care receiving
-- caretaking
-- guidance
-- nurtured play
-- caregiver-oriented evidence
-
-### Direction metadata
-
-Like power exchange, care can have direction:
-
-- receiving care
-- giving care
-- reciprocal / both
-
-The radar axis should represent strength, not force one direction to cancel the other.
+Direction metadata preserves receiving-care and giving-care evidence independently.
 
 ---
 
 ## 6. Play & Resistance
 
-Represents playful challenge, teasing, mischief, resistance, and negotiated push-pull.
+Represents playfulness, teasing, mischief, negotiated resistance, and consensual push-pull.
 
-Potential sources:
-
-- playfulness
-- playful resistance
-- autonomy in playful contexts
-- Brat / Brat Tamer compositions
+| SignalId | Weight |
+| --- | ---: |
+| `playfulness` | 1.00 |
+| `playful_resistance` | 1.00 |
+| `challenge_escape` | 0.60 |
+| `autonomy` | 0.30 |
 
 This is intentionally separate from adversarial or non-consensual framing.
 
@@ -297,118 +272,71 @@ This is intentionally separate from adversarial or non-consensual framing.
 
 ## 7. Primal & Instinctive
 
-Represents feral, pursuit, chase, predator/prey, instinctive, or less-structured embodied dynamics.
+Represents feral, pursuit, chase, predator/prey, embodied, and less-structured instinctive energy.
 
-Potential sources:
+| SignalId | Weight | Direction |
+| --- | ---: | --- |
+| `primal_embodiment` | 1.00 | shared |
+| `pursuit_receiving` | 0.85 | receiving |
+| `pursuit_giving` | 0.85 | giving |
 
-- primal embodiment
-- pursuit/chase evidence
-- Prey
-- Predator
-- primal / feral dynamic mode
-
-### Direction metadata
-
-Possible directional detail:
-
-- pursuit / predator
-- being pursued / prey
-- bidirectional
-- non-directional primality
+Direction metadata preserves being-pursued/prey-like and pursuit/predator-like evidence independently.
 
 ---
 
 ## 8. Restraint & Physical Control
 
-Represents interest in physical restriction and control of movement/body positioning.
+Represents physical restriction, body positioning, movement control, and constraint-oriented play.
 
-Potential sources:
+| SignalId | Weight | Direction |
+| --- | ---: | --- |
+| `receiving_restraint` | 1.00 | receiving |
+| `giving_restraint` | 1.00 | giving |
+| `movement_restriction` | 0.90 | shared |
+| `receiving_positioning` | 0.70 | receiving |
+| `giving_positioning` | 0.70 | giving |
+| `receiving_constraint_control` | 0.80 | receiving |
+| `giving_constraint_control` | 0.80 | giving |
 
-- restraint
-- movement restriction
-- positioning
-- immobilization
-- bondage-oriented catalog mappings
-
-This should remain distinct from:
-
-- protocol
-- pain
-- ownership
-- general D/s
-
-because those may correlate without being the same preference.
+This remains distinct from protocol, pain, ownership, and general D/s.
 
 ---
 
 ## 9. Intensity & Pain
 
-Represents attraction to physical/emotional intensity, challenge, endurance, and pain-related play.
+Represents physical or emotional intensity, pain, endurance, and consensual challenge at an agreed edge.
 
-Potential sources:
+| SignalId | Weight | Direction |
+| --- | ---: | --- |
+| `pain_receiving` | 1.00 | receiving |
+| `pain_giving` | 1.00 | giving |
+| `receiving_intensity` | 0.90 | receiving |
+| `giving_intensity` | 0.90 | giving |
+| `receiving_endurance` | 0.65 | receiving |
+| `giving_endurance` | 0.65 | giving |
+| `receiving_challenge` | 0.65 | receiving |
+| `giving_challenge` | 0.65 | giving |
+| `emotional_intensity` | 0.55 | shared |
 
-- receiving intensity
-- giving intensity
-- pain receiving
-- pain giving
-- endurance
-- challenge
-- emotional intensity
-
-### Direction metadata
-
-Potential companion detail:
-
-- receiving
-- giving
-- both
-
-A high overall intensity score should not imply sadism, masochism, or switch identity by itself.
+A high overall score does not assign a Sadist, Masochist, or switch identity. Direction metadata preserves receiving and giving independently.
 
 ---
 
-## 10. Sensation & Sensory Play
+## Sensation & Sensory Play — parked
 
-Potential future facet if the product gains enough direct evidence for it.
+Do **not** add Sensation & Sensory Play as a tenth facet yet.
 
-Potential sources:
-
-- sensory deprivation
-- sensory amplification
-- temperature
-- texture
-- pressure
-- impact-as-sensation where not primarily pain-driven
-
-Do not add this axis merely because catalog items exist.
-
-It should become a top-level facet only when the product has enough independent evidence to score it meaningfully.
+The catalog contains sensory items, but the current canonical signal vocabulary does not provide enough independent primitive evidence to score a broad sensory facet without inventing a second inference system. It can be reconsidered when dedicated signals/evidence exist.
 
 ---
 
 # Possible final radar size
 
-The current candidate vocabulary contains **9 facets**:
+The **facet model contains 9 facets**.
 
-```text
-Power Exchange
-Structure & Protocol
-Ownership & Belonging
-Service & Devotion
-Care & Nurture
-Play & Resistance
-Primal & Instinctive
-Restraint & Physical Control
-Intensity & Pain
-```
+M7.4 should test the real mobile rendering before deciding whether the first radar shows all nine simultaneously. Prefer roughly 7–8 simultaneous axes when practical, but do not merge distinct facets merely to satisfy that number. If nine is visually crowded, one facet can remain available in supporting/detail presentation while still existing in the underlying model.
 
-The vocabulary is useful, but the first M7 radar should **prefer 7–8 simultaneously rendered axes** if nine becomes visually crowded. Do not merge distinct concepts merely to hit a number; instead decide whether one or more facets are better represented elsewhere in the profile summary or as an optional/detail view.
-
-This is intentionally broader than the section-level radars.
-
-It represents the shape of the overall profile rather than reproducing every underlying signal.
-
-**Sensation & Sensory Play** can join later if/when the evidence model supports it.
+This vocabulary is intentionally broader than section-level radars and represents the overall profile shape rather than reproducing every underlying signal.
 
 ## Overall radar — agreed presentation direction
 
