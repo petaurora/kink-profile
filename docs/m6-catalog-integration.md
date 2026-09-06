@@ -1065,26 +1065,26 @@ Current seeded mapping layer:
 
 Unmapped means **unknown / not inferable from current quiz signals**, not 0% affinity.
 
-## C3 — Explicit catalog preference state 🎯 scoped for implementation
+## C3 — Explicit catalog preference state ✅
 
 See [M6 C3 — Explicit Preference State](m6-c3-explicit-preference.md) for the concrete implementation plan and acceptance scenarios.
 
-- [ ] define the seven-state runtime enum
-- [ ] represent unanswered by absence
-- [ ] support optional overall / receiving / giving state per Catalog ID
-- [ ] implement directional override resolution without synthesizing a generic value
-- [ ] create `pet-profile-catalog-v1`
-- [ ] migrate raw ranking history from `pet-profile-kink-ranking-v1`
-- [ ] canonicalize migrated Catalog IDs through C1 replacement mappings
-- [ ] keep the legacy ranking key untouched during the migration window; no long-term dual-write
-- [ ] refactor comparison sides so Pick and Preference are separate valid interactive controls
-- [ ] add contextual Set preference controls on active catalog comparison cards
-- [ ] keep explicit-state actions separate from pairwise choices
-- [ ] make Hard Limit visibly distinct from Not Interested
-- [ ] exclude hard_limit / not_interested / not_applicable from new pair selection
-- [ ] preserve love / like / curious / unsure / unanswered as ranking-eligible
-- [ ] handle scopes with fewer than two eligible items without a blank/dead ranking state
-- [ ] add focused preference/storage/migration/eligibility tests
+- [x] define the seven-state runtime enum
+- [x] represent unanswered by absence
+- [x] support optional overall / receiving / giving state per Catalog ID
+- [x] implement directional override resolution without synthesizing a generic value
+- [x] create `pet-profile-catalog-v1`
+- [x] migrate raw ranking history from `pet-profile-kink-ranking-v1`
+- [x] canonicalize migrated Catalog IDs through C1 replacement mappings
+- [x] keep the legacy ranking key untouched during the migration window; no long-term dual-write
+- [x] refactor comparison sides so Pick and Preference are separate valid interactive controls
+- [x] add contextual Set preference controls on active catalog comparison cards
+- [x] keep explicit-state actions separate from pairwise choices
+- [x] make Hard Limit visibly distinct from Not Interested
+- [x] exclude hard_limit / not_interested / not_applicable from new pair selection
+- [x] preserve love / like / curious / unsure / unanswered as ranking-eligible
+- [x] handle scopes with fewer than two eligible items without a blank/dead ranking state
+- [x] add focused preference/storage/migration/eligibility tests
 
 ## C4 — Ranking hardening
 - [ ] stop skip from increasing ranking confidence
