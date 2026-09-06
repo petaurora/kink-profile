@@ -456,13 +456,6 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   line-height: 1.3;
 }
 
-.summary-arrow {
-  position: absolute;
-  top: 18px;
-  right: 20px;
-  font-size: 1.2rem;
-}
-
 .hub-section-heading {
   display: flex;
   justify-content: space-between;
