@@ -24,7 +24,9 @@ describe("profile share summary", () => {
   });
 
   it("keeps positive interests and explicit Hard Limits semantically separate", () => {
-    const [loveItem, curiousItem, limitItem] = kinkCatalog.slice(0, 3);
+    const loveItem = kinkCatalog[0]!;
+    const curiousItem = kinkCatalog[1]!;
+    const limitItem = kinkCatalog[2]!;
     const catalogProfile = createEmptyCatalogProfileState();
 
     catalogProfile.preferences[loveItem.id] = {
@@ -59,7 +61,8 @@ describe("profile share summary", () => {
   });
 
   it("contains presentation-ready content only, not private source history", () => {
-    const [loveItem, , limitItem] = kinkCatalog.slice(0, 3);
+    const loveItem = kinkCatalog[0]!;
+    const limitItem = kinkCatalog[2]!;
     const catalogProfile = createEmptyCatalogProfileState();
 
     catalogProfile.preferences[loveItem.id] = {
