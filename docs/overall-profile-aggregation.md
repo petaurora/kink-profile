@@ -2,7 +2,9 @@
 
 ## Status
 
-Parked design direction for **M7 — Full Overall Profile**.
+**Active implementation contract for M7 — Full Overall Profile.**
+
+M6 is complete. M7 now consumes the source-aware evidence, ranking, catalog-result, and recommendation boundaries implemented in M6 rather than inventing another catalog/profile model.
 
 This document defines what the front-page "overall" result should represent and, more importantly, what it should **not** flatten together.
 
@@ -1109,11 +1111,11 @@ The overall profile should preserve complexity while making it easier to underst
 
 ---
 
-# Proposed M7 implementation slices
+# M7 implementation slices
 
 ## O1 — Canonical cross-source signal aggregation
 
-- consume the source-aware evidence contract from C4
+- consume the source-aware evidence/projection contracts implemented through M6 C4–C7
 - merge repeated SignalIds across completed quizzes and independent direct catalog evidence
 - define source deduplication/replacement semantics
 - preserve score + coverage/evidence strength
@@ -1162,17 +1164,20 @@ The overall profile should preserve complexity while making it easier to underst
 - do not let inferred catalog affinity enter Top Overall by itself
 - keep the underlying explicit and pairwise source values available for explainability without mutating either source
 
-## O6 — Exploration / coverage summary
+## O6 — Exploration / coverage support
 
-- show completed/in-progress/unexplored sections
-- identify low-coverage facets
+This is primarily a **home/dashboard concern**, not a dominant block in the presentation profile.
+
+- show completed/in-progress/unexplored sections on the dashboard/status surface
+- identify low-coverage facets where qualification is useful
 - link users to relevant quizzes without framing unknown as deficiency
+- keep completion mechanics subordinate or drill-down-only on the aggregated profile itself
 
 ---
 
 # Open design questions
 
-These should be settled after M4/M5 signals exist, because those implementations will determine whether the candidate facets have enough clean evidence.
+M4/M5 are implemented, so these are now **active M7 decisions** rather than questions waiting on prerequisite signal work. O1 should establish the canonical cross-source evidence math first; O2 can then lock the final facet vocabulary/weights against the actual signal inventory.
 
 1. Are the nine proposed facets the right final set?
 2. Does Service & Devotion need to split into two facets?
@@ -1190,9 +1195,11 @@ These should be settled after M4/M5 signals exist, because those implementations
 
 # Current recommendation
 
-Do **not** lock the final M7 radar axes before M4 and M5 are designed.
+Start with **O1 canonical cross-source signal aggregation** before building the new M7 profile UI.
 
-Do lock the architecture now:
+M4, M5, and M6 are now implemented, so M7 has enough real evidence structure to settle the remaining aggregation/facet decisions from actual runtime inputs rather than hypothetical future quizzes.
+
+Keep this architecture locked:
 
 ```text
 source-aware independent evidence
@@ -1213,4 +1220,4 @@ explicit catalog favorites
 coverage/exploration state
 ```
 
-That gives the front page a coherent model without prematurely hard-coding the final visual vocabulary.
+That gives the front page a coherent model while allowing O2 to lock the final visual vocabulary from the implemented signal/evidence inventory.
