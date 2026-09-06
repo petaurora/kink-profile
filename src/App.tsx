@@ -552,11 +552,6 @@ export default function App() {
 
             <button className="profile-summary" onClick={() => setScreen("profile")}>
               <span className="eyebrow">Your profile</span>
-              <span>
-                {completedCore === 0
-                  ? "Ready when you are"
-                  : `${completedCore} of ${coreQuizzes.length} quiz sections complete`}
-              </span>
               <span className="summary-arrow">→</span>
             </button>
           </div>
