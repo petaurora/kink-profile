@@ -937,15 +937,15 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .profile-top-interest-list {
   display: grid;
-  margin-top: 26px;
+  margin-top: 16px;
 }
 
 .profile-top-interest-row {
   display: grid;
-  grid-template-columns: 38px minmax(180px, 1fr) auto;
-  gap: 14px;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 8px;
   align-items: center;
-  padding: 14px 0;
+  padding: 8px 0;
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -956,25 +956,34 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   font-variant-numeric: tabular-nums;
 }
 
-.profile-top-interest-row > strong {
-  font-size: .98rem;
+.profile-top-interest-main {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.profile-top-interest-main > strong {
+  font-size: .94rem;
+  line-height: 1.25;
 }
 
 .profile-top-interest-sources {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 7px;
+  gap: 5px;
 }
 
 .profile-source-chip {
   border: 1px solid var(--border-subtle);
   border-radius: 999px;
-  padding: 6px 9px;
+  padding: 3px 6px;
   background: var(--bg-muted);
   color: var(--text-secondary);
-  font-size: .7rem;
+  font-size: .64rem;
   font-weight: 800;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
@@ -1010,15 +1019,6 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
   .profile-top-interests-heading > p {
     text-align: left;
-  }
-
-  .profile-top-interest-row {
-    grid-template-columns: 32px minmax(0, 1fr);
-  }
-
-  .profile-top-interest-sources {
-    grid-column: 2;
-    justify-content: flex-start;
   }
 
   .profile-top-interests-footer {
