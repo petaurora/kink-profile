@@ -718,14 +718,15 @@ M8 is not a prerequisite for M9. The share-summary slices depend on the stable M
 - [x] reject invalid/incompatible files without partially mutating the current profile
 - [x] recompute derived profile state after successful import
 
-### M9.5 — Shareable profile summary
+### M9.5 — Shareable profile summary ✅
 
-- [ ] build a dedicated share-summary presentation from stable M7 outputs
-- [ ] keep the share summary distinct from the full private backup/export
-- [ ] prioritize useful profile highlights such as strongest themes, radar/facets, top interests, headspaces/dynamic modes, limits, and selected interest areas
-- [ ] intentionally omit internal provenance/debug data and machine-oriented storage detail
-- [ ] design the summary so it can be rendered consistently into multiple output formats
-- [ ] provide a preview before export
+- [x] build a dedicated share-summary presentation from stable M7 outputs
+- [x] keep the share summary distinct from the full private backup/export
+- [x] include strongest themes, overall radar, orientation, submissive Headspaces, Dynamic Modes, Top Overall, and explicit Hard Limits
+- [x] intentionally defer Interest Areas until M7.8 defines stable category-selection semantics
+- [x] intentionally omit internal provenance/debug data and machine-oriented storage detail
+- [x] design the summary so the same model + renderer can feed multiple output formats
+- [x] provide a preview before export
 
 ### M9.6 — Summary export formats
 
