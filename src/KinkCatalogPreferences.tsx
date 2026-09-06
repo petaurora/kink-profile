@@ -13,63 +13,19 @@ import {
   type CatalogProfileState,
 } from "./lib/catalogProfile";
 import {
+  buildCatalogResultView,
+  catalogPreferenceLabels,
+} from "./lib/catalogResults";
+import {
   loadCatalogProfile,
   saveCatalogProfile,
 } from "./lib/catalogProfileStorage";
-import { calculateRanking } from "./lib/kinkRanking";
+import type { StoredProfile } from "./lib/profileStorage";
 
 type PreferenceFilter = "all" | "unanswered" | CatalogPreferenceState;
 
-const preferenceLabels: Record<CatalogPreferenceState, string> = {
-  love: "Love",
-  like: "Like",
-  curious: "Curious",
-  unsure: "Unsure",
-  not_interested: "Not Interested",
-  hard_limit: "Hard Limit",
-  not_applicable: "Not Applicable",
-};
-
 function preferenceClass(state: CatalogPreferenceState | undefined) {
   return state ? `preference-${state.replaceAll("_", "-")}` : "preference-unanswered";
-}
-
-function buildRankingContext(profile: CatalogProfileState) {
-  const categoryRanks = new Map<string, number>();
-  const overallRanks = new Map<string, number>();
-
-  for (const category of kinkCategories) {
-    const snapshot = calculateRanking(kinkCatalog, profile.comparisons, {
-      type: "category",
-      categoryId: category.id,
-    });
-
-    for (const item of snapshot.items) {
-      if (item.comparisons > 0) categoryRanks.set(item.id, item.rank);
-    }
-  }
-
-  const overallParticipantIds = new Set<string>();
-  for (const comparison of profile.comparisons) {
-    if (comparison.scope.type !== "overall") continue;
-    overallParticipantIds.add(comparison.leftKinkId);
-    overallParticipantIds.add(comparison.rightKinkId);
-  }
-
-  if (overallParticipantIds.size >= 2) {
-    const participantCatalog = kinkCatalog.filter((item) =>
-      overallParticipantIds.has(item.id),
-    );
-    const snapshot = calculateRanking(participantCatalog, profile.comparisons, {
-      type: "overall",
-    });
-
-    for (const item of snapshot.items) {
-      if (item.comparisons > 0) overallRanks.set(item.id, item.rank);
-    }
-  }
-
-  return { categoryRanks, overallRanks };
 }
 
 function matchesSearch(item: KinkCatalogItem, query: string) {
@@ -82,9 +38,11 @@ function matchesSearch(item: KinkCatalogItem, query: string) {
 }
 
 export function KinkCatalogPreferences({
+  quizProfile,
   onClose,
   onPlayRanking,
 }: {
+  quizProfile: StoredProfile;
   onClose: () => void;
   onPlayRanking: () => void;
 }) {
@@ -107,9 +65,9 @@ export function KinkCatalogPreferences({
     return () => window.removeEventListener("scroll", updateReturnToTop);
   }, []);
 
-  const rankingContext = useMemo(
-    () => buildRankingContext(profile),
-    [profile.comparisons],
+  const resultView = useMemo(
+    () => buildCatalogResultView(quizProfile, profile),
+    [quizProfile, profile],
   );
 
   const visibleItems = useMemo(
@@ -262,7 +220,7 @@ export function KinkCatalogPreferences({
             <option value="unanswered">Not set</option>
             {catalogPreferenceStates.map((state) => (
               <option key={state} value={state}>
-                {preferenceLabels[state]}
+                {catalogPreferenceLabels[state]}
               </option>
             ))}
           </select>
@@ -382,7 +340,7 @@ export function KinkCatalogPreferences({
                               <option value="">Not set</option>
                               {catalogPreferenceStates.map((state) => (
                                 <option key={state} value={state}>
-                                  {preferenceLabels[state]}
+                                  {catalogPreferenceLabels[state]}
                                 </option>
                               ))}
                             </select>
