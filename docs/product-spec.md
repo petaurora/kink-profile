@@ -382,7 +382,7 @@ The catalog is a **data + explicit-preference + ranking layer**, not the questio
 See:
 
 - [M6 Catalog Integration](m6-catalog-integration.md)
-- [M6 C3 Explicit Preference](m6-c3-explicit-preference.md)
+- [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)
 - [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
 - [Reference Data](../reference/README.md)
 
