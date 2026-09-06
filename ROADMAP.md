@@ -525,7 +525,8 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 - [x] add compact Headspaces traits
 - [x] add compact Dynamic Modes traits
 - [x] preserve receiving/giving direction in headline headspaces
-- [x] distinguish receiving / giving / bidirectional / mixed / emerging orientation states
+- [x] distinguish internal directional states while presenting them as Submissive / Dominant / Dominant + submissive / Context-dependent / Still emerging
+- [x] keep receiving/giving implementation vocabulary out of normal header copy and Headspace chips
 - [x] suppress low-evidence composed labels rather than overclaim them
 - [x] avoid declaring one identity as the user's single result
 - [x] keep completion/progress mechanics out of the profile header
