@@ -550,19 +550,21 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Exit condition:** the overall radar accurately reflects M7.2 facets and incomplete-profile behavior. ✅
 
-### M7.5 — Headspaces + Dynamic Modes
+### M7.5 — Headspaces + Dynamic Modes ✅
 
 **Purpose:** add recognizable profile language beneath the broad facets.
 
-- [ ] show compact top receiving/submissive headspaces with percentages
-- [ ] add Show all / Show less for the full ranked receiving/submissive list
-- [ ] show strongest dynamic modes
-- [ ] preserve independent overlapping scores
-- [ ] keep giving/dominant headspace presentation parked for the broader future directional-profile enhancement
+- [x] show compact top 5 submissive-oriented Headspaces with percentages
+- [x] add Show all / Show less for the full known ranked submissive Headspace list
+- [x] show top 5 strongest Dynamic Modes with percentages
+- [x] preserve independent overlapping scores
+- [x] suppress very sparse composed labels rather than overclaim them
+- [x] qualify limited-but-usable evidence
+- [x] keep dominant-oriented Headspace presentation parked for the broader future directional-profile enhancement
+- [x] keep giving/receiving implementation vocabulary out of the normal UI
+- [x] add deterministic overlap/ranking/coverage tests
 
-**Test before moving on:** seed profiles with overlapping headspaces/modes and verify ordering, percentages, and expansion behavior.
-
-**Exit condition:** headspaces and dynamic modes add recognizable detail without replacing the broader profile model.
+**Exit condition:** Headspaces and Dynamic Modes add recognizable detail without replacing the broader profile model. ✅
 
 ### M7.6 — Top Overall catalog interests
 
@@ -768,6 +770,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.5 — Headspaces + Dynamic Modes**
+**M7.6 — Top Overall catalog interests**
 
-Add the dedicated ranked Headspaces and Dynamic Modes profile section beneath the broad overall model. Preserve overlapping scores, keep the main view compact with expansion controls, and use dominant/submissive presentation language rather than exposing giving/receiving implementation terms.
+Build the profile's concrete Top Overall list from independent direct evidence: explicit catalog preference + This-or-That ranking. Keep inference-only affinity out of the ranking, preserve source traceability underneath, and define deterministic aggregation/tie behavior before adding Hard Limits in M7.7.
