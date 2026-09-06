@@ -209,10 +209,10 @@ export function deriveProfileOrientation(
   }
 
   const labels: Record<ProfileOrientationKey, string> = {
-    receiving: "Receiving / submissive",
-    giving: "Giving / dominant",
-    bidirectional: "Bidirectional",
-    mixed: "Mixed / context-dependent",
+    receiving: "Submissive",
+    giving: "Dominant",
+    bidirectional: "Dominant + submissive",
+    mixed: "Context-dependent",
     insufficient: "Still emerging",
   };
 
@@ -351,12 +351,12 @@ function buildSummary(
   const orientationIntro: Partial<
     Record<ProfileOrientationKey, string>
   > = {
-    receiving: "Receiving/submissive energy is the clearest directional lean",
-    giving: "Giving/dominant energy is the clearest directional lean",
+    receiving: "The profile leans submissive",
+    giving: "The profile leans dominant",
     bidirectional:
-      "The profile shows meaningful strength in both receiving and giving",
+      "The profile shows strong dominant and submissive tendencies",
     mixed:
-      "Giving and receiving shift depending on the part of the dynamic",
+      "The profile is context-dependent rather than strongly dominant or submissive",
   };
 
   const intro = orientationIntro[orientation.key];
