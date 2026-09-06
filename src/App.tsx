@@ -44,6 +44,7 @@ import {
   type QuizDefinition,
   type QuizId,
 } from "./data/quizzes";
+import { kinkCategories } from "./data/kinkCatalog.generated";
 import {
   loadProfile,
   saveProfile,
@@ -70,6 +71,7 @@ import {
 } from "./lib/catalogResults";
 import { buildProfileTopInterests } from "./lib/profileTopInterests";
 import { buildProfileHardLimits } from "./lib/profileHardLimits";
+import { buildProfileInterestAreas } from "./lib/profileInterestAreas";
 import {
   scoreDsSignals,
   scoreHeadspaces,
@@ -688,6 +690,11 @@ export default function App() {
     ? profileHardLimits.all
     : profileHardLimits.featured;
 
+  const profileInterestAreas = useMemo(
+    () => buildProfileInterestAreas(catalogResultView, kinkCategories),
+    [catalogResultView],
+  );
+
   const openQuiz = (quiz: QuizDefinition) => {
     if (quiz.availability !== "available") return;
 
@@ -1184,6 +1191,42 @@ export default function App() {
                   ? "Show less"
                   : `Show all limits (+${profileHardLimits.hiddenCount})`}
               </button>
+            )}
+          </article>
+
+          <article className="profile-interest-areas panel">
+            <div className="profile-interest-areas-heading">
+              <div>
+                <p className="eyebrow">Category themes</p>
+                <h2>Interest Areas</h2>
+              </div>
+              <p>
+                A compact view of the catalog areas with the strongest direct
+                evidence. Only a few representative interests are shown here.
+              </p>
+            </div>
+
+            {profileInterestAreas.length > 0 ? (
+              <div className="profile-interest-area-grid">
+                {profileInterestAreas.map((area) => (
+                  <section
+                    className="profile-interest-area"
+                    key={area.categoryId}
+                  >
+                    <strong>{area.label}</strong>
+                    <p>
+                      {area.representativeItems
+                        .map((item) => item.label)
+                        .join(" · ")}
+                    </p>
+                  </section>
+                ))}
+              </div>
+            ) : (
+              <p className="profile-interest-areas-empty">
+                Interest areas will appear as you directly mark or rank catalog
+                items.
+              </p>
             )}
           </article>
 
