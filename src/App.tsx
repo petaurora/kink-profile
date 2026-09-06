@@ -63,6 +63,7 @@ import {
   type OverallRadarAxis,
 } from "./lib/overallRadar";
 import type { OverallFacetId } from "./data/overallFacets";
+import { buildProfileRoleDetails } from "./lib/profileRoleDetails";
 import {
   scoreDsSignals,
   scoreHeadspaces,
@@ -454,6 +455,8 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>("hub");
   const [activeQuizId, setActiveQuizId] = useState<QuizId>(defaultQuiz.id);
   const [questionIndex, setQuestionIndex] = useState(0);
+  const [showAllSubmissiveHeadspaces, setShowAllSubmissiveHeadspaces] =
+    useState(false);
 
   useEffect(() => {
     saveProfile(profile);
@@ -645,6 +648,15 @@ export default function App() {
       ),
     [overallFacets, profileHeader.strongestFacetIds],
   );
+
+  const profileRoleDetails = useMemo(
+    () => buildProfileRoleDetails(canonicalSignals),
+    [canonicalSignals],
+  );
+
+  const visibleSubmissiveHeadspaces = showAllSubmissiveHeadspaces
+    ? profileRoleDetails.submissiveHeadspaces
+    : profileRoleDetails.featuredSubmissiveHeadspaces;
 
   const openQuiz = (quiz: QuizDefinition) => {
     if (quiz.availability !== "available") return;
@@ -955,6 +967,97 @@ export default function App() {
               )}
             </div>
           </article>
+
+          <section className="profile-role-detail-grid">
+            <article className="profile-role-panel panel">
+              <div className="profile-role-heading">
+                <div>
+                  <p className="eyebrow">Recognizable roles</p>
+                  <h2>Headspaces</h2>
+                </div>
+                <p>
+                  These scores can overlap. They describe submissive-oriented role
+                  patterns, not one assigned identity.
+                </p>
+              </div>
+
+              {visibleSubmissiveHeadspaces.length > 0 ? (
+                <div className="profile-role-list">
+                  {visibleSubmissiveHeadspaces.map((item, index) => (
+                    <div className="profile-role-row" key={item.id}>
+                      <span className="profile-role-rank">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <div className="profile-role-main">
+                        <div className="profile-role-title">
+                          <strong>{item.label}</strong>
+                          <span>{item.affinity}%</span>
+                        </div>
+                        <div className="profile-role-track" aria-hidden="true">
+                          <span style={{ width: `${item.affinity}%` }} />
+                        </div>
+                        {item.state === "limited" && (
+                          <small>Limited evidence so far</small>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="profile-role-empty">
+                  These headspace patterns are still emerging.
+                </p>
+              )}
+
+              {profileRoleDetails.submissiveHeadspaces.length >
+                profileRoleDetails.featuredSubmissiveHeadspaces.length && (
+                <button
+                  className="text-button profile-role-toggle"
+                  onClick={() =>
+                    setShowAllSubmissiveHeadspaces((shown) => !shown)
+                  }
+                >
+                  {showAllSubmissiveHeadspaces ? "Show less" : "Show all headspaces"}
+                </button>
+              )}
+            </article>
+
+            <article className="profile-role-panel panel">
+              <div className="profile-role-heading">
+                <div>
+                  <p className="eyebrow">How it tends to feel</p>
+                  <h2>Dynamic modes</h2>
+                </div>
+                <p>
+                  These are overlapping patterns that help explain how different
+                  parts of the profile tend to come together.
+                </p>
+              </div>
+
+              {profileRoleDetails.featuredDynamicModes.length > 0 ? (
+                <div className="profile-mode-list">
+                  {profileRoleDetails.featuredDynamicModes.map((item) => (
+                    <div className="profile-mode-card" key={item.id}>
+                      <div>
+                        <strong>{item.label}</strong>
+                        <span>{item.affinity}%</span>
+                      </div>
+                      <div className="profile-role-track" aria-hidden="true">
+                        <span style={{ width: `${item.affinity}%` }} />
+                      </div>
+                      {item.state === "limited" && (
+                        <small>Limited evidence so far</small>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="profile-role-empty">
+                  Dynamic modes are still emerging.
+                </p>
+              )}
+            </article>
+          </section>
 
           <div className="profile-overview panel">
             <div className="profile-number">
