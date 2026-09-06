@@ -37,10 +37,13 @@ This folder contains the product and scoring decisions that should guide impleme
 11. [Overall Profile Aggregation](overall-profile-aggregation.md)  
    The active M7 implementation contract, now split into M7.1–M7.11 testable slices: canonical aggregation/inspection, facets, header, radar, role/mode summaries, Top Overall, limits, Interest Areas, catalog drill-down, explainability, and final polish.
 
-12. [Roadmap](../ROADMAP.md)  
+12. [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md)  
+   The planned Settings/profile-lifecycle contract: display name, selective reset, complete versioned backup/restore, share-summary presentation, and PNG/HTML/PDF output.
+
+13. [Roadmap](../ROADMAP.md)  
    What is already implemented and what should be built next.
 
-13. [Reference Data](../reference/README.md)  
+14. [Reference Data](../reference/README.md)  
    How the expanded kink catalog should be used without turning it into a 551-question test.
 
 ## Source of truth by topic
@@ -58,6 +61,7 @@ This folder contains the product and scoring decisions that should guide impleme
 | How should catalog items be pairwise ranked? | [Kink This-or-That Ranking](kink-this-or-that-ranking.md) |
 | How should scoring and catalog affinity work generally? | [Scoring Model](scoring-model.md) |
 | How should the overall front-page profile aggregate everything? | [Overall Profile Aggregation](overall-profile-aggregation.md) |
+| How should profile settings, reset, backup/restore, and sharing work? | [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md) |
 | What do we build next? | [Roadmap](../ROADMAP.md) |
 | What is implemented today? | [README](../README.md) + code |
 | How do we use the kink catalog? | [Reference Data](../reference/README.md) |
@@ -73,6 +77,7 @@ If catalog identity, explicit-state, mapping, or catalog/profile behavior change
 If C3 implementation details or acceptance criteria change, update the C3 explicit-preference scope.  
 If source provenance, evidence flow, recomputation, or feedback-loop rules change, update the source-aware profile evidence architecture.  
 If pairwise catalog ranking behavior changes, update the this-or-that ranking spec.  
-If overall profile aggregation or front-page facet behavior changes, update the overall profile aggregation spec.
+If overall profile aggregation or front-page facet behavior changes, update the overall profile aggregation spec.  
+If settings, reset behavior, profile backup/restore, or share-summary export changes, update the M9 settings/profile-management spec.
 
 The repository code remains authoritative for what is actually implemented.

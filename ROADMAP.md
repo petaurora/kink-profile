@@ -19,7 +19,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M6 | ✅ Complete | integrated, source-aware, hardened kink catalog |
 | M7 | Planned | build the full aggregated profile |
 | M8 | Optional | add quiz depth/adaptive follow-ups |
-| M9 | Planned later | export/import/share |
+| M9 | Planned | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
 
 ---
@@ -661,15 +661,70 @@ Do not build this until the fixed mini-quizzes demonstrate a need for it.
 
 ---
 
-## M9 — Portability & Sharing
+## M9 — Settings, Profile Management & Sharing
 
-**Goal:** give the user explicit control over their profile data.
+**Goal:** give the user a dedicated place to manage profile identity, local data lifecycle, backups/restores, and deliberately shareable profile output.
 
-- [ ] export profile
-- [ ] import profile
-- [ ] clear/delete local profile
-- [ ] selective shareable result card
-- [ ] exclude private details from shared views
+M9 is a separate product area from M7. M7 owns the profile itself; M9 owns managing, moving, resetting, and sharing that profile.
+
+See [docs/m9-settings-profile-management.md](docs/m9-settings-profile-management.md) for the detailed implementation contract.
+
+M8 is not a prerequisite for M9. The share-summary slices depend on the stable M7 profile presentation/data contract, while settings/reset/backup work can remain independent of adaptive quiz depth.
+
+### M9.1 — Settings shell + profile identity
+
+- [ ] add a first-class Settings destination
+- [ ] organize Settings into Profile, Data, and Sharing groups
+- [ ] replace hard-coded user-facing "Pet" profile naming with an editable profile display name
+- [ ] update profile-facing labels/headings to use the configured display name where appropriate
+- [ ] keep broader identity/pronoun customization out of this slice
+
+### M9.2 — Selective reset
+
+- [ ] provide a reset flow that never deletes data immediately from the first click
+- [ ] allow selecting independent data sections to reset
+- [ ] support quiz data, explicit catalog preferences, This-or-That/ranking data, and profile settings/identity as independent reset scopes
+- [ ] support an explicit Reset Everything option
+- [ ] preview what will be deleted before confirmation
+- [ ] preserve unselected evidence sources
+- [ ] recompute derived views after reset rather than persisting stale aggregates
+
+### M9.3 — Full profile export
+
+- [ ] export a complete machine-readable profile backup
+- [ ] include schema/export version metadata
+- [ ] include profile settings/identity and all authoritative persisted profile evidence
+- [ ] include quiz progress/results, explicit catalog preference state, and raw This-or-That/ranking history
+- [ ] keep recomputable derived values non-authoritative
+- [ ] produce a portable JSON file suitable for later restore
+
+### M9.4 — Full profile import
+
+- [ ] validate file shape + supported schema/export version before changing local data
+- [ ] show an import preview/summary before replacement
+- [ ] import as a full-profile replacement in the initial implementation
+- [ ] do not attempt merge-import in the first version
+- [ ] reject invalid/incompatible files without partially mutating the current profile
+- [ ] recompute derived profile state after successful import
+
+### M9.5 — Shareable profile summary
+
+- [ ] build a dedicated share-summary presentation from stable M7 outputs
+- [ ] keep the share summary distinct from the full private backup/export
+- [ ] prioritize useful profile highlights such as strongest themes, radar/facets, top interests, headspaces/dynamic modes, limits, and selected interest areas
+- [ ] intentionally omit internal provenance/debug data and machine-oriented storage detail
+- [ ] design the summary so it can be rendered consistently into multiple output formats
+- [ ] provide a preview before export
+
+### M9.6 — Summary export formats
+
+- [ ] support a shareable PNG render
+- [ ] support a self-contained/shareable HTML representation
+- [ ] support a polished PDF representation
+- [ ] reuse the same share-summary content contract across formats instead of maintaining separate profile designs
+- [ ] verify mobile/desktop rendering does not produce clipped or unreadable exports
+
+**M9 exit condition:** a user can rename the profile, selectively reset independent source data without collateral deletion, create and restore a complete versioned backup, and generate a polished shareable summary without exposing the full private profile data store.
 
 No account is required for this milestone.
 
