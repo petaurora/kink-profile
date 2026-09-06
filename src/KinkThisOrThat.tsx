@@ -7,8 +7,11 @@ import {
 import {
   calculateRanking,
   confidenceLabel,
+  countOrderingComparisonsForScope,
+  isOrderingResult,
   selectCategoryFinalists,
   selectNextPair,
+  selectOverallCandidates,
   type ComparisonResult,
   type KinkComparison,
   type RankingScope,
@@ -78,8 +81,18 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
     [eligibleCatalog, profile.comparisons],
   );
 
+  const overallCandidates = useMemo(
+    () =>
+      selectOverallCandidates(
+        eligibleCatalog,
+        finalists,
+        profile.comparisons,
+      ),
+    [eligibleCatalog, finalists, profile.comparisons],
+  );
+
   const activeCatalog = mode === "overall"
-    ? finalists
+    ? overallCandidates
     : eligibleCatalog.filter((item) => item.categoryId === categoryId);
 
   const scope: RankingScope = mode === "overall"
@@ -99,6 +112,10 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
   const pair = useMemo(() => randomizePair(basePair), [basePair, pairNonce]);
 
   const totalInScope = comparisonCountForScope(profile.comparisons, scope);
+  const orderingInScope = countOrderingComparisonsForScope(
+    profile.comparisons,
+    scope,
+  );
   const sessionAnswered = Math.max(0, totalInScope - sessionStartCount);
   const sessionLimit = sessionSize === "gremlin" ? Infinity : sessionSize;
   const sessionComplete = sessionAnswered >= sessionLimit;
@@ -108,7 +125,10 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
     () =>
       kinkCategories.map((category) => {
         const categoryScope: RankingScope = { type: "category", categoryId: category.id };
-        const comparisons = comparisonCountForScope(profile.comparisons, categoryScope);
+        const comparisons = countOrderingComparisonsForScope(
+          profile.comparisons,
+          categoryScope,
+        );
         const categoryCatalog = eligibleCatalog.filter(
           (item) => item.categoryId === category.id,
         );
@@ -130,7 +150,11 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
 
   const lastRankedCategoryId = useMemo(() => {
     const latest = profile.comparisons
-      .filter((comparison) => comparison.scope.type === "category")
+      .filter(
+        (comparison) =>
+          comparison.scope.type === "category" &&
+          isOrderingResult(comparison.result),
+      )
       .slice()
       .sort((a, b) => b.timestamp.localeCompare(a.timestamp))[0];
 
@@ -203,7 +227,7 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
   };
 
   const openOverallRanking = () => {
-    if (finalists.length < 2) return;
+    if (overallCandidates.length < 2) return;
 
     setMode("overall");
     setCategoryOpen(false);
@@ -241,8 +265,8 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
           <p className="eyebrow">Kink ranking</p>
           <h1>This or that. Giant list, tiny decisions.</h1>
           <p>
-            Rank within a category first, then send that category's Top 5 into the overall
-            fight. Only categories you've actually ranked contribute finalists. Your raw choices
+            Rank within a category first, then send up to that category's Top 5 items with
+            actual ordering evidence into the overall fight. Your raw choices
             are saved locally so the ranking can be recalculated
             later without locking us to one algorithm.
           </p>
@@ -261,7 +285,7 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
             </span>
             <strong>
               {mode === "overall"
-                ? `${finalists.length} finalists · Top 5 from ranked categories`
+                ? `${overallCandidates.length} candidates · current finalists + prior Overall history`
                 : activeCategory?.label}
             </strong>
           </div>
@@ -271,21 +295,21 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
       {mode === "category" && !categoryOpen ? (
         <section className="category-map">
           <button
-            className={finalists.length >= 2 ? "overall-destination panel" : "overall-destination panel locked"}
+            className={overallCandidates.length >= 2 ? "overall-destination panel" : "overall-destination panel locked"}
             onClick={openOverallRanking}
-            disabled={finalists.length < 2}
+            disabled={overallCandidates.length < 2}
           >
             <div>
               <p className="eyebrow">Across everything you've ranked</p>
               <h2>Your overall ranking</h2>
               <p>
-                {finalists.length >= 2
-                  ? `${finalists.length} finalists ready · Compare your category favorites against each other.`
-                  : "Rank at least one category to start building your finalist pool."}
+                {overallCandidates.length >= 2
+                  ? `${overallCandidates.length} candidates ready · Current finalists plus prior Overall participants stay in the fight.`
+                  : "Make at least one meaningful category comparison to start building your finalist pool."}
               </p>
             </div>
             <span className="overall-destination-arrow">
-              {finalists.length >= 2 ? "→" : "Locked"}
+              {overallCandidates.length >= 2 ? "→" : "Locked"}
             </span>
           </button>
 
@@ -510,7 +534,10 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
               </p>
               <h2>{confidenceLabel(snapshot.confidence)}</h2>
               <p>
-                {totalInScope} comparisons recorded. Keep going whenever you want to refine it.
+                {orderingInScope} ordering comparisons shape this ranking.
+                {totalInScope > orderingInScope
+                  ? ` ${totalInScope - orderingInScope} Skip/Neither interactions are saved but do not raise confidence.`
+                  : " Keep going whenever you want to refine it."}
               </p>
             </div>
             <div className="ranking-results-actions">
