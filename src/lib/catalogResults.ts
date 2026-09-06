@@ -22,6 +22,16 @@ import {
 } from "./profileEvidence";
 import type { StoredProfile } from "./profileStorage";
 
+export const catalogPreferenceLabels: Record<CatalogPreferenceState, string> = {
+  love: "Love",
+  like: "Like",
+  curious: "Curious",
+  unsure: "Unsure",
+  not_interested: "Not Interested",
+  hard_limit: "Hard Limit",
+  not_applicable: "Not Applicable",
+};
+
 export type CatalogRankContext = {
   rank: number;
   comparisons: number;
