@@ -534,19 +534,21 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Exit condition:** the header provides a useful standalone summary from real aggregated data. ✅
 
-### M7.4 — Overall radar
+### M7.4 — Overall radar ✅
 
 **Purpose:** visualize the broad M7 facet model.
 
-- [ ] render broad overall facets, targeting roughly 7–8 simultaneous axes when practical
-- [ ] handle unknown/low-coverage axes honestly
-- [ ] show a compact strongest-theme summary beneath the radar
-- [ ] retain direction metadata for future directional radar modes
-- [ ] support drill-down hooks to contributing evidence
+- [x] render all nine locked broad facets without merging distinct concepts
+- [x] keep unknown axes unscored rather than drawing artificial zero-interest values
+- [x] qualify sparse-but-known axes as limited evidence
+- [x] keep true known 0% distinct from unknown
+- [x] render incomplete profiles as open known-value runs rather than a fabricated closed polygon
+- [x] show the M7.3 strongest-theme summary beneath the radar
+- [x] retain directional metadata for future dominant/submissive radar modes
+- [x] add interactive axis/theme drill-down into the M7.2 facet inspector
+- [x] add deterministic full/partial/sparse radar tests
 
-**Test before moving on:** verify full, partial, and sparse profile data do not turn unknown axes into artificial zero-interest results.
-
-**Exit condition:** the overall radar accurately reflects M7.2 facets and incomplete-profile behavior.
+**Exit condition:** the overall radar accurately reflects M7.2 facets and incomplete-profile behavior. ✅
 
 ### M7.5 — Headspaces + Dynamic Modes
 
@@ -766,6 +768,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.4 — Overall radar**
+**M7.5 — Headspaces + Dynamic Modes**
 
-Render the locked M7.2 broad facets as the primary profile visualization beneath the M7.3 header. Test the real nine-facet model on desktop/mobile before deciding whether all nine remain simultaneous axes, and preserve unknown/low-coverage behavior rather than drawing unexplored facets as 0%.
+Add the dedicated ranked Headspaces and Dynamic Modes profile section beneath the broad overall model. Preserve overlapping scores, keep the main view compact with expansion controls, and use dominant/submissive presentation language rather than exposing giving/receiving implementation terms.
