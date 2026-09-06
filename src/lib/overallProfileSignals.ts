@@ -166,7 +166,7 @@ function summarizeChannel(
     affinity: weightedContributionAffinity(usable),
     coverage,
     reliability,
-    effectiveWeight: round1(reliability * (coverage / 100)),
+    effectiveWeight: reliability * (coverage / 100),
     contributions: usable,
   };
 }
