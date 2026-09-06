@@ -445,36 +445,58 @@ C7 hardens recommendation behavior around that existing model:
 
 ## M7 — Full Overall Profile
 
-**Goal:** turn completed section results into one coherent profile.
+**Goal:** turn the independent section + catalog evidence built through M6 into one coherent, source-aware profile.
 
-M1 provides the navigation/progress shell. M7 adds real cross-section aggregation.
+M1 provides the navigation/progress shell. M7 adds real cross-source aggregation and presentation.
 
-See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.md) for the source-aware evidence contract and [docs/overall-profile-aggregation.md](docs/overall-profile-aggregation.md) for the aggregation/front-page design direction. The overall radar should use broad cross-cutting facets derived from canonical signals rather than quiz names, specific kink names, or role labels.
+See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.md) for the source-aware evidence contract and [docs/overall-profile-aggregation.md](docs/overall-profile-aggregation.md) for the active M7 implementation contract.
 
-- [ ] canonical source-aware **cross-source** SignalId aggregation
+### O1 — Canonical cross-source signal aggregation
+
 - [ ] consume independent quiz, explicit-catalog, and pairwise-catalog evidence
 - [ ] define deduplication/weighting rules across independent evidence sources
-- [ ] update existing signal/radar percentages as direct catalog evidence strengthens the profile
-- [ ] define final overall facet vocabulary and composition weights
-- [ ] coverage-aware overall radar
-- [ ] preserve direction metadata for power exchange, care, primality, and intensity where relevant
-- [ ] expose profile-level affinity separately from evidence confidence/coverage
-- [ ] top receiving/submissive and giving/dominant headspace summaries
-- [ ] strongest dynamic-mode summary
-- [ ] explicit/pairwise-ranked catalog favorites summary
-- [ ] inferred catalog starting points with source explainability
-- [ ] completed-section summary
-- [ ] Activities view
-- [ ] D/s view
-- [ ] Headspaces view
-- [ ] overall visualization
-- [ ] strongest-signal summary
-- [ ] preserve unexplored sections as unknown, not 0%
+- [ ] preserve score separately from evidence coverage/confidence
 - [ ] prevent repeated SignalIds from being double-counted across quizzes/sources
 - [ ] replace/supersede only the affected quiz contribution on retake
 - [ ] preserve manual/ranking evidence when quizzes are retaken
 - [ ] prevent inferred catalog affinity from feeding back into the evidence that produced it
-- [ ] allow drill-down from a catalog item or radar result to contributing source evidence
+- [ ] retain source traceability for drill-down
+
+### O2 — Overall facet model
+
+- [ ] define final overall facet vocabulary + composition weights from the implemented signal inventory
+- [ ] preserve direction metadata for power exchange, care, primality, and intensity where relevant
+- [ ] expose facet affinity separately from evidence coverage/confidence
+- [ ] preserve unexplored evidence as unknown, not 0%
+
+### O3 — Profile header + overall radar
+
+- [ ] hybrid human-readable profile header + compact Orientation / Headspaces / Dynamic modes traits
+- [ ] coverage-aware overall radar using broad cross-cutting facets rather than quiz/kink/role names
+- [ ] strongest-theme summary beneath the radar
+- [ ] allow drill-down to contributing source evidence
+
+### O4 — Roles/headspaces + dynamic modes
+
+- [ ] compact top receiving/submissive headspace summary with percentages
+- [ ] Show all / Show less receiving/submissive headspaces
+- [ ] strongest dynamic-mode summary
+- [ ] defer giving/dominant headspace presentation to the broader future directional-profile enhancement
+
+### O5 — Catalog profile summary
+
+- [ ] Top Overall direct-evidence catalog interests derived from explicit + pairwise evidence without mutating either source
+- [ ] explicit Hard Limits as a separate summary
+- [ ] top 4–6 Interest Areas with representative items
+- [ ] separate Explore all categories experience
+- [ ] state-filter shortcuts into the editable catalog
+- [ ] keep inference-only catalog suggestions out of Top Overall by themselves
+
+### O6 — Dashboard exploration / coverage support
+
+- [ ] keep completed/in-progress/unexplored progress primarily on the home/dashboard
+- [ ] qualify low-coverage profile results without turning unknown into deficiency
+- [ ] link back to useful unfinished quizzes/catalog exploration where appropriate
 
 ---
 
@@ -539,6 +561,7 @@ Interesting, but not current scope:
 - educational content for catalog items
 - relationship discussion prompts
 - quiz recommendations based on incomplete profile
+- rewards / consequences runtime system using `reference/rewards-punishments/` source data (schema + product semantics TBD)
 - anonymous aggregate statistics
 
 ---
