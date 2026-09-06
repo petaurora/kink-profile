@@ -8,7 +8,7 @@ M6 is not starting from zero.
 
 The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-The next implementation slice is C3 explicit preference + catalog table.
+C3 explicit preference + catalog table is implemented. The next implementation slice is C4 source-aware evidence convergence.
 
 Current baseline on `main`:
 
@@ -27,7 +27,7 @@ Current baseline on `main`:
 - cross-category ranking is playable
 - raw pairwise decisions are retained so rankings can be recalculated
 
-M6 preserves that baseline. C1/C2 have closed the identity and mapping gaps; C3–C6 now own explicit user state, ranking hardening, result integration, and the affinity foundation.
+M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4–C7 now own source-aware convergence, ranking hardening, result integration, and affinity hardening.
 
 ---
 
@@ -570,7 +570,7 @@ Storage key:
 pet-profile-catalog-v1
 ```
 
-Do **not** add persisted Overall finalist membership in C3. Whether that state needs persistence is a C4 ranking-hardening decision.
+Do **not** add persisted Overall finalist membership in C3. Whether that state needs persistence is a C5 ranking-hardening decision.
 
 ## Migration from ranking v1
 
@@ -1084,31 +1084,31 @@ Current seeded mapping layer:
 
 Unmapped means **unknown / not inferable from current quiz signals**, not 0% affinity.
 
-## C3 — Explicit preference + catalog table 🧭 re-scoped for review
+## C3 — Explicit preference + catalog table ✅
 
 See [M6 C3 — Explicit Preference + Catalog Table](m6-c3-explicit-preference.md) for the concrete implementation plan and acceptance scenarios.
 
-- [ ] define the seven-state runtime enum
-- [ ] represent unanswered by absence
-- [ ] support optional overall / receiving / giving state per Catalog ID
-- [ ] implement directional override resolution without synthesizing a generic value
-- [ ] create `pet-profile-catalog-v1`
-- [ ] migrate raw ranking history from `pet-profile-kink-ranking-v1`
-- [ ] canonicalize migrated Catalog IDs through C1 replacement mappings
-- [ ] keep the legacy ranking key untouched during the migration window; no long-term dual-write
-- [ ] add a first-class catalog/preferences table/list destination
-- [ ] search by label + aliases
-- [ ] filter by category + explicit state + unanswered
-- [ ] responsive desktop table / mobile rows
-- [ ] compact overall-state editor + expandable item details
-- [ ] show read-only category/overall ranking context by stable Catalog ID where useful
-- [ ] keep This-or-That focused on pairwise ranking with no embedded preference editor
-- [ ] keep explicit-state actions separate from pairwise choices
-- [ ] make Hard Limit visibly distinct from Not Interested
-- [ ] exclude hard_limit / not_interested / not_applicable from new pair selection
-- [ ] preserve love / like / curious / unsure / unanswered as ranking-eligible
-- [ ] handle scopes with fewer than two eligible items without a blank/dead ranking state
-- [ ] add focused preference/storage/migration/eligibility tests
+- [x] define the seven-state runtime enum
+- [x] represent unanswered by absence
+- [x] support optional overall / receiving / giving state per Catalog ID
+- [x] implement directional override resolution without synthesizing a generic value
+- [x] create `pet-profile-catalog-v1`
+- [x] migrate raw ranking history from `pet-profile-kink-ranking-v1`
+- [x] canonicalize migrated Catalog IDs through C1 replacement mappings
+- [x] keep the legacy ranking key untouched during the migration window; no long-term dual-write
+- [x] add a first-class catalog/preferences table/list destination
+- [x] search by label + aliases
+- [x] filter by category + explicit state + unanswered
+- [x] responsive desktop table / mobile rows
+- [x] compact overall-state editor + expandable item details
+- [x] show read-only category/overall ranking context by stable Catalog ID where useful
+- [x] keep This-or-That focused on pairwise ranking with no embedded preference editor
+- [x] keep explicit-state actions separate from pairwise choices
+- [x] make Hard Limit visibly distinct from Not Interested
+- [x] exclude hard_limit / not_interested / not_applicable from new pair selection
+- [x] preserve love / like / curious / unsure / unanswered as ranking-eligible
+- [x] handle scopes with fewer than two eligible items without a blank/dead ranking state
+- [x] add focused preference/storage/migration/eligibility tests
 
 ## C4 — Source-aware evidence convergence
 
@@ -1181,9 +1181,9 @@ The catalog should feel like an enrichment layer and exploration tool, not a 551
 
 ---
 
-# C3 review focus
+# C3 implemented decisions
 
-The main decisions proposed for approval before implementation are:
+The decisions below are now implemented and form the handoff contract for C4:
 
 1. **Seven-state enum:** Love / Like / Curious / Unsure / Not Interested / Hard Limit / Not Applicable.
 2. **Unknown semantics:** unanswered is absence; clearing the last stored state removes the preference record.
@@ -1197,4 +1197,4 @@ The main decisions proposed for approval before implementation are:
 10. **Evidence separation:** pairwise choices never infer explicit state, explicit-state edits never create pairwise wins, and positive explicit state does not seed rank.
 11. **Next boundary:** C4 adds source-aware evidence convergence, quiz-derived catalog inference, provenance, retake/recompute semantics, and the no-feedback-loop contract. Ranking confidence/finalist hardening moves to C5.
 
-If these hold, C3 can be implemented as a focused shared-state + catalog-table slice without redesigning its active persistence work around the broader C4/M7 evidence model.
+These decisions now define the durable C3 boundary. C4 should build source-aware adapters/selectors and derived evidence around this store rather than rewrite C3 persistence without a concrete versioning need.
