@@ -17,7 +17,10 @@ Current baseline on `main`:
 - the catalog contains **551 discussion items**
 - `scripts/generate-kink-catalog.mjs` generates the app-owned runtime module before dev/build
 - the runtime catalog exposes stable identity, category/domain/display metadata, normalized direction, aliases, signal mappings, description, role/mode, intensity, and risk metadata
-- pairwise comparisons are persisted locally
+- `pet-profile-catalog-v1` locally persists explicit catalog preferences + raw pairwise comparisons
+- legacy `pet-profile-kink-ranking-v1` history migrates into the shared catalog-profile store without inventing explicit states
+- a first-class Browse preferences table/list supports search, filters, explicit state editing, collapsible category sections, item details, and read-only ranking context
+- Hard Limit / Not Interested / Not Applicable exclude items from newly generated ranking pairs while historical comparisons remain intact
 - category ranking is playable
 - the ranking home is a category progress map rather than a category dropdown
 - users can continue where they left off and move directly to the next category
@@ -27,7 +30,7 @@ Current baseline on `main`:
 - cross-category ranking is playable
 - raw pairwise decisions are retained so rankings can be recalculated
 
-M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4–C7 now own source-aware convergence, ranking hardening, result integration, and affinity hardening.
+M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection. C4 owns source-aware convergence, C5 ranking hardening, C6 result integration, and C7 affinity hardening.
 
 ---
 
