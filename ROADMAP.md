@@ -376,7 +376,6 @@ C3 owns explicit-state semantics, persistence, migration, and the minimum eligib
 
 ### C4 — Ranking hardening
 
-- [ ] ensure pairwise choices never silently mutate explicit state
 - [ ] stop Skip from inflating ranking confidence
 - [ ] stop Neither from inflating ordering confidence
 - [ ] decide whether one category comparison is sufficient for Top-5 promotion
