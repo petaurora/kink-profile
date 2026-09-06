@@ -552,7 +552,6 @@ export default function App() {
 
             <button className="profile-summary" onClick={() => setScreen("profile")}>
               <span className="eyebrow">Your profile</span>
-              <strong>See the picture so far</strong>
               <span>
                 {completedCore === 0
                   ? "Ready when you are"
@@ -581,19 +580,19 @@ export default function App() {
 
           <div className="hub-section-heading catalog-hub-heading">
             <div>
-              <p className="eyebrow">02 · Refine the details</p>
+              <p className="eyebrow">02 · Rank & compare</p>
               <h2>Figure out what actually rises to the top.</h2>
             </div>
             <p>
-              Compare interests against each other, then get as precise as you want about
-              individual preferences and limits.
+              Quick pairwise choices help reveal preference order without asking you to rate
+              everything in isolation.
             </p>
           </div>
 
-          <div className="catalog-hub-grid">
+          <div className="catalog-hub-grid catalog-hub-grid-single">
             <article className="catalog-hub-card catalog-hub-game panel">
               <div>
-                <span className="catalog-kicker">Rank & compare</span>
+                <span className="catalog-kicker">Comparative discovery</span>
                 <h3>Play This or That</h3>
                 <p>
                   Make quick pairwise choices to see what wins when two interests compete.
@@ -604,7 +603,20 @@ export default function App() {
                 Play This or That
               </button>
             </article>
+          </div>
 
+          <div className="hub-section-heading catalog-hub-heading">
+            <div>
+              <p className="eyebrow">03 · Detailed refinement</p>
+              <h2>Get specific.</h2>
+            </div>
+            <p>
+              Fine-tune individual interests, curiosity, uncertainty, and limits directly in
+              the full catalog.
+            </p>
+          </div>
+
+          <div className="catalog-hub-grid catalog-hub-grid-single">
             <article className="catalog-hub-card panel">
               <div>
                 <span className="catalog-kicker">Fine-tune directly</span>
