@@ -65,6 +65,11 @@ import {
 import type { OverallFacetId } from "./data/overallFacets";
 import { buildProfileRoleDetails } from "./lib/profileRoleDetails";
 import {
+  buildCatalogResultView,
+  catalogPreferenceLabels,
+} from "./lib/catalogResults";
+import { buildProfileTopInterests } from "./lib/profileTopInterests";
+import {
   scoreDsSignals,
   scoreHeadspaces,
   scoreSignals,
@@ -658,6 +663,20 @@ export default function App() {
     ? profileRoleDetails.submissiveHeadspaces
     : profileRoleDetails.featuredSubmissiveHeadspaces;
 
+  const catalogResultView = useMemo(
+    () =>
+      buildCatalogResultView(
+        profile,
+        catalogProfileForInspection,
+      ),
+    [catalogProfileForInspection, profile],
+  );
+
+  const topOverallInterests = useMemo(
+    () => buildProfileTopInterests(catalogResultView),
+    [catalogResultView],
+  );
+
   const openQuiz = (quiz: QuizDefinition) => {
     if (quiz.availability !== "available") return;
 
@@ -1058,6 +1077,65 @@ export default function App() {
               )}
             </article>
           </section>
+
+          <article className="profile-top-interests panel">
+            <div className="profile-top-interests-heading">
+              <div>
+                <p className="eyebrow">Concrete preferences</p>
+                <h2>Top Overall</h2>
+              </div>
+              <p>
+                Built only from things you directly marked or ranked. Quiz-derived
+                suggestions cannot put something on this list by themselves.
+              </p>
+            </div>
+
+            {topOverallInterests.length > 0 ? (
+              <div className="profile-top-interest-list">
+                {topOverallInterests.map((item, index) => (
+                  <div className="profile-top-interest-row" key={item.catalogId}>
+                    <span className="profile-top-interest-rank">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <strong>{item.label}</strong>
+                    <div className="profile-top-interest-sources">
+                      {item.explicitState && (
+                        <span className="profile-source-chip">
+                          {catalogPreferenceLabels[item.explicitState]}
+                        </span>
+                      )}
+                      {item.overallRank && (
+                        <span className="profile-source-chip">
+                          This or That · #{item.overallRank.rank}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="profile-top-interests-empty">
+                No direct Top Overall results yet. Set a few catalog preferences or
+                compare finalists in This or That to start building this list.
+              </p>
+            )}
+
+            <div className="profile-top-interests-footer">
+              <span>
+                {topOverallInterests.length === 10
+                  ? "Showing your current top 10 direct-evidence interests."
+                  : `Showing ${topOverallInterests.length} direct-evidence ${
+                      topOverallInterests.length === 1 ? "interest" : "interests"
+                    } — no filler added.`}
+              </span>
+              <button
+                className="secondary compact"
+                onClick={() => setScreen("catalog")}
+              >
+                Refine preferences
+              </button>
+            </div>
+          </article>
 
           <div className="profile-overview panel">
             <div className="profile-number">
