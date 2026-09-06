@@ -383,22 +383,22 @@ C3 now owns explicit-state semantics, persistence, the catalog-table management 
 
 See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.md) for the source-aware profile contract.
 
-### C4 — Source-aware evidence convergence
+### C4 — Source-aware evidence convergence ✅
 
-- [ ] define source-aware evidence identities for quiz, explicit catalog, pairwise, and derived inference
-- [ ] treat C3 explicit state + raw comparisons as independent evidence sources
-- [ ] expose a derived per-Catalog-ID evidence snapshot without collapsing source values
-- [ ] centralize coverage-aware quiz-signal → catalog inference using the existing C2 mappings
-- [ ] never persist quiz-derived catalog inference as explicit preference
-- [ ] retain matched SignalIds/provenance for inferred affinity
-- [ ] define catalog → signal projection semantics for independent explicit/pairwise evidence
-- [ ] prohibit inferred catalog affinity from feeding back into signals
-- [ ] define quiz-retake source replacement/deduplication semantics
-- [ ] recompute derived catalog/profile views when quiz, explicit, or pairwise evidence changes
-- [ ] keep affinity separate from confidence/coverage
-- [ ] add source-isolation + no-feedback-loop tests
-- [ ] preserve explicit exclusion authority when direct and inferred evidence conflict
-- [ ] leave final cross-source signal aggregation/radar UI to M7
+- [x] define source-aware evidence identities for quiz, explicit catalog, pairwise, and derived inference
+- [x] treat C3 explicit state + raw comparisons as independent evidence sources
+- [x] expose a derived per-Catalog-ID evidence snapshot without collapsing source values
+- [x] centralize coverage-aware quiz-signal → catalog inference using the existing C2 mappings
+- [x] never persist quiz-derived catalog inference as explicit preference
+- [x] retain matched SignalIds/provenance for inferred affinity
+- [x] define catalog → signal projection semantics for independent explicit/pairwise evidence
+- [x] prohibit inferred catalog affinity from feeding back into signals
+- [x] define quiz-retake source replacement/deduplication semantics
+- [x] recompute derived catalog/profile views when quiz, explicit, or pairwise evidence changes
+- [x] keep affinity separate from confidence/coverage
+- [x] add source-isolation + no-feedback-loop tests
+- [x] preserve explicit exclusion authority when direct and inferred evidence conflict
+- [x] leave final cross-source signal aggregation/radar UI to M7
 
 **C4 exit condition:** quiz-derived inference, explicit preference, and pairwise evidence can coexist for the same Catalog ID; changing one preserves the others; derived values are recomputable; and circular evidence is impossible by construction.
 
@@ -536,6 +536,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M6 — Catalog Integration / C4 source-aware evidence convergence**
+**M6 — Catalog Integration / C5 ranking hardening**
 
-Implement [Source-Aware Profile Evidence Architecture](docs/profile-evidence-architecture.md): adapt C3 explicit preference + raw pairwise history into source-aware evidence views, centralize quiz-signal → catalog inference, preserve provenance, define retake/recompute semantics, and make feedback loops impossible by construction. Ranking-confidence/finalist hardening follows in C5.
+Harden the This-or-That evidence model: stop Skip/Neither from inflating ordering confidence, define meaningful finalist-promotion evidence, preserve prior Overall participants/history as category Top 5 changes, and add focused ranking tests.
