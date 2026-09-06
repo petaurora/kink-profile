@@ -528,7 +528,7 @@ TOP OVERALL
 
 This aggregate should use **independent direct user evidence only**. Quiz-derived/inferred catalog affinity must not place an item into Top Overall by itself.
 
-The exact merge rule between explicit state and pairwise rank is an M7 design/implementation decision, but it must preserve the distinction between the source values rather than rewriting either source. For example, an explicit `love` and strong pairwise placement can reinforce the same item, while an explicitly assigned positive preference can still contribute even when the user has not yet ranked that item deeply in This-or-That.
+M7.6 now locks the presentation merge rule: Love / Like / Curious provide positive explicit ordering evidence, active Overall This-or-That rank provides independent relative ordering evidence, and the two are combined only in a derived presentation score. The original explicit state and actual Overall rank remain visible and unchanged. See **M7.6 — Top Overall catalog interests** below for the exact scoring and tie contract.
 
 Importantly, this does **not** change the M6 rule that explicit positive states do not seed or mutate the pairwise ranking engine. M7 may derive a separate presentation-level Top Overall result from both sources without writing one source into the other.
 
@@ -1387,21 +1387,105 @@ Deterministic tests cover:
 
 **Exit condition:** recognizable Headspaces and Dynamic Modes add useful detail without replacing the broad facet model. ✅
 
-## M7.6 — Top Overall catalog interests
+## M7.6 — Top Overall catalog interests ✅
 
-### Scope
+M7.6 turns the concrete catalog evidence into one profile-level **Top Overall** list without changing either underlying source.
 
-- derive Top 10 overall catalog items from aggregated **explicit preference + pairwise ranking** evidence
-- keep explicit and pairwise values independent underneath the presentation aggregate
-- keep source traceability
-- define deterministic ordering/tie behavior
-- do not let inferred catalog affinity enter Top Overall by itself
+### Eligible direct evidence
 
-### Test gate
+An item can enter Top Overall from either independent source:
 
-Manipulate explicit states and This-or-That history independently and verify Top Overall changes without mutating either source.
+1. a positive explicit **overall** catalog preference:
+   - Love
+   - Like
+   - Curious
+2. an active **Overall This-or-That** rank with at least one ordering comparison
 
-**Exit condition:** Top Overall is a direct-evidence ranking, not an inference/recommendation list.
+The selector does **not** read quiz-derived/inferred catalog affinity. An inference-only item therefore cannot enter Top Overall.
+
+Explicit states that exclude an item from ranking remain excluded from Top Overall even if historical pairwise evidence still exists:
+
+- Hard Limit
+- Not Interested
+- Not Applicable
+
+`Unsure` does not count as a positive explicit Top Overall signal by itself, but real Overall This-or-That evidence can still place that item in the list.
+
+### Presentation-only aggregate ordering
+
+The source values are preserved unchanged. M7.6 computes a derived ordering score only for the profile presentation.
+
+Explicit positive-state scores:
+
+| Explicit state | Ordering score |
+| --- | ---: |
+| Love | 100 |
+| Like | 82 |
+| Curious | 65 |
+
+Pairwise placement is normalized across items that currently have active Overall rank evidence:
+
+- first ranked direct-evidence item → 100
+- last ranked direct-evidence item → 55
+- intermediate placements interpolate linearly between them
+
+Pairwise contribution weight is coverage-aware:
+
+`0.65 + (0.35 × item pairwise confidence)`
+
+This means an early Overall ranking can contribute immediately without pretending it is as refined as a deeply compared ranking.
+
+When both sources exist, the presentation score is the weighted mean of:
+
+- explicit score at weight 1.0
+- pairwise placement score at the confidence-aware pairwise weight
+
+The derived score is **not displayed as a fake preference percentage** and is never written back into catalog state or the pairwise engine.
+
+### Deterministic ties
+
+After aggregate score, ties resolve by:
+
+1. number of independent direct sources
+2. stronger positive explicit state
+3. pairwise confidence
+4. better actual Overall This-or-That rank
+5. catalog label alphabetically
+
+Thus agreement between explicit preference and pairwise evidence reinforces an item without rewriting either source.
+
+### UI
+
+The profile shows up to **10** concrete items.
+
+Each row shows the source values that actually support it, for example:
+
+```text
+01  Rope Bondage        Love · This or That #2
+02  Collaring           Love
+03  Praise              This or That #4
+```
+
+The internal aggregate ordering score is intentionally not shown.
+
+If fewer than 10 items have qualifying direct evidence, the profile shows fewer and explicitly does not pad the list with inferred or unanswered catalog items.
+
+### Test gate ✅
+
+Deterministic tests cover:
+
+- explicit-only Love / Like / Curious ordering
+- pairwise-only placement
+- agreement/reinforcement across both direct sources
+- inference-only exclusion
+- Hard Limit / Not Interested / Not Applicable exclusion despite historical rank
+- Unsure semantics
+- strong pairwise evidence refining explicit-state ordering
+- fewer-than-10 no-padding behavior
+- default Top 10 cap
+- deterministic final tie ordering
+
+**Exit condition:** Top Overall is a direct-evidence ranking, not an inference/recommendation list. ✅
 
 ## M7.7 — Hard Limits
 
