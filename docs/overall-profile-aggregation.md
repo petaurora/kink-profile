@@ -1487,20 +1487,61 @@ Deterministic tests cover:
 
 **Exit condition:** Top Overall is a direct-evidence ranking, not an inference/recommendation list. ✅
 
-## M7.7 — Hard Limits
+## M7.7 — Hard Limits ✅
 
-### Scope
+M7.7 adds a dedicated profile boundary summary using **explicit Hard Limit state only**.
 
-- show explicit Hard Limits as a separate summary
-- provide Show all when needed
-- keep Hard Limit distinct from Not Interested / Not Applicable / Unsure / low pairwise rank
-- prevent hard-limited items from appearing in Top Overall favorites
+### Source semantics
 
-### Test gate
+Only an item's explicit overall catalog state of `hard_limit` qualifies.
 
-Seed every exclusion/disinterest state and verify only explicit Hard Limits appear in this summary.
+The summary does not infer limits from:
 
-**Exit condition:** boundaries remain semantically and visually separate from low preference.
+- Not Interested
+- Not Applicable
+- Unsure
+- low This-or-That placement
+- missing ranking evidence
+- low quiz-derived/inferred affinity
+
+Hard Limits therefore remain a direct boundary declaration rather than another end of the preference-ranking scale.
+
+### Relationship to Top Overall
+
+M7.6 already excludes Hard Limit items from Top Overall even when historical pairwise evidence remains stored.
+
+M7.7 consumes the same catalog-result exclusion contract, so the two profile sections remain intentionally disjoint:
+
+- **Top Overall** = strongest directly evidenced positive interests
+- **Hard Limits** = explicit boundaries
+
+Historical ranking data is preserved underneath for source integrity but does not override a current explicit Hard Limit.
+
+### Presentation
+
+The profile uses a compact separate **Hard Limits** panel after Top Overall.
+
+- default view shows up to 6 explicit limits
+- limits are sorted alphabetically for stable presentation
+- rows are compact rather than ranked
+- when more than 6 exist, **Show all limits (+N)** expands in place
+- **Show less** restores the compact view
+- when none exist, the panel says **No hard limits marked**
+
+The list intentionally does not number limits because the order does not represent severity.
+
+### Test gate ✅
+
+Deterministic tests cover:
+
+- only explicit Hard Limit inclusion
+- Not Interested / Not Applicable / Unsure exclusion
+- no inference from missing or low preference evidence
+- deterministic alphabetical ordering
+- compact first-6 behavior
+- full-list expansion metadata
+
+**Exit condition:** boundaries remain semantically and visually separate from low preference. ✅
 
 ## M7.8 — Interest Areas
 
