@@ -6,7 +6,9 @@
 
 M6 is not starting from zero.
 
-PR #18 landed the initial playable catalog/ranking slice before the core quiz milestones finished. PR #19 then refined that ranking into the current Top-5 funnel, incorporating the category-home/navigation work from PRs #20 and #22. M6 now owns the work required to turn that useful slice into a stable, profile-aware catalog system.
+The new `kink-profile` repository imported the already-working catalog/ranking application baseline, then C1 established durable catalog identity on the new `main`. The repository migration did **not** carry over the completed pre-migration C2 implementation branch, so C2 metadata/mapping work must be ported and verified before it can be considered landed here.
+
+The C2 design itself is already settled; the next design slice is C3 explicit preference state. This contract therefore distinguishes **landed on the new main**, **implemented before migration but pending port**, and **specified for the next implementation** rather than relying on pull-request numbers from the old repository history.
 
 Current baseline on `main`:
 
@@ -338,12 +340,11 @@ Aliases support:
 
 Aliases do not create separate ranked items.
 
-Recommended representation:
+The approved C2 representation is a one-alias-per-row sidecar:
 
-- an `Aliases` field in the catalog TSV for simple cases, or
-- a small `catalog-aliases.tsv` sidecar if one-to-many maintenance becomes awkward
+`reference/catalog/catalog-aliases.tsv`
 
-The exact physical format is less important than keeping alias identity separate from the canonical label.
+That source was implemented before the repository migration and should be restored as part of the C2 port. Alias identity remains separate from the canonical label and does not create additional ranked items.
 
 ---
 
@@ -353,9 +354,11 @@ The catalog needs an explicit many-to-many mapping to the stable `SignalId` voca
 
 Do not hardcode catalog mappings in React.
 
-Recommended source:
+Approved C2 source:
 
 `reference/catalog/catalog-signal-mappings.tsv`
+
+The pre-migration implementation used category-default rules plus item-specific refinements, validated against the actual `SignalId` union. Porting C2 should preserve that approach rather than inventing a new mapping format.
 
 Conceptual rows:
 
@@ -413,7 +416,27 @@ Do not create a second competing inference system based on hand-authored role sc
 
 ---
 
-# Explicit preference state
+# Explicit preference state — C3 contract
+
+C3 turns direct catalog classification into first-class application state without turning the catalog into a 551-row form.
+
+C3 owns:
+
+- the explicit-state vocabulary
+- per-item preference storage
+- migration from the existing ranking-only store
+- a contextual editor
+- the minimum ranking-eligibility behavior required to make exclusions authoritative
+
+C3 does **not** own:
+
+- Skip / Neither confidence semantics
+- finalist-promotion thresholds
+- persistence of prior Overall candidate membership
+- catalog affinity calculation
+- broad results/profile integration
+
+Those remain C4–C6.
 
 ## Canonical runtime states
 
@@ -430,33 +453,41 @@ type CatalogPreferenceState =
 
 **Unanswered is represented by absence**, not by storing an `unknown` preference.
 
-This distinguishes:
+That distinction must survive persistence and UI:
 
 ```text
 no explicit state yet
 ```
 
-from:
+is different from:
 
 ```text
 the user explicitly chose "unsure"
 ```
 
-## Workbook list values
+If the final stored value on an item is cleared, delete that empty preference record instead of saving an object that merely means "unanswered."
 
-`reference/catalog/lists.tsv` retains historical workbook helper values such as Maybe / Neutral / No.
+## State meanings
 
-Those are not the canonical runtime state enum.
+The labels are deliberately semantic rather than numeric:
 
-If legacy user-specific workbook values are ever imported, define an explicit migration rather than leaking old spreadsheet terminology into the app model.
+| State | Meaning |
+| --- | --- |
+| Love | strong explicit positive preference |
+| Like | clear positive preference |
+| Curious | wants to explore / learn more |
+| Unsure | explicitly uncertain |
+| Not Interested | known lack of interest |
+| Hard Limit | explicit safety/boundary exclusion |
+| Not Applicable | the concept does not meaningfully apply in the user's context |
 
-## Directional explicit state
+Do not infer a numeric score from these states in C3.
 
-Catalog concepts can have different giving and receiving semantics.
+In particular, `hard_limit` is not simply a stronger version of `not_interested`.
 
-The storage model should allow direction-specific overrides without requiring every item to use them.
+## Direction-capable preference record
 
-Conceptual model:
+The storage model must support direction-specific overrides now even if the first C3 editor only changes the general/overall value.
 
 ```ts
 type CatalogItemPreference = {
@@ -467,7 +498,17 @@ type CatalogItemPreference = {
 };
 ```
 
-Examples:
+Direction resolution is:
+
+```text
+receiving view: receiving override → overall → unanswered
+giving view:    giving override    → overall → unanswered
+generic view:   overall            → unanswered
+```
+
+Directional overrides must **not** be collapsed into a synthetic generic value.
+
+Example:
 
 ```text
 Impact play
@@ -476,22 +517,23 @@ receiving: hard_limit
 giving:    love
 ```
 
-or:
+A generic summary may say the overall state is Like while direction-aware surfaces preserve the receiving Hard Limit and giving Love.
 
-```text
-Rope suspension
-receiving: not_interested
-```
+The initial C3 UI may edit only `overall`; the schema is directional now so a later UI does not require a storage migration.
 
-Direction-specific state must not be collapsed into one unsafe overall summary.
+## Workbook list values
 
-A minimal M6 UI may ship overall state first if needed, but the persisted schema should not make directional preference impossible to add later.
+`reference/catalog/lists.tsv` retains historical workbook helper values such as Maybe / Neutral / No.
+
+Those values are not the canonical runtime state enum.
+
+If workbook-specific user data is ever imported, it needs an explicit migration table. Do not leak spreadsheet terminology into the application profile model.
 
 ---
 
-# Catalog user-state persistence
+# Catalog user-state persistence — C3
 
-The current ranking slice stores only:
+The current imported ranking slice stores only:
 
 ```text
 pet-profile-kink-ranking-v1
@@ -499,43 +541,71 @@ pet-profile-kink-ranking-v1
 
 with raw comparisons.
 
-M6 should establish one logical catalog-profile model.
-
-Recommended direction:
+C3 establishes one logical catalog-profile store:
 
 ```ts
 type CatalogProfileState = {
   schemaVersion: 1;
   preferences: Record<CatalogItemId, CatalogItemPreference>;
   comparisons: KinkComparison[];
-  overallFinalistIds: CatalogItemId[];
 };
 ```
 
-Recommended storage key:
+Storage key:
 
-`pet-profile-catalog-v1`
+```text
+pet-profile-catalog-v1
+```
+
+Do **not** add persisted Overall finalist membership in C3. Whether that state needs persistence is a C4 ranking-hardening decision.
 
 ## Migration from ranking v1
 
-If the new catalog state does not yet exist:
+When `pet-profile-catalog-v1` does not yet exist:
 
-1. load `pet-profile-kink-ranking-v1`
-2. copy raw comparisons into the new catalog profile
-3. preserve comparison IDs/timestamps/scopes/results
-4. initialize preferences as empty
-5. seed finalist state as needed from current derived ranking
-6. save the new schema
+1. read `pet-profile-kink-ranking-v1`
+2. validate its v1 comparison array using the same tolerant behavior the ranking store uses today
+3. canonicalize catalog item IDs through the C1 replacement map when a replacement exists
+4. preserve comparison IDs, timestamps, scopes, and results
+5. initialize `preferences` as empty
+6. write the new catalog-profile schema
+7. leave the old ranking key untouched during the migration window for rollback/compatibility
+8. after migration, write only the new catalog-profile key; do not dual-write indefinitely
 
-Do not discard raw pairwise history.
+Corrupt or missing legacy data must not block the app. Fall back to an empty catalog profile just as the existing ranking store falls back to empty progress.
 
-The old key can remain readable for at least one migration version.
+Migration is about **moving raw evidence**, not deriving preference state from ranking history.
+
+Examples:
+
+- a prior win does not become `love`
+- a prior `neither` does not become `not_interested`
+- a prior `skip` does not become `unsure`
+
+## Contextual editing UI
+
+C3 should add explicit classification where the user is already interacting with a catalog item rather than creating a giant checklist.
+
+Initial target:
+
+- a small independent **Set preference** action on each active comparison card
+- current explicit state shown in that control when one exists
+- seven canonical choices plus **Clear**
+- pairwise "choose this item" remains a separate action
+- setting Love / Like / Curious / Unsure records explicit state but does not create a ranking win
+- setting Not Interested / Hard Limit / Not Applicable records explicit state and immediately removes that item from future pair selection
+- if an exclusion invalidates the currently displayed pair, select a new eligible pair
+- Hard Limit must be visually distinguishable from ordinary disinterest
+- no requirement to classify every item
+- no bulk 551-row editor in C3
+
+C5 can later surface explicit state throughout category/overall result views. C3 only needs enough contextual UI to create and edit the state safely.
 
 ---
 
 # Explicit state and ranking eligibility
 
-Ranking eligibility should use explicit state when it exists.
+Ranking eligibility uses explicit state as soon as C3 exists. This minimum behavior belongs in C3 because explicit exclusions are not authoritative if the pair selector continues presenting them.
 
 Default exclusion:
 
@@ -577,7 +647,7 @@ The user must explicitly change explicit state.
 
 # Pairwise comparison semantics
 
-PR #18 correctly retains raw comparison history.
+The imported ranking baseline correctly retains raw comparison history.
 
 M6 should tighten how each result contributes to ranking confidence.
 
@@ -644,7 +714,7 @@ Stable IDs make this additive behavior possible.
 
 # Finalist promotion
 
-## Current behavior after PR #19
+## Current imported behavior
 
 The current funnel:
 
@@ -938,7 +1008,7 @@ The boundary is the important part:
 
 ## C0 — Already landed baseline ✅
 
-From PR #18 plus the Top-5/navigation refinements in PRs #19/#20/#22:
+From the imported pre-migration baseline:
 
 - [x] repo-native TSV runtime catalog source
 - [x] generated runtime catalog module
@@ -969,30 +1039,41 @@ From PR #18 plus the Top-5/navigation refinements in PRs #19/#20/#22:
 - [x] preserve existing comparison compatibility
 - [x] add validated `catalog-id-replacements.tsv` migration support
 
-## C2 — Catalog metadata + mapping schema
+## C2 — Catalog metadata + mapping schema 🟠 port pending
 
-- [ ] normalize aliases
-- [ ] define optional domains
-- [ ] normalize direction/role metadata where useful
-- [ ] add catalog-signal mapping source
-- [ ] validate SignalIds and mapping weights
-- [ ] emit mappings in generated runtime catalog
-- [ ] keep risk/context metadata separate from affinity
+The C2 implementation was completed before repository migration but is not present on the imported new `main`.
 
-## C3 — Explicit catalog preference state
+Port/verify rather than redesign:
 
-- [ ] define canonical runtime preference enum
+- [ ] category metadata for all 35 stable categories
+- [ ] broad domain + display order
+- [ ] receiving / giving / both normalized direction
+- [ ] `catalog-aliases.tsv`
+- [ ] category-default + item-specific `catalog-signal-mappings.tsv`
+- [ ] build-time validation for mapping scopes / IDs / direction / SignalIds / controlled weights
+- [ ] generated runtime domains / direction / aliases / resolved mappings
+- [ ] risk/context metadata remains descriptive-only
+
+The pre-migration implementation seeded 93 mapping rules that resolved 269 / 551 catalog items into 698 item → signal associations, leaving 282 items intentionally unmapped where M2–M5 did not provide defensible evidence. Port verification should confirm those counts or explicitly document any intentional change.
+
+## C3 — Explicit catalog preference state 📋 contract ready
+
+- [ ] define the seven-state runtime enum
 - [ ] represent unanswered by absence
-- [ ] allow future receiving/giving overrides
-- [ ] create catalog profile storage schema
+- [ ] support optional overall / receiving / giving state per Catalog ID
+- [ ] implement directional override resolution without synthesizing a generic value
+- [ ] create `pet-profile-catalog-v1`
 - [ ] migrate raw ranking history from `pet-profile-kink-ranking-v1`
-- [ ] add contextual explicit-state editing UI
-- [ ] make hard limit visibly distinct from not interested
+- [ ] canonicalize migrated Catalog IDs through C1 replacement mappings
+- [ ] keep the legacy ranking key untouched during the migration window; no long-term dual-write
+- [ ] add contextual Set preference controls on active catalog comparison cards
+- [ ] keep explicit-state actions separate from pairwise choices
+- [ ] make Hard Limit visibly distinct from Not Interested
+- [ ] exclude hard_limit / not_interested / not_applicable from new pair selection
+- [ ] preserve love / like / curious / unsure / unanswered as ranking-eligible
 
-## C4 — Ranking eligibility + hardening
+## C4 — Ranking hardening
 
-- [ ] exclude hard_limit / not_interested / not_applicable by default
-- [ ] preserve ranking for unanswered/curious/unsure items
 - [ ] ensure ranking choices do not mutate explicit state
 - [ ] stop skip from increasing ranking confidence
 - [ ] stop neither from inflating ordering confidence
@@ -1041,15 +1122,19 @@ The catalog should feel like an enrichment layer and exploration tool, not a 551
 
 ---
 
-# Review questions before the next implementation slice
+# C3 review focus
 
-1. Should explicit Catalog IDs and Category IDs live directly in `kink-catalog.tsv`, or should categories have their own small TSV?
-2. Do we want directional explicit preference overrides in the initial M6 storage schema even if the first UI only edits overall state? **Recommended: yes.**
-3. Should `neither` be retained purely as interaction history, or treated as a low-preference tie? **Recommended: interaction history only.**
-4. Is "at least one category comparison" sufficient evidence for Top-5 promotion, or should M6 require a stronger threshold?
-5. Should the persisted overall candidate pool be append-only until reset/exclusion, or should users be able to manually demote a former finalist?
-6. Should aliases live inline in the main TSV or in a sidecar?
-7. Is a dedicated catalog browser needed in M6, or are contextual state controls in ranking/results sufficient for the first explicit-state UI?
-8. How many signal mappings should be authored before inferred affinity is considered useful enough for M7?
-9. Do we want mapping weights limited to `0.25 / 0.5 / 0.75 / 1.0` to discourage fake precision? **Recommended: yes.**
-10. Should archived/deprecated catalog items remain visible in preference history but hidden from new ranking sessions? **Recommended: yes.**
+The main decisions proposed for approval before implementation are:
+
+1. **Seven-state enum:** Love / Like / Curious / Unsure / Not Interested / Hard Limit / Not Applicable.
+2. **Unknown semantics:** unanswered is absence; clearing the last stored state removes the preference record.
+3. **Direction model:** persist optional overall / receiving / giving values now; initial C3 UI edits overall only.
+4. **Direction resolution:** receiving/giving overrides beat overall only in that directional context; directional values never synthesize a generic overall state.
+5. **Storage boundary:** create `pet-profile-catalog-v1` with preferences + raw comparisons; do not persist Overall finalist membership yet.
+6. **Migration:** preserve raw ranking evidence exactly, canonicalize item IDs through the C1 replacement map, leave the legacy key untouched for one migration window, and do not dual-write.
+7. **Editing UX:** contextual Set preference action on active comparison cards; no giant catalog checklist.
+8. **Safety/exclusion semantics:** Hard Limit is visually distinct and, along with Not Interested / Not Applicable, immediately removes the item from future pair selection.
+9. **Evidence separation:** pairwise choices never infer explicit state, and explicit-state edits never create pairwise wins.
+10. **Next boundary:** C4 handles Skip/Neither confidence, finalist promotion thresholds, and preservation of prior Overall participation/history.
+
+If these hold, C3 can be implemented as a focused storage/migration/state-editor slice without pulling C5 result integration or C6 affinity into scope.
