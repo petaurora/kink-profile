@@ -43,13 +43,19 @@ M6 should leave us with a catalog system where:
 4. hard limits and exclusions are authoritative
 5. catalog items can map to the shared quiz signal vocabulary
 6. inferred affinity remains visibly different from explicit preference
-7. M7 can safely consume catalog favorites and canonical signal mappings without inventing another catalog model
+7. quiz-derived inference, explicit preference, and pairwise evidence can coexist for the same Catalog ID
+8. C4 establishes source provenance/no-feedback-loop behavior before broader profile aggregation
+9. M7 can safely consume direct catalog evidence and mappings without inventing another catalog model
+
+See [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) for the post-C3 evidence/convergence contract.
 
 ---
 
-# Four independent kinds of catalog truth
+# Four catalog layers
 
-Do not collapse these layers.
+Do not collapse these layers or treat every displayed value as independent evidence.
+
+Catalog definition is shared app data. Explicit preference and raw pairwise choices are independent user evidence. Inferred affinity and resolved/profile views are derived and must retain provenance.
 
 ```text
 CATALOG DEFINITION
@@ -844,22 +850,32 @@ Hard Limit must be easy to set and clearly distinct from ordinary Not Interested
 
 # Inferred catalog affinity
 
-## Important M6/M7 boundary
+## Important C4/M7 boundary
 
 M6 owns:
 
 - stable catalog mappings to SignalIds
 - explicit preference semantics
+- raw pairwise evidence
 - a pure affinity calculation contract
+- source-aware catalog evidence snapshots/selectors
 - exclusion/override rules
+- the no-feedback-loop contract
+- the catalog → signal projection contract for **independent** explicit/pairwise evidence
+
+M6 C4 may centralize quiz-signal → catalog inference so the catalog can have a useful inferred starting point after quizzes. That inference remains derived and must never be persisted as explicit preference.
 
 M7 owns:
 
-- the canonical cross-quiz signal profile
-- deduplicating repeated SignalIds across M2–M5
+- the final canonical **cross-source** SignalId profile
+- deduplicating/weighting independent quiz + direct catalog evidence
+- updating profile radars/facets from that canonical evidence
+- profile-wide confidence/coverage and source drill-down
 - profile-wide inferred exploration UI
 
-Do **not** rebuild cross-quiz aggregation inside M6 just to calculate catalog recommendations.
+Do **not** feed inferred catalog affinity back into signals. Do **not** use a resolved/merged catalog presentation value as if it were raw evidence.
+
+See [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md).
 
 ## Affinity function
 
@@ -1094,7 +1110,24 @@ See [M6 C3 — Explicit Preference + Catalog Table](m6-c3-explicit-preference.md
 - [ ] handle scopes with fewer than two eligible items without a blank/dead ranking state
 - [ ] add focused preference/storage/migration/eligibility tests
 
-## C4 — Ranking hardening
+## C4 — Source-aware evidence convergence
+
+See [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md).
+
+- [ ] define source-aware evidence IDs/types for quiz, explicit catalog, pairwise, and derived inference
+- [ ] wrap C3 explicit state + raw comparisons as independent evidence sources
+- [ ] expose a per-Catalog-ID evidence snapshot without collapsing source values
+- [ ] centralize coverage-aware quiz-signal → catalog inference
+- [ ] never persist inferred affinity as explicit preference
+- [ ] retain matched SignalIds/provenance for inference
+- [ ] define catalog → signal projection semantics for independent explicit/pairwise evidence
+- [ ] prohibit inferred affinity/resolved values from feeding back into signals
+- [ ] define quiz-retake replacement/deduplication behavior
+- [ ] recompute derived catalog views without destroying unrelated source evidence
+- [ ] retain affinity separately from confidence/coverage
+- [ ] add source-isolation, exclusion-authority, and no-feedback-loop tests
+
+## C5 — Ranking hardening
 - [ ] stop skip from increasing ranking confidence
 - [ ] stop neither from inflating ordering confidence
 - [x] prevent untouched categories from contributing finalists
@@ -1103,23 +1136,26 @@ See [M6 C3 — Explicit Preference + Catalog Table](m6-c3-explicit-preference.md
 - [ ] keep existing Overall comparison history meaningful when category Top 5 changes
 - [ ] add focused ranking tests
 
-## C5 — Catalog result integration
+## C6 — Catalog result integration
 
 - [ ] show explicit state alongside category rank
 - [ ] show explicit state alongside overall rank
 - [ ] expose category ranking independently
 - [ ] expose overall favorites independently
+- [ ] show inference-only starting affinity separately from direct evidence
+- [ ] preserve source provenance/explainability in catalog result views
 - [ ] expose hard-limit/exclusion summaries without mixing them into favorites
 - [ ] keep exact ranks derived rather than persisted where practical
 
-## C6 — Signal affinity foundation
+## C7 — Signal affinity hardening
 
-- [ ] implement pure coverage-aware catalog affinity matcher
+- [ ] harden the coverage-aware catalog affinity matcher introduced/centralized in C4
 - [ ] test mapping/coverage/override behavior with synthetic signal profiles
 - [ ] suppress hard limits/not-interested/not-applicable
 - [ ] retain matched-signal explainability
-- [ ] use tentative exploration language
-- [ ] defer canonical cross-quiz input + profile-wide recommendation UI to M7
+- [ ] use tentative exploration language for inference-only items
+- [ ] ensure catalog → signal projection accepts only independent direct catalog evidence
+- [ ] defer final canonical cross-source aggregation + profile-wide radar/recommendation UI to M7
 
 ---
 
@@ -1134,9 +1170,12 @@ M6 is complete when:
 5. pairwise ranking remains recalculable from raw history and has trustworthy confidence semantics
 6. overall finalist participation does not disappear because a category ranking shifts
 7. catalog items have validated SignalId mappings
-8. explicit preference, ranking, and inferred affinity are stored/represented as different concepts
-9. a pure affinity matcher exists without duplicating M7's cross-quiz aggregation
-10. M7 can consume catalog favorites/mappings through a clean boundary
+8. explicit preference, pairwise evidence, inferred affinity, and resolved views are represented as different concepts
+9. source provenance makes independent vs derived evidence explicit
+10. quiz-derived catalog inference cannot feed back into the signals that produced it
+11. changing one evidence source preserves unrelated source evidence
+12. a pure affinity matcher exists without duplicating M7's final cross-source profile aggregation
+13. M7 can consume direct catalog evidence/mappings through a clean boundary
 
 The catalog should feel like an enrichment layer and exploration tool, not a 551-question obligation.
 
@@ -1156,6 +1195,6 @@ The main decisions proposed for approval before implementation are:
 8. **Interconnection:** table rows may show read-only category/overall rank context by the same Catalog ID without collapsing the signals.
 9. **Safety/exclusion semantics:** Hard Limit is visually distinct and, along with Not Interested / Not Applicable, immediately removes the item from future pair selection.
 10. **Evidence separation:** pairwise choices never infer explicit state, explicit-state edits never create pairwise wins, and positive explicit state does not seed rank.
-11. **Next boundary:** C4 handles Skip/Neither confidence, finalist promotion thresholds, and preservation of prior Overall participation/history.
+11. **Next boundary:** C4 adds source-aware evidence convergence, quiz-derived catalog inference, provenance, retake/recompute semantics, and the no-feedback-loop contract. Ranking confidence/finalist hardening moves to C5.
 
-If these hold, C3 can be implemented as a focused shared-state + catalog-table slice without pulling C5 broad result integration or C6 affinity into scope.
+If these hold, C3 can be implemented as a focused shared-state + catalog-table slice without redesigning its active persistence work around the broader C4/M7 evidence model.
