@@ -618,7 +618,7 @@ M6 hardening:
 - [ ] Skip must not increase ranking confidence
 - [ ] Neither must not increase ordering confidence
 
-## R2 — Category ranking engine ✅ / C3 eligibility pending
+## R2 — Category ranking engine ✅ / C5 confidence hardening pending
 
 Implemented:
 
@@ -630,7 +630,7 @@ Implemented:
 
 M6 hardening:
 
-- [ ] C3 explicit-preference eligibility/exclusions
+- [x] C3 explicit-preference eligibility/exclusions
 - [ ] C5 confidence semantics based only on meaningful ordering evidence
 
 ## R3 — Finalist selection 🟡
