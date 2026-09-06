@@ -412,6 +412,8 @@ See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.m
 
 ### C6 — Catalog result integration
 
+**Boundary:** surface explicit, pairwise, inferred, and exclusion channels together without synthesizing a new merged profile score/list. Presentation-level aggregation across independent direct sources remains M7.
+
 - [ ] show explicit state alongside category rankings
 - [ ] show explicit state alongside overall favorites
 - [ ] expose hard-limit/exclusion summaries separately from favorites
@@ -419,6 +421,7 @@ See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.m
 - [ ] keep source provenance/explainability available for catalog items
 - [ ] keep exact ranks derived from raw comparison history where practical
 - [ ] preserve category and overall ranking as separate useful results
+- [ ] do not collapse explicit + pairwise evidence into an M7-style Top Overall aggregate
 
 ### C7 — Signal-affinity hardening
 
