@@ -387,9 +387,23 @@ Its job is to answer:
 
 Build one dedicated share-summary content model/view, then render that same model into export formats.
 
-## Candidate content
+## Implemented v1 content
 
-Use stable M7 outputs and keep the default summary concise.
+Use stable profile outputs and keep the default summary concise.
+
+The first share-summary model includes:
+
+- configured profile display name
+- M7.3 human-readable summary + Orientation
+- M7.4 nine-axis overall radar with unknown preserved as unknown
+- M7.5 top submissive-oriented Headspaces
+- M7.5 top Dynamic Modes
+- M7.6 Top Overall directly evidenced interests
+- explicit Hard Limits from the stable C6 catalog exclusion channel
+
+Interest Areas are intentionally deferred from the v1 summary until M7.8 locks category relevance/selection semantics. M9 must not invent a parallel category-ranking algorithm merely to fill the export.
+
+The share model contains only presentation-ready data. Raw answers, comparison history, source evidence IDs, browser-storage metadata, and internal provenance are not copied into the model.
 
 Recommended hierarchy:
 
@@ -451,12 +465,12 @@ Future selective include/exclude controls can be added if real usage demonstrate
 
 ## Acceptance criteria
 
-- a dedicated preview uses real M7 profile data
-- the share view is visually coherent without the surrounding app chrome
-- private implementation/provenance details are absent
-- Hard Limits remain semantically distinct from interests
-- incomplete profiles render honestly rather than filling unknowns with zeroes
-- the same content contract can feed all M9.6 formats
+- [x] a dedicated preview uses real M7 profile data
+- [x] the share view is visually coherent without the surrounding app chrome
+- [x] private implementation/provenance details are absent
+- [x] Hard Limits remain semantically distinct from interests
+- [x] incomplete profiles render honestly rather than filling unknowns with zeroes
+- [x] the same content contract can feed all M9.6 formats
 
 ---
 

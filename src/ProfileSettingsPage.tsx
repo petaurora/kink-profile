@@ -2,6 +2,7 @@ import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { ProfileResetPanel } from "./ProfileResetPanel";
 import { ProfileBackupPanel } from "./ProfileBackupPanel";
 import { ProfileImportPanel } from "./ProfileImportPanel";
+import { ProfileSharePanel } from "./ProfileSharePanel";
 import {
   MAX_PROFILE_DISPLAY_NAME_LENGTH,
   normalizeProfileDisplayName,
@@ -41,6 +42,7 @@ export function ProfileSettingsPage({
   const [resetOpen, setResetOpen] = useState(false);
   const [backupOpen, setBackupOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [sharePreviewOpen, setSharePreviewOpen] = useState(false);
 
   useEffect(() => {
     setDraftName(settings.displayName);
@@ -154,6 +156,7 @@ export function ProfileSettingsPage({
                 setResetOpen((open) => !open);
                 setBackupOpen(false);
                 setImportOpen(false);
+                setSharePreviewOpen(false);
               }}
             >
               {resetOpen ? "Close reset" : "Choose data"}
@@ -172,6 +175,7 @@ export function ProfileSettingsPage({
                 setBackupOpen((open) => !open);
                 setResetOpen(false);
                 setImportOpen(false);
+                setSharePreviewOpen(false);
               }}
             >
               {backupOpen ? "Close backup" : "Download backup"}
@@ -190,6 +194,7 @@ export function ProfileSettingsPage({
                 setImportOpen((open) => !open);
                 setResetOpen(false);
                 setBackupOpen(false);
+                setSharePreviewOpen(false);
               }}
             >
               {importOpen ? "Close restore" : "Choose backup"}
@@ -226,16 +231,33 @@ export function ProfileSettingsPage({
           </p>
         </div>
 
-        <div className="settings-action-list panel" aria-label="Planned profile sharing controls">
-          <FutureAction
-            title="Preview share summary"
-            description="See the curated profile another person would receive before exporting anything."
-          />
+        <div className="settings-action-list panel" aria-label="Profile sharing controls">
+          <article className="settings-action-row">
+            <div>
+              <strong>Preview share summary</strong>
+              <p>
+                See the curated human-facing profile before exporting anything.
+              </p>
+            </div>
+            <button
+              className="secondary compact"
+              onClick={() => {
+                setSharePreviewOpen((open) => !open);
+                setResetOpen(false);
+                setBackupOpen(false);
+                setImportOpen(false);
+              }}
+            >
+              {sharePreviewOpen ? "Close preview" : "Preview"}
+            </button>
+          </article>
           <FutureAction
             title="Export share summary"
             description="Generate the same polished summary as PNG, HTML, or PDF."
           />
         </div>
+
+        {sharePreviewOpen && <ProfileSharePanel settings={settings} />}
       </section>
     </section>
   );
