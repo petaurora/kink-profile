@@ -20,7 +20,7 @@ This folder contains the product and scoring decisions that should guide impleme
    The implemented M5 contract: directional pain/intensity/endurance/challenge signals, 26-question bank, weights, and receiving/giving S/M radars.
 
 6. [M6 Catalog Integration](m6-catalog-integration.md)  
-   The in-progress M6 contract: C1 stable IDs are on the new main; the completed pre-migration C2 metadata/mapping implementation still needs to be ported; and the C3 explicit-preference contract is ready for review before ranking hardening and M7 integration.
+   The in-progress M6 contract: C1 stable IDs + C2 metadata/signal mappings are implemented; the C3 explicit-preference contract is next, followed by ranking hardening, catalog result integration, affinity foundation, and the M7 boundary.
 
 7. [Kink This-or-That Ranking](kink-this-or-that-ranking.md)  
    The implemented Top-5-per-ranked-category funnel, category-home navigation, and remaining ranking hardening.
