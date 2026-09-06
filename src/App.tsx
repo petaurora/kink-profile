@@ -581,13 +581,17 @@ export default function App() {
 
       {screen === "catalog" && (
         <KinkCatalogPreferences
+          quizProfile={profile}
           onClose={() => setScreen("hub")}
           onPlayRanking={() => setScreen("ranking")}
         />
       )}
 
       {screen === "ranking" && (
-        <KinkThisOrThat onClose={() => setScreen("hub")} />
+        <KinkThisOrThat
+          quizProfile={profile}
+          onClose={() => setScreen("hub")}
+        />
       )}
 
       {screen === "profile" && (
