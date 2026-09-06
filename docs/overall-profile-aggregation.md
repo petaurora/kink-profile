@@ -575,7 +575,12 @@ Before drilling into category-level detail, the profile should surface the user'
 
 ### Top overall
 
-Show the current **Top 10 overall-ranked catalog items** when enough pairwise evidence exists.
+Show the current **Top 10 direct-evidence catalog items**, derived from both:
+
+- explicit assigned catalog preference
+- Overall This-or-That / pairwise ranking evidence
+
+This is a profile-level aggregate, not a copy of the raw Overall This-or-That leaderboard.
 
 Conceptual shape:
 
@@ -591,9 +596,13 @@ TOP OVERALL
 10. ...
 ```
 
-This should use **direct overall pairwise ranking evidence**, not inferred catalog affinity.
+This aggregate should use **independent direct user evidence only**. Quiz-derived/inferred catalog affinity must not place an item into Top Overall by itself.
 
-If fewer than 10 items have meaningful overall ranking evidence, show only the supported results rather than padding the list with low-confidence/default ordering.
+The exact merge rule between explicit state and pairwise rank is an M7 design/implementation decision, but it must preserve the distinction between the source values rather than rewriting either source. For example, an explicit `love` and strong pairwise placement can reinforce the same item, while an explicitly assigned positive preference can still contribute even when the user has not yet ranked that item deeply in This-or-That.
+
+Importantly, this does **not** change the M6 rule that explicit positive states do not seed or mutate the pairwise ranking engine. M7 may derive a separate presentation-level Top Overall result from both sources without writing one source into the other.
+
+If fewer than 10 items have enough direct evidence to support a meaningful aggregate placement, show fewer rather than padding the list with inferred/default ordering.
 
 ### Limits
 
@@ -972,7 +981,7 @@ Current agreed conceptual order:
 1. **Profile header** — hybrid human-readable summary + compact Orientation / Headspaces / Dynamic Modes
 2. **Overall Profile** — large broad-facet radar + compact strongest overall themes
 3. **Roles & Headspaces** — top receiving/submissive results with percentages + Show all
-4. **Top Overall + Limits** — Top 10 overall-ranked catalog items + explicit Hard Limits
+4. **Top Overall + Limits** — Top 10 aggregated direct catalog preferences (explicit + pairwise) + explicit Hard Limits
 5. **Category detail** — deeper catalog browsing grouped by category/domain
 6. later supporting/detail sections as needed
 
@@ -1069,12 +1078,13 @@ The overall profile should preserve complexity while making it easier to underst
 
 ## O5 — Catalog summary
 
-- show Top 10 overall-ranked catalog items when enough evidence exists
+- derive Top 10 overall catalog items from aggregated **explicit preference + pairwise ranking** evidence
 - show explicit Hard Limits as a separate summary, with Show all when needed
 - keep Hard Limits distinct from Not Interested / Not Applicable / low rank
 - place Top Overall + Limits before deeper category-level catalog detail
 - show explicit catalog states and category rankings in the deeper category view
-- keep inferred catalog affinity visually distinct from direct ranking/preference evidence
+- do not let inferred catalog affinity enter Top Overall by itself
+- keep the underlying explicit and pairwise source values available for explainability without mutating either source
 
 ## O6 — Exploration / coverage summary
 
