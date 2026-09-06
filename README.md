@@ -14,9 +14,9 @@ A privacy-first React app for exploring BDSM, kink, power-dynamic, and headspace
 
 The app now supports all four core quiz sections plus a playable catalog-ranking flow. The 551-item catalog is sourced from repo-native TSV, generated into app-owned runtime data before dev/build, and can be ranked within categories and across the current Top-5-per-ranked-category finalist pool.
 
-The ranking experience now uses a category progress-map home, continue/next-category navigation, and a separate Overall destination. Raw pairwise comparisons remain browser-local so rankings can be recalculated later. M6 is hardening that slice with durable catalog IDs, explicit preference state, mapping metadata, ranking eligibility/confidence rules, and clean M7 integration.
+The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. M6 is continuing with source-aware evidence, ranking confidence/finalists, result integration, affinity hardening, and the M7 handoff.
 
-C1 durable IDs and C2 metadata/signal mappings are implemented. C3 is centered on two complementary catalog experiences: a searchable table/list for direct preference management and the existing This-or-That mini-game for comparative discovery/ranking, connected through the same stable Catalog IDs. The post-C3 C4 cleanup introduces a source-aware evidence model so quiz inference, explicit preference, and pairwise evidence can coexist and recompute without overwriting each other or creating feedback loops.
+C1 durable IDs, C2 metadata/signal mappings, and C3 explicit preference + catalog table are implemented. The catalog now has two complementary experiences: a searchable direct-management table/list and the This-or-That comparative ranking mini-game, connected through stable Catalog IDs. C4 is next: source-aware evidence convergence so quiz inference, explicit preference, and pairwise evidence can coexist and recompute without overwriting one another or creating feedback loops.
 
 The original 16-question prototype remains available as the **Starter Profile** sampler. It is not intended to be the final scoring model.
 
