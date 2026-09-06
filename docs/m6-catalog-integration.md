@@ -1205,6 +1205,39 @@ The This-or-That comparison cards remain intentionally simple. Only the ranking 
 
 C6 does not create a merged explicit+pairwise Top Overall score/list. That remains M7.
 
+### Deferred catalog-result UX follow-up
+
+The current catalog item Details view can make pairwise evidence look absent when an item has stored This-or-That history but no **active** category or Overall rank.
+
+For example, a row may currently show:
+
+```text
+Direct evidence
+Explicit: Love
+No active category rank
+```
+
+even though meaningful historical pairwise comparisons still exist for that Catalog ID.
+
+Future catalog-result polish should make the pairwise channel explicit regardless of whether a current rank is available. The Details view should communicate these independently, conceptually:
+
+```text
+Explicit: Love
+This or That: 6 ordering comparisons
+Category rank: none active
+Overall rank: none active
+```
+
+Requirements for that follow-up:
+
+- do not equate "no active rank" with "no This-or-That evidence"
+- show meaningful pairwise comparison presence/count independently from active rank
+- retain separate category-rank and Overall-rank context when either exists
+- keep explicit preference, pairwise evidence, and quiz-derived inference visibly distinct
+- this is a **presentation fix only**; raw pairwise persistence and M7.1 canonical aggregation semantics do not need to change
+
+This is intentionally deferred from M7.1 canonical aggregation.
+
 Verification: 56 tests pass across the ranking/catalog/evidence/result suites, including 6 focused C6 result-integration tests, and the production TypeScript/Vite build passes.
 
 ### C6 / C7 / M7 boundary

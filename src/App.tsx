@@ -23,7 +23,7 @@ import {
   receivingRoleHeadspaceIds,
   roleHeadspaces,
 } from "./data/headspacesQuiz";
-import { getSignals } from "./data/signals";
+import { getSignals, signalDefinitions } from "./data/signals";
 import {
   isWeightedQuestion,
   quizQuestions,
@@ -42,6 +42,11 @@ import {
   type AnswerMap,
   type StoredProfile,
 } from "./lib/profileStorage";
+import { loadCatalogProfile } from "./lib/catalogProfileStorage";
+import {
+  buildCanonicalSignalProfile,
+  type CanonicalSignalSourceType,
+} from "./lib/overallProfileSignals";
 import {
   scoreDsSignals,
   scoreHeadspaces,
@@ -58,6 +63,21 @@ type Score = {
   coverage?: number;
 };
 type QuizState = "not-started" | "in-progress" | "complete" | "coming-soon";
+
+const signalDefinitionById = new Map(
+  signalDefinitions.map((signal) => [signal.id, signal]),
+);
+
+function evidenceSourceLabel(sourceType: CanonicalSignalSourceType) {
+  switch (sourceType) {
+    case "quiz":
+      return "Quiz";
+    case "catalog_explicit":
+      return "Explicit catalog";
+    case "catalog_pairwise":
+      return "This or That";
+  }
+}
 
 function scoreLabel(score: number, weighted = false) {
   if (score >= 80) return weighted ? "Very strong" : "Core";
@@ -234,6 +254,9 @@ function QuizCard({
 
 export default function App() {
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
+  const [catalogProfileForInspection, setCatalogProfileForInspection] = useState(() =>
+    loadCatalogProfile(),
+  );
   const [screen, setScreen] = useState<Screen>("hub");
   const [activeQuizId, setActiveQuizId] = useState<QuizId>(starterQuiz.id);
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -405,6 +428,11 @@ export default function App() {
     (quiz) => getQuizState(quiz, profile) === "complete",
   ).length;
 
+  const canonicalSignals = useMemo(
+    () => buildCanonicalSignalProfile(profile, catalogProfileForInspection),
+    [catalogProfileForInspection, profile],
+  );
+
   const openQuiz = (quiz: QuizDefinition) => {
     if (quiz.availability !== "available") return;
 
@@ -472,6 +500,15 @@ export default function App() {
     setScreen("hub");
   };
 
+  const refreshCanonicalEvidence = () => {
+    setCatalogProfileForInspection(loadCatalogProfile());
+  };
+
+  const openProfile = () => {
+    setCatalogProfileForInspection(loadCatalogProfile());
+    setScreen("profile");
+  };
+
   return (
     <main className="app-shell">
       <header className="site-header">
@@ -481,7 +518,7 @@ export default function App() {
         </button>
 
         <div className="header-actions">
-          <button className="header-link" onClick={() => setScreen("profile")}>
+          <button className="header-link" onClick={openProfile}>
             My profile
           </button>
           <span className="privacy-pill">local only</span>
@@ -500,7 +537,7 @@ export default function App() {
               </p>
             </div>
 
-            <button className="profile-summary" onClick={() => setScreen("profile")}>
+            <button className="profile-summary" onClick={openProfile}>
               <span className="eyebrow">Overall profile</span>
               <strong>
                 {completedCore} / {coreQuizzes.length}
@@ -631,6 +668,100 @@ export default function App() {
               })}
             </div>
           </div>
+
+          <article className="panel evidence-inspector">
+            <div className="evidence-inspector-heading">
+              <div>
+                <p className="eyebrow">M7.1 inspection</p>
+                <h2>Canonical signal evidence</h2>
+                <p>
+                  Temporary testing view. Each SignalId is merged by evidence channel first,
+                  then the quiz, explicit catalog, and This-or-That channels contribute one
+                  capped vote to the canonical result.
+                </p>
+              </div>
+              <button className="secondary compact" onClick={refreshCanonicalEvidence}>
+                Refresh evidence
+              </button>
+            </div>
+
+            {canonicalSignals.length === 0 ? (
+              <div className="evidence-empty">
+                No canonical signal evidence yet. Answer part of a weighted quiz, set mapped
+                catalog preferences, or make signal-discriminating This-or-That choices.
+              </div>
+            ) : (
+              <div className="evidence-signal-list">
+                {canonicalSignals.map((signal) => {
+                  const definition = signalDefinitionById.get(signal.signalId);
+
+                  return (
+                    <details className="evidence-signal" key={signal.signalId}>
+                      <summary>
+                        <div className="evidence-signal-name">
+                          <strong>{definition?.label ?? signal.signalId}</strong>
+                          <code>{signal.signalId}</code>
+                        </div>
+                        <div className="evidence-signal-metrics">
+                          <span>
+                            <strong>{signal.affinity}%</strong>
+                            affinity
+                          </span>
+                          <span>
+                            <strong>{signal.coverage}%</strong>
+                            evidence
+                          </span>
+                        </div>
+                      </summary>
+
+                      <div className="evidence-channel-list">
+                        {signal.channels.map((channel) => (
+                          <section
+                            className="evidence-channel"
+                            key={channel.sourceType}
+                          >
+                            <div className="evidence-channel-heading">
+                              <div>
+                                <strong>{evidenceSourceLabel(channel.sourceType)}</strong>
+                                <span>
+                                  {channel.affinity}% affinity · {channel.coverage}% channel
+                                  coverage
+                                </span>
+                              </div>
+                              <span className="evidence-channel-weight">
+                                {Math.round(channel.effectiveWeight * 100)}% effective weight
+                              </span>
+                            </div>
+
+                            <div className="evidence-contribution-list">
+                              {channel.contributions.map((contribution, index) => (
+                                <div
+                                  className="evidence-contribution"
+                                  key={`${channel.sourceType}-${contribution.sourceId}-${index}`}
+                                >
+                                  <div>
+                                    <strong>{contribution.sourceId}</strong>
+                                    {contribution.detail && (
+                                      <span>{contribution.detail}</span>
+                                    )}
+                                  </div>
+                                  <div className="evidence-contribution-values">
+                                    <span>{contribution.affinity}%</span>
+                                    <span>{contribution.coverage}% evidence</span>
+                                  </div>
+                                  <code>{contribution.sourceEvidenceIds.join(" · ")}</code>
+                                </div>
+                              ))}
+                            </div>
+                          </section>
+                        ))}
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+            )}
+          </article>
 
           {getQuizState(starterQuiz, profile) !== "not-started" && (
             <div className="panel sampler-profile-row">
