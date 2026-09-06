@@ -38,6 +38,85 @@ The overall result should feel like a **profile summary**, not a fifth independe
 
 ---
 
+# Profile presentation UI boundary
+
+M7 has two related but distinct product surfaces:
+
+1. **Home/dashboard status** — answers "how far have I explored?"
+2. **Aggregated profile presentation** — answers "what does my profile say about me?"
+
+Progress-oriented information belongs primarily on the **home/dashboard** surface:
+
+- quizzes completed
+- catalog items explored
+- This-or-That categories ranked
+- overall profile progress / evidence-building status
+- prompts to continue unfinished areas
+
+The aggregated profile itself is an **information-display surface** that should make sense when shown to another person. It should prioritize the user's resulting profile over the mechanics used to build it.
+
+Evidence coverage/confidence may still appear when needed to qualify a result or in drill-down/explainability UI, but should not dominate the profile header.
+
+## Profile header — agreed direction
+
+The M7 profile header should use a **hybrid summary**:
+
+1. a short human-readable interpretation of the strongest overall profile themes
+2. compact structured trait groups that anchor that interpretation in actual profile results
+
+Conceptual shape:
+
+```text
+YOUR KINK PROFILE
+
+Strongly receiving-oriented, with a profile centered around
+surrender, devotion, primal play, and emotionally connected
+power exchange.
+
+Orientation
+Receiving / submissive
+
+Headspaces
+Pet · Prey · Devotional Submissive
+
+Dynamic modes
+Surrender · Devotion · Primal
+```
+
+The exact labels and values above are illustrative, not locked output.
+
+### Header responsibilities
+
+The header should answer:
+
+> "What are the biggest things about this person's profile?"
+
+It should **not** answer:
+
+> "How much of the app have they completed?"
+
+The header should therefore:
+
+- favor a concise human-readable summary over a wall of percentages
+- expose a small number of structured headline traits underneath
+- keep receiving/giving direction visible when it materially shapes the profile
+- avoid declaring a single identity such as "You are a Pet"
+- avoid making one percentage the defining result
+- avoid quiz/catalog/ranking completion statistics
+- avoid detailed source provenance or confidence mechanics unless the user drills deeper
+
+### Initial compact trait groups
+
+The current preferred three groups are:
+
+- **Orientation** — broad receiving/submissive, giving/dominant, bidirectional, or mixed/context-dependent tendency
+- **Headspaces** — strongest recognizable role/headspace results, with direction preserved
+- **Dynamic modes** — strongest explanatory patterns such as Surrender, Devotion, Claiming, or Primal / Feral
+
+These groups are a current UI direction and can be refined as M7 aggregation is implemented.
+
+---
+
 # Important distinction: facets vs labels
 
 The overall radar should measure broad **profile facets / drivers**.
@@ -82,7 +161,7 @@ The recognizable labels remain visible elsewhere in the overall result.
 
 These are **candidate M7 axes**, not yet locked.
 
-A practical radar should probably contain around **7–10 axes**. More than that becomes difficult to read and starts reproducing the detailed section charts.
+A practical radar should probably target around **7–8 axes** for readability, especially on mobile. The current nine-facet vocabulary is still useful as a candidate set, but M7 should test whether all nine deserve simultaneous visual treatment rather than forcing every valid facet onto the first radar.
 
 ## 1. Power Exchange
 
@@ -307,7 +386,7 @@ It should become a top-level facet only when the product has enough independent 
 
 # Possible final radar size
 
-A likely initial M7 radar could use **9 axes**:
+The current candidate vocabulary contains **9 facets**:
 
 ```text
 Power Exchange
@@ -321,11 +400,99 @@ Restraint & Physical Control
 Intensity & Pain
 ```
 
+The vocabulary is useful, but the first M7 radar should **prefer 7–8 simultaneously rendered axes** if nine becomes visually crowded. Do not merge distinct concepts merely to hit a number; instead decide whether one or more facets are better represented elsewhere in the profile summary or as an optional/detail view.
+
 This is intentionally broader than the section-level radars.
 
 It represents the shape of the overall profile rather than reproducing every underlying signal.
 
 **Sensation & Sensory Play** can join later if/when the evidence model supports it.
+
+## Overall radar — agreed presentation direction
+
+The overall radar should appear immediately beneath the profile header as the primary visual summary of the aggregated profile.
+
+Conceptual presentation:
+
+```text
+OVERALL PROFILE
+
+        [ large overall radar ]
+
+Power Exchange · Ownership · Devotion
+        strongest overall themes
+```
+
+The radar itself should remain visually dominant and relatively clean. The compact text beneath it should surface only a few strongest overall themes rather than repeat every axis as a ranked list.
+
+The profile header answers:
+
+> "What are the biggest things about this person's profile?"
+
+The radar answers:
+
+> "What is the overall shape of those preferences?"
+
+Detailed evidence, source provenance, confidence, direction, and lower-level signals belong in later sections or drill-down.
+
+## Parked future enhancement — orientation gauge
+
+A future profile presentation may include a playful **orientation gauge** summarizing the relative balance between giving/dominant and receiving/submissive expression.
+
+Conceptually:
+
+```text
+Dominant / Giving  ────────●────────  Submissive / Receiving
+                         Switch
+```
+
+This should not be implemented until the profile has robust cross-source directional support.
+
+Important semantic constraint:
+
+> The gauge represents **relative orientation/balance**, not total affinity and not a zero-sum model.
+
+A user may have strong evidence for both giving and receiving. The pointer should therefore answer something closer to:
+
+> "Which direction does this profile lean overall?"
+
+It must not imply that stronger submissive/receiving evidence means weaker dominant/giving capability or interest.
+
+If implemented, pair the gauge with enough supporting context to distinguish:
+
+- overall directional lean
+- strength of giving evidence
+- strength of receiving evidence
+- genuinely bidirectional/switch profiles
+- low-evidence/uncertain orientation
+
+This belongs with the broader future giving/receiving visualization work rather than the initial M7 UI.
+
+---
+
+## Parked future enhancement — directional radar modes
+
+The initial aggregated radar should use the **overall** facet values only. M7 should not prematurely split every facet into receiving/giving variants before the underlying directional aggregation model has full support.
+
+However, preserve direction metadata now so a future enhancement can offer multiple radar modes over the same facet vocabulary:
+
+```text
+[ Overall ] [ Receiving ] [ Giving ]
+
+            same radar axes
+            different directional series
+```
+
+A later implementation may support:
+
+- **Overall** — combined profile strength for each facet
+- **Receiving** — receiving/submissive-side expression where that facet has directional evidence
+- **Giving** — giving/dominant-side expression where that facet has directional evidence
+- optionally overlaying multiple series/lines for comparison when readable
+
+This should be treated as a deliberate follow-up to broader giving/receiving support, not approximated by making receiving and giving cancel each other out.
+
+Facets without meaningful directional semantics should remain neutral/shared rather than inventing receiving/giving values.
 
 ---
 
@@ -341,23 +508,53 @@ Broad cross-cutting facets.
 
 ## Strongest roles / headspaces
 
-Keep direction visible.
+For the initial M7 profile presentation, prioritize the **receiving / submissive headspaces** that are already well-supported by the current implementation.
 
 Example:
 
 ```text
 Receiving / submissive
-1. Pet
-2. Slave
-3. Brat
 
-Giving / dominant
-1. Owner / Handler
-2. Caregiver
-3. Predator
+Pet                    94%
+Prey                   87%
+Devotional Submissive  81%
 ```
 
-Do not merge receiving and giving roles into one winner-take-all list.
+The profile should surface only a compact top set (for example, top 3) by default **with their percentages visible**, plus an in-place **Show all headspaces** action that expands to the full ranked receiving/submissive headspace list.
+
+Conceptual shape:
+
+```text
+ROLES & HEADSPACES
+
+Pet                    94%
+Prey                   87%
+Devotional Submissive  81%
+
+[ Show all headspaces ]
+```
+
+Expanded:
+
+```text
+ROLES & HEADSPACES
+
+Pet                    94%
+Prey                   87%
+Devotional Submissive  81%
+Service Submissive     74%
+Little                  62%
+Brat                    55%
+...
+
+[ Show less ]
+```
+
+The percentages are useful context because they show relative strength, but the default view should remain compact rather than rendering the full ranked list immediately.
+
+Do **not** present a parallel giving/dominant headspace block in the initial M7 UI merely for symmetry. The giving/dominant presentation should be revisited as part of the broader future directional-profile work, once cross-source giving/receiving aggregation is mature enough to support it consistently.
+
+When that future support exists, receiving and giving headspaces should remain separate rather than being merged into one winner-take-all list.
 
 ## Strongest dynamic modes
 
@@ -372,20 +569,138 @@ Primal / Feral
 
 These help explain the radar and role results.
 
-## Favorite catalog interests
+## Top overall catalog interests + limits
 
-Once M6 ranking exists:
+Before drilling into category-level detail, the profile should surface the user's most concrete overall catalog results.
+
+### Top overall
+
+Show the current **Top 10 direct-evidence catalog items**, derived from both:
+
+- explicit assigned catalog preference
+- Overall This-or-That / pairwise ranking evidence
+
+This is a profile-level aggregate, not a copy of the raw Overall This-or-That leaderboard.
+
+Conceptual shape:
 
 ```text
-Overall favorites
+TOP OVERALL
+
 1. Rope Bondage
 2. Collaring
 3. Pet Play
 4. Praise
 5. Impact Play
+6. ...
+10. ...
 ```
 
-This should use the explicit/pairwise catalog ranking, not inferred affinity.
+This aggregate should use **independent direct user evidence only**. Quiz-derived/inferred catalog affinity must not place an item into Top Overall by itself.
+
+The exact merge rule between explicit state and pairwise rank is an M7 design/implementation decision, but it must preserve the distinction between the source values rather than rewriting either source. For example, an explicit `love` and strong pairwise placement can reinforce the same item, while an explicitly assigned positive preference can still contribute even when the user has not yet ranked that item deeply in This-or-That.
+
+Importantly, this does **not** change the M6 rule that explicit positive states do not seed or mutate the pairwise ranking engine. M7 may derive a separate presentation-level Top Overall result from both sources without writing one source into the other.
+
+If fewer than 10 items have enough direct evidence to support a meaningful aggregate placement, show fewer rather than padding the list with inferred/default ordering.
+
+### Limits
+
+Show explicit **Hard Limit** items as a separate adjacent/paired summary.
+
+Conceptual shape:
+
+```text
+LIMITS
+
+Breath Restriction
+Needle Play
+...
+```
+
+Hard Limits must remain visually and semantically distinct from:
+
+- Not Interested
+- Not Applicable
+- low-ranked items
+
+The profile should not imply that a low-ranked item is a limit, or that a limit is merely a low preference.
+
+If the limit list is long, show a compact subset with a **Show all limits** action.
+
+This concrete Top Overall + Limits section should appear **before category-level catalog detail** so the profile moves from broad interpretation into the clearest direct preferences first.
+
+## Interest Areas
+
+The main aggregated profile should **not** render all 35 catalog categories as equal-detail cards.
+
+Instead, show a compact **Interest Areas** section containing only the top approximately **4–6 strongest/relevant categories**.
+
+Conceptual shape:
+
+```text
+INTEREST AREAS
+
+Bondage & Restraint
+Rope Bondage · Cuffs · Immobilization
+
+Protocol, Obedience & Service
+Service · Ritual · Rules
+
+Primal Play
+Prey Play · Chase · Wrestling
+
+Pain & Sensation
+Biting · Scratching · Impact Play
+
+[ Explore all categories ]
+```
+
+Each summary should remain intentionally light:
+
+- category label
+- simple strength/relevance descriptor when useful
+- top 2–3 concrete catalog items that make the category meaningful
+- no dense Love / Like / Curious / Limit count row on the main profile
+- no requirement to show all categories inline
+
+The profile should order these by strongest/relevant category evidence, but should not imply false precision by ranking all 35 categories from #1 to #35 unless the aggregation model can support that meaningfully.
+
+### Explore all categories
+
+**Explore all categories** should open a separate category explorer/detail experience rather than expanding all 35 categories directly into the profile page.
+
+That deeper experience may:
+
+- group categories by broader domain
+- allow opening one category at a time
+- show richer within-category ranking/preferences
+- show explicit states such as Love / Like / Curious / Limits
+- link to the full editable catalog where appropriate
+
+This preserves the main profile as a readable presentation surface while still making the catalog detail accessible when someone wants it.
+
+### State-filter shortcuts
+
+Do not create a separate ranked **Curious / Exploring** section on the main profile.
+
+`Curious` is an explicit categorical preference state, not an inherently ordered result. Unless independent ranking evidence exists, the product should not invent a "Top Curious" ordering.
+
+Instead, provide compact navigation shortcuts into the existing catalog/list filtered by explicit state where useful.
+
+Conceptually:
+
+```text
+[ Curious (12) ]   [ Unsure (8) ]   [ Limits (3) ]
+```
+
+Selecting one should open the catalog/preferences experience with the corresponding state filter already applied.
+
+These shortcuts may live near **Interest Areas**, **Top Overall + Limits**, or in a small supporting action row, whichever fits the final visual layout best.
+
+Hard Limits may still have their own visible summary on the profile because they are important boundaries. The filtered shortcut is an additional way to inspect the full list.
+
+---
 
 ## Strongest reusable signals
 
@@ -402,7 +717,11 @@ Care Receiving — 87%
 
 ## Coverage / exploration state
 
-The overall page should clearly show what is known vs unexplored.
+Detailed exploration/completion status belongs primarily on the home/dashboard rather than in the profile header.
+
+The aggregated profile still needs to distinguish well-supported results from sparse or unexplored areas so unknown never becomes 0%, but that qualification should be secondary to the profile presentation itself and may live in result-level treatment, drill-down, or a lower-page evidence section rather than a dashboard-style header.
+
+When shown on the profile surface, coverage should communicate what is known vs unexplored without turning the page into a task-completion view.
 
 Example:
 
@@ -729,6 +1048,16 @@ The visualization choice can be decided during M7 implementation.
 
 # Front-page hierarchy
 
+Current agreed conceptual order:
+
+1. **Profile header** — hybrid human-readable summary + compact Orientation / Headspaces / Dynamic Modes
+2. **Overall Profile** — large broad-facet radar + compact strongest overall themes
+3. **Roles & Headspaces** — top receiving/submissive results with percentages + Show all
+4. **Top Overall + Limits** — Top 10 aggregated direct catalog preferences (explicit + pairwise) + explicit Hard Limits
+5. **Interest Areas** — top 4–6 strongest/relevant catalog categories with a few representative items
+6. **Explore all categories** — separate deeper category explorer/detail experience
+7. later supporting/detail sections as needed
+
 Conceptual layout:
 
 ```text
@@ -804,24 +1133,34 @@ The overall profile should preserve complexity while making it easier to underst
 
 ## O3 — Overall radar
 
-- render broad facets
+- place the overall radar immediately beneath the hybrid profile header
+- render broad facets, targeting 7–8 simultaneous axes when practical
 - represent unknown/low-coverage axes honestly
-- expose compact strongest-theme summary
+- expose a compact strongest-theme summary beneath the radar
+- keep the initial radar on overall facet values rather than prematurely splitting direction
+- retain direction metadata needed for a future Overall / Receiving / Giving radar toggle or multi-series view
 - support drill-down to evidence/source sections
 
 ## O4 — Role / mode summary
 
-- top receiving/submissive headspaces
-- top giving/dominant headspaces
+- show a compact top set of receiving/submissive headspaces with percentages in the initial M7 UI
+- provide an in-place Show all / Show less interaction for the full ranked receiving/submissive headspace list
+- park giving/dominant headspace presentation for the broader future directional-profile enhancement
 - strongest dynamic modes
 - preserve independent overlapping scores
 
 ## O5 — Catalog summary
 
-- show explicit catalog states
-- show category rankings
-- show overall this-or-that favorites
-- keep inferred catalog affinity visually distinct
+- derive Top 10 overall catalog items from aggregated **explicit preference + pairwise ranking** evidence
+- show explicit Hard Limits as a separate summary, with Show all when needed
+- keep Hard Limits distinct from Not Interested / Not Applicable / low rank
+- place Top Overall + Limits before the Interest Areas section
+- show only the top approximately 4–6 Interest Areas on the main profile
+- show a few representative top items per Interest Area
+- provide a separate Explore all categories experience rather than expanding all 35 categories inline
+- show explicit catalog states and category rankings in the deeper category view
+- do not let inferred catalog affinity enter Top Overall by itself
+- keep the underlying explicit and pairwise source values available for explainability without mutating either source
 
 ## O6 — Exploration / coverage summary
 
