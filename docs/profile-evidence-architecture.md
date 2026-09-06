@@ -6,7 +6,7 @@ Design contract for the post-C3 profile model.
 
 This document defines how quizzes, explicit catalog preferences, This-or-That ranking, inferred catalog affinity, and the overall profile interact without overwriting one another or creating circular scoring.
 
-M6 C3 may finish against its current explicit-preference + raw-comparison persistence contract. **C4 is the cleanup/convergence slice that introduces the source-aware evidence layer on top of that data.**
+M6 C3 persists explicit preference + raw comparison evidence. **C4 now implements the source-aware evidence layer on top of that data without introducing a competing persistence model.**
 
 ---
 
