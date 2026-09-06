@@ -19,7 +19,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M6 | ✅ Complete | integrated, source-aware, hardened kink catalog |
 | M7 | 🚧 In progress | build the full aggregated profile |
 | M8 | Optional | add quiz depth/adaptive follow-ups |
-| M9 | Planned | settings, profile lifecycle, portability, and sharing |
+| M9 | 🚧 In progress | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
 
 ---
@@ -678,32 +678,32 @@ See [docs/m9-settings-profile-management.md](docs/m9-settings-profile-management
 
 M8 is not a prerequisite for M9. The share-summary slices depend on the stable M7 profile presentation/data contract, while settings/reset/backup work can remain independent of adaptive quiz depth.
 
-### M9.1 — Settings shell + profile identity
+### M9.1 — Settings shell + profile identity ✅
 
-- [ ] add a first-class Settings destination
-- [ ] organize Settings into Profile, Data, and Sharing groups
-- [ ] replace hard-coded user-facing "Pet" profile naming with an editable profile display name
-- [ ] update profile-facing labels/headings to use the configured display name where appropriate
-- [ ] keep broader identity/pronoun customization out of this slice
+- [x] add a first-class Settings destination
+- [x] organize Settings into Profile, Data, and Sharing groups
+- [x] replace hard-coded user-facing "Pet" profile naming with an editable profile display name
+- [x] update profile-facing labels/headings to use the configured display name where appropriate
+- [x] keep broader identity/pronoun customization out of this slice
 
-### M9.2 — Selective reset
+### M9.2 — Selective reset ✅
 
-- [ ] provide a reset flow that never deletes data immediately from the first click
-- [ ] allow selecting independent data sections to reset
-- [ ] support quiz data, explicit catalog preferences, This-or-That/ranking data, and profile settings/identity as independent reset scopes
-- [ ] support an explicit Reset Everything option
-- [ ] preview what will be deleted before confirmation
-- [ ] preserve unselected evidence sources
-- [ ] recompute derived views after reset rather than persisting stale aggregates
+- [x] provide a reset flow that never deletes data immediately from the first click
+- [x] allow selecting independent data sections to reset
+- [x] support quiz data, explicit catalog preferences, This-or-That/ranking data, and profile settings/identity as independent reset scopes
+- [x] support an explicit Reset Everything option
+- [x] preview what will be deleted before confirmation
+- [x] preserve unselected evidence sources
+- [x] recompute derived views after reset rather than persisting stale aggregates
 
-### M9.3 — Full profile export
+### M9.3 — Full profile export ✅
 
-- [ ] export a complete machine-readable profile backup
-- [ ] include schema/export version metadata
-- [ ] include profile settings/identity and all authoritative persisted profile evidence
-- [ ] include quiz progress/results, explicit catalog preference state, and raw This-or-That/ranking history
-- [ ] keep recomputable derived values non-authoritative
-- [ ] produce a portable JSON file suitable for later restore
+- [x] export a complete machine-readable profile backup
+- [x] include schema/export version metadata
+- [x] include profile settings/identity and all authoritative persisted profile evidence
+- [x] include quiz progress/results, explicit catalog preference state, and raw This-or-That/ranking history
+- [x] keep recomputable derived values non-authoritative
+- [x] produce a portable JSON file suitable for later restore
 
 ### M9.4 — Full profile import
 

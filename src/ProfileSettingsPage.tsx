@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { ProfileResetPanel } from "./ProfileResetPanel";
+import { ProfileBackupPanel } from "./ProfileBackupPanel";
 import {
   MAX_PROFILE_DISPLAY_NAME_LENGTH,
   normalizeProfileDisplayName,
@@ -37,6 +38,7 @@ export function ProfileSettingsPage({
 }: ProfileSettingsPageProps) {
   const [draftName, setDraftName] = useState(settings.displayName);
   const [resetOpen, setResetOpen] = useState(false);
+  const [backupOpen, setBackupOpen] = useState(false);
 
   useEffect(() => {
     setDraftName(settings.displayName);
@@ -151,10 +153,20 @@ export function ProfileSettingsPage({
               {resetOpen ? "Close reset" : "Choose data"}
             </button>
           </article>
-          <FutureAction
-            title="Export profile backup"
-            description="Download the complete private profile as versioned machine-readable data."
-          />
+          <article className="settings-action-row">
+            <div>
+              <strong>Export profile backup</strong>
+              <p>
+                Download the complete private profile as versioned machine-readable data.
+              </p>
+            </div>
+            <button
+              className="secondary compact"
+              onClick={() => setBackupOpen((open) => !open)}
+            >
+              {backupOpen ? "Close backup" : "Download backup"}
+            </button>
+          </article>
           <FutureAction
             title="Import profile backup"
             description="Validate and restore a complete profile backup without partially overwriting current data."
@@ -167,6 +179,8 @@ export function ProfileSettingsPage({
             onClose={() => setResetOpen(false)}
           />
         )}
+
+        {backupOpen && <ProfileBackupPanel />}
       </section>
 
       <section className="settings-section" aria-labelledby="settings-sharing-heading">
