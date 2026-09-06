@@ -16,7 +16,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M3 | ✅ Complete | add Roles & Headspaces |
 | M4 | ✅ Complete | add Bondage & Discipline |
 | M5 | ✅ Complete | add Sadism & Masochism |
-| M6 | 🟡 In progress | integrate and harden the kink catalog |
+| M6 | ✅ Complete | integrated, source-aware, hardened kink catalog |
 | M7 | Planned | build the full aggregated profile |
 | M8 | Optional | add quiz depth/adaptive follow-ups |
 | M9 | Planned later | export/import/share |
@@ -302,7 +302,7 @@ See [docs/m5-sm-design.md](docs/m5-sm-design.md) for the implemented contract.
 
 ---
 
-## M6 — Catalog Integration 🟡
+## M6 — Catalog Integration ✅
 
 **Goal:** turn the existing 551-item runtime catalog + This-or-That flow into a durable, profile-aware catalog system without turning catalog rows into quiz questions.
 
@@ -425,19 +425,19 @@ See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.m
 - [x] preserve category and overall ranking as separate useful results
 - [x] do not collapse explicit + pairwise evidence into an M7-style Top Overall aggregate
 
-### C7 — Signal-affinity hardening
+### C7 — Signal-affinity hardening ✅
 
 **Inherited baseline from C4/C6:** inferred affinity is already visibly distinct from explicit preference/pairwise rank; matched SignalId + quiz provenance is already retained; and catalog → signal projection already accepts independent direct catalog evidence only.
 
 C7 hardens recommendation behavior around that existing model:
 
-- [ ] harden the pure coverage-aware catalog affinity matcher introduced/centralized in C4
-- [ ] add synthetic mapping / partial-coverage / unmapped-item edge-case tests
-- [ ] suppress hard limit / not interested / not applicable items from recommendation candidates while keeping derived evidence inspectable
-- [ ] use tentative "may be worth exploring" language for inference-only recommendations
-- [ ] preserve matched-signal + quiz provenance through recommendation filtering/suppression
-- [ ] regression-test the direct-evidence-only catalog → signal boundary and no-feedback-loop guarantee
-- [ ] defer canonical cross-source signal input + profile-wide radar/recommendation UI to M7
+- [x] harden the pure coverage-aware catalog affinity matcher introduced/centralized in C4
+- [x] add synthetic mapping / partial-coverage / unmapped-item edge-case tests
+- [x] suppress hard limit / not interested / not applicable items from recommendation candidates while keeping derived evidence inspectable
+- [x] use tentative "may be worth exploring" language for inference-only recommendations
+- [x] preserve matched-signal + quiz provenance through recommendation filtering/suppression
+- [x] regression-test the direct-evidence-only catalog → signal boundary and no-feedback-loop guarantee
+- [x] defer canonical cross-source signal input + profile-wide radar/recommendation UI to M7
 
 **Exit condition:** catalog definitions have durable identity; explicit state, relative ranking, and inferred affinity remain separate; ranking history survives normal catalog evolution; exclusions are authoritative; catalog items have validated SignalId mappings; and M7 can consume clean catalog favorites/mappings without understanding TSV/ranking internals.
 
@@ -545,6 +545,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M6 — Catalog Integration / C7 signal-affinity hardening**
+**M7 — Full Overall Profile**
 
-Harden the quiz-derived catalog inference/recommendation layer: mapping + coverage edge cases, explicit-exclusion suppression without hiding explainability evidence, tentative inference-only language, provenance preservation, and regression protection for the existing direct-evidence-only back-projection boundary.
+Implement the source-aware overall profile defined in [docs/overall-profile-aggregation.md](docs/overall-profile-aggregation.md): canonical cross-source SignalId aggregation, broad radar/facet results, role/headspace + dynamic-mode summaries, Top Overall direct catalog interests + limits, interest-area drill-down, and source explainability without mutating section-local evidence.

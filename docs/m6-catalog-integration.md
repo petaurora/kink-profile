@@ -2,13 +2,13 @@
 
 ## Status
 
-**In-progress contract.**
+**Implemented contract.**
 
 M6 is not starting from zero.
 
 The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-C3 explicit preference + catalog table, C4 source-aware evidence convergence, C5 ranking hardening, and C6 catalog result integration are implemented. The next implementation slice is C7 signal-affinity hardening.
+C3 explicit preference + catalog table, C4 source-aware evidence convergence, C5 ranking hardening, C6 catalog result integration, and C7 signal-affinity/recommendation hardening are implemented. M6 is complete; M7 can now consume the catalog through the source-aware boundaries defined here.
 
 Current baseline on `main`:
 
@@ -30,7 +30,7 @@ Current baseline on `main`:
 - cross-category ranking is playable
 - raw pairwise decisions are retained so rankings can be recalculated
 
-M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4 added source-aware convergence; C5 hardened ranking evidence/finalists; C6 integrated those channels into source-aware catalog results. C7 now owns affinity/recommendation hardening.
+M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4 added source-aware convergence; C5 hardened ranking evidence/finalists; C6 integrated those channels into source-aware catalog results; C7 hardened the matcher and recommendation eligibility/suppression boundary.
 
 ---
 
@@ -1215,7 +1215,7 @@ Verification: 56 tests pass across the ranking/catalog/evidence/result suites, i
 
 This avoids implementing the same merged profile result twice under different milestone names.
 
-## C7 — Signal affinity hardening
+## C7 — Signal affinity hardening ✅
 
 C7 starts from behavior already established by C4/C6:
 
@@ -1225,20 +1225,45 @@ C7 starts from behavior already established by C4/C6:
 - catalog → signal projection already consumes only independent direct evidence
 - inferred catalog affinity cannot feed back into the signals that produced it
 
-Remaining C7 work:
+Implemented C7 work:
 
-- [ ] harden the coverage-aware catalog affinity matcher introduced/centralized in C4
-- [ ] test mapping / partial-coverage / unmapped-item behavior with synthetic signal profiles
-- [ ] suppress Hard Limit / Not Interested / Not Applicable items from recommendation candidates
-- [ ] keep suppressed items' derived affinity/provenance inspectable in explainability views rather than deleting the evidence
-- [ ] use tentative exploration language for inference-only recommendations
-- [ ] preserve matched-signal + quiz provenance through recommendation filtering/suppression
-- [ ] regression-test the direct-evidence-only catalog → signal projection boundary
-- [ ] defer final canonical cross-source aggregation + profile-wide radar/recommendation UI to M7
+- [x] harden the coverage-aware catalog affinity matcher introduced/centralized in C4
+- [x] test mapping / partial-coverage / unmapped-item behavior with synthetic signal profiles
+- [x] suppress Hard Limit / Not Interested / Not Applicable items from recommendation candidates
+- [x] keep suppressed items' derived affinity/provenance inspectable in explainability views rather than deleting the evidence
+- [x] use tentative exploration language for inference-only recommendations
+- [x] preserve matched-signal + quiz provenance through recommendation filtering/suppression
+- [x] regression-test the direct-evidence-only catalog → signal projection boundary
+- [x] defer final canonical cross-source aggregation + profile-wide radar/recommendation UI to M7
+
+### Implemented C7 semantics
+
+C7 adds a pure recommendation selector on top of the C6 result view rather than mutating evidence or introducing new persistence.
+
+The affinity matcher now:
+
+- ignores non-positive / non-finite synthetic mapping weights
+- merges duplicate mappings to the same SignalId before scoring
+- clamps malformed synthetic affinity/coverage input into valid 0–100 percentages
+- preserves affinity separately from coverage
+- returns no inference for unmapped/no-evidence items
+- preserves matched-signal provenance
+
+Recommendation output is separated into:
+
+- **inference-only candidates** — no independent direct evidence; tentative label: "May be worth exploring"
+- **inferred + direct evidence** — kept separate so M7/product weighting does not get decided implicitly in C7
+- **suppressed inference** — Hard Limit / Not Interested / Not Applicable items are excluded from recommendation candidates while their inferred affinity + provenance remain inspectable
+
+Inference-only ordering is deterministic: affinity → coverage → label.
+
+The direct-evidence-only catalog → signal projection boundary remains unchanged, and focused regression tests prove recommendation/inference processing cannot feed derived catalog evidence back into source signals.
+
+Verification: 67 tests pass across 6 test files, including 11 focused C7 matcher/recommendation tests, and the production TypeScript/Vite build passes.
 
 ---
 
-# M6 exit condition
+# M6 exit condition ✅
 
 M6 is complete when:
 

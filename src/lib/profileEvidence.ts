@@ -273,6 +273,30 @@ export function dedupeQuizSignalEvidence(
   return [...byEvidenceId.values()];
 }
 
+function clampPercent(value: number) {
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(100, Math.max(0, value));
+}
+
+function normalizedSignalMappings(
+  mappings: readonly KinkCatalogSignalMapping[],
+) {
+  const bySignalId = new Map<SignalId, number>();
+
+  for (const mapping of mappings) {
+    if (!Number.isFinite(mapping.weight) || mapping.weight <= 0) continue;
+    bySignalId.set(
+      mapping.signalId,
+      (bySignalId.get(mapping.signalId) ?? 0) + mapping.weight,
+    );
+  }
+
+  return [...bySignalId.entries()].map(([signalId, weight]) => ({
+    signalId,
+    weight,
+  }));
+}
+
 export function buildQuizInferenceSignalProfile(
   evidence: readonly QuizSignalEvidence[],
 ): Map<SignalId, QuizInferenceSignal> {
@@ -292,9 +316,10 @@ export function buildQuizInferenceSignalProfile(
       let uncoveredProduct = 1;
 
       for (const item of items) {
-        const coverageFactor = item.coverage / 100;
+        const coverageFactor = clampPercent(item.coverage) / 100;
+        const affinity = clampPercent(item.affinity);
         totalCoverageWeight += coverageFactor;
-        weightedAffinity += item.affinity * coverageFactor;
+        weightedAffinity += affinity * coverageFactor;
         uncoveredProduct *= 1 - coverageFactor;
       }
 
@@ -306,7 +331,7 @@ export function buildQuizInferenceSignalProfile(
             totalCoverageWeight > 0
               ? Math.round((weightedAffinity / totalCoverageWeight) * 10) / 10
               : 0,
-          coverage: Math.round((1 - uncoveredProduct) * 100),
+          coverage: Math.round(clampPercent((1 - uncoveredProduct) * 100)),
           sourceEvidenceIds: items.map((item) => item.evidenceId).sort(),
         },
       ];
@@ -318,9 +343,10 @@ export function inferCatalogAffinity(
   item: Pick<KinkCatalogItem, "id" | "signalMappings">,
   signalProfile: ReadonlyMap<SignalId, QuizInferenceSignal>,
 ): InferredCatalogEvidence | undefined {
-  if (item.signalMappings.length === 0) return undefined;
+  const mappings = normalizedSignalMappings(item.signalMappings);
+  if (mappings.length === 0) return undefined;
 
-  const totalMappingWeight = item.signalMappings.reduce(
+  const totalMappingWeight = mappings.reduce(
     (sum, mapping) => sum + mapping.weight,
     0,
   );
@@ -329,20 +355,24 @@ export function inferCatalogAffinity(
   let weightedAffinity = 0;
   const matchedSignals: MatchedSignalEvidence[] = [];
 
-  for (const mapping of item.signalMappings) {
+  for (const mapping of mappings) {
     const signal = signalProfile.get(mapping.signalId);
-    if (!signal || signal.coverage <= 0) continue;
+    if (!signal) continue;
 
-    const coveredWeight = mapping.weight * (signal.coverage / 100);
+    const signalCoverage = clampPercent(signal.coverage);
+    if (signalCoverage <= 0) continue;
+
+    const signalAffinity = clampPercent(signal.affinity);
+    const coveredWeight = mapping.weight * (signalCoverage / 100);
     effectiveWeight += coveredWeight;
-    weightedAffinity += signal.affinity * coveredWeight;
+    weightedAffinity += signalAffinity * coveredWeight;
 
     matchedSignals.push({
       signalId: mapping.signalId,
       mappingWeight: mapping.weight,
-      signalAffinity: signal.affinity,
-      signalCoverage: signal.coverage,
-      sourceEvidenceIds: signal.sourceEvidenceIds,
+      signalAffinity,
+      signalCoverage,
+      sourceEvidenceIds: [...new Set(signal.sourceEvidenceIds)].sort(),
     });
   }
 
@@ -353,8 +383,13 @@ export function inferCatalogAffinity(
     sourceType: "catalog_inference",
     evidenceId: inferenceEvidenceId(item.id),
     catalogId: item.id,
-    affinity: Math.round((weightedAffinity / effectiveWeight) * 10) / 10,
-    coverage: Math.round((effectiveWeight / totalMappingWeight) * 100),
+    affinity:
+      Math.round(
+        clampPercent(weightedAffinity / effectiveWeight) * 10,
+      ) / 10,
+    coverage: Math.round(
+      clampPercent((effectiveWeight / totalMappingWeight) * 100),
+    ),
     matchedSignals: matchedSignals.sort((a, b) =>
       a.signalId.localeCompare(b.signalId),
     ),

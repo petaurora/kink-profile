@@ -5,7 +5,7 @@
 Living product direction.
 
 **Implemented through:** M5 — Sadism & Masochism  
-**Current:** M6 — Catalog Integration (in progress; catalog generation + ranking baseline already landed)
+**Current:** M6 — Catalog Integration complete; M7 Full Overall Profile is next
 
 The app is now structurally a collection of independently completable quizzes rather than one monolithic assessment.
 
