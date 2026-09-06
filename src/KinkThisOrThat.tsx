@@ -21,6 +21,11 @@ import {
   loadCatalogProfile,
   saveCatalogProfile,
 } from "./lib/catalogProfileStorage";
+import {
+  buildCatalogResultView,
+  catalogPreferenceLabels,
+} from "./lib/catalogResults";
+import type { StoredProfile } from "./lib/profileStorage";
 
 type RankingMode = "category" | "overall";
 type SessionSize = 10 | 25 | 50 | "gremlin";
@@ -57,7 +62,13 @@ function comparisonCountForScope(
   }).length;
 }
 
-export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
+export function KinkThisOrThat({
+  quizProfile,
+  onClose,
+}: {
+  quizProfile: StoredProfile;
+  onClose: () => void;
+}) {
   const [profile, setProfile] = useState(() => loadCatalogProfile());
   const [mode, setMode] = useState<RankingMode>("category");
   const [categoryId, setCategoryId] = useState<string>(kinkCategories[0]?.id ?? "");
@@ -74,6 +85,11 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
   const eligibleCatalog = useMemo(
     () => filterEligibleCatalogItems(kinkCatalog, profile.preferences),
     [profile.preferences],
+  );
+
+  const resultView = useMemo(
+    () => buildCatalogResultView(quizProfile, profile),
+    [quizProfile, profile],
   );
 
   const finalists = useMemo(
@@ -558,16 +574,32 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="ranking-list">
-            {snapshot.items.slice(0, mode === "overall" ? 25 : 10).map((item) => (
-              <div className="ranking-row" key={item.id}>
-                <span className="ranking-position">{item.rank}</span>
-                <div>
-                  <strong>{item.label}</strong>
-                  <span>{item.categoryLabel}</span>
+            {snapshot.items.slice(0, mode === "overall" ? 25 : 10).map((item) => {
+              const result = resultView.byCatalogId.get(item.id);
+
+              return (
+                <div className="ranking-row" key={item.id}>
+                  <span className="ranking-position">{item.rank}</span>
+                  <div className="ranking-row-copy">
+                    <strong>{item.label}</strong>
+                    <span>{item.categoryLabel}</span>
+                    <div className="ranking-row-evidence">
+                      {result?.explicitState && (
+                        <span className="ranking-evidence-chip explicit">
+                          Explicit: {catalogPreferenceLabels[result.explicitState]}
+                        </span>
+                      )}
+                      {result?.inferred && (
+                        <span className="ranking-evidence-chip inferred">
+                          Quiz-derived {Math.round(result.inferred.affinity)}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span>{item.comparisons} comps</span>
                 </div>
-                <span>{item.comparisons} comps</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </article>
       )}
