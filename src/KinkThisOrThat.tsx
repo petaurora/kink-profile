@@ -87,11 +87,6 @@ export function KinkThisOrThat({
     [profile.preferences],
   );
 
-  const resultView = useMemo(
-    () => buildCatalogResultView(quizProfile, profile),
-    [quizProfile, profile],
-  );
-
   const finalists = useMemo(
     () => selectCategoryFinalists(eligibleCatalog, profile.comparisons, 5),
     [eligibleCatalog, profile.comparisons],
@@ -135,6 +130,15 @@ export function KinkThisOrThat({
   const sessionAnswered = Math.max(0, totalInScope - sessionStartCount);
   const sessionLimit = sessionSize === "gremlin" ? Infinity : sessionSize;
   const sessionComplete = sessionAnswered >= sessionLimit;
+
+  const resultView = useMemo(
+    () =>
+      showResults || sessionComplete
+        ? buildCatalogResultView(quizProfile, profile)
+        : null,
+    [quizProfile, profile, showResults, sessionComplete],
+  );
+
   const activeCategory = kinkCategories.find((category) => category.id === categoryId);
 
   const categorySummaries = useMemo(
@@ -575,7 +579,7 @@ export function KinkThisOrThat({
 
           <div className="ranking-list">
             {snapshot.items.slice(0, mode === "overall" ? 25 : 10).map((item) => {
-              const result = resultView.byCatalogId.get(item.id);
+              const result = resultView?.byCatalogId.get(item.id);
 
               return (
                 <div className="ranking-row" key={item.id}>
