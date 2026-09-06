@@ -1,0 +1,16 @@
+Jackie + Taylor D/s Systems Workbook					
+Combined idea banks + reward/punishment system guide. Each uploaded source is preserved on its own sheet.					
+					
+Sheet	Source File	Type	Rows / Lines	Purpose	Notes
+Creative Pain 100	jackie_creative_punishment_100.csv	CSV idea bank	100	Punishment ideas	Original rows preserved
+Nontraditional 100	jackie_nontraditional_punishment_100.csv	CSV idea bank	100	Punishment ideas	Original rows preserved
+Cognitive 100	jackie_cognitive_punishment_idea_bank_100.csv	CSV idea bank	100	Punishment ideas	Original rows preserved
+Sensory-Control 100	jackie_sensory_control_punishment_100.csv	CSV idea bank	100	Punishment ideas	Original rows preserved
+Creative Punishments	creative_punishment_idea_bank.csv	CSV idea bank	56	Punishment ideas	Original rows preserved
+Pain Batch 2	pain_punishment_batch_2.csv	CSV idea bank	30	Punishment ideas	Original rows preserved
+Rewards 100	jackie_reward_idea_bank_100.csv	CSV idea bank	100	Reward ideas	Original rows preserved
+Rewards Bonus	jackie_reward_idea_bank_bonus.csv	CSV idea bank	83	Reward ideas	Original rows preserved
+System Guide	ds_reward_punishment_system.md	Markdown guide	346	Reward/punishment principles, tiers, rules, metadata	Markdown converted into structured rows
+					
+					
+Core guide principle: keep rewards more common than punishments; keep consequences bounded and clearable; keep normal affection outside the reward economy.					
