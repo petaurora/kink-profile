@@ -497,7 +497,7 @@ Tiers are presentation. They should not replace the underlying ranking evidence.
 
 The master kink catalog will continue changing.
 
-The current runtime IDs are generated from labels, which is not durable enough now that comparison history exists. M6 makes explicit stable Catalog IDs / Category IDs the first hardening slice.
+C1 replaced label-derived runtime identity with explicit stable Catalog IDs / Category IDs while preserving the IDs used by existing comparison history.
 
 New items should:
 
@@ -614,7 +614,7 @@ M6 hardening:
 - [ ] Skip must not increase ranking confidence
 - [ ] Neither must not increase ordering confidence
 
-## R2 — Category ranking engine ✅ / eligibility pending
+## R2 — Category ranking engine ✅ / C3 eligibility pending
 
 Implemented:
 
@@ -626,8 +626,8 @@ Implemented:
 
 M6 hardening:
 
-- [ ] explicit preference eligibility/exclusions
-- [ ] confidence semantics based only on meaningful ordering evidence
+- [ ] C3 explicit-preference eligibility/exclusions
+- [ ] C4 confidence semantics based only on meaningful ordering evidence
 
 ## R3 — Finalist selection 🟡
 
