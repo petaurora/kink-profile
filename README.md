@@ -16,7 +16,7 @@ The app now supports all four core quiz sections plus a playable catalog-ranking
 
 The ranking experience now uses a category progress-map home, continue/next-category navigation, and a separate Overall destination. Raw pairwise comparisons remain browser-local so rankings can be recalculated later. M6 is hardening that slice with durable catalog IDs, explicit preference state, mapping metadata, ranking eligibility/confidence rules, and clean M7 integration.
 
-C1 durable IDs and C2 metadata/signal mappings are now implemented in this repository. C2 adds category domains/display order, normalized receiving/giving/both direction, explicit aliases, and validated Catalog → SignalId mappings in generated runtime data. The C3 explicit-preference contract is documented and is the next implementation slice.
+C1 durable IDs, C2 metadata/signal mappings, and C3 explicit preference state are now implemented in this repository. C3 adds the unified catalog-profile store, lossless migration from legacy ranking history, contextual preference editing, and authoritative exclusion from new ranking pairs. C4 ranking hardening is next.
 
 The original 16-question prototype remains available as the **Starter Profile** sampler. It is not intended to be the final scoring model.
 
@@ -36,7 +36,7 @@ Start with [docs/README.md](docs/README.md).
 - [Product specification](docs/product-spec.md) — product behavior, taxonomy, UX, privacy, and scope
 - [Scoring & taxonomy model](docs/scoring-model.md) — signal-weighted scoring and catalog-affinity boundaries
 - [M6 catalog integration](docs/m6-catalog-integration.md) — stable catalog identity, explicit state, ranking hardening, signal mappings, and M7 boundary
-- [M6 C3 explicit preference](docs/m6-c3-explicit-preference.md) — next implementation scope for storage, migration, eligibility, UI, and tests
+- [M6 C3 explicit preference](docs/m6-c3-explicit-preference.md) — implemented storage, migration, eligibility, contextual UI, and test contract
 - [Kink This-or-That ranking](docs/kink-this-or-that-ranking.md) — current Top-5 ranking funnel and remaining ranking hardening
 - [Roadmap](ROADMAP.md) — implementation milestones and current next work
 - [Reference data](reference/README.md) — repo-native TSV catalog source and intended use
