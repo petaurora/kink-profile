@@ -1,5 +1,19 @@
 # Reference Data
 
+## Rewards & punishments
+
+Repository reference data:
+
+- `rewards-punishments/punishments.tsv` — 486 combined punishment/consequence ideas with source provenance
+- `rewards-punishments/rewards.tsv` — 183 combined reward ideas with source provenance
+- `rewards-punishments/source/` — exact sheet-level TSV exports from the source workbook
+- `rewards-punishments/system-guide.md` — source system principles, tiers, rules, and metadata
+- `rewards-punishments/overview.tsv` — workbook/source provenance
+
+Like the kink catalog, these are plain-text reference exports so changes remain readable and diffable in GitHub. They are source/reference material, not yet a runtime rewards-and-consequences schema.
+
+See [Rewards & Punishments Reference Data](rewards-punishments/README.md).
+
 ## Expanded kink catalog
 
 Repository source data:
