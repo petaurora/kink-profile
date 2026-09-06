@@ -1,4 +1,5 @@
 import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { ProfileResetPanel } from "./ProfileResetPanel";
 import {
   MAX_PROFILE_DISPLAY_NAME_LENGTH,
   normalizeProfileDisplayName,
@@ -35,6 +36,7 @@ export function ProfileSettingsPage({
   onClose,
 }: ProfileSettingsPageProps) {
   const [draftName, setDraftName] = useState(settings.displayName);
+  const [resetOpen, setResetOpen] = useState(false);
 
   useEffect(() => {
     setDraftName(settings.displayName);
@@ -64,7 +66,7 @@ export function ProfileSettingsPage({
           <p className="eyebrow">Settings</p>
           <h1>Make the profile yours.</h1>
           <p>
-            Manage profile identity here now. Reset, backup/restore, and sharing are already
+            Manage profile identity and local data here. Backup/restore and sharing are
             reserved below for the next M9 slices.
           </p>
         </div>
@@ -130,16 +132,25 @@ export function ProfileSettingsPage({
             <h2 id="settings-data-heading">Profile lifecycle</h2>
           </div>
           <p>
-            These controls are intentionally visible but inactive until their dedicated M9
-            slices land.
+            Reset independent source data without wiping unrelated parts of the profile.
           </p>
         </div>
 
-        <div className="settings-action-list panel" aria-label="Planned profile data controls">
-          <FutureAction
-            title="Reset profile data"
-            description="Choose exactly which quiz, catalog, ranking, or profile-settings data to reset."
-          />
+        <div className="settings-action-list panel" aria-label="Profile data controls">
+          <article className="settings-action-row">
+            <div>
+              <strong>Reset profile data</strong>
+              <p>
+                Choose exactly which quiz, catalog, ranking, or profile-settings data to reset.
+              </p>
+            </div>
+            <button
+              className="secondary compact"
+              onClick={() => setResetOpen((open) => !open)}
+            >
+              {resetOpen ? "Close reset" : "Choose data"}
+            </button>
+          </article>
           <FutureAction
             title="Export profile backup"
             description="Download the complete private profile as versioned machine-readable data."
@@ -149,6 +160,13 @@ export function ProfileSettingsPage({
             description="Validate and restore a complete profile backup without partially overwriting current data."
           />
         </div>
+
+        {resetOpen && (
+          <ProfileResetPanel
+            onSettingsChange={onChange}
+            onClose={() => setResetOpen(false)}
+          />
+        )}
       </section>
 
       <section className="settings-section" aria-labelledby="settings-sharing-heading">
