@@ -351,7 +351,9 @@ The repository migration imported the already-working catalog/ranking baseline i
 - [x] keep risk/context metadata separate from affinity scoring
 - [x] preserve the pre-migration seeded mapping layer: 93 source rules, 269 / 551 mapped items, 698 resolved item → signal associations
 
-### C3 — Explicit preference state 📋 Contract ready
+### C3 — Explicit preference state 🎯 Scoped for implementation
+
+See [docs/m6-c3-explicit-preference.md](docs/m6-c3-explicit-preference.md) for the concrete implementation plan, code touchpoints, migration behavior, UI structure, tests, and acceptance scenarios.
 
 - [ ] define the canonical seven-state runtime enum
 - [ ] represent unanswered by absence rather than a fake "unknown" state
@@ -361,11 +363,14 @@ The repository migration imported the already-working catalog/ranking baseline i
 - [ ] create `pet-profile-catalog-v1` as the logical catalog-profile store
 - [ ] migrate raw comparisons from `pet-profile-kink-ranking-v1` without losing IDs, timestamps, scopes, or results
 - [ ] keep the old ranking key readable/untouched for the migration window; do not dual-write
+- [ ] refactor comparison sides so Pick and Preference are separate valid interactive controls
 - [ ] add contextual explicit-state editing without requiring a 551-row checklist
 - [ ] keep pairwise choice actions independent from explicit-state actions
 - [ ] make Hard Limit visually distinct from ordinary disinterest
 - [ ] immediately exclude Hard Limit / Not Interested / Not Applicable items from new pair selection
 - [ ] preserve Love / Like / Curious / Unsure / unanswered as ranking-eligible
+- [ ] handle scopes with fewer than two eligible items without rendering a dead/blank ranking state
+- [ ] add focused preference/storage/migration/eligibility tests
 
 C3 owns explicit-state semantics, persistence, migration, and the minimum eligibility behavior required to make exclusions authoritative. C4 owns ranking-confidence and finalist hardening.
 
@@ -495,4 +500,4 @@ Interesting, but not current scope:
 
 **M6 — Catalog Integration / C3**
 
-Implement the reviewed C3 explicit-preference contract on top of the now-landed C1/C2 catalog model: logical catalog-profile storage, lossless ranking-history migration, contextual state editing, and authoritative exclusion from new pair selection.
+Implement [M6 C3 — Explicit Preference State](docs/m6-c3-explicit-preference.md): add the catalog-profile store + lossless ranking migration first, then preference-based eligibility, then the contextual comparison-card editor and focused tests.
