@@ -76,7 +76,7 @@ M1 establishes the multi-quiz application architecture, M2 adds weighted D/s sig
 
 The four core section models are implemented through M5.
 
-The imported pre-migration baseline established:
+The imported pre-migration baseline established the original ranking behavior below; C3–C5 later hardened eligibility, meaningful ordering evidence, finalist promotion, and Overall-candidate continuity:
 
 - TSV → generated runtime catalog
 - category ranking
