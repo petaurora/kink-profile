@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import App from "./App";
 import { ProfileSettingsPage } from "./ProfileSettingsPage";
+import { ProfileNameBridge } from "./ProfileNameBridge";
 import {
   loadProfileSettings,
   saveProfileSettings,
@@ -18,6 +19,7 @@ export default function ProfileAppRoot() {
 
   return (
     <ProfileSettingsProvider value={{ settings, setSettings }}>
+      <ProfileNameBridge settings={settings} />
       {settingsOpen ? (
         <main className="app-shell">
           <ProfileSettingsPage
