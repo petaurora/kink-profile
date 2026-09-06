@@ -30,7 +30,7 @@ describe("M7.3 profile orientation", () => {
     expect(deriveProfileOrientation(facets).key).toBe("insufficient");
   });
 
-  it("identifies a clear receiving/submissive lean", () => {
+  it("identifies a clear submissive lean", () => {
     const facets = scoreOverallFacets([
       signal("receiving_control", 92),
       signal("responsibility_transfer", 88),
@@ -51,7 +51,7 @@ describe("M7.3 profile orientation", () => {
     );
   });
 
-  it("identifies a clear giving/dominant lean", () => {
+  it("identifies a clear dominant lean", () => {
     const facets = scoreOverallFacets([
       signal("receiving_control", 20),
       signal("responsibility_transfer", 25),
@@ -83,7 +83,7 @@ describe("M7.3 profile orientation", () => {
     expect(deriveProfileOrientation(facets).key).toBe("bidirectional");
   });
 
-  it("uses mixed/context-dependent when different facets lean in opposite directions", () => {
+  it("uses context-dependent when different facets lean in opposite directions", () => {
     const facets = scoreOverallFacets([
       // Power exchange strongly receiving.
       signal("receiving_control", 95),
@@ -97,7 +97,9 @@ describe("M7.3 profile orientation", () => {
       signal("guidance_shaping", 90),
     ]);
 
-    expect(deriveProfileOrientation(facets).key).toBe("mixed");
+    const orientation = deriveProfileOrientation(facets);
+    expect(orientation.key).toBe("mixed");
+    expect(orientation.label).toBe("Context-dependent");
   });
 });
 
@@ -212,7 +214,34 @@ describe("M7.3 profile header model", () => {
     );
 
     expect(model.orientation.key).toBe("receiving");
-    expect(model.summary).toMatch(/^Receiving\/submissive energy/);
+    expect(model.orientation.label).toBe("Submissive");
+    expect(model.summary).toMatch(/^The profile leans submissive/);
     expect(model.summary).toContain("strongest themes");
+    expect(model.summary).not.toMatch(/giving|receiving/i);
+  });
+
+  it("keeps internal direction terms out of mixed-orientation user-facing copy", () => {
+    const canonical = [
+      signal("receiving_control", 95),
+      signal("responsibility_transfer", 90),
+      signal("obedience", 85),
+      signal("giving_control", 15),
+      signal("responsibility_holding", 20),
+      signal("care_receiving", 15),
+      signal("care_giving", 95),
+      signal("guidance_shaping", 90),
+      signal("service", 88),
+      signal("devotion", 90),
+    ];
+    const model = buildProfileHeaderModel(
+      canonical,
+      scoreOverallFacets(canonical),
+    );
+
+    expect(model.orientation.label).toBe("Context-dependent");
+    expect(model.summary).toMatch(
+      /^The profile is context-dependent rather than strongly dominant or submissive/,
+    );
+    expect(model.summary).not.toMatch(/giving|receiving/i);
   });
 });
