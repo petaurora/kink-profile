@@ -28,15 +28,13 @@ function selectionLabels(selection: ProfileResetSelection) {
 
   if (allQuizzesSelected) {
     reset.push("All quiz answers, progress, and results");
+  } else if (selection.quizIds.length === 0) {
+    keep.push("All quiz answers, progress, and results");
   } else {
     for (const quiz of quizzes) {
       const label = `${quiz.title} quiz`;
       (selection.quizIds.includes(quiz.id) ? reset : keep).push(label);
     }
-  }
-
-  if (!allQuizzesSelected && selection.quizIds.length === 0) {
-    keep.push("All quiz answers, progress, and results");
   }
 
   (selection.catalogPreferences ? reset : keep).push(
