@@ -1,43 +1,270 @@
-# M6 C3 — Explicit Preference State Implementation Scope
+# M6 C3 — Explicit Preference + Catalog Table
 
 ## Status
 
-**Scoped for implementation.**
+**Re-scoped for review after browser validation of the first contextual-editor implementation.**
 
-C1 and C2 are complete on `petaurora/kink-profile/main`.
+The C3 data model remains useful, but the original plan to edit explicit preference directly on This-or-That comparison cards overloaded the ranking experience.
 
-C3 adds first-class explicit catalog preference state on top of the existing catalog/ranking flow while preserving the separation between:
-
-- catalog definition
-- direct user preference
-- pairwise ranking evidence
-- inferred affinity
-
-The parent contract remains [M6 Catalog Integration](m6-catalog-integration.md). This document is the concrete implementation plan for C3.
+This document replaces that UX direction.
 
 ---
 
-# Goal
+# Product framing
 
-A user should be able to directly classify a catalog item while ranking without turning the catalog into a 551-row checklist.
+The catalog has one stable identity layer and multiple independent kinds of user evidence.
 
-C3 is complete when:
+```text
+CATALOG ITEM
+stable Catalog ID
+      │
+      ├── definition metadata
+      │   label / category / aliases / description / direction / risk
+      │
+      ├── explicit preference
+      │   Love / Like / Curious / Unsure / Not Interested / Hard Limit / N/A
+      │
+      ├── category pairwise evidence
+      │   comparisons → derived category ranking
+      │
+      ├── overall pairwise evidence
+      │   comparisons → derived overall ranking
+      │
+      └── inferred affinity (later)
+          quiz signals → exploration suggestion
+```
 
-1. explicit preference state has a stable runtime/storage model
-2. existing ranking history migrates losslessly into the new catalog-profile store
-3. direct preference edits never create pairwise ranking evidence
-4. pairwise choices never create explicit preference state
-5. explicit exclusions immediately stop an item from appearing in new comparisons
-6. the current comparison UI exposes a small, independent preference editor
-7. storage/migration/state-resolution behavior has focused automated tests
+These layers are interconnected through **Catalog ID**, not by silently converting one kind of evidence into another.
+
+Example:
+
+```text
+rope-bondage
+├─ explicit preference: Like
+├─ category rank: #2
+└─ overall rank: #11
+```
+
+The user can edit the explicit state directly while the ranking remains independently derived from pairwise history.
 
 ---
 
-# In scope
+# This-or-That is a mini-game
 
-## 1. Canonical explicit state
+The pairwise flow exists because comparing two things is often easier and more revealing than independently assigning a score to hundreds of items.
 
-Add the seven-state runtime vocabulary:
+Its product job is:
+
+- reduce catalog fatigue
+- make preference discovery playful
+- establish relative ordering
+- help a user notice preferences through contrast
+- progressively refine category and overall favorites
+
+It should feel like:
+
+> Which one am I more into?
+
+It should **not** also feel like:
+
+> Please maintain a profile record while answering this comparison.
+
+Therefore C3 removes explicit-preference editing from active This-or-That cards.
+
+The comparison UI remains focused on:
+
+- left
+- right
+- both / equal
+- neither
+- skip / don't know
+
+Pairwise interaction never automatically writes an explicit preference.
+
+---
+
+# Direct preference management is a catalog table
+
+Explicit preference needs its own first-class surface.
+
+The initial direct-management experience is a searchable/filterable catalog table or table-like list.
+
+The surface is not a required questionnaire and must not imply that all 551 items need to be classified.
+
+## Desktop shape
+
+Conceptually:
+
+```text
+┌─────────────────────┬──────────────────┬───────────────┬─────────────────┐
+│ Kink                │ Category         │ Preference    │ Ranking context │
+├─────────────────────┼──────────────────┼───────────────┼─────────────────┤
+│ Rope bondage        │ Bondage          │ Like          │ Cat #2 · Ov #11 │
+│ Praise              │ Praise / Humil.  │ Love          │ Cat #1 · Ov #3  │
+│ Blood play          │ Edge play        │ HARD LIMIT    │ —               │
+│ Wax play            │ Sensory          │ Not set       │ Cat #7          │
+└─────────────────────┴──────────────────┴───────────────┴─────────────────┘
+```
+
+Exact columns may be tuned during implementation.
+
+## Mobile shape
+
+Do not force a wide HTML table onto a phone.
+
+The same data should collapse into compact stacked rows:
+
+```text
+Rope bondage
+Bondage & Restraint
+[ Like ▾ ]       Cat #2 · Overall #11
+──────────────────────────────────────
+Praise
+Praise, Degradation & Humiliation
+[ Love ▾ ]       Cat #1 · Overall #3
+```
+
+The interaction model remains table/list management even when presentation becomes responsive cards/rows.
+
+---
+
+# Table v1 requirements
+
+## Search
+
+Search should match:
+
+- canonical label
+- aliases
+
+Description search can be added if useful but is not required for v1.
+
+Search is client-side against generated catalog data.
+
+## Filters
+
+Initial filters:
+
+- category
+- explicit state
+- unanswered / not set
+
+Useful state shortcuts may include:
+
+- Positive: Love / Like
+- Explore: Curious / Unsure
+- Excluded: Not Interested / Hard Limit / Not Applicable
+- Not set
+
+Do not require a category dropdown if a more visible filter treatment works better. The exact filter control can be tuned in implementation.
+
+## Ordering
+
+Default ordering:
+
+1. category `displayOrder`
+2. item label
+
+The table may group rows by category.
+
+Future sorting by explicit state or rank is optional.
+
+## Preference editor
+
+Each row exposes one compact editable preference cell/control.
+
+Canonical values:
+
+- Love
+- Like
+- Curious
+- Unsure
+- Not Interested
+- Hard Limit
+- Not Applicable
+- Clear / Not set
+
+Changing a preference:
+
+- updates only explicit preference state
+- does not record a pairwise comparison
+- does not modify Elo/ranking evidence
+- immediately affects ranking eligibility when the new state is an exclusion
+
+Hard Limit must remain visually distinct from ordinary disinterest.
+
+## Details
+
+A user may need context before assigning a state.
+
+Rows should support an expandable/detail treatment exposing useful catalog metadata such as:
+
+- description
+- aliases
+- normalized direction
+- primary mode
+- intensity
+- risk/context metadata where present
+
+The default row should remain compact.
+
+---
+
+# Ranking context in the table
+
+The table and ranking system are connected through the same stable Catalog ID.
+
+Ranking context is **derived/read-only** on the table.
+
+Possible v1 display:
+
+- category rank when category evidence exists
+- overall rank when Overall evidence exists
+- otherwise blank / not ranked
+
+Confidence/comparison-count detail may appear in expanded details rather than making the primary table noisy.
+
+Important:
+
+- ranking context does not overwrite explicit state
+- explicit positive state does not seed or boost ranking
+- an unanswered item can still have ranking evidence
+- a Love item can still be relatively low-ranked among other loved items
+- a Hard Limit / Not Interested / Not Applicable item is excluded from new pairs but historical pairwise history is retained
+
+C4 remains responsible for making ranking confidence and finalist promotion trustworthy.
+
+---
+
+# Shared user-state model
+
+C3 still uses one logical catalog-profile store:
+
+```ts
+type CatalogProfileState = {
+  schemaVersion: 1;
+  preferences: Record<CatalogItemId, CatalogItemPreference>;
+  comparisons: KinkComparison[];
+};
+```
+
+Storage key:
+
+```text
+pet-profile-catalog-v1
+```
+
+This does **not** mean explicit preference and ranking are the same signal.
+
+They share one persistence envelope because both refer to the same catalog identities and should migrate/export together.
+
+Their semantics remain independent.
+
+---
+
+# Explicit preference model
+
+Canonical state:
 
 ```ts
 type CatalogPreferenceState =
@@ -50,9 +277,9 @@ type CatalogPreferenceState =
   | "not_applicable";
 ```
 
-Unanswered remains **absence**, not an eighth state.
+Unanswered is absence.
 
-Persist per-item state by stable Catalog ID:
+Per-item record:
 
 ```ts
 type CatalogItemPreference = {
@@ -63,350 +290,202 @@ type CatalogItemPreference = {
 };
 ```
 
-The C3 UI edits `overall` only.
+The initial table edits `overall`.
 
-The receiving/giving fields are included now so directional editing can be added later without changing the storage schema.
+Directional overrides remain supported by the storage contract but directional editing UI is not required for C3 v1.
 
-## 2. Preference resolution helpers
-
-Provide pure helpers for preference semantics rather than spreading state rules through React.
-
-Required behavior:
+Resolution remains:
 
 ```text
-generic context:   overall → unanswered
-receiving context: receiving → overall → unanswered
-giving context:    giving → overall → unanswered
+generic:   overall → unanswered
+receiving: receiving override → overall → unanswered
+giving:    giving override    → overall → unanswered
 ```
 
-Directional values never synthesize an overall value.
+Directional overrides never synthesize an overall state.
 
-Clearing the last stored state removes the item preference record entirely.
+Clearing the final explicit value deletes the preference record.
 
-Recommended helper boundary:
+---
 
-```ts
-getCatalogPreference(preference, context)
-setCatalogPreference(profile, catalogId, context, state, updatedAt?)
-clearCatalogPreference(profile, catalogId, context)
-isExcludedCatalogState(state)
-```
+# Migration
 
-Exact names may vary.
+When `pet-profile-catalog-v1` does not exist:
 
-## 3. One logical catalog-profile store
+1. inspect `pet-profile-kink-ranking-v1`
+2. preserve valid raw comparison records
+3. canonicalize Catalog IDs through C1 replacement mappings
+4. initialize explicit preferences empty
+5. write the new catalog-profile store
+6. leave the legacy ranking key untouched during the migration window
+7. write only the new key afterward
 
-Replace the ranking-only application state with:
+Never infer explicit state from old pairwise history.
 
-```ts
-type CatalogProfileState = {
-  schemaVersion: 1;
-  preferences: Record<string, CatalogItemPreference>;
-  comparisons: KinkComparison[];
-};
-```
+Examples:
 
-Storage key:
+- prior win ≠ Love
+- Neither ≠ Not Interested
+- Skip ≠ Unsure
 
-```text
-pet-profile-catalog-v1
-```
+Malformed/corrupt legacy records should not block the entire application.
 
-The existing key remains the legacy migration source:
+---
 
-```text
-pet-profile-kink-ranking-v1
-```
+# Explicit state and mini-game eligibility
 
-After migration, application writes go only to the new catalog-profile key.
+The one intentional behavior crossing explicit preference into ranking is **eligibility**.
 
-Do not delete or mutate the legacy key in C3.
+Exclude from new This-or-That pairs:
 
-## 4. Ranking-history migration
+- Hard Limit
+- Not Interested
+- Not Applicable
 
-Load order:
+Remain eligible:
 
-1. if a valid `pet-profile-catalog-v1` exists, use it
-2. otherwise inspect `pet-profile-kink-ranking-v1`
-3. if legacy ranking v1 is valid enough to recover, copy its raw comparisons
-4. canonicalize compared item IDs through `kinkCatalogIdReplacements`
-5. preserve comparison ID, timestamp, scope, and result
-6. initialize `preferences` as empty
-7. write the migrated catalog profile
-8. if neither source is usable, return an empty catalog profile
-
-Migration must not infer direct preference from ranking history.
-
-Therefore:
-
-- prior left/right wins do not become Love/Like
-- Neither does not become Not Interested
-- Skip does not become Unsure
-
-Malformed individual records should be ignored rather than allowing one corrupt entry to block the entire profile.
-
-A corrupt **existing new-store value** should not silently re-import legacy state as though migration never happened; fail safe to an empty in-memory profile and leave stored values untouched.
-
-## 5. Explicit ranking eligibility
-
-C3 owns only the eligibility behavior necessary to make direct exclusions authoritative.
-
-Excluded from **new pair selection**:
-
-- `hard_limit`
-- `not_interested`
-- `not_applicable`
-
-Eligible:
-
-- `love`
-- `like`
-- `curious`
-- `unsure`
+- Love
+- Like
+- Curious
+- Unsure
 - unanswered
 
-Historical comparisons are retained even when an item becomes excluded.
+Historical comparison records are retained after exclusion.
 
-Do not delete or rewrite prior comparison records.
+Clearing an exclusion makes the item eligible again.
 
-For the current generic ranking flow, overall explicit state controls eligibility. Directional override-specific ranking behavior is deferred until a directional editor/ranking context exists.
-
-Filtering should happen before ranking/pair-selection functions receive the active catalog so the ranking engine remains preference-model agnostic.
-
-The same eligible catalog must feed:
-
-- category pair selection
-- category ranking snapshots
-- category finalist calculation
-- Overall finalist/pair selection
-
-## 6. Contextual comparison-card editor
-
-The current comparison side is itself one large `<button>`.
-
-C3 must refactor each side into a non-button card wrapper because interactive preference controls cannot be nested inside the existing pick button.
-
-Conceptual structure:
-
-```text
-comparison card
-├── Pick this            ← pairwise ranking action
-└── Preference: Unset    ← explicit-state action
-    └── editor
-        ├── Love
-        ├── Like
-        ├── Curious
-        ├── Unsure
-        ├── Not Interested
-        ├── Hard Limit
-        ├── Not Applicable
-        └── Clear
-```
-
-Requirements:
-
-- preference editing does not submit a pairwise answer
-- selecting Love/Like/Curious/Unsure does not advance the pair
-- selecting an exclusion immediately recomputes the active eligible pair
-- current overall state is visible on the card when set
-- Hard Limit is visually distinct from ordinary Not Interested
-- Clear returns the item to unanswered
-- editor controls are keyboard-accessible
-- avoid a giant global catalog preference form
-
-A compact expandable chip/menu treatment is preferred over nesting another control inside the pick button.
-
-## 7. Empty-pair handling
-
-C3 can reduce an active scope below two eligible items.
-
-The UI must not silently render an empty hole when `selectNextPair` returns null.
-
-Show a small completed/no-more-eligible-items state with appropriate navigation:
-
-- view the current ranking when meaningful
-- move to another category
-- return to categories from Overall
-
-Do not invent ranking evidence merely to keep the session running.
-
-## 8. Focused tests
-
-C3 introduces persistence and migration behavior that should not rely only on manual UI testing.
-
-Add the smallest test setup necessary for pure state/storage tests.
-
-Recommended: Vitest in node mode with an injected/fake Storage implementation rather than a browser DOM dependency.
-
-Minimum automated cases:
-
-### Preference semantics
-
-- unanswered resolves to undefined
-- overall resolves in generic/receiving/giving contexts
-- receiving override beats overall only for receiving
-- giving override beats overall only for giving
-- directional overrides never synthesize generic overall
-- clearing the last value removes the record
-- excluded-state helper recognizes exactly Hard Limit / Not Interested / Not Applicable
-
-### Storage/migration
-
-- empty storage returns empty catalog profile
-- valid new store wins over legacy
-- legacy comparisons migrate losslessly
-- replacement Catalog IDs are canonicalized
-- preferences initialize empty during legacy migration
-- migration never derives preferences from comparison result
-- migrated state writes only the new key
-- legacy key remains untouched
-- corrupt legacy data falls back safely
-- corrupt individual legacy comparisons do not destroy otherwise valid history
-- corrupt existing new-store data does not trigger a fresh legacy import
-
-### Eligibility integration
-
-- excluded catalog items are absent from active category pairs
-- excluded items do not enter newly derived finalists
-- historical comparisons remain stored after exclusion
-- clearing an exclusion makes the item eligible again
-
-C4 retains the ranking-algorithm test work for Skip/Neither confidence and finalist evidence thresholds.
+Positive manual preference never changes rank.
 
 ---
 
-# Expected code touchpoints
+# Navigation
 
-Likely files:
+The catalog should become a first-class destination alongside the ranking mini-game.
+
+Conceptually:
 
 ```text
-src/lib/catalogProfile.ts               new: preference types + pure helpers
-src/lib/catalogProfileStorage.ts        new: v1 persistence + legacy migration
-src/lib/kinkRankingStorage.ts           retired or reduced to legacy migration types/constants
-src/KinkThisOrThat.tsx                  load/save new profile + eligibility + editor UI
-src/styles.css                          preference-card/editor/empty-state styles
-package.json                            minimal test command/dependency
-.github/workflows/ci.yml                run focused tests in CI
+KINK CATALOG
+├─ Browse / Preferences      ← table
+└─ This or That              ← ranking mini-game
 ```
 
-The exact split between `catalogProfile.ts` and `catalogProfileStorage.ts` is flexible; keep pure semantics separate from React.
+These may initially be two clearly separate entry points from the catalog/ranking area rather than tabs if that keeps mobile navigation cleaner.
 
-Do not move catalog definitions or signal mappings into user-state files.
+The table should not be hidden inside the This-or-That flow.
 
 ---
 
-# Explicit non-goals
+# C3 implementation slices
 
-C3 does **not** include:
+## C3.1 — Shared state + migration
 
+- canonical seven-state preference model
+- direction-capable preference record
+- unified catalog-profile storage
+- legacy pairwise-history migration
+- C1 ID replacement canonicalization
+- focused state/storage tests
+
+## C3.2 — Table foundation
+
+- catalog/preferences destination
+- search by label + alias
+- category/state filters
+- category-order grouping/sorting
+- responsive desktop table / mobile rows
+- compact overall-preference editor
+- expandable metadata/details
+
+## C3.3 — Ranking interconnection
+
+- derive category/overall ranking context by Catalog ID
+- display useful read-only ranking context in table
+- explicit exclusions filter new pair generation
+- historical comparisons remain intact
+- remove preference editor from This-or-That cards
+
+## C3.4 — Verification
+
+- focused state/storage/eligibility tests
+- production build
+- browser/mobile validation of table usability
+- verify This-or-That remains simple after explicit editor removal
+- update docs/status only after validation
+
+---
+
+# C3 non-goals
+
+Do not add in this slice:
+
+- requirement to classify all 551 rows
+- preference completion percentage as a goal
+- pairwise choices auto-writing explicit states
+- explicit positive states seeding Elo/ranking
 - directional preference editing UI
-- preference controls on ranking-result rows
-- catalog-wide searchable browser
-- hard-limit/exclusion summary pages
-- Skip/Neither confidence fixes
-- finalist evidence thresholds
+- bulk spreadsheet import
+- C4 confidence fixes
+- C4 finalist-promotion thresholds
 - persisted Overall candidate pool
-- broad ranking algorithm changes
-- inferred catalog affinity
+- inferred affinity
 - M7 cross-quiz aggregation
-- export/import/share
 - cloud persistence
-
-Those remain C4–C10 as already scoped.
-
----
-
-# Implementation order
-
-## C3.1 — State + storage
-
-- add canonical types/helpers
-- add `pet-profile-catalog-v1`
-- implement migration from ranking v1
-- add storage/migration tests
-
-Exit: existing users retain raw ranking history and new users get an empty catalog profile.
-
-## C3.2 — Eligibility integration
-
-- derive an eligible catalog from explicit overall state
-- feed eligible items into category ranking/pair selection/finalists/Overall
-- retain historical comparisons
-- add eligibility tests
-
-Exit: exclusions are authoritative for all newly generated pairs.
-
-## C3.3 — Contextual editor
-
-- refactor comparison sides into wrapper + separate pick action
-- add preference trigger/editor
-- expose current state
-- distinguish Hard Limit
-- handle pair invalidation after exclusion
-- add no-pair empty state
-
-Exit: a user can classify either currently displayed item without accidentally recording a comparison.
-
-## C3.4 — Verification + docs
-
-- run tests
-- run production build
-- manually verify migration with representative legacy localStorage
-- manually verify mobile comparison-card interaction
-- update C3 checklist/status only after behavior is verified
 
 ---
 
 # Acceptance scenarios
 
-## Existing ranking user
+## Manual preference
 
-Given legacy ranking history exists and the new catalog-profile key does not:
+Given Rope Bondage appears in the catalog table:
 
-- opening ranking preserves the same raw comparison records
-- no explicit preferences are invented
-- the new catalog-profile key is created
-- future comparisons save only into the new store
+- set preference to Like
+- table shows Like
+- no comparison is created
+- its existing category/overall ranking remains unchanged
 
-## Explicit positive preference
+## Ranking-only evidence
 
-Given Rope Bondage is currently displayed:
+Given Praise has pairwise history but no explicit state:
 
-- mark it Like
-- the card shows Like
-- no comparison record is added
-- the same pair may remain available until the user makes a ranking choice
+- table may show its derived rank
+- preference remains Not set
+- no explicit state is inferred
 
-## Explicit exclusion
+## Exclusion
 
-Given Rope Bondage is currently displayed:
+Given an item is marked Hard Limit in the table:
 
-- mark it Hard Limit
-- no comparison record is added
-- Rope Bondage disappears from newly generated pairs
-- prior Rope Bondage comparison history remains stored
-- Hard Limit is visibly different from Not Interested
+- Hard Limit is visually distinct
+- prior comparisons remain stored
+- the item does not appear in newly generated This-or-That pairs
+- rank history may remain visible as historical/derived context if useful
 
 ## Clear
 
 Given an item is Not Interested:
 
-- choose Clear
-- the explicit preference record is removed when no directional fields remain
-- the item becomes eligible for new generic comparisons again
+- clear the explicit value
+- the final preference record is removed when no directional values remain
+- the item becomes eligible for future pairs again
 
-## Scope exhaustion
+## Discovery through mini-game
 
-Given only one eligible item remains in a category:
+Given two unanswered items appear in This-or-That:
 
-- no invalid comparison is rendered
-- the user sees a clear no-more-eligible-items state
-- navigation remains usable
+- user chooses one over the other
+- ranking evidence updates
+- neither receives a manual preference state
+- the user may later open the table and explicitly classify either item
 
 ---
 
 # C3 exit condition
 
-C3 is complete when explicit preference is a durable, independently editable user signal; ranking history migrates safely; exclusions control new ranking eligibility; the comparison UI supports direct classification without nested-interaction problems; and the behavior is covered by focused tests.
+C3 is complete when the user has two coherent ways to work with the same catalog:
 
-At that point M6 moves to **C4 — Ranking hardening**.
+1. **Catalog table** for direct explicit preference management
+2. **This-or-That mini-game** for low-friction comparative discovery and ranking
+
+Both operate on the same stable Catalog IDs, share one catalog-profile persistence envelope, remain semantically independent, and intentionally interact only where explicit exclusions control future ranking eligibility.
