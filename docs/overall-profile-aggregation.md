@@ -1168,17 +1168,29 @@ The compact header intentionally omits percentages. Detailed percentages remain 
 
 Orientation is derived across the **directional M7.2 facets**, not from one D/s score and not from a zero-sum receiving-vs-giving slider.
 
-Possible compact results:
+Possible compact user-facing results:
 
-- **Receiving / submissive**
-- **Giving / dominant**
-- **Bidirectional**
-- **Mixed / context-dependent**
+- **Submissive**
+- **Dominant**
+- **Dominant + submissive**
+- **Context-dependent**
 - **Still emerging**
 
-Strong receiving and strong giving evidence can coexist. When both are meaningfully supported, the header says **Bidirectional** rather than assigning a "switch" identity.
+The internal evidence model still uses receiving/giving direction keys because they are useful, neutral plumbing across different facet types. Those terms should not leak into normal profile copy.
 
-When different directional facets materially lean opposite ways, the header can use **Mixed / context-dependent**.
+Strong evidence on both sides can coexist. When both are meaningfully supported, the header says **Dominant + submissive** rather than assigning a "switch" identity.
+
+When different directional facets materially lean opposite ways, the header uses **Context-dependent**.
+
+### User-facing terminology boundary
+
+For M7 presentation:
+
+- keep `receiving` / `giving` as internal model vocabulary where useful
+- prefer **submissive** / **dominant** in the profile header when describing orientation
+- do not add receiving/giving badges to Headspace chips
+- do not write prose such as "giving and receiving shift..."
+- temporary debug/inspection surfaces may still expose internal SignalIds, but normal presentation should describe the person's profile rather than the aggregation plumbing
 
 ### Headline-theme semantics
 
