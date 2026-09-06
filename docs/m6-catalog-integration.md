@@ -8,7 +8,7 @@ M6 is not starting from zero.
 
 The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-The next implementation slice is C3 explicit preference state.
+C3 explicit preference state is implemented in this slice. C4 ranking hardening is next.
 
 Current baseline on `main`:
 
