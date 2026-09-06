@@ -379,7 +379,7 @@ See [docs/m6-c3-explicit-preference.md](docs/m6-c3-explicit-preference.md) for t
 - [x] handle scopes with fewer than two eligible items without rendering a dead/blank ranking state
 - [x] add focused preference/storage/migration/eligibility tests
 
-C3 now owns explicit-state semantics, persistence, the catalog-table management surface, migration, and the minimum eligibility behavior required to make exclusions authoritative. C4 is the next post-C3 convergence slice and builds around these durable outputs rather than replacing them.
+C3 owns explicit-state semantics, persistence, the catalog-table management surface, migration, and the minimum eligibility behavior required to make exclusions authoritative. C4 now builds source-aware derived evidence around those durable outputs without replacing them.
 
 See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.md) for the source-aware profile contract.
 
