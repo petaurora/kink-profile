@@ -908,6 +908,126 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   }
 }
 
+/* M7.3 — aggregated profile header */
+
+.profile-identity-header {
+  padding: clamp(26px, 5vw, 52px);
+}
+
+.profile-identity-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.profile-identity-top > div {
+  min-width: 0;
+}
+
+.profile-identity-top h1 {
+  max-width: 940px;
+  margin: 0;
+  font-size: clamp(2rem, 4.4vw, 4.25rem);
+  line-height: 1.02;
+  letter-spacing: -.045em;
+}
+
+.profile-identity-top .secondary {
+  flex: 0 0 auto;
+}
+
+.profile-trait-grid {
+  display: grid;
+  grid-template-columns: .8fr 1.25fr 1.25fr;
+  gap: 12px;
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.profile-trait-group {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 9px;
+}
+
+.profile-trait-label {
+  color: var(--text-muted);
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.profile-orientation,
+.profile-trait-emerging {
+  font-size: .98rem;
+}
+
+.profile-trait-emerging {
+  color: var(--text-secondary);
+}
+
+.profile-trait-chips {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.profile-trait-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+.profile-trait-chip strong {
+  font-size: .82rem;
+}
+
+.profile-trait-chip small {
+  color: var(--text-muted);
+  font-size: .64rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 820px) {
+  .profile-identity-top {
+    flex-direction: column;
+  }
+
+  .profile-trait-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 560px) {
+  .profile-identity-header {
+    padding: 22px 20px;
+  }
+
+  .profile-identity-top h1 {
+    font-size: clamp(1.85rem, 9vw, 2.65rem);
+  }
+
+  .profile-identity-top .secondary {
+    width: 100%;
+  }
+
+  .profile-trait-grid {
+    margin-top: 28px;
+  }
+}
+
 /* M7.1 — canonical signal inspection */
 
 .evidence-inspector {
