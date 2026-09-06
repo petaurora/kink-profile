@@ -2,18 +2,24 @@
 
 ## Status
 
-**Scoped for implementation.**
+**Implemented.**
 
 C1 and C2 are complete on `petaurora/kink-profile/main`.
 
-C3 adds first-class explicit catalog preference state on top of the existing catalog/ranking flow while preserving the separation between:
+C3 now adds first-class explicit catalog preference state on top of the existing catalog/ranking flow while preserving the separation between:
 
 - catalog definition
 - direct user preference
 - pairwise ranking evidence
 - inferred affinity
 
-The parent contract remains [M6 Catalog Integration](m6-catalog-integration.md). This document is the concrete implementation plan for C3.
+The parent contract remains [M6 Catalog Integration](m6-catalog-integration.md). This document records the implemented C3 contract and acceptance criteria.
+
+Verification for this slice:
+
+- 19 focused tests pass across preference semantics, migration/storage, and eligibility behavior
+- production TypeScript/Vite build passes
+- runtime catalog generation still reports 551 items / 35 categories / 19 domains / 269 mapped items
 
 ---
 
