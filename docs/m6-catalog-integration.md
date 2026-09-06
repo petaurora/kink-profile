@@ -1210,19 +1210,30 @@ Verification: 56 tests pass across the ranking/catalog/evidence/result suites, i
 ### C6 / C7 / M7 boundary
 
 - **C6** shows the evidence channels already available and keeps their provenance/semantics visible.
-- **C7** hardens the inference matcher/recommendation behavior itself: suppression, mapping/coverage edge cases, matched-signal explainability, and tentative language.
+- **C7** hardens the inference matcher/recommendation behavior itself: suppression, mapping/coverage edge cases, tentative language, and preservation of the explainability/provenance C4/C6 already expose.
 - **M7** may derive new profile-level aggregates from multiple independent direct evidence sources, including a presentation-level Top Overall list, without mutating the underlying explicit or pairwise evidence.
 
 This avoids implementing the same merged profile result twice under different milestone names.
 
 ## C7 — Signal affinity hardening
 
+C7 starts from behavior already established by C4/C6:
+
+- inferred affinity is a separate derived channel, never an explicit preference or rank
+- matched SignalIds + contributing quiz provenance are already available
+- explicit exclusions remain authoritative for ranking eligibility
+- catalog → signal projection already consumes only independent direct evidence
+- inferred catalog affinity cannot feed back into the signals that produced it
+
+Remaining C7 work:
+
 - [ ] harden the coverage-aware catalog affinity matcher introduced/centralized in C4
-- [ ] test mapping/coverage/override behavior with synthetic signal profiles
-- [ ] suppress hard limits/not-interested/not-applicable
-- [ ] retain matched-signal explainability
-- [ ] use tentative exploration language for inference-only items
-- [ ] ensure catalog → signal projection accepts only independent direct catalog evidence
+- [ ] test mapping / partial-coverage / unmapped-item behavior with synthetic signal profiles
+- [ ] suppress Hard Limit / Not Interested / Not Applicable items from recommendation candidates
+- [ ] keep suppressed items' derived affinity/provenance inspectable in explainability views rather than deleting the evidence
+- [ ] use tentative exploration language for inference-only recommendations
+- [ ] preserve matched-signal + quiz provenance through recommendation filtering/suppression
+- [ ] regression-test the direct-evidence-only catalog → signal projection boundary
 - [ ] defer final canonical cross-source aggregation + profile-wide radar/recommendation UI to M7
 
 ---

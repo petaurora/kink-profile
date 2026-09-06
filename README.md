@@ -12,7 +12,7 @@ A privacy-first React app for exploring BDSM, kink, power-dynamic, and headspace
 **M5 — Sadism & Masochism:** complete  
 **M6 — Catalog Integration:** in progress
 
-The app now supports all four core quiz sections plus a playable catalog-ranking flow. The 551-item catalog is sourced from repo-native TSV, generated into app-owned runtime data before dev/build, and can be ranked within categories and across the current Top-5-per-ranked-category finalist pool.
+The app now supports all four core quiz sections plus a playable catalog-ranking flow. The 551-item catalog is sourced from repo-native TSV, generated into app-owned runtime data before dev/build, and can be ranked within categories and across an Overall candidate pool built from current evidenced finalists plus eligible prior Overall participants.
 
 The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. With source-aware evidence convergence implemented in C4, ranking confidence/finalists hardened in C5, and source-aware catalog results integrated in C6, M6 now continues with affinity/recommendation hardening and the M7 handoff.
 

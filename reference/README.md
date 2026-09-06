@@ -68,7 +68,7 @@ Canonical runtime states:
 - hard limit
 - not applicable
 
-Hard limits should suppress inferred recommendations for that item.
+C7 must suppress Hard Limit items from inferred recommendation candidates. C6 explainability may still display the underlying derived affinity/provenance; suppression does not erase evidence.
 
 ## Current use
 

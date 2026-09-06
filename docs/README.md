@@ -32,7 +32,7 @@ This folder contains the product and scoring decisions that should guide impleme
    The implemented category/Overall ranking flow, C5 meaningful-evidence/finalist/history hardening, and C6 explicit/inferred result integration.
 
 10. [Scoring & Taxonomy Model](scoring-model.md)  
-   The reusable scoring architecture behind the core quizzes, catalog affinity, and source-aware recomputation.
+   The reusable scoring architecture behind the core quizzes, catalog affinity, source-aware recomputation, and the C7 recommendation-suppression/no-feedback boundaries.
 
 11. [Overall Profile Aggregation](overall-profile-aggregation.md)  
    The M7 direction for canonical cross-source signals, broad front-page facets, updated radars, role/mode summaries, catalog evidence, and coverage handling.

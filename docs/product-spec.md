@@ -553,9 +553,10 @@ These ideas can be revisited after the quiz/profile model is useful on its own.
 
 These do not block the current core quiz work.
 
+Already decided in M6: **Hard Limit is a distinct explicit state from Not Interested / Not Applicable.** It controls eligibility/recommendation behavior without erasing historical or derived evidence used for explainability.
+
 1. Should every section eventually offer both Quick and Deep modes?
 2. When M7 aggregates the overall profile, how should source-aware evidence from M2 and M3 be combined without silently changing section-local results?
-3. How strongly should catalog recommendations depend on explicit answers versus inferred signals?
-4. Should hard limits be tracked separately from ordinary "not interested" responses? (Current direction: yes.)
-5. Should a user be able to exclude a completed section from their overall profile?
-6. Does "Pet Profile" remain the final product name once the app covers broader BDSM interests?
+3. For future recommendation ordering, how should explicit positive preference affect placement relative to inference-only suggestions?
+4. Should a user be able to exclude a completed section from their overall profile?
+5. Does "Pet Profile" remain the final product name once the app covers broader BDSM interests?
