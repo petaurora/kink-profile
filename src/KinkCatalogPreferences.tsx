@@ -13,63 +13,19 @@ import {
   type CatalogProfileState,
 } from "./lib/catalogProfile";
 import {
+  buildCatalogResultView,
+  catalogPreferenceLabels,
+} from "./lib/catalogResults";
+import {
   loadCatalogProfile,
   saveCatalogProfile,
 } from "./lib/catalogProfileStorage";
-import { calculateRanking } from "./lib/kinkRanking";
+import type { StoredProfile } from "./lib/profileStorage";
 
 type PreferenceFilter = "all" | "unanswered" | CatalogPreferenceState;
 
-const preferenceLabels: Record<CatalogPreferenceState, string> = {
-  love: "Love",
-  like: "Like",
-  curious: "Curious",
-  unsure: "Unsure",
-  not_interested: "Not Interested",
-  hard_limit: "Hard Limit",
-  not_applicable: "Not Applicable",
-};
-
 function preferenceClass(state: CatalogPreferenceState | undefined) {
   return state ? `preference-${state.replaceAll("_", "-")}` : "preference-unanswered";
-}
-
-function buildRankingContext(profile: CatalogProfileState) {
-  const categoryRanks = new Map<string, number>();
-  const overallRanks = new Map<string, number>();
-
-  for (const category of kinkCategories) {
-    const snapshot = calculateRanking(kinkCatalog, profile.comparisons, {
-      type: "category",
-      categoryId: category.id,
-    });
-
-    for (const item of snapshot.items) {
-      if (item.comparisons > 0) categoryRanks.set(item.id, item.rank);
-    }
-  }
-
-  const overallParticipantIds = new Set<string>();
-  for (const comparison of profile.comparisons) {
-    if (comparison.scope.type !== "overall") continue;
-    overallParticipantIds.add(comparison.leftKinkId);
-    overallParticipantIds.add(comparison.rightKinkId);
-  }
-
-  if (overallParticipantIds.size >= 2) {
-    const participantCatalog = kinkCatalog.filter((item) =>
-      overallParticipantIds.has(item.id),
-    );
-    const snapshot = calculateRanking(participantCatalog, profile.comparisons, {
-      type: "overall",
-    });
-
-    for (const item of snapshot.items) {
-      if (item.comparisons > 0) overallRanks.set(item.id, item.rank);
-    }
-  }
-
-  return { categoryRanks, overallRanks };
 }
 
 function matchesSearch(item: KinkCatalogItem, query: string) {
@@ -82,9 +38,11 @@ function matchesSearch(item: KinkCatalogItem, query: string) {
 }
 
 export function KinkCatalogPreferences({
+  quizProfile,
   onClose,
   onPlayRanking,
 }: {
+  quizProfile: StoredProfile;
   onClose: () => void;
   onPlayRanking: () => void;
 }) {
@@ -107,9 +65,9 @@ export function KinkCatalogPreferences({
     return () => window.removeEventListener("scroll", updateReturnToTop);
   }, []);
 
-  const rankingContext = useMemo(
-    () => buildRankingContext(profile),
-    [profile.comparisons],
+  const resultView = useMemo(
+    () => buildCatalogResultView(quizProfile, profile),
+    [quizProfile, profile],
   );
 
   const visibleItems = useMemo(
@@ -262,7 +220,7 @@ export function KinkCatalogPreferences({
             <option value="unanswered">Not set</option>
             {catalogPreferenceStates.map((state) => (
               <option key={state} value={state}>
-                {preferenceLabels[state]}
+                {catalogPreferenceLabels[state]}
               </option>
             ))}
           </select>
@@ -272,6 +230,75 @@ export function KinkCatalogPreferences({
           Clear filters
         </button>
       </div>
+
+      <section className="catalog-exclusion-summary panel">
+        <div className="catalog-exclusion-heading">
+          <div>
+            <p className="eyebrow">Direct explicit boundaries</p>
+            <h2>Limits & exclusions</h2>
+          </div>
+          <p>
+            These are explicit states, not low rankings. Quiz-derived affinity never
+            overrides them.
+          </p>
+        </div>
+
+        <div className="catalog-exclusion-grid">
+          <div className="catalog-exclusion-card hard-limit">
+            <div>
+              <span>Hard Limits</span>
+              <strong>{resultView.exclusions.hardLimits.length}</strong>
+            </div>
+            <p>
+              {resultView.exclusions.hardLimits.length > 0
+                ? resultView.exclusions.hardLimits
+                    .slice(0, 5)
+                    .map((result) => result.item.label)
+                    .join(" · ")
+                : "None marked"}
+              {resultView.exclusions.hardLimits.length > 5
+                ? ` · +${resultView.exclusions.hardLimits.length - 5} more`
+                : ""}
+            </p>
+          </div>
+
+          <div className="catalog-exclusion-card">
+            <div>
+              <span>Not Interested</span>
+              <strong>{resultView.exclusions.notInterested.length}</strong>
+            </div>
+            <p>
+              {resultView.exclusions.notInterested.length > 0
+                ? resultView.exclusions.notInterested
+                    .slice(0, 5)
+                    .map((result) => result.item.label)
+                    .join(" · ")
+                : "None marked"}
+              {resultView.exclusions.notInterested.length > 5
+                ? ` · +${resultView.exclusions.notInterested.length - 5} more`
+                : ""}
+            </p>
+          </div>
+
+          <div className="catalog-exclusion-card">
+            <div>
+              <span>Not Applicable</span>
+              <strong>{resultView.exclusions.notApplicable.length}</strong>
+            </div>
+            <p>
+              {resultView.exclusions.notApplicable.length > 0
+                ? resultView.exclusions.notApplicable
+                    .slice(0, 5)
+                    .map((result) => result.item.label)
+                    .join(" · ")
+                : "None marked"}
+              {resultView.exclusions.notApplicable.length > 5
+                ? ` · +${resultView.exclusions.notApplicable.length - 5} more`
+                : ""}
+            </p>
+          </div>
+        </div>
+      </section>
 
       <div className="catalog-table-summary">
         <div className="catalog-table-summary-copy">
@@ -295,7 +322,7 @@ export function KinkCatalogPreferences({
         <div className="catalog-table-head" aria-hidden="true">
           <span>Kink</span>
           <span>Preference</span>
-          <span>Ranking context</span>
+          <span>Evidence</span>
           <span>More</span>
         </div>
 
@@ -343,12 +370,22 @@ export function KinkCatalogPreferences({
                 {isExpanded && (
                   <div className="catalog-rows">
                     {items.map((item) => {
-                      const preference = getCatalogPreference(
-                        profile.preferences[item.id],
-                        "overall",
-                      );
-                      const categoryRank = rankingContext.categoryRanks.get(item.id);
-                      const overallRank = rankingContext.overallRanks.get(item.id);
+                      const result = resultView.byCatalogId.get(item.id);
+                      const preference =
+                        result?.explicitState ??
+                        getCatalogPreference(
+                          profile.preferences[item.id],
+                          "overall",
+                        );
+                      const categoryRank = result?.categoryRank;
+                      const overallRank = result?.overallRank;
+                      const inferred = result?.inferred;
+                      const hasEvidence =
+                        Boolean(categoryRank) ||
+                        Boolean(overallRank) ||
+                        Boolean(inferred) ||
+                        (result?.meaningfulPairwiseComparisons ?? 0) > 0 ||
+                        Boolean(result?.excludedFromNewRanking);
 
                       return (
                         <article
@@ -382,23 +419,36 @@ export function KinkCatalogPreferences({
                               <option value="">Not set</option>
                               {catalogPreferenceStates.map((state) => (
                                 <option key={state} value={state}>
-                                  {preferenceLabels[state]}
+                                  {catalogPreferenceLabels[state]}
                                 </option>
                               ))}
                             </select>
                           </label>
 
                           <div className="catalog-ranking-context">
-                            {categoryRank || overallRank ? (
-                              <>
-                                {categoryRank && (
-                                  <span>Category #{categoryRank}</span>
-                                )}
-                                {overallRank && <span>Overall #{overallRank}</span>}
-                              </>
-                            ) : (
+                            {categoryRank && (
+                              <span className="catalog-evidence-chip direct">
+                                Category #{categoryRank.rank}
+                              </span>
+                            )}
+                            {overallRank && (
+                              <span className="catalog-evidence-chip direct">
+                                Overall #{overallRank.rank}
+                              </span>
+                            )}
+                            {inferred && (
+                              <span className="catalog-evidence-chip inferred">
+                                Quiz-derived {Math.round(inferred.affinity)}%
+                              </span>
+                            )}
+                            {result?.excludedFromNewRanking && (
+                              <span className="catalog-evidence-chip excluded">
+                                Excluded from new pairs
+                              </span>
+                            )}
+                            {!hasEvidence && (
                               <span className="catalog-not-ranked">
-                                Not ranked yet
+                                No ranking or quiz inference yet
                               </span>
                             )}
                           </div>
@@ -407,6 +457,71 @@ export function KinkCatalogPreferences({
                             <summary>Details</summary>
                             <div>
                               {item.description && <p>{item.description}</p>}
+
+                              <div className="catalog-evidence-details">
+                                <section>
+                                  <span className="eyebrow">Direct evidence</span>
+                                  <strong>
+                                    {preference
+                                      ? `Explicit: ${catalogPreferenceLabels[preference]}`
+                                      : "No explicit preference set"}
+                                  </strong>
+                                  <p>
+                                    {categoryRank
+                                      ? `Category #${categoryRank.rank} · ${categoryRank.comparisons} ordering comps`
+                                      : "No active category rank"}
+                                    {overallRank
+                                      ? ` · Overall #${overallRank.rank} · ${overallRank.comparisons} ordering comps`
+                                      : ""}
+                                  </p>
+                                  {(result?.meaningfulPairwiseComparisons ?? 0) > 0 &&
+                                    !categoryRank &&
+                                    !overallRank && (
+                                      <p>
+                                        {result?.meaningfulPairwiseComparisons} historical
+                                        ordering comparisons remain stored.
+                                      </p>
+                                    )}
+                                </section>
+
+                                <section>
+                                  <span className="eyebrow">Quiz-derived evidence</span>
+                                  {inferred ? (
+                                    <>
+                                      <strong>
+                                        {Math.round(inferred.affinity)}% affinity · {inferred.coverage}% coverage
+                                      </strong>
+                                      <p>
+                                        Derived from quiz signals only. This does not create
+                                        or override an explicit preference or pairwise rank.
+                                      </p>
+                                      <ul className="catalog-evidence-sources">
+                                        {inferred.matchedSignals.map((signal) => (
+                                          <li key={signal.signalId}>
+                                            <strong>{signal.signalLabel}</strong>
+                                            <span>
+                                              {Math.round(signal.signalAffinity)}% signal
+                                              {signal.sourceQuizLabels.length > 0
+                                                ? ` · via ${signal.sourceQuizLabels.join(", ")}`
+                                                : ""}
+                                            </span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </>
+                                  ) : (
+                                    <p>No mapped quiz evidence for this item yet.</p>
+                                  )}
+                                </section>
+                              </div>
+
+                              {inferred && result?.excludedFromNewRanking && (
+                                <p className="catalog-evidence-conflict-note">
+                                  The quiz-derived affinity is shown for explainability only.
+                                  Your explicit exclusion remains authoritative.
+                                </p>
+                              )}
+
                               <dl>
                                 <div>
                                   <dt>Direction</dt>

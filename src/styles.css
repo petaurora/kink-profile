@@ -1977,3 +1977,211 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
     white-space: normal;
   }
 }
+
+
+/* M6 C6 source-aware catalog result integration */
+.catalog-exclusion-summary {
+  padding: clamp(1rem, 2.5vw, 1.4rem);
+  display: grid;
+  gap: 1rem;
+}
+
+.catalog-exclusion-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.catalog-exclusion-heading h2 {
+  margin: .15rem 0 0;
+  font-size: 1.2rem;
+}
+
+.catalog-exclusion-heading > p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: .86rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.catalog-exclusion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+}
+
+.catalog-exclusion-card {
+  min-width: 0;
+  padding: .9rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-muted);
+}
+
+.catalog-exclusion-card.hard-limit {
+  border-color: var(--border-strong);
+  background: var(--bg-surface-emphasis);
+}
+
+.catalog-exclusion-card > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+.catalog-exclusion-card span {
+  color: var(--text-secondary);
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.catalog-exclusion-card strong {
+  font-size: 1.2rem;
+}
+
+.catalog-exclusion-card p {
+  min-height: 2.5em;
+  margin: .45rem 0 0;
+  color: var(--text-muted);
+  font-size: .78rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.catalog-evidence-chip,
+.ranking-evidence-chip {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: .28rem .48rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  font-size: .76rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.catalog-evidence-chip.inferred,
+.ranking-evidence-chip.inferred {
+  border-color: var(--accent-border);
+  color: var(--accent-primary);
+  background: var(--bg-surface-raised);
+}
+
+.catalog-evidence-chip.excluded {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  background: var(--bg-surface-emphasis);
+}
+
+.ranking-evidence-chip.explicit {
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.catalog-evidence-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+
+.catalog-evidence-details > section {
+  min-width: 0;
+  padding: .85rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+
+.catalog-evidence-details .eyebrow {
+  margin-bottom: .35rem;
+}
+
+.catalog-evidence-details > section > strong {
+  display: block;
+  font-size: .9rem;
+}
+
+.catalog-evidence-details > section > p {
+  margin: .35rem 0 0;
+  font-size: .8rem;
+}
+
+.catalog-evidence-sources {
+  list-style: none;
+  margin: .7rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: .45rem;
+}
+
+.catalog-evidence-sources li {
+  display: grid;
+  gap: .12rem;
+  padding-top: .45rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.catalog-evidence-sources li strong {
+  font-size: .78rem;
+}
+
+.catalog-evidence-sources li span {
+  color: var(--text-muted);
+  font-size: .74rem;
+}
+
+.catalog-evidence-conflict-note {
+  padding: .7rem .8rem;
+  border-left: 3px solid var(--accent-primary);
+  background: var(--bg-surface-emphasis);
+  color: var(--text-secondary);
+  font-size: .8rem;
+}
+
+.ranking-row-copy {
+  min-width: 0;
+}
+
+.ranking-row-evidence {
+  display: flex !important;
+  grid-auto-flow: unset;
+  flex-wrap: wrap;
+  gap: .35rem !important;
+  margin-top: .3rem;
+}
+
+@media (max-width: 760px) {
+  .catalog-exclusion-heading {
+    display: grid;
+  }
+
+  .catalog-exclusion-heading > p {
+    text-align: left;
+  }
+
+  .catalog-exclusion-grid,
+  .catalog-evidence-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .ranking-row {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .ranking-row > span:last-child {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

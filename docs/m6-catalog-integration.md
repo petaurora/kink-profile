@@ -8,7 +8,7 @@ M6 is not starting from zero.
 
 The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-C3 explicit preference + catalog table, C4 source-aware evidence convergence, and C5 ranking hardening are implemented. The next implementation slice is C6 catalog result integration.
+C3 explicit preference + catalog table, C4 source-aware evidence convergence, C5 ranking hardening, and C6 catalog result integration are implemented. The next implementation slice is C7 signal-affinity hardening.
 
 Current baseline on `main`:
 
@@ -30,7 +30,7 @@ Current baseline on `main`:
 - cross-category ranking is playable
 - raw pairwise decisions are retained so rankings can be recalculated
 
-M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4 added source-aware convergence; C5 hardened ranking evidence/finalists. C6 now owns result integration, followed by C7 affinity hardening.
+M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4 added source-aware convergence; C5 hardened ranking evidence/finalists; C6 integrated those channels into source-aware catalog results. C7 now owns affinity/recommendation hardening.
 
 ---
 
@@ -1153,7 +1153,7 @@ See [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.m
 
 Verification: 50 tests pass across the ranking/catalog/evidence suites, including 12 focused C5 ranking tests, and the production TypeScript/Vite build passes.
 
-## C6 — Catalog result integration
+## C6 — Catalog result integration ✅
 
 C6 is a **source-aware presentation/integration slice**, not a new scoring merge.
 
@@ -1168,16 +1168,44 @@ It should surface the channels already established by C3–C5 without collapsing
 
 C6 does **not** create a new presentation-level "Top Overall" score by combining explicit preference and pairwise ranking. A broader profile aggregate that combines multiple independent direct evidence sources belongs to M7.
 
-- [ ] show explicit state alongside category rank
-- [ ] show explicit state alongside overall rank
-- [ ] expose category ranking independently
-- [ ] expose overall favorites independently
-- [ ] show inference-only starting affinity separately from direct evidence/rank
-- [ ] preserve source provenance/explainability in catalog result views
-- [ ] expose hard-limit/exclusion summaries without mixing them into favorites
-- [ ] keep exact ranks derived rather than persisted where practical
-- [ ] preserve explicit / pairwise / inferred labels in every combined catalog result surface
-- [ ] do not synthesize an M7-style merged Top Overall list inside C6
+- [x] show explicit state alongside category rank
+- [x] show explicit state alongside overall rank
+- [x] expose category ranking independently
+- [x] expose overall favorites independently
+- [x] show inference-only starting affinity separately from direct evidence/rank
+- [x] preserve source provenance/explainability in catalog result views
+- [x] expose hard-limit/exclusion summaries without mixing them into favorites
+- [x] keep exact ranks derived rather than persisted where practical
+- [x] preserve explicit / pairwise / inferred labels in every combined catalog result surface
+- [x] do not synthesize an M7-style merged Top Overall list inside C6
+
+### Implemented C6 semantics
+
+C6 adds a pure source-aware catalog result selector and uses it in the direct catalog table + This-or-That result list.
+
+Per Catalog ID, the presentation model keeps these channels separate:
+
+- explicit overall preference
+- active category rank
+- active Overall rank
+- quiz-derived affinity + mapping coverage
+- matched SignalIds + contributing quiz provenance
+- meaningful historical pairwise evidence
+- current ranking eligibility/exclusion state
+
+The catalog table now:
+
+- shows compact Category / Overall / Quiz-derived evidence chips
+- keeps source detail behind the existing Details expander
+- exposes matched signal + quiz provenance for inference
+- shows Hard Limit / Not Interested / Not Applicable in a separate Limits & exclusions summary
+- may display conflicting quiz-derived inference for an explicitly excluded item for explainability, while stating that explicit state remains authoritative
+
+The This-or-That comparison cards remain intentionally simple. Only the ranking **results** gain explicit-state + quiz-derived context.
+
+C6 does not create a merged explicit+pairwise Top Overall score/list. That remains M7.
+
+Verification: 56 tests pass across the ranking/catalog/evidence/result suites, including 6 focused C6 result-integration tests, and the production TypeScript/Vite build passes.
 
 ### C6 / C7 / M7 boundary
 
