@@ -991,12 +991,31 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   align-items: stretch;
 }
 
-.kink-choice {
+.kink-choice-card {
   min-height: 290px;
   border: 1px solid var(--border-subtle);
   border-radius: 20px;
   background: var(--bg-control);
   color: var(--text-primary);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.kink-choice-card:focus-within,
+.kink-choice-card:hover {
+  border-color: var(--accent-primary);
+  background: var(--bg-surface-raised);
+}
+
+.kink-choice-main {
+  appearance: none;
+  width: 100%;
+  min-height: 240px;
+  border: 0;
+  background: transparent;
+  color: inherit;
   padding: clamp(1.25rem, 4vw, 2.25rem);
   display: flex;
   flex-direction: column;
@@ -1005,24 +1024,109 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   gap: 0.8rem;
   text-align: left;
   cursor: pointer;
-  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
 }
 
-.kink-choice:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent-primary);
-  background: var(--bg-surface-raised);
+.kink-choice-main:hover {
+  background: var(--bg-control-hover);
 }
 
-.kink-choice strong {
+.kink-choice-main:focus-visible,
+.preference-menu summary:focus-visible,
+.preference-option:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.kink-choice-main strong {
   font-size: clamp(1.45rem, 3vw, 2.25rem);
   line-height: 1.05;
 }
 
-.kink-choice p {
+.kink-choice-main p {
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
+}
+
+.preference-menu {
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-muted);
+}
+
+.preference-menu summary {
+  list-style: none;
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+
+.preference-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.preference-menu summary strong {
+  color: var(--text-primary);
+}
+
+.preference-menu.preference-set summary strong {
+  color: var(--accent-primary);
+}
+
+.preference-menu.preference-hard-limit {
+  border-top-color: var(--accent-border);
+  background: var(--bg-surface-emphasis);
+}
+
+.preference-menu.preference-hard-limit summary,
+.preference-menu.preference-hard-limit summary strong {
+  color: var(--text-primary);
+}
+
+.preference-options {
+  padding: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.preference-option {
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--bg-control);
+  color: var(--text-primary);
+  padding: 0.65rem 0.7rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.preference-option:hover,
+.preference-option.active {
+  border-color: var(--accent-primary);
+  background: var(--bg-accent-soft);
+}
+
+.preference-option.hard-limit {
+  border-color: var(--accent-border);
+  background: var(--bg-surface-emphasis);
+}
+
+.preference-option.clear {
+  color: var(--text-secondary);
+  background: transparent;
+}
+
+.preference-option:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .choice-category,
@@ -1056,6 +1160,26 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
+}
+
+.ranking-empty {
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.ranking-empty h2 {
+  margin: 0.25rem 0 0.65rem;
+}
+
+.ranking-empty p:not(.eyebrow) {
+  color: var(--text-secondary);
+  max-width: 680px;
+}
+
+.ranking-empty-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
 }
 
 .ranking-results-heading {
@@ -1136,8 +1260,12 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
     justify-self: center;
   }
 
-  .kink-choice {
+  .kink-choice-card {
     min-height: 220px;
+  }
+
+  .kink-choice-main {
+    min-height: 180px;
   }
 }
 
