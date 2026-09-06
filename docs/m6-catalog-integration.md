@@ -1225,7 +1225,7 @@ C7 starts from behavior already established by C4/C6:
 - catalog → signal projection already consumes only independent direct evidence
 - inferred catalog affinity cannot feed back into the signals that produced it
 
-Remaining C7 work:
+Implemented C7 work:
 
 - [x] harden the coverage-aware catalog affinity matcher introduced/centralized in C4
 - [x] test mapping / partial-coverage / unmapped-item behavior with synthetic signal profiles
