@@ -351,35 +351,35 @@ The repository migration imported the already-working catalog/ranking baseline i
 - [x] keep risk/context metadata separate from affinity scoring
 - [x] preserve the pre-migration seeded mapping layer: 93 source rules, 269 / 551 mapped items, 698 resolved item → signal associations
 
-### C3 — Explicit preference + catalog table 🧭 Re-scoped for review
+### C3 — Explicit preference + catalog table ✅
 
 See [docs/m6-c3-explicit-preference.md](docs/m6-c3-explicit-preference.md) for the revised table-first explicit-preference model and the This-or-That mini-game boundary.
 
-- [ ] define the canonical seven-state runtime enum
-- [ ] represent unanswered by absence rather than a fake "unknown" state
-- [ ] store optional `overall`, `receiving`, and `giving` values per Catalog ID
-- [ ] resolve directional state as direction override → overall → unanswered
-- [ ] never synthesize a generic overall state from directional overrides
-- [ ] create `pet-profile-catalog-v1` as the logical catalog-profile store
-- [ ] migrate raw comparisons from `pet-profile-kink-ranking-v1` without losing IDs, timestamps, scopes, or results
-- [ ] keep the old ranking key readable/untouched for the migration window; do not dual-write
-- [ ] add a first-class catalog/preferences destination separate from This-or-That
-- [ ] search by canonical label + aliases
-- [ ] filter by category + explicit state + unanswered
-- [ ] order/group using category display order + item label
-- [ ] provide responsive desktop table / mobile stacked rows
-- [ ] edit the general/overall explicit state directly from each catalog row
-- [ ] expose expandable item description/metadata without making the default row noisy
-- [ ] surface read-only category/overall ranking context by the same Catalog ID where available
-- [ ] keep This-or-That focused on pairwise ranking; do not embed explicit-preference controls in comparison cards
-- [ ] keep pairwise choices independent from explicit-state edits
-- [ ] make Hard Limit visually distinct from ordinary disinterest
-- [ ] immediately exclude Hard Limit / Not Interested / Not Applicable items from new pair selection
-- [ ] preserve Love / Like / Curious / Unsure / unanswered as ranking-eligible
-- [ ] handle scopes with fewer than two eligible items without rendering a dead/blank ranking state
-- [ ] add focused preference/storage/migration/eligibility tests
+- [x] define the canonical seven-state runtime enum
+- [x] represent unanswered by absence rather than a fake "unknown" state
+- [x] store optional `overall`, `receiving`, and `giving` values per Catalog ID
+- [x] resolve directional state as direction override → overall → unanswered
+- [x] never synthesize a generic overall state from directional overrides
+- [x] create `pet-profile-catalog-v1` as the logical catalog-profile store
+- [x] migrate raw comparisons from `pet-profile-kink-ranking-v1` without losing IDs, timestamps, scopes, or results
+- [x] keep the old ranking key readable/untouched for the migration window; do not dual-write
+- [x] add a first-class catalog/preferences destination separate from This-or-That
+- [x] search by canonical label + aliases
+- [x] filter by category + explicit state + unanswered
+- [x] order/group using category display order + item label
+- [x] provide responsive desktop table / mobile stacked rows
+- [x] edit the general/overall explicit state directly from each catalog row
+- [x] expose expandable item description/metadata without making the default row noisy
+- [x] surface read-only category/overall ranking context by the same Catalog ID where available
+- [x] keep This-or-That focused on pairwise ranking; do not embed explicit-preference controls in comparison cards
+- [x] keep pairwise choices independent from explicit-state edits
+- [x] make Hard Limit visually distinct from ordinary disinterest
+- [x] immediately exclude Hard Limit / Not Interested / Not Applicable items from new pair selection
+- [x] preserve Love / Like / Curious / Unsure / unanswered as ranking-eligible
+- [x] handle scopes with fewer than two eligible items without rendering a dead/blank ranking state
+- [x] add focused preference/storage/migration/eligibility tests
 
-C3 owns explicit-state semantics, persistence, the catalog-table management surface, migration, and the minimum eligibility behavior required to make exclusions authoritative. **C4 is intentionally a post-C3 cleanup/convergence slice**: C3 can land without being redesigned around the broader evidence model while it is under active implementation.
+C3 now owns explicit-state semantics, persistence, the catalog-table management surface, migration, and the minimum eligibility behavior required to make exclusions authoritative. C4 is the next post-C3 convergence slice and builds around these durable outputs rather than replacing them.
 
 See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.md) for the source-aware profile contract.
 
@@ -536,6 +536,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M6 — Catalog Integration / C3 re-scope**
+**M6 — Catalog Integration / C4 source-aware evidence convergence**
 
-Implement [M6 C3 — Explicit Preference + Catalog Table](docs/m6-c3-explicit-preference.md): keep This-or-That as the low-friction ranking mini-game, add a separate table/list surface for direct preference management, and connect both through stable Catalog IDs without converting one kind of evidence into the other.
+Implement [Source-Aware Profile Evidence Architecture](docs/profile-evidence-architecture.md): adapt C3 explicit preference + raw pairwise history into source-aware evidence views, centralize quiz-signal → catalog inference, preserve provenance, define retake/recompute semantics, and make feedback loops impossible by construction. Ranking-confidence/finalist hardening follows in C5.
