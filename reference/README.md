@@ -109,7 +109,7 @@ M6 C2 now adds:
 
 The remaining 282 items are intentionally unmapped rather than assigned speculative core-signal affinities.
 
-M6 C3 provides explicit preference state, migration into one logical catalog-profile store, the searchable catalog table/list, and authoritative exclusion semantics while keeping This-or-That focused on relative ranking. C4 added source-aware quiz/catalog evidence, recomputable inferred affinity, provenance, and no-feedback-loop guarantees. C5 hardened meaningful ordering confidence, finalist promotion, and Overall history preservation. C6 result integration is next, followed by C7 affinity hardening.
+M6 C3 provides explicit preference state, migration into one logical catalog-profile store, the searchable catalog table/list, and authoritative exclusion semantics while keeping This-or-That focused on relative ranking. C4 added source-aware quiz/catalog evidence, recomputable inferred affinity, provenance, and no-feedback-loop guarantees. C5 hardened meaningful ordering confidence, finalist promotion, and Overall history preservation. C6 now surfaces explicit, ranking, inferred, exclusion, and provenance channels together without collapsing them. C7 affinity hardening is next.
 
 See:
 

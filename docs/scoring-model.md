@@ -328,7 +328,7 @@ Hard limits must suppress inferred recommendations for that item.
 
 Catalog integration is now **in progress in M6**.
 
-The repo has a runtime catalog and pairwise ranking. M6 C1 added durable identity, C2 added validated catalog-to-signal mappings + normalized metadata, C3 added explicit catalog preference state plus the direct-management table, C4 implemented source-aware evidence convergence + centralized quiz-signal → catalog inference, and C5 hardened ranking confidence/finalist/history semantics. C6 now integrates those catalog evidence channels into results, followed by C7 affinity hardening.
+The repo has a runtime catalog and pairwise ranking. M6 C1 added durable identity, C2 added validated catalog-to-signal mappings + normalized metadata, C3 added explicit catalog preference state plus the direct-management table, C4 implemented source-aware evidence convergence + centralized quiz-signal → catalog inference, C5 hardened ranking confidence/finalist/history semantics, and C6 integrated explicit/ranking/inferred/provenance channels into catalog results without merging them. C7 now hardens affinity/recommendation behavior.
 
 See [m6-catalog-integration.md](m6-catalog-integration.md).
 

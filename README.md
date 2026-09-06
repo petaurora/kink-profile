@@ -14,9 +14,9 @@ A privacy-first React app for exploring BDSM, kink, power-dynamic, and headspace
 
 The app now supports all four core quiz sections plus a playable catalog-ranking flow. The 551-item catalog is sourced from repo-native TSV, generated into app-owned runtime data before dev/build, and can be ranked within categories and across the current Top-5-per-ranked-category finalist pool.
 
-The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. With source-aware evidence convergence implemented in C4 and ranking confidence/finalists hardened in C5, M6 now continues with catalog result integration, affinity hardening, and the M7 handoff.
+The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. With source-aware evidence convergence implemented in C4, ranking confidence/finalists hardened in C5, and source-aware catalog results integrated in C6, M6 now continues with affinity/recommendation hardening and the M7 handoff.
 
-C1 durable IDs, C2 metadata/signal mappings, C3 explicit preference + catalog table, C4 source-aware evidence convergence, and C5 ranking hardening are implemented. Skip/Neither no longer inflate ranking confidence, zero-evidence items cannot hitchhike into category finalists, and prior meaningful Overall participants remain available when category Top 5s change. C6 catalog result integration is next.
+C1 durable IDs, C2 metadata/signal mappings, C3 explicit preference + catalog table, C4 source-aware evidence convergence, C5 ranking hardening, and C6 catalog result integration are implemented. Catalog rows/results can now show explicit preference, category/Overall rank, quiz-derived affinity, exclusions, and source provenance as separate evidence channels. C7 signal-affinity hardening is next.
 
 The original 16-question prototype remains available as the **Starter Profile** sampler. It is not intended to be the final scoring model.
 

@@ -412,18 +412,18 @@ See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.m
 - [x] preserve prior Overall participants/history when a category Top 5 shifts
 - [x] add focused ranking tests
 
-### C6 — Catalog result integration
+### C6 — Catalog result integration ✅
 
 **Boundary:** surface explicit, pairwise, inferred, and exclusion channels together without synthesizing a new merged profile score/list. Presentation-level aggregation across independent direct sources remains M7.
 
-- [ ] show explicit state alongside category rankings
-- [ ] show explicit state alongside overall favorites
-- [ ] expose hard-limit/exclusion summaries separately from favorites
-- [ ] show inferred starting affinity separately from direct preference/ranking evidence
-- [ ] keep source provenance/explainability available for catalog items
-- [ ] keep exact ranks derived from raw comparison history where practical
-- [ ] preserve category and overall ranking as separate useful results
-- [ ] do not collapse explicit + pairwise evidence into an M7-style Top Overall aggregate
+- [x] show explicit state alongside category rankings
+- [x] show explicit state alongside overall favorites
+- [x] expose hard-limit/exclusion summaries separately from favorites
+- [x] show inferred starting affinity separately from direct preference/ranking evidence
+- [x] keep source provenance/explainability available for catalog items
+- [x] keep exact ranks derived from raw comparison history where practical
+- [x] preserve category and overall ranking as separate useful results
+- [x] do not collapse explicit + pairwise evidence into an M7-style Top Overall aggregate
 
 ### C7 — Signal-affinity hardening
 
@@ -541,6 +541,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M6 — Catalog Integration / C6 catalog result integration**
+**M6 — Catalog Integration / C7 signal-affinity hardening**
 
-Surface the catalog evidence already available: show explicit preference beside category/Overall rankings, expose exclusions separately from favorites, show inference-only starting affinity separately from direct evidence, and preserve source provenance/explainability.
+Harden the quiz-derived catalog inference/recommendation layer: mapping + coverage edge cases, explicit-exclusion suppression, matched-signal explainability, tentative inference language, and the direct-evidence-only signal back-projection boundary.

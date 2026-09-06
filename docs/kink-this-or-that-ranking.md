@@ -686,12 +686,12 @@ Implemented:
 - [x] Overall favorites
 - [x] confidence labels
 
-C6 integration still needed:
+C6 integration:
 
-- [ ] explicit preference state beside rankings
-- [ ] exclusion/hard-limit summaries separate from favorites
-- [ ] inferred affinity shown as a separate derived channel, never as rank
-- [ ] source-aware catalog detail/explainability
+- [x] explicit preference state beside ranking results
+- [x] exclusion/hard-limit summaries separate from favorites
+- [x] inferred affinity shown as a separate derived channel, never as rank
+- [x] source-aware catalog detail/explainability
 - [ ] optional tiers if they prove useful
 
 M7 remains responsible for any new presentation-level aggregate that combines multiple independent direct evidence sources into a broader profile "Top Overall" result.
