@@ -908,6 +908,189 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   }
 }
 
+/* M7.4 — overall profile radar */
+
+.overall-radar-panel {
+  padding: clamp(24px, 5vw, 48px);
+  overflow: hidden;
+}
+
+.overall-radar-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.overall-radar-heading h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  letter-spacing: -.04em;
+}
+
+.overall-radar-heading > p {
+  max-width: 420px;
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  text-align: right;
+}
+
+.overall-radar-wrap {
+  display: grid;
+  place-items: center;
+  min-height: 470px;
+  margin: 10px auto 0;
+}
+
+.overall-radar {
+  width: min(100%, 620px);
+  overflow: visible;
+}
+
+.overall-radar-ring,
+.overall-radar-axis {
+  fill: none;
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+}
+
+.overall-radar-axis-group {
+  cursor: pointer;
+  outline: none;
+}
+
+.overall-radar-axis-group:focus .overall-radar-label,
+.overall-radar-axis-group:hover .overall-radar-label {
+  fill: var(--accent-primary);
+}
+
+.overall-radar-axis-group.state-unknown .overall-radar-axis {
+  stroke-dasharray: 3 5;
+  opacity: .7;
+}
+
+.overall-radar-axis-group.state-unknown .overall-radar-label {
+  fill: var(--text-muted);
+  opacity: .7;
+}
+
+.overall-radar-label {
+  fill: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 850;
+  transition: fill 140ms ease;
+}
+
+.overall-radar-score {
+  fill: var(--bg-accent-soft);
+  stroke: var(--accent-primary);
+  stroke-width: 2.7;
+}
+
+.overall-radar-score-partial {
+  fill: none;
+  stroke: var(--accent-primary);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.7;
+}
+
+.overall-radar-point {
+  fill: var(--accent-primary);
+  stroke: var(--bg-surface);
+  stroke-width: 2;
+}
+
+.overall-radar-point.state-limited {
+  fill: var(--bg-surface);
+  stroke: var(--accent-primary);
+  stroke-width: 2.5;
+}
+
+.overall-radar-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, .7fr);
+  gap: 24px;
+  align-items: end;
+  padding-top: 22px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.overall-radar-footer > div {
+  display: grid;
+  gap: 10px;
+}
+
+.overall-radar-theme-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.overall-radar-theme {
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 8px 11px;
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 800;
+}
+
+.overall-radar-theme:hover,
+.overall-radar-theme:focus-visible {
+  border-color: var(--accent-primary);
+  outline: none;
+}
+
+.overall-radar-partial-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: .78rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+@media (max-width: 760px) {
+  .overall-radar-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .overall-radar-heading > p,
+  .overall-radar-partial-note {
+    text-align: left;
+  }
+
+  .overall-radar-wrap {
+    min-height: 0;
+    margin-top: 18px;
+  }
+
+  .overall-radar-footer {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+
+@media (max-width: 560px) {
+  .overall-radar-panel {
+    padding: 22px 18px 24px;
+  }
+
+  .overall-radar {
+    width: 112%;
+    margin-inline: -6%;
+  }
+
+  .overall-radar-label {
+    font-size: 12px;
+  }
+}
+
 /* M7.3 — aggregated profile header */
 
 .profile-identity-header {
