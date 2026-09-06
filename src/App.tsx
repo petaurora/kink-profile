@@ -573,7 +573,7 @@ export default function App() {
             <p>The first 16-question sampler stays available separately.</p>
           </div>
 
-          <div className="sampler-grid">
+          <div className="sampler-grid sampler-grid-single">
             <QuizCard quiz={starterQuiz} profile={profile} onOpen={openQuiz} />
           </div>
         </section>
