@@ -10,13 +10,13 @@ A privacy-first React app for exploring BDSM, kink, power-dynamic, and headspace
 **M3 — Roles & Headspaces:** complete  
 **M4 — Bondage & Discipline:** complete  
 **M5 — Sadism & Masochism:** complete  
-**M6 — Catalog Integration:** in progress
+**M6 — Catalog Integration:** complete
 
 The app now supports all four core quiz sections plus a playable catalog-ranking flow. The 551-item catalog is sourced from repo-native TSV, generated into app-owned runtime data before dev/build, and can be ranked within categories and across an Overall candidate pool built from current evidenced finalists plus eligible prior Overall participants.
 
-The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. With source-aware evidence convergence implemented in C4, ranking confidence/finalists hardened in C5, and source-aware catalog results integrated in C6, M6 now continues with affinity/recommendation hardening and the M7 handoff.
+The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. M6 now also provides source-aware quiz-derived affinity, provenance, hardened recommendation eligibility/suppression, and no-feedback-loop guarantees.
 
-C1 durable IDs, C2 metadata/signal mappings, C3 explicit preference + catalog table, C4 source-aware evidence convergence, C5 ranking hardening, and C6 catalog result integration are implemented. Catalog rows/results can now show explicit preference, category/Overall rank, quiz-derived affinity, exclusions, and source provenance as separate evidence channels. C7 signal-affinity hardening is next.
+C1 durable IDs, C2 metadata/signal mappings, C3 explicit preference + catalog table, C4 source-aware evidence convergence, C5 ranking hardening, C6 catalog result integration, and C7 affinity/recommendation hardening are implemented. **M6 is complete. M7 Full Overall Profile is next.**
 
 The original 16-question prototype remains available as the **Starter Profile** sampler. It is not intended to be the final scoring model.
 
