@@ -1,4 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  IconAdjustmentsHeart,
+  IconBolt,
+  IconHeart,
+  IconMasksTheater,
+  IconTransfer,
+} from "@tabler/icons-react";
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { KinkThisOrThat } from "./KinkThisOrThat";
 import {
@@ -57,6 +64,24 @@ type Score = {
   coverage?: number;
 };
 type QuizState = "not-started" | "in-progress" | "complete" | "coming-soon";
+
+
+function QuizGlyph({ name, size = 26 }: { name: string; size?: number }) {
+  const props = { size, stroke: 1.8, "aria-hidden": true as const };
+
+  switch (name) {
+    case "adjustments-heart":
+      return <IconAdjustmentsHeart {...props} />;
+    case "transfer":
+      return <IconTransfer {...props} />;
+    case "bolt":
+      return <IconBolt {...props} />;
+    case "masks-theater":
+      return <IconMasksTheater {...props} />;
+    default:
+      return <IconHeart {...props} />;
+  }
+}
 
 function scoreLabel(score: number, weighted = false) {
   if (score >= 80) return weighted ? "Very strong" : "Core";
@@ -188,7 +213,7 @@ function QuizCard({
     <article className={`quiz-card panel quiz-state-${state}`}>
       <div className="quiz-card-top">
         <span className="quiz-icon" aria-hidden="true">
-          {quiz.icon}
+          <QuizGlyph name={quiz.icon} />
         </span>
         <span className={`status-chip status-${state}`}>{stateLabel(state)}</span>
       </div>
@@ -477,7 +502,9 @@ export default function App() {
     <main className="app-shell">
       <header className="site-header">
         <button className="brand" onClick={() => setScreen("hub")}>
-          <span className="brand-mark">♡</span>
+          <span className="brand-mark">
+            <IconHeart size={18} stroke={2} aria-hidden="true" />
+          </span>
           <span>Pet Profile</span>
         </button>
 
@@ -605,7 +632,9 @@ export default function App() {
                 const state = getQuizState(quiz, profile);
                 return (
                   <div className="profile-section-row" key={quiz.id}>
-                    <span className="quiz-icon small">{quiz.icon}</span>
+                    <span className="quiz-icon small">
+                      <QuizGlyph name={quiz.icon} size={19} />
+                    </span>
                     <div>
                       <strong>{quiz.title}</strong>
                       <span>{stateLabel(state)}</span>
