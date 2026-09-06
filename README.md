@@ -65,11 +65,16 @@ npm run build
 
 ## Deployment
 
-Production is deployed to GitHub Pages from `main` by `.github/workflows/pages.yml`.
+GitHub Pages publishes from the generated `gh-pages` branch.
 
-Pull requests run CI only and do not create preview deployments. The Pages workflow can also be run manually from GitHub Actions when needed.
+- `main` is built by `.github/workflows/pages.yml` and deployed at `https://petaurora.github.io/kink-profile/`.
+- Open pull requests are built by `.github/workflows/preview-pages.yml` and deployed at `https://petaurora.github.io/kink-profile/pr-<number>/`.
+- Preview deployments are updated on each PR synchronize event and removed when the PR closes.
+- The preview workflow adds or updates a comment on the PR with the preview URL.
 
-Because this is a project site in the `petaurora/kink-profile` repository, Vite is configured with the `/kink-profile/` base path.
+Vite's base path is controlled at build time with `VITE_BASE_PATH`. Production uses `/kink-profile/`; PR previews use `/kink-profile/pr-<number>/`. The app currently uses state-driven navigation rather than React Router, so no router basename is required.
+
+Repository setup: under **Settings → Pages**, set **Source** to **Deploy from a branch**, choose `gh-pages`, and publish from `/(root)`. Both production and preview workflows serialize writes to that branch so they do not overwrite each other.
 
 ## Privacy
 
