@@ -397,6 +397,8 @@ The current app already has:
 
 M6 is responsible for stabilizing and integrating that slice.
 
+C1 provides durable Catalog/Category IDs. C2 now provides category domains/display order, normalized receiving/giving/both direction, explicit aliases, and validated Catalog → SignalId mappings in generated runtime data.
+
 ## Four independent catalog truths
 
 Keep these concepts separate:
