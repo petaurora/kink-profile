@@ -38,6 +38,85 @@ The overall result should feel like a **profile summary**, not a fifth independe
 
 ---
 
+# Profile presentation UI boundary
+
+M7 has two related but distinct product surfaces:
+
+1. **Home/dashboard status** — answers "how far have I explored?"
+2. **Aggregated profile presentation** — answers "what does my profile say about me?"
+
+Progress-oriented information belongs primarily on the **home/dashboard** surface:
+
+- quizzes completed
+- catalog items explored
+- This-or-That categories ranked
+- overall profile progress / evidence-building status
+- prompts to continue unfinished areas
+
+The aggregated profile itself is an **information-display surface** that should make sense when shown to another person. It should prioritize the user's resulting profile over the mechanics used to build it.
+
+Evidence coverage/confidence may still appear when needed to qualify a result or in drill-down/explainability UI, but should not dominate the profile header.
+
+## Profile header — agreed direction
+
+The M7 profile header should use a **hybrid summary**:
+
+1. a short human-readable interpretation of the strongest overall profile themes
+2. compact structured trait groups that anchor that interpretation in actual profile results
+
+Conceptual shape:
+
+```text
+YOUR KINK PROFILE
+
+Strongly receiving-oriented, with a profile centered around
+surrender, devotion, primal play, and emotionally connected
+power exchange.
+
+Orientation
+Receiving / submissive
+
+Headspaces
+Pet · Prey · Devotional Submissive
+
+Dynamic modes
+Surrender · Devotion · Primal
+```
+
+The exact labels and values above are illustrative, not locked output.
+
+### Header responsibilities
+
+The header should answer:
+
+> "What are the biggest things about this person's profile?"
+
+It should **not** answer:
+
+> "How much of the app have they completed?"
+
+The header should therefore:
+
+- favor a concise human-readable summary over a wall of percentages
+- expose a small number of structured headline traits underneath
+- keep receiving/giving direction visible when it materially shapes the profile
+- avoid declaring a single identity such as "You are a Pet"
+- avoid making one percentage the defining result
+- avoid quiz/catalog/ranking completion statistics
+- avoid detailed source provenance or confidence mechanics unless the user drills deeper
+
+### Initial compact trait groups
+
+The current preferred three groups are:
+
+- **Orientation** — broad receiving/submissive, giving/dominant, bidirectional, or mixed/context-dependent tendency
+- **Headspaces** — strongest recognizable role/headspace results, with direction preserved
+- **Dynamic modes** — strongest explanatory patterns such as Surrender, Devotion, Claiming, or Primal / Feral
+
+These groups are a current UI direction and can be refined as M7 aggregation is implemented.
+
+---
+
 # Important distinction: facets vs labels
 
 The overall radar should measure broad **profile facets / drivers**.
@@ -402,7 +481,11 @@ Care Receiving — 87%
 
 ## Coverage / exploration state
 
-The overall page should clearly show what is known vs unexplored.
+Detailed exploration/completion status belongs primarily on the home/dashboard rather than in the profile header.
+
+The aggregated profile still needs to distinguish well-supported results from sparse or unexplored areas so unknown never becomes 0%, but that qualification should be secondary to the profile presentation itself and may live in result-level treatment, drill-down, or a lower-page evidence section rather than a dashboard-style header.
+
+When shown on the profile surface, coverage should communicate what is known vs unexplored without turning the page into a task-completion view.
 
 Example:
 
