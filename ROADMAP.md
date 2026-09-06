@@ -427,12 +427,16 @@ See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.m
 
 ### C7 — Signal-affinity hardening
 
+**Inherited baseline from C4/C6:** inferred affinity is already visibly distinct from explicit preference/pairwise rank; matched SignalId + quiz provenance is already retained; and catalog → signal projection already accepts independent direct catalog evidence only.
+
+C7 hardens recommendation behavior around that existing model:
+
 - [ ] harden the pure coverage-aware catalog affinity matcher introduced/centralized in C4
-- [ ] distinguish inferred affinity from explicit preference and pairwise ranking
-- [ ] suppress hard limit / not interested / not applicable recommendations
-- [ ] retain matched-signal explainability
-- [ ] use tentative "may be worth exploring" language for inference-only items
-- [ ] ensure catalog → signal projection consumes only independent direct catalog evidence
+- [ ] add synthetic mapping / partial-coverage / unmapped-item edge-case tests
+- [ ] suppress hard limit / not interested / not applicable items from recommendation candidates while keeping derived evidence inspectable
+- [ ] use tentative "may be worth exploring" language for inference-only recommendations
+- [ ] preserve matched-signal + quiz provenance through recommendation filtering/suppression
+- [ ] regression-test the direct-evidence-only catalog → signal boundary and no-feedback-loop guarantee
 - [ ] defer canonical cross-source signal input + profile-wide radar/recommendation UI to M7
 
 **Exit condition:** catalog definitions have durable identity; explicit state, relative ranking, and inferred affinity remain separate; ranking history survives normal catalog evolution; exclusions are authoritative; catalog items have validated SignalId mappings; and M7 can consume clean catalog favorites/mappings without understanding TSV/ranking internals.
@@ -543,4 +547,4 @@ Interesting, but not current scope:
 
 **M6 — Catalog Integration / C7 signal-affinity hardening**
 
-Harden the quiz-derived catalog inference/recommendation layer: mapping + coverage edge cases, explicit-exclusion suppression, matched-signal explainability, tentative inference language, and the direct-evidence-only signal back-projection boundary.
+Harden the quiz-derived catalog inference/recommendation layer: mapping + coverage edge cases, explicit-exclusion suppression without hiding explainability evidence, tentative inference-only language, provenance preservation, and regression protection for the existing direct-evidence-only back-projection boundary.
