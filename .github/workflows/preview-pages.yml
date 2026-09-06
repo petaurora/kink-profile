@@ -52,7 +52,7 @@ jobs:
           target-folder: pr-${{ github.event.number }}
           clean: true
           force: false
-          commit-message: Deploy preview for PR #${{ github.event.number }}
+          commit-message: "Deploy preview for PR #${{ github.event.number }}"
 
       - name: Add or update preview link
         if: github.event.action != 'closed'
@@ -108,7 +108,7 @@ jobs:
           target-folder: pr-${{ github.event.number }}
           clean: true
           force: false
-          commit-message: Remove preview for PR #${{ github.event.number }}
+          commit-message: "Remove preview for PR #${{ github.event.number }}"
 
       - name: Mark preview as removed
         if: github.event.action == 'closed'
