@@ -69,6 +69,7 @@ import {
   catalogPreferenceLabels,
 } from "./lib/catalogResults";
 import { buildProfileTopInterests } from "./lib/profileTopInterests";
+import { buildProfileHardLimits } from "./lib/profileHardLimits";
 import {
   scoreDsSignals,
   scoreHeadspaces,
@@ -462,6 +463,7 @@ export default function App() {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [showAllSubmissiveHeadspaces, setShowAllSubmissiveHeadspaces] =
     useState(false);
+  const [showAllHardLimits, setShowAllHardLimits] = useState(false);
 
   useEffect(() => {
     saveProfile(profile);
@@ -676,6 +678,15 @@ export default function App() {
     () => buildProfileTopInterests(catalogResultView),
     [catalogResultView],
   );
+
+  const profileHardLimits = useMemo(
+    () => buildProfileHardLimits(catalogResultView),
+    [catalogResultView],
+  );
+
+  const visibleHardLimits = showAllHardLimits
+    ? profileHardLimits.all
+    : profileHardLimits.featured;
 
   const openQuiz = (quiz: QuizDefinition) => {
     if (quiz.availability !== "available") return;
@@ -1137,6 +1148,43 @@ export default function App() {
                 Refine preferences
               </button>
             </div>
+          </article>
+
+          <article className="profile-limits panel">
+            <div className="profile-limits-heading">
+              <div>
+                <p className="eyebrow">Boundaries</p>
+                <h2>Hard Limits</h2>
+              </div>
+              <p>
+                Only things you explicitly marked Hard Limit appear here. Low rank,
+                uncertainty, and disinterest are not treated as limits.
+              </p>
+            </div>
+
+            {visibleHardLimits.length > 0 ? (
+              <div className="profile-limit-list">
+                {visibleHardLimits.map((item) => (
+                  <div className="profile-limit-item" key={item.catalogId}>
+                    <strong>{item.label}</strong>
+                    <span>Hard Limit</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="profile-limits-empty">No hard limits marked.</p>
+            )}
+
+            {profileHardLimits.hiddenCount > 0 && (
+              <button
+                className="text-button profile-limits-toggle"
+                onClick={() => setShowAllHardLimits((shown) => !shown)}
+              >
+                {showAllHardLimits
+                  ? "Show less"
+                  : `Show all limits (+${profileHardLimits.hiddenCount})`}
+              </button>
+            )}
           </article>
 
           <div className="profile-overview panel">
