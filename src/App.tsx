@@ -210,6 +210,27 @@ function QuizCard({
   const progress =
     quiz.questionIds.length > 0 ? Math.round((answeredCount / quiz.questionIds.length) * 100) : 0;
 
+  if (state === "complete") {
+    return (
+      <article className="quiz-card quiz-card-complete panel quiz-state-complete">
+        <span className="quiz-icon" aria-hidden="true">
+          <QuizGlyph name={quiz.icon} />
+        </span>
+
+        <div className="quiz-card-complete-copy">
+          <p className="eyebrow">{quiz.eyebrow}</p>
+          <h2>{quiz.title}</h2>
+        </div>
+
+        <span className="status-chip status-complete">Complete</span>
+
+        <button className="secondary compact" onClick={() => onOpen(quiz)}>
+          View results
+        </button>
+      </article>
+    );
+  }
+
   return (
     <article className={`quiz-card panel quiz-state-${state}`}>
       <div className="quiz-card-top">
@@ -239,7 +260,7 @@ function QuizCard({
 
         {quiz.availability === "available" ? (
           <button className="primary compact" onClick={() => onOpen(quiz)}>
-            {state === "complete" ? "View / retake" : state === "in-progress" ? "Continue" : "Explore"}
+            {state === "in-progress" ? "Continue" : "Explore"}
           </button>
         ) : (
           <button className="secondary compact" disabled>
