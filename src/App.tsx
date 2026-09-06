@@ -724,7 +724,6 @@ export default function App() {
                     {profileHeader.headspaces.map((trait) => (
                       <span className="profile-trait-chip" key={trait.id}>
                         <strong>{trait.label}</strong>
-                        {trait.direction && <small>{trait.direction}</small>}
                       </span>
                     ))}
                   </div>
@@ -819,7 +818,9 @@ export default function App() {
 
                           return (
                             <div className="facet-direction-card" key={direction}>
-                              <span>{direction}</span>
+                              <span>
+                                {direction === "receiving" ? "Submissive" : "Dominant"}
+                              </span>
                               <strong>
                                 {result.affinity === null ? "—" : `${result.affinity}%`}
                               </strong>
