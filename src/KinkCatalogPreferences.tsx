@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   kinkCatalog,
   kinkCategories,
@@ -95,6 +95,17 @@ export function KinkCatalogPreferences({
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [preferenceFilter, setPreferenceFilter] =
     useState<PreferenceFilter>("all");
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const [showReturnToTop, setShowReturnToTop] = useState(false);
+
+  useEffect(() => {
+    const updateReturnToTop = () => setShowReturnToTop(window.scrollY > 600);
+    updateReturnToTop();
+    window.addEventListener("scroll", updateReturnToTop, { passive: true });
+    return () => window.removeEventListener("scroll", updateReturnToTop);
+  }, []);
 
   const rankingContext = useMemo(
     () => buildRankingContext(profile),
@@ -159,6 +170,30 @@ export function KinkCatalogPreferences({
     setQuery("");
     setCategoryFilter("all");
     setPreferenceFilter("all");
+    setExpandedCategories(new Set());
+  };
+
+  const toggleCategory = (categoryId: string) => {
+    setExpandedCategories((current) => {
+      const next = new Set(current);
+      if (next.has(categoryId)) next.delete(categoryId);
+      else next.add(categoryId);
+      return next;
+    });
+  };
+
+  const expandVisibleCategories = () => {
+    setExpandedCategories(
+      new Set(visibleByCategory.map(({ category }) => category.id)),
+    );
+  };
+
+  const collapseAllCategories = () => {
+    setExpandedCategories(new Set());
+  };
+
+  const returnToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -198,7 +233,13 @@ export function KinkCatalogPreferences({
           <span>Category</span>
           <select
             value={categoryFilter}
-            onChange={(event) => setCategoryFilter(event.target.value)}
+            onChange={(event) => {
+              const nextCategory = event.target.value;
+              setCategoryFilter(nextCategory);
+              setExpandedCategories(
+                nextCategory === "all" ? new Set() : new Set([nextCategory]),
+              );
+            }}
           >
             <option value="all">All categories</option>
             {kinkCategories.map((category) => (
@@ -233,11 +274,21 @@ export function KinkCatalogPreferences({
       </div>
 
       <div className="catalog-table-summary">
-        <strong>{visibleItems.length}</strong>
-        <span>matching items</span>
-        <span aria-hidden="true">·</span>
-        <strong>{explicitlySetCount}</strong>
-        <span>with explicit preferences</span>
+        <div className="catalog-table-summary-copy">
+          <strong>{visibleItems.length}</strong>
+          <span>matching items</span>
+          <span aria-hidden="true">·</span>
+          <strong>{explicitlySetCount}</strong>
+          <span>with explicit preferences</span>
+        </div>
+        <div className="catalog-category-actions">
+          <button className="text-button" onClick={expandVisibleCategories}>
+            Expand all
+          </button>
+          <button className="text-button" onClick={collapseAllCategories}>
+            Collapse all
+          </button>
+        </div>
       </div>
 
       <div className="catalog-table panel">
@@ -257,116 +308,158 @@ export function KinkCatalogPreferences({
             </button>
           </div>
         ) : (
-          visibleByCategory.map(({ category, items }) => (
-            <section className="catalog-category-group" key={category.id}>
-              <div className="catalog-category-heading">
-                <div>
-                  <span className="eyebrow">{category.domain.replaceAll("-", " ")}</span>
-                  <h2>{category.label}</h2>
-                </div>
-                <span>{items.length} shown</span>
-              </div>
+          visibleByCategory.map(({ category, items }) => {
+            const isExpanded = expandedCategories.has(category.id);
 
-              <div className="catalog-rows">
-                {items.map((item) => {
-                  const preference = getCatalogPreference(
-                    profile.preferences[item.id],
-                    "overall",
-                  );
-                  const categoryRank = rankingContext.categoryRanks.get(item.id);
-                  const overallRank = rankingContext.overallRanks.get(item.id);
+            return (
+              <section
+                className={
+                  isExpanded
+                    ? "catalog-category-group expanded"
+                    : "catalog-category-group"
+                }
+                key={category.id}
+              >
+                <button
+                  type="button"
+                  className="catalog-category-heading"
+                  aria-expanded={isExpanded}
+                  onClick={() => toggleCategory(category.id)}
+                >
+                  <div>
+                    <span className="eyebrow">
+                      {category.domain.replaceAll("-", " ")}
+                    </span>
+                    <h2>{category.label}</h2>
+                  </div>
+                  <span className="catalog-category-meta">
+                    {items.length} shown
+                    <span className="catalog-category-chevron" aria-hidden="true">
+                      {isExpanded ? "−" : "+"}
+                    </span>
+                  </span>
+                </button>
 
-                  return (
-                    <article
-                      className={`catalog-row ${preferenceClass(preference)}`}
-                      key={item.id}
-                    >
-                      <div className="catalog-row-main">
-                        <strong>{item.label}</strong>
-                        {item.aliases.length > 0 && (
-                          <span className="catalog-row-alias">
-                            aka {item.aliases.slice(0, 2).join(" · ")}
-                          </span>
-                        )}
-                      </div>
+                {isExpanded && (
+                  <div className="catalog-rows">
+                    {items.map((item) => {
+                      const preference = getCatalogPreference(
+                        profile.preferences[item.id],
+                        "overall",
+                      );
+                      const categoryRank = rankingContext.categoryRanks.get(item.id);
+                      const overallRank = rankingContext.overallRanks.get(item.id);
 
-                      <label className="catalog-preference-editor">
-                        <span className="sr-only">Preference for {item.label}</span>
-                        <select
-                          value={preference ?? ""}
-                          onChange={(event) =>
-                            updatePreference(
-                              item.id,
-                              event.target.value
-                                ? (event.target.value as CatalogPreferenceState)
-                                : undefined,
-                            )
-                          }
+                      return (
+                        <article
+                          className={`catalog-row ${preferenceClass(preference)}`}
+                          key={item.id}
                         >
-                          <option value="">Not set</option>
-                          {catalogPreferenceStates.map((state) => (
-                            <option key={state} value={state}>
-                              {preferenceLabels[state]}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-
-                      <div className="catalog-ranking-context">
-                        {categoryRank || overallRank ? (
-                          <>
-                            {categoryRank && <span>Category #{categoryRank}</span>}
-                            {overallRank && <span>Overall #{overallRank}</span>}
-                          </>
-                        ) : (
-                          <span className="catalog-not-ranked">Not ranked yet</span>
-                        )}
-                      </div>
-
-                      <details className="catalog-row-details">
-                        <summary>Details</summary>
-                        <div>
-                          {item.description && <p>{item.description}</p>}
-                          <dl>
-                            <div>
-                              <dt>Direction</dt>
-                              <dd>{item.direction}</dd>
-                            </div>
-                            {item.primaryMode && (
-                              <div>
-                                <dt>Mode</dt>
-                                <dd>{item.primaryMode}</dd>
-                              </div>
-                            )}
-                            {item.intensity && (
-                              <div>
-                                <dt>Intensity</dt>
-                                <dd>{item.intensity}</dd>
-                              </div>
-                            )}
-                            {item.riskLevel && (
-                              <div>
-                                <dt>Risk</dt>
-                                <dd>{item.riskLevel}</dd>
-                              </div>
-                            )}
+                          <div className="catalog-row-main">
+                            <strong>{item.label}</strong>
                             {item.aliases.length > 0 && (
-                              <div>
-                                <dt>Aliases</dt>
-                                <dd>{item.aliases.join(", ")}</dd>
-                              </div>
+                              <span className="catalog-row-alias">
+                                aka {item.aliases.slice(0, 2).join(" · ")}
+                              </span>
                             )}
-                          </dl>
-                        </div>
-                      </details>
-                    </article>
-                  );
-                })}
-              </div>
-            </section>
-          ))
+                          </div>
+
+                          <label className="catalog-preference-editor">
+                            <span className="sr-only">
+                              Preference for {item.label}
+                            </span>
+                            <select
+                              value={preference ?? ""}
+                              onChange={(event) =>
+                                updatePreference(
+                                  item.id,
+                                  event.target.value
+                                    ? (event.target.value as CatalogPreferenceState)
+                                    : undefined,
+                                )
+                              }
+                            >
+                              <option value="">Not set</option>
+                              {catalogPreferenceStates.map((state) => (
+                                <option key={state} value={state}>
+                                  {preferenceLabels[state]}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+
+                          <div className="catalog-ranking-context">
+                            {categoryRank || overallRank ? (
+                              <>
+                                {categoryRank && (
+                                  <span>Category #{categoryRank}</span>
+                                )}
+                                {overallRank && <span>Overall #{overallRank}</span>}
+                              </>
+                            ) : (
+                              <span className="catalog-not-ranked">
+                                Not ranked yet
+                              </span>
+                            )}
+                          </div>
+
+                          <details className="catalog-row-details">
+                            <summary>Details</summary>
+                            <div>
+                              {item.description && <p>{item.description}</p>}
+                              <dl>
+                                <div>
+                                  <dt>Direction</dt>
+                                  <dd>{item.direction}</dd>
+                                </div>
+                                {item.primaryMode && (
+                                  <div>
+                                    <dt>Mode</dt>
+                                    <dd>{item.primaryMode}</dd>
+                                  </div>
+                                )}
+                                {item.intensity && (
+                                  <div>
+                                    <dt>Intensity</dt>
+                                    <dd>{item.intensity}</dd>
+                                  </div>
+                                )}
+                                {item.riskLevel && (
+                                  <div>
+                                    <dt>Risk</dt>
+                                    <dd>{item.riskLevel}</dd>
+                                  </div>
+                                )}
+                                {item.aliases.length > 0 && (
+                                  <div>
+                                    <dt>Aliases</dt>
+                                    <dd>{item.aliases.join(", ")}</dd>
+                                  </div>
+                                )}
+                              </dl>
+                            </div>
+                          </details>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
+              </section>
+            );
+          })
         )}
       </div>
+
+      {showReturnToTop && (
+        <button
+          type="button"
+          className="catalog-return-top"
+          onClick={returnToTop}
+          aria-label="Return to top of kink catalog"
+        >
+          ↑ Return to top
+        </button>
+      )}
     </section>
   );
 }
