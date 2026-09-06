@@ -10,9 +10,11 @@ import type {
   KinkComparison,
   RankingScope,
 } from "./kinkRanking";
+import { LEGACY_KINK_RANKING_STORAGE_KEY } from "./kinkRankingStorage";
 
 export const CATALOG_PROFILE_STORAGE_KEY = "pet-profile-catalog-v1";
-export const LEGACY_KINK_RANKING_STORAGE_KEY = "pet-profile-kink-ranking-v1";
+
+export { LEGACY_KINK_RANKING_STORAGE_KEY };
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem">;
 
