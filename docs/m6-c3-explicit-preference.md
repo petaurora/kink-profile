@@ -415,6 +415,38 @@ The table should not be hidden inside the This-or-That flow.
 
 ---
 
+# Post-C3 evidence boundary
+
+C3 intentionally stores the two forms of **direct catalog evidence** it owns:
+
+- explicit preference by stable Catalog ID/direction
+- raw pairwise comparison history
+
+It does **not** need to solve the larger profile-convergence problem while this slice is under implementation.
+
+After C3 lands, M6 C4 introduces the source-aware evidence layer described in [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md).
+
+That cleanup will allow the same Catalog ID to expose, simultaneously:
+
+- quiz-derived inferred affinity
+- direct explicit preference
+- pairwise ranking evidence
+- a derived/resolved presentation view
+
+without converting one source into another.
+
+Important compatibility rules:
+
+- quiz inference must never be written into C3's explicit preference as though the user chose it
+- C3 raw comparisons remain the durable ranking evidence source
+- quiz retakes must not erase C3 explicit/ranking evidence
+- future catalog → signal back-projection may consume **independent** explicit/pairwise evidence, never catalog affinity inferred from those signals
+- C4 should prefer adapters/selectors around C3's store over unnecessary persistence churn
+
+This keeps C3 a clean direct-preference/ranking foundation while leaving the profile free to become source-aware afterward.
+
+---
+
 # C3 non-goals
 
 Do not add in this slice:
@@ -425,11 +457,11 @@ Do not add in this slice:
 - explicit positive states seeding Elo/ranking
 - directional preference editing UI
 - bulk spreadsheet import
-- C4 confidence fixes
-- C4 finalist-promotion thresholds
+- C5 confidence fixes
+- C5 finalist-promotion thresholds
 - persisted Overall candidate pool
 - inferred affinity
-- M7 cross-quiz aggregation
+- M7 cross-source profile aggregation
 - cloud persistence
 
 ---
