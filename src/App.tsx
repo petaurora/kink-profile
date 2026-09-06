@@ -552,7 +552,6 @@ export default function App() {
 
             <button className="profile-summary" onClick={() => setScreen("profile")}>
               <span className="eyebrow">Your profile</span>
-              <span className="summary-arrow">→</span>
             </button>
           </div>
 
