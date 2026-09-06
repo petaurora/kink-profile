@@ -8,7 +8,7 @@ M6 is not starting from zero.
 
 The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-C3 explicit preference + catalog table is implemented. The next implementation slice is C4 source-aware evidence convergence.
+C3 explicit preference + catalog table and C4 source-aware evidence convergence are implemented. The next implementation slice is C5 ranking hardening.
 
 Current baseline on `main`:
 
@@ -30,7 +30,7 @@ Current baseline on `main`:
 - cross-category ranking is playable
 - raw pairwise decisions are retained so rankings can be recalculated
 
-M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection. C4 owns source-aware convergence, C5 ranking hardening, C6 result integration, and C7 affinity hardening.
+M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4 added source-aware convergence. C5 now owns ranking hardening, followed by C6 result integration and C7 affinity hardening.
 
 ---
 
@@ -452,7 +452,7 @@ C3 does **not** own:
 - catalog affinity calculation
 - broad results/profile integration
 
-Those remain C4–C6.
+Those are split across the later slices: C4 provides the source-aware inference/evidence foundation, C5 owns ranking confidence/finalists, and C6 owns broad catalog result integration.
 
 ## Canonical runtime states
 
@@ -866,7 +866,7 @@ M6 owns:
 - the no-feedback-loop contract
 - the catalog → signal projection contract for **independent** explicit/pairwise evidence
 
-M6 C4 may centralize quiz-signal → catalog inference so the catalog can have a useful inferred starting point after quizzes. That inference remains derived and must never be persisted as explicit preference.
+M6 C4 centralizes quiz-signal → catalog inference so the catalog can have a useful inferred starting point after quizzes. That inference remains derived and is never persisted as explicit preference.
 
 M7 owns:
 
@@ -1186,7 +1186,7 @@ The catalog should feel like an enrichment layer and exploration tool, not a 551
 
 # C3 implemented decisions
 
-The decisions below are now implemented and form the handoff contract for C4:
+The decisions below are implemented and formed the C3 → C4 handoff contract:
 
 1. **Seven-state enum:** Love / Like / Curious / Unsure / Not Interested / Hard Limit / Not Applicable.
 2. **Unknown semantics:** unanswered is absence; clearing the last stored state removes the preference record.
@@ -1198,6 +1198,6 @@ The decisions below are now implemented and form the handoff contract for C4:
 8. **Interconnection:** table rows may show read-only category/overall rank context by the same Catalog ID without collapsing the signals.
 9. **Safety/exclusion semantics:** Hard Limit is visually distinct and, along with Not Interested / Not Applicable, immediately removes the item from future pair selection.
 10. **Evidence separation:** pairwise choices never infer explicit state, explicit-state edits never create pairwise wins, and positive explicit state does not seed rank.
-11. **Next boundary:** C4 adds source-aware evidence convergence, quiz-derived catalog inference, provenance, retake/recompute semantics, and the no-feedback-loop contract. Ranking confidence/finalist hardening moves to C5.
+11. **Post-C3 boundary:** C4 added source-aware evidence convergence, quiz-derived catalog inference, provenance, retake/recompute semantics, and the no-feedback-loop contract. Ranking confidence/finalist hardening is now C5.
 
-These decisions now define the durable C3 boundary. C4 should build source-aware adapters/selectors and derived evidence around this store rather than rewrite C3 persistence without a concrete versioning need.
+These decisions define the durable C3 boundary. C4 builds source-aware adapters/selectors and derived evidence around this store without rewriting C3 persistence.

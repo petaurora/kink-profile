@@ -433,7 +433,7 @@ The storage schema should remain capable of future receiving/giving overrides be
 
 This-or-That remains a separate low-friction comparison mini-game. Pairwise choices do not create explicit state, and positive explicit state does not seed ranking.
 
-Once explicit state exists, `hard_limit`, `not_interested`, and `not_applicable` are excluded from new pair selection immediately. This minimum eligibility behavior belongs with C3 so explicit exclusions are actually authoritative; C4 now handles source-aware evidence convergence and ranking-confidence/finalist hardening follows in C5.
+Once explicit state exists, `hard_limit`, `not_interested`, and `not_applicable` are excluded from new pair selection immediately. This minimum eligibility behavior belongs with C3 so explicit exclusions are actually authoritative; C4 implements source-aware evidence convergence, and ranking-confidence/finalist hardening follows in C5.
 
 ## Pairwise ranking
 
