@@ -8,7 +8,7 @@ M6 is not starting from zero.
 
 The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-C3 explicit preference + catalog table is implemented. The next implementation slice is C4 source-aware evidence convergence.
+C3 explicit preference + catalog table and C4 source-aware evidence convergence are implemented. The next implementation slice is C5 ranking hardening.
 
 Current baseline on `main`:
 
@@ -30,7 +30,7 @@ Current baseline on `main`:
 - cross-category ranking is playable
 - raw pairwise decisions are retained so rankings can be recalculated
 
-M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection. C4 owns source-aware convergence, C5 ranking hardening, C6 result integration, and C7 affinity hardening.
+M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4 added source-aware convergence. C5 now owns ranking hardening, followed by C6 result integration and C7 affinity hardening.
 
 ---
 
@@ -1200,4 +1200,4 @@ The decisions below are now implemented and form the handoff contract for C4:
 10. **Evidence separation:** pairwise choices never infer explicit state, explicit-state edits never create pairwise wins, and positive explicit state does not seed rank.
 11. **Next boundary:** C4 adds source-aware evidence convergence, quiz-derived catalog inference, provenance, retake/recompute semantics, and the no-feedback-loop contract. Ranking confidence/finalist hardening moves to C5.
 
-These decisions now define the durable C3 boundary. C4 should build source-aware adapters/selectors and derived evidence around this store rather than rewrite C3 persistence without a concrete versioning need.
+These decisions define the durable C3 boundary. C4 now builds source-aware adapters/selectors and derived evidence around this store without rewriting C3 persistence.
