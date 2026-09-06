@@ -27,7 +27,7 @@ Current baseline on `main`:
 - cross-category ranking is playable
 - raw pairwise decisions are retained so rankings can be recalculated
 
-M6 must preserve that work while fixing the identity, user-state, mapping, and integration gaps that the initial slice intentionally left open.
+M6 preserves that baseline. C1/C2 have closed the identity and mapping gaps; C3–C6 now own explicit user state, ranking hardening, result integration, and the affinity foundation.
 
 ---
 
@@ -189,9 +189,9 @@ Before C1, the generator derived item identity from the label:
 
 Duplicate slugs receive row-order suffixes.
 
-Category IDs are also derived from category labels.
+Category IDs were also derived from category labels.
 
-This is convenient for the initial slice but it is **not durable identity**.
+That was convenient for the initial slice but it was **not durable identity**.
 
 A label rename, category rename, or duplicate-row reorder can invalidate:
 
@@ -384,7 +384,7 @@ type CatalogSignalMapping = {
 };
 ```
 
-Weights should initially use a small documented range such as:
+C2 uses the controlled mapping-weight range:
 
 ```text
 0.25 — weak/secondary association
@@ -393,7 +393,7 @@ Weights should initially use a small documented range such as:
 1.00 — defining association
 ```
 
-Avoid false precision.
+The generator rejects other values to avoid false precision.
 
 ## Direction
 
@@ -1065,7 +1065,9 @@ Current seeded mapping layer:
 
 Unmapped means **unknown / not inferable from current quiz signals**, not 0% affinity.
 
-## C3 — Explicit catalog preference state 📋 contract ready
+## C3 — Explicit catalog preference state 🎯 scoped for implementation
+
+See [M6 C3 — Explicit Preference State](m6-c3-explicit-preference.md) for the concrete implementation plan and acceptance scenarios.
 
 - [ ] define the seven-state runtime enum
 - [ ] represent unanswered by absence
@@ -1075,15 +1077,16 @@ Unmapped means **unknown / not inferable from current quiz signals**, not 0% aff
 - [ ] migrate raw ranking history from `pet-profile-kink-ranking-v1`
 - [ ] canonicalize migrated Catalog IDs through C1 replacement mappings
 - [ ] keep the legacy ranking key untouched during the migration window; no long-term dual-write
+- [ ] refactor comparison sides so Pick and Preference are separate valid interactive controls
 - [ ] add contextual Set preference controls on active catalog comparison cards
 - [ ] keep explicit-state actions separate from pairwise choices
 - [ ] make Hard Limit visibly distinct from Not Interested
 - [ ] exclude hard_limit / not_interested / not_applicable from new pair selection
 - [ ] preserve love / like / curious / unsure / unanswered as ranking-eligible
+- [ ] handle scopes with fewer than two eligible items without a blank/dead ranking state
+- [ ] add focused preference/storage/migration/eligibility tests
 
 ## C4 — Ranking hardening
-
-- [ ] ensure ranking choices do not mutate explicit state
 - [ ] stop skip from increasing ranking confidence
 - [ ] stop neither from inflating ordering confidence
 - [x] prevent untouched categories from contributing finalists
