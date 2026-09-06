@@ -29,7 +29,7 @@ This folder contains the product and scoring decisions that should guide impleme
    The implemented C4/M7 convergence contract: quizzes, explicit catalog state, pairwise ranking, inferred catalog affinity, source provenance, recomputation, and the no-feedback-loop rule.
 
 9. [Kink This-or-That Ranking](kink-this-or-that-ranking.md)  
-   The implemented Top-5-per-ranked-category funnel, category-home navigation, and remaining ranking hardening.
+   The implemented category/Overall ranking flow, C5 meaningful-evidence/finalist/history hardening, and the remaining C6 result-integration work.
 
 10. [Scoring & Taxonomy Model](scoring-model.md)  
    The reusable scoring architecture behind the core quizzes, catalog affinity, and source-aware recomputation.
