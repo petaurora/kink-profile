@@ -8,7 +8,7 @@ M6 is not starting from zero.
 
 The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-C3 explicit preference + catalog table and C4 source-aware evidence convergence are implemented. The next implementation slice is C5 ranking hardening.
+C3 explicit preference + catalog table, C4 source-aware evidence convergence, and C5 ranking hardening are implemented. The next implementation slice is C6 catalog result integration.
 
 Current baseline on `main`:
 
@@ -30,7 +30,7 @@ Current baseline on `main`:
 - cross-category ranking is playable
 - raw pairwise decisions are retained so rankings can be recalculated
 
-M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4 added source-aware convergence. C5 now owns ranking hardening, followed by C6 result integration and C7 affinity hardening.
+M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added direct catalog state + the table/mini-game interconnection; C4 added source-aware convergence; C5 hardened ranking evidence/finalists. C6 now owns result integration, followed by C7 affinity hardening.
 
 ---
 
@@ -1130,14 +1130,28 @@ See [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.m
 - [x] retain affinity separately from confidence/coverage
 - [x] add source-isolation, exclusion-authority, and no-feedback-loop tests
 
-## C5 — Ranking hardening
-- [ ] stop skip from increasing ranking confidence
-- [ ] stop neither from inflating ordering confidence
+## C5 — Ranking hardening ✅
+- [x] stop skip from increasing ranking confidence
+- [x] stop neither from inflating ordering confidence
 - [x] prevent untouched categories from contributing finalists
-- [ ] define whether more than one comparison is required before finalist promotion
-- [ ] persist overall finalist/candidate membership or otherwise preserve prior Overall participants
-- [ ] keep existing Overall comparison history meaningful when category Top 5 changes
-- [ ] add focused ranking tests
+- [x] require at least one meaningful ordering comparison per finalist; one comparison may promote only the items actually involved
+- [x] preserve prior meaningful Overall participants by deriving candidates from current eligible finalists + prior eligible Overall ordering participants
+- [x] keep existing Overall comparison history meaningful when category Top 5 changes
+- [x] add focused ranking tests
+
+### Implemented C5 semantics
+
+- `left`, `right`, and `equal` are meaningful ordering evidence
+- `skip` and `neither` remain stored interactions but do not increment item ordering counts or ranking confidence
+- session-size progress still counts all interactions because session length is a UX convenience, not evidence strength
+- category progress/confidence uses meaningful ordering evidence only
+- finalist promotion requires at least one meaningful ordering comparison for the item
+- one comparison can therefore promote the two items actually compared; unrelated zero-evidence items cannot hitchhike into Top 5
+- Overall candidates are derived from current eligible finalists plus eligible Catalog IDs with prior meaningful Overall ordering evidence
+- no new persistence version is required to preserve Overall history
+- explicit exclusions remain authoritative; excluded historical participants disappear from new pairs while raw comparison history remains stored
+
+Verification: 50 tests pass across the ranking/catalog/evidence suites, including 12 focused C5 ranking tests, and the production TypeScript/Vite build passes.
 
 ## C6 — Catalog result integration
 

@@ -235,7 +235,7 @@ No positive ordering preference should be awarded to either item.
 
 The raw interaction may be retained to avoid immediately repeating an unhelpful pair.
 
-**Current implementation note:** Neither does not change Elo, but it currently increments item comparison counts and scope confidence. M6 should stop it from inflating ordering confidence.
+**Current implementation:** Neither is retained as a raw interaction for repetition avoidance/history, but it does not change Elo, increment item ordering counts, or increase scope confidence.
 
 Direct explicit preference editing belongs in the catalog table/list. Ranking behavior must not silently overwrite explicit profile state.
 
@@ -245,7 +245,7 @@ Skip should provide no ranking evidence.
 
 The raw interaction may be retained so the selector can avoid immediate repetition.
 
-**Current implementation note:** Skip does not change Elo, but it currently increments item comparison counts and scope confidence. M6 should correct that behavior.
+**Current implementation:** Skip is retained as a raw interaction for repetition avoidance/history, but it does not change Elo, increment item ordering counts, or increase scope confidence.
 
 Useful when:
 
@@ -283,7 +283,7 @@ Ranking: excluded
 
 The catalog's explicit states remain authoritative for safety and interest semantics.
 
-Canonical M6 explicit states (not yet implemented in runtime user state):
+Canonical M6 explicit states:
 
 - love
 - like
@@ -342,7 +342,7 @@ The storage model should not make Elo permanent. Future algorithms could include
 - TrueSkill
 - Bayesian preference models
 
-Calculated rankings are currently derived from raw comparison history. Once M6 explicit preference state lands, eligibility must also filter the catalog before pair selection/ranking.
+Calculated rankings are derived from raw comparison history, while C3 explicit preference state filters eligibility before pair selection/ranking.
 
 ---
 
@@ -603,7 +603,7 @@ This is future scope, not required for initial ranking implementation.
 
 The initial feature is already playable. These statuses describe the current implementation rather than the original plan.
 
-## R1 — Pairwise comparison model ✅ / hardening pending
+## R1 — Pairwise comparison model ✅
 
 Implemented:
 
@@ -614,11 +614,11 @@ Implemented:
 
 M6 hardening:
 
-- [ ] focused tests
-- [ ] Skip must not increase ranking confidence
-- [ ] Neither must not increase ordering confidence
+- [x] focused tests
+- [x] Skip does not increase ranking confidence
+- [x] Neither does not increase ordering confidence
 
-## R2 — Category ranking engine ✅ / C5 confidence hardening pending
+## R2 — Category ranking engine ✅
 
 Implemented:
 
@@ -631,9 +631,9 @@ Implemented:
 M6 hardening:
 
 - [x] C3 explicit-preference eligibility/exclusions
-- [ ] C5 confidence semantics based only on meaningful ordering evidence
+- [x] C5 confidence semantics based only on meaningful ordering evidence
 
-## R3 — Finalist selection 🟡
+## R3 — Finalist selection ✅
 
 Implemented:
 
@@ -644,10 +644,10 @@ Implemented:
 
 Still needed:
 
-- [ ] decide whether one category comparison is sufficient promotion evidence
-- [ ] preserve prior Overall participants/history when current category Top 5 changes
+- [x] require at least one meaningful ordering comparison for each promoted item; one comparison can promote only the items involved
+- [x] preserve eligible prior meaningful Overall participants when current category Top 5 changes
 
-## R4 — Cross-category ranking ✅ / hardening pending
+## R4 — Cross-category ranking ✅ / selection tuning remains
 
 Implemented:
 
@@ -660,7 +660,7 @@ Implemented:
 Still needed:
 
 - [ ] determine whether selection should prioritize resolving the top of the list more aggressively
-- [ ] finalist/candidate persistence semantics
+- [x] derive the active candidate pool from current eligible finalists + eligible prior meaningful Overall participants; no separate persistence needed
 
 ## R5 — This-or-that UI ✅
 
