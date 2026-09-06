@@ -506,7 +506,7 @@ export default function App() {
               <strong>
                 {completedCore} / {coreQuizzes.length}
               </strong>
-              <span>core areas explored</span>
+              <span>sections explored</span>
               <span className="summary-arrow">→</span>
             </button>
           </div>
@@ -599,7 +599,7 @@ export default function App() {
           <div className="profile-overview panel">
             <div className="profile-number">
               <strong>{completedCore}</strong>
-              <span>of {coreQuizzes.length} core areas explored</span>
+              <span>of {coreQuizzes.length} sections explored</span>
             </div>
             <div className="profile-section-list">
               {coreQuizzes.map((quiz) => {
