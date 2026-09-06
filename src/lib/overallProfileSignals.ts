@@ -104,7 +104,7 @@ function clampPercent(value: number) {
 }
 
 function round1(value: number) {
-  return Math.round(value * 10) / 10;
+  return Math.round((value + 1e-9) * 10) / 10;
 }
 
 function signalDirection(signalId: SignalId) {
