@@ -17,7 +17,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M4 | ✅ Complete | add Bondage & Discipline |
 | M5 | ✅ Complete | add Sadism & Masochism |
 | M6 | ✅ Complete | integrated, source-aware, hardened kink catalog |
-| M7 | Planned | build the full aggregated profile |
+| M7 | 🚧 In progress | build the full aggregated profile |
 | M8 | Optional | add quiz depth/adaptive follow-ups |
 | M9 | Planned | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
@@ -482,39 +482,39 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 - **O5 → M7.6–M7.9**
 - **O6 → M7.10–M7.11**
 
-### M7.1 — Canonical cross-source aggregation + inspection
+### M7.1 — Canonical cross-source aggregation + inspection ✅
 
 **Purpose:** make the profile math inspectable before building presentation on top of it.
 
-- [ ] consume independent quiz, explicit-catalog, and pairwise-catalog evidence
-- [ ] merge repeated SignalIds without semantic double-counting
-- [ ] define deterministic source weighting/deduplication rules
-- [ ] preserve score separately from coverage/evidence strength
-- [ ] preserve source traceability for every canonical signal
-- [ ] replace only the affected quiz contribution on retake
-- [ ] preserve manual catalog + ranking evidence across quiz retakes
-- [ ] exclude inferred catalog affinity/resolved views from signal input
-- [ ] add deterministic aggregation tests
-- [ ] add a temporary/dev inspection surface showing canonical signal score, coverage, and per-source contributions
+- [x] consume independent quiz, explicit-catalog, and pairwise-catalog evidence
+- [x] merge repeated SignalIds without semantic double-counting
+- [x] define deterministic source weighting/deduplication rules
+- [x] preserve score separately from coverage/evidence strength
+- [x] preserve source traceability for every canonical signal
+- [x] replace only the affected quiz contribution on retake
+- [x] preserve manual catalog + ranking evidence across quiz retakes
+- [x] exclude inferred catalog affinity/resolved views from signal input
+- [x] add deterministic aggregation tests
+- [x] add a temporary/dev inspection surface showing canonical signal score, coverage, and per-source contributions
 
-**Test before moving on:** change explicit catalog state, add This-or-That evidence, and retake a quiz; verify only the intended source contribution changes and the inspection output remains explainable.
+**Exit condition:** canonical SignalIds can be inspected and trusted independently of the final profile UI. ✅
 
-**Exit condition:** canonical SignalIds can be inspected and trusted independently of the final profile UI.
-
-### M7.2 — Overall facet model
+### M7.2 — Overall facet model ✅
 
 **Purpose:** turn canonical signals into broad profile themes.
 
-- [ ] define final facet IDs/vocabulary
-- [ ] lock facet composition weights in config/data
-- [ ] calculate facet score + coverage
-- [ ] preserve unknown evidence as unknown rather than 0%
-- [ ] preserve direction metadata where relevant
-- [ ] add deterministic composition tests
+- [x] lock the nine-facet vocabulary without merging distinct concepts for visualization convenience
+- [x] lock facet composition weights in `src/data/overallFacets.ts`
+- [x] calculate facet affinity + coverage from canonical signals
+- [x] preserve unknown evidence as unknown rather than 0%
+- [x] preserve receiving/giving metadata for directional facets
+- [x] retain source provenance through contributing components
+- [x] add deterministic composition tests
+- [x] add a temporary facet inspection surface for real-data validation
 
-**Test before moving on:** seed intentionally different signal combinations and verify the resulting facets, coverage, and direction metadata behave as expected.
+**Locked facets:** Power Exchange; Structure & Protocol; Ownership & Belonging; Service & Devotion; Care & Nurture; Play & Resistance; Primal & Instinctive; Restraint & Physical Control; Intensity & Pain.
 
-**Exit condition:** broad profile facets are stable enough to present without depending on UI code.
+**Exit condition:** broad profile facets are stable enough to present without depending on final profile UI. ✅
 
 ### M7.3 — Profile header
 
@@ -763,6 +763,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.1 — Canonical cross-source aggregation + inspection**
+**M7.3 — Profile header**
 
-Implement and test the canonical SignalId aggregation layer first. Expose a temporary/dev inspection surface for score, coverage, and source contributions so explicit catalog changes, This-or-That evidence, and quiz retakes can be validated independently before M7.2 facet composition begins.
+Use the canonical-signal + M7.2 facet model to build the hybrid human-readable profile header with compact Orientation / Headspaces / Dynamic Modes traits. Keep progress/completion mechanics out of the presentation header.
