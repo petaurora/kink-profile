@@ -16,7 +16,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M3 | ✅ Complete | add Roles & Headspaces |
 | M4 | ✅ Complete | add Bondage & Discipline |
 | M5 | ✅ Complete | add Sadism & Masochism |
-| M6 | 🟡 In progress | integrate and harden the kink catalog |
+| M6 | ✅ Complete | integrated, source-aware, hardened kink catalog |
 | M7 | Planned | build the full aggregated profile |
 | M8 | Optional | add quiz depth/adaptive follow-ups |
 | M9 | Planned later | export/import/share |
