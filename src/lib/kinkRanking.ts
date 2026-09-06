@@ -39,6 +39,12 @@ function expectedScore(ratingA: number, ratingB: number) {
   return 1 / (1 + 10 ** ((ratingB - ratingA) / 400));
 }
 
+export function isOrderingResult(
+  result: ComparisonResult,
+): result is "left" | "right" | "equal" {
+  return result === "left" || result === "right" || result === "equal";
+}
+
 function scoreFor(result: ComparisonResult, side: "left" | "right") {
   if (result === "equal") return 0.5;
   if (result === "left") return side === "left" ? 1 : 0;
@@ -72,9 +78,19 @@ export function calculateRanking(
     .slice()
     .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 
-  for (const comparison of relevant) {
-    counts.set(comparison.leftKinkId, (counts.get(comparison.leftKinkId) ?? 0) + 1);
-    counts.set(comparison.rightKinkId, (counts.get(comparison.rightKinkId) ?? 0) + 1);
+  const orderingComparisons = relevant.filter((comparison) =>
+    isOrderingResult(comparison.result),
+  );
+
+  for (const comparison of orderingComparisons) {
+    counts.set(
+      comparison.leftKinkId,
+      (counts.get(comparison.leftKinkId) ?? 0) + 1,
+    );
+    counts.set(
+      comparison.rightKinkId,
+      (counts.get(comparison.rightKinkId) ?? 0) + 1,
+    );
 
     const leftScore = scoreFor(comparison.result, "left");
     const rightScore = scoreFor(comparison.result, "right");
@@ -115,7 +131,10 @@ export function calculateRanking(
     .map((item, index) => ({ ...item, rank: index + 1 }));
 
   const totalComparisonTargets = Math.max(1, eligible.length * 4);
-  const confidence = Math.min(1, relevant.length / totalComparisonTargets);
+  const confidence = Math.min(
+    1,
+    orderingComparisons.length / totalComparisonTargets,
+  );
 
   return { items, confidence };
 }
@@ -167,6 +186,17 @@ export function selectNextPair(
   return [best.left, best.right];
 }
 
+export function countOrderingComparisonsForScope(
+  comparisons: readonly KinkComparison[],
+  scope: RankingScope,
+) {
+  return comparisons.filter(
+    (comparison) =>
+      sameScope(comparison.scope, scope) &&
+      isOrderingResult(comparison.result),
+  ).length;
+}
+
 export function selectCategoryFinalists(
   catalog: readonly KinkCatalogItem[],
   comparisons: readonly KinkComparison[],
@@ -174,7 +204,11 @@ export function selectCategoryFinalists(
 ) {
   const rankedCategoryIds = new Set(
     comparisons
-      .filter((comparison) => comparison.scope.type === "category")
+      .filter(
+        (comparison) =>
+          comparison.scope.type === "category" &&
+          isOrderingResult(comparison.result),
+      )
       .map((comparison) =>
         comparison.scope.type === "category" ? comparison.scope.categoryId : "",
       )
@@ -182,11 +216,35 @@ export function selectCategoryFinalists(
   );
 
   return [...rankedCategoryIds].flatMap((categoryId) =>
-    calculateRanking(catalog, comparisons, { type: "category", categoryId }).items.slice(
-      0,
-      finalistCount,
-    ),
+    calculateRanking(catalog, comparisons, {
+      type: "category",
+      categoryId,
+    }).items
+      .filter((item) => item.comparisons > 0)
+      .slice(0, finalistCount),
   );
+}
+
+export function selectOverallCandidates(
+  catalog: readonly KinkCatalogItem[],
+  currentFinalists: readonly KinkCatalogItem[],
+  comparisons: readonly KinkComparison[],
+) {
+  const candidateIds = new Set(currentFinalists.map((item) => item.id));
+
+  for (const comparison of comparisons) {
+    if (
+      comparison.scope.type !== "overall" ||
+      !isOrderingResult(comparison.result)
+    ) {
+      continue;
+    }
+
+    candidateIds.add(comparison.leftKinkId);
+    candidateIds.add(comparison.rightKinkId);
+  }
+
+  return catalog.filter((item) => candidateIds.has(item.id));
 }
 
 export function confidenceLabel(confidence: number) {
