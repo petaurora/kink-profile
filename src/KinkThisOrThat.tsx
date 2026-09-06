@@ -14,9 +14,18 @@ import {
   type RankingScope,
 } from "./lib/kinkRanking";
 import {
-  loadKinkRankingProgress,
-  saveKinkRankingProgress,
-} from "./lib/kinkRankingStorage";
+  catalogPreferenceStates,
+  clearCatalogPreference,
+  filterEligibleCatalogItems,
+  getCatalogPreference,
+  isExcludedCatalogState,
+  setCatalogPreference,
+  type CatalogPreferenceState,
+} from "./lib/catalogProfile";
+import {
+  loadCatalogProfile,
+  saveCatalogProfile,
+} from "./lib/catalogProfileStorage";
 
 type RankingMode = "category" | "overall";
 type SessionSize = 10 | 25 | 50 | "gremlin";
@@ -27,6 +36,16 @@ const sessionOptions: Array<{ value: SessionSize; label: string; detail: string 
   { value: 50, label: "Deep Dive", detail: "50 comparisons" },
   { value: "gremlin", label: "Gremlin Mode", detail: "keep going" },
 ];
+
+const preferenceLabels: Record<CatalogPreferenceState, string> = {
+  love: "Love",
+  like: "Like",
+  curious: "Curious",
+  unsure: "Unsure",
+  not_interested: "Not Interested",
+  hard_limit: "Hard Limit",
+  not_applicable: "Not Applicable",
+};
 
 function randomId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -54,7 +73,7 @@ function comparisonCountForScope(
 }
 
 export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
-  const [progress, setProgress] = useState(() => loadKinkRankingProgress());
+  const [profile, setProfile] = useState(() => loadCatalogProfile());
   const [mode, setMode] = useState<RankingMode>("category");
   const [categoryId, setCategoryId] = useState<string>(kinkCategories[0]?.id ?? "");
   const [sessionSize, setSessionSize] = useState<SessionSize>(25);
@@ -64,35 +83,52 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
   const [categoryOpen, setCategoryOpen] = useState(false);
 
   useEffect(() => {
-    saveKinkRankingProgress(progress);
-  }, [progress]);
+    saveCatalogProfile(profile);
+  }, [profile]);
+
+  const excludedCatalogKey = useMemo(
+    () =>
+      Object.entries(profile.preferences)
+        .filter(([, preference]) =>
+          isExcludedCatalogState(getCatalogPreference(preference, "overall")),
+        )
+        .map(([catalogId]) => catalogId)
+        .sort()
+        .join("|"),
+    [profile.preferences],
+  );
+
+  const eligibleCatalog = useMemo(
+    () => filterEligibleCatalogItems(kinkCatalog, profile.preferences),
+    [excludedCatalogKey],
+  );
 
   const finalists = useMemo(
-    () => selectCategoryFinalists(kinkCatalog, progress.comparisons, 5),
-    [progress.comparisons],
+    () => selectCategoryFinalists(eligibleCatalog, profile.comparisons, 5),
+    [eligibleCatalog, profile.comparisons],
   );
 
   const activeCatalog = mode === "overall"
     ? finalists
-    : kinkCatalog.filter((item) => item.categoryId === categoryId);
+    : eligibleCatalog.filter((item) => item.categoryId === categoryId);
 
   const scope: RankingScope = mode === "overall"
     ? { type: "overall" }
     : { type: "category", categoryId };
 
   const snapshot = useMemo(
-    () => calculateRanking(activeCatalog, progress.comparisons, scope),
-    [activeCatalog, progress.comparisons, mode, categoryId],
+    () => calculateRanking(activeCatalog, profile.comparisons, scope),
+    [activeCatalog, profile.comparisons, mode, categoryId],
   );
 
   const basePair = useMemo(
-    () => selectNextPair(activeCatalog, progress.comparisons, scope),
-    [activeCatalog, progress.comparisons, mode, categoryId, pairNonce],
+    () => selectNextPair(activeCatalog, profile.comparisons, scope),
+    [activeCatalog, profile.comparisons, mode, categoryId, pairNonce],
   );
 
   const pair = useMemo(() => randomizePair(basePair), [basePair, pairNonce]);
 
-  const totalInScope = comparisonCountForScope(progress.comparisons, scope);
+  const totalInScope = comparisonCountForScope(profile.comparisons, scope);
   const sessionAnswered = Math.max(0, totalInScope - sessionStartCount);
   const sessionLimit = sessionSize === "gremlin" ? Infinity : sessionSize;
   const sessionComplete = sessionAnswered >= sessionLimit;
@@ -102,11 +138,13 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
     () =>
       kinkCategories.map((category) => {
         const categoryScope: RankingScope = { type: "category", categoryId: category.id };
-        const comparisons = comparisonCountForScope(progress.comparisons, categoryScope);
-        const categoryCatalog = kinkCatalog.filter((item) => item.categoryId === category.id);
+        const comparisons = comparisonCountForScope(profile.comparisons, categoryScope);
+        const categoryCatalog = eligibleCatalog.filter(
+          (item) => item.categoryId === category.id,
+        );
         const categorySnapshot = calculateRanking(
           categoryCatalog,
-          progress.comparisons,
+          profile.comparisons,
           categoryScope,
         );
 
@@ -117,17 +155,17 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
           confidenceLabel: comparisons === 0 ? "Not started" : confidenceLabel(categorySnapshot.confidence),
         };
       }),
-    [progress.comparisons],
+    [eligibleCatalog, profile.comparisons],
   );
 
   const lastRankedCategoryId = useMemo(() => {
-    const latest = progress.comparisons
+    const latest = profile.comparisons
       .filter((comparison) => comparison.scope.type === "category")
       .slice()
       .sort((a, b) => b.timestamp.localeCompare(a.timestamp))[0];
 
     return latest?.scope.type === "category" ? latest.scope.categoryId : null;
-  }, [progress.comparisons]);
+  }, [profile.comparisons]);
 
   const continueCategory = categorySummaries.find(
     (category) => category.id === lastRankedCategoryId,
@@ -175,6 +213,17 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
     setPairNonce((value) => value + 1);
   };
 
+  const updatePreference = (
+    catalogId: string,
+    state: CatalogPreferenceState | undefined,
+  ) => {
+    setProfile((current) =>
+      state === undefined
+        ? clearCatalogPreference(current, catalogId, "overall")
+        : setCatalogPreference(current, catalogId, "overall", state),
+    );
+  };
+
   const answer = (result: ComparisonResult) => {
     if (!pair || sessionComplete) return;
 
@@ -187,7 +236,7 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
       timestamp: new Date().toISOString(),
     };
 
-    setProgress((current) => ({
+    setProfile((current) => ({
       ...current,
       comparisons: [...current.comparisons, comparison],
     }));
@@ -202,7 +251,7 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
     setShowResults(false);
     setPairNonce((value) => value + 1);
     setSessionStartCount(
-      comparisonCountForScope(progress.comparisons, { type: "overall" }),
+      comparisonCountForScope(profile.comparisons, { type: "overall" }),
     );
   };
 
@@ -219,7 +268,7 @@ export function KinkThisOrThat({ onClose }: { onClose: () => void }) {
     setShowResults(false);
     setPairNonce((value) => value + 1);
     setSessionStartCount(
-      comparisonCountForScope(progress.comparisons, {
+      comparisonCountForScope(profile.comparisons, {
         type: "category",
         categoryId: nextCategoryId,
       }),
