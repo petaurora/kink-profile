@@ -50,20 +50,11 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   color: var(--text-primary);
 }
 
-.privacy-pill,
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: .12em;
   font-size: .72rem;
   font-weight: 800;
-}
-
-.privacy-pill {
-  border: 1px solid var(--border-subtle);
-  border-radius: 999px;
-  padding: 8px 11px;
-  color: var(--text-secondary);
-  background: var(--bg-muted);
 }
 
 .panel {
