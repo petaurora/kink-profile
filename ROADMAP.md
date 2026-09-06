@@ -566,19 +566,23 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Exit condition:** Headspaces and Dynamic Modes add recognizable detail without replacing the broader profile model. ✅
 
-### M7.6 — Top Overall catalog interests
+### M7.6 — Top Overall catalog interests ✅
 
 **Purpose:** make the abstract profile concrete using the user's strongest directly evidenced catalog interests.
 
-- [ ] derive Top 10 from aggregated explicit preference + pairwise ranking evidence
-- [ ] keep explicit and pairwise source values independent underneath the aggregate
-- [ ] do not allow inference-only affinity into Top Overall
-- [ ] define deterministic ordering/tie behavior
-- [ ] preserve source traceability
+- [x] derive Top 10 from positive explicit preference + active Overall This-or-That rank
+- [x] keep explicit and pairwise source values independent underneath the aggregate
+- [x] exclude inference-only affinity from Top Overall
+- [x] exclude Hard Limit / Not Interested / Not Applicable even when historical rank remains
+- [x] keep Unsure from acting as positive explicit evidence by itself
+- [x] use confidence-aware pairwise placement in the derived presentation ordering
+- [x] define deterministic source-count / explicit-state / confidence / rank / label tie behavior
+- [x] preserve source traceability directly in each displayed row
+- [x] show fewer than 10 instead of padding with inferred/default items
+- [x] keep the aggregate ordering score presentation-only and non-authoritative
+- [x] add deterministic direct-evidence aggregation tests
 
-**Test before moving on:** manipulate explicit states and This-or-That rankings independently and verify Top Overall responds without mutating either source.
-
-**Exit condition:** Top Overall is a stable direct-evidence ranking rather than an inferred recommendation list.
+**Exit condition:** Top Overall is a stable direct-evidence ranking rather than an inferred recommendation list. ✅
 
 ### M7.7 — Hard Limits
 
@@ -770,6 +774,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.6 — Top Overall catalog interests**
+**M7.7 — Hard Limits**
 
-Build the profile's concrete Top Overall list from independent direct evidence: explicit catalog preference + This-or-That ranking. Keep inference-only affinity out of the ranking, preserve source traceability underneath, and define deterministic aggregation/tie behavior before adding Hard Limits in M7.7.
+Add the explicit Hard Limits profile summary beside/after Top Overall. Keep Hard Limit semantically distinct from Not Interested, Not Applicable, and low-ranked items; use a compact default list with expansion behavior when needed.
