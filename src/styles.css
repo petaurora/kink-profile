@@ -2719,7 +2719,8 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 .catalog-return-top {
   position: fixed;
   right: max(1rem, env(safe-area-inset-right));
-  bottom: max(1rem, env(safe-area-inset-bottom));
+  /* Keep this above the global Settings FAB instead of sharing its corner. */
+  bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 3.75rem);
   z-index: 20;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
@@ -2873,7 +2874,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
   .catalog-return-top {
     right: max(.75rem, env(safe-area-inset-right));
-    bottom: max(.75rem, env(safe-area-inset-bottom));
+    bottom: calc(max(.75rem, env(safe-area-inset-bottom)) + 3.5rem);
     padding: .65rem .85rem;
   }
 
