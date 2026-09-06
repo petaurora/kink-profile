@@ -430,13 +430,11 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .profile-summary {
   position: relative;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-areas:
-    "label arrow"
-    "score copy";
-  column-gap: 14px;
-  align-items: end;
+  display: flex;
+  min-height: 138px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
   border: 1px solid var(--border-subtle);
   border-radius: 20px;
   padding: 18px 20px;
@@ -447,32 +445,30 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 }
 
 .profile-summary .eyebrow {
-  grid-area: label;
   color: var(--text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: auto;
 }
 
 .profile-summary strong {
-  grid-area: score;
   display: block;
-  margin: 0;
-  font-size: 2.45rem;
-  line-height: .9;
-  letter-spacing: -.06em;
+  max-width: 180px;
+  margin-top: 24px;
+  font-size: 1.25rem;
+  line-height: 1.05;
+  letter-spacing: -.035em;
 }
 
 .profile-summary > span:not(.eyebrow):not(.summary-arrow) {
-  grid-area: copy;
-  margin: 0 28px 2px 0;
+  margin-top: 8px;
   color: var(--text-secondary);
-  font-size: .82rem;
-  line-height: 1.25;
+  font-size: .78rem;
+  line-height: 1.3;
 }
 
 .summary-arrow {
-  grid-area: arrow;
-  justify-self: end;
-  align-self: start;
+  position: absolute;
+  top: 18px;
+  right: 20px;
   font-size: 1.2rem;
 }
 
@@ -895,9 +891,6 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
     padding: 16px 18px;
   }
 
-  .profile-summary strong {
-    font-size: 2.2rem;
-  }
 
   .quiz-card,
   .catalog-note {
