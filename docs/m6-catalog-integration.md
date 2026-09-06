@@ -16,7 +16,7 @@ Current baseline on `main`:
 - `reference/catalog/kink-catalog.tsv` is the runtime catalog source of truth
 - the catalog contains **551 discussion items**
 - `scripts/generate-kink-catalog.mjs` generates the app-owned runtime module before dev/build
-- the runtime catalog exposes label, category, description, role/mode, intensity, and risk metadata
+- the runtime catalog exposes stable identity, category/domain/display metadata, normalized direction, aliases, signal mappings, description, role/mode, intensity, and risk metadata
 - pairwise comparisons are persisted locally
 - category ranking is playable
 - the ranking home is a category progress map rather than a category dropdown
@@ -141,16 +141,21 @@ This is the human-editable, diffable source for catalog definitions.
 
 ## Supporting TSVs
 
-Current supporting files:
+Runtime catalog sidecars:
+
+- `catalog-categories.tsv` — category domain + display metadata
+- `catalog-aliases.tsv` — alternate terminology
+- `catalog-signal-mappings.tsv` — validated category/item → SignalId mappings
+- `catalog-id-replacements.tsv` — old Catalog ID → canonical Catalog ID replacements
+
+Reference/authoring support files:
 
 - `overview.tsv`
 - `lists.tsv`
 - `research-sources.tsv`
 - `new-additions.tsv`
 
-These are reference/authoring support data.
-
-They are **not automatically runtime schemas**.
+The reference/authoring files are **not automatically runtime schemas**.
 
 In particular, the old workbook-specific Master/pet preference columns and helper lists should not become the application's user-profile storage model.
 
@@ -176,7 +181,7 @@ Application code consumes the generated runtime model rather than parsing TSV in
 
 ## Prior problem
 
-The current generator derives item identity from the label:
+Before C1, the generator derived item identity from the label:
 
 ```text
 "Rope bondage" → rope-bondage
@@ -256,43 +261,42 @@ The migration was verified as lossless:
 
 # Runtime catalog schema
 
-Initial target:
+C2 currently generates the following core shape:
 
 ```ts
-type CatalogItemId = string;
-type CatalogCategoryId = string;
+type KinkCatalogDirection = "receiving" | "giving" | "both";
+
+type KinkCatalogSignalMapping = {
+  signalId: SignalId;
+  weight: number;
+};
 
 type KinkCatalogItem = {
-  id: CatalogItemId;
+  id: string;
   label: string;
-
-  categoryId: CatalogCategoryId;
+  categoryId: string;
   categoryLabel: string;
-
+  domain: KinkCatalogDomain;
+  direction: KinkCatalogDirection;
+  aliases: readonly string[];
+  signalMappings: readonly KinkCatalogSignalMapping[];
   description: string;
-  aliases: string[];
-
-  typicalRole?: "receiving" | "giving" | "both" | "neutral";
-  primaryMode?: string;
-
-  intensity?: string;
-  riskLevel?: string;
-
-  signalMappings: CatalogSignalMapping[];
+  typicalRole: string;
+  primaryMode: string;
+  intensity: string;
+  riskLevel: string;
 };
 
 type KinkCatalogCategory = {
-  id: CatalogCategoryId;
+  id: string;
   label: string;
+  domain: KinkCatalogDomain;
+  displayOrder: number;
   itemCount: number;
-  domain?: string;
-  displayOrder?: number;
 };
 ```
 
-Not every existing TSV field has to become strongly typed immediately.
-
-Identity and signal mapping need stronger guarantees than descriptive metadata.
+Not every descriptive TSV field needs stronger typing. Stable identity, controlled direction, category metadata, and signal mapping have explicit generator validation.
 
 ---
 
@@ -307,25 +311,25 @@ The existing catalog categories remain useful for:
 - filtering
 - finalist selection
 
-Category identity should become explicit and stable.
+Category identity is explicit and stable.
 
 ## Domains
 
 Categories are comparatively granular.
 
-A future `domain` may group categories into broader product areas such as:
+C2 groups all 35 stable categories into broader product domains for filtering, ordering, and mapping. Examples include:
 
-- bondage / physical control
+- bondage/control
 - power exchange
-- S/M / intensity
-- roles / headspaces
+- S/M/intensity
+- roles/headspaces
 - sensation
-- sexual activities
-- contexts / environments
-- display / social
-- relational dynamics
+- sexual activity
+- display/context
+- relational/social
+- fantasy/roleplay
 
-M6 may add this metadata where it improves filtering/mapping.
+Domains are catalog organization metadata, not quiz sections.
 
 Do not force every category into a quiz section.
 
@@ -350,7 +354,7 @@ Alias identity remains separate from the canonical label and does not create add
 
 # Signal mappings
 
-The catalog needs an explicit many-to-many mapping to the stable `SignalId` vocabulary implemented in M2–M5.
+C2 provides an explicit many-to-many mapping from catalog items/categories to the stable `SignalId` vocabulary implemented in M2–M5.
 
 Do not hardcode catalog mappings in React.
 
@@ -363,12 +367,12 @@ The mapping layer uses category-default rules plus item-specific refinements and
 Conceptual rows:
 
 ```text
-Catalog ID       Signal ID                 Weight   Notes
-rope-bondage     receiving_restraint       0.9      common receiving mechanism
-rope-bondage     giving_restraint          0.9      common giving mechanism
-rope-bondage     movement_restriction      0.7
-rope-bondage     receiving_constraint_control 0.4
-rope-bondage     giving_constraint_control 0.4
+Scope Type  Scope ID           Applies To  Signal ID                     Weight
+category    bondage-restraint  receiving   receiving_restraint           0.75
+category    bondage-restraint  giving      giving_restraint              0.75
+category    bondage-restraint  any         movement_restriction          0.50
+category    bondage-restraint  receiving   receiving_constraint_control  0.25
+category    bondage-restraint  giving      giving_constraint_control     0.25
 ```
 
 Runtime shape:
@@ -417,6 +421,8 @@ Do not create a second competing inference system based on hand-authored role sc
 ---
 
 # Explicit preference state — C3 contract
+
+Concrete implementation scope: [M6 C3 — Explicit Preference State](m6-c3-explicit-preference.md).
 
 C3 turns direct catalog classification into first-class application state without turning the catalog into a 551-row form.
 
