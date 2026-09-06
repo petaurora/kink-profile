@@ -83,7 +83,7 @@ The imported pre-migration baseline established:
 - current Top 5 from ranked categories → Overall
 - untouched-category exclusion
 - category progress-map navigation
-- locally persisted raw comparisons
+- shared local catalog-profile persistence for explicit preferences + raw comparisons
 
 M6 C1 provides durable explicit Catalog IDs + Category IDs and validated replacement-map support while preserving all existing comparison IDs.
 
