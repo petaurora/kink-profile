@@ -20,24 +20,27 @@ This folder contains the product and scoring decisions that should guide impleme
    The implemented M5 contract: directional pain/intensity/endurance/challenge signals, 26-question bank, weights, and receiving/giving S/M radars.
 
 6. [M6 Catalog Integration](m6-catalog-integration.md)  
-   The in-progress M6 contract: C1 stable IDs + C2 metadata/signal mappings are implemented; C3 is being re-scoped around a catalog preference table plus a separate This-or-That mini-game, followed by ranking hardening, result integration, affinity foundation, and the M7 boundary.
+   The in-progress M6 contract: C1 stable IDs + C2 mappings, C3 direct preference/table state, C4 source-aware evidence convergence, then ranking/result/affinity hardening before M7.
 
 7. [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)  
-   The revised C3 scope: shared Catalog-ID state, catalog-profile storage/migration, a searchable preference table/list, ranking interconnection, eligibility, tests, and acceptance scenarios.
+   The C3 scope: shared Catalog-ID state, catalog-profile storage/migration, a searchable preference table/list, ranking interconnection, eligibility, tests, and the explicit post-C3 handoff.
 
-8. [Kink This-or-That Ranking](kink-this-or-that-ranking.md)  
+8. [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md)  
+   The C4/M7 convergence contract: quizzes, explicit catalog state, pairwise ranking, inferred catalog affinity, source provenance, recomputation, and the no-feedback-loop rule.
+
+9. [Kink This-or-That Ranking](kink-this-or-that-ranking.md)  
    The implemented Top-5-per-ranked-category funnel, category-home navigation, and remaining ranking hardening.
 
-9. [Scoring & Taxonomy Model](scoring-model.md)  
-   The reusable scoring architecture behind the core quizzes and catalog affinity.
+10. [Scoring & Taxonomy Model](scoring-model.md)  
+   The reusable scoring architecture behind the core quizzes, catalog affinity, and source-aware recomputation.
 
-10. [Overall Profile Aggregation](overall-profile-aggregation.md)  
-   The M7 direction for canonical cross-quiz signals, broad front-page facets, the overall radar, role/mode summaries, catalog favorites, and coverage handling.
+11. [Overall Profile Aggregation](overall-profile-aggregation.md)  
+   The M7 direction for canonical cross-source signals, broad front-page facets, updated radars, role/mode summaries, catalog evidence, and coverage handling.
 
-11. [Roadmap](../ROADMAP.md)  
+12. [Roadmap](../ROADMAP.md)  
    What is already implemented and what should be built next.
 
-12. [Reference Data](../reference/README.md)  
+13. [Reference Data](../reference/README.md)  
    How the expanded kink catalog should be used without turning it into a 551-question test.
 
 ## Source of truth by topic
@@ -50,7 +53,8 @@ This folder contains the product and scoring decisions that should guide impleme
 | How is M4 modeled? | [M4 Bondage & Discipline Contract](m4-bd-design.md) |
 | How is M5 modeled? | [M5 Sadism & Masochism Contract](m5-sm-design.md) |
 | How should M6 integrate the catalog? | [M6 Catalog Integration](m6-catalog-integration.md) |
-| What exactly should C3 implement next? | [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md) |
+| What exactly should C3 implement? | [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md) |
+| How do quizzes, catalog preferences, ranking, and inference interact without loops? | [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) |
 | How should catalog items be pairwise ranked? | [Kink This-or-That Ranking](kink-this-or-that-ranking.md) |
 | How should scoring and catalog affinity work generally? | [Scoring Model](scoring-model.md) |
 | How should the overall front-page profile aggregate everything? | [Overall Profile Aggregation](overall-profile-aggregation.md) |
@@ -67,6 +71,7 @@ If milestone order changes, update the roadmap.
 If product behavior or scope changes, update the product spec.  
 If catalog identity, explicit-state, mapping, or catalog/profile behavior changes, update the M6 catalog integration contract.  
 If C3 implementation details or acceptance criteria change, update the C3 explicit-preference scope.  
+If source provenance, evidence flow, recomputation, or feedback-loop rules change, update the source-aware profile evidence architecture.  
 If pairwise catalog ranking behavior changes, update the this-or-that ranking spec.  
 If overall profile aggregation or front-page facet behavior changes, update the overall profile aggregation spec.
 
