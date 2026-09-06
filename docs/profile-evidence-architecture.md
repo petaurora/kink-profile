@@ -476,7 +476,7 @@ Question-level provenance may be available through quiz signal traceability, but
 
 # C3 compatibility
 
-C3 does not need to be rewritten mid-implementation.
+C3 is implemented and does not need to be rewritten for C4.
 
 Its durable outputs are useful independent evidence:
 
@@ -485,7 +485,7 @@ Its durable outputs are useful independent evidence:
 - stable Catalog IDs
 - eligibility/exclusion behavior
 
-C4 should build an evidence adapter/aggregation layer **around** those stores rather than turning C3 into a different feature.
+C4 should build an evidence adapter/aggregation layer **around** those stores rather than turning the landed C3 feature into a different persistence model.
 
 C3's `pet-profile-catalog-v1` can remain the catalog user-data store unless C4 discovers a concrete versioning reason to introduce a migration.
 
@@ -495,7 +495,7 @@ The cleanup goal is semantic separation and provenance, not churn for its own sa
 
 # M6 C4 — Source-aware evidence convergence
 
-C4 is the first post-C3 cleanup slice.
+C4 is the current post-C3 convergence slice.
 
 ## Contract
 
