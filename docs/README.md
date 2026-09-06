@@ -35,7 +35,7 @@ This folder contains the product and scoring decisions that should guide impleme
    The reusable scoring architecture behind the core quizzes, catalog affinity, source-aware recomputation, and the C7 recommendation-suppression/no-feedback boundaries.
 
 11. [Overall Profile Aggregation](overall-profile-aggregation.md)  
-   The active M7 implementation contract for canonical cross-source signals, broad profile facets, the hybrid header + overall radar, role/mode summaries, Top Overall + limits, Interest Areas, and coverage/explainability handling.
+   The active M7 implementation contract, now split into M7.1–M7.11 testable slices: canonical aggregation/inspection, facets, header, radar, role/mode summaries, Top Overall, limits, Interest Areas, catalog drill-down, explainability, and final polish.
 
 12. [Roadmap](../ROADMAP.md)  
    What is already implemented and what should be built next.

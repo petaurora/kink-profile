@@ -1113,65 +1113,259 @@ The overall profile should preserve complexity while making it easier to underst
 
 # M7 implementation slices
 
-## O1 — Canonical cross-source signal aggregation
+M7 should be implemented as a sequence of **small, independently testable and mergeable slices**. Each slice should be completed, validated with representative data, and merged before beginning the next one.
+
+The former O1–O6 grouping is preserved as a conceptual map:
+
+- **O1 → M7.1**
+- **O2 → M7.2**
+- **O3 → M7.3–M7.4**
+- **O4 → M7.5**
+- **O5 → M7.6–M7.9**
+- **O6 → M7.10–M7.11**
+
+The implementation sequence intentionally separates data math from presentation:
+
+```text
+raw source evidence
+        ↓
+canonical signals
+        ↓
+overall facets
+        ↓
+profile presentation
+        ↓
+catalog summaries + drill-down
+        ↓
+explainability / polish
+```
+
+## M7.1 — Canonical cross-source aggregation + inspection
+
+This is the first implementation slice and must be trustworthy before any new profile presentation is built.
+
+### Scope
 
 - consume the source-aware evidence/projection contracts implemented through M6 C4–C7
 - merge repeated SignalIds across completed quizzes and independent direct catalog evidence
-- define source deduplication/replacement semantics
-- preserve score + coverage/evidence strength
-- preserve source traceability
+- define deterministic source weighting/deduplication/replacement semantics
+- preserve canonical signal score separately from coverage/evidence strength
+- preserve source traceability for every canonical SignalId
 - ensure quiz retakes replace only the affected quiz contribution
-- ensure direct catalog evidence survives quiz retakes
-- explicitly exclude inferred catalog affinity/resolved catalog views from signal input
+- ensure direct explicit/pairwise catalog evidence survives quiz retakes
+- explicitly exclude inferred catalog affinity and resolved catalog views from signal input
 - test against semantic double-counting and feedback loops
+- add a temporary/dev inspection surface for canonical signals
 
-## O2 — Overall facet model
+### Inspection surface
 
-- define final facet IDs
-- lock composition weights
+M7.1 should expose enough detail to validate the math with real data before M7.2 consumes it.
+
+Conceptual shape:
+
+```text
+receiving_control
+  aggregate: 82%
+  coverage: 0.76
+
+  sources:
+    D/s quiz ............. 88%
+    Roles quiz ........... 79%
+    explicit catalog ..... 72%
+```
+
+The exact visual styling is not important. The important part is being able to inspect:
+
+- canonical SignalId
+- aggregate score
+- aggregate coverage/evidence strength
+- contributing source type/id
+- each source score/coverage where meaningful
+- which quiz version/source contribution would be superseded by a retake
+
+### Test gate
+
+Before moving to M7.2:
+
+1. change explicit catalog state and verify only that source contribution changes
+2. add/continue This-or-That evidence and verify ranking evidence contributes independently
+3. retake a quiz and verify only that quiz contribution is replaced
+4. verify inferred affinity never feeds back into the canonical signal
+5. verify repeated SignalIds improve evidence/coverage without automatically inflating affinity
+
+**Exit condition:** canonical SignalIds can be inspected and trusted independently of the final profile UI.
+
+## M7.2 — Overall facet model
+
+### Scope
+
+- define final facet IDs/vocabulary
+- lock composition weights in config/data rather than rendering code
 - calculate facet score + coverage
-- calculate direction metadata where relevant
-- add deterministic tests
+- calculate/preserve direction metadata where relevant
+- preserve missing evidence as unknown rather than zero
+- add deterministic composition tests
 
-## O3 — Overall radar
+### Test gate
+
+Seed intentionally different canonical-signal combinations and verify:
+
+- facet affinity changes for the right reasons
+- additional evidence can increase coverage without forcing affinity upward
+- direction metadata remains available
+- missing inputs reduce coverage rather than act as 0%
+
+**Exit condition:** broad profile facets are stable enough to present independently of UI code.
+
+## M7.3 — Profile header
+
+### Scope
+
+- implement the hybrid human-readable profile summary
+- expose compact Orientation / Headspaces / Dynamic Modes traits
+- keep receiving/giving direction visible when it materially shapes the profile
+- avoid declaring a single identity such as "You are a Pet"
+- keep quiz/catalog/ranking completion statistics out of the header
+
+### Test gate
+
+Compare complete, partial, directional, bidirectional, and mixed/context-dependent sample profiles for wording and trait quality.
+
+**Exit condition:** the header answers "what are the biggest things about this profile?" using real aggregated data.
+
+## M7.4 — Overall radar
+
+### Scope
 
 - place the overall radar immediately beneath the hybrid profile header
-- render broad facets, targeting 7–8 simultaneous axes when practical
+- render broad facets, targeting roughly 7–8 simultaneous axes when practical
 - represent unknown/low-coverage axes honestly
 - expose a compact strongest-theme summary beneath the radar
 - keep the initial radar on overall facet values rather than prematurely splitting direction
-- retain direction metadata needed for a future Overall / Receiving / Giving radar toggle or multi-series view
-- support drill-down to evidence/source sections
+- retain direction metadata needed for future directional radar modes
+- support drill-down hooks to source evidence
 
-## O4 — Role / mode summary
+### Test gate
 
-- show a compact top set of receiving/submissive headspaces with percentages in the initial M7 UI
-- provide an in-place Show all / Show less interaction for the full ranked receiving/submissive headspace list
-- park giving/dominant headspace presentation for the broader future directional-profile enhancement
-- strongest dynamic modes
+Verify full, partial, and sparse profiles. Unknown axes must never silently become 0% interest.
+
+**Exit condition:** the radar accurately visualizes the M7.2 facet model across incomplete and complete profile states.
+
+## M7.5 — Headspaces + Dynamic Modes
+
+### Scope
+
+- show a compact top set of receiving/submissive headspaces with percentages
+- provide in-place Show all / Show less for the full ranked receiving/submissive list
+- show strongest dynamic modes
 - preserve independent overlapping scores
+- defer giving/dominant headspace presentation to the broader future directional-profile enhancement
 
-## O5 — Catalog summary
+### Test gate
+
+Seed profiles with overlapping headspaces/modes and verify ranking, percentages, and expansion behavior.
+
+**Exit condition:** recognizable headspaces and modes add useful detail without replacing the broad facet model.
+
+## M7.6 — Top Overall catalog interests
+
+### Scope
 
 - derive Top 10 overall catalog items from aggregated **explicit preference + pairwise ranking** evidence
-- show explicit Hard Limits as a separate summary, with Show all when needed
-- keep Hard Limits distinct from Not Interested / Not Applicable / low rank
-- place Top Overall + Limits before the Interest Areas section
-- show only the top approximately 4–6 Interest Areas on the main profile
-- show a few representative top items per Interest Area
-- provide a separate Explore all categories experience rather than expanding all 35 categories inline
-- show explicit catalog states and category rankings in the deeper category view
+- keep explicit and pairwise values independent underneath the presentation aggregate
+- keep source traceability
+- define deterministic ordering/tie behavior
 - do not let inferred catalog affinity enter Top Overall by itself
-- keep the underlying explicit and pairwise source values available for explainability without mutating either source
 
-## O6 — Exploration / coverage support
+### Test gate
 
-This is primarily a **home/dashboard concern**, not a dominant block in the presentation profile.
+Manipulate explicit states and This-or-That history independently and verify Top Overall changes without mutating either source.
 
-- show completed/in-progress/unexplored sections on the dashboard/status surface
-- identify low-coverage facets where qualification is useful
-- link users to relevant quizzes without framing unknown as deficiency
-- keep completion mechanics subordinate or drill-down-only on the aggregated profile itself
+**Exit condition:** Top Overall is a direct-evidence ranking, not an inference/recommendation list.
+
+## M7.7 — Hard Limits
+
+### Scope
+
+- show explicit Hard Limits as a separate summary
+- provide Show all when needed
+- keep Hard Limit distinct from Not Interested / Not Applicable / Unsure / low pairwise rank
+- prevent hard-limited items from appearing in Top Overall favorites
+
+### Test gate
+
+Seed every exclusion/disinterest state and verify only explicit Hard Limits appear in this summary.
+
+**Exit condition:** boundaries remain semantically and visually separate from low preference.
+
+## M7.8 — Interest Areas
+
+### Scope
+
+- show only the top approximately 4–6 strongest/relevant catalog categories on the main profile
+- show a few representative top items per Interest Area
+- define category relevance/strength from direct evidence
+- keep the main profile intentionally compact rather than displaying all categories
+
+### Test gate
+
+Use dense and sparse catalog data to tune which categories appear, representative-item selection, and visual density.
+
+**Exit condition:** category-level themes are useful without making the main profile busy.
+
+## M7.9 — Explore / catalog drill-down
+
+### Scope
+
+- provide a separate Explore all categories experience
+- expose category details, explicit states, and ranking context
+- add useful state-filter shortcuts into the editable catalog
+- support direct navigation to states such as Curious / Like / Love / Unsure where appropriate
+- preserve the existing catalog as the editing surface rather than creating a second preference editor
+
+### Test gate
+
+Follow profile → category/state drill-down → catalog edit → profile refresh and verify navigation/data continuity.
+
+**Exit condition:** the user can move from profile summary to editable catalog detail without expanding all categories inline.
+
+## M7.10 — Explainability + coverage
+
+This remains partly a dashboard/status concern and should not dominate the presentation profile.
+
+### Scope
+
+- expose contributing quiz/catalog/ranking evidence for derived results
+- qualify low-coverage profile results without framing unknown as deficiency
+- preserve source identity/version where available
+- link users to useful unfinished quizzes/catalog exploration where appropriate
+- keep completion mechanics subordinate or drill-down-only on the aggregated profile
+
+### Test gate
+
+Inspect:
+
+- strong affinity / high coverage
+- strong affinity / low coverage
+- conflicting independent sources
+- partially explored facets
+- completely unexplored facets
+
+**Exit condition:** the user can understand why a result exists and distinguish affinity from confidence/coverage.
+
+## M7.11 — Final integration + polish
+
+### Scope
+
+- remove or appropriately gate the temporary M7.1 inspection surface
+- verify the final profile hierarchy across all M7 sections
+- responsive/mobile pass
+- empty/partial/full-profile state pass
+- accessibility + interaction cleanup
+- regression-test M2–M6 section-local results and catalog behavior
+- final documentation cleanup
+
+**Exit condition:** M7 reads as one coherent profile experience while preserving the source-aware architecture underneath.
 
 ---
 
@@ -1195,9 +1389,9 @@ M4/M5 are implemented, so these are now **active M7 decisions** rather than ques
 
 # Current recommendation
 
-Start with **O1 canonical cross-source signal aggregation** before building the new M7 profile UI.
+Start with **M7.1 canonical cross-source aggregation + inspection** and do not begin facet/profile presentation work until that layer has been tested with real mutable user data.
 
-M4, M5, and M6 are now implemented, so M7 has enough real evidence structure to settle the remaining aggregation/facet decisions from actual runtime inputs rather than hypothetical future quizzes.
+M4, M5, and M6 are implemented, so M7 has enough real evidence structure to settle aggregation behavior from actual runtime inputs rather than hypothetical future quizzes.
 
 Keep this architecture locked:
 
@@ -1209,15 +1403,25 @@ canonical signals
         ↓
 broad overall facets
         ↓
-radar + direction metadata
+hybrid profile header + radar
         +
-roles/headspaces
+roles/headspaces + dynamic modes
         +
-dynamic modes
+direct-evidence catalog summaries
         +
-explicit catalog favorites
-        +
-coverage/exploration state
+coverage / explainability
 ```
 
-That gives the front page a coherent model while allowing O2 to lock the final visual vocabulary from the implemented signal/evidence inventory.
+The immediate test loop for M7.1 is:
+
+```text
+inspect baseline
+  → change explicit catalog state
+  → inspect
+  → add This-or-That evidence
+  → inspect
+  → retake a quiz
+  → inspect
+```
+
+Only after those source-isolation and replacement semantics are trustworthy should M7.2 lock the final facet vocabulary and composition weights.
