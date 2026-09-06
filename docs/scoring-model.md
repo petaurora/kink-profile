@@ -379,13 +379,14 @@ Constraints:
 1. explicit preference is authoritative for direct user meaning
 2. hard limits exclude inferred recommendations
 3. not interested / not applicable are excluded from recommendations by default
-4. pairwise rankings do not silently mutate explicit preference
-5. quiz-derived inferred affinity never writes an explicit preference
-6. low-evidence affinity produces tentative exploration language
-7. risk metadata does not reduce preference/affinity scores
-8. independent explicit/pairwise catalog evidence may later project back to mapped SignalIds
-9. inferred catalog affinity must never project back to signals because that would create a feedback loop
-10. M6 C4 defines the source-aware evidence/projection contract; M7 supplies the final canonical cross-source signal profile and radar/facet aggregation
+4. recommendation suppression does **not** erase derived affinity/provenance; explainability views may still show why the model matched an explicitly excluded item
+5. pairwise rankings do not silently mutate explicit preference
+6. quiz-derived inferred affinity never writes an explicit preference
+7. low-evidence affinity produces tentative exploration language
+8. risk metadata does not reduce preference/affinity scores
+9. independent explicit/pairwise catalog evidence may later project back to mapped SignalIds
+10. inferred catalog affinity must never project back to signals because that would create a feedback loop
+11. M6 C4 defines the source-aware evidence/projection contract; C6 exposes it in catalog results; C7 hardens recommendation eligibility/language; M7 supplies the final canonical cross-source signal profile and radar/facet aggregation
 
 
 ---
