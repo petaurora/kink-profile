@@ -38,7 +38,7 @@ Start with [docs/README.md](docs/README.md).
 - [M6 catalog integration](docs/m6-catalog-integration.md) — stable catalog identity, explicit state, ranking hardening, signal mappings, and M7 boundary
 - [M6 C3 explicit preference + catalog table](docs/m6-c3-explicit-preference.md) — direct-management table + This-or-That mini-game boundary
 - [Source-aware profile evidence architecture](docs/profile-evidence-architecture.md) — C4/M7 evidence provenance, recomputation, quiz/catalog interconnection, and no-feedback-loop rules
-- [Kink This-or-That ranking](docs/kink-this-or-that-ranking.md) — current Top-5 ranking funnel and remaining ranking hardening
+- [Kink This-or-That ranking](docs/kink-this-or-that-ranking.md) — category/Overall ranking flow, meaningful-evidence confidence, finalist promotion, and Overall-history semantics
 - [Roadmap](ROADMAP.md) — implementation milestones and current next work
 - [Reference data](reference/README.md) — repo-native TSV catalog source and intended use
 
