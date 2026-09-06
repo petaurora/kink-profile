@@ -149,6 +149,43 @@ export type DirectCatalogSignalProjection =
   | ExplicitCatalogSignalProjection
   | PairwiseCatalogSignalProjection;
 
+const receivingSignalIds = new Set<SignalId>([
+  "receiving_control",
+  "care_receiving",
+  "pursuit_receiving",
+  "receiving_restraint",
+  "receiving_positioning",
+  "receiving_constraint_control",
+  "receiving_discipline",
+  "pain_receiving",
+  "receiving_intensity",
+  "receiving_endurance",
+  "receiving_challenge",
+]);
+
+const givingSignalIds = new Set<SignalId>([
+  "giving_control",
+  "care_giving",
+  "pursuit_giving",
+  "giving_restraint",
+  "giving_positioning",
+  "giving_constraint_control",
+  "giving_discipline",
+  "pain_giving",
+  "giving_intensity",
+  "giving_endurance",
+  "giving_challenge",
+]);
+
+function mappingMatchesPreferenceContext(
+  mapping: KinkCatalogSignalMapping,
+  context: CatalogPreferenceContext,
+) {
+  if (context === "overall") return true;
+  if (context === "receiving") return !givingSignalIds.has(mapping.signalId);
+  return !receivingSignalIds.has(mapping.signalId);
+}
+
 function quizEvidenceId(quizId: QuizId, signalId: SignalId) {
   return `quiz:${quizId}:${signalId}`;
 }
@@ -451,15 +488,19 @@ export function projectExplicitCatalogEvidenceToSignals(
   const semantics = explicitProjectionSemantics(evidence.state);
   if (!semantics) return [];
 
-  return item.signalMappings.map((mapping) => ({
-    kind: "explicit_catalog_signal_projection" as const,
-    sourceEvidenceId: evidence.evidenceId,
-    catalogId: item.id,
-    context: evidence.context,
-    signalId: mapping.signalId,
-    mappingWeight: mapping.weight,
-    ...semantics,
-  }));
+  return item.signalMappings
+    .filter((mapping) =>
+      mappingMatchesPreferenceContext(mapping, evidence.context),
+    )
+    .map((mapping) => ({
+      kind: "explicit_catalog_signal_projection" as const,
+      sourceEvidenceId: evidence.evidenceId,
+      catalogId: item.id,
+      context: evidence.context,
+      signalId: mapping.signalId,
+      mappingWeight: mapping.weight,
+      ...semantics,
+    }));
 }
 
 function mappedSignalsForCatalogId(
