@@ -630,6 +630,58 @@ If the limit list is long, show a compact subset with a **Show all limits** acti
 
 This concrete Top Overall + Limits section should appear **before category-level catalog detail** so the profile moves from broad interpretation into the clearest direct preferences first.
 
+## Interest Areas
+
+The main aggregated profile should **not** render all 35 catalog categories as equal-detail cards.
+
+Instead, show a compact **Interest Areas** section containing only the top approximately **4–6 strongest/relevant categories**.
+
+Conceptual shape:
+
+```text
+INTEREST AREAS
+
+Bondage & Restraint
+Rope Bondage · Cuffs · Immobilization
+
+Protocol, Obedience & Service
+Service · Ritual · Rules
+
+Primal Play
+Prey Play · Chase · Wrestling
+
+Pain & Sensation
+Biting · Scratching · Impact Play
+
+[ Explore all categories ]
+```
+
+Each summary should remain intentionally light:
+
+- category label
+- simple strength/relevance descriptor when useful
+- top 2–3 concrete catalog items that make the category meaningful
+- no dense Love / Like / Curious / Limit count row on the main profile
+- no requirement to show all categories inline
+
+The profile should order these by strongest/relevant category evidence, but should not imply false precision by ranking all 35 categories from #1 to #35 unless the aggregation model can support that meaningfully.
+
+### Explore all categories
+
+**Explore all categories** should open a separate category explorer/detail experience rather than expanding all 35 categories directly into the profile page.
+
+That deeper experience may:
+
+- group categories by broader domain
+- allow opening one category at a time
+- show richer within-category ranking/preferences
+- show explicit states such as Love / Like / Curious / Limits
+- link to the full editable catalog where appropriate
+
+This preserves the main profile as a readable presentation surface while still making the catalog detail accessible when someone wants it.
+
+---
+
 ## Strongest reusable signals
 
 Optional compact view for users who want more detail.
@@ -982,8 +1034,9 @@ Current agreed conceptual order:
 2. **Overall Profile** — large broad-facet radar + compact strongest overall themes
 3. **Roles & Headspaces** — top receiving/submissive results with percentages + Show all
 4. **Top Overall + Limits** — Top 10 aggregated direct catalog preferences (explicit + pairwise) + explicit Hard Limits
-5. **Category detail** — deeper catalog browsing grouped by category/domain
-6. later supporting/detail sections as needed
+5. **Interest Areas** — top 4–6 strongest/relevant catalog categories with a few representative items
+6. **Explore all categories** — separate deeper category explorer/detail experience
+7. later supporting/detail sections as needed
 
 Conceptual layout:
 
@@ -1081,7 +1134,10 @@ The overall profile should preserve complexity while making it easier to underst
 - derive Top 10 overall catalog items from aggregated **explicit preference + pairwise ranking** evidence
 - show explicit Hard Limits as a separate summary, with Show all when needed
 - keep Hard Limits distinct from Not Interested / Not Applicable / low rank
-- place Top Overall + Limits before deeper category-level catalog detail
+- place Top Overall + Limits before the Interest Areas section
+- show only the top approximately 4–6 Interest Areas on the main profile
+- show a few representative top items per Interest Area
+- provide a separate Explore all categories experience rather than expanding all 35 categories inline
 - show explicit catalog states and category rankings in the deeper category view
 - do not let inferred catalog affinity enter Top Overall by itself
 - keep the underlying explicit and pairwise source values available for explainability without mutating either source
