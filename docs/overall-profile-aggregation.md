@@ -1246,23 +1246,82 @@ Deterministic coverage includes:
 
 **Exit condition:** the header provides a useful standalone summary from real aggregated data. ✅
 
-## M7.4 — Overall radar
+## M7.4 — Overall radar ✅
 
-### Scope
+M7.4 renders the locked M7.2 facet model as the primary visualization immediately beneath the profile header.
 
-- place the overall radar immediately beneath the hybrid profile header
-- render broad facets, targeting roughly 7–8 simultaneous axes when practical
-- represent unknown/low-coverage axes honestly
-- expose a compact strongest-theme summary beneath the radar
-- keep the initial radar on overall facet values rather than prematurely splitting direction
-- retain direction metadata needed for future directional radar modes
-- support drill-down hooks to source evidence
+### Axis set
 
-### Test gate
+The initial radar renders **all nine locked facets** using their compact short labels:
 
-Verify full, partial, and sparse profiles. Unknown axes must never silently become 0% interest.
+- Power
+- Structure
+- Ownership
+- Service
+- Care
+- Play
+- Primal
+- Restraint
+- Intensity
 
-**Exit condition:** the radar accurately visualizes the M7.2 facet model across incomplete and complete profile states.
+No facet is merged or silently omitted for visualization convenience.
+
+The model remains the source of truth; if later visual polish finds nine axes too crowded in a specific export/layout, presentation can change without changing the facet vocabulary.
+
+### Unknown and limited evidence
+
+Radar state distinguishes three cases:
+
+- **known** — normal plotted affinity
+- **limited** — affinity exists, but evidence coverage is still sparse
+- **unknown** — no usable evidence; the axis stays unscored
+
+Unknown axes are **never plotted as 0%**.
+
+For incomplete profiles, the chart does not draw a closed polygon across unexplored axes. Instead it renders only contiguous runs of known values, leaving genuine gaps where evidence is absent.
+
+A known 0% result remains a real plotted value at the center and is therefore distinct from unknown.
+
+Limited-evidence results use an outlined point so sparse evidence remains visually qualified without suppressing the result.
+
+### Strongest themes
+
+The compact summary beneath the radar reuses the coverage-aware strongest-facet ordering already selected by M7.3.
+
+This avoids maintaining a second competing definition of "strongest theme."
+
+### Drill-down
+
+Each radar axis and strongest-theme chip is interactive.
+
+Selecting one:
+
+1. opens the corresponding M7.2 facet detail row
+2. scrolls directly to that facet
+3. preserves the existing component/source inspection path underneath
+
+This is a lightweight M7.4 hook into explainability rather than a new duplicate facet-details UI.
+
+### Direction boundary
+
+The initial radar plots **overall facet affinity only**.
+
+Directional capability remains preserved in M7.2 facet metadata for future dominant/submissive radar modes, but M7.4 does not split the radar into competing directional series.
+
+### Test gate ✅
+
+Deterministic tests cover:
+
+- unknown axis remains `null`, not 0
+- known low-coverage result becomes limited
+- known true 0% remains plotted
+- full nine-axis shape
+- partial profile with one missing axis
+- separated sparse evidence regions
+- strongest-theme ordering
+- directional capability metadata preservation
+
+**Exit condition:** the radar accurately visualizes the M7.2 facet model across incomplete and complete profile states. ✅
 
 ## M7.5 — Headspaces + Dynamic Modes
 
