@@ -1,6 +1,6 @@
 # M9 — Settings, Profile Management & Sharing
 
-**Status:** planned  
+**Status:** in progress  
 **Roadmap milestone:** M9  
 **Primary boundary:** M7 owns what the profile means and displays; M9 owns how the user manages, moves, resets, and shares it.
 
@@ -244,7 +244,7 @@ A human-friendly filename may include the profile name and export date, but cons
 
 Use a versioned envelope rather than dumping browser storage keys directly.
 
-Conceptual shape:
+Implemented v1 shape:
 
 ```json
 {
@@ -254,13 +254,14 @@ Conceptual shape:
   "profile": {
     "settings": {},
     "quizzes": {},
-    "catalog": {},
-    "ranking": {}
+    "catalog": {}
   }
 }
 ```
 
-Exact storage objects may differ, but the export contract should explicitly map authoritative data into a stable portable envelope.
+`profile.catalog` contains both explicit catalog preferences and raw This-or-That comparison history because those are the two authoritative fields of the shared catalog-profile store. Ranking order/progress is derived from raw comparisons rather than exported as a redundant second source of truth.
+
+The envelope is intentionally independent from browser storage key names. Each nested authoritative store also retains its own schema version for future import migration.
 
 ## What belongs in the backup
 
@@ -290,11 +291,11 @@ Because this file contains the full profile:
 
 ## Acceptance criteria
 
-- export produces valid versioned JSON
-- the export contains all authoritative profile data
-- JSON can be parsed independently of browser storage key names
-- an export/import round trip restores equivalent source data
-- derived profile output after restore matches a fresh recomputation
+- [x] export produces valid versioned JSON
+- [x] the export contains all authoritative profile data
+- [x] JSON can be parsed independently of browser storage key names
+- [ ] an export/import round trip restores equivalent source data — completed with M9.4 import
+- [ ] derived profile output after restore matches a fresh recomputation — completed with M9.4 import
 
 ---
 
