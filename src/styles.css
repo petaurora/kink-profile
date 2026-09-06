@@ -547,8 +547,11 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   border-radius: 14px;
   background: var(--bg-accent-soft);
   color: var(--accent-primary);
-  font-size: 1.15rem;
-  font-weight: 900;
+}
+
+.quiz-icon svg,
+.brand-mark svg {
+  display: block;
 }
 
 .quiz-icon.small {
