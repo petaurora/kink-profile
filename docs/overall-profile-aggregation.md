@@ -422,54 +422,63 @@ Unknown areas must remain unknown, not silently become 0%.
 
 # Aggregation architecture
 
-The overall profile should be derived from **source-aware evidence**.
+The overall profile should be derived from **source-aware independent evidence**.
+
+See [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) for the full evidence graph and no-feedback-loop rules.
 
 Conceptually:
 
 ```text
-quiz answers
-    ↓
-section-local signals
-    ↓
-canonical cross-quiz signal profile
-    ↓
-overall facets
-    ↓
-front-page visualization
+quiz evidence ───────────────┐
+                             │
+explicit catalog evidence ───┼──► canonical SignalId profile
+                             │
+pairwise catalog evidence ───┘
+                                      │
+                                      ├──► section/profile radars
+                                      ├──► overall facets
+                                      ├──► roles/headspaces
+                                      └──► inferred catalog affinity
 ```
 
-The section-local result must remain unchanged.
+Catalog affinity inferred from those signals is a **derived output** and is not allowed to re-enter the canonical signal profile.
 
-M7 creates a separate aggregation layer.
+Section-local quiz results remain available as their original source views.
+
+M7 creates the separate cross-source aggregation layer used by the evolving overall profile.
 
 ---
 
 # Canonical signal aggregation
 
-M2 and M3 already reuse some signal IDs while scoring independently.
+M2–M5 already reuse some signal IDs while scoring independently, and direct catalog evidence can add additional independent observations after C4.
 
-M7 should not simply concatenate all section scores.
+M7 should not simply concatenate all source scores.
 
-Instead, each source contribution should retain:
+Instead, each contribution should retain:
 
 - signal ID
-- score
-- coverage
-- quiz/source ID
-- quiz version
-- evidence count/weight if useful
+- source type
+- source ID
+- source/scoring version where relevant
+- score/direction
+- coverage/evidence strength
+- enough provenance to deduplicate, replace, and explain the contribution
 
 Conceptual shape:
 
 ```ts
 type SignalEvidence = {
   signalId: SignalId;
-  sourceQuizId: string;
-  sourceVersion: number;
+  sourceType: "quiz" | "explicit_catalog" | "pairwise_catalog";
+  sourceId: string;
+  sourceVersion?: number;
   score: number;
   coverage: number;
 };
 ```
+
+A quiz retake supersedes/replaces only that quiz source's contribution. It must not erase independent explicit/pairwise catalog evidence.
 
 Then M7 can derive a canonical user-level signal.
 
@@ -585,9 +594,9 @@ The important rule is that sparse evidence must not visually look identical to h
 
 # Catalog evidence and circularity
 
-The catalog creates a special aggregation problem.
+The catalog creates a special aggregation problem because it contains both **independent direct evidence** and **derived inference**.
 
-There are two kinds of catalog information:
+There are three user evidence channels to keep distinct:
 
 ## Inferred catalog affinity
 
@@ -597,7 +606,7 @@ Example:
 
 This is derived **from the profile itself**.
 
-It must **not** be fed back into the overall radar.
+It must **not** be fed back into the overall radar or canonical signals.
 
 Doing so would create circular evidence:
 
@@ -619,16 +628,33 @@ Example:
 
 > user explicitly marks Rope Bondage as Love
 
-or ranks Rope highly through this-or-that comparisons.
+This is new independent user evidence.
 
-This is independent user evidence and may eventually contribute to relevant overall facets.
+Once C4 defines the Catalog ID → SignalId projection contract, M7 may incorporate that direct evidence into canonical signals/radars while preserving:
 
-However, for an initial M7 implementation, the safer approach is:
+- source identity
+- direction
+- mapping weights
+- coverage/evidence strength
+- explicit exclusion semantics
 
-- show explicit catalog favorites alongside the radar
-- do not use catalog rankings to change radar scores yet
+## Pairwise ranking evidence
 
-Later, explicit catalog evidence can be incorporated once the mapping and weighting model is deliberately designed.
+Example:
+
+> user repeatedly prefers Rope Bondage over other eligible items
+
+This is also independent evidence, but it is **relative** rather than an explicit state.
+
+M7 may incorporate ranking-derived signal evidence only through a deliberate coverage/confidence-aware projection. Skip and Neither must not manufacture confidence.
+
+The critical rule is not "catalog never affects radars."
+
+The critical rule is:
+
+> **Only independent catalog evidence may affect signals. Catalog affinity inferred from those signals may not.**
+
+The exact cross-source weighting remains an M7 implementation decision and must be deterministic/tested.
 
 ---
 
@@ -756,13 +782,17 @@ The overall profile should preserve complexity while making it easier to underst
 
 # Proposed M7 implementation slices
 
-## O1 — Canonical signal aggregation
+## O1 — Canonical cross-source signal aggregation
 
-- define source-aware signal evidence
-- merge repeated SignalIds across completed quizzes
-- preserve score + coverage
+- consume the source-aware evidence contract from C4
+- merge repeated SignalIds across completed quizzes and independent direct catalog evidence
+- define source deduplication/replacement semantics
+- preserve score + coverage/evidence strength
 - preserve source traceability
-- test against double-counting
+- ensure quiz retakes replace only the affected quiz contribution
+- ensure direct catalog evidence survives quiz retakes
+- explicitly exclude inferred catalog affinity/resolved catalog views from signal input
+- test against semantic double-counting and feedback loops
 
 ## O2 — Overall facet model
 
@@ -812,9 +842,10 @@ These should be settled after M4/M5 signals exist, because those implementations
 5. When is there enough evidence to add Sensation & Sensory Play?
 6. What merge rule best combines repeated SignalIds across quizzes?
 7. What minimum coverage is required before an overall facet appears on the radar?
-8. Should explicit catalog preferences eventually contribute evidence to facets?
-9. How should front-page drill-down explain which quizzes/signals contributed to each facet?
-10. Should users be able to exclude one completed quiz from overall aggregation?
+8. What weighting should explicit catalog evidence receive relative to quiz evidence for the same SignalId?
+9. What weighting/confidence threshold should pairwise evidence require before contributing to signals?
+10. How should front-page drill-down explain which quizzes/catalog evidence contributed to each facet?
+11. Should users be able to exclude one completed quiz or evidence source from overall aggregation?
 
 ---
 
@@ -825,7 +856,8 @@ Do **not** lock the final M7 radar axes before M4 and M5 are designed.
 Do lock the architecture now:
 
 ```text
-source-aware quiz evidence
+source-aware independent evidence
+(quiz + explicit catalog + pairwise catalog)
         ↓
 canonical signals
         ↓

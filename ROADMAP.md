@@ -379,9 +379,30 @@ See [docs/m6-c3-explicit-preference.md](docs/m6-c3-explicit-preference.md) for t
 - [ ] handle scopes with fewer than two eligible items without rendering a dead/blank ranking state
 - [ ] add focused preference/storage/migration/eligibility tests
 
-C3 owns explicit-state semantics, persistence, the catalog-table management surface, migration, and the minimum eligibility behavior required to make exclusions authoritative. C4 owns ranking-confidence and finalist hardening.
+C3 owns explicit-state semantics, persistence, the catalog-table management surface, migration, and the minimum eligibility behavior required to make exclusions authoritative. **C4 is intentionally a post-C3 cleanup/convergence slice**: C3 can land without being redesigned around the broader evidence model while it is under active implementation.
 
-### C4 — Ranking hardening
+See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.md) for the source-aware profile contract.
+
+### C4 — Source-aware evidence convergence
+
+- [ ] define source-aware evidence identities for quiz, explicit catalog, pairwise, and derived inference
+- [ ] treat C3 explicit state + raw comparisons as independent evidence sources
+- [ ] expose a derived per-Catalog-ID evidence snapshot without collapsing source values
+- [ ] centralize coverage-aware quiz-signal → catalog inference using the existing C2 mappings
+- [ ] never persist quiz-derived catalog inference as explicit preference
+- [ ] retain matched SignalIds/provenance for inferred affinity
+- [ ] define catalog → signal projection semantics for independent explicit/pairwise evidence
+- [ ] prohibit inferred catalog affinity from feeding back into signals
+- [ ] define quiz-retake source replacement/deduplication semantics
+- [ ] recompute derived catalog/profile views when quiz, explicit, or pairwise evidence changes
+- [ ] keep affinity separate from confidence/coverage
+- [ ] add source-isolation + no-feedback-loop tests
+- [ ] preserve explicit exclusion authority when direct and inferred evidence conflict
+- [ ] leave final cross-source signal aggregation/radar UI to M7
+
+**C4 exit condition:** quiz-derived inference, explicit preference, and pairwise evidence can coexist for the same Catalog ID; changing one preserves the others; derived values are recomputable; and circular evidence is impossible by construction.
+
+### C5 — Ranking hardening
 
 - [ ] stop Skip from inflating ranking confidence
 - [ ] stop Neither from inflating ordering confidence
@@ -389,22 +410,25 @@ C3 owns explicit-state semantics, persistence, the catalog-table management surf
 - [ ] preserve prior Overall participants/history when a category Top 5 shifts
 - [ ] add focused ranking tests
 
-### C5 — Catalog result integration
+### C6 — Catalog result integration
 
 - [ ] show explicit state alongside category rankings
 - [ ] show explicit state alongside overall favorites
 - [ ] expose hard-limit/exclusion summaries separately from favorites
+- [ ] show inferred starting affinity separately from direct preference/ranking evidence
+- [ ] keep source provenance/explainability available for catalog items
 - [ ] keep exact ranks derived from raw comparison history where practical
 - [ ] preserve category and overall ranking as separate useful results
 
-### C6 — Signal-affinity foundation
+### C7 — Signal-affinity hardening
 
-- [ ] implement a pure coverage-aware catalog affinity matcher
+- [ ] harden the pure coverage-aware catalog affinity matcher introduced/centralized in C4
 - [ ] distinguish inferred affinity from explicit preference and pairwise ranking
 - [ ] suppress hard limit / not interested / not applicable recommendations
 - [ ] retain matched-signal explainability
-- [ ] use tentative "may be worth exploring" language
-- [ ] defer canonical cross-quiz signal input + profile-wide recommendation UI to M7
+- [ ] use tentative "may be worth exploring" language for inference-only items
+- [ ] ensure catalog → signal projection consumes only independent direct catalog evidence
+- [ ] defer canonical cross-source signal input + profile-wide radar/recommendation UI to M7
 
 **Exit condition:** catalog definitions have durable identity; explicit state, relative ranking, and inferred affinity remain separate; ranking history survives normal catalog evolution; exclusions are authoritative; catalog items have validated SignalId mappings; and M7 can consume clean catalog favorites/mappings without understanding TSV/ranking internals.
 
@@ -416,15 +440,20 @@ C3 owns explicit-state semantics, persistence, the catalog-table management surf
 
 M1 provides the navigation/progress shell. M7 adds real cross-section aggregation.
 
-See [docs/overall-profile-aggregation.md](docs/overall-profile-aggregation.md) for the parked aggregation/front-page design direction. The overall radar should use broad cross-cutting facets derived from canonical signals rather than quiz names, specific kink names, or role labels.
+See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.md) for the source-aware evidence contract and [docs/overall-profile-aggregation.md](docs/overall-profile-aggregation.md) for the aggregation/front-page design direction. The overall radar should use broad cross-cutting facets derived from canonical signals rather than quiz names, specific kink names, or role labels.
 
-- [ ] canonical source-aware cross-quiz signal aggregation
+- [ ] canonical source-aware **cross-source** SignalId aggregation
+- [ ] consume independent quiz, explicit-catalog, and pairwise-catalog evidence
+- [ ] define deduplication/weighting rules across independent evidence sources
+- [ ] update existing signal/radar percentages as direct catalog evidence strengthens the profile
 - [ ] define final overall facet vocabulary and composition weights
 - [ ] coverage-aware overall radar
 - [ ] preserve direction metadata for power exchange, care, primality, and intensity where relevant
+- [ ] expose profile-level affinity separately from evidence confidence/coverage
 - [ ] top receiving/submissive and giving/dominant headspace summaries
 - [ ] strongest dynamic-mode summary
 - [ ] explicit/pairwise-ranked catalog favorites summary
+- [ ] inferred catalog starting points with source explainability
 - [ ] completed-section summary
 - [ ] Activities view
 - [ ] D/s view
@@ -432,8 +461,11 @@ See [docs/overall-profile-aggregation.md](docs/overall-profile-aggregation.md) f
 - [ ] overall visualization
 - [ ] strongest-signal summary
 - [ ] preserve unexplored sections as unknown, not 0%
-- [ ] prevent repeated SignalIds from being double-counted across quizzes
+- [ ] prevent repeated SignalIds from being double-counted across quizzes/sources
+- [ ] replace/supersede only the affected quiz contribution on retake
+- [ ] preserve manual/ranking evidence when quizzes are retaken
 - [ ] prevent inferred catalog affinity from feeding back into the evidence that produced it
+- [ ] allow drill-down from a catalog item or radar result to contributing source evidence
 
 ---
 
