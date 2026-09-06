@@ -16,7 +16,7 @@ Current imported runtime behavior includes:
 - browser-local raw comparison persistence
 - category and Overall ranking views
 
-See [M6 Catalog Integration](m6-catalog-integration.md) for the parent catalog contract and [M6 C3 Explicit Preference](m6-c3-explicit-preference.md) for the next storage/eligibility/comparison-card implementation slice.
+See [M6 Catalog Integration](m6-catalog-integration.md) for the parent catalog contract and [M6 C3 Explicit Preference](m6-c3-explicit-preference.md) for the implemented explicit-state storage, eligibility, and comparison-card behavior. C4 ranking-confidence/finalist hardening remains next.
 
 ---
 
