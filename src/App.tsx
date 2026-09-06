@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   IconAdjustmentsHeart,
   IconBolt,
+  IconChevronRight,
   IconHeart,
   IconMasksTheater,
   IconPaw,
@@ -552,6 +553,10 @@ export default function App() {
 
             <button className="profile-summary" onClick={() => setScreen("profile")}>
               <span className="eyebrow">Your profile</span>
+              <span className="profile-summary-go">
+                View
+                <IconChevronRight size={17} stroke={2} aria-hidden="true" />
+              </span>
             </button>
           </div>
 
