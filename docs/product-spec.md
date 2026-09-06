@@ -429,7 +429,9 @@ M6's canonical explicit states are:
 
 Unanswered is absence of explicit state, not a stored "unknown" value.
 
-The storage schema should remain capable of future receiving/giving overrides because many catalog concepts are directional. C3 will initially edit the general/overall state contextually while preserving directional fields in the storage contract.
+The storage schema should remain capable of future receiving/giving overrides because many catalog concepts are directional. C3 initially edits the general/overall state through a searchable/filterable catalog table/list while preserving directional fields in the storage contract.
+
+This-or-That remains a separate low-friction comparison mini-game. Pairwise choices do not create explicit state, and positive explicit state does not seed ranking.
 
 Once explicit state exists, `hard_limit`, `not_interested`, and `not_applicable` are excluded from new pair selection immediately. This minimum eligibility behavior belongs with C3 so explicit exclusions are actually authoritative; later ranking-confidence and finalist hardening remains C4.
 
