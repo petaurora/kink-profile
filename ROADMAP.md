@@ -584,18 +584,20 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Exit condition:** Top Overall is a stable direct-evidence ranking rather than an inferred recommendation list. ✅
 
-### M7.7 — Hard Limits
+### M7.7 — Hard Limits ✅
 
 **Purpose:** keep explicit boundaries visible and semantically separate from preference strength.
 
-- [ ] show explicit Hard Limits as their own summary
-- [ ] add Show all when needed
-- [ ] keep Hard Limit distinct from Not Interested, Not Applicable, Unsure, and low pairwise rank
-- [ ] ensure limits never appear in Top Overall favorites
+- [x] show explicit Hard Limits as their own summary
+- [x] default to a compact first 6 limits
+- [x] add Show all limits / Show less when needed
+- [x] keep Hard Limit distinct from Not Interested, Not Applicable, Unsure, and low pairwise rank
+- [x] keep limits unranked and alphabetically stable
+- [x] ensure limits never appear in Top Overall favorites
+- [x] preserve historical pairwise evidence without allowing it to override a current limit
+- [x] add deterministic exclusion/compact-list tests
 
-**Test before moving on:** seed each exclusion/disinterest state and verify only explicit Hard Limits appear in the limits summary.
-
-**Exit condition:** limits are clearly visible without being conflated with ranking or low affinity.
+**Exit condition:** limits are clearly visible without being conflated with ranking or low affinity. ✅
 
 ### M7.8 — Interest Areas
 
@@ -774,6 +776,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.7 — Hard Limits**
+**M7.8 — Interest Areas**
 
-Add the explicit Hard Limits profile summary beside/after Top Overall. Keep Hard Limit semantically distinct from Not Interested, Not Applicable, and low-ranked items; use a compact default list with expansion behavior when needed.
+Build the compact category-level profile summary using only the strongest/relevant catalog categories. Show approximately 4–6 interest areas with 2–3 representative concrete items each, avoid rendering all 35 categories inline, and keep the result useful without pretending every category has a precise #1–#35 rank.
