@@ -1097,18 +1097,20 @@ export default function App() {
                     <span className="profile-top-interest-rank">
                       {String(index + 1).padStart(2, "0")}
                     </span>
-                    <strong>{item.label}</strong>
-                    <div className="profile-top-interest-sources">
-                      {item.explicitState && (
-                        <span className="profile-source-chip">
-                          {catalogPreferenceLabels[item.explicitState]}
-                        </span>
-                      )}
-                      {item.overallRank && (
-                        <span className="profile-source-chip">
-                          This or That · #{item.overallRank.rank}
-                        </span>
-                      )}
+                    <div className="profile-top-interest-main">
+                      <strong>{item.label}</strong>
+                      <div className="profile-top-interest-sources">
+                        {item.explicitState && (
+                          <span className="profile-source-chip">
+                            {catalogPreferenceLabels[item.explicitState]}
+                          </span>
+                        )}
+                        {item.overallRank && (
+                          <span className="profile-source-chip">
+                            This or That · #{item.overallRank.rank}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
