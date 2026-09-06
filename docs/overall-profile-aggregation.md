@@ -161,7 +161,7 @@ The recognizable labels remain visible elsewhere in the overall result.
 
 These are **candidate M7 axes**, not yet locked.
 
-A practical radar should probably contain around **7–10 axes**. More than that becomes difficult to read and starts reproducing the detailed section charts.
+A practical radar should probably target around **7–8 axes** for readability, especially on mobile. The current nine-facet vocabulary is still useful as a candidate set, but M7 should test whether all nine deserve simultaneous visual treatment rather than forcing every valid facet onto the first radar.
 
 ## 1. Power Exchange
 
@@ -386,7 +386,7 @@ It should become a top-level facet only when the product has enough independent 
 
 # Possible final radar size
 
-A likely initial M7 radar could use **9 axes**:
+The current candidate vocabulary contains **9 facets**:
 
 ```text
 Power Exchange
@@ -400,11 +400,64 @@ Restraint & Physical Control
 Intensity & Pain
 ```
 
+The vocabulary is useful, but the first M7 radar should **prefer 7–8 simultaneously rendered axes** if nine becomes visually crowded. Do not merge distinct concepts merely to hit a number; instead decide whether one or more facets are better represented elsewhere in the profile summary or as an optional/detail view.
+
 This is intentionally broader than the section-level radars.
 
 It represents the shape of the overall profile rather than reproducing every underlying signal.
 
 **Sensation & Sensory Play** can join later if/when the evidence model supports it.
+
+## Overall radar — agreed presentation direction
+
+The overall radar should appear immediately beneath the profile header as the primary visual summary of the aggregated profile.
+
+Conceptual presentation:
+
+```text
+OVERALL PROFILE
+
+        [ large overall radar ]
+
+Power Exchange · Ownership · Devotion
+        strongest overall themes
+```
+
+The radar itself should remain visually dominant and relatively clean. The compact text beneath it should surface only a few strongest overall themes rather than repeat every axis as a ranked list.
+
+The profile header answers:
+
+> "What are the biggest things about this person's profile?"
+
+The radar answers:
+
+> "What is the overall shape of those preferences?"
+
+Detailed evidence, source provenance, confidence, direction, and lower-level signals belong in later sections or drill-down.
+
+## Parked future enhancement — directional radar modes
+
+The initial aggregated radar should use the **overall** facet values only. M7 should not prematurely split every facet into receiving/giving variants before the underlying directional aggregation model has full support.
+
+However, preserve direction metadata now so a future enhancement can offer multiple radar modes over the same facet vocabulary:
+
+```text
+[ Overall ] [ Receiving ] [ Giving ]
+
+            same radar axes
+            different directional series
+```
+
+A later implementation may support:
+
+- **Overall** — combined profile strength for each facet
+- **Receiving** — receiving/submissive-side expression where that facet has directional evidence
+- **Giving** — giving/dominant-side expression where that facet has directional evidence
+- optionally overlaying multiple series/lines for comparison when readable
+
+This should be treated as a deliberate follow-up to broader giving/receiving support, not approximated by making receiving and giving cancel each other out.
+
+Facets without meaningful directional semantics should remain neutral/shared rather than inventing receiving/giving values.
 
 ---
 
@@ -887,9 +940,12 @@ The overall profile should preserve complexity while making it easier to underst
 
 ## O3 — Overall radar
 
-- render broad facets
+- place the overall radar immediately beneath the hybrid profile header
+- render broad facets, targeting 7–8 simultaneous axes when practical
 - represent unknown/low-coverage axes honestly
-- expose compact strongest-theme summary
+- expose a compact strongest-theme summary beneath the radar
+- keep the initial radar on overall facet values rather than prematurely splitting direction
+- retain direction metadata needed for a future Overall / Receiving / Giving radar toggle or multi-series view
 - support drill-down to evidence/source sections
 
 ## O4 — Role / mode summary
