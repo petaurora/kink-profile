@@ -56,6 +56,7 @@ import {
   type CanonicalSignalSourceType,
 } from "./lib/overallProfileSignals";
 import { scoreOverallFacets } from "./lib/overallProfileFacets";
+import { buildProfileHeaderModel } from "./lib/profileHeader";
 import {
   scoreDsSignals,
   scoreHeadspaces,
@@ -487,6 +488,11 @@ export default function App() {
     [canonicalSignals],
   );
 
+  const profileHeader = useMemo(
+    () => buildProfileHeaderModel(canonicalSignals, overallFacets),
+    [canonicalSignals, overallFacets],
+  );
+
   const openQuiz = (quiz: QuizDefinition) => {
     if (quiz.availability !== "available") return;
 
@@ -692,19 +698,57 @@ export default function App() {
 
       {screen === "profile" && (
         <section className="profile-stack">
-          <div className="results-heading panel">
-            <div>
-              <p className="eyebrow">Your overall profile</p>
-              <h1>Built a section at a time.</h1>
-              <p>
-                Unexplored sections stay unknown instead of quietly becoming zeroes. Completed
-                core quizzes accumulate here as each section becomes available.
-              </p>
+          <article className="profile-identity-header panel">
+            <div className="profile-identity-top">
+              <div>
+                <p className="eyebrow">Your kink profile</p>
+                <h1>{profileHeader.summary}</h1>
+              </div>
+              <button className="secondary" onClick={() => setScreen("hub")}>
+                Back to explore
+              </button>
             </div>
-            <button className="secondary" onClick={() => setScreen("hub")}>
-              Explore quizzes
-            </button>
-          </div>
+
+            <div className="profile-trait-grid">
+              <section className="profile-trait-group">
+                <span className="profile-trait-label">Orientation</span>
+                <strong className="profile-orientation">
+                  {profileHeader.orientation.label}
+                </strong>
+              </section>
+
+              <section className="profile-trait-group">
+                <span className="profile-trait-label">Headspaces</span>
+                {profileHeader.headspaces.length > 0 ? (
+                  <div className="profile-trait-chips">
+                    {profileHeader.headspaces.map((trait) => (
+                      <span className="profile-trait-chip" key={trait.id}>
+                        <strong>{trait.label}</strong>
+                        {trait.direction && <small>{trait.direction}</small>}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <strong className="profile-trait-emerging">Still emerging</strong>
+                )}
+              </section>
+
+              <section className="profile-trait-group">
+                <span className="profile-trait-label">Dynamic modes</span>
+                {profileHeader.dynamicModes.length > 0 ? (
+                  <div className="profile-trait-chips">
+                    {profileHeader.dynamicModes.map((trait) => (
+                      <span className="profile-trait-chip" key={trait.id}>
+                        <strong>{trait.label}</strong>
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <strong className="profile-trait-emerging">Still emerging</strong>
+                )}
+              </section>
+            </div>
+          </article>
 
           <div className="profile-overview panel">
             <div className="profile-number">
