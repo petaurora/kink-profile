@@ -20,10 +20,10 @@ This folder contains the product and scoring decisions that should guide impleme
    The implemented M5 contract: directional pain/intensity/endurance/challenge signals, 26-question bank, weights, and receiving/giving S/M radars.
 
 6. [M6 Catalog Integration](m6-catalog-integration.md)  
-   The in-progress M6 contract: C1 stable IDs + C2 metadata/signal mappings are implemented; C3 explicit preference is next, followed by ranking hardening, catalog result integration, affinity foundation, and the M7 boundary.
+   The in-progress M6 contract: C1 stable IDs + C2 metadata/signal mappings are implemented; C3 is being re-scoped around a catalog preference table plus a separate This-or-That mini-game, followed by ranking hardening, result integration, affinity foundation, and the M7 boundary.
 
 7. [M6 C3 Explicit Preference](m6-c3-explicit-preference.md)  
-   The concrete C3 implementation scope: state semantics, catalog-profile storage, legacy ranking migration, eligibility, comparison-card editing, tests, and acceptance scenarios.
+   The revised C3 scope: shared Catalog-ID state, catalog-profile storage/migration, a searchable preference table/list, ranking interconnection, eligibility, tests, and acceptance scenarios.
 
 8. [Kink This-or-That Ranking](kink-this-or-that-ranking.md)  
    The implemented Top-5-per-ranked-category funnel, category-home navigation, and remaining ranking hardening.
