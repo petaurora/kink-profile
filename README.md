@@ -36,6 +36,7 @@ Start with [docs/README.md](docs/README.md).
 - [Product specification](docs/product-spec.md) — product behavior, taxonomy, UX, privacy, and scope
 - [Scoring & taxonomy model](docs/scoring-model.md) — signal-weighted scoring and catalog-affinity boundaries
 - [M6 catalog integration](docs/m6-catalog-integration.md) — stable catalog identity, explicit state, ranking hardening, signal mappings, and M7 boundary
+- [M6 C3 explicit preference](docs/m6-c3-explicit-preference.md) — next implementation scope for storage, migration, eligibility, UI, and tests
 - [Kink This-or-That ranking](docs/kink-this-or-that-ranking.md) — current Top-5 ranking funnel and remaining ranking hardening
 - [Roadmap](ROADMAP.md) — implementation milestones and current next work
 - [Reference data](reference/README.md) — repo-native TSV catalog source and intended use
