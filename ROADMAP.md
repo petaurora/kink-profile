@@ -339,19 +339,17 @@ The repository migration imported the already-working catalog/ranking baseline i
 - [x] preserve existing comparison compatibility
 - [x] define validated ID-replacement migration support for merged/deprecated items
 
-### C2 — Metadata + signal mappings 🟠 Port pending
+### C2 — Metadata + signal mappings ✅
 
-C2 design and implementation were completed before the repository migration, but that branch was not merged into the snapshot imported here. Do not redesign this slice; port and verify the existing implementation before marking C2 landed on `kink-profile/main`.
-
-- [ ] port category metadata for all 35 stable Category IDs
-- [ ] port broad domains + display order
-- [ ] port normalized receiving / giving / both direction
-- [ ] port explicit alias source
-- [ ] port category-default + item-specific Catalog → SignalId mappings
-- [ ] port build-time validation for scopes / IDs / direction / SignalIds / controlled weights
-- [ ] port generated runtime domains / direction / aliases / resolved mappings
-- [ ] verify risk/context metadata remains separate from affinity scoring
-- [ ] verify the seeded mapping coverage against the pre-migration implementation
+- [x] add category metadata for all 35 stable Category IDs
+- [x] define broad domains + display order
+- [x] normalize receiving / giving / both direction
+- [x] add explicit alias source
+- [x] add category-default + item-specific Catalog → SignalId mappings
+- [x] validate mapping scopes / IDs / direction / SignalIds / controlled weights at build time
+- [x] emit domains / direction / aliases / resolved mappings into generated runtime catalog
+- [x] keep risk/context metadata separate from affinity scoring
+- [x] preserve the pre-migration seeded mapping layer: 93 source rules, 269 / 551 mapped items, 698 resolved item → signal associations
 
 ### C3 — Explicit preference state 📋 Contract ready
 
@@ -495,6 +493,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M6 — Catalog Integration / C2 port → C3**
+**M6 — Catalog Integration / C3**
 
-First port and verify the already-completed pre-migration C2 metadata/mapping implementation so the new repository does not lose that work. Then implement the reviewed C3 explicit-preference contract: logical catalog-profile storage, ranking-history migration, contextual state editing, and authoritative exclusion from new pair selection.
+Implement the reviewed C3 explicit-preference contract on top of the now-landed C1/C2 catalog model: logical catalog-profile storage, lossless ranking-history migration, contextual state editing, and authoritative exclusion from new pair selection.

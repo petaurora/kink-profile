@@ -6,6 +6,9 @@ Repository source data:
 
 - `catalog/kink-catalog.tsv` — runtime catalog source with explicit stable Catalog IDs + Category IDs
 - `catalog/catalog-id-replacements.tsv` — explicit old-ID → canonical-ID migration map for future merge/deprecation cleanup
+- `catalog/catalog-categories.tsv` — stable categories, broad domains, and display order
+- `catalog/catalog-aliases.tsv` — searchable alternate terminology
+- `catalog/catalog-signal-mappings.tsv` — validated category-default + item-specific SignalId mappings
 - `catalog/overview.tsv` — workbook overview / counts
 - `catalog/lists.tsv` — supporting list values
 - `catalog/research-sources.tsv` — source references
@@ -22,9 +25,10 @@ Catalog integration is now **in progress in M6**. The TSV runtime source + initi
 The catalog is already a runtime data/ranking layer and M6 is expanding it to support:
 
 - stable item/category IDs ✅
-- domains/categories
-- aliases
-- signal mappings
+- domains/categories ✅
+- normalized receiving/giving/both direction ✅
+- aliases ✅
+- validated signal mappings ✅
 - role/headspace and dynamic-mode mappings where useful
 - context/intensity metadata
 - explicit user preference states
@@ -83,9 +87,15 @@ The imported pre-migration baseline established:
 
 M6 C1 provides durable explicit Catalog IDs + Category IDs and validated replacement-map support while preserving all existing comparison IDs.
 
-The C2 metadata/mapping implementation was completed before the repository migration but was not included in the imported `kink-profile/main` snapshot. It still needs to be ported and verified here before the reference sources can be described as landed.
+M6 C2 now adds:
+- domain/display metadata for all 35 categories
+- normalized receiving / giving / both direction
+- conservative aliases
+- 93 validated mapping rules resolving 269 / 551 catalog items into 698 item → signal associations
 
-C3 is now specified around explicit preference state, migration into one logical catalog-profile store, contextual editing, and authoritative exclusion semantics. Later M6 slices harden ranking confidence/finalists and add the signal-affinity foundation while keeping explicit preference, relative ranking, and inferred affinity distinct.
+The remaining 282 items are intentionally unmapped rather than assigned speculative core-signal affinities.
+
+C3 is next: explicit preference state, migration into one logical catalog-profile store, contextual editing, and authoritative exclusion semantics. Later M6 slices harden ranking confidence/finalists and add the signal-affinity foundation while keeping explicit preference, relative ranking, and inferred affinity distinct.
 
 See:
 

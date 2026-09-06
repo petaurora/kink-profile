@@ -1,0 +1,94 @@
+Scope Type	Scope ID	Applies To	Signal ID	Weight	Notes
+category	bondage-restraint	any	movement_restriction	0.50	physical restriction is common across the category
+category	bondage-restraint	receiving	receiving_restraint	0.75	receiving-side restraint category default
+category	bondage-restraint	receiving	receiving_constraint_control	0.25	secondary control-through-constraint association
+category	bondage-restraint	giving	giving_restraint	0.75	giving-side restraint category default
+category	bondage-restraint	giving	giving_constraint_control	0.25	secondary control-through-constraint association
+category	impact-play	receiving	pain_receiving	0.75	impact commonly expresses receiving pain
+category	impact-play	receiving	receiving_intensity	0.50	impact commonly expresses receiving intensity
+category	impact-play	giving	pain_giving	0.75	impact commonly expresses giving pain
+category	impact-play	giving	giving_intensity	0.50	impact commonly expresses giving intensity
+category	pain-sensation	receiving	pain_receiving	0.75	pain/sensation category default
+category	pain-sensation	receiving	receiving_intensity	0.50	secondary receiving-intensity association
+category	pain-sensation	giving	pain_giving	0.75	pain/sensation category default
+category	pain-sensation	giving	giving_intensity	0.50	secondary giving-intensity association
+category	protocol-obedience-service	any	structure	0.50	protocol/service category default
+category	protocol-obedience-service	any	ritual_significance	0.50	formal repeated behavior is common
+category	protocol-obedience-service	receiving	obedience	0.50	receiving-side protocol often includes obedience
+category	protocol-obedience-service	receiving	service	0.50	receiving-side service association
+category	protocol-obedience-service	giving	guidance_shaping	0.25	giving-side protocol can involve shaping expectations
+category	power-exchange-roles	any	role_embodiment	0.50	roles are explicit in this category
+category	power-exchange-roles	receiving	receiving_control	0.50	receiving-side power exchange
+category	power-exchange-roles	receiving	responsibility_transfer	0.25	secondary responsibility-transfer association
+category	power-exchange-roles	giving	giving_control	0.50	giving-side power exchange
+category	power-exchange-roles	giving	responsibility_holding	0.25	secondary responsibility-holding association
+category	pet-animal-roleplay	any	role_embodiment	0.75	pet/animal play is strongly role-embodied
+category	pet-animal-roleplay	any	playfulness	0.50	playful/creature mode association
+category	primal-play	any	primal_embodiment	0.75	primal category defining association
+category	collars-symbols-marking	any	ownership_symbolism	0.75	symbolic claiming/ownership is common
+category	collars-symbols-marking	any	ritual_significance	0.50	symbols/marking can carry ritual meaning
+category	collars-symbols-marking	any	belonging	0.25	secondary belonging association
+category	caretaking-reward-oriented	receiving	care_receiving	0.75	receiving-side care association
+category	caretaking-reward-oriented	giving	care_giving	0.75	giving-side care association
+category	caretaking-reward-oriented	any	praise_approval	0.25	reward-oriented secondary association
+category	endurance-positioning	receiving	receiving_endurance	0.50	receiving endurance category default
+category	endurance-positioning	receiving	receiving_positioning	0.50	receiving positioning category default
+category	endurance-positioning	giving	giving_endurance	0.50	giving endurance category default
+category	endurance-positioning	giving	giving_positioning	0.50	giving positioning category default
+category	roleplay-fantasy	any	role_embodiment	0.75	roleplay category defining association
+category	roleplay-scenario-kinks	any	role_embodiment	0.75	roleplay category defining association
+category	surreal-transformation-fictional-fantasy	any	role_embodiment	0.50	fictional transformation often relies on role embodiment
+category	psychological-verbal-emotional	any	emotional_intensity	0.50	psychological/emotional category default
+category	edge-play-high-risk-specialty	receiving	receiving_challenge	0.50	edge-play can center receiving challenge
+category	edge-play-high-risk-specialty	receiving	receiving_intensity	0.50	edge-play can center receiving intensity
+category	edge-play-high-risk-specialty	giving	giving_challenge	0.50	edge-play can center giving challenge
+category	edge-play-high-risk-specialty	giving	giving_intensity	0.50	edge-play can center giving intensity
+category	orgasm-arousal-control	receiving	receiving_control	0.50	receiving-side arousal control
+category	orgasm-arousal-control	giving	giving_control	0.50	giving-side arousal control
+category	protocol-bondage-d-s-details	any	structure	0.50	mixed protocol details commonly express structure
+category	protocol-bondage-d-s-details	any	ritual_significance	0.25	secondary ritual association
+item	praise-kink	any	praise_approval	1.00	defining association
+item	good-girl-good-boy-praise	any	praise_approval	1.00	defining association
+item	competence-praise	any	praise_approval	0.75	strong praise association
+item	objectification	any	objectification	1.00	defining association
+item	use-object-fantasy	any	objectification	0.75	strong objectification association
+item	formal-correction	receiving	receiving_discipline	0.75	explicit correction framing
+item	lines-writing-punishment	receiving	receiving_discipline	0.75	explicit non-painful discipline
+item	lines-writing-punishment	any	accountability	0.50	consequence/follow-through association
+item	dominance	giving	giving_control	1.00	defining giving-control item
+item	submission	receiving	receiving_control	1.00	defining receiving-control item
+item	bratting	receiving	playful_resistance	1.00	defining playful-resistance item
+item	brat-taming	giving	giving_control	0.75	giving authority association
+item	brat-taming	giving	guidance_shaping	0.50	shaping/correction association
+item	ownership-ritual	any	ownership_symbolism	1.00	defining ownership-symbolism item
+item	ownership-ritual	any	ritual_significance	0.75	strong ritual association
+item	devotional-submission	receiving	devotion	1.00	defining devotion item
+item	devotional-submission	receiving	service	0.50	secondary service association
+item	primal-hunter	giving	pursuit_giving	1.00	defining predator/pursuit item
+item	primal-hunter	any	primal_embodiment	1.00	defining primal item
+item	primal-prey	receiving	pursuit_receiving	1.00	defining prey/pursuit item
+item	primal-prey	any	primal_embodiment	1.00	defining primal item
+item	chase-play	receiving	pursuit_receiving	0.75	strong receiving pursuit association
+item	chase-play	giving	pursuit_giving	0.75	strong giving pursuit association
+item	pinning	giving	giving_constraint_control	0.75	physical control association
+item	pinning	giving	giving_restraint	0.50	secondary restraint association
+item	impact-endurance	receiving	receiving_endurance	1.00	defining endurance item
+item	pain-endurance	receiving	receiving_endurance	1.00	defining endurance item
+item	pain-endurance	receiving	pain_receiving	0.75	strong pain association
+item	pain-processing	receiving	pain_receiving	0.75	strong receiving pain association
+item	pain-processing	receiving	receiving_intensity	0.50	secondary intensity association
+item	masochism	receiving	pain_receiving	1.00	defining receiving-pain umbrella
+item	masochism	receiving	receiving_intensity	0.75	strong receiving-intensity umbrella
+item	sadism	giving	pain_giving	1.00	defining giving-pain umbrella
+item	sadism	giving	giving_intensity	0.75	strong giving-intensity umbrella
+item	collaring	any	ownership_symbolism	1.00	defining ownership-symbolism item
+item	collaring	any	ritual_significance	0.75	strong ritual association
+item	collaring	any	belonging	0.50	belonging association
+item	high-protocol	any	structure	0.75	strong structure association
+item	high-protocol	any	ritual_significance	1.00	defining protocol/ritual item
+item	low-protocol	any	structure	0.50	moderate structure association
+item	low-protocol	any	ritual_significance	0.50	moderate ritual association
+item	obedience	receiving	obedience	1.00	defining obedience item
+item	service-submission	receiving	service	1.00	defining service item
+item	service-submission	receiving	obedience	0.50	secondary obedience association
+item	position-protocols	receiving	receiving_positioning	0.75	positioning association

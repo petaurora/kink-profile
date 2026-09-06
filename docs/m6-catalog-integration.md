@@ -6,9 +6,9 @@
 
 M6 is not starting from zero.
 
-The new `kink-profile` repository imported the already-working catalog/ranking application baseline, then C1 established durable catalog identity on the new `main`. The repository migration did **not** carry over the completed pre-migration C2 implementation branch, so C2 metadata/mapping work must be ported and verified before it can be considered landed here.
+The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-The C2 design itself is already settled; the next design slice is C3 explicit preference state. This contract therefore distinguishes **landed on the new main**, **implemented before migration but pending port**, and **specified for the next implementation** rather than relying on pull-request numbers from the old repository history.
+The next implementation slice is C3 explicit preference state.
 
 Current baseline on `main`:
 
@@ -340,11 +340,11 @@ Aliases support:
 
 Aliases do not create separate ranked items.
 
-The approved C2 representation is a one-alias-per-row sidecar:
+C2 uses a one-alias-per-row sidecar:
 
 `reference/catalog/catalog-aliases.tsv`
 
-That source was implemented before the repository migration and should be restored as part of the C2 port. Alias identity remains separate from the canonical label and does not create additional ranked items.
+Alias identity remains separate from the canonical label and does not create additional ranked items.
 
 ---
 
@@ -354,11 +354,11 @@ The catalog needs an explicit many-to-many mapping to the stable `SignalId` voca
 
 Do not hardcode catalog mappings in React.
 
-Approved C2 source:
+Implemented C2 source:
 
 `reference/catalog/catalog-signal-mappings.tsv`
 
-The pre-migration implementation used category-default rules plus item-specific refinements, validated against the actual `SignalId` union. Porting C2 should preserve that approach rather than inventing a new mapping format.
+The mapping layer uses category-default rules plus item-specific refinements and validates against the actual `SignalId` union.
 
 Conceptual rows:
 
@@ -1039,22 +1039,25 @@ From the imported pre-migration baseline:
 - [x] preserve existing comparison compatibility
 - [x] add validated `catalog-id-replacements.tsv` migration support
 
-## C2 — Catalog metadata + mapping schema 🟠 port pending
+## C2 — Catalog metadata + mapping schema ✅
 
-The C2 implementation was completed before repository migration but is not present on the imported new `main`.
+- [x] category metadata for all 35 stable categories
+- [x] broad domain + display order
+- [x] receiving / giving / both normalized direction
+- [x] `catalog-aliases.tsv`
+- [x] category-default + item-specific `catalog-signal-mappings.tsv`
+- [x] build-time validation for mapping scopes / IDs / direction / SignalIds / controlled weights
+- [x] generated runtime domains / direction / aliases / resolved mappings
+- [x] risk/context metadata remains descriptive-only
 
-Port/verify rather than redesign:
+Current seeded mapping layer:
 
-- [ ] category metadata for all 35 stable categories
-- [ ] broad domain + display order
-- [ ] receiving / giving / both normalized direction
-- [ ] `catalog-aliases.tsv`
-- [ ] category-default + item-specific `catalog-signal-mappings.tsv`
-- [ ] build-time validation for mapping scopes / IDs / direction / SignalIds / controlled weights
-- [ ] generated runtime domains / direction / aliases / resolved mappings
-- [ ] risk/context metadata remains descriptive-only
+- 93 source mapping rules
+- 269 / 551 catalog items resolve to one or more core signals
+- 698 resolved item → signal associations
+- 282 items intentionally remain unmapped where M2–M5 do not provide defensible evidence
 
-The pre-migration implementation seeded 93 mapping rules that resolved 269 / 551 catalog items into 698 item → signal associations, leaving 282 items intentionally unmapped where M2–M5 did not provide defensible evidence. Port verification should confirm those counts or explicitly document any intentional change.
+Unmapped means **unknown / not inferable from current quiz signals**, not 0% affinity.
 
 ## C3 — Explicit catalog preference state 📋 contract ready
 

@@ -313,7 +313,7 @@ Hard limits must suppress inferred recommendations for that item.
 
 Catalog integration is now **in progress in M6**.
 
-The repo already has a runtime catalog and pairwise ranking. M6 adds durable identity, explicit preference semantics, catalog-to-signal mappings, and a pure affinity matcher.
+The repo already has a runtime catalog and pairwise ranking. M6 C1 added durable identity and C2 adds validated catalog-to-signal mappings plus normalized metadata. Explicit preference semantics and the pure affinity matcher remain later M6 slices.
 
 See [m6-catalog-integration.md](m6-catalog-integration.md).
 
