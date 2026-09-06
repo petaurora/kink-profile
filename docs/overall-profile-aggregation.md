@@ -508,23 +508,23 @@ Broad cross-cutting facets.
 
 ## Strongest roles / headspaces
 
-Keep direction visible.
+For the initial M7 profile presentation, prioritize the **receiving / submissive headspaces** that are already well-supported by the current implementation.
 
 Example:
 
 ```text
 Receiving / submissive
-1. Pet
-2. Slave
-3. Brat
 
-Giving / dominant
-1. Owner / Handler
-2. Caregiver
-3. Predator
+Pet                    94%
+Prey                   87%
+Devotional Submissive  81%
 ```
 
-Do not merge receiving and giving roles into one winner-take-all list.
+The profile should surface only a compact top set (for example, top 3) by default, with full detail available through expansion or drill-down.
+
+Do **not** present a parallel giving/dominant headspace block in the initial M7 UI merely for symmetry. The giving/dominant presentation should be revisited as part of the broader future directional-profile work, once cross-source giving/receiving aggregation is mature enough to support it consistently.
+
+When that future support exists, receiving and giving headspaces should remain separate rather than being merged into one winner-take-all list.
 
 ## Strongest dynamic modes
 
@@ -985,8 +985,8 @@ The overall profile should preserve complexity while making it easier to underst
 
 ## O4 — Role / mode summary
 
-- top receiving/submissive headspaces
-- top giving/dominant headspaces
+- show a compact top set of receiving/submissive headspaces in the initial M7 UI
+- park giving/dominant headspace presentation for the broader future directional-profile enhancement
 - strongest dynamic modes
 - preserve independent overlapping scores
 
