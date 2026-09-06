@@ -72,6 +72,13 @@ export function isCatalogItemEligible(
   );
 }
 
+export function filterEligibleCatalogItems<T extends { id: string }>(
+  catalog: readonly T[],
+  preferences: CatalogProfileState["preferences"],
+): T[] {
+  return catalog.filter((item) => isCatalogItemEligible(preferences, item.id));
+}
+
 export function setCatalogPreference(
   profile: CatalogProfileState,
   catalogId: string,
