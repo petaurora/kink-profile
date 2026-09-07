@@ -18,7 +18,7 @@ function signal(
 }
 
 describe("M7.5 profile role details", () => {
-  it("keeps overlapping submissive headspaces independently scored", () => {
+  it("keeps overlapping headspaces independently scored without authority bucketing", () => {
     const model = buildProfileRoleDetails([
       signal("belonging", 95),
       signal("role_embodiment", 90),
@@ -35,12 +35,12 @@ describe("M7.5 profile role details", () => {
       signal("structure", 75),
     ]);
 
-    const ids = model.submissiveHeadspaces.map((item) => item.id);
+    const ids = model.headspaces.map((item) => item.id);
 
     expect(ids).toContain("pet");
     expect(ids).toContain("service_submissive");
     expect(ids).toContain("devotional_submissive");
-    expect(model.submissiveHeadspaces[0].affinity).toBeGreaterThan(0);
+    expect(model.headspaces[0].affinity).toBeGreaterThan(0);
   });
 
   it("sorts displayed rows by affinity while using coverage as the tie-breaker", () => {
@@ -56,7 +56,7 @@ describe("M7.5 profile role details", () => {
       signal("responsibility_transfer", 70),
     ]);
 
-    const affinities = model.submissiveHeadspaces.map((item) => item.affinity);
+    const affinities = model.headspaces.map((item) => item.affinity);
     expect(affinities).toEqual([...affinities].sort((a, b) => b - a));
   });
 
@@ -66,7 +66,7 @@ describe("M7.5 profile role details", () => {
       signal("care_receiving", 100, 8),
     ]);
 
-    expect(model.submissiveHeadspaces).toEqual([]);
+    expect(model.headspaces).toEqual([]);
   });
 
   it("keeps limited-but-usable evidence visible and qualified", () => {
@@ -78,7 +78,7 @@ describe("M7.5 profile role details", () => {
       signal("playful_resistance", 70, 35),
     ]);
 
-    const prey = model.submissiveHeadspaces.find((item) => item.id === "prey");
+    const prey = model.headspaces.find((item) => item.id === "prey");
 
     expect(prey).toEqual(
       expect.objectContaining({
@@ -110,10 +110,29 @@ describe("M7.5 profile role details", () => {
       signal("primal_embodiment", 58),
     ]);
 
-    expect(model.submissiveHeadspaces.length).toBeGreaterThan(5);
-    expect(model.featuredSubmissiveHeadspaces).toEqual(
-      model.submissiveHeadspaces.slice(0, 5),
+    expect(model.headspaces.length).toBeGreaterThan(5);
+    expect(model.featuredHeadspaces).toEqual(
+      model.headspaces.slice(0, 5),
     );
+  });
+
+  it("allows caregiver or trainer-style headspaces to surface without classifying them as dominant", () => {
+    const model = buildProfileRoleDetails([
+      signal("care_giving", 96),
+      signal("responsibility_holding", 92),
+      signal("guidance_shaping", 94),
+      signal("structure", 82),
+      signal("service", 90),
+      signal("devotion", 88),
+      signal("obedience", 86),
+      signal("receiving_control", 90),
+    ]);
+
+    const ids = model.headspaces.map((item) => item.id);
+
+    expect(ids).toContain("caregiver");
+    expect(ids).toContain("trainer");
+    expect(model.featuredHeadspaces.length).toBeLessThanOrEqual(5);
   });
 
   it("scores dynamic modes from the same canonical signals without forcing exclusivity", () => {

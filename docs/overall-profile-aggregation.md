@@ -1166,16 +1166,26 @@ The compact header intentionally omits percentages. Detailed percentages remain 
 
 ### Orientation semantics
 
-Orientation is derived from the **Power Exchange facet's directional evidence**, not from every directional M7.2 facet and not from a zero-sum receiving-vs-giving slider.
+Orientation is a **negotiated-authority result**, not a generic activity-direction result.
 
-This boundary is intentional:
+The aggregate header now derives Dominant/Submissive orientation only from authority-specific evidence from the D/s quiz:
 
-- enjoying **giving pain** does not by itself mean Dominant
-- enjoying **giving restraint** does not by itself mean Dominant
-- enjoying **providing care** does not by itself mean Dominant
-- predator/prey or other directional activity preferences do not automatically define D/s orientation
+- submissive-side authority: `receiving_control`, `responsibility_transfer`, `obedience`
+- dominant-side authority: `giving_control`
 
-Those directional signals remain meaningful inside their own facets and explainability views, but they do not vote on the Dominant/Submissive label.
+The authority classifier deliberately ignores:
+
+- pain giving/receiving
+- restraint giving/receiving
+- discipline giving/receiving
+- care giving/receiving
+- pursuit giving/receiving
+- generic `responsibility_holding`
+- catalog preference/ranking evidence
+
+This prevents "I like doing this to someone" from becoming "I am dominant."
+
+`responsibility_holding` remains useful profile evidence but is not dominant authority by itself because responsibility can be delegated or service-oriented.
 
 Possible compact user-facing results:
 
@@ -1185,11 +1195,9 @@ Possible compact user-facing results:
 - **Context-dependent**
 - **Still emerging**
 
-The internal evidence model still uses receiving/giving direction keys because they are useful, neutral plumbing across different facet types. Those terms should not leak into normal profile copy.
+Strong authority evidence on both sides can coexist. When both are meaningfully supported, the header says **Dominant + submissive** rather than assigning a "switch" identity.
 
-Strong Power Exchange evidence on both sides can coexist. When both are meaningfully supported, the header says **Dominant + submissive** rather than assigning a "switch" identity.
-
-**Context-dependent** is reserved for ambiguous/mixed Power Exchange evidence rather than disagreement between unrelated activity facets.
+See [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md) for the cross-cutting contract.
 
 ### User-facing terminology boundary
 
@@ -1224,7 +1232,7 @@ They do not feed back into:
 
 Low-coverage composed labels are suppressed from the compact header.
 
-Headspace direction is retained so receiving-side and giving-side role/headspace results remain distinguishable.
+Headspaces are not assigned a generic receiving/giving or submissive/dominant direction. A role may contain activity-side ingredients without inheriting authority meaning from them.
 
 ### Presentation boundary
 
@@ -1243,13 +1251,13 @@ rather than:
 Deterministic coverage includes:
 
 - insufficient evidence
-- receiving-oriented
-- giving-oriented
-- bidirectional
-- mixed/context-dependent
+- submissive authority
+- dominant authority
+- bidirectional authority
+- mixed/context-dependent authority
 - low-coverage headline suppression
 - coverage-aware strongest-theme selection
-- recognizable headspace composition + direction
+- recognizable headspace composition without authority bucketing
 - dynamic-mode composition
 - no percentage leakage into the headline summary
 
@@ -1338,7 +1346,7 @@ M7.5 adds the dedicated recognizable-role layer beneath the broad M7.2/M7.4 face
 
 ### Headspaces
 
-The main profile now shows ranked **submissive-oriented Headspaces** using the existing composed role definitions.
+The main profile ranks **all known Headspaces together** using the existing composed role definitions.
 
 Presentation rules:
 
@@ -1350,9 +1358,9 @@ Presentation rules:
 - keep 20–39.9% coverage visible but mark it **Limited evidence so far**
 - sort by affinity first, then coverage as the deterministic tie-breaker
 
-The dedicated profile section uses **submissive** language in the UI. The underlying implementation may still reference historical receiving-side IDs internally, but that vocabulary does not appear in normal presentation.
+The profile does not first divide Headspaces into submissive vs dominant or receiving vs giving buckets.
 
-Dominant-oriented Headspace presentation remains parked for the broader future directional-profile enhancement. This slice does not infer that a missing dominant list means absence of dominant interests.
+Pet, Prey, Caregiver, Predator, Trainer, Little, and similar roles remain independent of D/s orientation unless the role definition itself explicitly encodes authority semantics.
 
 ### Dynamic Modes
 
@@ -1381,11 +1389,14 @@ M7.5 is derived from canonical signals and does not write anything back into:
 
 Headspaces and modes are descriptive derived views only.
 
+Activity-side signals may contribute to a role composition where semantically appropriate, but they do not assign authority orientation.
+
 ### Test gate ✅
 
 Deterministic tests cover:
 
 - multiple overlapping Headspaces remaining independently scored
+- partner-positioned roles surfacing without dominance classification
 - affinity ordering
 - coverage tie behavior
 - sparse 100% evidence suppression
@@ -1394,7 +1405,7 @@ Deterministic tests cover:
 - overlapping Dynamic Modes
 - compact top-5 mode selection
 
-**Exit condition:** recognizable Headspaces and Dynamic Modes add useful detail without replacing the broad facet model. ✅
+**Exit condition:** recognizable Headspaces and Dynamic Modes add useful detail without replacing or redefining D/s authority. ✅
 
 ## M7.6 — Top Overall catalog interests ✅
 

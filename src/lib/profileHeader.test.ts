@@ -11,99 +11,118 @@ function signal(
   signalId: SignalId,
   affinity: number,
   coverage = 100,
+  quizId = "dominance-submission",
 ): CanonicalSignalResult {
   return {
     signalId,
     affinity,
     coverage,
-    channels: [],
-    sourceEvidenceIds: [`test:${signalId}`],
+    channels: [
+      {
+        sourceType: "quiz",
+        affinity,
+        coverage,
+        reliability: 0.8,
+        effectiveWeight: 0.8 * (coverage / 100),
+        contributions: [
+          {
+            sourceType: "quiz",
+            sourceId: quizId,
+            signalId,
+            affinity,
+            coverage,
+            sourceEvidenceIds: [`test:${quizId}:${signalId}`],
+          },
+        ],
+      },
+    ],
+    sourceEvidenceIds: [`test:${quizId}:${signalId}`],
   };
 }
 
 describe("M7.3 profile orientation", () => {
-  it("stays emerging when directional evidence is too sparse", () => {
-    const facets = scoreOverallFacets([
-      signal("receiving_control", 100, 10),
-    ]);
-
-    expect(deriveProfileOrientation(facets).key).toBe("insufficient");
+  it("stays emerging when D/s authority evidence is too sparse", () => {
+    expect(
+      deriveProfileOrientation([
+        signal("receiving_control", 100, 10),
+      ]).key,
+    ).toBe("insufficient");
   });
 
-  it("identifies a clear submissive lean", () => {
-    const facets = scoreOverallFacets([
+  it("identifies a clear submissive lean from authority-specific D/s evidence", () => {
+    const orientation = deriveProfileOrientation([
       signal("receiving_control", 92),
       signal("responsibility_transfer", 88),
       signal("obedience", 82),
       signal("giving_control", 20),
-      signal("responsibility_holding", 25),
-      signal("care_receiving", 90),
-      signal("care_giving", 30),
-      signal("pursuit_receiving", 85),
-      signal("pursuit_giving", 20),
     ]);
 
-    const orientation = deriveProfileOrientation(facets);
-
-    expect(orientation.key).toBe("receiving");
-    expect(orientation.receivingAffinity).toBeGreaterThan(
-      orientation.givingAffinity ?? 0,
+    expect(orientation.key).toBe("submissive");
+    expect(orientation.submissiveAffinity).toBeGreaterThan(
+      orientation.dominantAffinity ?? 0,
     );
   });
 
-  it("identifies a clear dominant lean", () => {
-    const facets = scoreOverallFacets([
-      signal("receiving_control", 20),
-      signal("responsibility_transfer", 25),
-      signal("obedience", 20),
-      signal("giving_control", 92),
-      signal("responsibility_holding", 88),
-      signal("care_receiving", 25),
-      signal("care_giving", 90),
-      signal("pursuit_receiving", 20),
-      signal("pursuit_giving", 85),
-    ]);
-
-    expect(deriveProfileOrientation(facets).key).toBe("giving");
+  it("identifies a clear dominant lean from negotiated authority evidence", () => {
+    expect(
+      deriveProfileOrientation([
+        signal("receiving_control", 20),
+        signal("responsibility_transfer", 25),
+        signal("obedience", 20),
+        signal("giving_control", 92),
+      ]).key,
+    ).toBe("dominant");
   });
 
-  it("identifies genuinely strong bidirectional evidence without forcing a switch identity", () => {
-    const facets = scoreOverallFacets([
-      signal("receiving_control", 88),
-      signal("responsibility_transfer", 80),
-      signal("obedience", 75),
-      signal("giving_control", 84),
-      signal("responsibility_holding", 82),
-      signal("care_receiving", 86),
-      signal("care_giving", 88),
-      signal("pursuit_receiving", 78),
-      signal("pursuit_giving", 80),
-    ]);
-
-    expect(deriveProfileOrientation(facets).key).toBe("bidirectional");
+  it("identifies genuinely strong authority evidence on both sides", () => {
+    expect(
+      deriveProfileOrientation([
+        signal("receiving_control", 88),
+        signal("responsibility_transfer", 80),
+        signal("obedience", 75),
+        signal("giving_control", 84),
+      ]).key,
+    ).toBe("bidirectional");
   });
 
-  it("does not turn giving-side activity preferences into dominant orientation", () => {
-    const facets = scoreOverallFacets([
-      // Power exchange is clearly submissive-leaning.
+  it("does not turn activity direction into authority orientation", () => {
+    const orientation = deriveProfileOrientation([
       signal("receiving_control", 100),
       signal("responsibility_transfer", 100),
       signal("obedience", 100),
       signal("giving_control", 68),
-      // Other activities can still be strongly giving-side.
-      signal("care_receiving", 85),
-      signal("care_giving", 95),
-      signal("pain_receiving", 100),
+      signal("care_giving", 100),
       signal("pain_giving", 100),
-      signal("receiving_intensity", 100),
       signal("giving_intensity", 100),
-      signal("receiving_restraint", 90),
-      signal("giving_restraint", 95),
+      signal("giving_restraint", 100),
+      signal("giving_discipline", 100),
+      signal("pursuit_giving", 100),
     ]);
 
-    const orientation = deriveProfileOrientation(facets);
-    expect(orientation.key).toBe("receiving");
+    expect(orientation.key).toBe("submissive");
     expect(orientation.label).toBe("Submissive");
+  });
+
+  it("does not treat delegated responsibility-holding as dominant authority", () => {
+    const orientation = deriveProfileOrientation([
+      signal("receiving_control", 95),
+      signal("responsibility_transfer", 95),
+      signal("obedience", 95),
+      signal("giving_control", 35),
+      signal("responsibility_holding", 100),
+    ]);
+
+    expect(orientation.key).toBe("submissive");
+  });
+
+  it("ignores authority-like signals from non-D/s quiz sources", () => {
+    const orientation = deriveProfileOrientation([
+      signal("giving_control", 100, 100, "roles-headspaces"),
+      signal("responsibility_holding", 100, 100, "roles-headspaces"),
+    ]);
+
+    expect(orientation.key).toBe("insufficient");
+    expect(orientation.label).toBe("Still emerging");
   });
 });
 
@@ -138,7 +157,7 @@ describe("M7.3 profile header model", () => {
     expect(model.summary).toContain("service and devotion");
   });
 
-  it("derives recognizable headspaces from canonical signals and preserves their direction", () => {
+  it("derives recognizable headspaces without assigning an authority direction", () => {
     const canonical = [
       signal("belonging", 92),
       signal("role_embodiment", 90),
@@ -157,9 +176,9 @@ describe("M7.3 profile header model", () => {
       expect.objectContaining({
         id: "pet",
         label: "Pet",
-        direction: "receiving",
       }),
     );
+    expect(model.headspaces[0]).not.toHaveProperty("direction");
     expect(model.headspaces.length).toBeLessThanOrEqual(3);
   });
 
@@ -217,7 +236,7 @@ describe("M7.3 profile header model", () => {
       scoreOverallFacets(canonical),
     );
 
-    expect(model.orientation.key).toBe("receiving");
+    expect(model.orientation.key).toBe("submissive");
     expect(model.orientation.label).toBe("Submissive");
     expect(model.summary).toMatch(/^The profile leans submissive/);
     expect(model.summary).toContain("strongest themes");

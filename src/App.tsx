@@ -27,9 +27,9 @@ import {
 } from "./data/sadismMasochismQuiz";
 import {
   dynamicModes,
-  givingRoleHeadspaceIds,
+  partnerPositionedRoleHeadspaceIds,
   headspaceSignalIds,
-  receivingRoleHeadspaceIds,
+  selfPositionedRoleHeadspaceIds,
   roleHeadspaces,
 } from "./data/headspacesQuiz";
 import { getSignals, signalDefinitions } from "./data/signals";
@@ -472,8 +472,7 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>("hub");
   const [activeQuizId, setActiveQuizId] = useState<QuizId>(defaultQuiz.id);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [showAllSubmissiveHeadspaces, setShowAllSubmissiveHeadspaces] =
-    useState(false);
+  const [showAllHeadspaces, setShowAllHeadspaces] = useState(false);
   const [showAllHardLimits, setShowAllHardLimits] = useState(false);
   const [catalogDrilldown, setCatalogDrilldown] =
     useState<CatalogDrilldownTarget>(() => allCatalogDrilldown("hub"));
@@ -602,17 +601,17 @@ export default function App() {
     [scores],
   );
 
-  const receivingHeadspaceRadarScores = useMemo(
+  const selfPositionedHeadspaceRadarScores = useMemo(
     () =>
-      receivingRoleHeadspaceIds
+      selfPositionedRoleHeadspaceIds
         .map((id) => scores.find((score) => score.id === id))
         .filter((score): score is Score => score !== undefined),
     [scores],
   );
 
-  const givingHeadspaceRadarScores = useMemo(
+  const partnerPositionedHeadspaceRadarScores = useMemo(
     () =>
-      givingRoleHeadspaceIds
+      partnerPositionedRoleHeadspaceIds
         .map((id) => scores.find((score) => score.id === id))
         .filter((score): score is Score => score !== undefined),
     [scores],
@@ -674,9 +673,9 @@ export default function App() {
     [canonicalSignals],
   );
 
-  const visibleSubmissiveHeadspaces = showAllSubmissiveHeadspaces
-    ? profileRoleDetails.submissiveHeadspaces
-    : profileRoleDetails.featuredSubmissiveHeadspaces;
+  const visibleHeadspaces = showAllHeadspaces
+    ? profileRoleDetails.headspaces
+    : profileRoleDetails.featuredHeadspaces;
 
   const catalogResultView = useMemo(
     () =>
@@ -1049,14 +1048,14 @@ export default function App() {
                   <h2>Headspaces</h2>
                 </div>
                 <p>
-                  These scores can overlap. They describe submissive-oriented role
-                  patterns, not one assigned identity.
+                  These scores can overlap. They describe recognizable role and
+                  headspace patterns, not one assigned identity or authority position.
                 </p>
               </div>
 
-              {visibleSubmissiveHeadspaces.length > 0 ? (
+              {visibleHeadspaces.length > 0 ? (
                 <div className="profile-role-list">
-                  {visibleSubmissiveHeadspaces.map((item, index) => (
+                  {visibleHeadspaces.map((item, index) => (
                     <div className="profile-role-row" key={item.id}>
                       <span className="profile-role-rank">
                         {String(index + 1).padStart(2, "0")}
@@ -1082,15 +1081,15 @@ export default function App() {
                 </p>
               )}
 
-              {profileRoleDetails.submissiveHeadspaces.length >
-                profileRoleDetails.featuredSubmissiveHeadspaces.length && (
+              {profileRoleDetails.headspaces.length >
+                profileRoleDetails.featuredHeadspaces.length && (
                 <button
                   className="text-button profile-role-toggle"
                   onClick={() =>
-                    setShowAllSubmissiveHeadspaces((shown) => !shown)
+                    setShowAllHeadspaces((shown) => !shown)
                   }
                 >
-                  {showAllSubmissiveHeadspaces ? "Show less" : "Show all headspaces"}
+                  {showAllHeadspaces ? "Show less" : "Show all headspaces"}
                 </button>
               )}
             </article>
@@ -1617,23 +1616,23 @@ export default function App() {
               <div className="multi-radar-grid">
                 <article className="panel chart-panel">
                   <div className="section-heading">
-                    <p className="eyebrow">Receiving / submissive</p>
+                    <p className="eyebrow">Self-positioned roles</p>
                     <h2>Headspace radar</h2>
                   </div>
                   <RadarChart
-                    scores={receivingHeadspaceRadarScores}
-                    ariaLabel="Receiving and submissive roles and headspaces radar chart"
+                    scores={selfPositionedHeadspaceRadarScores}
+                    ariaLabel="Self-positioned roles and headspaces radar chart"
                   />
                 </article>
 
                 <article className="panel chart-panel">
                   <div className="section-heading">
-                    <p className="eyebrow">Giving / dominant</p>
+                    <p className="eyebrow">Partner-positioned roles</p>
                     <h2>Headspace radar</h2>
                   </div>
                   <RadarChart
-                    scores={givingHeadspaceRadarScores}
-                    ariaLabel="Giving and dominant roles and headspaces radar chart"
+                    scores={partnerPositionedHeadspaceRadarScores}
+                    ariaLabel="Partner-positioned roles and headspaces radar chart"
                   />
                 </article>
 
