@@ -1,14 +1,16 @@
+import { kinkCategories } from "../data/kinkCatalog.generated";
 import type { CatalogProfileState } from "./catalogProfile";
 import { buildCatalogResultView } from "./catalogResults";
 import { buildOverallRadarModel, type OverallRadarAxisState } from "./overallRadar";
 import { scoreOverallFacets } from "./overallProfileFacets";
+import { buildProfileInterestAreas } from "./profileInterestAreas";
 import { buildCanonicalSignalProfile } from "./overallProfileSignals";
 import { buildProfileHeaderModel } from "./profileHeader";
 import { buildProfileRoleDetails, type ProfileRoleScoreState } from "./profileRoleDetails";
 import { buildProfileTopInterests } from "./profileTopInterests";
 import type { StoredProfile } from "./profileStorage";
 
-export const PROFILE_SHARE_SUMMARY_VERSION = 1 as const;
+export const PROFILE_SHARE_SUMMARY_VERSION = 2 as const;
 
 export type ShareRadarAxis = {
   id: string;
@@ -30,6 +32,12 @@ export type ShareInterest = {
   label: string;
 };
 
+export type ShareInterestArea = {
+  categoryId: string;
+  label: string;
+  items: readonly ShareInterest[];
+};
+
 export type ProfileShareSummaryModel = {
   version: typeof PROFILE_SHARE_SUMMARY_VERSION;
   generatedAt: string;
@@ -41,6 +49,7 @@ export type ProfileShareSummaryModel = {
   headspaces: readonly ShareScoredTrait[];
   dynamicModes: readonly ShareScoredTrait[];
   topInterests: readonly ShareInterest[];
+  interestAreas: readonly ShareInterestArea[];
   hardLimits: readonly ShareInterest[];
 };
 
@@ -60,6 +69,10 @@ export function buildProfileShareSummary(
   const roles = buildProfileRoleDetails(canonicalSignals);
   const catalogResults = buildCatalogResultView(storedProfile, catalogProfile);
   const topInterests = buildProfileTopInterests(catalogResults, 10);
+  const interestAreas = buildProfileInterestAreas(
+    catalogResults,
+    kinkCategories,
+  );
 
   return {
     version: PROFILE_SHARE_SUMMARY_VERSION,
@@ -90,6 +103,14 @@ export function buildProfileShareSummary(
     topInterests: topInterests.map((interest) => ({
       catalogId: interest.catalogId,
       label: interest.label,
+    })),
+    interestAreas: interestAreas.map((area) => ({
+      categoryId: area.categoryId,
+      label: area.label,
+      items: area.representativeItems.map((item) => ({
+        catalogId: item.catalogId,
+        label: item.label,
+      })),
     })),
     hardLimits: catalogResults.exclusions.hardLimits
       .map((limit) => ({
