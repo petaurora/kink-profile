@@ -38,7 +38,7 @@ The implemented M3 contract is:
 - 15 overlapping role/headspace affinities
 - 12 explanatory dynamic modes
 - ranked role/headspace results
-- separate receiving/submissive and giving/dominant role/headspace radars
+- separate self-positioned and partner-positioned role/headspace radars
 - a dedicated dynamic-mode radar
 - dynamic-mode ranked results shown underneath
 - no requirement to complete M2 first
@@ -125,7 +125,7 @@ Roles/headspaces describe recognizable relational identities or modes a user may
 
 Implemented initial set:
 
-### Receiving / submissive-leaning
+### Self-positioned roles / headspaces
 
 - Pet
 - Slave
@@ -137,7 +137,7 @@ Implemented initial set:
 - Devotional Submissive
 - Property / Object
 
-### Giving / dominant-leaning
+### Partner-positioned roles / headspaces
 
 - Owner / Handler
 - Caregiver
@@ -148,7 +148,17 @@ Implemented initial set:
 
 These categories are **not mutually exclusive**.
 
-A user may legitimately score highly on several at once.
+The two display groups are not authority classifications. In particular:
+
+- caring for someone does not imply dominance
+- pursuing someone does not imply dominance
+- training, correcting, or holding someone accountable does not imply dominance
+- being cared for, pursued, restrained, or positioned does not imply submission
+- a role can be enacted as service, under instruction, through delegated responsibility, or outside D/s entirely
+
+Dominant/submissive orientation belongs to the explicit authority model, not to generic activity direction.
+
+A user may legitimately score highly on several roles at once.
 
 Example:
 
@@ -508,9 +518,15 @@ The primary ranked results use **role/headspace compositions**.
 
 M3 v3 separates visualization into three radar charts:
 
-1. receiving / submissive roles and headspaces
-2. giving / dominant roles and headspaces
+1. self-positioned roles and headspaces
+2. partner-positioned roles and headspaces
 3. underlying dynamic modes
+
+These are **display groupings, not D/s orientation buckets**.
+
+A self-positioned role is one primarily phrased as the role or headspace the user inhabits (for example Pet, Little, Prey, or Slave). A partner-positioned role is one primarily phrased as a role enacted toward another person (for example Caregiver, Trainer, Predator, or Owner / Handler).
+
+Neither grouping means submissive or dominant. A submissive person can score highly on partner-positioned roles, and a dominant person can score highly on self-positioned roles. Activity side, relational role, and negotiated authority are separate dimensions.
 
 Dynamic-mode ranked results remain beneath the primary role/headspace results as explanatory context.
 
