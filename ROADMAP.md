@@ -739,7 +739,7 @@ M8 is not a prerequisite for M9. The share-summary slices depend on the stable M
 
 - [x] build a dedicated share-summary presentation from stable M7 outputs
 - [x] keep the share summary distinct from the full private backup/export
-- [x] include strongest themes, overall radar, orientation, submissive Headspaces, Dynamic Modes, Top Overall, and explicit Hard Limits
+- [x] include strongest themes, overall radar, orientation, Headspaces, Dynamic Modes, Top Overall, and explicit Hard Limits
 - [x] include M7.8 Interest Areas once its stable category-selection semantics landed
 - [x] intentionally omit internal provenance/debug data and machine-oriented storage detail
 - [x] design the summary so the same model + renderer can feed multiple output formats
