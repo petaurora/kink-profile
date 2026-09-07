@@ -41,9 +41,9 @@ export function ProfileSharePanel({
       </div>
 
       <p className="settings-share-note">
-        Interest Areas are intentionally not included yet because M7.8 has not defined their
-        stable category-selection semantics. M9.6 will export this same summary renderer as
-        PNG, HTML, and PDF.
+        This preview follows the current M7 profile hierarchy, including Interest Areas, while
+        leaving out app-only navigation and private implementation detail. M9.6 will export
+        this same summary renderer as PNG, HTML, and PDF.
       </p>
     </section>
   );
