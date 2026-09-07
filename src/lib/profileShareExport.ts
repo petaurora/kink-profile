@@ -508,8 +508,13 @@ export async function exportShareSummaryPdf(
   const pages = await pdfPagesFromCanvas(canvas, element);
   const pdf = buildPdfFromJpegPages(pages);
 
+  const pdfBuffer = pdf.buffer.slice(
+    pdf.byteOffset,
+    pdf.byteOffset + pdf.byteLength,
+  ) as ArrayBuffer;
+
   downloadBlob(
-    new Blob([pdf], { type: "application/pdf" }),
+    new Blob([pdfBuffer], { type: "application/pdf" }),
     createShareExportFilename(model, "pdf"),
   );
 }
