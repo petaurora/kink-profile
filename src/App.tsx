@@ -32,7 +32,7 @@ import {
   selfPositionedRoleHeadspaceIds,
   roleHeadspaces,
 } from "./data/headspacesQuiz";
-import { getSignals, signalDefinitions } from "./data/signals";
+import { getSignals } from "./data/signals";
 import {
   isWeightedQuestion,
   quizQuestions,
@@ -52,10 +52,7 @@ import {
   type StoredProfile,
 } from "./lib/profileStorage";
 import { loadCatalogProfile } from "./lib/catalogProfileStorage";
-import {
-  buildCanonicalSignalProfile,
-  type CanonicalSignalSourceType,
-} from "./lib/overallProfileSignals";
+import { buildCanonicalSignalProfile } from "./lib/overallProfileSignals";
 import { scoreOverallFacets } from "./lib/overallProfileFacets";
 import { buildProfileHeaderModel } from "./lib/profileHeader";
 import {
@@ -65,6 +62,10 @@ import {
 } from "./lib/overallRadar";
 import type { OverallFacetId } from "./data/overallFacets";
 import { buildProfileRoleDetails } from "./lib/profileRoleDetails";
+import {
+  buildProfileExplainability,
+  type ProfileExplainabilityAction,
+} from "./lib/profileExplainability";
 import {
   buildCatalogResultView,
   catalogPreferenceLabels,
@@ -113,22 +114,7 @@ function QuizGlyph({ name, size = 26 }: { name: string; size?: number }) {
   }
 }
 
-const signalDefinitionById = new Map(
-  signalDefinitions.map((signal) => [signal.id, signal]),
-);
-
 const kinkCategoryIds = new Set(kinkCategories.map((category) => category.id));
-
-function evidenceSourceLabel(sourceType: CanonicalSignalSourceType) {
-  switch (sourceType) {
-    case "quiz":
-      return "Quiz";
-    case "catalog_explicit":
-      return "Explicit catalog";
-    case "catalog_pairwise":
-      return "This or That";
-  }
-}
 
 function scoreLabel(score: number, weighted = false) {
   if (score >= 80) return weighted ? "Very strong" : "Core";
@@ -640,10 +626,6 @@ export default function App() {
   );
 
   const coreQuizzes = quizzes.filter((quiz) => quiz.contributesToOverall);
-  const completedCore = coreQuizzes.filter(
-    (quiz) => getQuizState(quiz, profile) === "complete",
-  ).length;
-
   const canonicalSignals = useMemo(
     () => buildCanonicalSignalProfile(profile, catalogProfileForInspection),
     [catalogProfileForInspection, profile],
@@ -671,6 +653,16 @@ export default function App() {
   const profileRoleDetails = useMemo(
     () => buildProfileRoleDetails(canonicalSignals),
     [canonicalSignals],
+  );
+
+  const profileExplainability = useMemo(
+    () =>
+      buildProfileExplainability(
+        canonicalSignals,
+        overallFacets,
+        profile,
+      ),
+    [canonicalSignals, overallFacets, profile],
   );
 
   const visibleHeadspaces = showAllHeadspaces
@@ -772,10 +764,6 @@ export default function App() {
     setScreen("hub");
   };
 
-  const refreshCanonicalEvidence = () => {
-    setCatalogProfileForInspection(loadCatalogProfile());
-  };
-
   const openProfile = () => {
     setCatalogProfileForInspection(loadCatalogProfile());
     setScreen("profile");
@@ -795,6 +783,18 @@ export default function App() {
     }
 
     setScreen("hub");
+  };
+
+  const openExplainabilityAction = (
+    action: ProfileExplainabilityAction,
+  ) => {
+    if (action.type === "quiz") {
+      const quiz = getQuiz(action.quizId);
+      if (quiz) openQuiz(quiz);
+      return;
+    }
+
+    openCatalog(allCatalogDrilldown());
   };
 
   const openFacetDetail = (facetId: OverallFacetId) => {
@@ -1301,214 +1301,158 @@ export default function App() {
             </div>
           </article>
 
-          <div className="profile-overview panel">
-            <div className="profile-number">
-              <strong>{completedCore}</strong>
-              <span>of {coreQuizzes.length} sections explored</span>
-            </div>
-            <div className="profile-section-list">
-              {coreQuizzes.map((quiz) => {
-                const state = getQuizState(quiz, profile);
-                return (
-                  <div className="profile-section-row" key={quiz.id}>
-                    <span className="quiz-icon small">
-                      <QuizGlyph name={quiz.icon} size={19} />
-                    </span>
-                    <div>
-                      <strong>{quiz.title}</strong>
-                      <span>{stateLabel(state)}</span>
-                    </div>
-                    <span className={`status-dot status-${state}`} />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <article className="panel facet-inspector">
-            <div className="evidence-inspector-heading">
+          <article className="profile-explainability panel">
+            <div className="profile-explainability-heading">
               <div>
-                <p className="eyebrow">M7.2 inspection</p>
-                <h2>Overall facets</h2>
+                <p className="eyebrow">Behind the profile</p>
+                <h2>Why these themes show up.</h2>
                 <p>
-                  Temporary testing view for the broad profile model. Missing signals reduce
-                  evidence coverage instead of counting as zero interest. Directional facets
-                  keep receiving and giving evidence separate underneath the overall score.
+                  Affinity describes how strongly a theme currently resonates.
+                  Evidence describes how much relevant information is behind that
+                  result. A strong score can still be lightly explored.
                 </p>
               </div>
-              <button className="secondary compact" onClick={refreshCanonicalEvidence}>
-                Refresh evidence
-              </button>
             </div>
 
-            <div className="facet-inspector-list">
-              {overallFacets.map((facet) => (
+            <div className="profile-explainability-list">
+              {profileExplainability.facets.map((facet) => (
                 <details
-                    className="facet-inspector-row"
-                    id={`facet-detail-${facet.facetId}`}
-                    key={facet.facetId}
-                  >
+                  className={`profile-explanation profile-explanation-${facet.evidenceState}`}
+                  id={`facet-detail-${facet.facetId}`}
+                  key={facet.facetId}
+                >
                   <summary>
-                    <div className="facet-inspector-name">
+                    <div className="profile-explanation-name">
                       <strong>{facet.label}</strong>
                       <span>{facet.description}</span>
                     </div>
-                    <div className="evidence-signal-metrics">
+                    <div className="profile-explanation-summary">
                       <span>
-                        <strong>{facet.affinity === null ? "—" : `${facet.affinity}%`}</strong>
+                        <strong>
+                          {facet.affinity === null ? "—" : `${facet.affinity}%`}
+                        </strong>
                         affinity
                       </span>
-                      <span>
-                        <strong>{facet.coverage}%</strong>
-                        evidence
+                      <span className="profile-evidence-state">
+                        {facet.evidenceLabel}
                       </span>
                     </div>
                   </summary>
 
-                  <div className="facet-inspector-detail">
-                    {facet.direction && (
-                      <div className="facet-direction-grid">
-                        {(["receiving", "giving"] as const).map((direction) => {
-                          const result = facet.direction?.[direction];
-                          if (!result) return null;
+                  <div className="profile-explanation-detail">
+                    <p className="profile-evidence-message">
+                      {facet.evidenceMessage}
+                      {facet.coverage > 0 && (
+                        <span> Evidence coverage: {facet.coverage}%.</span>
+                      )}
+                    </p>
 
-                          return (
-                            <div className="facet-direction-card" key={direction}>
-                              <span>
-                                {direction === "receiving" ? "Submissive" : "Dominant"}
-                              </span>
-                              <strong>
-                                {result.affinity === null ? "—" : `${result.affinity}%`}
-                              </strong>
-                              <small>{result.coverage}% evidence</small>
-                            </div>
-                          );
-                        })}
-                      </div>
+                    {facet.hasSourceConflict && facet.conflictMessage && (
+                      <p className="profile-evidence-conflict">
+                        {facet.conflictMessage}
+                      </p>
                     )}
 
-                    {facet.components.length === 0 ? (
-                      <p className="facet-no-evidence">
-                        No canonical signals currently contribute evidence to this facet.
-                      </p>
-                    ) : (
-                      <div className="facet-component-list">
-                        {facet.components.map((component) => {
-                          const signal = signalDefinitionById.get(component.signalId);
+                    {facet.contributingSignals.length > 0 && (
+                      <section className="profile-explanation-section">
+                        <span className="profile-trait-label">
+                          What contributes
+                        </span>
+                        <div className="profile-explanation-signals">
+                          {facet.contributingSignals.map((signal) => (
+                            <div
+                              className="profile-explanation-signal"
+                              key={signal.signalId}
+                            >
+                              <strong>{signal.label}</strong>
+                              <span>
+                                {signal.affinity}% affinity · {signal.coverage}% evidence
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
 
-                          return (
-                            <div className="facet-component" key={component.signalId}>
+                    {facet.sources.length > 0 && (
+                      <section className="profile-explanation-section">
+                        <span className="profile-trait-label">
+                          Evidence sources
+                        </span>
+                        <div className="profile-explanation-sources">
+                          {facet.sources.map((source) => (
+                            <div
+                              className="profile-explanation-source"
+                              key={source.id}
+                            >
                               <div>
-                                <strong>{signal?.label ?? component.signalId}</strong>
-                                <code>{component.signalId}</code>
+                                <strong>{source.label}</strong>
+                                <span>{source.detail}</span>
                               </div>
                               <span>
-                                {component.affinity}% affinity · {component.coverage}% evidence
+                                {source.affinity}% signal · {source.evidence}% evidence
                               </span>
-                              <span>weight {component.configuredWeight}</span>
                             </div>
-                          );
-                        })}
-                      </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
+                    {facet.nextStep && (
+                      <button
+                        className="secondary compact profile-explanation-action"
+                        onClick={() =>
+                          openExplainabilityAction(facet.nextStep!)
+                        }
+                      >
+                        {facet.nextStep.label}
+                      </button>
                     )}
                   </div>
                 </details>
               ))}
             </div>
-          </article>
 
-          <article className="panel evidence-inspector">
-            <div className="evidence-inspector-heading">
-              <div>
-                <p className="eyebrow">M7.1 inspection</p>
-                <h2>Canonical signal evidence</h2>
-                <p>
-                  Temporary testing view. Each SignalId is merged by evidence channel first,
-                  then the quiz, explicit catalog, and This-or-That channels contribute one
-                  capped vote to the canonical result.
-                </p>
-              </div>
-              <button className="secondary compact" onClick={refreshCanonicalEvidence}>
-                Refresh evidence
-              </button>
-            </div>
+            <details className="profile-exploration-status">
+              <summary>
+                <div>
+                  <strong>Exploration status</strong>
+                  <span>
+                    Guided sections are shown here only as context for evidence,
+                    not as part of your identity.
+                  </span>
+                </div>
+                <strong>
+                  {profileExplainability.exploredQuizCount} of{" "}
+                  {profileExplainability.totalQuizCount}
+                </strong>
+              </summary>
 
-            {canonicalSignals.length === 0 ? (
-              <div className="evidence-empty">
-                No canonical signal evidence yet. Answer part of a weighted quiz, set mapped
-                catalog preferences, or make signal-discriminating This-or-That choices.
-              </div>
-            ) : (
-              <div className="evidence-signal-list">
-                {canonicalSignals.map((signal) => {
-                  const definition = signalDefinitionById.get(signal.signalId);
-
+              <div className="profile-exploration-list">
+                {coreQuizzes.map((quiz) => {
+                  const state = getQuizState(quiz, profile);
                   return (
-                    <details className="evidence-signal" key={signal.signalId}>
-                      <summary>
-                        <div className="evidence-signal-name">
-                          <strong>{definition?.label ?? signal.signalId}</strong>
-                          <code>{signal.signalId}</code>
-                        </div>
-                        <div className="evidence-signal-metrics">
-                          <span>
-                            <strong>{signal.affinity}%</strong>
-                            affinity
-                          </span>
-                          <span>
-                            <strong>{signal.coverage}%</strong>
-                            evidence
-                          </span>
-                        </div>
-                      </summary>
-
-                      <div className="evidence-channel-list">
-                        {signal.channels.map((channel) => (
-                          <section
-                            className="evidence-channel"
-                            key={channel.sourceType}
-                          >
-                            <div className="evidence-channel-heading">
-                              <div>
-                                <strong>{evidenceSourceLabel(channel.sourceType)}</strong>
-                                <span>
-                                  {channel.affinity}% affinity · {channel.coverage}% channel
-                                  coverage
-                                </span>
-                              </div>
-                              <span className="evidence-channel-weight">
-                                {Math.round(channel.effectiveWeight * 100)}% effective weight
-                              </span>
-                            </div>
-
-                            <div className="evidence-contribution-list">
-                              {channel.contributions.map((contribution, index) => (
-                                <div
-                                  className="evidence-contribution"
-                                  key={`${channel.sourceType}-${contribution.sourceId}-${index}`}
-                                >
-                                  <div>
-                                    <strong>{contribution.sourceId}</strong>
-                                    {contribution.detail && (
-                                      <span>{contribution.detail}</span>
-                                    )}
-                                  </div>
-                                  <div className="evidence-contribution-values">
-                                    <span>{contribution.affinity}%</span>
-                                    <span>{contribution.coverage}% evidence</span>
-                                  </div>
-                                  <code>{contribution.sourceEvidenceIds.join(" · ")}</code>
-                                </div>
-                              ))}
-                            </div>
-                          </section>
-                        ))}
+                    <div className="profile-exploration-row" key={quiz.id}>
+                      <span className="quiz-icon small">
+                        <QuizGlyph name={quiz.icon} size={19} />
+                      </span>
+                      <div>
+                        <strong>{quiz.title}</strong>
+                        <span>{stateLabel(state)}</span>
                       </div>
-                    </details>
+                      {state !== "complete" && (
+                        <button
+                          className="text-button"
+                          onClick={() => openQuiz(quiz)}
+                        >
+                          {state === "in-progress" ? "Continue" : "Explore"}
+                        </button>
+                      )}
+                    </div>
                   );
                 })}
               </div>
-            )}
+            </details>
           </article>
 
         </section>

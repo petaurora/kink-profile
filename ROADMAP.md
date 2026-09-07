@@ -634,19 +634,26 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Exit condition:** users can move from summary to editable catalog detail without cluttering the main profile. ✅
 
-### M7.10 — Explainability + coverage
+### M7.10 — Explainability + coverage ✅
 
-**Purpose:** make derived results understandable when the user wants to inspect them.
+**Purpose:** make the profile explainable without turning the main view into a scoring debugger.
 
-- [ ] expose contributing quiz/catalog/ranking evidence for derived profile results
-- [ ] qualify low-coverage results without framing unknown as deficiency
-- [ ] preserve source type/id/version where available
-- [ ] connect useful unfinished exploration back to dashboard/catalog flows
-- [ ] keep completion mechanics subordinate on the presentation profile
+- [x] replace temporary M7.1/M7.2 inspection panels with user-facing facet explanation
+- [x] keep affinity separate from evidence coverage
+- [x] preserve unknown as unknown rather than artificial 0%
+- [x] add Not explored / Limited / Growing / Well supported evidence states
+- [x] show human-readable contributing signals without SignalIds or composition weights
+- [x] preserve quiz identity/version in source summaries
+- [x] summarize direct catalog and This-or-That evidence without raw evidence IDs
+- [x] qualify materially conflicting independent sources without rewriting the score
+- [x] link sparse facets to relevant unfinished quizzes where available
+- [x] provide a catalog refinement fallback for sparse facets when appropriate
+- [x] move guided-section completion into subordinate collapsed Exploration status
+- [x] remove the large profile completion card from the main presentation hierarchy
+- [x] keep authority / activity side / role semantics separate in explainability
+- [x] add deterministic high/low/conflict/partial/unknown/source tests
 
-**Test before moving on:** inspect strong/high-coverage, strong/low-coverage, conflicting-source, and unexplored cases.
-
-**Exit condition:** a user can understand why a result exists and distinguish confidence from affinity.
+**Exit condition:** users can understand why a result exists and distinguish affinity from evidence coverage. ✅
 
 ### M7.11 — Final integration + polish
 
@@ -785,6 +792,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.10 — Explainability + coverage**
+**M7.11 — Final integration + polish**
 
-Turn the temporary M7.1/M7.2 inspection information into subordinate, human-readable profile explainability. Keep coverage/confidence separate from affinity, provide useful "why is this here?" detail without flooding the main profile, and remove or demote developer-facing inspection language where the real profile now has an equivalent user-facing surface.
+Treat the M7 profile as one finished experience: remove remaining obsolete/debug-era code and styles, verify hierarchy and copy across header/radar/headspaces/catalog/explainability, run mobile/partial/empty/full-profile passes, tighten accessibility/interactions, and regression-check M2–M6 behavior before marking the full aggregated profile milestone complete.
