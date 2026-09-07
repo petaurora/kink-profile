@@ -43,7 +43,6 @@ export type ProfileHeaderModel = {
 };
 
 const directionalFacetCoverageFloor = 12;
-const directionalFacetLeanThreshold = 20;
 const orientationLeanThreshold = 15;
 const bidirectionalAffinityFloor = 60;
 
@@ -84,77 +83,30 @@ function headlineStrength(affinity: number, coverage: number) {
   return affinity * Math.sqrt(clamp01(coverage / 100));
 }
 
-function aggregateDirectionalSide(
+function getPowerExchangeDirection(
   facets: readonly OverallFacetResult[],
-  direction: "receiving" | "giving",
 ) {
-  const directionalFacets = facets.filter((facet) => facet.direction);
-  const usable = directionalFacets.flatMap((facet) => {
-    const result = facet.direction?.[direction];
-    return result && result.affinity !== null && result.coverage > 0
-      ? [result]
-      : [];
-  });
-
-  const evidenceWeight = usable.reduce(
-    (sum, result) => sum + result.coverage / 100,
-    0,
-  );
-  const affinity =
-    evidenceWeight > 0
-      ? round1(
-          usable.reduce(
-            (sum, result) =>
-              sum + (result.affinity ?? 0) * (result.coverage / 100),
-            0,
-          ) / evidenceWeight,
-        )
-      : null;
-
-  const coverage =
-    directionalFacets.length > 0
-      ? round1(
-          (usable.reduce((sum, result) => sum + result.coverage, 0) /
-            directionalFacets.length),
-        )
-      : 0;
-
-  return { affinity, coverage };
-}
-
-function countDirectionalLeans(facets: readonly OverallFacetResult[]) {
-  let receiving = 0;
-  let giving = 0;
-
-  for (const facet of facets) {
-    if (!facet.direction) continue;
-
-    const left = facet.direction.receiving;
-    const right = facet.direction.giving;
-    if (
-      left.affinity === null ||
-      right.affinity === null ||
-      left.coverage < directionalFacetCoverageFloor ||
-      right.coverage < directionalFacetCoverageFloor
-    ) {
-      continue;
-    }
-
-    const difference = left.affinity - right.affinity;
-    if (difference >= directionalFacetLeanThreshold) receiving += 1;
-    if (difference <= -directionalFacetLeanThreshold) giving += 1;
-  }
-
-  return { receiving, giving };
+  return facets.find((facet) => facet.facetId === "power_exchange")?.direction;
 }
 
 export function deriveProfileOrientation(
   facets: readonly OverallFacetResult[],
 ): ProfileOrientation {
-  const receiving = aggregateDirectionalSide(facets, "receiving");
-  const giving = aggregateDirectionalSide(facets, "giving");
-  const receivingKnown = receiving.coverage >= directionalFacetCoverageFloor;
-  const givingKnown = giving.coverage >= directionalFacetCoverageFloor;
+  const powerExchange = getPowerExchangeDirection(facets);
+  const receiving = powerExchange?.receiving ?? {
+    affinity: null,
+    coverage: 0,
+  };
+  const giving = powerExchange?.giving ?? {
+    affinity: null,
+    coverage: 0,
+  };
+  const receivingKnown =
+    receiving.affinity !== null &&
+    receiving.coverage >= directionalFacetCoverageFloor;
+  const givingKnown =
+    giving.affinity !== null &&
+    giving.coverage >= directionalFacetCoverageFloor;
 
   let key: ProfileOrientationKey = "insufficient";
 
@@ -173,21 +125,8 @@ export function deriveProfileOrientation(
       const receivingAffinity = receiving.affinity ?? 0;
       const givingAffinity = giving.affinity ?? 0;
       const difference = receivingAffinity - givingAffinity;
-      const leans = countDirectionalLeans(facets);
 
       if (
-        receivingAffinity >= bidirectionalAffinityFloor &&
-        givingAffinity >= bidirectionalAffinityFloor &&
-        Math.abs(difference) <= 20
-      ) {
-        key = "bidirectional";
-      } else if (
-        leans.receiving > 0 &&
-        leans.giving > 0 &&
-        Math.abs(difference) < 25
-      ) {
-        key = "mixed";
-      } else if (
         difference >= orientationLeanThreshold &&
         receivingAffinity >= composedTraitAffinityFloor
       ) {
@@ -198,8 +137,8 @@ export function deriveProfileOrientation(
       ) {
         key = "giving";
       } else if (
-        receivingAffinity >= composedTraitAffinityFloor &&
-        givingAffinity >= composedTraitAffinityFloor
+        receivingAffinity >= bidirectionalAffinityFloor &&
+        givingAffinity >= bidirectionalAffinityFloor
       ) {
         key = "bidirectional";
       } else {
