@@ -1705,7 +1705,8 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   }
 
   .profile-identity-top h1 {
-    font-size: clamp(1.85rem, 9vw, 2.65rem);
+    font-size: clamp(1.75rem, 7.6vw, 2.35rem);
+    line-height: 1.04;
   }
 
   .profile-identity-top .secondary {
@@ -1750,6 +1751,18 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .profile-explanation {
   border-top: 1px solid var(--border-subtle);
+  scroll-margin-top: 18px;
+}
+
+.profile-explanation > summary:focus-visible,
+.profile-exploration-status > summary:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+.profile-explanation > summary:hover .profile-explanation-name > strong {
+  color: var(--accent-primary);
 }
 
 .profile-explanation summary {
@@ -1994,6 +2007,10 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 }
 
 @media (max-width: 560px) {
+  .profile-stack {
+    gap: 14px;
+  }
+
   .profile-explainability {
     padding: 22px 20px;
   }
