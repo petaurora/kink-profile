@@ -75,7 +75,7 @@ export function buildProfileShareSummary(
       affinity: axis.affinity,
       state: axis.state,
     })),
-    headspaces: roles.featuredSubmissiveHeadspaces.map((trait) => ({
+    headspaces: roles.featuredHeadspaces.map((trait) => ({
       id: trait.id,
       label: trait.label,
       affinity: trait.affinity,
