@@ -73,6 +73,13 @@ import { buildProfileTopInterests } from "./lib/profileTopInterests";
 import { buildProfileHardLimits } from "./lib/profileHardLimits";
 import { buildProfileInterestAreas } from "./lib/profileInterestAreas";
 import {
+  allCatalogDrilldown,
+  categoryDrilldown,
+  normalizeCatalogDrilldown,
+  preferenceDrilldown,
+  type CatalogDrilldownTarget,
+} from "./lib/catalogDrilldown";
+import {
   scoreDsSignals,
   scoreHeadspaces,
   scoreSignals,
@@ -109,6 +116,8 @@ function QuizGlyph({ name, size = 26 }: { name: string; size?: number }) {
 const signalDefinitionById = new Map(
   signalDefinitions.map((signal) => [signal.id, signal]),
 );
+
+const kinkCategoryIds = new Set(kinkCategories.map((category) => category.id));
 
 function evidenceSourceLabel(sourceType: CanonicalSignalSourceType) {
   switch (sourceType) {
@@ -466,6 +475,8 @@ export default function App() {
   const [showAllSubmissiveHeadspaces, setShowAllSubmissiveHeadspaces] =
     useState(false);
   const [showAllHardLimits, setShowAllHardLimits] = useState(false);
+  const [catalogDrilldown, setCatalogDrilldown] =
+    useState<CatalogDrilldownTarget>(() => allCatalogDrilldown("hub"));
 
   useEffect(() => {
     saveProfile(profile);
@@ -771,6 +782,22 @@ export default function App() {
     setScreen("profile");
   };
 
+  const openCatalog = (target: CatalogDrilldownTarget) => {
+    setCatalogDrilldown(
+      normalizeCatalogDrilldown(target, kinkCategoryIds),
+    );
+    setScreen("catalog");
+  };
+
+  const closeCatalog = () => {
+    if (catalogDrilldown.returnTo === "profile") {
+      openProfile();
+      return;
+    }
+
+    setScreen("hub");
+  };
+
   const openFacetDetail = (facetId: OverallFacetId) => {
     const element = document.getElementById(`facet-detail-${facetId}`);
     if (element instanceof HTMLDetailsElement) {
@@ -883,7 +910,10 @@ export default function App() {
                   Not Interested, Hard Limit, or N/A. Change anything whenever you want.
                 </p>
               </div>
-              <button className="secondary" onClick={() => setScreen("catalog")}>
+              <button
+                className="secondary"
+                onClick={() => openCatalog(allCatalogDrilldown("hub"))}
+              >
                 Browse preferences
               </button>
             </article>
@@ -894,7 +924,13 @@ export default function App() {
       {screen === "catalog" && (
         <KinkCatalogPreferences
           quizProfile={profile}
-          onClose={() => setScreen("hub")}
+          initialFocus={catalogDrilldown}
+          closeLabel={
+            catalogDrilldown.returnTo === "profile"
+              ? "Back to profile"
+              : "Back to hub"
+          }
+          onClose={closeCatalog}
           onPlayRanking={() => setScreen("ranking")}
         />
       )}
@@ -1209,17 +1245,22 @@ export default function App() {
             {profileInterestAreas.length > 0 ? (
               <div className="profile-interest-area-grid">
                 {profileInterestAreas.map((area) => (
-                  <section
+                  <button
+                    type="button"
                     className="profile-interest-area"
                     key={area.categoryId}
+                    onClick={() => openCatalog(categoryDrilldown(area.categoryId))}
                   >
-                    <strong>{area.label}</strong>
+                    <span>
+                      <strong>{area.label}</strong>
+                      <small>Explore category →</small>
+                    </span>
                     <p>
                       {area.representativeItems
                         .map((item) => item.label)
                         .join(" · ")}
                     </p>
-                  </section>
+                  </button>
                 ))}
               </div>
             ) : (
@@ -1228,6 +1269,37 @@ export default function App() {
                 items.
               </p>
             )}
+
+            <div className="profile-interest-area-actions">
+              <button
+                className="secondary compact"
+                onClick={() => openCatalog(allCatalogDrilldown())}
+              >
+                Explore all categories
+              </button>
+
+              <div className="profile-interest-shortcuts">
+                <span>Quick filters</span>
+                <button
+                  className="text-button"
+                  onClick={() => openCatalog(preferenceDrilldown("curious"))}
+                >
+                  Curious
+                </button>
+                <button
+                  className="text-button"
+                  onClick={() => openCatalog(preferenceDrilldown("unsure"))}
+                >
+                  Unsure
+                </button>
+                <button
+                  className="text-button"
+                  onClick={() => openCatalog(preferenceDrilldown("hard_limit"))}
+                >
+                  Hard Limits
+                </button>
+              </div>
+            </div>
           </article>
 
           <div className="profile-overview panel">
