@@ -1166,7 +1166,16 @@ The compact header intentionally omits percentages. Detailed percentages remain 
 
 ### Orientation semantics
 
-Orientation is derived across the **directional M7.2 facets**, not from one D/s score and not from a zero-sum receiving-vs-giving slider.
+Orientation is derived from the **Power Exchange facet's directional evidence**, not from every directional M7.2 facet and not from a zero-sum receiving-vs-giving slider.
+
+This boundary is intentional:
+
+- enjoying **giving pain** does not by itself mean Dominant
+- enjoying **giving restraint** does not by itself mean Dominant
+- enjoying **providing care** does not by itself mean Dominant
+- predator/prey or other directional activity preferences do not automatically define D/s orientation
+
+Those directional signals remain meaningful inside their own facets and explainability views, but they do not vote on the Dominant/Submissive label.
 
 Possible compact user-facing results:
 
@@ -1178,9 +1187,9 @@ Possible compact user-facing results:
 
 The internal evidence model still uses receiving/giving direction keys because they are useful, neutral plumbing across different facet types. Those terms should not leak into normal profile copy.
 
-Strong evidence on both sides can coexist. When both are meaningfully supported, the header says **Dominant + submissive** rather than assigning a "switch" identity.
+Strong Power Exchange evidence on both sides can coexist. When both are meaningfully supported, the header says **Dominant + submissive** rather than assigning a "switch" identity.
 
-When different directional facets materially lean opposite ways, the header uses **Context-dependent**.
+**Context-dependent** is reserved for ambiguous/mixed Power Exchange evidence rather than disagreement between unrelated activity facets.
 
 ### User-facing terminology boundary
 
