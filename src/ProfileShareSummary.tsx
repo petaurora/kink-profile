@@ -179,7 +179,7 @@ export function ProfileShareSummary({
 }) {
   return (
     <article className="share-summary" data-share-summary-version={model.version}>
-      <header className="share-summary-header">
+      <header className="share-summary-header" data-share-block>
         <div>
           <p className="share-kicker">Kink Profile</p>
           <h2>{model.displayName}</h2>
@@ -192,14 +192,18 @@ export function ProfileShareSummary({
       </header>
 
       {model.strongestThemes.length > 0 && (
-        <div className="share-theme-row" aria-label="Strongest themes">
+        <div
+          className="share-theme-row"
+          aria-label="Strongest themes"
+          data-share-block
+        >
           {model.strongestThemes.map((theme) => (
             <span key={theme}>{theme}</span>
           ))}
         </div>
       )}
 
-      <section className="share-overall-section">
+      <section className="share-overall-section" data-share-block>
         <div className="share-section-heading">
           <span>Overall shape</span>
           <small>
@@ -209,7 +213,7 @@ export function ProfileShareSummary({
         <ShareRadar axes={model.radarAxes} />
       </section>
 
-      <div className="share-two-column">
+      <div className="share-two-column" data-share-block>
         <section className="share-section">
           <div className="share-section-heading">
             <span>Headspaces</span>
@@ -233,7 +237,7 @@ export function ProfileShareSummary({
         </section>
       </div>
 
-      <section className="share-section">
+      <section className="share-section" data-share-block>
         <div className="share-section-heading">
           <span>Top Overall</span>
           <small>Directly evidenced interests</small>
@@ -241,8 +245,11 @@ export function ProfileShareSummary({
 
         {model.topInterests.length > 0 ? (
           <ol className="share-interest-list">
-            {model.topInterests.map((interest) => (
+            {model.topInterests.map((interest, index) => (
               <li key={interest.catalogId}>
+                <span className="share-interest-rank">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <span>{interest.label}</span>
               </li>
             ))}
@@ -254,7 +261,29 @@ export function ProfileShareSummary({
         )}
       </section>
 
-      <section className="share-section share-limits-section">
+      {model.interestAreas.length > 0 && (
+        <section className="share-section" data-share-block>
+          <div className="share-section-heading">
+            <span>Interest Areas</span>
+            <small>Strongest directly evidenced categories</small>
+          </div>
+
+          <div className="share-area-grid">
+            {model.interestAreas.map((area) => (
+              <article className="share-area-card" key={area.categoryId}>
+                <strong>{area.label}</strong>
+                <div className="share-area-items">
+                  {area.items.map((item) => (
+                    <span key={item.catalogId}>{item.label}</span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="share-section share-limits-section" data-share-block>
         <div className="share-section-heading">
           <span>Hard Limits</span>
           <small>Explicit boundaries only</small>
@@ -271,7 +300,7 @@ export function ProfileShareSummary({
         )}
       </section>
 
-      <footer className="share-summary-footer">
+      <footer className="share-summary-footer" data-share-block>
         Generated {new Date(model.generatedAt).toLocaleDateString()}
       </footer>
     </article>
