@@ -410,7 +410,7 @@ export const roleHeadspaces: ComposedDefinition[] = [
   },
 ];
 
-export const receivingRoleHeadspaceIds = [
+export const selfPositionedRoleHeadspaceIds = [
   "pet",
   "slave",
   "little",
@@ -422,7 +422,7 @@ export const receivingRoleHeadspaceIds = [
   "property_object",
 ] as const;
 
-export const givingRoleHeadspaceIds = [
+export const partnerPositionedRoleHeadspaceIds = [
   "owner_handler",
   "caregiver",
   "brat_tamer",
