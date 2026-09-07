@@ -396,7 +396,7 @@ The share-summary v2 model includes:
 - configured profile display name
 - M7.3 human-readable summary + Orientation
 - M7.4 nine-axis overall radar with unknown preserved as unknown
-- M7.5 top submissive-oriented Headspaces
+- M7.5 top Headspaces
 - M7.5 top Dynamic Modes
 - M7.6 Top Overall directly evidenced interests
 - M7.8 Interest Areas using the same stable category relevance/representative-item selector as the main profile
