@@ -809,7 +809,9 @@ export default function App() {
       element.open = true;
       element.scrollIntoView({ behavior: "smooth", block: "start" });
       window.setTimeout(() => {
-        element.querySelector("summary")?.focus({ preventScroll: true });
+        element
+          .querySelector<HTMLElement>("summary")
+          ?.focus({ preventScroll: true });
       }, 250);
     }
   };
