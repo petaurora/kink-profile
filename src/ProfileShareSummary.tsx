@@ -149,6 +149,26 @@ function ShareRadar({ axes }: { axes: readonly ShareRadarAxis[] }) {
   );
 }
 
+function TraitChips({
+  items,
+}: {
+  items: ProfileShareSummaryModel["headspaces"];
+}) {
+  if (items.length === 0) {
+    return <strong className="share-trait-emerging">Still emerging</strong>;
+  }
+
+  return (
+    <div className="share-trait-chips">
+      {items.map((item) => (
+        <span className="share-trait-chip" key={item.id}>
+          <strong>{item.label}</strong>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function TraitList({
   items,
   emptyCopy,
@@ -177,65 +197,109 @@ export function ProfileShareSummary({
 }: {
   model: ProfileShareSummaryModel;
 }) {
+  const hasCompleteShape =
+    model.radarAxes.length > 0 &&
+    model.radarAxes.every((axis) => axis.state !== "unknown");
+
   return (
     <article className="share-summary" data-share-summary-version={model.version}>
-      <header className="share-summary-header">
+      <header className="share-profile-header">
         <div>
-          <p className="share-kicker">Kink Profile</p>
-          <h2>{model.displayName}</h2>
-          <p className="share-summary-copy">{model.summary}</p>
+          <p className="share-kicker">Kink profile · {model.displayName}</p>
+          <h2>{model.summary}</h2>
         </div>
-        <div className="share-orientation">
-          <span>Orientation</span>
-          <strong>{model.orientation}</strong>
+
+        <div className="share-profile-trait-grid">
+          <section className="share-trait-group">
+            <span className="share-trait-label">Orientation</span>
+            <strong className="share-orientation">{model.orientation}</strong>
+          </section>
+
+          <section className="share-trait-group">
+            <span className="share-trait-label">Headspaces</span>
+            <TraitChips items={model.headspaces} />
+          </section>
+
+          <section className="share-trait-group">
+            <span className="share-trait-label">Dynamic modes</span>
+            <TraitChips items={model.dynamicModes} />
+          </section>
         </div>
       </header>
 
-      {model.strongestThemes.length > 0 && (
-        <div className="share-theme-row" aria-label="Strongest themes">
-          {model.strongestThemes.map((theme) => (
-            <span key={theme}>{theme}</span>
-          ))}
-        </div>
-      )}
-
       <section className="share-overall-section">
-        <div className="share-section-heading">
-          <span>Overall shape</span>
-          <small>
-            Unknown areas stay unscored until there is enough evidence.
-          </small>
+        <div className="share-panel-heading">
+          <div>
+            <p className="share-kicker">Overall profile</p>
+            <h3>The shape of the profile.</h3>
+          </div>
+          <p>
+            Each axis is one broad theme. Unexplored axes stay blank instead of
+            being treated as zero.
+          </p>
         </div>
+
         <ShareRadar axes={model.radarAxes} />
+
+        <div className="share-overall-footer">
+          <div>
+            <span className="share-trait-label">Strongest themes</span>
+            {model.strongestThemes.length > 0 ? (
+              <div className="share-theme-row" aria-label="Strongest themes">
+                {model.strongestThemes.map((theme) => (
+                  <span key={theme}>{theme}</span>
+                ))}
+              </div>
+            ) : (
+              <strong className="share-trait-emerging">Still emerging</strong>
+            )}
+          </div>
+
+          {!hasCompleteShape && (
+            <p className="share-partial-note">
+              Some facets are still emerging. Blank spokes remain genuinely
+              unknown; outlined points mark results with limited evidence.
+            </p>
+          )}
+        </div>
       </section>
 
       <div className="share-two-column">
         <section className="share-section">
           <div className="share-section-heading">
-            <span>Headspaces</span>
+            <div>
+              <p className="share-kicker">Where this profile tends to land</p>
+              <h3>Headspaces</h3>
+            </div>
             <small>Strongest submissive-oriented results</small>
           </div>
           <TraitList
             items={model.headspaces}
-            emptyCopy="Still emerging."
+            emptyCopy="Headspaces are still emerging."
           />
         </section>
 
         <section className="share-section">
           <div className="share-section-heading">
-            <span>Dynamic modes</span>
+            <div>
+              <p className="share-kicker">How it tends to feel</p>
+              <h3>Dynamic modes</h3>
+            </div>
             <small>Strongest underlying dynamics</small>
           </div>
           <TraitList
             items={model.dynamicModes}
-            emptyCopy="Still emerging."
+            emptyCopy="Dynamic modes are still emerging."
           />
         </section>
       </div>
 
       <section className="share-section">
         <div className="share-section-heading">
-          <span>Top Overall</span>
+          <div>
+            <p className="share-kicker">Concrete preferences</p>
+            <h3>Top Overall</h3>
+          </div>
           <small>Directly evidenced interests</small>
         </div>
 
@@ -256,7 +320,10 @@ export function ProfileShareSummary({
 
       <section className="share-section share-limits-section">
         <div className="share-section-heading">
-          <span>Hard Limits</span>
+          <div>
+            <p className="share-kicker">Boundaries</p>
+            <h3>Hard Limits</h3>
+          </div>
           <small>Explicit boundaries only</small>
         </div>
 
