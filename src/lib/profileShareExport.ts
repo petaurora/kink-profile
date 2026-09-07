@@ -1,3 +1,4 @@
+import html2canvas from "html2canvas";
 import type { ProfileShareSummaryModel } from "./profileShareSummary";
 
 export type ShareExportFormat = "png" | "html" | "pdf";
@@ -263,52 +264,6 @@ export function collectDocumentCss(doc: Document = document) {
   return css.join("\n");
 }
 
-function inlineComputedStyles(source: Element, clone: Element) {
-  const computed = getComputedStyle(source);
-
-  if (clone instanceof HTMLElement || clone instanceof SVGElement) {
-    for (const property of Array.from(computed)) {
-      clone.style.setProperty(
-        property,
-        computed.getPropertyValue(property),
-        computed.getPropertyPriority(property),
-      );
-    }
-
-    clone.style.setProperty("animation", "none");
-    clone.style.setProperty("transition", "none");
-  }
-
-  const sourceChildren = Array.from(source.children);
-  const cloneChildren = Array.from(clone.children);
-
-  sourceChildren.forEach((child, index) => {
-    const clonedChild = cloneChildren[index];
-    if (clonedChild) inlineComputedStyles(child, clonedChild);
-  });
-}
-
-async function loadSvgImage(svg: string) {
-  const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-
-  try {
-    const image = new Image();
-    image.decoding = "async";
-
-    await new Promise<void>((resolve, reject) => {
-      image.onload = () => resolve();
-      image.onerror = () => reject(new Error("The share summary could not be rendered."));
-      image.src = url;
-    });
-
-    return image;
-  } finally {
-    // The image has decoded before this point, so its object URL is no longer needed.
-    URL.revokeObjectURL(url);
-  }
-}
-
 export async function renderShareElementToCanvas(
   element: HTMLElement,
   requestedScale = exportScale,
@@ -335,35 +290,18 @@ export async function renderShareElementToCanvas(
     throw new Error("The share summary is too large to render safely.");
   }
 
-  const clone = element.cloneNode(true) as HTMLElement;
-  inlineComputedStyles(element, clone);
-  clone.style.margin = "0";
-  clone.style.width = `${width}px`;
-  clone.style.maxWidth = "none";
-
-  const serialized = new XMLSerializer().serializeToString(clone);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-<foreignObject x="0" y="0" width="${width}" height="${height}">
-<div xmlns="http://www.w3.org/1999/xhtml">${serialized}</div>
-</foreignObject>
-</svg>`;
-
-  const image = await loadSvgImage(svg);
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.ceil(width * safeScale);
-  canvas.height = Math.ceil(height * safeScale);
-
-  const context = canvas.getContext("2d");
-  if (!context) {
-    throw new Error("This browser could not create an export canvas.");
-  }
-
-  const background = getComputedStyle(element).backgroundColor || "#211B4D";
-  context.fillStyle = background;
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-  return canvas;
+  return html2canvas(element, {
+    backgroundColor: "#211B4D",
+    scale: safeScale,
+    logging: false,
+    useCORS: false,
+    allowTaint: false,
+    imageTimeout: 0,
+    removeContainer: true,
+    width,
+    height,
+    windowWidth: Math.max(560, width),
+  });
 }
 
 function downloadBlob(blob: Blob, filename: string) {
