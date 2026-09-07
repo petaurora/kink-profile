@@ -113,7 +113,7 @@ describe("M7.2 overall facet scoring", () => {
     expect(result.coverage).toBe(47.6);
   });
 
-  it("preserves receiving and giving power-exchange direction instead of collapsing them into a slider", () => {
+  it("keeps delegated responsibility neutral in the power-exchange side breakdown", () => {
     const result = facet(
       scoreOverallFacets([
         canonicalSignal("receiving_control", 90),
@@ -129,7 +129,7 @@ describe("M7.2 overall facet scoring", () => {
     expect(result.coverage).toBe(100);
     expect(result.direction?.receiving.affinity).toBe(81.4);
     expect(result.direction?.receiving.coverage).toBe(100);
-    expect(result.direction?.giving.affinity).toBe(24.4);
+    expect(result.direction?.giving.affinity).toBe(20);
     expect(result.direction?.giving.coverage).toBe(100);
   });
 
