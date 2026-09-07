@@ -67,7 +67,7 @@ describe("M7.6 Top Overall direct-evidence aggregation", () => {
       "like",
       "curious",
     ]);
-    expect(top.map((item) => item.aggregateScore)).toEqual([100, 82, 65]);
+    expect(top.map((item) => item.aggregateScore)).toEqual([80.3, 69.4, 59.1]);
   });
 
   it("includes Overall This-or-That evidence even without an explicit positive state", () => {
@@ -91,9 +91,9 @@ describe("M7.6 Top Overall direct-evidence aggregation", () => {
       "three",
     ]);
     expect(top.map((item) => item.aggregateScore)).toEqual([
-      100,
-      77.5,
-      55,
+      75,
+      63.1,
+      52.3,
     ]);
   });
 
@@ -119,6 +119,45 @@ describe("M7.6 Top Overall direct-evidence aggregation", () => {
       }),
     );
     expect(top[1].catalogId).toBe("explicit-only");
+  });
+
+  it("does not let alphabetic Love-only items outrank well-refined Overall favorites", () => {
+    const rankedLove = Array.from({ length: 10 }, (_, index) =>
+      result(
+        `ranked-${index + 1}`,
+        index === 0
+          ? "Edging"
+          : index === 1
+            ? "Collaring"
+            : `Ranked ${String(index + 1).padStart(2, "0")}`,
+        {
+          explicitState: "love",
+          overallRank: {
+            rank: index + 1,
+            comparisons: 8,
+            confidence: 1,
+          },
+        },
+      ),
+    );
+
+    const top = buildProfileTopInterests(
+      view([
+        result("anal-sex", "Anal sex", { explicitState: "love" }),
+        result("anticipation-play", "Anticipation play", {
+          explicitState: "love",
+        }),
+        ...rankedLove,
+      ]),
+    );
+
+    expect(top.slice(0, 2).map((item) => item.label)).toEqual([
+      "Edging",
+      "Collaring",
+    ]);
+    expect(
+      top.find((item) => item.catalogId === "anal-sex")?.aggregateScore,
+    ).toBeLessThan(top[1].aggregateScore);
   });
 
   it("does not allow quiz-derived inference to place an item into Top Overall", () => {
