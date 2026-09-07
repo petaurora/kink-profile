@@ -17,7 +17,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M4 | ✅ Complete | add Bondage & Discipline |
 | M5 | ✅ Complete | add Sadism & Masochism |
 | M6 | ✅ Complete | integrated, source-aware, hardened kink catalog |
-| M7 | 🚧 In progress | build the full aggregated profile |
+| M7 | ✅ Complete | full source-aware aggregated profile |
 | M8 | Optional | add quiz depth/adaptive follow-ups |
 | M9 | 🚧 In progress | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
@@ -185,7 +185,7 @@ See [docs/m3-headspaces-direction.md](docs/m3-headspaces-direction.md) for the i
 - [x] calculate role/headspace composition + coverage
 - [x] calculate dynamic-mode composition + coverage
 - [x] render roles/headspaces as primary ranked results
-- [x] split receiving/submissive and giving/dominant headspace radars
+- [x] split self-positioned and partner-positioned headspace radars without treating the display groups as D/s orientation
 - [x] add an underlying dynamic-modes radar
 - [x] render dynamic modes as explanatory ranked results
 - [x] version the expanded M3 taxonomy as quiz version 3
@@ -443,7 +443,7 @@ C7 hardens recommendation behavior around that existing model:
 
 ---
 
-## M7 — Full Overall Profile
+## M7 — Full Overall Profile ✅
 
 **Goal:** turn the independent section + catalog evidence built through M6 into one coherent, source-aware profile.
 
@@ -495,7 +495,7 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 - [x] preserve manual catalog + ranking evidence across quiz retakes
 - [x] exclude inferred catalog affinity/resolved views from signal input
 - [x] add deterministic aggregation tests
-- [x] add a temporary/dev inspection surface showing canonical signal score, coverage, and per-source contributions
+- [x] validate canonical signal score, coverage, and per-source contributions through the temporary inspection surface; remove that surface in M7.10/M7.11
 
 **Exit condition:** canonical SignalIds can be inspected and trusted independently of the final profile UI. ✅
 
@@ -510,7 +510,7 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 - [x] preserve receiving/giving metadata for directional facets
 - [x] retain source provenance through contributing components
 - [x] add deterministic composition tests
-- [x] add a temporary facet inspection surface for real-data validation
+- [x] validate real-data facet composition through the temporary facet inspection surface; remove that surface in M7.10/M7.11
 
 **Locked facets:** Power Exchange; Structure & Protocol; Ownership & Belonging; Service & Devotion; Care & Nurture; Play & Resistance; Primal & Instinctive; Restraint & Physical Control; Intensity & Pain.
 
@@ -546,7 +546,7 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 - [x] render incomplete profiles as open known-value runs rather than a fabricated closed polygon
 - [x] show the M7.3 strongest-theme summary beneath the radar
 - [x] retain directional metadata for future dominant/submissive radar modes
-- [x] add interactive axis/theme drill-down into the M7.2 facet inspector
+- [x] add interactive axis/theme drill-down, finalized as M7.10 user-facing theme explainability
 - [x] add deterministic full/partial/sparse radar tests
 
 **Exit condition:** the overall radar accurately reflects M7.2 facets and incomplete-profile behavior. ✅
@@ -655,19 +655,22 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Exit condition:** users can understand why a result exists and distinguish affinity from evidence coverage. ✅
 
-### M7.11 — Final integration + polish
+### M7.11 — Final integration + polish ✅
 
 **Purpose:** remove implementation scaffolding and make the full M7 experience coherent.
 
-- [ ] remove or appropriately gate temporary M7.1 inspection UI
-- [ ] verify profile hierarchy across all M7 sections
-- [ ] responsive/mobile pass
-- [ ] empty/partial/full-profile state pass
-- [ ] accessibility and interaction cleanup
-- [ ] regression-test M2–M6 section-local results and catalog behavior
-- [ ] final documentation cleanup
+- [x] remove remaining inspection-era runtime naming/scaffolding
+- [x] verify final profile hierarchy across header, radar, roles/modes, direct interests, limits, Interest Areas, and explainability
+- [x] tighten mobile headline scale and section density
+- [x] verify empty/partial/full-profile behavior with deterministic integration tests
+- [x] improve radar/explanation keyboard and focus behavior
+- [x] fix profile → catalog → profile refinement routing
+- [x] regression-run M2–M6 section-local scoring, catalog, ranking, storage, and evidence tests in the full CI suite
+- [x] clean stale M7/M3 documentation and semantic wording
+- [x] mark M7 complete
 
-**Exit condition:** M7 reads as one coherent profile experience while preserving the source-aware architecture underneath.
+**Exit condition:** M7 reads as one coherent profile experience while preserving the source-aware architecture underneath. ✅
+
 ## M8 — Quiz Depth & Adaptive Follow-ups
 
 **Goal:** support deeper exploration without forcing everyone through a giant assessment.
@@ -792,6 +795,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.11 — Final integration + polish**
+**M7 is complete.**
 
-Treat the M7 profile as one finished experience: remove remaining obsolete/debug-era code and styles, verify hierarchy and copy across header/radar/headspaces/catalog/explainability, run mobile/partial/empty/full-profile passes, tighten accessibility/interactions, and regression-check M2–M6 behavior before marking the full aggregated profile milestone complete.
+The next product work should be chosen intentionally rather than treated as another required M7 slice. Existing roadmap options include optional M8 adaptive/deeper quizzes and the already-partial M9 settings/profile-lifecycle work.
