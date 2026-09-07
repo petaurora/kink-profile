@@ -1583,21 +1583,90 @@ Deterministic tests cover category grouping, top-3 representative selection, bre
 
 **Exit condition:** category-level themes are useful without making the main profile busy. ✅
 
-## M7.9 — Explore / catalog drill-down
+## M7.9 — Explore / catalog drill-down ✅
 
-### Scope
+M7.9 connects the compact profile summary back into the existing editable catalog instead of building a second category-detail system.
 
-- provide a separate Explore all categories experience
-- expose category details, explicit states, and ranking context
-- add useful state-filter shortcuts into the editable catalog
-- support direct navigation to states such as Curious / Like / Love / Unsure where appropriate
-- preserve the existing catalog as the editing surface rather than creating a second preference editor
+### Interest Area drill-down
 
-### Test gate
+Each visible Interest Area is now interactive.
 
-Follow profile → category/state drill-down → catalog edit → profile refresh and verify navigation/data continuity.
+Selecting one:
 
-**Exit condition:** the user can move from profile summary to editable catalog detail without expanding all categories inline.
+1. opens the existing catalog
+2. preselects that category
+3. expands that one category
+4. preserves the catalog's existing explicit preference editor
+5. preserves category rank, Overall rank, historical pairwise, and quiz-derived explainability already available on each catalog row
+6. changes the catalog return action to **Back to profile**
+
+This gives the category summary a real detail path without rendering all 35 categories inline on the profile.
+
+### Explore all categories
+
+The Interest Areas panel includes **Explore all categories**.
+
+This opens the normal unfiltered catalog from the profile and returns to the profile when closed.
+
+Normal catalog entry from the hub still returns to the hub.
+
+The return destination is therefore explicit routing state rather than being inferred from browser history.
+
+### Compact state shortcuts
+
+The Interest Areas panel also exposes small direct shortcuts for:
+
+- **Curious**
+- **Unsure**
+- **Hard Limits**
+
+Each shortcut opens the existing catalog with only that explicit state selected.
+
+These are navigation/filter helpers only. They do not create, rank, or alter preferences.
+
+Users can immediately edit the visible items using the existing catalog controls.
+
+### Focused catalog context
+
+When the catalog opens with a category or state focus, it shows a small **Focused catalog view** bar containing the active filters.
+
+The user can choose **Explore full catalog** to clear the drill-down and return to the normal full catalog without leaving the screen.
+
+The standard Category and Preference selects remain editable, so the focused view is not a locked special mode.
+
+### Routing safety
+
+M7.9 uses typed drill-down targets for:
+
+- category focus
+- preference-state focus
+- all-catalog entry
+- return destination
+
+Category ids are normalized against the generated catalog metadata before navigation. A stale/unknown category id is dropped rather than producing a broken empty special route.
+
+### Architecture boundary
+
+M7.9 reuses `KinkCatalogPreferences` as the only direct editing surface.
+
+No second profile-specific preference editor is introduced.
+
+No new preference or ranking semantics are created.
+
+### Test gate ✅
+
+Deterministic tests cover:
+
+- category drill-down target
+- Curious / Unsure / Hard Limit state targets
+- Explore all categories target
+- hub vs profile return destination
+- stale category-id normalization
+- valid-category preservation and default filter behavior
+
+Build/preview validation covers the actual profile → focused catalog → edit → profile navigation surface.
+
+**Exit condition:** users can move from profile summary to editable catalog detail without cluttering the main profile. ✅
 
 ## M7.10 — Explainability + coverage
 
