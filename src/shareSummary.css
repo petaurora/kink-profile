@@ -190,7 +190,7 @@
 }
 
 .share-radar-score {
-  fill: color-mix(in srgb, var(--accent-primary) 16%, transparent);
+  fill: rgba(201, 73, 172, .16);
   stroke: var(--accent-primary);
   stroke-width: 2;
 }
@@ -376,7 +376,6 @@
   left: -10000px;
   top: 0;
   width: 560px;
-  opacity: 0;
   pointer-events: none;
   z-index: -1;
 }
