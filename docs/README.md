@@ -23,7 +23,7 @@ This folder contains the product and scoring decisions that should guide impleme
    The implemented M5 contract: directional pain/intensity/endurance/challenge signals, 26-question bank, weights, and receiving/giving S/M radars.
 
 7. [M6 Catalog Integration](m6-catalog-integration.md)  
-   The implemented M6 contract: C1 stable IDs + C2 mappings + C3 direct preference/table state + C4 source-aware evidence convergence + C5 ranking hardening + C6 catalog result integration + C7 affinity/recommendation hardening. M7 Full Overall Profile is next.
+   The implemented M6 contract: C1 stable IDs + C2 mappings + C3 direct preference/table state + C4 source-aware evidence convergence + C5 ranking hardening + C6 catalog result integration + C7 affinity/recommendation hardening. M7 now consumes this boundary.
 
 8. [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)  
    The implemented C3 contract: shared Catalog-ID state, catalog-profile storage/migration, searchable preference table/list, ranking interconnection, eligibility, tests, and the explicit C4 handoff.
@@ -38,7 +38,7 @@ This folder contains the product and scoring decisions that should guide impleme
     The reusable scoring architecture behind the core quizzes, catalog affinity, source-aware recomputation, and the C7 recommendation-suppression/no-feedback boundaries.
 
 12. [Overall Profile Aggregation](overall-profile-aggregation.md)  
-    The active M7 implementation contract, now split into M7.1–M7.11 testable slices: canonical aggregation/inspection, facets, header, radar, role/mode summaries, Top Overall, limits, Interest Areas, catalog drill-down, explainability, and final polish.
+    The completed M7 contract: canonical aggregation, nine broad facets, profile header/radar, role/mode summaries, Top Overall, limits, Interest Areas, catalog drill-down, explainability, and final integration.
 
 13. [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md)  
     The planned Settings/profile-lifecycle contract: display name, selective reset, complete versioned backup/restore, share-summary presentation, and PNG/HTML/PDF output.
