@@ -400,8 +400,7 @@ The first share-summary model includes:
 - M7.5 top Dynamic Modes
 - M7.6 Top Overall directly evidenced interests
 - explicit Hard Limits from the stable C6 catalog exclusion channel
-
-Interest Areas are intentionally deferred from the v1 summary until M7.8 locks category relevance/selection semantics. M9 must not invent a parallel category-ranking algorithm merely to fill the export.
+- M7.8 Interest Areas using the same stable category relevance/representative-item output as the profile
 
 The share model contains only presentation-ready data. Raw answers, comparison history, source evidence IDs, browser-storage metadata, and internal provenance are not copied into the model.
 
@@ -478,6 +477,8 @@ Future selective include/exclude controls can be added if real usage demonstrate
 - [x] the share view is visually coherent without the surrounding app chrome
 - [x] private implementation/provenance details are absent
 - [x] Hard Limits remain semantically distinct from interests
+- [x] Interest Areas reuse M7.8 output rather than inventing a separate share-only category rank
+- [x] share hierarchy mirrors the current M7 profile while omitting app-only controls
 - [x] incomplete profiles render honestly rather than filling unknowns with zeroes
 - [x] the same content contract can feed all M9.6 formats
 
