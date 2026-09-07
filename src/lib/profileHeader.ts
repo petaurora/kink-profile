@@ -1,7 +1,5 @@
 import {
   dynamicModes,
-  givingRoleHeadspaceIds,
-  receivingRoleHeadspaceIds,
   roleHeadspaces,
   type ComposedDefinition,
 } from "../data/headspacesQuiz";
@@ -11,8 +9,8 @@ import type { OverallFacetResult } from "./overallProfileFacets";
 import type { CanonicalSignalResult } from "./overallProfileSignals";
 
 export type ProfileOrientationKey =
-  | "receiving"
-  | "giving"
+  | "submissive"
+  | "dominant"
   | "bidirectional"
   | "mixed"
   | "insufficient";
@@ -20,10 +18,10 @@ export type ProfileOrientationKey =
 export type ProfileOrientation = {
   key: ProfileOrientationKey;
   label: string;
-  receivingAffinity: number | null;
-  receivingCoverage: number;
-  givingAffinity: number | null;
-  givingCoverage: number;
+  submissiveAffinity: number | null;
+  submissiveCoverage: number;
+  dominantAffinity: number | null;
+  dominantCoverage: number;
 };
 
 export type ProfileHeadlineTrait = {
@@ -31,7 +29,6 @@ export type ProfileHeadlineTrait = {
   label: string;
   affinity: number;
   coverage: number;
-  direction?: "receiving" | "giving";
 };
 
 export type ProfileHeaderModel = {
@@ -50,9 +47,6 @@ const headlineFacetCoverageFloor = 12;
 const headlineFacetAffinityFloor = 45;
 const composedTraitCoverageFloor = 20;
 const composedTraitAffinityFloor = 55;
-
-const receivingHeadspaceIds = new Set<string>(receivingRoleHeadspaceIds);
-const givingHeadspaceIds = new Set<string>(givingRoleHeadspaceIds);
 
 const facetSummaryPhrases: Readonly<Record<OverallFacetId, string>> = {
   power_exchange: "power exchange",
@@ -83,62 +77,151 @@ function headlineStrength(affinity: number, coverage: number) {
   return affinity * Math.sqrt(clamp01(coverage / 100));
 }
 
-function getPowerExchangeDirection(
-  facets: readonly OverallFacetResult[],
+type AuthoritySideSignal = {
+  signalId: SignalId;
+  weight: number;
+};
+
+const authorityQuizId = "dominance-submission";
+
+const submissiveAuthoritySignals: readonly AuthoritySideSignal[] = [
+  { signalId: "receiving_control", weight: 1 },
+  { signalId: "responsibility_transfer", weight: 0.9 },
+  { signalId: "obedience", weight: 0.65 },
+];
+
+const dominantAuthoritySignals: readonly AuthoritySideSignal[] = [
+  { signalId: "giving_control", weight: 1 },
+];
+
+function authorityQuizSignal(
+  canonicalSignals: readonly CanonicalSignalResult[],
+  signalId: SignalId,
 ) {
-  return facets.find((facet) => facet.facetId === "power_exchange")?.direction;
+  const signal = canonicalSignals.find((item) => item.signalId === signalId);
+  const contributions =
+    signal?.channels
+      .find((channel) => channel.sourceType === "quiz")
+      ?.contributions.filter(
+        (contribution) => contribution.sourceId === authorityQuizId,
+      ) ?? [];
+
+  if (contributions.length === 0) {
+    return { affinity: null as number | null, coverage: 0 };
+  }
+
+  const evidenceWeight = contributions.reduce(
+    (sum, contribution) => sum + clamp01(contribution.coverage / 100),
+    0,
+  );
+  if (evidenceWeight <= 0) {
+    return { affinity: null as number | null, coverage: 0 };
+  }
+
+  const affinity = round1(
+    contributions.reduce(
+      (sum, contribution) =>
+        sum +
+        clampPercent(contribution.affinity) *
+          clamp01(contribution.coverage / 100),
+      0,
+    ) / evidenceWeight,
+  );
+
+  let uncovered = 1;
+  for (const contribution of contributions) {
+    uncovered *= 1 - clamp01(contribution.coverage / 100);
+  }
+
+  return {
+    affinity,
+    coverage: round1((1 - uncovered) * 100),
+  };
+}
+
+function scoreAuthoritySide(
+  canonicalSignals: readonly CanonicalSignalResult[],
+  definitions: readonly AuthoritySideSignal[],
+) {
+  let totalWeight = 0;
+  let evidenceWeight = 0;
+  let weightedAffinity = 0;
+
+  for (const definition of definitions) {
+    totalWeight += definition.weight;
+    const signal = authorityQuizSignal(
+      canonicalSignals,
+      definition.signalId,
+    );
+    if (signal.affinity === null || signal.coverage <= 0) continue;
+
+    const coveredWeight =
+      definition.weight * clamp01(signal.coverage / 100);
+    evidenceWeight += coveredWeight;
+    weightedAffinity += signal.affinity * coveredWeight;
+  }
+
+  return {
+    affinity:
+      evidenceWeight > 0
+        ? round1(weightedAffinity / evidenceWeight)
+        : null,
+    coverage:
+      totalWeight > 0
+        ? round1((evidenceWeight / totalWeight) * 100)
+        : 0,
+  };
 }
 
 export function deriveProfileOrientation(
-  facets: readonly OverallFacetResult[],
+  canonicalSignals: readonly CanonicalSignalResult[],
 ): ProfileOrientation {
-  const powerExchange = getPowerExchangeDirection(facets);
-  const receiving = powerExchange?.receiving ?? {
-    affinity: null,
-    coverage: 0,
-  };
-  const giving = powerExchange?.giving ?? {
-    affinity: null,
-    coverage: 0,
-  };
-  const receivingKnown =
-    receiving.affinity !== null &&
-    receiving.coverage >= directionalFacetCoverageFloor;
-  const givingKnown =
-    giving.affinity !== null &&
-    giving.coverage >= directionalFacetCoverageFloor;
+  const submissive = scoreAuthoritySide(
+    canonicalSignals,
+    submissiveAuthoritySignals,
+  );
+  const dominant = scoreAuthoritySide(
+    canonicalSignals,
+    dominantAuthoritySignals,
+  );
+  const submissiveKnown =
+    submissive.affinity !== null &&
+    submissive.coverage >= directionalFacetCoverageFloor;
+  const dominantKnown =
+    dominant.affinity !== null &&
+    dominant.coverage >= directionalFacetCoverageFloor;
 
   let key: ProfileOrientationKey = "insufficient";
 
-  if (receivingKnown || givingKnown) {
-    if (receivingKnown && !givingKnown) {
+  if (submissiveKnown || dominantKnown) {
+    if (submissiveKnown && !dominantKnown) {
       key =
-        (receiving.affinity ?? 0) >= composedTraitAffinityFloor
-          ? "receiving"
+        (submissive.affinity ?? 0) >= composedTraitAffinityFloor
+          ? "submissive"
           : "mixed";
-    } else if (!receivingKnown && givingKnown) {
+    } else if (!submissiveKnown && dominantKnown) {
       key =
-        (giving.affinity ?? 0) >= composedTraitAffinityFloor
-          ? "giving"
+        (dominant.affinity ?? 0) >= composedTraitAffinityFloor
+          ? "dominant"
           : "mixed";
     } else {
-      const receivingAffinity = receiving.affinity ?? 0;
-      const givingAffinity = giving.affinity ?? 0;
-      const difference = receivingAffinity - givingAffinity;
+      const submissiveAffinity = submissive.affinity ?? 0;
+      const dominantAffinity = dominant.affinity ?? 0;
+      const difference = submissiveAffinity - dominantAffinity;
 
       if (
         difference >= orientationLeanThreshold &&
-        receivingAffinity >= composedTraitAffinityFloor
+        submissiveAffinity >= composedTraitAffinityFloor
       ) {
-        key = "receiving";
+        key = "submissive";
       } else if (
         difference <= -orientationLeanThreshold &&
-        givingAffinity >= composedTraitAffinityFloor
+        dominantAffinity >= composedTraitAffinityFloor
       ) {
-        key = "giving";
+        key = "dominant";
       } else if (
-        receivingAffinity >= bidirectionalAffinityFloor &&
-        givingAffinity >= bidirectionalAffinityFloor
+        submissiveAffinity >= bidirectionalAffinityFloor &&
+        dominantAffinity >= bidirectionalAffinityFloor
       ) {
         key = "bidirectional";
       } else {
@@ -148,8 +231,8 @@ export function deriveProfileOrientation(
   }
 
   const labels: Record<ProfileOrientationKey, string> = {
-    receiving: "Submissive",
-    giving: "Dominant",
+    submissive: "Submissive",
+    dominant: "Dominant",
     bidirectional: "Dominant + submissive",
     mixed: "Context-dependent",
     insufficient: "Still emerging",
@@ -158,10 +241,10 @@ export function deriveProfileOrientation(
   return {
     key,
     label: labels[key],
-    receivingAffinity: receiving.affinity,
-    receivingCoverage: receiving.coverage,
-    givingAffinity: giving.affinity,
-    givingCoverage: giving.coverage,
+    submissiveAffinity: submissive.affinity,
+    submissiveCoverage: submissive.coverage,
+    dominantAffinity: dominant.affinity,
+    dominantCoverage: dominant.coverage,
   };
 }
 
@@ -229,16 +312,7 @@ function scoreComposedDefinitions(
 function deriveHeadspaces(
   canonicalSignals: readonly CanonicalSignalResult[],
 ): ProfileHeadlineTrait[] {
-  return scoreComposedDefinitions(canonicalSignals, roleHeadspaces)
-    .map((trait) => ({
-      ...trait,
-      direction: receivingHeadspaceIds.has(trait.id)
-        ? ("receiving" as const)
-        : givingHeadspaceIds.has(trait.id)
-          ? ("giving" as const)
-          : undefined,
-    }))
-    .slice(0, 3);
+  return scoreComposedDefinitions(canonicalSignals, roleHeadspaces).slice(0, 3);
 }
 
 function deriveDynamicModes(
@@ -290,8 +364,8 @@ function buildSummary(
   const orientationIntro: Partial<
     Record<ProfileOrientationKey, string>
   > = {
-    receiving: "The profile leans submissive",
-    giving: "The profile leans dominant",
+    submissive: "The profile leans submissive",
+    dominant: "The profile leans dominant",
     bidirectional:
       "The profile shows strong dominant and submissive tendencies",
     mixed:
@@ -323,7 +397,7 @@ export function buildProfileHeaderModel(
   canonicalSignals: readonly CanonicalSignalResult[],
   facets: readonly OverallFacetResult[],
 ): ProfileHeaderModel {
-  const orientation = deriveProfileOrientation(facets);
+  const orientation = deriveProfileOrientation(canonicalSignals);
   const strongestFacets = selectHeadlineFacets(facets);
 
   return {
