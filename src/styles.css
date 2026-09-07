@@ -908,6 +908,85 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   }
 }
 
+/* M7.8 — Interest Areas */
+
+.profile-interest-areas {
+  padding: clamp(22px, 4vw, 34px);
+}
+
+.profile-interest-areas-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.profile-interest-areas-heading h2 {
+  margin: 0;
+  font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+  letter-spacing: -.04em;
+}
+
+.profile-interest-areas-heading > p {
+  max-width: 520px;
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  text-align: right;
+}
+
+.profile-interest-area-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  margin-top: 18px;
+}
+
+.profile-interest-area {
+  min-width: 0;
+  padding: 11px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.profile-interest-area strong {
+  display: block;
+  font-size: .95rem;
+  line-height: 1.25;
+}
+
+.profile-interest-area p {
+  margin: 5px 0 0;
+  color: var(--text-secondary);
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
+.profile-interest-areas-empty {
+  margin: 16px 0 0;
+  color: var(--text-secondary);
+  font-size: .86rem;
+}
+
+@media (max-width: 700px) {
+  .profile-interest-areas-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-interest-areas-heading > p {
+    text-align: left;
+  }
+
+  .profile-interest-area-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .profile-interest-area {
+    padding: 9px 0;
+  }
+}
+
 /* M7.7 — Hard Limits */
 
 .profile-limits {

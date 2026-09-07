@@ -1543,20 +1543,45 @@ Deterministic tests cover:
 
 **Exit condition:** boundaries remain semantically and visually separate from low preference. ✅
 
-## M7.8 — Interest Areas
+## M7.8 — Interest Areas ✅
 
-### Scope
+M7.8 adds a compact category-level summary after Top Overall + Hard Limits.
 
-- show only the top approximately 4–6 strongest/relevant catalog categories on the main profile
-- show a few representative top items per Interest Area
-- define category relevance/strength from direct evidence
-- keep the main profile intentionally compact rather than displaying all categories
+### Evidence source
 
-### Test gate
+Interest Areas reuse the positive direct-evidence eligibility established by M7.6:
 
-Use dense and sparse catalog data to tune which categories appear, representative-item selection, and visual density.
+- explicit Love / Like / Curious
+- active Overall This-or-That rank
 
-**Exit condition:** category-level themes are useful without making the main profile busy.
+Quiz-derived/inferred affinity cannot create an Interest Area by itself.
+
+Hard Limit, Not Interested, Not Applicable, and Unsure-only items do not contribute positive category relevance.
+
+### Category relevance
+
+For each category:
+
+1. take up to the strongest 3 direct-interest items
+2. weight those representative ordering scores at 1.00 / 0.70 / 0.50
+3. calculate their weighted mean
+4. apply a breadth factor of 0.80 / 0.90 / 1.00 for 1 / 2 / 3+ qualifying items
+
+The derived relevance score is presentation-only and is not shown as a user-facing percentage.
+
+### Main profile density
+
+Show up to **6** Interest Areas, each with up to **3** representative concrete items.
+
+If fewer than 6 categories have meaningful direct evidence, show fewer rather than padding the section.
+
+The main profile still does **not** render all 35 categories inline. Full category exploration remains M7.9.
+
+### Test gate ✅
+
+Deterministic tests cover category grouping, top-3 representative selection, breadth-aware relevance, inference exclusion, exclusion-state behavior, pairwise-only evidence, the six-area cap, sparse profiles, and fallback labels.
+
+**Exit condition:** category-level themes are useful without making the main profile busy. ✅
 
 ## M7.9 — Explore / catalog drill-down
 
