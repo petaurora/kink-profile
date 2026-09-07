@@ -34,6 +34,14 @@ const excludedExplicitStates = new Set<CatalogPreferenceState>([
   "not_applicable",
 ]);
 
+// Presentation-only neutral priors for a direct-evidence channel that has not
+// been measured for this item. Missing evidence must not behave like a perfect
+// score: otherwise an unranked Love (100) outranks a Love whose real pairwise
+// placement is anything below 100.
+const neutralDirectScore = 50;
+const explicitWeight = 1;
+const minimumPairwiseWeight = 0.65;
+
 function round1(value: number) {
   return Math.round((value + 1e-9) * 10) / 10;
 }
@@ -88,20 +96,25 @@ function buildCandidate(
 
   if (!hasExplicit && !hasPairwise) return null;
 
-  let weightedTotal = 0;
-  let totalWeight = 0;
+  const pairwiseWeight = hasPairwise
+    ? minimumPairwiseWeight +
+      0.35 * Math.max(0, Math.min(1, result.overallRank!.confidence))
+    : minimumPairwiseWeight;
 
-  if (hasExplicit) {
-    weightedTotal += explicitScore;
-    totalWeight += 1;
-  }
+  // Both direct channels always occupy an ordering slot. An unmeasured channel
+  // contributes a neutral prior only to presentation ordering; it does not
+  // become evidence, a stored preference, or a synthetic rank.
+  const explicitOrderingScore = hasExplicit
+    ? explicitScore
+    : neutralDirectScore;
+  const pairwiseOrderingScore = hasPairwise
+    ? pairwiseScore
+    : neutralDirectScore;
 
-  if (hasPairwise) {
-    const pairwiseWeight =
-      0.65 + 0.35 * Math.max(0, Math.min(1, result.overallRank!.confidence));
-    weightedTotal += pairwiseScore * pairwiseWeight;
-    totalWeight += pairwiseWeight;
-  }
+  const weightedTotal =
+    explicitOrderingScore * explicitWeight +
+    pairwiseOrderingScore * pairwiseWeight;
+  const totalWeight = explicitWeight + pairwiseWeight;
 
   const sources: TopInterestEvidenceSource[] = [];
   if (hasExplicit) sources.push("explicit");
@@ -129,9 +142,12 @@ function buildCandidate(
  * Quiz-derived/inferred affinity is not read at all and therefore cannot place
  * an item into Top Overall by itself.
  *
- * Explicit state and pairwise rank remain independent source values. The
- * aggregateScore is presentation-only ordering metadata and is never written
- * back into either source.
+ * Explicit state and pairwise rank remain independent source values. Missing
+ * direct evidence uses a neutral presentation prior instead of behaving like a
+ * perfect score. That prevents large sets of explicit Love items from sorting
+ * alphabetically ahead of items the user actually refined in Overall
+ * This-or-That. The aggregateScore is presentation-only ordering metadata and
+ * is never written back into either source.
  */
 export function buildProfileTopInterests(
   resultView: CatalogResultView,
