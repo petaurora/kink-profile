@@ -21,6 +21,7 @@ describe("profile share summary", () => {
     expect(model.orientation).toBe("Still emerging");
     expect(model.radarAxes.every((axis) => axis.affinity === null)).toBe(true);
     expect(model.radarAxes.every((axis) => axis.state === "unknown")).toBe(true);
+    expect(model.interestAreas).toEqual([]);
   });
 
   it("keeps positive interests and explicit Hard Limits semantically separate", () => {
@@ -52,6 +53,14 @@ describe("profile share summary", () => {
     expect(model.topInterests.map((item) => item.catalogId)).toContain(loveItem.id);
     expect(model.topInterests.map((item) => item.catalogId)).toContain(curiousItem.id);
     expect(model.topInterests.map((item) => item.catalogId)).not.toContain(limitItem.id);
+
+    const interestAreaItemIds = model.interestAreas.flatMap((area) =>
+      area.representativeItems.map((item) => item.catalogId),
+    );
+    expect(interestAreaItemIds).toContain(loveItem.id);
+    expect(interestAreaItemIds).toContain(curiousItem.id);
+    expect(interestAreaItemIds).not.toContain(limitItem.id);
+
     expect(model.hardLimits).toEqual([
       {
         catalogId: limitItem.id,
