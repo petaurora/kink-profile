@@ -15,24 +15,6 @@ type ProfileSettingsPageProps = {
   onClose: () => void;
 };
 
-function FutureAction({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <article className="settings-action-row">
-      <div>
-        <strong>{title}</strong>
-        <p>{description}</p>
-      </div>
-      <span className="settings-coming">Coming next</span>
-    </article>
-  );
-}
-
 export function ProfileSettingsPage({
   settings,
   onChange,
@@ -72,8 +54,7 @@ export function ProfileSettingsPage({
           <p className="eyebrow">Settings</p>
           <h1>Make the profile yours.</h1>
           <p>
-            Manage profile identity and local data here. Backup/restore and sharing are
-            reserved below for the next M9 slices.
+            Manage profile identity, local data, backup/restore, and deliberate sharing here.
           </p>
         </div>
         <button className="secondary" onClick={onClose}>
@@ -251,10 +232,25 @@ export function ProfileSettingsPage({
               {sharePreviewOpen ? "Close preview" : "Preview"}
             </button>
           </article>
-          <FutureAction
-            title="Export share summary"
-            description="Generate the same polished summary as PNG, HTML, or PDF."
-          />
+          <article className="settings-action-row">
+            <div>
+              <strong>Export share summary</strong>
+              <p>
+                Download the curated summary as PNG, self-contained HTML, or PDF.
+              </p>
+            </div>
+            <button
+              className="secondary compact"
+              onClick={() => {
+                setSharePreviewOpen(true);
+                setResetOpen(false);
+                setBackupOpen(false);
+                setImportOpen(false);
+              }}
+            >
+              Open exports
+            </button>
+          </article>
         </div>
 
         {sharePreviewOpen && <ProfileSharePanel settings={settings} />}
