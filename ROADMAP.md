@@ -19,7 +19,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M6 | ✅ Complete | integrated, source-aware, hardened kink catalog |
 | M7 | 🚧 In progress | build the full aggregated profile |
 | M8 | Optional | add quiz depth/adaptive follow-ups |
-| M9 | 🚧 In progress | settings, profile lifecycle, portability, and sharing |
+| M9 | ✅ Complete | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
 
 ---
@@ -740,18 +740,19 @@ M8 is not a prerequisite for M9. The share-summary slices depend on the stable M
 - [x] build a dedicated share-summary presentation from stable M7 outputs
 - [x] keep the share summary distinct from the full private backup/export
 - [x] include strongest themes, overall radar, orientation, submissive Headspaces, Dynamic Modes, Top Overall, and explicit Hard Limits
-- [x] intentionally defer Interest Areas until M7.8 defines stable category-selection semantics
+- [x] include M7.8 Interest Areas once its stable category-selection semantics landed
 - [x] intentionally omit internal provenance/debug data and machine-oriented storage detail
 - [x] design the summary so the same model + renderer can feed multiple output formats
 - [x] provide a preview before export
 
-### M9.6 — Summary export formats
+### M9.6 — Summary export formats ✅
 
-- [ ] support a shareable PNG render
-- [ ] support a self-contained/shareable HTML representation
-- [ ] support a polished PDF representation
-- [ ] reuse the same share-summary content contract across formats instead of maintaining separate profile designs
-- [ ] verify mobile/desktop rendering does not produce clipped or unreadable exports
+- [x] support a high-density tall/mobile-friendly PNG render
+- [x] support a self-contained/shareable responsive HTML representation
+- [x] support a polished multi-page PDF representation
+- [x] reuse the same share-summary v2 content contract and renderer across formats instead of maintaining separate profile designs
+- [x] use section-aware PDF breaks and fixed export staging so mobile/desktop preview width does not produce clipped or unreadable exports
+- [x] keep all exports local and free of app navigation/admin chrome
 
 **M9 exit condition:** a user can rename the profile, selectively reset independent source data without collateral deletion, create and restore a complete versioned backup, and generate a polished shareable summary without exposing the full private profile data store.
 
