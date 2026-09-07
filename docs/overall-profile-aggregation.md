@@ -1454,10 +1454,14 @@ Pairwise contribution weight is coverage-aware:
 
 This means an early Overall ranking can contribute immediately without pretending it is as refined as a deeply compared ranking.
 
-When both sources exist, the presentation score is the weighted mean of:
+The presentation ordering always reserves a slot for both direct channels:
 
 - explicit score at weight 1.0
 - pairwise placement score at the confidence-aware pairwise weight
+
+If one direct channel has not been measured for an item, that missing channel uses a neutral **50-point presentation prior** for ordering only. The prior does not create a stored preference, a synthetic rank, or evidence provenance.
+
+This matters especially for `Love`: an unranked Love must not behave like a perfect 100/100 combined result and alphabetically outrank a Love that the user actually refined through Overall This-or-That.
 
 The derived score is **not displayed as a fake preference percentage** and is never written back into catalog state or the pairwise engine.
 
