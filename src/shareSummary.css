@@ -323,6 +323,33 @@
   font-weight: 850;
 }
 
+.share-interest-area-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+}
+
+.share-interest-area {
+  min-width: 0;
+  padding: .8rem .9rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-muted);
+}
+
+.share-interest-area strong {
+  display: block;
+  margin-bottom: .3rem;
+  font-size: .9rem;
+}
+
+.share-interest-area p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: .76rem;
+  line-height: 1.45;
+}
+
 .share-empty {
   margin: 0;
   color: var(--text-muted);
@@ -349,7 +376,8 @@
 
   .share-profile-trait-grid,
   .share-two-column,
-  .share-interest-list {
+  .share-interest-list,
+  .share-interest-area-grid {
     grid-template-columns: 1fr;
   }
 
