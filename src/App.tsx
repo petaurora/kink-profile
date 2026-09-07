@@ -27,9 +27,9 @@ import {
 } from "./data/sadismMasochismQuiz";
 import {
   dynamicModes,
-  givingRoleHeadspaceIds,
+  partnerPositionedRoleHeadspaceIds,
   headspaceSignalIds,
-  receivingRoleHeadspaceIds,
+  selfPositionedRoleHeadspaceIds,
   roleHeadspaces,
 } from "./data/headspacesQuiz";
 import { getSignals, signalDefinitions } from "./data/signals";
@@ -601,17 +601,17 @@ export default function App() {
     [scores],
   );
 
-  const receivingHeadspaceRadarScores = useMemo(
+  const selfPositionedHeadspaceRadarScores = useMemo(
     () =>
-      receivingRoleHeadspaceIds
+      selfPositionedRoleHeadspaceIds
         .map((id) => scores.find((score) => score.id === id))
         .filter((score): score is Score => score !== undefined),
     [scores],
   );
 
-  const givingHeadspaceRadarScores = useMemo(
+  const partnerPositionedHeadspaceRadarScores = useMemo(
     () =>
-      givingRoleHeadspaceIds
+      partnerPositionedRoleHeadspaceIds
         .map((id) => scores.find((score) => score.id === id))
         .filter((score): score is Score => score !== undefined),
     [scores],
@@ -1616,23 +1616,23 @@ export default function App() {
               <div className="multi-radar-grid">
                 <article className="panel chart-panel">
                   <div className="section-heading">
-                    <p className="eyebrow">Receiving / submissive</p>
+                    <p className="eyebrow">Self-positioned roles</p>
                     <h2>Headspace radar</h2>
                   </div>
                   <RadarChart
-                    scores={receivingHeadspaceRadarScores}
-                    ariaLabel="Receiving and submissive roles and headspaces radar chart"
+                    scores={selfPositionedHeadspaceRadarScores}
+                    ariaLabel="Self-positioned roles and headspaces radar chart"
                   />
                 </article>
 
                 <article className="panel chart-panel">
                   <div className="section-heading">
-                    <p className="eyebrow">Giving / dominant</p>
+                    <p className="eyebrow">Partner-positioned roles</p>
                     <h2>Headspace radar</h2>
                   </div>
                   <RadarChart
-                    scores={givingHeadspaceRadarScores}
-                    ariaLabel="Giving and dominant roles and headspaces radar chart"
+                    scores={partnerPositionedHeadspaceRadarScores}
+                    ariaLabel="Partner-positioned roles and headspaces radar chart"
                   />
                 </article>
 
