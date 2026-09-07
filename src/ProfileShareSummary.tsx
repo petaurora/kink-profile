@@ -217,7 +217,7 @@ export function ProfileShareSummary({
         <section className="share-section">
           <div className="share-section-heading">
             <span>Headspaces</span>
-            <small>Strongest submissive-oriented results</small>
+            <small>Strongest known headspace results</small>
           </div>
           <TraitList
             items={model.headspaces}
