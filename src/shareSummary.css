@@ -60,18 +60,16 @@
   background: var(--bg-surface-raised);
   color: var(--text-primary);
   display: grid;
-  gap: 1.5rem;
+  gap: clamp(1.5rem, 4vw, 2.4rem);
 }
 
-.share-summary-header {
+.share-profile-header {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
   gap: 1.5rem;
 }
 
 .share-kicker {
-  margin: 0 0 .25rem;
+  margin: 0 0 .3rem;
   color: var(--text-muted);
   font-size: .72rem;
   font-weight: 850;
@@ -79,42 +77,42 @@
   text-transform: uppercase;
 }
 
-.share-summary-header h2 {
+.share-profile-header h2 {
+  max-width: 780px;
   margin: 0;
-  font-size: clamp(2rem, 5vw, 3.6rem);
-  line-height: .95;
-  letter-spacing: -.04em;
+  font-size: clamp(2rem, 6vw, 4.4rem);
+  line-height: 1.04;
+  letter-spacing: -.045em;
 }
 
-.share-summary-copy {
-  max-width: 650px;
-  margin: .8rem 0 0;
-  color: var(--text-secondary);
-  line-height: 1.55;
-}
-
-.share-orientation {
-  min-width: 150px;
-  padding: .8rem .95rem;
-  border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  background: var(--bg-muted);
+.share-profile-trait-grid {
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-subtle);
   display: grid;
-  gap: .18rem;
+  grid-template-columns: minmax(0, .65fr) repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
 }
 
-.share-orientation span {
+.share-trait-group {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: .55rem;
+}
+
+.share-trait-label {
   color: var(--text-muted);
-  font-size: .66rem;
+  font-size: .68rem;
   font-weight: 850;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
 
-.share-orientation strong {
-  font-size: .92rem;
+.share-orientation {
+  font-size: 1.05rem;
 }
 
+.share-trait-chips,
 .share-theme-row,
 .share-limit-list {
   display: flex;
@@ -122,6 +120,7 @@
   gap: .45rem;
 }
 
+.share-trait-chip,
 .share-theme-row span,
 .share-limit-list span {
   padding: .42rem .62rem;
@@ -131,6 +130,7 @@
   font-weight: 750;
 }
 
+.share-trait-chip,
 .share-theme-row span {
   background: var(--bg-muted);
 }
@@ -140,34 +140,60 @@
   background: var(--bg-surface-emphasis);
 }
 
+.share-trait-emerging {
+  color: var(--text-secondary);
+  font-size: .9rem;
+}
+
 .share-overall-section,
 .share-section {
   display: grid;
-  gap: .75rem;
+  gap: 1rem;
 }
 
-.share-section {
-  padding-top: 1rem;
+.share-overall-section {
+  padding-top: 1.45rem;
   border-top: 1px solid var(--border-subtle);
 }
 
+.share-section {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.share-panel-heading,
 .share-section-heading {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
 }
 
-.share-section-heading > span {
-  font-size: .82rem;
-  font-weight: 850;
-  letter-spacing: .07em;
-  text-transform: uppercase;
+.share-panel-heading > div,
+.share-section-heading > div {
+  min-width: 0;
+}
+
+.share-panel-heading h3,
+.share-section-heading h3 {
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  line-height: 1.1;
+}
+
+.share-panel-heading > p {
+  max-width: 330px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: .78rem;
+  line-height: 1.5;
 }
 
 .share-section-heading small {
+  max-width: 250px;
   color: var(--text-muted);
   font-size: .72rem;
+  line-height: 1.4;
   text-align: right;
 }
 
@@ -222,6 +248,24 @@
   opacity: .7;
 }
 
+.share-overall-footer {
+  display: grid;
+  gap: .75rem;
+}
+
+.share-overall-footer > div {
+  display: grid;
+  gap: .55rem;
+}
+
+.share-partial-note {
+  max-width: 620px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: .72rem;
+  line-height: 1.45;
+}
+
 .share-two-column {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -233,7 +277,7 @@
 }
 
 .share-trait-row {
-  padding: .55rem 0;
+  padding: .6rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -298,26 +342,22 @@
 
 @media (max-width: 700px) {
   .settings-share-heading,
-  .share-summary-header {
-    grid-template-columns: 1fr;
+  .share-panel-heading,
+  .share-section-heading {
     display: grid;
   }
 
-  .share-orientation {
-    min-width: 0;
-    justify-self: start;
-  }
-
+  .share-profile-trait-grid,
   .share-two-column,
   .share-interest-list {
     grid-template-columns: 1fr;
   }
 
-  .share-section-heading {
-    display: grid;
-  }
-
   .share-section-heading small {
     text-align: left;
+  }
+
+  .share-panel-heading > p {
+    max-width: none;
   }
 }
