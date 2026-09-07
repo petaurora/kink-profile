@@ -1688,29 +1688,121 @@ Build/preview validation covers the actual profile → focused catalog → edit 
 
 **Exit condition:** users can move from profile summary to editable catalog detail without cluttering the main profile. ✅
 
-## M7.10 — Explainability + coverage
+## M7.10 — Explainability + coverage ✅
 
-This remains partly a dashboard/status concern and should not dominate the presentation profile.
+M7.10 replaces the temporary M7.1/M7.2 developer inspection panels with a subordinate, user-facing explanation layer.
 
-### Scope
+The main profile stays presentation-first. Explainability lives behind expandable theme rows and answers:
 
-- expose contributing quiz/catalog/ranking evidence for derived results
-- qualify low-coverage profile results without framing unknown as deficiency
-- preserve source identity/version where available
-- link users to useful unfinished quizzes/catalog exploration where appropriate
-- keep completion mechanics subordinate or drill-down-only on the aggregated profile
+> Why is this theme here, and how much evidence is behind it?
 
-### Test gate
+### Affinity and evidence stay separate
 
-Inspect:
+Each broad facet exposes two distinct concepts:
 
-- strong affinity / high coverage
-- strong affinity / low coverage
+- **Affinity** — how strongly the currently known evidence supports the theme
+- **Evidence coverage** — how much relevant information is currently available for that theme
+
+Coverage never changes an unknown result into 0% affinity.
+
+A sparse 100% result therefore remains:
+
+- 100% affinity from the known evidence
+- **Limited evidence** rather than a fully established conclusion
+
+User-facing evidence states are:
+
+- **Not explored yet** — 0% coverage
+- **Limited evidence** — under 25%
+- **Growing evidence** — 25–54.9%
+- **Well supported** — 55%+
+
+The numeric coverage value appears only inside expanded explanation detail.
+
+### Theme explanation
+
+The radar and strongest-theme chips continue to open the corresponding facet detail.
+
+Each expanded theme shows:
+
+- the facet description
+- affinity
+- evidence state
+- evidence coverage
+- up to 5 strongest contributing human-readable signals
+- source summaries
+- a conflict qualification when independent sources materially disagree
+- a useful next step when evidence is still sparse
+
+Internal SignalIds, composition weights, evidence IDs, reliability multipliers, and effective-weight math are no longer exposed in the normal profile UI.
+
+### Evidence sources
+
+Source identity is preserved without dumping provenance internals.
+
+Quiz sources retain the concrete quiz identity and version where available, for example:
+
+- **Roles & Headspaces · v3**
+- **Dominance & Submission · v1**
+
+Catalog evidence is summarized as:
+
+- **Catalog preferences · N directly marked items**
+- **This or That · N meaningful comparisons**
+
+The explainability model intentionally uses source-channel summaries rather than allowing catalog row volume to become a second scoring system.
+
+### Conflicting sources
+
+When at least two meaningful independent source summaries differ by 30+ affinity points, the facet is qualified with:
+
+> Different evidence sources are pulling this theme in noticeably different directions, so the combined result may shift as you refine it.
+
+The conflict flag is explanatory only. It does not rewrite the canonical score.
+
+### Useful next steps
+
+For facets that are not yet Well supported:
+
+1. identify core quizzes whose weighted questions actually measure signals in that facet
+2. prefer an in-progress relevant quiz
+3. otherwise offer a relevant not-started quiz
+4. if the facet is still unknown/limited and no relevant quiz remains unfinished, offer the catalog as a general refinement path
+
+This keeps completion status actionable without making it part of the profile identity.
+
+### Exploration status
+
+The former large **X of Y sections explored** profile card is removed from the main hierarchy.
+
+Guided-section progress now lives in a collapsed **Exploration status** detail at the bottom of explainability.
+
+That section exists only to explain evidence gaps and provide Continue / Explore actions for unfinished core quizzes.
+
+### Semantic boundary
+
+M7.10 follows the authority/activity/role contract:
+
+- activity-side giving/receiving does not imply Dominant/Submissive
+- role/headspace labels do not inherit D/s orientation from activity side
+- explainability reports the evidence that exists without assigning an unmeasured mindset
+
+See [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md).
+
+### Test gate ✅
+
+Deterministic tests cover:
+
+- strong affinity + established evidence
+- strong affinity + limited evidence
 - conflicting independent sources
-- partially explored facets
-- completely unexplored facets
+- relevant unfinished-quiz next steps
+- completely unexplored facets staying `affinity: null`
+- catalog + This-or-That source summaries
+- quiz identity/version preservation
+- subordinate exploration-status counts
 
-**Exit condition:** the user can understand why a result exists and distinguish affinity from confidence/coverage.
+**Exit condition:** users can understand why a result exists and distinguish affinity from evidence coverage without exposing developer-facing aggregation plumbing. ✅
 
 ## M7.11 — Final integration + polish
 
