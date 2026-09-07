@@ -16,10 +16,10 @@ This folder contains the product and scoring decisions that should guide impleme
 4. [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md)  
    The cross-cutting semantic boundary between Dominant/Submissive authority, activity-side giving/receiving, and recognizable roles/headspaces.
 
-6. [M4 Bondage & Discipline Contract](m4-bd-design.md)  
+5. [M4 Bondage & Discipline Contract](m4-bd-design.md)  
    The implemented M4 contract: directional restraint/discipline signals, 26-question bank, weights, pain boundary, and split B&D radars.
 
-5. [M5 Sadism & Masochism Contract](m5-sm-design.md)  
+6. [M5 Sadism & Masochism Contract](m5-sm-design.md)  
    The implemented M5 contract: directional pain/intensity/endurance/challenge signals, 26-question bank, weights, and receiving/giving S/M radars.
 
 7. [M6 Catalog Integration](m6-catalog-integration.md)  
@@ -32,22 +32,22 @@ This folder contains the product and scoring decisions that should guide impleme
    The implemented C4/M7 convergence contract: quizzes, explicit catalog state, pairwise ranking, inferred catalog affinity, source provenance, recomputation, and the no-feedback-loop rule.
 
 10. [Kink This-or-That Ranking](kink-this-or-that-ranking.md)  
-   The implemented category/Overall ranking flow, C5 meaningful-evidence/finalist/history hardening, and C6 explicit/inferred result integration.
+    The implemented category/Overall ranking flow, C5 meaningful-evidence/finalist/history hardening, and C6 explicit/inferred result integration.
 
 11. [Scoring & Taxonomy Model](scoring-model.md)  
-   The reusable scoring architecture behind the core quizzes, catalog affinity, source-aware recomputation, and the C7 recommendation-suppression/no-feedback boundaries.
+    The reusable scoring architecture behind the core quizzes, catalog affinity, source-aware recomputation, and the C7 recommendation-suppression/no-feedback boundaries.
 
 12. [Overall Profile Aggregation](overall-profile-aggregation.md)  
-   The active M7 implementation contract, now split into M7.1–M7.11 testable slices: canonical aggregation/inspection, facets, header, radar, role/mode summaries, Top Overall, limits, Interest Areas, catalog drill-down, explainability, and final polish.
+    The active M7 implementation contract, now split into M7.1–M7.11 testable slices: canonical aggregation/inspection, facets, header, radar, role/mode summaries, Top Overall, limits, Interest Areas, catalog drill-down, explainability, and final polish.
 
 13. [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md)  
-   The planned Settings/profile-lifecycle contract: display name, selective reset, complete versioned backup/restore, share-summary presentation, and PNG/HTML/PDF output.
+    The planned Settings/profile-lifecycle contract: display name, selective reset, complete versioned backup/restore, share-summary presentation, and PNG/HTML/PDF output.
 
 14. [Roadmap](../ROADMAP.md)  
-   What is already implemented and what should be built next.
+    What is already implemented and what should be built next.
 
-14. [Reference Data](../reference/README.md)  
-   How the expanded kink catalog should be used without turning it into a 551-question test.
+15. [Reference Data](../reference/README.md)  
+    How the expanded kink catalog should be used without turning it into a 551-question test.
 
 ## Source of truth by topic
 
