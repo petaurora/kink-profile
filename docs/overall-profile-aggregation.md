@@ -2,9 +2,9 @@
 
 ## Status
 
-**Active implementation contract for M7 — Full Overall Profile.**
+**M7 — Full Overall Profile is complete.**
 
-M6 is complete. M7 now consumes the source-aware evidence, ranking, catalog-result, and recommendation boundaries implemented in M6 rather than inventing another catalog/profile model.
+M7 consumes the source-aware evidence, ranking, catalog-result, and recommendation boundaries implemented in M6 rather than inventing another catalog/profile model. M7.11 completed the final integration, responsive/accessibility pass, and removal of temporary inspection scaffolding.
 
 This document defines what the front-page "overall" result should represent and, more importantly, what it should **not** flatten together.
 
@@ -71,21 +71,20 @@ Conceptual shape:
 ```text
 YOUR KINK PROFILE
 
-Strongly receiving-oriented, with a profile centered around
-surrender, devotion, primal play, and emotionally connected
-power exchange.
+The profile leans submissive, with the strongest themes around
+service and devotion, structure and protocol, and care and nurture.
 
 Orientation
-Receiving / submissive
+Submissive
 
 Headspaces
 Pet · Prey · Devotional Submissive
 
 Dynamic modes
-Surrender · Devotion · Primal
+Surrender · Devotion · Primal / Feral
 ```
 
-The exact labels and values above are illustrative, not locked output.
+The labels above are illustrative. Authority orientation, activity side, and role/headspace remain separate dimensions.
 
 ### Header responsibilities
 
@@ -101,7 +100,7 @@ The header should therefore:
 
 - favor a concise human-readable summary over a wall of percentages
 - expose a small number of structured headline traits underneath
-- keep receiving/giving direction visible when it materially shapes the profile
+- keep activity-side direction available in theme detail without turning it into Dominant/Submissive identity
 - avoid declaring a single identity such as "You are a Pet"
 - avoid making one percentage the defining result
 - avoid quiz/catalog/ranking completion statistics
@@ -111,8 +110,8 @@ The header should therefore:
 
 The current preferred three groups are:
 
-- **Orientation** — broad receiving/submissive, giving/dominant, bidirectional, or mixed/context-dependent tendency
-- **Headspaces** — strongest recognizable role/headspace results, with direction preserved
+- **Orientation** — authority-specific Submissive, Dominant, Dominant + submissive, Context-dependent, or Still emerging
+- **Headspaces** — strongest recognizable role/headspace results without generic D/s bucketing
 - **Dynamic modes** — strongest explanatory patterns such as Surrender, Devotion, Claiming, or Primal / Feral
 
 These groups are a current UI direction and can be refined as M7 aggregation is implemented.
@@ -185,10 +184,10 @@ Represents meaningful surrender, exercise, or transfer of negotiated authority a
 | `receiving_control` | 1.00 | receiving |
 | `giving_control` | 1.00 | giving |
 | `responsibility_transfer` | 0.90 | receiving |
-| `responsibility_holding` | 0.80 | giving |
+| `responsibility_holding` | 0.80 | shared / unassigned |
 | `obedience` | 0.65 | receiving |
 
-Direction metadata preserves independent receiving and giving affinity/coverage. The facet is **not** a dominant/submissive slider.
+Direction metadata preserves activity-side evidence where the signal itself is directional. `responsibility_holding` contributes to overall Power Exchange but is deliberately not assigned to the dominant/giving side because responsibility may be delegated or service-oriented. The facet is **not** a Dominant/Submissive classifier.
 
 ---
 
@@ -1804,75 +1803,104 @@ Deterministic tests cover:
 
 **Exit condition:** users can understand why a result exists and distinguish affinity from evidence coverage without exposing developer-facing aggregation plumbing. ✅
 
-## M7.11 — Final integration + polish
+## M7.11 — Final integration + polish ✅
 
-### Scope
+M7.11 turns the completed slices into one finished profile experience.
 
-- remove or appropriately gate the temporary M7.1 inspection surface
-- verify the final profile hierarchy across all M7 sections
-- responsive/mobile pass
-- empty/partial/full-profile state pass
-- accessibility + interaction cleanup
-- regression-test M2–M6 section-local results and catalog behavior
-- final documentation cleanup
+### Integration cleanup
 
-**Exit condition:** M7 reads as one coherent profile experience while preserving the source-aware architecture underneath.
+- removed the last inspection-era naming from runtime profile state
+- kept the M7.1/M7.2 aggregation internals available through tested models rather than developer UI
+- fixed profile-origin **Refine preferences** routing so catalog edits return to the profile
+- retained one canonical catalog editing surface rather than duplicating controls inside the profile
+- preserved all nine broad facets and the source-aware evidence pipeline underneath the presentation
+
+### Final hierarchy
+
+The profile now reads in this order:
+
+1. **Profile header** — concise summary, authority orientation, top Headspaces, top Dynamic Modes
+2. **Overall radar** — nine broad themes with honest unknown/limited behavior
+3. **Headspaces + Dynamic Modes** — recognizable detailed patterns
+4. **Top Overall** — direct-evidence concrete interests
+5. **Hard Limits** — explicit boundaries
+6. **Interest Areas** — compact category-level themes with catalog drill-down
+7. **Why these themes show up** — subordinate explainability and evidence coverage
+8. **Exploration status** — collapsed progress context only
+
+Completion mechanics no longer interrupt the main profile narrative.
+
+### Responsive/mobile pass
+
+- reduced the mobile profile headline scale so the summary remains prominent without consuming most of the first viewport
+- tightened profile section spacing on small screens
+- preserved the nine-axis radar while allowing its labels to use the available width
+- kept dense explanation details collapsed by default
+- retained compact Top Overall, limits, Interest Areas, and role/mode layouts
+
+### Accessibility + interaction pass
+
+- the overall radar is exposed as a labeled interactive group rather than an image that hides its child controls
+- each radar axis exposes its affinity/evidence state and opens the matching explanation
+- Enter / Space interaction remains supported for radar axes
+- opening a theme from the radar or strongest-theme chips moves keyboard focus to the opened explanation summary
+- explanation rows and Exploration status have visible focus treatment
+- profile navigation buttons use explicit button semantics where touched by the final pass
+
+### Empty / partial / full-profile behavior
+
+Final integration tests verify:
+
+- **empty profile:** no fake 0% facets, no fabricated roles/interests/limits, Orientation stays Still emerging
+- **partial profile:** known themes remain plotted while unknown radar axes stay open/blank; high affinity can remain limited evidence
+- **full profile:** all nine facets can form a complete radar while D/s authority semantics remain independent from activity side
+- **direct catalog boundaries:** a positive direct preference can enter Top Overall while an explicit Hard Limit remains excluded from favorites and visible in Limits
+
+### Regression boundary
+
+The full CI suite still runs all section-local M2–M6 scoring, storage, catalog, ranking, recommendation, and evidence tests alongside M7 tests.
+
+M7 integration does not alter:
+
+- M2 D/s section-local scoring
+- M3 role/headspace quiz scoring
+- M4 B&D section-local scoring
+- M5 S/M section-local scoring
+- M6 explicit catalog state, pairwise history, ranking eligibility, inference, or no-feedback-loop behavior
+
+### Exit condition ✅
+
+**M7 reads as one coherent profile experience while preserving the source-aware architecture underneath.**
 
 ---
 
-# Open design questions
-
-M4/M5 are implemented, so these are now **active M7 decisions** rather than questions waiting on prerequisite signal work. O1 should establish the canonical cross-source evidence math first; O2 can then lock the final facet vocabulary/weights against the actual signal inventory.
-
-1. Are the nine proposed facets the right final set?
-2. Does Service & Devotion need to split into two facets?
-3. Does Care & Nurture need separate giving/receiving visualization beyond metadata?
-4. Should Role Embodiment become its own facet, or remain represented only through headspace results?
-5. When is there enough evidence to add Sensation & Sensory Play?
-6. What merge rule best combines repeated SignalIds across quizzes?
-7. What minimum coverage is required before an overall facet appears on the radar?
-8. What weighting should explicit catalog evidence receive relative to quiz evidence for the same SignalId?
-9. What weighting/confidence threshold should pairwise evidence require before contributing to signals?
-10. How should front-page drill-down explain which quizzes/catalog evidence contributed to each facet?
-11. Should users be able to exclude one completed quiz or evidence source from overall aggregation?
-
----
-
-# Current recommendation
-
-Start with **M7.1 canonical cross-source aggregation + inspection** and do not begin facet/profile presentation work until that layer has been tested with real mutable user data.
-
-M4, M5, and M6 are implemented, so M7 has enough real evidence structure to settle aggregation behavior from actual runtime inputs rather than hypothetical future quizzes.
-
-Keep this architecture locked:
+# Final M7 architecture
 
 ```text
-source-aware independent evidence
+independent source evidence
 (quiz + explicit catalog + pairwise catalog)
         ↓
-canonical signals
+canonical SignalIds
         ↓
-broad overall facets
+nine broad profile facets
         ↓
-hybrid profile header + radar
+profile header + radar
+        ↓
+headspaces / dynamic modes
         +
-roles/headspaces + dynamic modes
-        +
-direct-evidence catalog summaries
-        +
-coverage / explainability
+direct catalog summaries
+        ↓
+catalog drill-down
+        ↓
+subordinate coverage + explainability
 ```
 
-The immediate test loop for M7.1 is:
+Locked boundaries:
 
-```text
-inspect baseline
-  → change explicit catalog state
-  → inspect
-  → add This-or-That evidence
-  → inspect
-  → retake a quiz
-  → inspect
-```
-
-Only after those source-isolation and replacement semantics are trustworthy should M7.2 lock the final facet vocabulary and composition weights.
+- affinity and evidence coverage are separate
+- unknown is not 0%
+- inferred catalog evidence never feeds back into canonical signals
+- direct catalog state and pairwise history remain independent
+- D/s authority is separate from activity-side giving/receiving
+- roles/headspaces do not inherit authority orientation from activity side
+- the profile is a derived presentation; source data remains independently editable and recomputable

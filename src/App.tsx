@@ -266,8 +266,8 @@ function OverallRadarChart({
       <svg
         className="overall-radar"
         viewBox={`0 0 ${size} ${size}`}
-        role="img"
-        aria-label="Overall profile radar showing nine broad preference facets"
+        role="group"
+        aria-label="Overall profile radar. Each axis opens an explanation for that theme."
       >
         {[0.25, 0.5, 0.75, 1].map((ring) => (
           <polygon
@@ -288,8 +288,14 @@ function OverallRadarChart({
               role="button"
               tabIndex={0}
               aria-label={`${axis.label}: ${
-                axis.affinity === null ? "unexplored" : `${axis.affinity}% affinity`
-              }. Open facet details.`}
+                axis.affinity === null
+                  ? "not explored yet"
+                  : `${axis.affinity}% affinity, ${
+                      axis.state === "limited"
+                        ? "limited evidence"
+                        : "evidence available"
+                    }`
+              }. Open theme explanation.`}
               onClick={() => onSelectFacet(axis.facetId)}
               onKeyDown={(event) => selectFromKeyboard(event, axis.facetId)}
             >
@@ -452,7 +458,7 @@ const defaultQuiz = quizzes.find((quiz) => quiz.contributesToOverall) ?? quizzes
 
 export default function App() {
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
-  const [catalogProfileForInspection, setCatalogProfileForInspection] = useState(() =>
+  const [catalogProfileSnapshot, setCatalogProfileSnapshot] = useState(() =>
     loadCatalogProfile(),
   );
   const [screen, setScreen] = useState<Screen>("hub");
@@ -627,8 +633,8 @@ export default function App() {
 
   const coreQuizzes = quizzes.filter((quiz) => quiz.contributesToOverall);
   const canonicalSignals = useMemo(
-    () => buildCanonicalSignalProfile(profile, catalogProfileForInspection),
-    [catalogProfileForInspection, profile],
+    () => buildCanonicalSignalProfile(profile, catalogProfileSnapshot),
+    [catalogProfileSnapshot, profile],
   );
 
   const overallFacets = useMemo(
@@ -673,9 +679,9 @@ export default function App() {
     () =>
       buildCatalogResultView(
         profile,
-        catalogProfileForInspection,
+        catalogProfileSnapshot,
       ),
-    [catalogProfileForInspection, profile],
+    [catalogProfileSnapshot, profile],
   );
 
   const topOverallInterests = useMemo(
@@ -765,7 +771,7 @@ export default function App() {
   };
 
   const openProfile = () => {
-    setCatalogProfileForInspection(loadCatalogProfile());
+    setCatalogProfileSnapshot(loadCatalogProfile());
     setScreen("profile");
   };
 
@@ -802,6 +808,11 @@ export default function App() {
     if (element instanceof HTMLDetailsElement) {
       element.open = true;
       element.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.setTimeout(() => {
+        element
+          .querySelector<HTMLElement>("summary")
+          ?.focus({ preventScroll: true });
+      }, 250);
     }
   };
 
@@ -949,7 +960,7 @@ export default function App() {
                 <p className="eyebrow">Your kink profile</p>
                 <h1>{profileHeader.summary}</h1>
               </div>
-              <button className="secondary" onClick={() => setScreen("hub")}>
+              <button type="button" className="secondary" onClick={() => setScreen("hub")}>
                 Back to explore
               </button>
             </div>
@@ -1019,6 +1030,7 @@ export default function App() {
                     {overallRadar.strongestThemes.map((theme) => (
                       <button
                         key={theme.facetId}
+                        type="button"
                         className="overall-radar-theme"
                         onClick={() => openFacetDetail(theme.facetId)}
                       >
@@ -1184,8 +1196,9 @@ export default function App() {
                     } — no filler added.`}
               </span>
               <button
+                type="button"
                 className="secondary compact"
-                onClick={() => setScreen("catalog")}
+                onClick={() => openCatalog(allCatalogDrilldown())}
               >
                 Refine preferences
               </button>
@@ -1271,6 +1284,7 @@ export default function App() {
 
             <div className="profile-interest-area-actions">
               <button
+                type="button"
                 className="secondary compact"
                 onClick={() => openCatalog(allCatalogDrilldown())}
               >

@@ -35,9 +35,11 @@ export type OverallFacetDefinition = {
  * roles/headspaces/dynamic modes are presentation results and must not feed
  * back into the signal/facet pipeline.
  *
- * We keep all nine meaningful facets in the model. M7.4 can decide whether
- * the first radar renders all nine simultaneously based on real mobile
- * readability; distinct concepts are not merged merely to hit an axis count.
+ * We keep all nine meaningful facets in the model and render all nine on the
+ * overall radar. Distinct concepts are not merged merely to reduce axis count.
+ *
+ * Direction metadata describes activity-side facet evidence only. It must not
+ * be treated as Dominant/Submissive authority orientation.
  */
 export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
   {
