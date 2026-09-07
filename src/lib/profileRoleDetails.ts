@@ -1,6 +1,5 @@
 import {
   dynamicModes,
-  receivingRoleHeadspaceIds,
   roleHeadspaces,
   type ComposedDefinition,
 } from "../data/headspacesQuiz";
@@ -19,9 +18,9 @@ export type ProfileRoleScore = {
 };
 
 export type ProfileRoleDetailsModel = {
-  submissiveHeadspaces: readonly ProfileRoleScore[];
+  headspaces: readonly ProfileRoleScore[];
   dynamicModes: readonly ProfileRoleScore[];
-  featuredSubmissiveHeadspaces: readonly ProfileRoleScore[];
+  featuredHeadspaces: readonly ProfileRoleScore[];
   featuredDynamicModes: readonly ProfileRoleScore[];
 };
 
@@ -107,14 +106,9 @@ function scoreDefinitions(
 export function buildProfileRoleDetails(
   canonicalSignals: readonly CanonicalSignalResult[],
 ): ProfileRoleDetailsModel {
-  const submissiveIds = new Set<string>(receivingRoleHeadspaceIds);
-  const submissiveDefinitions = roleHeadspaces.filter((definition) =>
-    submissiveIds.has(definition.id),
-  );
-
-  const submissiveHeadspaces = scoreDefinitions(
+  const headspaces = scoreDefinitions(
     canonicalSignals,
-    submissiveDefinitions,
+    roleHeadspaces,
   );
   const scoredDynamicModes = scoreDefinitions(
     canonicalSignals,
@@ -122,9 +116,9 @@ export function buildProfileRoleDetails(
   );
 
   return {
-    submissiveHeadspaces,
+    headspaces,
     dynamicModes: scoredDynamicModes,
-    featuredSubmissiveHeadspaces: submissiveHeadspaces.slice(
+    featuredHeadspaces: headspaces.slice(
       0,
       featuredHeadspaceCount,
     ),
