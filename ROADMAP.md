@@ -615,19 +615,23 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Exit condition:** Interest Areas provide useful category-level shape without making the profile busy. ✅
 
-### M7.9 — Explore / catalog drill-down
+### M7.9 — Explore / catalog drill-down ✅
 
 **Purpose:** provide deeper exploration without expanding all categories inline.
 
-- [ ] add a separate Explore all categories experience
-- [ ] expose category details, explicit states, and ranking context
-- [ ] add useful state-filter shortcuts into the editable catalog
-- [ ] support shortcuts such as Curious/Like/Love/Unsure where appropriate
-- [ ] preserve direct editing in the catalog rather than creating a second preference editor
+- [x] make each Interest Area open its focused catalog category
+- [x] auto-expand the selected category in the existing editable catalog
+- [x] add Explore all categories from the profile
+- [x] add compact Curious / Unsure / Hard Limits state-filter shortcuts
+- [x] preserve category rank, Overall rank, pairwise history, inference, and explicit editing in the existing catalog
+- [x] return focused catalog entry back to the profile
+- [x] preserve normal hub → catalog → hub behavior
+- [x] add visible focused-filter context with an Explore full catalog escape
+- [x] normalize stale category ids rather than creating broken focused routes
+- [x] keep the catalog as the single preference editing surface
+- [x] add deterministic routing/filter tests
 
-**Test before moving on:** follow profile → category/state drill-down → catalog edit → profile refresh and verify navigation/data continuity.
-
-**Exit condition:** users can move from summary to editable catalog detail without cluttering the main profile.
+**Exit condition:** users can move from summary to editable catalog detail without cluttering the main profile. ✅
 
 ### M7.10 — Explainability + coverage
 
@@ -780,6 +784,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7.9 — Explore / catalog drill-down**
+**M7.10 — Explainability + coverage**
 
-Add the separate category explorer/detail path behind Interest Areas instead of expanding all categories on the profile. Support opening one category at a time, richer within-category direct preference/ranking context, and compact state-filter shortcuts such as Curious / Unsure / Limits where useful.
+Turn the temporary M7.1/M7.2 inspection information into subordinate, human-readable profile explainability. Keep coverage/confidence separate from affinity, provide useful "why is this here?" detail without flooding the main profile, and remove or demote developer-facing inspection language where the real profile now has an equivalent user-facing surface.
