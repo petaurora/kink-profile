@@ -338,6 +338,35 @@ export function ProfileShareSummary({
         )}
       </section>
 
+      <section className="share-section">
+        <div className="share-section-heading">
+          <div>
+            <p className="share-kicker">Category themes</p>
+            <h3>Interest Areas</h3>
+          </div>
+          <small>Strongest direct-evidence areas</small>
+        </div>
+
+        {model.interestAreas.length > 0 ? (
+          <div className="share-interest-area-grid">
+            {model.interestAreas.map((area) => (
+              <div className="share-interest-area" key={area.categoryId}>
+                <strong>{area.label}</strong>
+                <p>
+                  {area.representativeItems
+                    .map((item) => item.label)
+                    .join(" · ")}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="share-empty">
+            Interest areas will appear as direct catalog evidence grows.
+          </p>
+        )}
+      </section>
+
       <footer className="share-summary-footer">
         Generated {new Date(model.generatedAt).toLocaleDateString()}
       </footer>
