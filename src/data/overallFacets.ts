@@ -58,7 +58,6 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
       {
         signalId: "responsibility_holding",
         weight: 0.8,
-        direction: "giving",
       },
       { signalId: "obedience", weight: 0.65, direction: "receiving" },
     ],
