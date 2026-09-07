@@ -21,8 +21,10 @@ import {
   saveCatalogProfile,
 } from "./lib/catalogProfileStorage";
 import type { StoredProfile } from "./lib/profileStorage";
-
-type PreferenceFilter = "all" | "unanswered" | CatalogPreferenceState;
+import type {
+  CatalogDrilldownFocus,
+  CatalogPreferenceFilter,
+} from "./lib/catalogDrilldown";
 
 function preferenceClass(state: CatalogPreferenceState | undefined) {
   return state ? `preference-${state.replaceAll("_", "-")}` : "preference-unanswered";
@@ -41,20 +43,31 @@ export function KinkCatalogPreferences({
   quizProfile,
   onClose,
   onPlayRanking,
+  initialFocus = {},
+  closeLabel = "Back to hub",
 }: {
   quizProfile: StoredProfile;
   onClose: () => void;
   onPlayRanking: () => void;
+  initialFocus?: CatalogDrilldownFocus;
+  closeLabel?: string;
 }) {
   const [profile, setProfile] = useState<CatalogProfileState>(() =>
     loadCatalogProfile(),
   );
   const [query, setQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState(
+    initialFocus.categoryId ?? "all",
+  );
   const [preferenceFilter, setPreferenceFilter] =
-    useState<PreferenceFilter>("all");
+    useState<CatalogPreferenceFilter>(
+      initialFocus.preferenceFilter ?? "all",
+    );
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    () => new Set(),
+    () =>
+      initialFocus.categoryId
+        ? new Set([initialFocus.categoryId])
+        : new Set(),
   );
   const [showReturnToTop, setShowReturnToTop] = useState(false);
 
@@ -171,10 +184,36 @@ export function KinkCatalogPreferences({
             Play This or That
           </button>
           <button className="secondary" onClick={onClose}>
-            Back to hub
+            {closeLabel}
           </button>
         </div>
       </div>
+
+      {(categoryFilter !== "all" || preferenceFilter !== "all") && (
+        <div className="catalog-focus-bar panel">
+          <div>
+            <span className="eyebrow">Focused catalog view</span>
+            <div className="catalog-focus-chips">
+              {categoryFilter !== "all" && (
+                <span>
+                  {kinkCategories.find((category) => category.id === categoryFilter)
+                    ?.label ?? categoryFilter}
+                </span>
+              )}
+              {preferenceFilter !== "all" && (
+                <span>
+                  {preferenceFilter === "unanswered"
+                    ? "Not set"
+                    : catalogPreferenceLabels[preferenceFilter]}
+                </span>
+              )}
+            </div>
+          </div>
+          <button className="text-button" onClick={resetFilters}>
+            Explore full catalog
+          </button>
+        </div>
+      )}
 
       <div className="catalog-toolbar panel">
         <label className="catalog-search">
@@ -213,7 +252,7 @@ export function KinkCatalogPreferences({
           <select
             value={preferenceFilter}
             onChange={(event) =>
-              setPreferenceFilter(event.target.value as PreferenceFilter)
+              setPreferenceFilter(event.target.value as CatalogPreferenceFilter)
             }
           >
             <option value="all">All states</option>
