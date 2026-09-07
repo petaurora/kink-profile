@@ -407,17 +407,24 @@ The share model contains only presentation-ready data. Raw answers, comparison h
 
 Recommended hierarchy:
 
-### Identity/header
+The share summary should feel like the same M7 profile with app-only controls removed, not like a second independently designed profile. Preserve the M7 reading order and visual emphasis wherever the export format allows it.
 
-- profile display name
-- "Kink Profile" / equivalent neutral title
-- optional generated/exported date
+### Profile header
 
-### Overall shape
+- compact profile identity/name in the kicker
+- M7 human-readable summary as the primary headline
+- Orientation, Headspaces, and Dynamic Modes directly beneath it
+- no app navigation such as "Back to explore"
 
-- strongest broad themes/facets
+### Overall profile
+
 - overall radar when it remains legible in the target format
-- compact orientation/headspace/dynamic-mode highlights
+- strongest broad themes/facets beneath the radar, matching the M7 profile hierarchy
+- preserve unknown/limited-evidence semantics
+
+### Role detail
+
+- concise Headspace and Dynamic Mode detail using the same results already exposed by M7
 
 ### Top interests
 
@@ -427,6 +434,8 @@ Recommended hierarchy:
 ### Limits
 
 - explicit Hard Limits in a clearly separate section
+
+Format-specific compaction is allowed, but it must not reverse the profile's hierarchy (for example, making the profile name the dominant headline while demoting the M7 summary to body copy).
 
 ### Curiosity / exploration
 
