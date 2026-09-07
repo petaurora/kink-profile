@@ -39,7 +39,7 @@ export type ProfileHeaderModel = {
   dynamicModes: readonly ProfileHeadlineTrait[];
 };
 
-const directionalFacetCoverageFloor = 12;
+const authorityCoverageFloor = 12;
 const orientationLeanThreshold = 15;
 const bidirectionalAffinityFloor = 60;
 
@@ -47,6 +47,7 @@ const headlineFacetCoverageFloor = 12;
 const headlineFacetAffinityFloor = 45;
 const composedTraitCoverageFloor = 20;
 const composedTraitAffinityFloor = 55;
+const authorityAffinityFloor = 55;
 
 const facetSummaryPhrases: Readonly<Record<OverallFacetId, string>> = {
   power_exchange: "power exchange",
@@ -186,22 +187,22 @@ export function deriveProfileOrientation(
   );
   const submissiveKnown =
     submissive.affinity !== null &&
-    submissive.coverage >= directionalFacetCoverageFloor;
+    submissive.coverage >= authorityCoverageFloor;
   const dominantKnown =
     dominant.affinity !== null &&
-    dominant.coverage >= directionalFacetCoverageFloor;
+    dominant.coverage >= authorityCoverageFloor;
 
   let key: ProfileOrientationKey = "insufficient";
 
   if (submissiveKnown || dominantKnown) {
     if (submissiveKnown && !dominantKnown) {
       key =
-        (submissive.affinity ?? 0) >= composedTraitAffinityFloor
+        (submissive.affinity ?? 0) >= authorityAffinityFloor
           ? "submissive"
           : "mixed";
     } else if (!submissiveKnown && dominantKnown) {
       key =
-        (dominant.affinity ?? 0) >= composedTraitAffinityFloor
+        (dominant.affinity ?? 0) >= authorityAffinityFloor
           ? "dominant"
           : "mixed";
     } else {
@@ -211,12 +212,12 @@ export function deriveProfileOrientation(
 
       if (
         difference >= orientationLeanThreshold &&
-        submissiveAffinity >= composedTraitAffinityFloor
+        submissiveAffinity >= authorityAffinityFloor
       ) {
         key = "submissive";
       } else if (
         difference <= -orientationLeanThreshold &&
-        dominantAffinity >= composedTraitAffinityFloor
+        dominantAffinity >= authorityAffinityFloor
       ) {
         key = "dominant";
       } else if (
