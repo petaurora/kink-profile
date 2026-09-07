@@ -4,8 +4,8 @@
 
 Living product direction.
 
-**Implemented through:** M6 — Catalog Integration  
-**Current:** M7 — Full Overall Profile
+**Implemented through:** M7 — Full Overall Profile  
+**Current:** choose the next roadmap slice intentionally; M8 is optional and M9 is partially implemented
 
 The app is now structurally a collection of independently completable quizzes rather than one monolithic assessment.
 
@@ -348,15 +348,17 @@ Example:
 
 Dynamic modes such as Surrender, Protocol, or Primal / Feral are shown as explanatory context.
 
-For M3, radar visualization is intentionally separated into receiving/submissive roles, giving/dominant roles, and underlying dynamic modes so one crowded chart does not flatten distinct directions.
+For M3, radar visualization is intentionally separated into self-positioned roles, partner-positioned roles, and underlying dynamic modes so one crowded chart does not flatten distinct role groupings. These are presentation groupings, not Dominant/Submissive classifications.
 
 ## Overall profile
 
-The overall profile aggregates completed core sections.
+The overall profile aggregates the source-aware evidence currently available from core quizzes, direct catalog preferences, and meaningful This-or-That comparisons.
 
-Unexplored sections remain explicitly unknown.
+Partial evidence can contribute where measured; missing evidence remains explicitly unknown rather than becoming 0%.
 
-M1 implements the profile/progress shell. M7 is now the active milestone for full cross-section aggregation.
+M7 implements the full cross-section aggregation and presentation layer. Completion/progress context stays subordinate to the resulting profile.
+
+Authority orientation is not inferred from generic activity side. Giving/receiving pain, restraint, discipline, care, pursuit, or other activities remains separate from Dominant/Submissive authority, and role/headspace labels remain independently overlapping.
 
 ## Visualizations
 
@@ -366,7 +368,7 @@ Supported/current direction:
 - radar/spider charts
 - completion/progress state
 
-The active M7 presentation direction is a unified overall profile with drill-down, not four mandatory peer views. Section-local D/s / Headspaces / activity results remain available from their existing sections; future dedicated alternate views can be added only if they prove useful.
+The M7 presentation is a unified overall profile with drill-down, not four mandatory peer views. Section-local D/s / Headspaces / activity results remain available from their existing sections; future dedicated alternate views can be added only if they prove useful.
 
 ---
 
@@ -465,13 +467,11 @@ signals:
   giving_restraint: 0.25
 ```
 
-That can eventually support language such as:
+That supports derived catalog affinity/explainability without turning inferred affinity into an explicit preference.
 
-> Based on your profile, collars may be worth exploring.
+M6 defines/validates catalog mappings and the source-aware catalog affinity contract.
 
-M6 defines/validates catalog mappings and a pure affinity contract.
-
-M7 owns the canonical cross-quiz signal profile and profile-wide inferred-exploration UI so M6 does not duplicate cross-quiz aggregation.
+M7 owns the canonical cross-quiz signal profile and aggregate profile presentation so M6 does not duplicate cross-quiz aggregation.
 
 
 ---
@@ -550,7 +550,6 @@ These do not block the current core quiz work.
 Already decided in M6: **Hard Limit is a distinct explicit state from Not Interested / Not Applicable.** It controls eligibility/recommendation behavior without erasing historical or derived evidence used for explainability.
 
 1. Should every section eventually offer both Quick and Deep modes?
-2. When M7 aggregates the overall profile, how should source-aware evidence from M2 and M3 be combined without silently changing section-local results?
-3. For future recommendation ordering, how should explicit positive preference affect placement relative to inference-only suggestions?
-4. Should a user be able to exclude a completed section from their overall profile?
-5. Does "Pet Profile" remain the final product name once the app covers broader BDSM interests?
+2. For future recommendation ordering, how should explicit positive preference affect placement relative to inference-only suggestions?
+3. Should a user be able to exclude one quiz/evidence source from the aggregate profile?
+4. Does "Pet Profile" remain the final product name once the app covers broader BDSM interests?
