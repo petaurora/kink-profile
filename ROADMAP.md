@@ -522,17 +522,18 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 - [x] add concise human-readable strongest-theme summary
 - [x] add compact Orientation trait
-- [x] add compact Headspaces traits
+- [x] derive D/s orientation from authority-specific D/s evidence rather than generic activity direction
+- [x] keep pain/restraint/discipline/care/pursuit side preferences out of D/s classification
+- [x] keep delegated responsibility-holding neutral to Dominant/Submissive orientation
+- [x] add compact Headspaces traits without authority-direction buckets
 - [x] add compact Dynamic Modes traits
-- [x] preserve receiving/giving direction in headline headspaces
-- [x] distinguish internal directional states while presenting them as Submissive / Dominant / Dominant + submissive / Context-dependent / Still emerging
-- [x] keep receiving/giving implementation vocabulary out of normal header copy and Headspace chips
+- [x] present Submissive / Dominant / Dominant + submissive / Context-dependent / Still emerging
 - [x] suppress low-evidence composed labels rather than overclaim them
 - [x] avoid declaring one identity as the user's single result
 - [x] keep completion/progress mechanics out of the profile header
-- [x] test directional, bidirectional, mixed, sparse, and partial profile cases
+- [x] test authority, activity-side, sparse, and partial profile cases
 
-**Exit condition:** the header provides a useful standalone summary from real aggregated data. ✅
+**Exit condition:** the header provides a useful standalone summary while keeping authority separate from activity side. ✅
 
 ### M7.4 — Overall radar ✅
 
@@ -554,17 +555,17 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 
 **Purpose:** add recognizable profile language beneath the broad facets.
 
-- [x] show compact top 5 submissive-oriented Headspaces with percentages
-- [x] add Show all / Show less for the full known ranked submissive Headspace list
+- [x] show compact top 5 Headspaces across the full role/headspace set
+- [x] add Show all / Show less for the full known ranked Headspace list
 - [x] show top 5 strongest Dynamic Modes with percentages
 - [x] preserve independent overlapping scores
+- [x] keep role/headspace ranking orthogonal to Dominant/Submissive orientation
+- [x] allow Caregiver / Predator / Trainer / etc. to surface without treating them as dominant
 - [x] suppress very sparse composed labels rather than overclaim them
 - [x] qualify limited-but-usable evidence
-- [x] keep dominant-oriented Headspace presentation parked for the broader future directional-profile enhancement
-- [x] keep giving/receiving implementation vocabulary out of the normal UI
-- [x] add deterministic overlap/ranking/coverage tests
+- [x] add deterministic overlap/ranking/coverage/semantic-boundary tests
 
-**Exit condition:** Headspaces and Dynamic Modes add recognizable detail without replacing the broader profile model. ✅
+**Exit condition:** Headspaces and Dynamic Modes add recognizable detail without redefining authority orientation. ✅
 
 ### M7.6 — Top Overall catalog interests ✅
 
