@@ -472,8 +472,7 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>("hub");
   const [activeQuizId, setActiveQuizId] = useState<QuizId>(defaultQuiz.id);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [showAllSubmissiveHeadspaces, setShowAllSubmissiveHeadspaces] =
-    useState(false);
+  const [showAllHeadspaces, setShowAllHeadspaces] = useState(false);
   const [showAllHardLimits, setShowAllHardLimits] = useState(false);
   const [catalogDrilldown, setCatalogDrilldown] =
     useState<CatalogDrilldownTarget>(() => allCatalogDrilldown("hub"));
@@ -674,9 +673,9 @@ export default function App() {
     [canonicalSignals],
   );
 
-  const visibleSubmissiveHeadspaces = showAllSubmissiveHeadspaces
-    ? profileRoleDetails.submissiveHeadspaces
-    : profileRoleDetails.featuredSubmissiveHeadspaces;
+  const visibleHeadspaces = showAllHeadspaces
+    ? profileRoleDetails.headspaces
+    : profileRoleDetails.featuredHeadspaces;
 
   const catalogResultView = useMemo(
     () =>
@@ -1049,14 +1048,14 @@ export default function App() {
                   <h2>Headspaces</h2>
                 </div>
                 <p>
-                  These scores can overlap. They describe submissive-oriented role
-                  patterns, not one assigned identity.
+                  These scores can overlap. They describe recognizable role and
+                  headspace patterns, not one assigned identity or authority position.
                 </p>
               </div>
 
-              {visibleSubmissiveHeadspaces.length > 0 ? (
+              {visibleHeadspaces.length > 0 ? (
                 <div className="profile-role-list">
-                  {visibleSubmissiveHeadspaces.map((item, index) => (
+                  {visibleHeadspaces.map((item, index) => (
                     <div className="profile-role-row" key={item.id}>
                       <span className="profile-role-rank">
                         {String(index + 1).padStart(2, "0")}
@@ -1082,15 +1081,15 @@ export default function App() {
                 </p>
               )}
 
-              {profileRoleDetails.submissiveHeadspaces.length >
-                profileRoleDetails.featuredSubmissiveHeadspaces.length && (
+              {profileRoleDetails.headspaces.length >
+                profileRoleDetails.featuredHeadspaces.length && (
                 <button
                   className="text-button profile-role-toggle"
                   onClick={() =>
-                    setShowAllSubmissiveHeadspaces((shown) => !shown)
+                    setShowAllHeadspaces((shown) => !shown)
                   }
                 >
-                  {showAllSubmissiveHeadspaces ? "Show less" : "Show all headspaces"}
+                  {showAllHeadspaces ? "Show less" : "Show all headspaces"}
                 </button>
               )}
             </article>
