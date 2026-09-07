@@ -564,7 +564,7 @@ HTML export serializes only the rendered `share-summary` element and embeds the 
 
 PDF export starts from the same high-density rendered summary. It creates letter-sized pages and prefers boundaries marked by major summary sections before falling back to a raw page-height cut. Each page embeds a high-quality JPEG slice of the rendered card, keeping the radar and styled summary visually aligned with PNG/HTML.
 
-No external rendering/export dependency is required.
+PNG/PDF DOM capture uses `html2canvas` so mobile browsers do not rely on SVG `foreignObject` rendering, which can taint the resulting canvas and block `toBlob()` / `toDataURL()` exports. The PDF container itself remains generated locally by the app.
 
 ## Acceptance criteria
 
