@@ -466,13 +466,13 @@ export function RewardPunishmentProfiles({
       ) : view === "randomizer" ? (
         <RewardPunishmentRandomizer
           profile={profile}
-          onOpenDetails={(primitive, targetContext) => {
+          onSetupPool={(targetContext) => {
             setContext(targetContext);
-            setQuery(primitive?.label ?? "");
+            setQuery("");
             setCategoryFilter("all");
             setSourceFilter("all");
             setSuitabilityFilter("all");
-            setRandomOnly(false);
+            setRandomOnly(true);
             setView("details");
           }}
         />

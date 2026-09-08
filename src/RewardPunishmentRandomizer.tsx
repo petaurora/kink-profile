@@ -63,13 +63,10 @@ function sourceOriginText(primitive: RewardPunishmentPrimitive) {
 
 export function RewardPunishmentRandomizer({
   profile,
-  onOpenDetails,
+  onSetupPool,
 }: {
   profile: RewardPunishmentProfileState;
-  onOpenDetails: (
-    primitive: RewardPunishmentPrimitive | undefined,
-    context: RewardPunishmentContext,
-  ) => void;
+  onSetupPool: (context: RewardPunishmentContext) => void;
 }) {
   const pools = useMemo(
     () => ({
@@ -161,7 +158,7 @@ export function RewardPunishmentRandomizer({
               {pool.length === 0 && (
                 <button
                   className="text-button"
-                  onClick={() => onOpenDetails(undefined, target)}
+                  onClick={() => onSetupPool(target)}
                 >
                   Set up this pool
                 </button>
@@ -204,12 +201,6 @@ export function RewardPunishmentRandomizer({
           <div className="rp-randomizer-actions">
             <button className="primary" onClick={() => pick(context)}>
               Pick again
-            </button>
-            <button
-              className="secondary"
-              onClick={() => onOpenDetails(result, context)}
-            >
-              View details
             </button>
           </div>
 

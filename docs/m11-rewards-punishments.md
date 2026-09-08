@@ -1853,7 +1853,7 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 - [x] never promote inferred proposals into the random pool
 - [x] never fall back to unrated/unapproved source ideas
 - [x] add Pick again
-- [x] allow detail/view-source navigation
+- [x] allow source/provenance inspection + empty-pool setup navigation
 - [x] avoid immediate reroll repetition within the current session
 - [x] add empty-pool states
 - [x] keep contextual rank from silently becoming random probability weighting in V1
