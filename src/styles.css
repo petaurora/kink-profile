@@ -23,14 +23,19 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   position: sticky;
   top: 0;
   z-index: 50;
+  width: 100%;
+  background: color-mix(in srgb, var(--bg-page) 92%, transparent);
+  backdrop-filter: blur(16px);
+}
+
+.site-header-inner {
+  width: min(1180px, calc(100% - 32px));
   min-height: 64px;
+  margin: 0 auto;
+  padding: 8px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
-  padding: 8px 0;
-  background: color-mix(in srgb, var(--bg-page) 92%, transparent);
-  backdrop-filter: blur(16px);
 }
 
 .site-header-nav {
