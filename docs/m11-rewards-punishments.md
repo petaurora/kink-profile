@@ -1870,18 +1870,18 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 **Purpose:** compose reusable multi-part rewards and punishments.
 
-- [ ] add Build a reward
-- [ ] add Build a punishment
-- [ ] select components from catalog + action primitives
-- [ ] surface inferred proposals as optional exploration helpers without auto-adding them
-- [ ] support recipe-local custom text components
-- [ ] support ordered components
-- [ ] add name + notes + tags
-- [ ] save/edit/duplicate/delete recipes
-- [ ] keep recipes non-recursive in V1
-- [ ] flag stale or context-`never` components as Needs review
-- [ ] prevent Needs review recipes from random selection
-- [ ] add deterministic recipe validation tests
+- [x] add Build a reward
+- [x] add Build a punishment
+- [x] select components from catalog + action primitives
+- [x] surface inferred proposals as optional exploration helpers without auto-adding them
+- [x] support recipe-local custom text components
+- [x] support ordered components
+- [x] add name + notes + tags
+- [x] save/edit/duplicate/delete recipes
+- [x] keep recipes non-recursive in V1
+- [x] flag stale or context-`never` components as Needs review
+- [x] prevent Needs review recipes from random selection
+- [x] add deterministic recipe validation tests
 
 **Exit condition:** a user can create named reusable combinations without the app tracking whether they were assigned or completed.
 
