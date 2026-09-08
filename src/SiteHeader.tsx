@@ -9,7 +9,8 @@ export type SiteHeaderDestination =
   | "hub"
   | "profile"
   | "ranking"
-  | "catalog";
+  | "catalog"
+  | "rewards-punishments";
 
 type SiteHeaderProps = {
   displayName: string;
@@ -69,6 +70,9 @@ export function SiteHeader({
             </button>
             <button type="button" onClick={() => navigate("catalog")}>
               Catalog
+            </button>
+            <button type="button" onClick={() => navigate("rewards-punishments")}>
+              Rewards / Punishments
             </button>
           </nav>
         )}
