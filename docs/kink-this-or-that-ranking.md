@@ -259,7 +259,7 @@ Useful when:
 
 # Relationship to explicit preference state
 
-C3 implementation details are recorded in [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md). C4 source-aware evidence convergence is implemented; C5 now owns the remaining ranking-confidence/finalist hardening.
+C3 implementation details are recorded in [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md). C4 source-aware evidence convergence and C5 ranking-confidence/finalist hardening are both complete.
 
 This-or-That is intentionally a mini-game for comparative discovery/ranking. Direct preference assignment belongs in the separate catalog table/list.
 
@@ -573,11 +573,11 @@ Exact rank values do not need to be persisted if they can be recalculated.
 
 ---
 
-# Future partner comparison
+# M14 shared-profile integration
 
-Ranked preferences become especially useful if partner-profile comparison is eventually implemented.
+Partner/profile comparison is now explicitly scoped in [M14 Shared Profiles, Comparison & Partner Integration](m14-shared-profiles.md).
 
-Example:
+Rank evidence can contribute useful context such as:
 
 ```text
 Shared favorites
@@ -587,19 +587,7 @@ Rope Bondage   You #2      Partner #2
 Praise         You #3      Partner #7
 ```
 
-Compatibility should eventually be able to distinguish:
-
-```text
-both said "yes"
-```
-
-from:
-
-```text
-this is a top-five preference for both people
-```
-
-This is future scope, not required for initial ranking implementation.
+M14 goes beyond "both said yes": it distinguishes mutual positive fit, complementary activity-side fit, curiosity, exclusions, and unknown while keeping each profile's ranking evidence independent. It does **not** turn rank overlap into one compatibility percentage.
 
 ---
 
@@ -646,7 +634,7 @@ Implemented:
 - [x] untouched categories contribute zero finalists
 - [x] categories with fewer than five items naturally contribute fewer finalists
 
-Still needed:
+C5 hardening (complete):
 
 - [x] require at least one meaningful ordering comparison for each promoted item; one comparison can promote only the items involved
 - [x] preserve eligible prior meaningful Overall participants when current category Top 5 changes
@@ -661,10 +649,13 @@ Implemented:
 - [x] Overall confidence
 - [x] existing raw Overall comparisons remain stored as the pool grows
 
-Still needed:
+Implemented hardening:
+
+- [x] derive the active candidate pool from current eligible finalists + eligible prior meaningful Overall participants; no separate persistence needed
+
+Optional tuning:
 
 - [ ] determine whether selection should prioritize resolving the top of the list more aggressively
-- [x] derive the active candidate pool from current eligible finalists + eligible prior meaningful Overall participants; no separate persistence needed
 
 ## R5 — This-or-that UI ✅
 
@@ -682,7 +673,7 @@ Implemented:
 - [x] separate Overall destination
 - [x] no prototype stage tabs/dropdown navigation
 
-## R6 — Results/profile integration 🟡
+## R6 — Results/profile integration ✅
 
 Implemented:
 
@@ -696,9 +687,13 @@ C6 integration:
 - [x] exclusion/hard-limit summaries separate from favorites
 - [x] inferred affinity shown as a separate derived channel, never as rank
 - [x] source-aware catalog detail/explainability
-- [ ] optional tiers if they prove useful
+- [x] M7 consumes direct explicit + Overall pairwise evidence into the broader profile Top Overall presentation without changing the underlying ranking source
 
-M7 remains responsible for any new presentation-level aggregate that combines multiple independent direct evidence sources into a broader profile "Top Overall" result.
+Optional future presentation:
+
+- [ ] tiers, if they prove useful
+
+See [Overall Profile Aggregation](overall-profile-aggregation.md) for the completed M7 Top Overall aggregation contract.
 
 ---
 
