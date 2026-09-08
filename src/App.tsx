@@ -843,6 +843,11 @@ export default function App({
       return;
     }
 
+    if (destination === "rewards-punishments") {
+      openRewardsPunishments();
+      return;
+    }
+
     setScreen(destination);
   };
 
@@ -874,10 +879,14 @@ export default function App({
             <div>
               <p className="eyebrow">Build it your way</p>
               <h1>Not one giant fucking test.</h1>
-              <p className="hero-copy">
+              <p className="hero-copy hub-hero-copy-desktop">
                 Use guided quizzes to spot patterns, This or That to compare what actually wins,
                 and the catalog to get specific. Start anywhere, revisit anything, and refine as
                 much or as little as you want.
+              </p>
+              <p className="hero-copy hub-hero-copy-mobile">
+                Explore broadly, compare what wins, then refine the details. Revisit anything
+                whenever you want.
               </p>
             </div>
           </div>
