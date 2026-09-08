@@ -102,8 +102,8 @@ export function captureActiveKinkRankingSnapshots(
 export function startNewKinkRankingRun(
   profile: CatalogProfileState,
   eligibleCatalog: readonly KinkCatalogItem[],
-  startedAt = new Date().toISOString(),
   newRunId: string,
+  startedAt = new Date().toISOString(),
 ): CatalogProfileState {
   const activeRunId = getActiveKinkRankingRunId(profile);
   const history = profile.rankingHistory;
