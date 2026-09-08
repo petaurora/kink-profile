@@ -181,9 +181,14 @@ Conceptually:
 interface RewardPunishmentActionDefinition {
   id: RewardPunishmentActionId;
   label: string;
-  category: string;
   description?: string;
   tags?: string[];
+
+  // normalized M11 taxonomy; source category text remains provenance only
+  contextCategories: Array<{
+    id: RewardPunishmentCategoryId;
+    weight: number;
+  }>;
 
   // provenance only; not a restriction on contextual use
   sourceOrigins: Array<{
@@ -226,6 +231,31 @@ But:
 ```
 
 should not be flattened merely because both involve impact.
+
+## Stable contextual category taxonomy
+
+M11 needs its own stable contextual category IDs so actions from different source sheets and M6 catalog items can participate in the same reward/punishment aggregation.
+
+Examples of contextual category concepts may include:
+
+- Care / Pampering
+- Praise / Recognition
+- Choice / Privilege
+- Connection / Attention
+- Service
+- Accountability / Structure
+- Impact
+- Restraint / Control
+- Sensory / Intensity
+- Sexual / Scene
+- Protocol / Obedience
+- Playful / Psychological
+
+The exact taxonomy should be normalized and versioned during M11.1 rather than using raw source-sheet category strings as identity.
+
+A primitive may map to more than one contextual category with bounded weights.
+
+Source category labels remain provenance/display metadata only.
 
 ## Catalog-linked source actions
 
@@ -337,6 +367,408 @@ Do not treat random eligibility as another preference signal for M7.
 
 ---
 
+# Category aggregation + inferred contextual proposals
+
+M11 should reuse the same source-aware pattern that makes the M6 catalog useful:
+
+> **store direct evidence, derive proposals, keep the proposal visibly different from what the user actually chose.**
+
+The user should not have to explicitly classify every primitive before the app can become useful.
+
+## Evidence layers
+
+For each primitive and each context, keep these concepts separate:
+
+```text
+DIRECT CONTEXTUAL EVIDENCE
+user chose Reward / Punishment / Both / Neither
+or refined Strong / Works / Depends / No / Never
+        │
+        ├──────────────► CONTEXT CATEGORY PROFILE
+        │                 direct evidence only
+        │
+        └──────────────► confirmed profile summaries
+                          direct evidence only
+
+CANONICAL M7 SIGNAL PROFILE ───────┐
+M6 GENERAL CATALOG CONTEXT ────────┤
+DIRECT M11 CATEGORY PREFERENCES ───┤
+SIMILAR CONFIRMED M11 ITEMS ───────┤
+                                   ▼
+                         INFERRED M11 PROPOSAL
+                         "this may work as a reward"
+                                   │
+                                   ▼
+                         suggestion / exploration UI
+```
+
+An inferred proposal is a **derived view**, not another authoritative evidence source.
+
+If the user accepts or edits a proposal, that new choice becomes direct M11 contextual evidence.
+
+## Separate reward and punishment category profiles
+
+Category aggregation is context-specific.
+
+The same category can therefore look completely different in the two profiles:
+
+```text
+Impact
+Reward affinity:      Strong
+Punishment affinity:  Strong
+
+Care / Pampering
+Reward affinity:      Strong
+Punishment affinity:  Low / not established
+```
+
+Never calculate one generic "reward/punishment category score."
+
+## Direct category aggregation
+
+Only direct M11 contextual states contribute to the category profile.
+
+Recommended initial numeric projection for aggregation:
+
+| Direct contextual state | Aggregation value |
+| --- | ---: |
+| `strong` | 1.00 |
+| `works` | 0.75 |
+| `depends` | 0.50 |
+| `no` | 0.00 |
+| `never` | 0.00 + explicit boundary metadata |
+| `unset` | excluded |
+
+When a primitive maps to multiple contextual categories, apply its configured category-mapping weight.
+
+For a category/context pair:
+
+```text
+category affinity
+= weighted mean of known direct contextual states
+
+category evidence
+= separate breadth / coverage measure
+```
+
+Do not treat unknown items as 0.
+
+Do not let one strongly rated item create the same confidence as a category supported by many independent direct choices.
+
+Category coverage/breadth must therefore stay separate from category affinity, following the same general M7 principle that **strength is not evidence coverage**.
+
+Exact breadth constants can be tuned during M11.3, but they must be deterministic, versioned, and tested.
+
+## Category preference weighting
+
+The derived reward-category and punishment-category profiles should influence:
+
+- inferred proposal ordering
+- which unrated items are most useful to surface next
+- contextual profile summaries
+- ordering among otherwise equivalent confirmed items
+- the overall-profile M11 section
+
+Category preference is a **bounded weighting input**, not an override.
+
+For confirmed/direct items:
+
+1. direct contextual state remains primary
+2. category preference may break/order ties or provide a bounded relevance modifier
+3. category weighting must never rewrite the underlying direct state
+
+For inferred items:
+
+- strong, well-supported contextual categories may raise a proposal
+- weak or low-coverage categories should shrink toward neutral rather than strongly suppressing/boosting
+- an inferred category score may never override an explicit item-level `no` or `never`
+
+## Inferred proposal model
+
+Conceptually:
+
+```ts
+interface InferredContextProposal {
+  ref: RewardPunishmentPrimitiveRef;
+  context: 'reward' | 'punishment';
+
+  score: number;       // 0..1 inferred contextual fit
+  confidence: number;  // 0..1 evidence/mapping confidence
+
+  band: 'likely' | 'possible' | 'weak';
+
+  categoryContributions: Array<{
+    categoryId: RewardPunishmentCategoryId;
+    affinity: number;
+    coverage: number;
+    weight: number;
+  }>;
+
+  reasons: string[];
+  sourceEvidenceIds: string[];
+}
+```
+
+The exact implementation type may differ, but score, confidence/coverage, context, and provenance must remain distinguishable.
+
+## Proposal inputs
+
+M11 inference may use:
+
+1. **canonical M7 signal evidence** through explicit M11 action/category mappings
+2. **M11 contextual category affinity** derived from direct M11 choices
+3. **similar confirmed M11 items** through shared contextual categories/tags/mechanisms
+4. **M6 general catalog evidence/affinity** when the primitive is catalog-linked
+5. explicit M6 exclusions/Hard Limits as blocking evidence where applicable
+
+Do not read raw quiz percentages directly and invent M11 meaning from them. Reuse the canonical M7 signal/evidence boundary.
+
+### Reward proposals
+
+General positive kink/catalog affinity is a reasonable supporting signal for reward fit.
+
+Example:
+
+```text
+high general affinity for massage/caretaking
++ strong direct Reward affinity for Care / Pampering
++ similar confirmed reward items
+→ "Likely reward"
+```
+
+M6 general affinity remains supporting evidence only; it does not create an explicit reward state.
+
+### Punishment proposals
+
+Punishment inference is intentionally more conservative.
+
+**Dislike, aversion, or low general kink affinity is never positive punishment evidence.**
+
+Punishment proposals should lean primarily on:
+
+- direct punishment-category preferences
+- similar directly confirmed punishment items
+- mapped canonical signals that are contextually relevant
+- explicit contextual patterns already established in M11
+
+General catalog preference may provide compatibility/context, but:
+
+```text
+"I dislike this"
+≠
+"this should be proposed as a punishment"
+```
+
+Explicit Hard Limits or M11 `never` always block a punishment proposal.
+
+## Suggested initial weighting contract
+
+M11.3 should lock/test versioned weights. A reasonable initial shape is:
+
+### Reward proposal
+
+```text
+30% mapped canonical-signal fit
+35% reward-category affinity × category evidence strength
+20% similarity to directly confirmed reward items
+15% M6 general catalog compatibility
+```
+
+### Punishment proposal
+
+```text
+25% mapped canonical-signal fit
+45% punishment-category affinity × category evidence strength
+30% similarity to directly confirmed punishment items
+```
+
+Missing inputs are renormalized over the evidence that actually exists.
+
+These are proposal weights only. They never alter direct user states.
+
+If implementation evidence suggests these exact constants produce poor calibration, change them deliberately with tests/versioning rather than silently tuning them in UI code.
+
+## Proposal visibility
+
+An unrated item may show:
+
+```text
+Hair wash + scalp massage
+
+Profile suggestion
+Likely reward · 82%
+Care / Pampering · Caretaking
+
+[ Accept as reward ]
+[ Refine ]
+```
+
+or:
+
+```text
+Slow-count impact set
+
+Profile suggestion
+Possible punishment · 67%
+Impact · Accountability
+
+[ Accept as punishment ]
+[ Refine ]
+```
+
+Accepting a proposal should create a conservative explicit `works` state for that context.
+
+It must **not**:
+
+- create `strong`
+- create `never`
+- add the item to the random pool automatically
+- change M6 general preference
+- feed into D/s orientation
+
+## Explicit always wins
+
+Once the user has any direct contextual state for an item/context:
+
+- `strong`
+- `works`
+- `depends`
+- `no`
+- `never`
+
+that direct state is authoritative for presentation.
+
+The app may still retain the current inferred score for explainability/debugging, but it must not display the inference as though it competes with the direct answer.
+
+## Sorter + inference
+
+The quick sorter may use inference to reduce grunt work.
+
+Useful behavior:
+
+- prioritize high-confidence unrated proposals
+- show a small **Suggested: Reward / Punishment / Both** hint
+- explain the top reason on demand
+- never preselect or auto-submit an answer
+- the user's tap remains the direct evidence
+
+This lets the sorter feel more like:
+
+> "Here are the things your profile thinks are worth sorting first."
+
+rather than an arbitrary 1,000-item deck.
+
+## Hard rule: no feedback loops
+
+Allowed:
+
+```text
+M7 CANONICAL SIGNALS ───────────────► INFERRED M11 PROPOSAL
+
+DIRECT M11 ITEM CHOICES ────────────► M11 CATEGORY PROFILE
+DIRECT M11 ITEM CHOICES ────────────► SIMILARITY EVIDENCE
+
+M11 CATEGORY PROFILE ───────────────► INFERRED M11 PROPOSAL
+SIMILARITY EVIDENCE ────────────────► INFERRED M11 PROPOSAL
+```
+
+Forbidden:
+
+```text
+inferred M11 proposal
+      ↓
+category preference becomes stronger
+      ↓
+proposal becomes stronger
+      ↓
+category preference becomes stronger
+      ↓
+feedback loop
+```
+
+Therefore:
+
+> **Inferred M11 proposals may never contribute to M11 category affinity, M7 canonical signals, or another inference source as though they were direct evidence.**
+
+Direct M11 contextual choices also do **not** feed M7 general kink affinity in V1 because "works as a punishment" is not the same semantic statement as "I generally like this kink."
+
+---
+
+# In-app overall profile integration
+
+M11 should add a distinct **Rewards & Punishments** section to the in-app overall profile once enough direct M11 evidence exists.
+
+It does not become a tenth M7 radar facet and does not alter the existing M7 nine-axis radar.
+
+Recommended shape:
+
+```text
+REWARDS & PUNISHMENTS
+
+Rewards
+Care & Pampering        Strong
+Praise & Recognition   Strong
+Scene / Play            Growing
+
+Confirmed
+Hair brushing · Massage · Dedicated cuddle time
+
+Suggested to explore
+Spa bath · Planned scene
+
+Punishments
+Impact                  Strong
+Accountability          Strong
+Restraint / Control     Moderate
+
+Confirmed
+Spanking · Writing lines · Chastity
+
+Suggested to explore
+Slow-count impact set · Structured obedience task
+
+[ Explore rewards & punishments ]
+```
+
+## Profile aggregation rules
+
+For each context:
+
+1. derive category affinity from **direct M11 contextual evidence only**
+2. keep category evidence coverage/breadth separate
+3. show approximately the top 3–4 meaningful categories
+4. show representative directly confirmed items first
+5. use category preference as a bounded ordering modifier among otherwise comparable direct items
+6. show inferred items only in a clearly separate **Suggested to explore** area
+7. never let inferred items displace confirmed items
+8. show fewer rather than padding a sparse profile
+
+## Profile hierarchy boundary
+
+The M11 section is an additional contextual profile dimension.
+
+It must not rewrite or vote on:
+
+- M7 overall radar facets
+- D/s orientation
+- Headspaces
+- Dynamic Modes
+- M7 Top Overall kink interests
+- M7 Hard Limits
+- M7 Interest Areas
+
+Those continue to mean what they mean today.
+
+The overall profile can present M11 alongside M7 because both describe the person, while keeping their evidence semantics separate.
+
+## Share-summary boundary
+
+This in-app profile integration does **not** change the M9 share-summary privacy rule.
+
+M11 Rewards & Punishments remain excluded from exported/shareable summaries by default.
+
+---
+
 # Rewards & Punishments page
 
 Add a first-class destination from the main app/navigation.
@@ -349,7 +781,9 @@ Rewards & Punishments
 [ Rewards ] [ Punishments ]
 
 Reward profile / Punishment profile
+  contextual category summary
   searchable list
+  explicit + inferred/resolved context
   category filters
   source filters
   suitability controls
@@ -917,24 +1351,26 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ## M11.1 — Runtime library + stable identity
 
-**Purpose:** turn the existing reference bank into a safe runtime primitive source.
+**Purpose:** turn the existing reference bank into a safe runtime primitive source and normalize category identity.
 
 - [ ] define stable `RewardPunishmentActionId`
+- [ ] define/version stable `RewardPunishmentCategoryId`
 - [ ] normalize source reward/punishment ideas into one action library
 - [ ] preserve source provenance
 - [ ] deduplicate obvious runtime duplicates
 - [ ] link exact/meaningful overlaps to M6 catalog IDs
-- [ ] keep source-sheet origin as metadata only
+- [ ] map catalog/action primitives into normalized contextual categories with bounded weights
+- [ ] keep source-sheet origin/category text as metadata only
 - [ ] define primitive union of catalog + action references
-- [ ] add deterministic stable-ID / dedupe / catalog-link tests
+- [ ] add deterministic stable-ID / category-mapping / dedupe / catalog-link tests
 
-**Exit condition:** the app has one stable primitive universe without treating TSV row order as identity.
+**Exit condition:** the app has one stable primitive + contextual-category universe without treating TSV row order or raw source category text as identity.
 
 ---
 
-## M11.2 — Contextual-use profiles
+## M11.2 — Direct contextual-use profiles
 
-**Purpose:** let the user define what actually works as a reward and/or punishment.
+**Purpose:** let the user explicitly define what actually works as a reward and/or punishment.
 
 - [ ] add M11 profile storage/versioning
 - [ ] add independent reward/punishment suitability overlays
@@ -944,14 +1380,37 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 - [ ] add Reward and Punishment profile views
 - [ ] support search/category/source/suitability filters
 - [ ] optionally show read-only general M6 preference context
-- [ ] ensure M11 edits never mutate M6/M7 evidence
+- [ ] ensure M11 direct edits never mutate M6/M7 evidence
 - [ ] add deterministic overlay independence tests
 
-**Exit condition:** the user can build clear lists of what works as a reward and what works as a punishment without conflating either with general preference.
+**Exit condition:** direct contextual evidence is authoritative, independent, and ready to drive category aggregation.
 
 ---
 
-## M11.3 — Quick Reward / Punishment / Both sorter
+## M11.3 — Category aggregation + inferred proposals
+
+**Purpose:** give M11 the same "profile can suggest useful starting points" behavior as the M6 catalog without turning derived guesses into explicit answers.
+
+- [ ] derive separate Reward and Punishment category affinity from direct M11 evidence only
+- [ ] keep category affinity separate from category evidence breadth/coverage
+- [ ] use stable contextual-category mapping weights
+- [ ] add versioned inferred contextual proposal model with score + confidence + provenance
+- [ ] reuse canonical M7 signal evidence rather than raw quiz percentages
+- [ ] use M6 general affinity as bounded supporting evidence for Reward proposals
+- [ ] weight proposals by direct M11 contextual category preferences
+- [ ] use similar directly confirmed M11 items as supporting evidence
+- [ ] never use dislike/aversion as positive punishment evidence
+- [ ] enforce Hard Limit / context-`never` proposal blockers
+- [ ] keep inferred proposals out of random eligibility
+- [ ] accepting a proposal creates conservative explicit `works`, not `strong`
+- [ ] prevent inferred proposals from feeding category aggregation or M7 signals
+- [ ] add deterministic score/confidence/no-feedback-loop tests
+
+**Exit condition:** unrated items can show explainable Reward/Punishment proposals weighted by the user's category patterns while explicit choices remain authoritative.
+
+---
+
+## M11.4 — Quick Reward / Punishment / Both sorter
 
 **Purpose:** make contextual classification fast and playful instead of requiring the full table.
 
@@ -962,22 +1421,25 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 - [ ] do not change random eligibility from sorter choices
 - [ ] persist through the contextual overlay rather than a parallel answer model
 - [ ] add Continue unsorted and category/source-focused runs
+- [ ] allow high-confidence inferred proposals to prioritize the queue
+- [ ] optionally show Suggested: Reward / Punishment / Both without auto-selecting it
 - [ ] add Back / Undo and resume behavior
 - [ ] protect existing nuanced `strong/depends/never` states from accidental overwrite
 - [ ] keep the table/list as the secondary detailed editing surface
-- [ ] add deterministic sorter-mapping/state-preservation tests
+- [ ] add deterministic sorter-mapping/proposal/state-preservation tests
 
-**Exit condition:** the user can rapidly sort the primitive universe into Reward / Punishment / Both / Neither without grinding through a giant table.
+**Exit condition:** the user can rapidly sort the primitive universe, with useful inferred prioritization, without grinding through a giant table.
 
 ---
 
-## M11.4 — Randomizer
+## M11.5 — Randomizer
 
 **Purpose:** provide the lightweight "just pick one" utility.
 
 - [ ] add Random reward
 - [ ] add Random punishment
 - [ ] select only explicitly eligible positive-context items
+- [ ] never promote inferred proposals into the random pool
 - [ ] never fall back to unrated/unapproved source ideas
 - [ ] add Pick again
 - [ ] allow detail/view-source navigation
@@ -986,17 +1448,18 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 - [ ] keep assignment/completion/history semantics out
 - [ ] add deterministic eligibility tests and injectable RNG for tests
 
-**Exit condition:** either contextual pool can produce a valid random suggestion without becoming a task/consequence system.
+**Exit condition:** either contextual pool can produce a valid random suggestion using only explicitly approved entries.
 
 ---
 
-## M11.5 — Reward & punishment builders
+## M11.6 — Reward & punishment builders
 
 **Purpose:** compose reusable multi-part rewards and punishments.
 
 - [ ] add Build a reward
 - [ ] add Build a punishment
 - [ ] select components from catalog + action primitives
+- [ ] surface inferred proposals as optional exploration helpers without auto-adding them
 - [ ] support recipe-local custom text components
 - [ ] support ordered components
 - [ ] add name + notes + tags
@@ -1010,38 +1473,41 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ---
 
-## M11.6 — Recipe randomization + lifecycle integration
+## M11.7 — Recipe randomization + lifecycle integration
 
-**Purpose:** make saved recipes first-class optional randomizer entries and preserve them through profile management.
+**Purpose:** make saved recipes first-class optional randomizer entries and preserve authoritative M11 state through profile management.
 
-- [ ] allow saved recipes in reward/punishment random pools
+- [ ] allow valid saved recipes in reward/punishment random pools
 - [ ] display recipe vs primitive clearly in random results
-- [ ] update full profile export/import for M11 state
+- [ ] update full profile export/import for direct M11 state + recipes
+- [ ] keep inferred/category aggregates recomputable and non-authoritative in backups
 - [ ] add Rewards & Punishments selective-reset scope
 - [ ] preserve M11 state across unrelated M9 resets
 - [ ] keep M11 out of share summary by default
 - [ ] add migration/backup/reset regression coverage
 
-**Exit condition:** M11 state behaves like durable profile data and survives normal profile lifecycle operations.
+**Exit condition:** authoritative M11 state behaves like durable profile data while inference remains recomputable.
 
 ---
 
-## M11.7 — UX polish + integration
+## M11.8 — Overall profile integration + UX polish
 
-**Purpose:** make the feature practical on mobile and coherent with the rest of the app.
+**Purpose:** make M11 a coherent part of the app/profile rather than a disconnected toolbox.
 
-- [ ] add first-class navigation entry
-- [ ] compact mobile rows and filters
-- [ ] avoid giant all-items scroll where possible
-- [ ] add useful empty/partial/full states
-- [ ] verify catalog-linked items do not appear as confusing duplicates
-- [ ] verify Reward/Punishment tabs stay semantically independent
-- [ ] verify randomizer and builders use the same stable primitives
+- [ ] add first-class navigation
+- [ ] add in-app overall-profile Rewards & Punishments section
+- [ ] show top 3–4 meaningful Reward categories and Punishment categories separately
+- [ ] show representative confirmed items weighted/ordered by direct state + bounded category relevance
+- [ ] show inferred **Suggested to explore** items separately from confirmed items
+- [ ] never feed M11 category/proposal values into M7 radar/orientation/Headspaces/Modes/Top Overall
+- [ ] compact mobile list/filter/profile behavior
+- [ ] prevent confusing duplicates between catalog-linked and action-library items
+- [ ] verify sorter, inference, randomizer, and builders use the same stable primitive/category model
 - [ ] verify accessibility/keyboard behavior
-- [ ] regression-run M6/M7/M9 profile tests
+- [ ] regression-run M6/M7/M9 profile/evidence tests
 - [ ] finalize docs and mark M11 complete
 
-**Exit condition:** the feature reads as one coherent toolbox: quick-sort → refine → randomize → build → reuse.
+**Exit condition:** the feature reads as one coherent flow: infer/propose → quick-sort → refine → aggregate/profile → randomize → build → reuse.
 
 ---
 
@@ -1101,6 +1567,42 @@ Given a saved reward recipe is valid and random-enabled:
 - the result clearly identifies it as a saved recipe
 - selecting it does not mark anything assigned, earned, due, or complete
 
+## Inferred proposal stays inferred
+
+Given an unrated item receives a high-confidence Reward proposal:
+
+- the row may show Likely reward + confidence/explanation
+- the item remains contextually `unset` until the user acts
+- it is not random-eligible
+- it does not contribute to Reward category affinity
+- accepting the proposal creates explicit `works`
+
+## Category weighting without feedback
+
+Given several directly confirmed Care / Pampering rewards:
+
+- the Reward profile may show Care / Pampering as a strong contextual category
+- that category may raise other Care / Pampering Reward proposals
+- those proposals do not themselves raise Care / Pampering category affinity
+- Punishment category affinity remains independently calculated
+
+## Punishment inference does not weaponize dislike
+
+Given an item has low M6 general affinity but no direct M11 punishment evidence:
+
+- low affinity is not positive punishment evidence
+- the item is not proposed merely because it is disliked
+- a Hard Limit blocks proposal entirely
+- only direct contextual patterns/mapped evidence may support a punishment proposal
+
+## Overall profile separation
+
+Given M11 has enough direct evidence:
+
+- the overall profile may show separate Reward and Punishment category summaries
+- confirmed items appear separately from Suggested to explore
+- M7 radar/orientation/Headspaces/Modes/Top Overall remain unchanged
+
 ## M9 backup
 
 Given a profile has contextual ratings and saved recipes:
@@ -1130,8 +1632,10 @@ M11 does **not** include:
 - consent contracts/checklists
 - automatic safety judgment
 - AI-generated punishments/rewards
-- inferred reward/punishment suitability from quiz scores
-- using dislike/aversion as punishment evidence
+- raw quiz scores directly writing M11 contextual states
+- inferred M11 proposals masquerading as explicit contextual evidence
+- inferred M11 proposals feeding back into category affinity or M7 signals
+- using dislike/aversion as positive punishment evidence
 - public sharing of M11 data by default
 - recursive recipes
 - a full scene-planning engine
@@ -1153,6 +1657,12 @@ Does this work as a reward for me?
 
 PUNISHMENT SUITABILITY
 Does this work as a punishment/consequence for me?
+
+CONTEXT CATEGORY AFFINITY
+What patterns emerge across my direct Reward or Punishment choices?
+
+INFERRED CONTEXTUAL PROPOSAL
+What does the profile think may be worth exploring here?
 
 RANDOM ELIGIBILITY
 Do I want the app to be allowed to pick this randomly?
