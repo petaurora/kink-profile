@@ -21,6 +21,7 @@ export type SceneThemeId =
   | "prey"
   | "devotional-submission"
   | "deep-submission"
+  | "power-exchange"
   | "surrender"
   | "protocol"
   | "primal-feral"
