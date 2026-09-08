@@ -554,7 +554,13 @@ Is this part of a saved custom combination?
 
 Reward and punishment are contextual uses, not opposite ends of one scale. An item may work as both, either, or neither. Dislike/aversion must never automatically make an item a punishment candidate.
 
-M11 includes a fast one-item-at-a-time **Reward / Punishment / Both** classification flow so the user does not have to build the profile through a giant table. The sorter is coarse: it may set contextual `works/no` states, while nuanced Strong / Depends / Never and random-pool controls remain in detailed editing.
+M11 follows the same source-aware philosophy as M6: direct contextual choices remain authoritative, while **inferred Reward/Punishment proposals** may be derived from canonical M7 signals, contextual category preferences, similar confirmed M11 items, and bounded M6 catalog context. Inference is visibly separate from explicit choice and may never feed itself back into category/profile evidence.
+
+Reward and Punishment also get independent **contextual category profiles**. Category affinity is derived from direct M11 choices, keeps evidence breadth separate from strength, and provides bounded weighting for proposal ordering and profile summaries.
+
+M11 includes a fast one-item-at-a-time **Reward / Punishment / Both** classification flow so the user does not have to build the profile through a giant table. The sorter may surface/prioritize inferred proposals, but the user's tap is what creates direct `works/no` evidence.
+
+The in-app overall profile may add a distinct Rewards & Punishments section showing strongest contextual categories, confirmed items, and clearly separate Suggested to explore items. These M11 values do not alter the M7 radar, orientation, roles, modes, Top Overall, or limits.
 
 M11 also includes lightweight random selection and reusable reward/punishment builders, but explicitly excludes assignment, earning, demerits, debt, task integration, completion tracking, and automatic escalation.
 
