@@ -2529,6 +2529,11 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   grid-template-columns: minmax(0, 1fr);
 }
 
+.catalog-hub-preference-stack {
+  display: grid;
+  gap: 12px;
+}
+
 .catalog-hub-card {
   min-height: 290px;
   padding: clamp(24px, 4vw, 34px);
@@ -2554,6 +2559,32 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .catalog-hub-card button {
   align-self: flex-start;
+}
+
+.catalog-hub-card-compact {
+  min-height: 0;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.catalog-hub-card-compact h3 {
+  margin: 5px 0 4px;
+  font-size: 1.15rem;
+  line-height: 1.1;
+}
+
+.catalog-hub-card-compact p {
+  max-width: 720px;
+  font-size: .86rem;
+}
+
+.catalog-hub-card-compact button {
+  flex: 0 0 auto;
+  align-self: center;
 }
 
 .catalog-hub-game {
@@ -3625,6 +3656,39 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   .catalog-hub-card .secondary {
     padding: 9px 13px;
     font-size: .74rem;
+  }
+
+  .catalog-hub-preference-stack {
+    gap: 8px;
+  }
+
+  .catalog-hub-card-compact {
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .catalog-hub-card-compact .catalog-kicker,
+  .catalog-hub-card-compact p {
+    display: none;
+  }
+
+  .catalog-hub-card-compact h3 {
+    margin: 0;
+    overflow: hidden;
+    font-size: .96rem;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .catalog-hub-card-compact button {
+    justify-self: end;
+    padding: 7px 10px;
+    font-size: .72rem;
+    white-space: nowrap;
   }
 
   .site-nav-menu {
