@@ -19,6 +19,7 @@ import {
   type QuizQuestion,
 } from "../data/quizQuestions";
 import {
+  getActiveKinkRankingComparisons,
   getCatalogPreference,
   isExcludedCatalogState,
   type CatalogPreferenceContext,
@@ -451,7 +452,7 @@ export function buildCatalogEvidenceSnapshot(
 ): CatalogEvidenceSnapshot {
   const explicit = selectExplicitCatalogEvidence(catalogProfile, item.id);
   const pairwise = selectPairwiseCatalogEvidence(
-    catalogProfile.comparisons,
+    getActiveKinkRankingComparisons(catalogProfile),
     item.id,
   );
   const inferred = inferCatalogAffinity(item, quizSignalProfile);
@@ -589,7 +590,7 @@ export function projectDirectCatalogEvidenceToSignals(
       : [];
   });
 
-  const pairwiseProjections = profile.comparisons.flatMap((comparison) => {
+  const pairwiseProjections = getActiveKinkRankingComparisons(profile).flatMap((comparison) => {
     const evidence: PairwiseCatalogEvidence = {
       kind: "catalog_pairwise",
       sourceType: "catalog_pairwise",
