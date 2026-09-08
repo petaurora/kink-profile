@@ -177,19 +177,27 @@ export function RewardPunishmentRandomizer({
             <span>{contextLabel(context)} suggestion</span>
           </div>
 
-          <h2>{result.label}</h2>
+          <div className="rp-randomizer-result-content">
+            <h2>{result.label}</h2>
 
-          {categoryLabels.length > 0 && (
-            <div className="rp-randomizer-categories">
-              {categoryLabels.map((label) => (
-                <span key={label}>{label}</span>
-              ))}
-            </div>
-          )}
+            {categoryLabels.length > 0 && (
+              <div className="rp-randomizer-categories">
+                {categoryLabels.map((label) => (
+                  <span key={label}>{label}</span>
+                ))}
+              </div>
+            )}
 
-          {description && (
-            <p className="rp-randomizer-description">{description}</p>
-          )}
+            {description && (
+              <p className="rp-randomizer-description">{description}</p>
+            )}
+          </div>
+
+          <div className="rp-randomizer-actions">
+            <button className="primary" onClick={() => pick(context)}>
+              Pick again
+            </button>
+          </div>
 
           {state?.note && (
             <div className="rp-randomizer-note">
@@ -197,12 +205,6 @@ export function RewardPunishmentRandomizer({
               <p>{state.note}</p>
             </div>
           )}
-
-          <div className="rp-randomizer-actions">
-            <button className="primary" onClick={() => pick(context)}>
-              Pick again
-            </button>
-          </div>
 
           <details className="rp-randomizer-source">
             <summary>View source</summary>

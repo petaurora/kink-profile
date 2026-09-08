@@ -68,6 +68,10 @@
   font-weight: 800;
 }
 
+.rp-randomizer-result-content {
+  display: grid;
+}
+
 .rp-randomizer-result h2 {
   margin: 16px 0 0;
   max-width: 860px;
@@ -241,9 +245,21 @@
     border-radius: 20px;
   }
 
+  .rp-randomizer-result-content {
+    height: 15.75rem;
+    overflow: hidden;
+    align-content: start;
+  }
+
   .rp-randomizer-result h2 {
+    height: 3.06em;
     margin-top: 10px;
+    display: -webkit-box;
+    overflow: hidden;
     font-size: clamp(1.8rem, 9vw, 2.6rem);
+    line-height: 1.02;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
   }
 
   .rp-randomizer-categories {
@@ -261,13 +277,14 @@
   }
 
   .rp-randomizer-description {
+    height: 4.2em;
     margin-top: 11px;
     display: -webkit-box;
     overflow: hidden;
     font-size: .78rem;
     line-height: 1.4;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 3;
   }
 
   .rp-randomizer-note {
