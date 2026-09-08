@@ -1454,12 +1454,43 @@ Pairwise contribution weight is coverage-aware:
 
 This means an early Overall ranking can contribute immediately without pretending it is as refined as a deeply compared ranking.
 
-When both sources exist, the presentation score is the weighted mean of:
+The presentation ordering always reserves a slot for both direct channels:
 
 - explicit score at weight 1.0
 - pairwise placement score at the confidence-aware pairwise weight
 
+If one direct channel has not been measured for an item, that missing channel uses a neutral **50-point presentation prior** for ordering only. The prior does not create a stored preference, a synthetic rank, or evidence provenance.
+
+This matters especially for `Love`: an unranked Love must not behave like a perfect 100/100 combined result and alphabetically outrank a Love that the user actually refined through Overall This-or-That.
+
 The derived score is **not displayed as a fake preference percentage** and is never written back into catalog state or the pairwise engine.
+
+### Quiz-fit modifier
+
+Quiz-derived catalog affinity is allowed to **refine ordering only after direct eligibility exists**.
+
+An item still needs at least one of:
+
+- positive explicit overall preference
+- active Overall This-or-That evidence
+
+Quiz inference alone can never put an item into Top Overall.
+
+For an eligible item, quiz fit applies a bounded multiplicative modifier:
+
+```text
+quiz strength = (quiz affinity / 100) × (quiz coverage / 100)
+```
+
+The maximum boost depends on direct pairwise confidence:
+
+- no Overall pairwise confidence → at most **+10%**
+- 100% Overall pairwise confidence → at most **+3%**
+- intermediate confidence interpolates between those limits
+
+This gives quiz evidence useful tie/refinement power among directly liked items while causing its influence to shrink as the user supplies stronger head-to-head comparisons.
+
+The multiplier is presentation-only. It does not create direct evidence, change explicit state, rewrite pairwise rank, or feed inferred catalog affinity back into canonical signals.
 
 ### Deterministic ties
 
