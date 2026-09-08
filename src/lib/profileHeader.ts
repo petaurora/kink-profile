@@ -1,12 +1,11 @@
-import {
-  dynamicModes,
-  roleHeadspaces,
-  type ComposedDefinition,
-} from "../data/headspacesQuiz";
 import type { OverallFacetId } from "../data/overallFacets";
 import type { SignalId } from "../data/signals";
 import type { OverallFacetResult } from "./overallProfileFacets";
 import type { CanonicalSignalResult } from "./overallProfileSignals";
+import {
+  buildProfileRoleDetails,
+  type ProfileRoleScore,
+} from "./profileRoleDetails";
 
 export type ProfileOrientationKey =
   | "submissive"
@@ -45,8 +44,6 @@ const bidirectionalAffinityFloor = 60;
 
 const headlineFacetCoverageFloor = 12;
 const headlineFacetAffinityFloor = 45;
-const composedTraitCoverageFloor = 20;
-const composedTraitAffinityFloor = 55;
 const authorityAffinityFloor = 55;
 
 const facetSummaryPhrases: Readonly<Record<OverallFacetId, string>> = {
@@ -249,77 +246,15 @@ export function deriveProfileOrientation(
   };
 }
 
-function scoreComposedDefinitions(
-  canonicalSignals: readonly CanonicalSignalResult[],
-  definitions: readonly ComposedDefinition[],
+function selectHeadlineTraits(
+  traits: readonly ProfileRoleScore[],
 ): ProfileHeadlineTrait[] {
-  const bySignalId = new Map(
-    canonicalSignals.map((signal) => [signal.signalId, signal]),
-  );
-
-  return definitions
-    .map((definition) => {
-      let totalWeight = 0;
-      let evidenceWeight = 0;
-      let weightedAffinity = 0;
-
-      for (const [signalId, configuredWeight] of Object.entries(
-        definition.weights,
-      )) {
-        if (!configuredWeight || configuredWeight <= 0) continue;
-
-        totalWeight += configuredWeight;
-        const signal = bySignalId.get(signalId as SignalId);
-        if (!signal || signal.coverage <= 0) continue;
-
-        const coveredWeight =
-          configuredWeight * clamp01(signal.coverage / 100);
-        evidenceWeight += coveredWeight;
-        weightedAffinity +=
-          clampPercent(signal.affinity) * coveredWeight;
-      }
-
-      const affinity =
-        evidenceWeight > 0
-          ? round1(weightedAffinity / evidenceWeight)
-          : 0;
-      const coverage =
-        totalWeight > 0
-          ? round1((evidenceWeight / totalWeight) * 100)
-          : 0;
-
-      return {
-        id: definition.id,
-        label: definition.label,
-        affinity,
-        coverage,
-      };
-    })
-    .filter(
-      (trait) =>
-        trait.coverage >= composedTraitCoverageFloor &&
-        trait.affinity >= composedTraitAffinityFloor,
-    )
-    .sort((a, b) => {
-      const strength =
-        headlineStrength(b.affinity, b.coverage) -
-        headlineStrength(a.affinity, a.coverage);
-      if (Math.abs(strength) > 0.001) return strength;
-      if (b.affinity !== a.affinity) return b.affinity - a.affinity;
-      return b.coverage - a.coverage;
-    });
-}
-
-function deriveHeadspaces(
-  canonicalSignals: readonly CanonicalSignalResult[],
-): ProfileHeadlineTrait[] {
-  return scoreComposedDefinitions(canonicalSignals, roleHeadspaces).slice(0, 3);
-}
-
-function deriveDynamicModes(
-  canonicalSignals: readonly CanonicalSignalResult[],
-): ProfileHeadlineTrait[] {
-  return scoreComposedDefinitions(canonicalSignals, dynamicModes).slice(0, 3);
+  return traits.slice(0, 3).map(({ id, label, affinity, coverage }) => ({
+    id,
+    label,
+    affinity,
+    coverage,
+  }));
 }
 
 function selectHeadlineFacets(facets: readonly OverallFacetResult[]) {
@@ -400,12 +335,13 @@ export function buildProfileHeaderModel(
 ): ProfileHeaderModel {
   const orientation = deriveProfileOrientation(canonicalSignals);
   const strongestFacets = selectHeadlineFacets(facets);
+  const roleDetails = buildProfileRoleDetails(canonicalSignals);
 
   return {
     summary: buildSummary(orientation, strongestFacets),
     orientation,
     strongestFacetIds: strongestFacets.map((facet) => facet.facetId),
-    headspaces: deriveHeadspaces(canonicalSignals),
-    dynamicModes: deriveDynamicModes(canonicalSignals),
+    headspaces: selectHeadlineTraits(roleDetails.headspaces),
+    dynamicModes: selectHeadlineTraits(roleDetails.dynamicModes),
   };
 }
