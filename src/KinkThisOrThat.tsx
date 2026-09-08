@@ -1,4 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  IconArrowDown,
+  IconArrowUp,
+  IconMinus,
+  IconSparkles,
+} from "@tabler/icons-react";
 import { PairwiseComparisonPanel } from "./PairwiseComparisonPanel";
 import {
   kinkCatalog,
@@ -31,6 +37,12 @@ import {
   catalogPreferenceLabels,
 } from "./lib/catalogResults";
 import { startNewKinkRankingRun } from "./lib/kinkRankingHistory";
+import {
+  calculateRankingMovement,
+  getPreviousComparableRankingSnapshot,
+  rankingMovementLabel,
+  type RankingMovement,
+} from "./lib/kinkRankingMovement";
 import type { StoredProfile } from "./lib/profileStorage";
 
 type RankingMode = "category" | "overall";
@@ -64,6 +76,68 @@ function randomizePair(pair: [KinkCatalogItem, KinkCatalogItem] | null) {
   return Math.random() < 0.5 ? pair : [pair[1], pair[0]] as [KinkCatalogItem, KinkCatalogItem];
 }
 
+function formatRunDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
+function RankingMovementIndicator({
+  movement,
+  open,
+  onToggle,
+}: {
+  movement: RankingMovement;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const label = rankingMovementLabel(movement);
+  const Icon =
+    movement.kind === "up"
+      ? IconArrowUp
+      : movement.kind === "down"
+        ? IconArrowDown
+        : movement.kind === "same"
+          ? IconMinus
+          : IconSparkles;
+
+  const compact =
+    movement.kind === "new"
+      ? "NEW"
+      : movement.kind === "same"
+        ? "—"
+        : String(movement.places);
+
+  return (
+    <span className={`ranking-movement-wrap ${open ? "open" : ""}`}>
+      <button
+        type="button"
+        className={`ranking-movement ranking-movement-${movement.kind}`}
+        aria-label={label}
+        aria-expanded={open}
+        onClick={onToggle}
+      >
+        <Icon size={15} stroke={2.2} aria-hidden="true" />
+        <span>{compact}</span>
+      </button>
+      <span className="ranking-movement-popover" role="status">
+        <strong>{label}</strong>
+        <span>
+          {movement.previousRank === null
+            ? "Not ranked in the previous comparable run"
+            : `Previously #${movement.previousRank}`}
+        </span>
+        <span>Previous run: {formatRunDate(movement.previousCapturedAt)}</span>
+      </span>
+    </span>
+  );
+}
+
 function comparisonCountForScope(
   comparisons: readonly KinkComparison[],
   scope: RankingScope,
@@ -93,6 +167,7 @@ export function KinkThisOrThat({
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [showNewRunConfirm, setShowNewRunConfirm] = useState(false);
   const [newRunNotice, setNewRunNotice] = useState(false);
+  const [openMovementId, setOpenMovementId] = useState<string | null>(null);
 
   useEffect(() => {
     saveCatalogProfile(profile);
@@ -140,6 +215,11 @@ export function KinkThisOrThat({
   const snapshot = useMemo(
     () => calculateRanking(activeCatalog, activeComparisons, scope),
     [activeCatalog, activeComparisons, mode, categoryId],
+  );
+
+  const previousComparableSnapshot = useMemo(
+    () => getPreviousComparableRankingSnapshot(profile, scope),
+    [profile, mode, categoryId],
   );
 
   const basePair = useMemo(
@@ -702,12 +782,30 @@ export function KinkThisOrThat({
           <div className="ranking-list">
             {snapshot.items.slice(0, mode === "overall" ? 25 : 10).map((item) => {
               const result = resultView?.byCatalogId.get(item.id);
+              const movement = calculateRankingMovement(
+                item,
+                previousComparableSnapshot,
+              );
+              const movementId = `${mode}:${categoryId}:${item.id}`;
 
               return (
                 <div className="ranking-row" key={item.id}>
                   <span className="ranking-position">{item.rank}</span>
                   <div className="ranking-row-copy">
-                    <strong>{item.label}</strong>
+                    <div className="ranking-row-title">
+                      <strong>{item.label}</strong>
+                      {movement && (
+                        <RankingMovementIndicator
+                          movement={movement}
+                          open={openMovementId === movementId}
+                          onToggle={() =>
+                            setOpenMovementId((current) =>
+                              current === movementId ? null : movementId,
+                            )
+                          }
+                        />
+                      )}
+                    </div>
                     <span>{item.categoryLabel}</span>
                     <div className="ranking-row-evidence">
                       {result?.explicitState && (
