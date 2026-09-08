@@ -345,6 +345,15 @@ Audit:
 - labels/descriptions
 - randomizer eligibility metadata
 - builder usefulness
+- **recipe-builder UX/model review** — revisit the M11.7 builder as a product surface, not just its recipe data:
+  - identify missing fields, actions, and composition flows discovered during real use
+  - review whether primitive search/add, inferred suggestions, custom recipe-local text, ordering, notes, tags, and save/edit/duplicate/delete are the right interaction model
+  - review mobile density and whether the builder is too long/busy or hides important context
+  - review component editing/reordering ergonomics and whether recipe steps need richer per-component metadata
+  - review Needs review / warning presentation and recovery flows
+  - review saved-recipe cards, recipe discoverability, naming, and organization
+  - remove controls or concepts that technically work but do not earn their interaction cost
+  - preserve the non-recursive recipe boundary unless real usage demonstrates a need to change it
 
 Important:
 
