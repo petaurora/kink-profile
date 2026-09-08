@@ -39,7 +39,7 @@ describe("M13 scene theme taxonomy", () => {
     expect(
       new Set(sceneThemeDefinitions.map((theme) => theme.family)),
     ).toEqual(
-      new Set(["activity", "headspace", "dynamic_mode", "vibe"]),
+      new Set(["activity", "headspace", "dynamic_mode", "facet", "vibe"]),
     );
   });
 
