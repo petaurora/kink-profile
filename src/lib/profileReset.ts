@@ -19,17 +19,25 @@ import {
   createInitialKinkRankingHistory,
   type CatalogProfileState,
 } from "./catalogProfile";
+import {
+  createEmptyRewardPunishmentAuthoritativeState,
+  loadRewardPunishmentAuthoritativeState,
+  saveRewardPunishmentAuthoritativeState,
+  type RewardPunishmentAuthoritativeState,
+} from "./rewardPunishmentLifecycle";
 
 export type ProfileResetSelection = {
   quizIds: QuizId[];
   catalogPreferences: boolean;
   rankingComparisons: boolean;
+  rewardsPunishments: boolean;
   profileSettings: boolean;
 };
 
 export type ProfileResetResult = {
   profile: StoredProfile;
   catalogProfile: CatalogProfileState;
+  rewardsPunishments: RewardPunishmentAuthoritativeState;
   settings: ProfileSettings;
 };
 
@@ -38,6 +46,9 @@ export type ProfileResetImpact = {
   selectedQuizAnswerCount: number;
   catalogPreferenceCount: number;
   rankingComparisonCount: number;
+  rewardPunishmentPreferenceCount: number;
+  rewardPunishmentComparisonCount: number;
+  rewardPunishmentRecipeCount: number;
   resetsProfileSettings: boolean;
 };
 
@@ -50,6 +61,7 @@ export function createEmptyResetSelection(): ProfileResetSelection {
     quizIds: [],
     catalogPreferences: false,
     rankingComparisons: false,
+    rewardsPunishments: false,
     profileSettings: false,
   };
 }
@@ -59,6 +71,7 @@ export function createResetEverythingSelection(): ProfileResetSelection {
     quizIds: quizzes.map((quiz) => quiz.id),
     catalogPreferences: true,
     rankingComparisons: true,
+    rewardsPunishments: true,
     profileSettings: true,
   };
 }
@@ -68,15 +81,21 @@ export function hasResetSelection(selection: ProfileResetSelection) {
     selection.quizIds.length > 0 ||
     selection.catalogPreferences ||
     selection.rankingComparisons ||
+    selection.rewardsPunishments ||
     selection.profileSettings
   );
 }
 
-export function isResetEverythingSelection(selection: ProfileResetSelection) {
+export function isResetEverythingSelection(
+  selection: ProfileResetSelection,
+) {
   return (
-    quizzes.every((quiz) => selection.quizIds.includes(quiz.id)) &&
+    quizzes.every((quiz) =>
+      selection.quizIds.includes(quiz.id),
+    ) &&
     selection.catalogPreferences &&
     selection.rankingComparisons &&
+    selection.rewardsPunishments &&
     selection.profileSettings
   );
 }
@@ -87,6 +106,8 @@ export function getProfileResetImpact(
 ): ProfileResetImpact {
   const profile = loadProfile(storage);
   const catalogProfile = loadCatalogProfile(storage);
+  const rewardsPunishments =
+    loadRewardPunishmentAuthoritativeState(storage);
 
   return {
     selectedQuizCount: selection.quizIds.filter(
@@ -94,7 +115,10 @@ export function getProfileResetImpact(
     ).length,
     selectedQuizAnswerCount: selection.quizIds.reduce(
       (total, quizId) =>
-        total + Object.keys(profile.quizzes[quizId]?.answers ?? {}).length,
+        total +
+        Object.keys(
+          profile.quizzes[quizId]?.answers ?? {},
+        ).length,
       0,
     ),
     catalogPreferenceCount: selection.catalogPreferences
@@ -103,6 +127,20 @@ export function getProfileResetImpact(
     rankingComparisonCount: selection.rankingComparisons
       ? catalogProfile.comparisons.length
       : 0,
+    rewardPunishmentPreferenceCount:
+      selection.rewardsPunishments
+        ? Object.keys(
+            rewardsPunishments.profile.preferences,
+          ).length
+        : 0,
+    rewardPunishmentComparisonCount:
+      selection.rewardsPunishments
+        ? rewardsPunishments.ranking.comparisons.length
+        : 0,
+    rewardPunishmentRecipeCount:
+      selection.rewardsPunishments
+        ? rewardsPunishments.recipes.recipes.length
+        : 0,
     resetsProfileSettings: selection.profileSettings,
   };
 }
@@ -113,6 +151,8 @@ export function resetProfileData(
 ): ProfileResetResult {
   const currentProfile = loadProfile(storage);
   const currentCatalogProfile = loadCatalogProfile(storage);
+  const currentRewardsPunishments =
+    loadRewardPunishmentAuthoritativeState(storage);
   const currentSettings = loadProfileSettings(storage);
 
   const nextQuizzes = { ...currentProfile.quizzes };
@@ -138,6 +178,11 @@ export function resetProfileData(
       : currentCatalogProfile.rankingHistory,
   };
 
+  const nextRewardsPunishments =
+    selection.rewardsPunishments
+      ? createEmptyRewardPunishmentAuthoritativeState()
+      : currentRewardsPunishments;
+
   const nextSettings = selection.profileSettings
     ? createDefaultProfileSettings()
     : currentSettings;
@@ -146,10 +191,18 @@ export function resetProfileData(
     saveProfile(nextProfile, storage);
   }
 
-  if (selection.catalogPreferences || selection.rankingComparisons) {
-    // Persist the canonical empty/partial catalog store rather than removing it.
-    // Otherwise the retained legacy ranking key could migrate old comparisons back in.
+  if (
+    selection.catalogPreferences ||
+    selection.rankingComparisons
+  ) {
     saveCatalogProfile(nextCatalogProfile, storage);
+  }
+
+  if (selection.rewardsPunishments) {
+    saveRewardPunishmentAuthoritativeState(
+      nextRewardsPunishments,
+      storage,
+    );
   }
 
   if (selection.profileSettings) {
@@ -159,6 +212,7 @@ export function resetProfileData(
   return {
     profile: nextProfile,
     catalogProfile: nextCatalogProfile,
+    rewardsPunishments: nextRewardsPunishments,
     settings: nextSettings,
   };
 }
