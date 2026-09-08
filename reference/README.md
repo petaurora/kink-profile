@@ -10,7 +10,7 @@ Repository reference data:
 - `rewards-punishments/system-guide.md` — source system principles, tiers, rules, and metadata
 - `rewards-punishments/overview.tsv` — workbook/source provenance
 
-Like the kink catalog, these are plain-text reference exports so changes remain readable and diffable in GitHub. They are source/reference material, not yet a runtime rewards-and-consequences schema.
+Like the kink catalog, these are plain-text reference exports so changes remain readable and diffable in GitHub. They remain source/reference material today; M11 now defines the planned normalization into stable runtime Reward/Punishment action primitives and contextual-use state.
 
 See [Rewards & Punishments Reference Data](rewards-punishments/README.md).
 
@@ -112,7 +112,7 @@ M6 C2 now adds:
 
 The remaining 282 items are intentionally unmapped rather than assigned speculative core-signal affinities.
 
-M6 C3 provides explicit preference state, migration into one logical catalog-profile store, the searchable catalog table/list, and authoritative exclusion semantics while keeping This-or-That focused on relative ranking. C4 added source-aware quiz/catalog evidence, recomputable inferred affinity, provenance, and no-feedback-loop guarantees. C5 hardened meaningful ordering confidence, finalist promotion, and Overall history preservation. C6 surfaces explicit, ranking, inferred, exclusion, and provenance channels together without collapsing them. C7 hardens affinity edge cases plus recommendation eligibility/suppression while preserving explainability. M6 is complete; M7 overall-profile aggregation is next.
+M6 C3 provides explicit preference state, migration into one logical catalog-profile store, the searchable catalog table/list, and authoritative exclusion semantics while keeping This-or-That focused on relative ranking. C4 added source-aware quiz/catalog evidence, recomputable inferred affinity, provenance, and no-feedback-loop guarantees. C5 hardened meaningful ordering confidence, finalist promotion, and Overall history preservation. C6 surfaces explicit, ranking, inferred, exclusion, and provenance channels together without collapsing them. C7 hardens affinity edge cases plus recommendation eligibility/suppression while preserving explainability. M6 is complete and M7 now consumes these boundaries in the completed overall profile. M11–M15 are separately scoped future consumers/extensions rather than unfinished M6 work.
 
 See:
 
