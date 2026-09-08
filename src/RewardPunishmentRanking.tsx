@@ -48,7 +48,7 @@ function primaryCategoryLabel(primitive: RewardPunishmentPrimitive) {
   );
 }
 
-const catalogDescriptionById = new Map(
+const catalogDescriptionById = new Map<string, string | undefined>(
   kinkCatalog.map((item) => [item.id, item.description]),
 );
 
