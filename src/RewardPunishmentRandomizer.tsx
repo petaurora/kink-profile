@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { kinkCatalog } from "./data/kinkCatalog.generated";
 import {
   getRewardPunishmentAction,
+  getRewardPunishmentPrimitive,
   rewardPunishmentCategories,
-  rewardPunishmentPrimitiveKey,
   rewardPunishmentPrimitives,
   type RewardPunishmentPrimitive,
 } from "./lib/rewardPunishmentLibrary";
@@ -13,9 +13,19 @@ import {
   type RewardPunishmentProfileState,
 } from "./lib/rewardPunishmentProfile";
 import {
-  buildRewardPunishmentRandomPool,
-  pickRewardPunishmentRandomPrimitive,
+  buildRewardPunishmentRandomEntries,
+  pickRewardPunishmentRandomEntry,
+  rewardPunishmentRandomEntryKey,
+  type RewardPunishmentRandomEntry,
 } from "./lib/rewardPunishmentRandomizer";
+import {
+  reconcileRewardPunishmentRecipeState,
+  type RewardPunishmentRecipeComponent,
+} from "./lib/rewardPunishmentRecipes";
+import {
+  loadRewardPunishmentRecipeState,
+  saveRewardPunishmentRecipeState,
+} from "./lib/rewardPunishmentRecipeStorage";
 import "./rewardPunishmentRandomizer.css";
 
 const catalogById = new Map<string, (typeof kinkCatalog)[number]>(
@@ -46,12 +56,7 @@ function primitiveCategoryLabels(primitive: RewardPunishmentPrimitive) {
     );
 }
 
-type RandomizerSessionPick = {
-  primitive: RewardPunishmentPrimitive;
-  context: RewardPunishmentContext;
-};
-
-function sourceOriginText(primitive: RewardPunishmentPrimitive) {
+function primitiveSourceOriginText(primitive: RewardPunishmentPrimitive) {
   if (primitive.sourceOrigins.length > 0) {
     return primitive.sourceOrigins
       .map((origin) => {
@@ -66,6 +71,30 @@ function sourceOriginText(primitive: RewardPunishmentPrimitive) {
     : "Normalized M11 action library";
 }
 
+function componentLabel(component: RewardPunishmentRecipeComponent) {
+  if (component.kind === "custom") return component.label;
+  return (
+    getRewardPunishmentPrimitive(component.ref)?.label ??
+    `Missing: ${component.ref.kind}:${component.ref.id}`
+  );
+}
+
+function entryLabel(entry: RewardPunishmentRandomEntry) {
+  return entry.kind === "recipe"
+    ? entry.recipe.name
+    : entry.primitive.label;
+}
+
+function entrySourceLabel(entry: RewardPunishmentRandomEntry) {
+  if (entry.kind === "recipe") return "Recipe";
+  return entry.primitive.sourceType === "catalog" ? "Catalog" : "Action";
+}
+
+type RandomizerSessionPick = {
+  entry: RewardPunishmentRandomEntry;
+  context: RewardPunishmentContext;
+};
+
 export function RewardPunishmentRandomizer({
   profile,
   onSetupPool,
@@ -73,26 +102,53 @@ export function RewardPunishmentRandomizer({
   profile: RewardPunishmentProfileState;
   onSetupPool: (context: RewardPunishmentContext) => void;
 }) {
+  const [recipeState, setRecipeState] = useState(() => {
+    const loaded = loadRewardPunishmentRecipeState();
+    const reconciled = reconcileRewardPunishmentRecipeState(
+      loaded,
+      profile,
+    );
+    if (reconciled !== loaded) {
+      saveRewardPunishmentRecipeState(reconciled);
+    }
+    return reconciled;
+  });
+
+  useEffect(() => {
+    setRecipeState((current) => {
+      const reconciled = reconcileRewardPunishmentRecipeState(
+        current,
+        profile,
+      );
+      if (reconciled !== current) {
+        saveRewardPunishmentRecipeState(reconciled);
+      }
+      return reconciled;
+    });
+  }, [profile]);
+
   const pools = useMemo(
     () => ({
-      reward: buildRewardPunishmentRandomPool(
+      reward: buildRewardPunishmentRandomEntries(
         profile,
         rewardPunishmentPrimitives,
+        recipeState.recipes,
         "reward",
       ),
-      punishment: buildRewardPunishmentRandomPool(
+      punishment: buildRewardPunishmentRandomEntries(
         profile,
         rewardPunishmentPrimitives,
+        recipeState.recipes,
         "punishment",
       ),
     }),
-    [profile],
+    [profile, recipeState.recipes],
   );
 
   const [context, setContext] =
     useState<RewardPunishmentContext>("reward");
   const [result, setResult] =
-    useState<RewardPunishmentPrimitive | null>(null);
+    useState<RewardPunishmentRandomEntry | null>(null);
   const [previousKeys, setPreviousKeys] = useState<
     Partial<Record<RewardPunishmentContext, string>>
   >({});
@@ -101,13 +157,13 @@ export function RewardPunishmentRandomizer({
   >([]);
 
   const pick = (target: RewardPunishmentContext) => {
-    const next = pickRewardPunishmentRandomPrimitive(pools[target], {
-      previousPrimitiveKey: previousKeys[target],
+    const next = pickRewardPunishmentRandomEntry(pools[target], {
+      previousEntryKey: previousKeys[target],
     });
 
     if (result) {
       setSessionHistory((current) => [
-        { primitive: result, context },
+        { entry: result, context },
         ...current,
       ]);
     }
@@ -118,17 +174,23 @@ export function RewardPunishmentRandomizer({
     if (next) {
       setPreviousKeys((current) => ({
         ...current,
-        [target]: rewardPunishmentPrimitiveKey(next.ref),
+        [target]: rewardPunishmentRandomEntryKey(next),
       }));
     }
   };
 
-  const state = result
-    ? getContextualUseState(profile, result.ref, context)
+  const primitive =
+    result?.kind === "primitive" ? result.primitive : undefined;
+  const recipe =
+    result?.kind === "recipe" ? result.recipe : undefined;
+  const primitiveState = primitive
+    ? getContextualUseState(profile, primitive.ref, context)
     : undefined;
-  const description = result ? primitiveDescription(result) : undefined;
-  const categoryLabels = result
-    ? primitiveCategoryLabels(result)
+  const description = primitive
+    ? primitiveDescription(primitive)
+    : undefined;
+  const categoryLabels = primitive
+    ? primitiveCategoryLabels(primitive)
     : [];
 
   return (
@@ -139,15 +201,20 @@ export function RewardPunishmentRandomizer({
           <h2>No weighting. No assignment. Just a suggestion.</h2>
         </div>
         <p>
-          Every explicitly included item has an equal chance in its own
-          context pool. Contextual rank and inferred proposals do not change
-          the odds.
+          Every explicitly approved primitive or valid saved recipe has one
+          equal entry in its own context pool. Contextual rank and inferred
+          proposals do not change the odds.
         </p>
       </section>
 
       <div className="rp-randomizer-pools">
         {(["reward", "punishment"] as const).map((target) => {
           const pool = pools[target];
+          const recipeCount = pool.filter(
+            (entry) => entry.kind === "recipe",
+          ).length;
+          const primitiveCount = pool.length - recipeCount;
+
           return (
             <article className="rp-randomizer-pool panel" key={target}>
               <div>
@@ -158,8 +225,11 @@ export function RewardPunishmentRandomizer({
                 </p>
                 <h2>{pool.length} ready</h2>
                 <p>
-                  Only direct Strong/Works items you explicitly added to the
-                  random pool.
+                  {primitiveCount} primitive
+                  {primitiveCount === 1 ? "" : "s"}
+                  {" · "}
+                  {recipeCount} recipe
+                  {recipeCount === 1 ? "" : "s"}
                 </p>
               </div>
               <button
@@ -195,18 +265,26 @@ export function RewardPunishmentRandomizer({
             >
               <div className="rp-randomizer-result-top">
                 <span className="rp-source-badge">
-                  {result.sourceType === "catalog" ? "Catalog" : "Action"}
+                  {entrySourceLabel(result)}
                 </span>
                 <span>{contextLabel(context)} suggestion</span>
               </div>
 
               <div className="rp-randomizer-result-content">
-                <h2>{result.label}</h2>
+                <h2>{entryLabel(result)}</h2>
 
-                {categoryLabels.length > 0 && (
+                {primitive && categoryLabels.length > 0 && (
                   <div className="rp-randomizer-categories">
                     {categoryLabels.map((label) => (
                       <span key={label}>{label}</span>
+                    ))}
+                  </div>
+                )}
+
+                {recipe?.tags && recipe.tags.length > 0 && (
+                  <div className="rp-randomizer-categories">
+                    {recipe.tags.slice(0, 4).map((tag) => (
+                      <span key={tag}>{tag}</span>
                     ))}
                   </div>
                 )}
@@ -215,10 +293,33 @@ export function RewardPunishmentRandomizer({
                   <p className="rp-randomizer-description">{description}</p>
                 )}
 
-                {state?.note && (
+                {recipe && (
+                  <ol className="rp-randomizer-recipe-components">
+                    {recipe.components.map((component, index) => (
+                      <li
+                        key={
+                          component.kind === "custom"
+                            ? component.id
+                            : `${component.ref.kind}:${component.ref.id}:${index}`
+                        }
+                      >
+                        {componentLabel(component)}
+                      </li>
+                    ))}
+                  </ol>
+                )}
+
+                {primitiveState?.note && (
                   <div className="rp-randomizer-note">
                     <span className="eyebrow">Your context note</span>
-                    <p>{state.note}</p>
+                    <p>{primitiveState.note}</p>
+                  </div>
+                )}
+
+                {recipe?.notes && (
+                  <div className="rp-randomizer-note">
+                    <span className="eyebrow">Recipe note</span>
+                    <p>{recipe.notes}</p>
                   </div>
                 )}
               </div>
@@ -231,32 +332,54 @@ export function RewardPunishmentRandomizer({
 
             <details className="rp-randomizer-source">
               <summary>View source</summary>
-              <dl>
-                <div>
-                  <dt>Primitive</dt>
-                  <dd>
-                    {result.ref.kind}:{result.ref.id}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Runtime source</dt>
-                  <dd>
-                    {result.sourceType === "catalog"
-                      ? "M6 catalog primitive"
-                      : "M11 action primitive"}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Reference origin</dt>
-                  <dd>{sourceOriginText(result)}</dd>
-                </div>
-                <div>
-                  <dt>Random eligibility</dt>
-                  <dd>
-                    Explicitly included · {state?.suitability ?? "unset"}
-                  </dd>
-                </div>
-              </dl>
+              {primitive ? (
+                <dl>
+                  <div>
+                    <dt>Primitive</dt>
+                    <dd>
+                      {primitive.ref.kind}:{primitive.ref.id}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Runtime source</dt>
+                    <dd>
+                      {primitive.sourceType === "catalog"
+                        ? "M6 catalog primitive"
+                        : "M11 action primitive"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Reference origin</dt>
+                    <dd>{primitiveSourceOriginText(primitive)}</dd>
+                  </div>
+                  <div>
+                    <dt>Random eligibility</dt>
+                    <dd>
+                      Explicitly included ·{" "}
+                      {primitiveState?.suitability ?? "unset"}
+                    </dd>
+                  </div>
+                </dl>
+              ) : (
+                <dl>
+                  <div>
+                    <dt>Recipe</dt>
+                    <dd>{recipe?.id}</dd>
+                  </div>
+                  <div>
+                    <dt>Context</dt>
+                    <dd>{contextLabel(context)}</dd>
+                  </div>
+                  <div>
+                    <dt>Components</dt>
+                    <dd>{recipe?.components.length ?? 0}</dd>
+                  </div>
+                  <div>
+                    <dt>Random eligibility</dt>
+                    <dd>Explicitly included · valid recipe</dd>
+                  </div>
+                </dl>
+              )}
             </details>
 
             <p className="rp-randomizer-disclaimer">
@@ -279,19 +402,17 @@ export function RewardPunishmentRandomizer({
                 {sessionHistory.map((entry, index) => (
                   <div
                     className="rp-randomizer-history-row"
-                    key={`${rewardPunishmentPrimitiveKey(entry.primitive.ref)}:${entry.context}:${index}`}
+                    key={`${rewardPunishmentRandomEntryKey(entry.entry)}:${entry.context}:${index}`}
                   >
                     <span className="rp-randomizer-history-index">
                       {sessionHistory.length - index}
                     </span>
                     <div>
-                      <strong>{entry.primitive.label}</strong>
+                      <strong>{entryLabel(entry.entry)}</strong>
                       <span>
                         {contextLabel(entry.context)}
                         {" · "}
-                        {entry.primitive.sourceType === "catalog"
-                          ? "Catalog"
-                          : "Action"}
+                        {entrySourceLabel(entry.entry)}
                       </span>
                     </div>
                   </div>
@@ -304,7 +425,8 @@ export function RewardPunishmentRandomizer({
               </p>
             </section>
           )}
-        </>      ) : (
+        </>
+      ) : (
         <section className="rp-randomizer-placeholder panel">
           <p className="eyebrow">Waiting for a pool</p>
           <h2>Pick Reward or Punishment above.</h2>

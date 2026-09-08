@@ -127,6 +127,19 @@
   line-height: 1.6;
 }
 
+.rp-randomizer-recipe-components {
+  max-width: 800px;
+  margin: 18px 0 0;
+  padding-left: 1.35rem;
+  color: var(--text-secondary);
+  font-size: .92rem;
+  line-height: 1.55;
+}
+
+.rp-randomizer-recipe-components li + li {
+  margin-top: 4px;
+}
+
 .rp-randomizer-note {
   max-width: 800px;
   margin-top: 16px;
@@ -376,6 +389,12 @@
   .rp-randomizer-description {
     margin-top: 11px;
     font-size: .78rem;
+    line-height: 1.4;
+  }
+
+  .rp-randomizer-recipe-components {
+    margin-top: 11px;
+    font-size: .76rem;
     line-height: 1.4;
   }
 
