@@ -3567,3 +3567,19 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
     height: 1.6rem;
   }
 }
+
+
+@media (max-width: 600px) {
+  .return-to-top {
+    width: 44px;
+    height: 44px;
+    right: max(.75rem, env(safe-area-inset-right));
+    bottom: max(.75rem, env(safe-area-inset-bottom));
+    justify-content: center;
+    padding: 0;
+  }
+
+  .return-to-top span {
+    display: none;
+  }
+}

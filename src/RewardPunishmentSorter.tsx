@@ -73,7 +73,7 @@ function choiceLabel(choice: Exclude<RewardPunishmentSorterChoice, "skip">) {
   if (choice === "both") return "Both";
   if (choice === "reward") return "Reward";
   if (choice === "punishment") return "Punishment";
-  return "Neither / not a fit";
+  return "Neither";
 }
 
 function currentClassificationLabel(
@@ -462,19 +462,19 @@ export function RewardPunishmentSorter({
           </div>
         </div>
 
-        <div className="rp-sorter-progress-block">
-          <div>
-            <span>
-              {scope.type === "unsorted" ? "Current run" : "Focused run"}
-            </span>
-            <strong>
-              {scopeCounts.classified} / {scopeCounts.total} classified
-            </strong>
+        {scope.type !== "unsorted" && (
+          <div className="rp-sorter-progress-block">
+            <div>
+              <span>Focused run</span>
+              <strong>
+                {scopeCounts.classified} / {scopeCounts.total} classified
+              </strong>
+            </div>
+            <div className="rp-sorter-progress-track">
+              <span style={{ width: `${scopePercent}%` }} />
+            </div>
           </div>
-          <div className="rp-sorter-progress-track">
-            <span style={{ width: `${scopePercent}%` }} />
-          </div>
-        </div>
+        )}
 
         <div className="rp-sorter-counts">
           <span>Reward {overallCounts.reward}</span>
@@ -485,9 +485,9 @@ export function RewardPunishmentSorter({
 
         {overallCounts.protectedIncomplete > 0 && (
           <p className="rp-sorter-protected-note">
-            {overallCounts.protectedIncomplete} partially refined item
-            {overallCounts.protectedIncomplete === 1 ? "" : "s"} with
-            nuance are protected from the normal quick-sort deck.
+            {overallCounts.protectedIncomplete} nuanced item
+            {overallCounts.protectedIncomplete === 1 ? "" : "s"} protected
+            from quick-sort.
           </p>
         )}
       </section>
