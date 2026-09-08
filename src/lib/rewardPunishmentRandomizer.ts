@@ -8,8 +8,22 @@ import {
   type RewardPunishmentContext,
   type RewardPunishmentProfileState,
 } from "./rewardPunishmentProfile";
+import {
+  validateRewardPunishmentRecipe,
+  type RewardPunishmentRecipe,
+} from "./rewardPunishmentRecipes";
 
 export type RewardPunishmentRandomizerRng = () => number;
+
+export type RewardPunishmentRandomEntry =
+  | {
+      kind: "primitive";
+      primitive: RewardPunishmentPrimitive;
+    }
+  | {
+      kind: "recipe";
+      recipe: RewardPunishmentRecipe;
+    };
 
 export function isRandomizerEligiblePrimitive(
   profile: RewardPunishmentProfileState,
@@ -33,10 +47,83 @@ export function buildRewardPunishmentRandomPool(
   );
 }
 
+export function isRandomizerEligibleRecipe(
+  profile: RewardPunishmentProfileState,
+  recipe: RewardPunishmentRecipe,
+  context: RewardPunishmentContext,
+) {
+  return (
+    recipe.kind === context &&
+    validateRewardPunishmentRecipe(recipe, profile).canRandomize
+  );
+}
+
+export function rewardPunishmentRandomEntryKey(
+  entry: RewardPunishmentRandomEntry,
+) {
+  return entry.kind === "primitive"
+    ? `primitive:${rewardPunishmentPrimitiveKey(entry.primitive.ref)}`
+    : `recipe:${entry.recipe.id}`;
+}
+
+export function buildRewardPunishmentRandomEntries(
+  profile: RewardPunishmentProfileState,
+  primitives: readonly RewardPunishmentPrimitive[],
+  recipes: readonly RewardPunishmentRecipe[],
+  context: RewardPunishmentContext,
+): RewardPunishmentRandomEntry[] {
+  return [
+    ...buildRewardPunishmentRandomPool(profile, primitives, context).map(
+      (primitive) =>
+        ({
+          kind: "primitive",
+          primitive,
+        }) satisfies RewardPunishmentRandomEntry,
+    ),
+    ...recipes
+      .filter((recipe) =>
+        isRandomizerEligibleRecipe(profile, recipe, context),
+      )
+      .map(
+        (recipe) =>
+          ({
+            kind: "recipe",
+            recipe,
+          }) satisfies RewardPunishmentRandomEntry,
+      ),
+  ];
+}
+
 function normalizeRng(value: number) {
   if (!Number.isFinite(value) || value <= 0) return 0;
   if (value >= 1) return 1 - Number.EPSILON;
   return value;
+}
+
+export function pickRewardPunishmentRandomEntry(
+  pool: readonly RewardPunishmentRandomEntry[],
+  {
+    previousEntryKey,
+    rng = Math.random,
+  }: {
+    previousEntryKey?: string;
+    rng?: RewardPunishmentRandomizerRng;
+  } = {},
+): RewardPunishmentRandomEntry | null {
+  if (pool.length === 0) return null;
+
+  const candidates =
+    pool.length > 1 && previousEntryKey
+      ? pool.filter(
+          (entry) =>
+            rewardPunishmentRandomEntryKey(entry) !==
+            previousEntryKey,
+        )
+      : pool;
+
+  const usable = candidates.length > 0 ? candidates : pool;
+  const index = Math.floor(normalizeRng(rng()) * usable.length);
+  return usable[index] ?? usable[0] ?? null;
 }
 
 export function pickRewardPunishmentRandomPrimitive(
@@ -49,20 +136,17 @@ export function pickRewardPunishmentRandomPrimitive(
     rng?: RewardPunishmentRandomizerRng;
   } = {},
 ): RewardPunishmentPrimitive | null {
-  if (pool.length === 0) return null;
+  const entry = pickRewardPunishmentRandomEntry(
+    pool.map((primitive) => ({ kind: "primitive", primitive })),
+    {
+      previousEntryKey: previousPrimitiveKey
+        ? `primitive:${previousPrimitiveKey}`
+        : undefined,
+      rng,
+    },
+  );
 
-  const candidates =
-    pool.length > 1 && previousPrimitiveKey
-      ? pool.filter(
-          (primitive) =>
-            rewardPunishmentPrimitiveKey(primitive.ref) !==
-            previousPrimitiveKey,
-        )
-      : pool;
-
-  const usable = candidates.length > 0 ? candidates : pool;
-  const index = Math.floor(normalizeRng(rng()) * usable.length);
-  return usable[index] ?? usable[0] ?? null;
+  return entry?.kind === "primitive" ? entry.primitive : null;
 }
 
 export function pickRewardPunishmentFromProfile(

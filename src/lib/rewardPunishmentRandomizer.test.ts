@@ -9,10 +9,14 @@ import {
   rewardPunishmentPrimitives,
 } from "./rewardPunishmentLibrary";
 import {
+  buildRewardPunishmentRandomEntries,
   buildRewardPunishmentRandomPool,
   pickRewardPunishmentFromProfile,
+  pickRewardPunishmentRandomEntry,
   pickRewardPunishmentRandomPrimitive,
+  rewardPunishmentRandomEntryKey,
 } from "./rewardPunishmentRandomizer";
+import type { RewardPunishmentRecipe } from "./rewardPunishmentRecipes";
 
 const a = rewardPunishmentPrimitives[0];
 const b = rewardPunishmentPrimitives[1];
@@ -41,15 +45,28 @@ function approve(
   return next;
 }
 
-describe("M11.6 random pool eligibility", () => {
+function recipe(
+  overrides: Partial<RewardPunishmentRecipe> = {},
+): RewardPunishmentRecipe {
+  return {
+    id: "recipe-1",
+    kind: "reward",
+    name: "Saved combo",
+    components: [
+      { kind: "primitive", ref: a.ref },
+      { kind: "custom", id: "custom-1", label: "Check in" },
+    ],
+    randomEligible: true,
+    createdAt: "2026-09-08T00:00:00.000Z",
+    updatedAt: "2026-09-08T00:00:00.000Z",
+    ...overrides,
+  };
+}
+
+describe("M11 random pool eligibility", () => {
   it("requires both direct positive suitability and explicit random eligibility", () => {
     let profile = createEmptyRewardPunishmentProfileState();
-    profile = setContextSuitability(
-      profile,
-      a.ref,
-      "reward",
-      "works",
-    );
+    profile = setContextSuitability(profile, a.ref, "reward", "works");
     profile = approve(profile, b, "reward", "strong");
 
     expect(
@@ -83,22 +100,21 @@ describe("M11.6 random pool eligibility", () => {
     };
 
     expect(
-      buildRewardPunishmentRandomPool(
-        malformed,
-        [a],
-        "reward",
-      ),
+      buildRewardPunishmentRandomPool(malformed, [a], "reward"),
     ).toEqual([]);
   });
 
-  it("keeps reward and punishment pools independent", () => {
+  it("keeps reward and punishment primitive pools independent", () => {
     let profile = createEmptyRewardPunishmentProfileState();
     profile = approve(profile, a, "reward");
     profile = approve(profile, b, "punishment");
 
     expect(
-      buildRewardPunishmentRandomPool(profile, [a, b], "reward")
-        .map((primitive) => primitive.ref),
+      buildRewardPunishmentRandomPool(
+        profile,
+        [a, b],
+        "reward",
+      ).map((primitive) => primitive.ref),
     ).toEqual([a.ref]);
     expect(
       buildRewardPunishmentRandomPool(
@@ -122,8 +138,101 @@ describe("M11.6 random pool eligibility", () => {
   });
 });
 
-describe("M11.6 random selection", () => {
-  it("uses injectable RNG deterministically with equal pool weighting", () => {
+describe("M11.8 recipe randomization", () => {
+  it("adds valid random-enabled recipes alongside primitive entries with equal entry weight", () => {
+    let profile = createEmptyRewardPunishmentProfileState();
+    profile = approve(profile, a, "reward");
+
+    const entries = buildRewardPunishmentRandomEntries(
+      profile,
+      [a],
+      [recipe()],
+      "reward",
+    );
+
+    expect(entries.map((entry) => entry.kind)).toEqual([
+      "primitive",
+      "recipe",
+    ]);
+    expect(
+      pickRewardPunishmentRandomEntry(entries, { rng: () => 0 })?.kind,
+    ).toBe("primitive");
+    expect(
+      pickRewardPunishmentRandomEntry(entries, { rng: () => 0.75 })?.kind,
+    ).toBe("recipe");
+  });
+
+  it("excludes recipes from the wrong context or without explicit recipe random eligibility", () => {
+    const profile = createEmptyRewardPunishmentProfileState();
+    const entries = buildRewardPunishmentRandomEntries(
+      profile,
+      [],
+      [
+        recipe({ kind: "punishment" }),
+        recipe({ id: "off", randomEligible: false }),
+      ],
+      "reward",
+    );
+
+    expect(entries).toEqual([]);
+  });
+
+  it("blocks Needs review recipes with stale or context-never components", () => {
+    let profile = createEmptyRewardPunishmentProfileState();
+    profile = setContextSuitability(profile, a.ref, "reward", "never");
+
+    const entries = buildRewardPunishmentRandomEntries(
+      profile,
+      [],
+      [
+        recipe(),
+        recipe({
+          id: "stale",
+          components: [
+            {
+              kind: "primitive",
+              ref: { kind: "catalog", id: "retired-item" },
+            },
+          ],
+        }),
+      ],
+      "reward",
+    );
+
+    expect(entries).toEqual([]);
+  });
+
+  it("uses distinct primitive/recipe anti-repeat keys", () => {
+    const primitiveEntry = {
+      kind: "primitive" as const,
+      primitive: a,
+    };
+    const recipeEntry = {
+      kind: "recipe" as const,
+      recipe: recipe(),
+    };
+
+    expect(rewardPunishmentRandomEntryKey(primitiveEntry)).toBe(
+      `primitive:${rewardPunishmentPrimitiveKey(a.ref)}`,
+    );
+    expect(rewardPunishmentRandomEntryKey(recipeEntry)).toBe(
+      "recipe:recipe-1",
+    );
+    expect(
+      pickRewardPunishmentRandomEntry(
+        [primitiveEntry, recipeEntry],
+        {
+          previousEntryKey:
+            rewardPunishmentRandomEntryKey(primitiveEntry),
+          rng: () => 0,
+        },
+      ),
+    ).toEqual(recipeEntry);
+  });
+});
+
+describe("M11 random selection", () => {
+  it("uses injectable RNG deterministically with equal primitive weighting", () => {
     expect(
       pickRewardPunishmentRandomPrimitive([a, b, c], {
         rng: () => 0,
