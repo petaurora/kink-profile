@@ -6,6 +6,7 @@ import { quizzes, type QuizId } from "../data/quizzes";
 import { signalDefinitions, type SignalId } from "../data/signals";
 import {
   filterEligibleCatalogItems,
+  getActiveKinkRankingComparisons,
   getCatalogPreference,
   type CatalogPreferenceState,
   type CatalogProfileState,
@@ -132,12 +133,13 @@ function buildCategoryRankContext(
   catalogProfile: CatalogProfileState,
 ) {
   const categoryRanks = new Map<string, CatalogRankContext>();
+  const comparisons = getActiveKinkRankingComparisons(catalogProfile);
   const categoryIds = [...new Set(eligibleCatalog.map((item) => item.categoryId))];
 
   for (const categoryId of categoryIds) {
     const snapshot = calculateRanking(
       eligibleCatalog,
-      catalogProfile.comparisons,
+      comparisons,
       { type: "category", categoryId },
     );
 
@@ -159,19 +161,20 @@ function buildOverallRankContext(
   eligibleCatalog: readonly KinkCatalogItem[],
   catalogProfile: CatalogProfileState,
 ) {
+  const comparisons = getActiveKinkRankingComparisons(catalogProfile);
   const finalists = selectCategoryFinalists(
     eligibleCatalog,
-    catalogProfile.comparisons,
+    comparisons,
     5,
   );
   const candidates = selectOverallCandidates(
     eligibleCatalog,
     finalists,
-    catalogProfile.comparisons,
+    comparisons,
   );
   const snapshot = calculateRanking(
     candidates,
-    catalogProfile.comparisons,
+    comparisons,
     { type: "overall" },
   );
   const overallRanks = new Map<string, CatalogRankContext>();
