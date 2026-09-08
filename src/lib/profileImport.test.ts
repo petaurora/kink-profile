@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { saveCatalogProfile } from "./catalogProfileStorage";
+import {
+  loadCatalogProfile,
+  saveCatalogProfile,
+} from "./catalogProfileStorage";
 import {
   createProfileBackup,
   serializeProfileBackup,
+  type ProfileBackupV1,
 } from "./profileBackup";
 import {
   loadProfileSettings,
@@ -19,7 +23,15 @@ import {
   restoreProfileBackup,
   validateProfileBackup,
 } from "./profileImport";
-import { loadCatalogProfile } from "./catalogProfileStorage";
+import {
+  createEmptyRewardPunishmentAuthoritativeState,
+  loadRewardPunishmentAuthoritativeState,
+  saveRewardPunishmentAuthoritativeState,
+} from "./rewardPunishmentLifecycle";
+import {
+  rewardPunishmentPrimitiveKey,
+  rewardPunishmentPrimitives,
+} from "./rewardPunishmentLibrary";
 
 class MemoryStorage implements StorageLike {
   values = new Map<string, string>();
@@ -39,7 +51,43 @@ class MemoryStorage implements StorageLike {
   }
 }
 
-function seedProfile(storage: MemoryStorage, displayName = "babygirl") {
+function seedM11(storage: MemoryStorage, suffix = "source") {
+  const [first, second] = rewardPunishmentPrimitives;
+  const state = createEmptyRewardPunishmentAuthoritativeState();
+  const firstKey = rewardPunishmentPrimitiveKey(first.ref);
+  const secondKey = rewardPunishmentPrimitiveKey(second.ref);
+
+  state.profile.preferences[firstKey] = {
+    ref: first.ref,
+    reward: { suitability: "works", randomEligible: true },
+    punishment: { suitability: "no", randomEligible: false },
+    updatedAt: "2026-09-06T20:00:00.000Z",
+  };
+  state.ranking.comparisons.push({
+    id: `rp-${suffix}`,
+    context: "reward",
+    leftPrimitiveKey: firstKey,
+    rightPrimitiveKey: secondKey,
+    result: "left",
+    timestamp: "2026-09-06T20:00:00.000Z",
+  });
+  state.recipes.recipes.push({
+    id: `recipe-${suffix}`,
+    kind: "reward",
+    name: `Recipe ${suffix}`,
+    components: [{ kind: "primitive", ref: first.ref }],
+    randomEligible: true,
+    createdAt: "2026-09-06T20:00:00.000Z",
+    updatedAt: "2026-09-06T20:00:00.000Z",
+  });
+  saveRewardPunishmentAuthoritativeState(state, storage);
+  return state;
+}
+
+function seedProfile(
+  storage: MemoryStorage,
+  displayName = "babygirl",
+) {
   const quizzes = createEmptyProfile();
   quizzes.quizzes["dominance-submission"] = {
     quizVersion: 1,
@@ -81,30 +129,64 @@ function seedProfile(storage: MemoryStorage, displayName = "babygirl") {
     },
     storage,
   );
+
+  seedM11(storage, displayName);
 }
 
 describe("profile backup import", () => {
   it("accepts the current exported backup format", () => {
     const storage = new MemoryStorage();
     seedProfile(storage);
-
     const backup = createProfileBackup(
       storage,
       "2026-09-06T22:00:00.000Z",
     );
 
-    const result = parseProfileBackupJson(serializeProfileBackup(backup));
+    const result = parseProfileBackupJson(
+      serializeProfileBackup(backup),
+    );
 
     expect(result.ok).toBe(true);
-    if (result.ok) {
-      expect(result.backup).toEqual(backup);
-    }
+    if (result.ok) expect(result.backup).toEqual(backup);
+  });
+
+  it("accepts legacy v1 backups and treats missing M11 as empty on full restore", () => {
+    const source = new MemoryStorage();
+    seedProfile(source, "legacy-source");
+    const current = createProfileBackup(
+      source,
+      "2026-09-06T22:00:00.000Z",
+    );
+    const legacy: ProfileBackupV1 = {
+      format: current.format,
+      version: 1,
+      exportedAt: current.exportedAt,
+      profile: {
+        settings: current.profile.settings,
+        quizzes: current.profile.quizzes,
+        catalog: current.profile.catalog,
+      },
+    };
+
+    const parsed = validateProfileBackup(legacy);
+    expect(parsed.ok).toBe(true);
+
+    const destination = new MemoryStorage();
+    seedProfile(destination, "has-m11");
+    restoreProfileBackup(legacy, destination);
+
+    expect(loadRewardPunishmentAuthoritativeState(destination)).toEqual(
+      createEmptyRewardPunishmentAuthoritativeState(),
+    );
   });
 
   it("rejects malformed JSON without touching current data", () => {
     const storage = new MemoryStorage();
     seedProfile(storage);
-    const before = createProfileBackup(storage, "2026-09-06T22:00:00.000Z");
+    const before = createProfileBackup(
+      storage,
+      "2026-09-06T22:00:00.000Z",
+    );
 
     const result = parseProfileBackupJson("{nope");
 
@@ -112,15 +194,19 @@ describe("profile backup import", () => {
       ok: false,
       error: "That file is not valid JSON.",
     });
-    expect(createProfileBackup(storage, "2026-09-06T22:00:00.000Z").profile)
-      .toEqual(before.profile);
+    expect(
+      createProfileBackup(
+        storage,
+        "2026-09-06T22:00:00.000Z",
+      ).profile,
+    ).toEqual(before.profile);
   });
 
   it("rejects the wrong format identifier", () => {
     expect(
       validateProfileBackup({
         format: "other-profile",
-        version: 1,
+        version: 2,
         exportedAt: "2026-09-06T22:00:00.000Z",
         profile: {},
       }),
@@ -131,46 +217,46 @@ describe("profile backup import", () => {
   });
 
   it("rejects unsupported backup versions", () => {
-    const result = validateProfileBackup({
-      format: "kink-profile",
-      version: 2,
-      exportedAt: "2026-09-06T22:00:00.000Z",
-      profile: {},
-    });
-
-    expect(result).toEqual({
+    expect(
+      validateProfileBackup({
+        format: "kink-profile",
+        version: 3,
+        exportedAt: "2026-09-06T22:00:00.000Z",
+        profile: {},
+      }),
+    ).toEqual({
       ok: false,
-      error: "Backup format v2 is not supported by this app version.",
+      error:
+        "Backup format v3 is not supported by this app version.",
     });
   });
 
-  it("rejects invalid authoritative nested data before restore", () => {
+  it("rejects invalid M11 nested data before restore", () => {
     const storage = new MemoryStorage();
     seedProfile(storage);
     const backup = createProfileBackup(
       storage,
       "2026-09-06T22:00:00.000Z",
-    ) as unknown as {
-      profile: {
-        catalog: {
-          preferences: Record<string, { overall: string; updatedAt: string }>;
-        };
-      };
+    );
+
+    const key = Object.keys(
+      backup.profile.rewardsPunishments.profile.preferences,
+    )[0];
+    backup.profile.rewardsPunishments.profile.preferences[
+      key
+    ].reward = {
+      suitability: "never",
+      randomEligible: true,
     };
 
-    backup.profile.catalog.preferences.rope = {
-      overall: "definitely-not-valid",
-      updatedAt: "2026-09-06T20:00:00.000Z",
-    };
-
-    const result = validateProfileBackup(backup);
-    expect(result).toEqual({
+    expect(validateProfileBackup(backup)).toEqual({
       ok: false,
-      error: "The catalog or This-or-That data is invalid or unsupported.",
+      error:
+        "The Rewards & Punishments data is invalid or unsupported.",
     });
   });
 
-  it("replaces every authoritative source with the imported backup", () => {
+  it("replaces every authoritative source including M11", () => {
     const source = new MemoryStorage();
     seedProfile(source, "source");
     const backup = createProfileBackup(
@@ -180,7 +266,6 @@ describe("profile backup import", () => {
 
     const destination = new MemoryStorage();
     seedProfile(destination, "destination");
-
     const destinationProfile = loadProfile(destination);
     destinationProfile.quizzes["roles-headspaces"] = {
       quizVersion: 3,
@@ -190,12 +275,21 @@ describe("profile backup import", () => {
 
     restoreProfileBackup(backup, destination);
 
-    expect(loadProfileSettings(destination)).toEqual(backup.profile.settings);
-    expect(loadProfile(destination)).toEqual(backup.profile.quizzes);
-    expect(loadCatalogProfile(destination)).toEqual(backup.profile.catalog);
+    expect(loadProfileSettings(destination)).toEqual(
+      backup.profile.settings,
+    );
+    expect(loadProfile(destination)).toEqual(
+      backup.profile.quizzes,
+    );
+    expect(loadCatalogProfile(destination)).toEqual(
+      backup.profile.catalog,
+    );
+    expect(
+      loadRewardPunishmentAuthoritativeState(destination),
+    ).toEqual(backup.profile.rewardsPunishments);
   });
 
-  it("supports export -> replace -> import round-trip equivalence", () => {
+  it("supports export -> replace -> import round-trip equivalence including M11", () => {
     const storage = new MemoryStorage();
     seedProfile(storage);
     const original = createProfileBackup(
@@ -215,6 +309,10 @@ describe("profile backup import", () => {
       },
       storage,
     );
+    saveRewardPunishmentAuthoritativeState(
+      createEmptyRewardPunishmentAuthoritativeState(),
+      storage,
+    );
 
     restoreProfileBackup(original, storage);
 
@@ -225,10 +323,9 @@ describe("profile backup import", () => {
     expect(restored.profile).toEqual(original.profile);
   });
 
-  it("rolls back the prior profile if a replacement write fails", () => {
+  it("rolls back all prior sources when a failure occurs midway through M11 writes", () => {
     const destination = new MemoryStorage();
     seedProfile(destination, "keep-me");
-
     const before = createProfileBackup(
       destination,
       "2026-09-06T22:00:00.000Z",
@@ -241,11 +338,12 @@ describe("profile backup import", () => {
       "2026-09-06T23:00:00.000Z",
     );
 
-    destination.failOnWriteNumber = destination.writeCount + 2;
+    destination.failOnWriteNumber =
+      destination.writeCount + 5;
 
-    expect(() => restoreProfileBackup(incoming, destination)).toThrow(
-      "The restore failed: simulated storage failure",
-    );
+    expect(() =>
+      restoreProfileBackup(incoming, destination),
+    ).toThrow("The restore failed: simulated storage failure");
 
     const after = createProfileBackup(
       destination,
