@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { ExpandableGroupedList } from "./ExpandableGroupedList";
+import { RewardPunishmentSorter } from "./RewardPunishmentSorter";
 import {
   kinkCatalog,
   type KinkCatalogItem,
@@ -191,6 +192,12 @@ export function RewardPunishmentProfiles({
   const [suitabilityFilter, setSuitabilityFilter] =
     useState<SuitabilityFilter>("all");
   const [randomOnly, setRandomOnly] = useState(false);
+  const [view, setView] = useState<"sorter" | "details">("sorter");
+
+  const commitProfile = (next: RewardPunishmentProfileState) => {
+    saveRewardPunishmentProfile(next);
+    setProfile(next);
+  };
 
   const updateProfile = (
     updater: (
@@ -385,6 +392,38 @@ export function RewardPunishmentProfiles({
           Back to hub
         </button>
       </article>
+
+      <div className="rp-view-tabs" role="group" aria-label="Rewards and punishments view">
+        <button
+          type="button"
+          className={view === "sorter" ? "rp-view-tab is-active" : "rp-view-tab"}
+          aria-pressed={view === "sorter"}
+          onClick={() => setView("sorter")}
+        >
+          <strong>Quick sorter</strong>
+          <span>Reward · Punishment · Both · Neither</span>
+        </button>
+        <button
+          type="button"
+          className={view === "details" ? "rp-view-tab is-active" : "rp-view-tab"}
+          aria-pressed={view === "details"}
+          onClick={() => setView("details")}
+        >
+          <strong>Detailed profiles</strong>
+          <span>Search · notes · nuanced suitability</span>
+        </button>
+      </div>
+
+      {view === "sorter" ? (
+        <RewardPunishmentSorter
+          profile={profile}
+          onProfileChange={commitProfile}
+          canonicalSignals={canonicalSignals}
+          catalogResultView={catalogResultView}
+          onExit={() => setView("details")}
+        />
+      ) : (
+        <>
 
       <div className="rp-tabs" role="group" aria-label="Context profile">
         {(["reward", "punishment"] as const).map((target) => (
@@ -845,6 +884,8 @@ export function RewardPunishmentProfiles({
           );
         }}
       />
+        </>
+      )}
     </section>
   );
 }
