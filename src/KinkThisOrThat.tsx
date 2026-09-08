@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { PairwiseComparisonPanel } from "./PairwiseComparisonPanel";
 import {
   kinkCatalog,
   kinkCategories,
@@ -469,42 +470,54 @@ export function KinkThisOrThat({
       )}
 
       {(mode === "overall" || categoryOpen) && !showResults && !sessionComplete && pair && (
-        <article className="versus-panel panel">
-          <div className="versus-meta">
-            <span>
-              {mode === "category" ? activeCategory?.label : "Cross-category finalists"}
-            </span>
-            <span>
-              {sessionSize === "gremlin"
-                ? `${sessionAnswered} this session`
-                : `${sessionAnswered} / ${sessionSize}`}
-            </span>
-          </div>
-
-          <div className="versus-grid">
-            <button className="kink-choice" onClick={() => answer("left")}>
-              <span className="choice-category">{pair[0].categoryLabel}</span>
-              <strong>{pair[0].label}</strong>
-              {pair[0].description && <p>{pair[0].description}</p>}
-              <span className="pick-label">Pick this</span>
-            </button>
-
-            <div className="versus-or" aria-hidden="true">OR</div>
-
-            <button className="kink-choice" onClick={() => answer("right")}>
-              <span className="choice-category">{pair[1].categoryLabel}</span>
-              <strong>{pair[1].label}</strong>
-              {pair[1].description && <p>{pair[1].description}</p>}
-              <span className="pick-label">Pick this</span>
-            </button>
-          </div>
-
-          <div className="comparison-actions">
-            <button className="secondary compact" onClick={() => answer("equal")}>Both / equal</button>
-            <button className="secondary compact" onClick={() => answer("neither")}>Neither</button>
-            <button className="text-button" onClick={() => answer("skip")}>Skip / don't know</button>
-          </div>
-        </article>
+        <PairwiseComparisonPanel
+          ariaLabel="Kink comparison"
+          metaStart={
+            mode === "category"
+              ? activeCategory?.label
+              : "Cross-category finalists"
+          }
+          metaEnd={
+            sessionSize === "gremlin"
+              ? `${sessionAnswered} this session`
+              : `${sessionAnswered} / ${sessionSize}`
+          }
+          left={{
+            id: pair[0].id,
+            eyebrow: pair[0].categoryLabel,
+            label: pair[0].label,
+            description: pair[0].description,
+          }}
+          right={{
+            id: pair[1].id,
+            eyebrow: pair[1].categoryLabel,
+            label: pair[1].label,
+            description: pair[1].description,
+          }}
+          onPick={(side) => answer(side)}
+          actions={
+            <>
+              <button
+                className="secondary compact"
+                onClick={() => answer("equal")}
+              >
+                Both / equal
+              </button>
+              <button
+                className="secondary compact"
+                onClick={() => answer("neither")}
+              >
+                Neither
+              </button>
+              <button
+                className="text-button"
+                onClick={() => answer("skip")}
+              >
+                Skip / don't know
+              </button>
+            </>
+          }
+        />
       )}
 
       {(mode === "overall" || categoryOpen) &&
