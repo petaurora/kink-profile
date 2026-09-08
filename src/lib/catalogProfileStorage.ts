@@ -269,9 +269,9 @@ function parseRankingRun(
   };
 }
 
-function parseRankingHistory(
+export function parseKinkRankingHistory(
   value: unknown,
-  replacements: Readonly<Record<string, string>>,
+  replacements: Readonly<Record<string, string>> = kinkCatalogIdReplacements,
 ): KinkRankingHistory | null {
   if (
     !isRecord(value) ||
@@ -320,7 +320,7 @@ function parseNewProfile(
     const rankingHistory =
       parsed.rankingHistory === undefined
         ? undefined
-        : parseRankingHistory(parsed.rankingHistory, replacements) ?? undefined;
+        : parseKinkRankingHistory(parsed.rankingHistory, replacements) ?? undefined;
 
     return normalizeCatalogRankingHistory(
       {
