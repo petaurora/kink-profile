@@ -18,6 +18,8 @@ Current imported runtime behavior includes:
 
 See [M6 Catalog Integration](m6-catalog-integration.md) for the parent catalog contract and [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md) for the direct preference-management surface.
 
+Temporal reranking is scoped separately in [M12 This-or-That Ranking History & Movement](m12-ranking-history-movement.md). M12 preserves each ranking run as history instead of treating a fresh rerank as destructive deletion or as lifetime score accumulation.
+
 ---
 
 ## Purpose
@@ -543,6 +545,8 @@ Future controls may support:
 - reset one category
 - reset overall ranking
 - reset one kink's comparison history
+
+M12 adds a separate temporal concept: **Start a new ranking run**. That action archives the current run and begins fresh comparative scoring while preserving history. It must not be conflated with destructive reset controls.
 
 ---
 

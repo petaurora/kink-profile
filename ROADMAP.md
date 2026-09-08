@@ -22,6 +22,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M9 | ✅ Complete | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
 | M11 | Planned | contextual rewards/punishments, randomizer, and reusable builders |
+| M12 | Scoped | preserve This-or-That runs and show rank movement over time |
 
 ---
 
@@ -890,6 +891,28 @@ M11 intentionally does **not** add assignment, earning, demerits, punishment deb
 
 ---
 
+## M12 — This-or-That Ranking History & Movement
+
+**Goal:** make This-or-That a repeatable preference pulse rather than one lifetime-accumulating ranking.
+
+See [docs/m12-ranking-history-movement.md](docs/m12-ranking-history-movement.md) for the detailed contract.
+
+Core behavior:
+
+- [ ] preserve the current ranking as an archived run when the user chooses to rerank
+- [ ] start the new run with fresh pairwise scoring rather than carrying old Elo evidence forward
+- [ ] keep quizzes and explicit catalog preferences untouched
+- [ ] treat only the active run as current pairwise evidence for M6/M7
+- [ ] show rank movement against the previous comparable run
+- [ ] show the exact previous rank on hover/focus/tap
+- [ ] keep archived history in private backup/restore
+- [ ] keep destructive M9 ranking reset separate from non-destructive reranking
+- [ ] retain enough historical data for future trend views without requiring them in M12 v1
+
+**M12 exit condition:** the user can start a fresh This-or-That run without losing the previous one, and current category/Overall results clearly show what moved since the last comparable run.
+
+---
+
 # Parked ideas
 
 Interesting, but not current scope:
@@ -907,6 +930,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7 and M9 are complete. M11 is now fully scoped and ready for implementation when chosen.**
+**M7 and M9 are complete. M11 and M12 are fully scoped and ready for implementation when chosen.**
 
-The next product work should still be chosen intentionally. Roadmap options include optional M8 adaptive/deeper quizzes, optional M10 cloud persistence, and the planned M11 Rewards & Punishments toolbox.
+The next product work should still be chosen intentionally. Roadmap options include optional M8 adaptive/deeper quizzes, optional M10 cloud persistence, the planned M11 Rewards & Punishments toolbox, and M12 This-or-That ranking history/movement.
