@@ -2,7 +2,7 @@
 
 ## Status
 
-**In progress. M12.1 is implemented; M12.2–M12.4 remain.**
+**In progress. M12.1–M12.2 are implemented; M12.3–M12.4 remain.**
 
 M12 extends the existing This-or-That ranking system with temporal history.
 
@@ -555,14 +555,14 @@ A future explicit share-history option can be scoped separately if useful.
 
 ## M12.2 — Start-new-run lifecycle
 
-- [ ] add a non-destructive Start a new ranking run action
-- [ ] explain that current rankings become history
-- [ ] archive the current run at any refinement level
-- [ ] create a fresh active run
-- [ ] preserve quiz and explicit catalog data
-- [ ] calculate pair selection/rank/confidence from active-run comparisons only
-- [ ] keep M9 destructive reset semantically separate
-- [ ] add source-isolation tests
+- [x] add a non-destructive Start a new ranking run action
+- [x] explain that current rankings become history
+- [x] archive the current run at any refinement level
+- [x] create a fresh active run
+- [x] preserve quiz and explicit catalog data
+- [x] calculate pair selection/rank/confidence from active-run comparisons only
+- [x] keep M9 destructive reset semantically separate
+- [x] add source-isolation tests
 
 **Exit condition:** the user can rerank from scratch without losing the old result.
 

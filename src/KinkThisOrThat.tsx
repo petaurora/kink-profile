@@ -30,6 +30,7 @@ import {
   buildCatalogResultView,
   catalogPreferenceLabels,
 } from "./lib/catalogResults";
+import { startNewKinkRankingRun } from "./lib/kinkRankingHistory";
 import type { StoredProfile } from "./lib/profileStorage";
 
 type RankingMode = "category" | "overall";
@@ -48,6 +49,14 @@ function randomId() {
   }
 
   return `comparison-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function randomRunId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return `ranking-run-${crypto.randomUUID()}`;
+  }
+
+  return `ranking-run-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
 function randomizePair(pair: [KinkCatalogItem, KinkCatalogItem] | null) {
@@ -82,6 +91,8 @@ export function KinkThisOrThat({
   const [showResults, setShowResults] = useState(false);
   const [pairNonce, setPairNonce] = useState(0);
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const [showNewRunConfirm, setShowNewRunConfirm] = useState(false);
+  const [newRunNotice, setNewRunNotice] = useState(false);
 
   useEffect(() => {
     saveCatalogProfile(profile);
@@ -97,6 +108,11 @@ export function KinkThisOrThat({
     [profile],
   );
   const activeRunId = getActiveKinkRankingRunId(profile);
+  const hasMeaningfulRank = useMemo(
+    () => activeComparisons.some((comparison) => isOrderingResult(comparison.result)),
+    [activeComparisons],
+  );
+  const rankingRunNumber = Object.keys(profile.rankingHistory?.runs ?? {}).length;
 
   const finalists = useMemo(
     () => selectCategoryFinalists(eligibleCatalog, activeComparisons, 5),
@@ -258,6 +274,26 @@ export function KinkThisOrThat({
     setPairNonce((value) => value + 1);
   };
 
+  const beginNewRankingRun = () => {
+    const startedAt = new Date().toISOString();
+
+    setProfile((current) =>
+      startNewKinkRankingRun(
+        current,
+        filterEligibleCatalogItems(kinkCatalog, current.preferences),
+        randomRunId(),
+        startedAt,
+      ),
+    );
+    setMode("category");
+    setCategoryOpen(false);
+    setShowResults(false);
+    setSessionStartCount(0);
+    setPairNonce((value) => value + 1);
+    setShowNewRunConfirm(false);
+    setNewRunNotice(true);
+  };
+
   const openOverallRanking = () => {
     if (overallCandidates.length < 2) return;
 
@@ -326,6 +362,68 @@ export function KinkThisOrThat({
 
       {mode === "category" && !categoryOpen ? (
         <section className="category-map">
+          {newRunNotice && (
+            <div className="ranking-run-notice panel" role="status">
+              <div>
+                <strong>Fresh ranking run started.</strong>
+                <span>Your previous ranking is saved as history. This run starts from zero comparisons.</span>
+              </div>
+              <button className="text-button" onClick={() => setNewRunNotice(false)}>
+                Dismiss
+              </button>
+            </div>
+          )}
+
+          {hasMeaningfulRank && (
+            showNewRunConfirm ? (
+              <section className="ranking-run-confirm panel" aria-labelledby="ranking-run-confirm-title">
+                <div className="ranking-run-confirm-copy">
+                  <p className="eyebrow">New ranking pulse</p>
+                  <h2 id="ranking-run-confirm-title">Start fresh?</h2>
+                  <p>
+                    Run {rankingRunNumber} will be saved as history. The new run starts with
+                    fresh This-or-That comparisons.
+                  </p>
+                </div>
+                <div className="ranking-run-impact">
+                  <span>
+                    <strong>Saved</strong>
+                    Current ranking + raw comparisons
+                  </span>
+                  <span>
+                    <strong>Kept</strong>
+                    Quiz results + catalog preferences
+                  </span>
+                  <span>
+                    <strong>Fresh</strong>
+                    Pairwise scores + ranking confidence
+                  </span>
+                </div>
+                <div className="ranking-run-confirm-actions">
+                  <button className="secondary" onClick={() => setShowNewRunConfirm(false)}>
+                    Cancel
+                  </button>
+                  <button className="primary" onClick={beginNewRankingRun}>
+                    Start new ranking run
+                  </button>
+                </div>
+              </section>
+            ) : (
+              <section className="ranking-run-control panel">
+                <div>
+                  <p className="eyebrow">Ranking history · Run {rankingRunNumber}</p>
+                  <strong>Want a fresh pulse?</strong>
+                  <span>
+                    Save this ranking as history and rerank from scratch to see what shifts.
+                  </span>
+                </div>
+                <button className="secondary compact" onClick={() => setShowNewRunConfirm(true)}>
+                  Start a new ranking run
+                </button>
+              </section>
+            )
+          )}
+
           <button
             className={overallCandidates.length >= 2 ? "overall-destination panel" : "overall-destination panel locked"}
             onClick={openOverallRanking}

@@ -196,9 +196,10 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 **Details:** [M12 Ranking History & Movement](docs/m12-ranking-history-movement.md)
 
 - [x] **M12.1** — run-aware persistence + migration
-- [ ] archive the previous comparable ranking run on rerank
-- [ ] start each new run with fresh pairwise scoring
-- [ ] use only the active run as current M6/M7 pairwise evidence
+- [x] **M12.2** — archive current ranking + start a fresh active run
+- [x] archive the previous comparable ranking run on rerank
+- [x] start each new run with fresh pairwise scoring
+- [x] use only the active run as current M6/M7 pairwise evidence
 - [ ] show movement + previous rank against the prior comparable run
 - [ ] preserve run history through backup/restore while keeping destructive reset separate
 
