@@ -33,7 +33,8 @@ export function SiteHeader({
 
   return (
     <header className="site-header">
-      <div className="site-header-nav">
+      <div className="site-header-inner">
+        <div className="site-header-nav">
         <button
           type="button"
           className={"site-nav-trigger" + (navOpen ? " is-open" : "")}
@@ -82,16 +83,17 @@ export function SiteHeader({
         </button>
       </div>
 
-      <div className="header-actions">
-        <button
-          type="button"
-          className={"header-icon-button" + (settingsActive ? " is-active" : "")}
-          onClick={onOpenSettings}
-          aria-label={settingsActive ? "Close settings" : "Open settings"}
-          aria-pressed={settingsActive}
-        >
-          <IconSettings size={20} stroke={2} aria-hidden="true" />
-        </button>
+        <div className="header-actions">
+          <button
+            type="button"
+            className={"header-icon-button" + (settingsActive ? " is-active" : "")}
+            onClick={onOpenSettings}
+            aria-label={settingsActive ? "Close settings" : "Open settings"}
+            aria-pressed={settingsActive}
+          >
+            <IconSettings size={20} stroke={2} aria-hidden="true" />
+          </button>
+        </div>
       </div>
     </header>
   );
