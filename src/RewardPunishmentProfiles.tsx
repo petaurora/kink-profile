@@ -7,9 +7,9 @@ import {
   rewardPunishmentActions,
   rewardPunishmentCategories,
   rewardPunishmentPrimitives,
-  type RewardPunishmentActionDefinition,
   type RewardPunishmentPrimitive,
 } from "./lib/rewardPunishmentLibrary";
+import type { RewardPunishmentActionDefinition } from "./data/rewardPunishmentLibrary.generated";
 import {
   canBeRandomEligible,
   contextSuitabilities,
