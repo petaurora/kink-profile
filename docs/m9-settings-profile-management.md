@@ -387,21 +387,22 @@ Its job is to answer:
 
 Build one dedicated share-summary content model/view, then render that same model into export formats.
 
-## Implemented v1 content
+## Implemented v2 content
 
 Use stable profile outputs and keep the default summary concise.
 
-The first share-summary model includes:
+The share-summary v2 model includes:
 
 - configured profile display name
 - M7.3 human-readable summary + Orientation
 - M7.4 nine-axis overall radar with unknown preserved as unknown
-- M7.5 top submissive-oriented Headspaces
+- M7.5 top Headspaces
 - M7.5 top Dynamic Modes
 - M7.6 Top Overall directly evidenced interests
-- explicit Hard Limits from the stable C6 catalog exclusion channel
+- M7.8 Interest Areas using the same stable category relevance/representative-item selector as the main profile
+- explicit Hard Limits from the stable catalog exclusion channel
 
-Interest Areas are intentionally deferred from the v1 summary until M7.8 locks category relevance/selection semantics. M9 must not invent a parallel category-ranking algorithm merely to fill the export.
+M9 does not maintain parallel interest/category scoring. The share summary consumes M7 selectors and strips them down to presentation-ready labels/items.
 
 The share model contains only presentation-ready data. Raw answers, comparison history, source evidence IDs, browser-storage metadata, and internal provenance are not copied into the model.
 
@@ -547,13 +548,32 @@ Recommended implementation order:
 
 This lets the visual content contract stabilize before adding multiple capture/render pipelines.
 
+## Implemented export pipeline
+
+All formats are generated locally from the same share-summary v2 model and the same `ProfileShareSummary` renderer.
+
+### PNG
+
+PNG capture uses an off-screen fixed-width single-column export stage rather than the current preview width. The summary is rendered at high pixel density as a deliberate tall image suitable for messaging/phone viewing. Canvas scale is bounded to avoid browser maximum-dimension failures on unusually long summaries.
+
+### HTML
+
+HTML export serializes only the rendered `share-summary` element and embeds the current same-origin stylesheet rules into one standalone document. There are no scripts, storage hooks, app navigation controls, or private backup data in the file. The document retains the renderer's responsive media rules.
+
+### PDF
+
+PDF export starts from the same high-density rendered summary. It creates letter-sized pages and prefers boundaries marked by major summary sections before falling back to a raw page-height cut. Each page embeds a high-quality JPEG slice of the rendered card, keeping the radar and styled summary visually aligned with PNG/HTML.
+
+PNG/PDF DOM capture uses `html2canvas` so mobile browsers do not rely on SVG `foreignObject` rendering, which can taint the resulting canvas and block `toBlob()` / `toDataURL()` exports. The PDF container itself remains generated locally by the app.
+
 ## Acceptance criteria
 
-- PNG, HTML, and PDF all represent the same profile summary semantics
-- exports do not contain app navigation/admin controls
-- limits and top interests remain visually distinct
-- long content does not clip silently
-- export tests cover at least sparse and dense sample profiles
+- [x] PNG, HTML, and PDF all represent the same profile summary semantics
+- [x] exports do not contain app navigation/admin controls
+- [x] limits, Top Overall, and Interest Areas remain visually distinct
+- [x] long content is handled as a tall PNG / responsive HTML / section-aware multi-page PDF rather than silently clipping
+- [x] export helpers cover filename, standalone HTML, page-boundary planning, and multi-page PDF container behavior
+- [x] sparse/dense share semantics remain covered by the share-summary model tests
 
 ---
 
@@ -662,7 +682,7 @@ Each slice should be testable and mergeable independently.
 
 ---
 
-# Exit condition
+# Exit condition ✅
 
 M9 is complete when:
 

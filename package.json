@@ -15,7 +15,8 @@
   "dependencies": {
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "@tabler/icons-react": "^3.46.0"
+    "@tabler/icons-react": "^3.46.0",
+    "html2canvas": "^1.4.1"
   },
   "devDependencies": {
     "@types/react": "^19.1.10",

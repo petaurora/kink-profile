@@ -13,7 +13,7 @@ describe("profile share summary", () => {
       "babygirl",
       createEmptyProfile(),
       createEmptyCatalogProfileState(),
-      "2026-09-06T23:00:00.000Z",
+      "2026-09-07T19:00:00.000Z",
     );
 
     expect(model.version).toBe(PROFILE_SHARE_SUMMARY_VERSION);
@@ -21,9 +21,10 @@ describe("profile share summary", () => {
     expect(model.orientation).toBe("Still emerging");
     expect(model.radarAxes.every((axis) => axis.affinity === null)).toBe(true);
     expect(model.radarAxes.every((axis) => axis.state === "unknown")).toBe(true);
+    expect(model.interestAreas).toEqual([]);
   });
 
-  it("keeps positive interests and explicit Hard Limits semantically separate", () => {
+  it("keeps positive interests, Interest Areas, and explicit Hard Limits semantically separate", () => {
     const loveItem = kinkCatalog[0]!;
     const curiousItem = kinkCatalog[1]!;
     const limitItem = kinkCatalog[2]!;
@@ -31,27 +32,35 @@ describe("profile share summary", () => {
 
     catalogProfile.preferences[loveItem.id] = {
       overall: "love",
-      updatedAt: "2026-09-06T22:00:00.000Z",
+      updatedAt: "2026-09-07T18:00:00.000Z",
     };
     catalogProfile.preferences[curiousItem.id] = {
       overall: "curious",
-      updatedAt: "2026-09-06T22:00:00.000Z",
+      updatedAt: "2026-09-07T18:00:00.000Z",
     };
     catalogProfile.preferences[limitItem.id] = {
       overall: "hard_limit",
-      updatedAt: "2026-09-06T22:00:00.000Z",
+      updatedAt: "2026-09-07T18:00:00.000Z",
     };
 
     const model = buildProfileShareSummary(
       "Kitty",
       createEmptyProfile(),
       catalogProfile,
-      "2026-09-06T23:00:00.000Z",
+      "2026-09-07T19:00:00.000Z",
     );
 
     expect(model.topInterests.map((item) => item.catalogId)).toContain(loveItem.id);
     expect(model.topInterests.map((item) => item.catalogId)).toContain(curiousItem.id);
     expect(model.topInterests.map((item) => item.catalogId)).not.toContain(limitItem.id);
+
+    expect(
+      model.interestAreas.flatMap((area) => area.items.map((item) => item.catalogId)),
+    ).toContain(loveItem.id);
+    expect(
+      model.interestAreas.flatMap((area) => area.items.map((item) => item.catalogId)),
+    ).not.toContain(limitItem.id);
+
     expect(model.hardLimits).toEqual([
       {
         catalogId: limitItem.id,
@@ -67,11 +76,11 @@ describe("profile share summary", () => {
 
     catalogProfile.preferences[loveItem.id] = {
       overall: "love",
-      updatedAt: "2026-09-06T22:00:00.000Z",
+      updatedAt: "2026-09-07T18:00:00.000Z",
     };
     catalogProfile.preferences[limitItem.id] = {
       overall: "hard_limit",
-      updatedAt: "2026-09-06T22:00:00.000Z",
+      updatedAt: "2026-09-07T18:00:00.000Z",
     };
     catalogProfile.comparisons.push({
       id: "private-comparison-id",
@@ -79,14 +88,14 @@ describe("profile share summary", () => {
       rightKinkId: limitItem.id,
       scope: { type: "overall" },
       result: "left",
-      timestamp: "2026-09-06T22:30:00.000Z",
+      timestamp: "2026-09-07T18:30:00.000Z",
     });
 
     const model = buildProfileShareSummary(
       "babygirl",
       createEmptyProfile(),
       catalogProfile,
-      "2026-09-06T23:00:00.000Z",
+      "2026-09-07T19:00:00.000Z",
     );
     const serialized = JSON.stringify(model);
 
@@ -95,5 +104,6 @@ describe("profile share summary", () => {
     expect(serialized).not.toContain("comparisons");
     expect(serialized).not.toContain("answers");
     expect(serialized).not.toContain("schemaVersion");
+    expect(serialized).not.toContain("relevanceScore");
   });
 });
