@@ -63,19 +63,21 @@ export default function ProfileAppRoot() {
       <ProfileNameBridge settings={settings} />
 
       {settingsOpen ? (
-        <main className="app-shell">
+        <>
           <SiteHeader
             displayName={settings.displayName}
             settingsActive
             onNavigate={leaveSettingsFor}
             onOpenSettings={() => setSettingsOpen(false)}
           />
-          <ProfileSettingsPage
-            settings={settings}
-            onChange={setSettings}
-            onClose={() => leaveSettingsFor("hub")}
-          />
-        </main>
+          <main className="app-shell">
+            <ProfileSettingsPage
+              settings={settings}
+              onChange={setSettings}
+              onClose={() => leaveSettingsFor("hub")}
+            />
+          </main>
+        </>
       ) : (
         <App
           initialScreen={resumeScreen}
