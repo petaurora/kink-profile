@@ -128,7 +128,8 @@ export function ProfileSettingsPage({
             <div>
               <strong>Reset profile data</strong>
               <p>
-                Choose exactly which quiz, catalog, ranking, or profile-settings data to reset.
+                Choose exactly which quiz, catalog, ranking, Rewards & Punishments, or
+                profile-settings data to reset.
               </p>
             </div>
             <button
