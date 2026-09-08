@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { ExpandableGroupedList } from "./ExpandableGroupedList";
 import { RewardPunishmentSorter } from "./RewardPunishmentSorter";
 import { RewardPunishmentRanking } from "./RewardPunishmentRanking";
+import { RewardPunishmentRandomizer } from "./RewardPunishmentRandomizer";
 import "./rewardPunishmentRanking.css";
 import {
   kinkCatalog,
@@ -194,7 +195,9 @@ export function RewardPunishmentProfiles({
   const [suitabilityFilter, setSuitabilityFilter] =
     useState<SuitabilityFilter>("all");
   const [randomOnly, setRandomOnly] = useState(false);
-  const [view, setView] = useState<"sorter" | "ranking" | "details">("sorter");
+  const [view, setView] = useState<
+    "sorter" | "ranking" | "randomizer" | "details"
+  >("sorter");
 
   const commitProfile = (next: RewardPunishmentProfileState) => {
     saveRewardPunishmentProfile(next);
@@ -429,6 +432,15 @@ export function RewardPunishmentProfiles({
         </button>
         <button
           type="button"
+          className={view === "randomizer" ? "rp-view-tab is-active" : "rp-view-tab"}
+          aria-pressed={view === "randomizer"}
+          onClick={() => setView("randomizer")}
+        >
+          <strong>Randomizer</strong>
+          <span>Pick an approved reward or punishment</span>
+        </button>
+        <button
+          type="button"
           className={view === "details" ? "rp-view-tab is-active" : "rp-view-tab"}
           aria-pressed={view === "details"}
           onClick={() => setView("details")}
@@ -450,6 +462,19 @@ export function RewardPunishmentProfiles({
         <RewardPunishmentRanking
           profile={profile}
           onReclassify={openDetailedForPrimitive}
+        />
+      ) : view === "randomizer" ? (
+        <RewardPunishmentRandomizer
+          profile={profile}
+          onOpenDetails={(primitive, targetContext) => {
+            setContext(targetContext);
+            setQuery(primitive?.label ?? "");
+            setCategoryFilter("all");
+            setSourceFilter("all");
+            setSuitabilityFilter("all");
+            setRandomOnly(false);
+            setView("details");
+          }}
         />
       ) : (
         <>
