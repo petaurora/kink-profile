@@ -2,7 +2,7 @@
 
 ## Status
 
-**In progress. M12.1–M12.2 are implemented; M12.3–M12.4 remain.**
+**In progress. M12.1–M12.3 are implemented; M12.4 remains.**
 
 M12 extends the existing This-or-That ranking system with temporal history.
 
@@ -568,15 +568,15 @@ A future explicit share-history option can be scoped separately if useful.
 
 ## M12.3 — Previous-rank movement indicators
 
-- [ ] compare current results with the most recent previous comparable snapshot
-- [ ] show up/down movement count
-- [ ] show unchanged state
-- [ ] show "NEW this run" only for meaningfully ranked current items absent from the previous comparable run
-- [ ] expose exact previous rank on hover/focus/tap
-- [ ] support category and Overall result views
-- [ ] avoid movement for zero-evidence/default rows
-- [ ] add accessible labels and mobile interaction
-- [ ] add deterministic delta tests
+- [x] compare current results with the most recent previous comparable snapshot
+- [x] show up/down movement count
+- [x] show unchanged state
+- [x] show "NEW this run" only for meaningfully ranked current items absent from the previous comparable run
+- [x] expose exact previous rank on hover/focus/tap
+- [x] support category and Overall result views
+- [x] avoid movement for zero-evidence/default rows
+- [x] add accessible labels and mobile interaction
+- [x] add deterministic delta tests
 
 **Exit condition:** a rerun visibly answers "what moved since last time?"
 
