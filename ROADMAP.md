@@ -577,6 +577,10 @@ The previous O1–O6 grouping remains useful as a conceptual map:
 - [x] exclude Hard Limit / Not Interested / Not Applicable even when historical rank remains
 - [x] keep Unsure from acting as positive explicit evidence by itself
 - [x] use confidence-aware pairwise placement in the derived presentation ordering
+- [x] treat missing direct channels as neutral rather than implicitly perfect
+- [x] use quiz-derived catalog affinity as a bounded, coverage-aware ordering modifier only after direct eligibility
+- [x] shrink quiz influence as Overall pairwise confidence increases
+- [x] keep quiz-only items ineligible for Top Overall
 - [x] define deterministic source-count / explicit-state / confidence / rank / label tie behavior
 - [x] preserve source traceability directly in each displayed row
 - [x] show fewer than 10 instead of padding with inferred/default items
