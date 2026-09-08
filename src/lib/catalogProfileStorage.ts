@@ -2,13 +2,18 @@ import { kinkCatalogIdReplacements } from "../data/kinkCatalog.generated";
 import {
   createEmptyCatalogProfileState,
   isCatalogPreferenceState,
+  normalizeCatalogRankingHistory,
   type CatalogItemPreference,
   type CatalogProfileState,
+  type KinkRankingHistory,
 } from "./catalogProfile";
 import type {
   ComparisonResult,
   KinkComparison,
+  RankingRun,
+  RankingRunSnapshots,
   RankingScope,
+  RankingScopeSnapshot,
 } from "./kinkRanking";
 import { LEGACY_KINK_RANKING_STORAGE_KEY } from "./kinkRankingStorage";
 
@@ -75,8 +80,14 @@ function parseComparison(
     return null;
   }
 
+  const runId =
+    typeof value.runId === "string" && value.runId.length > 0
+      ? value.runId
+      : undefined;
+
   return {
     id: value.id,
+    ...(runId ? { runId } : {}),
     leftKinkId: canonicalizeCatalogId(value.leftKinkId, replacements),
     rightKinkId: canonicalizeCatalogId(value.rightKinkId, replacements),
     scope,
@@ -139,6 +150,154 @@ function parseComparisons(
   });
 }
 
+function parseSnapshotItem(
+  value: unknown,
+  replacements: Readonly<Record<string, string>>,
+) {
+  if (!isRecord(value)) return null;
+  if (
+    typeof value.catalogId !== "string" ||
+    typeof value.rank !== "number" ||
+    !Number.isInteger(value.rank) ||
+    value.rank < 1 ||
+    typeof value.comparisons !== "number" ||
+    !Number.isInteger(value.comparisons) ||
+    value.comparisons < 0 ||
+    typeof value.confidence !== "number" ||
+    !Number.isFinite(value.confidence)
+  ) {
+    return null;
+  }
+
+  return {
+    catalogId: canonicalizeCatalogId(value.catalogId, replacements),
+    rank: value.rank,
+    comparisons: value.comparisons,
+    confidence: value.confidence,
+  };
+}
+
+function parseScopeSnapshot(
+  value: unknown,
+  replacements: Readonly<Record<string, string>>,
+): RankingScopeSnapshot | null {
+  if (
+    !isRecord(value) ||
+    typeof value.capturedAt !== "string" ||
+    typeof value.confidence !== "number" ||
+    !Number.isFinite(value.confidence) ||
+    !Array.isArray(value.items)
+  ) {
+    return null;
+  }
+
+  const items = value.items.map((item) => parseSnapshotItem(item, replacements));
+  if (items.some((item) => item === null)) return null;
+
+  return {
+    capturedAt: value.capturedAt,
+    confidence: value.confidence,
+    items: items.filter((item): item is NonNullable<typeof item> => item !== null),
+  };
+}
+
+function parseRunSnapshots(
+  value: unknown,
+  replacements: Readonly<Record<string, string>>,
+): RankingRunSnapshots | null {
+  if (!isRecord(value) || !isRecord(value.categories)) return null;
+
+  const categories: RankingRunSnapshots["categories"] = {};
+  for (const [categoryId, rawSnapshot] of Object.entries(value.categories)) {
+    const snapshot = parseScopeSnapshot(rawSnapshot, replacements);
+    if (!snapshot) return null;
+    categories[categoryId] = snapshot;
+  }
+
+  const overall =
+    value.overall === undefined
+      ? undefined
+      : parseScopeSnapshot(value.overall, replacements);
+  if (value.overall !== undefined && !overall) return null;
+
+  return {
+    categories,
+    ...(overall ? { overall } : {}),
+  };
+}
+
+function parseRankingRun(
+  value: unknown,
+  replacements: Readonly<Record<string, string>>,
+): RankingRun | null {
+  if (!isRecord(value)) return null;
+
+  if (
+    typeof value.id !== "string" ||
+    value.id.length === 0 ||
+    typeof value.startedAt !== "string" ||
+    (value.status !== "active" && value.status !== "archived") ||
+    typeof value.algorithmVersion !== "number" ||
+    !Number.isInteger(value.algorithmVersion) ||
+    value.algorithmVersion < 1
+  ) {
+    return null;
+  }
+
+  if (
+    value.archivedAt !== undefined &&
+    typeof value.archivedAt !== "string"
+  ) {
+    return null;
+  }
+
+  const snapshots =
+    value.snapshots === undefined
+      ? undefined
+      : parseRunSnapshots(value.snapshots, replacements);
+  if (value.snapshots !== undefined && !snapshots) return null;
+
+  return {
+    id: value.id,
+    startedAt: value.startedAt,
+    status: value.status,
+    algorithmVersion: value.algorithmVersion,
+    ...(typeof value.archivedAt === "string"
+      ? { archivedAt: value.archivedAt }
+      : {}),
+    ...(snapshots ? { snapshots } : {}),
+  };
+}
+
+function parseRankingHistory(
+  value: unknown,
+  replacements: Readonly<Record<string, string>>,
+): KinkRankingHistory | null {
+  if (
+    !isRecord(value) ||
+    typeof value.activeRunId !== "string" ||
+    value.activeRunId.length === 0 ||
+    !isRecord(value.runs)
+  ) {
+    return null;
+  }
+
+  const runs: Record<string, RankingRun> = {};
+  for (const [runId, rawRun] of Object.entries(value.runs)) {
+    const run = parseRankingRun(rawRun, replacements);
+    if (!run || run.id !== runId) return null;
+    runs[runId] = run;
+  }
+
+  const activeRun = runs[value.activeRunId];
+  if (!activeRun || activeRun.status !== "active") return null;
+
+  return {
+    activeRunId: value.activeRunId,
+    runs,
+  };
+}
+
 function parseNewProfile(
   raw: string,
   replacements: Readonly<Record<string, string>>,
@@ -158,11 +317,20 @@ function parseNewProfile(
     const comparisons = parseComparisons(parsed.comparisons, replacements);
     if (!preferences || !comparisons) return null;
 
-    return {
-      schemaVersion: 1,
-      preferences,
-      comparisons,
-    };
+    const rankingHistory =
+      parsed.rankingHistory === undefined
+        ? undefined
+        : parseRankingHistory(parsed.rankingHistory, replacements) ?? undefined;
+
+    return normalizeCatalogRankingHistory(
+      {
+        schemaVersion: 1,
+        preferences,
+        comparisons,
+        ...(rankingHistory ? { rankingHistory } : {}),
+      },
+      new Date().toISOString(),
+    );
   } catch {
     return null;
   }
@@ -199,10 +367,15 @@ export function loadCatalogProfile(
   const currentRaw = storage.getItem(CATALOG_PROFILE_STORAGE_KEY);
 
   if (currentRaw !== null) {
-    return (
-      parseNewProfile(currentRaw, replacements) ??
-      createEmptyCatalogProfileState()
-    );
+    const profile = parseNewProfile(currentRaw, replacements);
+    if (!profile) return createEmptyCatalogProfileState();
+
+    const normalizedRaw = JSON.stringify(profile);
+    if (normalizedRaw !== currentRaw) {
+      storage.setItem(CATALOG_PROFILE_STORAGE_KEY, normalizedRaw);
+    }
+
+    return profile;
   }
 
   const legacyRaw = storage.getItem(LEGACY_KINK_RANKING_STORAGE_KEY);
@@ -211,11 +384,11 @@ export function loadCatalogProfile(
   const comparisons = parseLegacyRanking(legacyRaw, replacements);
   if (!comparisons) return createEmptyCatalogProfileState();
 
-  const migrated: CatalogProfileState = {
+  const migrated = normalizeCatalogRankingHistory({
     schemaVersion: 1,
     preferences: {},
     comparisons,
-  };
+  });
 
   storage.setItem(CATALOG_PROFILE_STORAGE_KEY, JSON.stringify(migrated));
   return migrated;
@@ -225,5 +398,8 @@ export function saveCatalogProfile(
   profile: CatalogProfileState,
   storage: StorageLike = browserStorage(),
 ) {
-  storage.setItem(CATALOG_PROFILE_STORAGE_KEY, JSON.stringify(profile));
+  storage.setItem(
+    CATALOG_PROFILE_STORAGE_KEY,
+    JSON.stringify(normalizeCatalogRankingHistory(profile)),
+  );
 }
