@@ -1822,22 +1822,22 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 **Purpose:** rank already-classified contextual candidates without confusing that rank with general kink preference.
 
-- [ ] add separate Reward and Punishment This-or-That entry points
-- [ ] require direct positive contextual classification per item before ranking eligibility
-- [ ] do not require the entire primitive universe to be classified before ranking unlocks
-- [ ] allow `strong / works / depends` items into the matching context pool
-- [ ] keep `no / never / unset` out of that context's active rank pool
-- [ ] keep Reward rank independent from Punishment rank
-- [ ] keep both contextual ranks independent from M6 category/Overall rank
-- [ ] allow shared generic pairwise engine utilities without sharing M6 score/history
-- [ ] persist raw M11 contextual comparisons with explicit context identity
-- [ ] support left / right / equal / skip + explicit reclassification navigation
-- [ ] do not seed rank from suitability, inference, M6 rank, or M7 affinity
-- [ ] use adaptive/low-evidence pair selection rather than exhaustive all-pairs
-- [ ] expose confidence/refinement
-- [ ] produce Top Rewards and Top Punishments views
-- [ ] preserve old comparison evidence when later contextual edits exclude an item
-- [ ] add deterministic eligibility/source-separation/ranking tests
+- [x] add separate Reward and Punishment This-or-That entry points
+- [x] require direct positive contextual classification per item before ranking eligibility
+- [x] do not require the entire primitive universe to be classified before ranking unlocks
+- [x] allow `strong / works / depends` items into the matching context pool
+- [x] keep `no / never / unset` out of that context's active rank pool
+- [x] keep Reward rank independent from Punishment rank
+- [x] keep both contextual ranks independent from M6 category/Overall rank
+- [x] allow shared generic pairwise engine utilities without sharing M6 score/history
+- [x] persist raw M11 contextual comparisons with explicit context identity
+- [x] support left / right / equal / skip + explicit reclassification navigation
+- [x] do not seed rank from suitability, inference, M6 rank, or M7 affinity
+- [x] use adaptive/low-evidence pair selection rather than exhaustive all-pairs
+- [x] expose confidence/refinement
+- [x] produce Top Rewards and Top Punishments views
+- [x] preserve old comparison evidence when later contextual edits exclude an item
+- [x] add deterministic eligibility/source-separation/ranking tests
 
 **Exit condition:** confirmed Reward and Punishment pools each have their own trustworthy relative ranking, while absolute suitability and general kink rank remain independent.
 
