@@ -21,6 +21,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M8 | Optional | add quiz depth/adaptive follow-ups |
 | M9 | ✅ Complete | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
+| M11 | Scoped | preserve This-or-That runs and show rank movement over time |
 
 ---
 
@@ -782,6 +783,28 @@ Before implementation, define privacy expectations and a threat model.
 
 ---
 
+## M11 — This-or-That Ranking History & Movement
+
+**Goal:** make This-or-That a repeatable preference pulse rather than one lifetime-accumulating ranking.
+
+See [docs/m11-ranking-history-movement.md](docs/m11-ranking-history-movement.md) for the detailed contract.
+
+Core behavior:
+
+- [ ] preserve the current ranking as an archived run when the user chooses to rerank
+- [ ] start the new run with fresh pairwise scoring rather than carrying old Elo evidence forward
+- [ ] keep quizzes and explicit catalog preferences untouched
+- [ ] treat only the active run as current pairwise evidence for M6/M7
+- [ ] show rank movement against the previous comparable run
+- [ ] show the exact previous rank on hover/focus/tap
+- [ ] keep archived history in private backup/restore
+- [ ] keep destructive M9 ranking reset separate from non-destructive reranking
+- [ ] retain enough historical data for future trend views without requiring them in M11 v1
+
+**M11 exit condition:** the user can start a fresh This-or-That run without losing the previous one, and current category/Overall results clearly show what moved since the last comparable run.
+
+---
+
 # Parked ideas
 
 Interesting, but not current scope:
@@ -800,6 +823,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7 is complete.**
+**M7 and M9 are complete.**
 
-The next product work should be chosen intentionally rather than treated as another required M7 slice. Existing roadmap options include optional M8 adaptive/deeper quizzes and the already-partial M9 settings/profile-lifecycle work.
+M11 is now scoped as the next concrete ranking-evolution feature: non-destructive This-or-That reruns with previous-rank movement. Optional M8 adaptive/deeper quizzes and M10 cloud persistence remain independent roadmap choices.
