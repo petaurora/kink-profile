@@ -93,8 +93,8 @@ describe("M12 ranking run lifecycle", () => {
     const next = startNewKinkRankingRun(
       current,
       catalog,
-      "2026-09-08T20:45:00.000Z",
       "run-2",
+      "2026-09-08T20:45:00.000Z",
     );
 
     const archived = next.rankingHistory?.runs["run-1"];
@@ -124,8 +124,8 @@ describe("M12 ranking run lifecycle", () => {
     const next = startNewKinkRankingRun(
       current,
       catalog,
-      "2026-09-08T20:45:00.000Z",
       "run-2",
+      "2026-09-08T20:45:00.000Z",
     );
 
     expect(next.rankingHistory?.activeRunId).toBe("run-2");
@@ -148,8 +148,8 @@ describe("M12 ranking run lifecycle", () => {
     startNewKinkRankingRun(
       current,
       catalog,
-      "2026-09-08T20:45:00.000Z",
       "run-2",
+      "2026-09-08T20:45:00.000Z",
     );
 
     expect(current).toEqual(before);
@@ -160,8 +160,8 @@ describe("M12 ranking run lifecycle", () => {
       startNewKinkRankingRun(
         profile(),
         catalog,
-        "2026-09-08T20:45:00.000Z",
         "run-1",
+        "2026-09-08T20:45:00.000Z",
       ),
     ).toThrow("unique ID");
   });
