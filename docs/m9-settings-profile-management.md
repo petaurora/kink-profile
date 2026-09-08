@@ -1,6 +1,6 @@
 # M9 — Settings, Profile Management & Sharing
 
-**Status:** in progress  
+**Status:** complete  
 **Roadmap milestone:** M9  
 **Primary boundary:** M7 owns what the profile means and displays; M9 owns how the user manages, moves, resets, and shares it.
 
