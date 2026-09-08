@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   kinkCatalog,
   kinkCategories,
@@ -69,15 +69,6 @@ export function KinkCatalogPreferences({
         ? new Set([initialFocus.categoryId])
         : new Set(),
   );
-  const [showReturnToTop, setShowReturnToTop] = useState(false);
-
-  useEffect(() => {
-    const updateReturnToTop = () => setShowReturnToTop(window.scrollY > 600);
-    updateReturnToTop();
-    window.addEventListener("scroll", updateReturnToTop, { passive: true });
-    return () => window.removeEventListener("scroll", updateReturnToTop);
-  }, []);
-
   const resultView = useMemo(
     () => buildCatalogResultView(quizProfile, profile),
     [quizProfile, profile],
@@ -161,10 +152,6 @@ export function KinkCatalogPreferences({
 
   const collapseAllCategories = () => {
     setExpandedCategories(new Set());
-  };
-
-  const returnToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -604,16 +591,6 @@ export function KinkCatalogPreferences({
         )}
       </div>
 
-      {showReturnToTop && (
-        <button
-          type="button"
-          className="catalog-return-top"
-          onClick={returnToTop}
-          aria-label="Return to top of kink catalog"
-        >
-          ↑ Return to top
-        </button>
-      )}
     </section>
   );
 }
