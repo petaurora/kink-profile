@@ -857,7 +857,7 @@ Do not require users to manually browse 669 source ideas plus the entire catalog
 
 The primary classification experience should **not** require working through the full table/list editor.
 
-Add a fast card-by-card sorter inspired by This-or-That, but with contextual-use choices instead of pairwise comparison.
+Add a fast card-by-card sorter with contextual-use choices.
 
 Example:
 
@@ -878,7 +878,7 @@ The core interaction should feel lightweight and game-like:
 - large tap targets
 - fast keyboard/mobile interaction
 - immediate advance after a choice
-- visible progress within the current set/category
+- persistent visible progress
 - easy Back / Undo
 - easy Exit and resume later
 - optional category-focused runs
@@ -960,7 +960,25 @@ Review previous choices
 
 Category runs should reuse stable runtime categories from the normalized action library/catalog.
 
-## Progress
+## Progress rail
+
+The sorter should always expose honest, boring-in-a-good-way progress even while the surrounding feedback varies.
+
+Example:
+
+```text
+137 classified · 683 remaining
+━━━━━━━━━━━━━━────────────
+Reward 62 · Punishment 41 · Both 18 · Neither 16
+```
+
+Requirements:
+
+- count only directly classified primitives; Skip does not count
+- avoid pretending inferred proposals are completed classifications
+- show current filtered/category progress when the user entered a focused run
+- keep an overall classified count available even inside a focused run
+- tolerate catalog/action-library growth without corrupting prior progress
 
 Persist sorter progress as the contextual-use states themselves rather than maintaining a second authoritative answer history.
 
@@ -969,14 +987,141 @@ Optional UI-only/resumable state may remember:
 - current filter/category
 - current position
 - current shuffled/ordered deck seed or item order
+- next micro-feedback threshold
+- last celebrated 25-item checkpoint
 
 but the authoritative result remains the contextual overlay.
 
-## Not a pairwise ranker
+## Variable-cadence micro feedback
 
-Despite borrowing the card-game feel from This-or-That, this feature does **not** produce a rank.
+Hundreds of classifications will become repetitive even with good cards. M11 should deliberately vary the rhythm.
 
-It is a classification funnel:
+After a random **1–7 new classifications**, insert one lightweight, non-blocking feedback beat, then choose a new random interval of 1–7.
+
+Example cadence:
+
+```text
+3 choices
+feedback
+7 choices
+feedback
+2 choices
+feedback
+5 choices
+feedback
+1 choice
+feedback
+...
+```
+
+The user should never have to complete more than 7 new classifications before something changes visually/copy-wise.
+
+Skip, Undo, opening details, or revisiting an existing choice do not advance the cadence.
+
+A micro-feedback beat may be one of several types:
+
+### Profile connection
+
+Use deterministic existing mappings/provenance to explain how the just-classified item connects to the profile.
+
+Examples:
+
+```text
+This sits in Care / Pampering — currently one of your stronger Reward patterns.
+```
+
+```text
+This item also maps to Restraint / Control in your broader profile.
+```
+
+Do not invent a connection merely to have something to say.
+
+### Context contrast
+
+Surface interesting differences between general preference and contextual use.
+
+Example:
+
+```text
+You generally Love this, but marked it Punishment-only.
+General preference and contextual use really are different things.
+```
+
+### Category pulse
+
+Show a small derived snapshot from direct M11 evidence.
+
+Example:
+
+```text
+Impact is currently showing up strongly in both your Reward and Punishment profile.
+```
+
+### Discovery count
+
+Examples:
+
+```text
+You have found 14 items that work as Both.
+```
+
+```text
+9 new Reward candidates since your last checkpoint.
+```
+
+### Curated educational snippet
+
+M11 may include a small local bank of reviewed educational/factual snippets about the taxonomy, consent/context, or BDSM terminology.
+
+Rules:
+
+- snippets must be curated/static rather than model-generated at runtime
+- store source/provenance metadata when a factual claim needs it
+- do not present folklore/opinion as universal fact
+- do not interrupt the user with a mandatory modal
+- allow the user to immediately continue sorting
+
+### Playful microcopy
+
+Some beats can simply be short, varied encouragement/progress copy rather than information.
+
+The content-type selector should avoid showing the same feedback type repeatedly when another valid type exists.
+
+Micro feedback is presentation only. It must never alter contextual state, ranking, inference, or scoring.
+
+## Every-25 checkpoint
+
+Every 25 **new direct classifications**, provide a larger progress celebration.
+
+Example:
+
+```text
+100 mapped 🎉
+
+Reward candidates: 46
+Punishment candidates: 31
+Both: 17
+
+Care / Pampering moved into your top Reward themes.
+```
+
+The checkpoint may use a brief progress-line fill/pulse, card transition, particles/confetti-like effect, or similar delight animation.
+
+Requirements:
+
+- milestones are 25 / 50 / 75 / 100 / ...
+- Skip does not count
+- do not replay the same checkpoint repeatedly after reload/back navigation
+- if a random micro-feedback beat lands on the same classification as a 25-item checkpoint, show the checkpoint instead of stacking both
+- respect `prefers-reduced-motion`
+- the animation must never delay or block continuing
+- use actual direct-profile changes where available; otherwise show simple count progress rather than inventing insight
+
+## Classification is the eligibility funnel for ranking
+
+The sorter is **not itself** a pairwise ranker, but contextual classification is the required eligibility gate for the M11 pairwise rankers.
+
+Conceptually:
 
 ```text
 UNSORTED PRIMITIVES
@@ -985,13 +1130,220 @@ UNSORTED PRIMITIVES
 Reward / Punishment / Both / Neither
         │
         ▼
-COARSE CONTEXTUAL PROFILE
+DIRECT CONTEXTUAL PROFILE
         │
-        ▼
-optional nuanced refinement
+        ├──► REWARD RANKING POOL
+        │      Reward / Both / other direct positive Reward states
+        │
+        └──► PUNISHMENT RANKING POOL
+               Punishment / Both / other direct positive Punishment states
 ```
 
-Do not reuse Elo/pairwise-ranking semantics or compare one reward against another.
+Do **not** require the user to classify the entire primitive universe before either ranking experience unlocks.
+
+Instead:
+
+> an individual item must have direct positive contextual evidence before it can enter that context's ranking pool.
+
+This preserves the intended "classify first, compare second" flow without holding the fun ranking experience hostage to hundreds of unfinished items.
+
+A direct detailed-editor choice of `strong`, `works`, or `depends` also counts as contextual classification; the user does not need to literally tap the quick sorter if the same authoritative state was set elsewhere.
+
+---
+
+# Reward & Punishment This-or-That ranking
+
+M11 adds **two independent contextual pairwise rankings**:
+
+1. Reward ranking
+2. Punishment ranking
+
+These are separate from each other and separate from M6 general kink This-or-That.
+
+The same primitive may therefore simultaneously have:
+
+```text
+General kink Overall rank: #18
+Reward rank:              #2
+Punishment rank:          #11
+```
+
+or, for a Both-classified item:
+
+```text
+Reward rank:     #1
+Punishment rank: #7
+```
+
+That is expected behavior.
+
+## Do not reuse M6 rank values
+
+M11 may reuse generic ranking-engine **code/algorithms** where useful, but it must not reuse:
+
+- M6 comparison records
+- M6 Elo/rating state
+- M6 category rank
+- M6 Overall rank
+- M6 ranking confidence
+
+General preference answers:
+
+> "Which kink/activity pulls me more overall?"
+
+Reward ranking answers:
+
+> "Which of my known rewards is more rewarding / desirable as a reward?"
+
+Punishment ranking answers:
+
+> "Which of my known punishments is a stronger/better-fit punishment for this context?"
+
+Those are different questions and require independent evidence.
+
+## Ranking eligibility
+
+A primitive may enter the Reward ranking pool when its direct Reward suitability is:
+
+- `strong`
+- `works`
+- `depends`
+
+A primitive may enter the Punishment ranking pool when its direct Punishment suitability is:
+
+- `strong`
+- `works`
+- `depends`
+
+Excluded from that context:
+
+- `no`
+- `never`
+- `unset`
+
+A quick-sort **Both** therefore makes the primitive eligible for both contextual rankers.
+
+If a later explicit edit changes an item to `no` or `never`, current ranking views exclude it while preserving raw historical comparisons for explainability/recovery.
+
+## Pairwise interaction
+
+The contextual ranker can reuse the familiar card interaction:
+
+```text
+Favorite restraint setup
+        OR
+Hair wash + scalp massage
+```
+
+Recommended controls:
+
+- left
+- right
+- both / equal
+- skip / hard to compare
+- edit contextual classification
+
+Do not use a pairwise "Neither" answer to silently reclassify both items. If ranking reveals that one item should not actually be a Reward/Punishment, send the user to the explicit contextual editor.
+
+## Ranking model
+
+Raw M11 contextual comparisons should remain authoritative.
+
+Conceptually:
+
+```ts
+type RewardPunishmentRankingContext = 'reward' | 'punishment';
+
+interface RewardPunishmentComparison {
+  id: string;
+  context: RewardPunishmentRankingContext;
+  leftRef: RewardPunishmentPrimitiveRef;
+  rightRef: RewardPunishmentPrimitiveRef;
+  result: 'left' | 'right' | 'equal' | 'skip';
+  timestamp: string;
+}
+```
+
+The exact runtime model may share generic utilities with M6, but contextual comparison identity/storage must remain M11-owned.
+
+Do not seed pairwise rating from:
+
+- general M6 rank
+- `strong` vs `works`
+- inferred proposal score
+- M7 affinity
+
+Suitability determines whether something belongs in the pool. Pairwise evidence determines relative contextual rank.
+
+## Scaling to large pools
+
+The ranker must not require exhaustive all-pairs comparison.
+
+Use the same broad principles proven by M6:
+
+- prioritize low-evidence items
+- compare close/uncertain placements
+- avoid needless exact repeats
+- progressively establish the top of the list
+- expose confidence/refinement rather than one fake absolute completion point
+- support Quick / Standard / Deep Dive / open-ended sessions if that interaction remains useful
+
+Because classification already reduces the pool to items that plausibly work in the requested context, M11 does not need to force the M6 category-finalist funnel in V1.
+
+If real-world pools become too large, contextual-category-focused ranking can be added as a navigation/refinement option without redefining the independent Reward/Punishment rank signals.
+
+## Ranking output
+
+Example:
+
+```text
+TOP REWARDS
+
+1. Favorite restraint setup
+2. Dedicated cuddle/attention time
+3. Hair wash + scalp massage
+4. Chosen impact scene
+...
+```
+
+and independently:
+
+```text
+TOP PUNISHMENTS
+
+1. Accountability check-in
+2. Writing lines
+3. Chosen discipline scene
+4. Privilege restriction
+...
+```
+
+Rank is an additional direct contextual signal. It does not replace suitability.
+
+The UI may show both:
+
+```text
+#2 Hair wash + scalp massage
+Works as a reward
+```
+
+## Profile/category integration
+
+Contextual category aggregation remains based on absolute direct suitability, not pairwise rank.
+
+Pairwise Reward/Punishment rank may be used to:
+
+- order confirmed representative items
+- produce Top Rewards / Top Punishments lists
+- break ties among equally suitable direct items
+- improve contextual profile presentation
+
+It must not:
+
+- rewrite `strong/works/depends`
+- feed inferred proposals back into direct category affinity
+- alter M6/M7 general preference evidence
+- alter D/s authority orientation
 
 ---
 
@@ -1293,6 +1645,7 @@ Persist:
 
 - primitive reward contextual-use states
 - primitive punishment contextual-use states
+- raw Reward/Punishment contextual pairwise comparisons
 - random-pool flags
 - user notes
 - saved recipes
@@ -1410,7 +1763,7 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ---
 
-## M11.4 — Quick Reward / Punishment / Both sorter
+## M11.4 — Quick Reward / Punishment / Both sorter + engagement pacing
 
 **Purpose:** make contextual classification fast and playful instead of requiring the full table.
 
@@ -1425,14 +1778,45 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 - [ ] optionally show Suggested: Reward / Punishment / Both without auto-selecting it
 - [ ] add Back / Undo and resume behavior
 - [ ] protect existing nuanced `strong/depends/never` states from accidental overwrite
+- [ ] add persistent overall + focused-run progress rails
+- [ ] add variable-cadence micro feedback after a random 1–7 new classifications
+- [ ] support profile connection / context contrast / category pulse / discovery count / curated fact / playful-copy feedback types
+- [ ] ensure feedback is deterministic/provenance-backed when it claims a profile relationship or factual statement
+- [ ] add non-blocking 25-item checkpoint animations + useful profile deltas
+- [ ] respect reduced-motion preferences
 - [ ] keep the table/list as the secondary detailed editing surface
-- [ ] add deterministic sorter-mapping/proposal/state-preservation tests
+- [ ] add deterministic sorter-mapping/proposal/state-preservation/cadence tests
 
-**Exit condition:** the user can rapidly sort the primitive universe, with useful inferred prioritization, without grinding through a giant table.
+**Exit condition:** the user can rapidly sort the primitive universe with visible progress and varied, useful feedback instead of grinding through a giant table.
 
 ---
 
-## M11.5 — Randomizer
+## M11.5 — Independent Reward & Punishment pairwise rankings
+
+**Purpose:** rank already-classified contextual candidates without confusing that rank with general kink preference.
+
+- [ ] add separate Reward and Punishment This-or-That entry points
+- [ ] require direct positive contextual classification per item before ranking eligibility
+- [ ] do not require the entire primitive universe to be classified before ranking unlocks
+- [ ] allow `strong / works / depends` items into the matching context pool
+- [ ] keep `no / never / unset` out of that context's active rank pool
+- [ ] keep Reward rank independent from Punishment rank
+- [ ] keep both contextual ranks independent from M6 category/Overall rank
+- [ ] allow shared generic pairwise engine utilities without sharing M6 score/history
+- [ ] persist raw M11 contextual comparisons with explicit context identity
+- [ ] support left / right / equal / skip + explicit reclassification navigation
+- [ ] do not seed rank from suitability, inference, M6 rank, or M7 affinity
+- [ ] use adaptive/low-evidence pair selection rather than exhaustive all-pairs
+- [ ] expose confidence/refinement
+- [ ] produce Top Rewards and Top Punishments views
+- [ ] preserve old comparison evidence when later contextual edits exclude an item
+- [ ] add deterministic eligibility/source-separation/ranking tests
+
+**Exit condition:** confirmed Reward and Punishment pools each have their own trustworthy relative ranking, while absolute suitability and general kink rank remain independent.
+
+---
+
+## M11.6 — Randomizer
 
 **Purpose:** provide the lightweight "just pick one" utility.
 
@@ -1445,6 +1829,7 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 - [ ] allow detail/view-source navigation
 - [ ] avoid immediate reroll repetition within the current session
 - [ ] add empty-pool states
+- [ ] keep contextual rank from silently becoming random probability weighting in V1
 - [ ] keep assignment/completion/history semantics out
 - [ ] add deterministic eligibility tests and injectable RNG for tests
 
@@ -1452,7 +1837,7 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ---
 
-## M11.6 — Reward & punishment builders
+## M11.7 — Reward & punishment builders
 
 **Purpose:** compose reusable multi-part rewards and punishments.
 
@@ -1473,13 +1858,13 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ---
 
-## M11.7 — Recipe randomization + lifecycle integration
+## M11.8 — Recipe randomization + lifecycle integration
 
 **Purpose:** make saved recipes first-class optional randomizer entries and preserve authoritative M11 state through profile management.
 
 - [ ] allow valid saved recipes in reward/punishment random pools
 - [ ] display recipe vs primitive clearly in random results
-- [ ] update full profile export/import for direct M11 state + recipes
+- [ ] update full profile export/import for direct M11 state + contextual pairwise history + recipes
 - [ ] keep inferred/category aggregates recomputable and non-authoritative in backups
 - [ ] add Rewards & Punishments selective-reset scope
 - [ ] preserve M11 state across unrelated M9 resets
@@ -1490,24 +1875,25 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ---
 
-## M11.8 — Overall profile integration + UX polish
+## M11.9 — Overall profile integration + UX polish
 
 **Purpose:** make M11 a coherent part of the app/profile rather than a disconnected toolbox.
 
 - [ ] add first-class navigation
 - [ ] add in-app overall-profile Rewards & Punishments section
 - [ ] show top 3–4 meaningful Reward categories and Punishment categories separately
-- [ ] show representative confirmed items weighted/ordered by direct state + bounded category relevance
+- [ ] show Top Rewards / Top Punishments when contextual pairwise evidence is sufficient
+- [ ] order representative confirmed items using contextual rank when available, with suitability/category relevance retained as separate context
 - [ ] show inferred **Suggested to explore** items separately from confirmed items
-- [ ] never feed M11 category/proposal values into M7 radar/orientation/Headspaces/Modes/Top Overall
+- [ ] never feed M11 category/proposal/rank values into M7 radar/orientation/Headspaces/Modes/Top Overall
 - [ ] compact mobile list/filter/profile behavior
 - [ ] prevent confusing duplicates between catalog-linked and action-library items
-- [ ] verify sorter, inference, randomizer, and builders use the same stable primitive/category model
+- [ ] verify sorter, inference, contextual rankers, randomizer, and builders use the same stable primitive/category model
 - [ ] verify accessibility/keyboard behavior
 - [ ] regression-run M6/M7/M9 profile/evidence tests
 - [ ] finalize docs and mark M11 complete
 
-**Exit condition:** the feature reads as one coherent flow: infer/propose → quick-sort → refine → aggregate/profile → randomize → build → reuse.
+**Exit condition:** the feature reads as one coherent flow: infer/propose → quick-sort → contextual rank → refine → aggregate/profile → randomize → build → reuse.
 
 ---
 
@@ -1657,6 +2043,12 @@ Does this work as a reward for me?
 
 PUNISHMENT SUITABILITY
 Does this work as a punishment/consequence for me?
+
+REWARD RANK
+Among confirmed rewards, which ones rise to the top?
+
+PUNISHMENT RANK
+Among confirmed punishments, which ones rise to the top?
 
 CONTEXT CATEGORY AFFINITY
 What patterns emerge across my direct Reward or Punishment choices?
