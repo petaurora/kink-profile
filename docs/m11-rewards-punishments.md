@@ -1891,14 +1891,14 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 **Purpose:** make saved recipes first-class optional randomizer entries and preserve authoritative M11 state through profile management.
 
-- [ ] allow valid saved recipes in reward/punishment random pools
-- [ ] display recipe vs primitive clearly in random results
-- [ ] update full profile export/import for direct M11 state + contextual pairwise history + recipes
-- [ ] keep inferred/category aggregates recomputable and non-authoritative in backups
-- [ ] add Rewards & Punishments selective-reset scope
-- [ ] preserve M11 state across unrelated M9 resets
-- [ ] keep M11 out of share summary by default
-- [ ] add migration/backup/reset regression coverage
+- [x] allow valid saved recipes in reward/punishment random pools
+- [x] display recipe vs primitive clearly in random results
+- [x] update full profile export/import for direct M11 state + contextual pairwise history + recipes
+- [x] keep inferred/category aggregates recomputable and non-authoritative in backups
+- [x] add Rewards & Punishments selective-reset scope
+- [x] preserve M11 state across unrelated M9 resets
+- [x] keep M11 out of share summary by default
+- [x] add migration/backup/reset regression coverage
 
 **Exit condition:** authoritative M11 state behaves like durable profile data while inference remains recomputable.
 

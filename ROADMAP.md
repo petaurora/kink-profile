@@ -186,7 +186,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 - [ ] **M11.5** — independent Reward/Punishment pairwise rankings
 - [ ] **M11.6** — random reward / punishment picker
 - [ ] **M11.7** — reward + punishment builders
-- [ ] **M11.8** — recipe randomization + lifecycle integration
+- [x] **M11.8** — recipe randomization + lifecycle integration
 - [ ] **M11.9** — overall-profile integration + UX polish
 
 ---
