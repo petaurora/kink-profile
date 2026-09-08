@@ -3,6 +3,7 @@ import { ExpandableGroupedList } from "./ExpandableGroupedList";
 import { RewardPunishmentSorter } from "./RewardPunishmentSorter";
 import { RewardPunishmentRanking } from "./RewardPunishmentRanking";
 import { RewardPunishmentRandomizer } from "./RewardPunishmentRandomizer";
+import { RewardPunishmentRecipes } from "./RewardPunishmentRecipes";
 import "./rewardPunishmentRanking.css";
 import {
   kinkCatalog,
@@ -196,7 +197,7 @@ export function RewardPunishmentProfiles({
     useState<SuitabilityFilter>("all");
   const [randomOnly, setRandomOnly] = useState(false);
   const [view, setView] = useState<
-    "sorter" | "ranking" | "randomizer" | "details"
+    "sorter" | "ranking" | "randomizer" | "recipes" | "details"
   >("sorter");
 
   const commitProfile = (next: RewardPunishmentProfileState) => {
@@ -441,6 +442,15 @@ export function RewardPunishmentProfiles({
         </button>
         <button
           type="button"
+          className={view === "recipes" ? "rp-view-tab is-active" : "rp-view-tab"}
+          aria-pressed={view === "recipes"}
+          onClick={() => setView("recipes")}
+        >
+          <strong>Recipes</strong>
+          <span>Build reusable reward / punishment combinations</span>
+        </button>
+        <button
+          type="button"
           className={view === "details" ? "rp-view-tab is-active" : "rp-view-tab"}
           aria-pressed={view === "details"}
           onClick={() => setView("details")}
@@ -475,6 +485,12 @@ export function RewardPunishmentProfiles({
             setRandomOnly(true);
             setView("details");
           }}
+        />
+      ) : view === "recipes" ? (
+        <RewardPunishmentRecipes
+          profile={profile}
+          canonicalSignals={canonicalSignals}
+          catalogResultView={catalogResultView}
         />
       ) : (
         <>

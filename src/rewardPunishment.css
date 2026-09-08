@@ -589,7 +589,7 @@
 /* M11.4 quick sorter */
 .rp-view-tabs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 10px;
 }
 
@@ -970,6 +970,10 @@
   .rp-view-tabs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 7px;
+  }
+
+  .rp-view-tab:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 
   .rp-view-tab {
