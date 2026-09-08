@@ -6,8 +6,42 @@ export type RankingScope =
 
 export type ComparisonResult = "left" | "right" | "equal" | "neither" | "skip";
 
+export const KINK_RANKING_ALGORITHM_VERSION = 1 as const;
+
+export type RankingScopeSnapshotItem = {
+  catalogId: string;
+  rank: number;
+  comparisons: number;
+  confidence: number;
+};
+
+export type RankingScopeSnapshot = {
+  capturedAt: string;
+  confidence: number;
+  items: RankingScopeSnapshotItem[];
+};
+
+export type RankingRunSnapshots = {
+  categories: Record<string, RankingScopeSnapshot>;
+  overall?: RankingScopeSnapshot;
+};
+
+export type RankingRun = {
+  id: string;
+  startedAt: string;
+  archivedAt?: string;
+  status: "active" | "archived";
+  algorithmVersion: number;
+  snapshots?: RankingRunSnapshots;
+};
+
 export type KinkComparison = {
   id: string;
+  /**
+   * Present on all persisted M12 comparisons. Optional only so legacy in-memory
+   * fixtures and pre-M12 backup payloads can be migrated without data loss.
+   */
+  runId?: string;
   leftKinkId: string;
   rightKinkId: string;
   scope: RankingScope;

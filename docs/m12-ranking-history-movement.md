@@ -2,7 +2,7 @@
 
 ## Status
 
-**Scoped / not implemented.**
+**In progress. M12.1 is implemented; M12.2–M12.4 remain.**
 
 M12 extends the existing This-or-That ranking system with temporal history.
 
@@ -543,13 +543,13 @@ A future explicit share-history option can be scoped separately if useful.
 
 ## M12.1 — Run-aware persistence + migration
 
-- [ ] add stable ranking-run identity
-- [ ] associate every comparison with one run
-- [ ] migrate existing comparison history into one initial run
-- [ ] keep raw comparisons as authoritative evidence within a run
-- [ ] add immutable archived rank snapshots
-- [ ] version storage/import-export boundaries as required
-- [ ] add migration and round-trip tests
+- [x] add stable ranking-run identity
+- [x] associate every comparison with one run
+- [x] migrate existing comparison history into one initial run
+- [x] keep raw comparisons as authoritative evidence within a run
+- [x] add immutable archived rank snapshots
+- [x] version storage/import-export boundaries as required
+- [x] add migration and round-trip tests
 
 **Exit condition:** old installs load without ranking loss and the app can represent one active run plus archived runs.
 

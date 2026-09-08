@@ -1,10 +1,15 @@
 import { quizzes, type QuizId } from "../data/quizzes";
 import {
   isCatalogPreferenceState,
+  normalizeCatalogRankingHistory,
   type CatalogItemPreference,
   type CatalogProfileState,
 } from "./catalogProfile";
-import { loadCatalogProfile, saveCatalogProfile } from "./catalogProfileStorage";
+import {
+  loadCatalogProfile,
+  parseKinkRankingHistory,
+  saveCatalogProfile,
+} from "./catalogProfileStorage";
 import type { ComparisonResult, KinkComparison, RankingScope } from "./kinkRanking";
 import {
   PROFILE_BACKUP_FORMAT,
@@ -184,8 +189,14 @@ function parseComparison(value: unknown): KinkComparison | null {
     return null;
   }
 
+  const runId =
+    typeof value.runId === "string" && value.runId.length > 0
+      ? value.runId
+      : undefined;
+
   return {
     id: value.id,
+    ...(runId ? { runId } : {}),
     leftKinkId: value.leftKinkId,
     rightKinkId: value.rightKinkId,
     scope,
@@ -218,11 +229,18 @@ function parseCatalogProfile(value: unknown): CatalogProfileState | null {
     comparisons.push(comparison);
   }
 
-  return {
+  const rankingHistory =
+    value.rankingHistory === undefined
+      ? undefined
+      : parseKinkRankingHistory(value.rankingHistory, {});
+  if (value.rankingHistory !== undefined && !rankingHistory) return null;
+
+  return normalizeCatalogRankingHistory({
     schemaVersion: 1,
     preferences,
     comparisons,
-  };
+    ...(rankingHistory ? { rankingHistory } : {}),
+  });
 }
 
 export function validateProfileBackup(value: unknown): ProfileBackupParseResult {
