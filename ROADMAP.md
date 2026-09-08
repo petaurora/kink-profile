@@ -23,7 +23,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M10 | Optional | cloud persistence |
 | M11 | ✅ Complete | contextual rewards/punishments, randomizer, and reusable builders |
 | M12 | ✅ Complete | preserve This-or-That runs and show rank movement over time |
-| M13 | Planned | theme-driven, low-decision scene composition |
+| M13 | 🚧 In progress | theme-driven, low-decision scene composition |
 | M14 | Planned | multi-profile comparison, complementary fit, and shared scene filtering |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
 | M16 | Planned | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
@@ -210,7 +210,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 
 **Details:** [M13 Scene Builder](docs/m13-scene-builder.md)
 
-- [ ] **M13.1** — theme taxonomy + mappings
+- [x] **M13.1** — theme taxonomy + mappings
 - [ ] **M13.2** — profile-aware candidate engine
 - [ ] **M13.3** — current-session Yes / Maybe / Not tonight state
 - [ ] **M13.4** — theme-based suggestion surface
@@ -287,7 +287,7 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M11 and M12 are complete. M13–M16 are formally scoped and unimplemented.**
+**M11 and M12 are complete. M13 is in progress; M14–M16 remain formally scoped and unimplemented.**
 
 Choose the next milestone intentionally:
 
