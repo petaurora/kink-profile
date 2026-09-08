@@ -1,6 +1,6 @@
 # M11 — Rewards & Punishments
 
-**Status:** planned  
+**Status:** in progress  
 **Roadmap milestone:** M11  
 **Primary boundary:** M11 models what can work as a reward or punishment, provides a lightweight randomizer, and lets the user build reusable reward/punishment recipes. It does **not** assign, earn, schedule, track, or enforce consequences.
 
@@ -1731,16 +1731,16 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 **Purpose:** turn the existing reference bank into a safe runtime primitive source and normalize category identity.
 
-- [ ] define stable `RewardPunishmentActionId`
-- [ ] define/version stable `RewardPunishmentCategoryId`
-- [ ] normalize source reward/punishment ideas into one action library
-- [ ] preserve source provenance
-- [ ] deduplicate obvious runtime duplicates
-- [ ] link exact/meaningful overlaps to M6 catalog IDs
-- [ ] map catalog/action primitives into normalized contextual categories with bounded weights
-- [ ] keep source-sheet origin/category text as metadata only
-- [ ] define primitive union of catalog + action references
-- [ ] add deterministic stable-ID / category-mapping / dedupe / catalog-link tests
+- [x] define stable `RewardPunishmentActionId`
+- [x] define/version stable `RewardPunishmentCategoryId`
+- [x] normalize source reward/punishment ideas into one action library
+- [x] preserve source provenance
+- [x] deduplicate obvious runtime duplicates
+- [x] link exact/meaningful overlaps to M6 catalog IDs
+- [x] map catalog/action primitives into normalized contextual categories with bounded weights
+- [x] keep source-sheet origin/category text as metadata only
+- [x] define primitive union of catalog + action references
+- [x] add deterministic stable-ID / category-mapping / dedupe / catalog-link tests
 
 **Exit condition:** the app has one stable primitive + contextual-category universe without treating TSV row order or raw source category text as identity.
 
