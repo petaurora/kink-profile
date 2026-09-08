@@ -1,8 +1,20 @@
 # Documentation
 
-This folder contains the product and scoring decisions that should guide implementation.
+This folder contains both user-facing product documentation and the deeper product/scoring contracts that guide implementation.
 
-## Read in this order
+## Using the app
+
+Start here if you want to understand the product without reading implementation specifications.
+
+1. [Feature Guide](feature-guide.md)  
+   Plain-language definitions of the current features, when to use them, how they affect the profile, and how the major evidence sources fit together.
+
+2. [FAQ](faq.md)  
+   Common behavioral questions about quizzes, the Overall Profile, direct catalog preferences, This-or-That, ranking history, Rewards & Punishments, backup/sharing, privacy, and planned features.
+
+The user-facing docs explain behavior; the specifications below remain authoritative for scoring rules, data contracts, and implementation boundaries.
+
+## Product & implementation docs — read in this order
 
 1. [Product Spec](product-spec.md)  
    What the app is, how the quiz sections fit together, how signals/dynamic modes/roles are separated, and what is in or out of scope.
@@ -71,6 +83,8 @@ This folder contains the product and scoring decisions that should guide impleme
 
 | Question | Source |
 | --- | --- |
+| What does each feature do and how do I use it? | [Feature Guide](feature-guide.md) |
+| Why did the app behave this way? | [FAQ](faq.md) |
 | What are we building? | [Product Spec](product-spec.md) |
 | What exactly does M2 measure? | [M2 D/s Contract](m2-ds-design.md) |
 | How is M3 modeled? | [M3 Roles & Headspaces Contract](m3-headspaces-direction.md) |
@@ -97,6 +111,8 @@ This folder contains the product and scoring decisions that should guide impleme
 ## Documentation rule
 
 Avoid duplicating detailed decisions across files.
+
+The Feature Guide and FAQ are the plain-language behavior layer. They should explain current product behavior without becoming a second scoring/data contract. When underlying behavior changes, update the authoritative spec first and then keep the user-facing wording aligned.
 
 The roadmap is deliberately compact: keep milestone/slice status there, and keep implementation rules, acceptance criteria, semantic decisions, and deeper design notes in the appropriate detailed document.
 
