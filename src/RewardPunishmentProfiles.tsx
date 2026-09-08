@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { ExpandableGroupedList } from "./ExpandableGroupedList";
 import {
   kinkCatalog,
   type KinkCatalogItem,
@@ -54,6 +55,26 @@ const catalogById = new Map(catalogItems.map((item) => [item.id, item]));
 const categoryById = new Map(
   rewardPunishmentCategories.map((category) => [category.id, category]),
 );
+
+const categoryOrderById = new Map(
+  rewardPunishmentCategories.map((category) => [
+    category.id,
+    category.displayOrder,
+  ]),
+);
+
+function primaryContextCategoryId(
+  primitive: RewardPunishmentPrimitive,
+) {
+  return primitive.contextCategories
+    .slice()
+    .sort(
+      (left, right) =>
+        right.weight - left.weight ||
+        (categoryOrderById.get(left.id) ?? Number.MAX_SAFE_INTEGER) -
+          (categoryOrderById.get(right.id) ?? Number.MAX_SAFE_INTEGER),
+    )[0]?.id;
+}
 
 function suitabilityLabel(
   context: RewardPunishmentContext,
@@ -305,6 +326,27 @@ export function RewardPunishmentProfiles({
     sourceFilter,
     suitabilityFilter,
   ]);
+
+  const visibleByCategory = useMemo(() => {
+    if (categoryFilter !== "all") {
+      const category = rewardPunishmentCategories.find(
+        (candidate) => candidate.id === categoryFilter,
+      );
+      return category && visiblePrimitives.length > 0
+        ? [{ category, items: visiblePrimitives }]
+        : [];
+    }
+
+    return rewardPunishmentCategories
+      .map((category) => ({
+        category,
+        items: visiblePrimitives.filter(
+          (primitive) =>
+            primaryContextCategoryId(primitive) === category.id,
+        ),
+      }))
+      .filter((group) => group.items.length > 0);
+  }, [categoryFilter, visiblePrimitives]);
 
   const resetFilters = () => {
     setQuery("");
@@ -567,227 +609,242 @@ export function RewardPunishmentProfiles({
         </button>
       </div>
 
-      <div className="rp-list-summary">
-        <strong>{visiblePrimitives.length}</strong>
-        <span>matching primitives</span>
-        <span aria-hidden="true">·</span>
-        <span>
-          {rewardPunishmentPrimitives.length} total across catalog + action
-          library
-        </span>
-      </div>
+      <ExpandableGroupedList
+        groups={visibleByCategory.map(({ category, items }) => ({
+          id: category.id,
+          title: category.label,
+          eyebrow: "Context category",
+          items,
+        }))}
+        columnHeadings={[
+          "Item",
+          context === "reward" ? "Reward use" : "Punishment use",
+          "Random pool",
+          "More",
+        ]}
+        headClassName="rp-table-head"
+        listClassName="rp-table"
+        focusGroupId={
+          categoryFilter === "all" ? undefined : categoryFilter
+        }
+        expansionKey={context + ":" + categoryFilter}
+        summary={
+          <>
+            <strong>{visiblePrimitives.length}</strong>
+            <span>matching primitives</span>
+            <span aria-hidden="true">·</span>
+            <strong>{activeCounts.direct}</strong>
+            <span>directly rated in this context</span>
+          </>
+        }
+        emptyTitle="No matches."
+        emptyCopy="Try another search or clear one of the filters."
+        onClearFilters={resetFilters}
+        getGroupMeta={(group) => {
+          const directCount = group.items.filter(
+            (primitive) =>
+              getContextualUseState(
+                profile,
+                primitive.ref,
+                context,
+              ).suitability !== "unset",
+          ).length;
+          return `${group.items.length} shown · ${directCount} rated`;
+        }}
+        renderItem={(primitive) => {
+          const state = getContextualUseState(
+            profile,
+            primitive.ref,
+            context,
+          );
+          const categoryLabels = primitive.contextCategories
+            .map(
+              (mapping) =>
+                categoryById.get(mapping.id)?.label ?? mapping.id,
+            )
+            .slice(0, 2);
+          const generalPreference =
+            primitive.ref.kind === "catalog"
+              ? getCatalogPreference(
+                  catalogProfile.preferences[primitive.ref.id],
+                  "overall",
+                )
+              : undefined;
+          const action =
+            primitive.ref.kind === "action"
+              ? actionById.get(primitive.ref.id)
+              : undefined;
+          const catalog =
+            primitive.ref.kind === "catalog"
+              ? catalogById.get(primitive.ref.id)
+              : undefined;
+          const proposal = proposalByKey.get(
+            rewardPunishmentPrimitiveKey(primitive.ref),
+          );
 
-      <div className="rp-table panel">
-        <div className="rp-table-head" aria-hidden="true">
-          <span>Item</span>
-          <span>{context === "reward" ? "Reward use" : "Punishment use"}</span>
-          <span>Random pool</span>
-          <span>More</span>
-        </div>
-
-        {visiblePrimitives.length === 0 ? (
-          <div className="rp-empty">
-            <h2>No matches.</h2>
-            <p>Try another search or clear one of the filters.</p>
-            <button className="secondary compact" onClick={resetFilters}>
-              Clear filters
-            </button>
-          </div>
-        ) : (
-          visiblePrimitives.map((primitive) => {
-            const state = getContextualUseState(
-              profile,
-              primitive.ref,
-              context,
-            );
-            const categoryLabels = primitive.contextCategories
-              .map(
-                (mapping) =>
-                  categoryById.get(mapping.id)?.label ?? mapping.id,
-              )
-              .slice(0, 2);
-            const generalPreference =
-              primitive.ref.kind === "catalog"
-                ? getCatalogPreference(
-                    catalogProfile.preferences[primitive.ref.id],
-                    "overall",
-                  )
-                : undefined;
-            const action =
-              primitive.ref.kind === "action"
-                ? actionById.get(primitive.ref.id)
-                : undefined;
-            const catalog =
-              primitive.ref.kind === "catalog"
-                ? catalogById.get(primitive.ref.id)
-                : undefined;
-            const proposal = proposalByKey.get(
-              rewardPunishmentPrimitiveKey(primitive.ref),
-            );
-
-            return (
-              <article
-                className={
-                  state.suitability === "never"
-                    ? "rp-row is-never"
-                    : "rp-row"
-                }
-                key={primitive.sourceType + ":" + primitive.ref.id}
-              >
-                <div className="rp-row-main">
-                  <div className="rp-item-title">
-                    <strong>{primitive.label}</strong>
-                    <span className="rp-source-badge">
-                      {primitive.sourceType === "catalog"
-                        ? "Catalog"
-                        : "Action"}
-                    </span>
-                  </div>
-                  <div className="rp-category-line">
-                    {categoryLabels.join(" · ")}
-                  </div>
-                  {generalPreference && (
-                    <div className="rp-general-hint">
-                      General preference:{" "}
-                      {catalogPreferenceLabels[generalPreference]}
-                    </div>
-                  )}
-                  {proposal && (
-                    <div className="rp-proposal-hint">
-                      Profile suggestion: {proposalBandLabel(proposal, context)}
-                      {" · "}
-                      {Math.round(proposal.score * 100)}% fit
-                      {" · "}
-                      {Math.round(proposal.confidence * 100)}% confidence
-                    </div>
-                  )}
+          return (
+            <article
+              className={
+                state.suitability === "never"
+                  ? "rp-row is-never"
+                  : "rp-row"
+              }
+              key={primitive.sourceType + ":" + primitive.ref.id}
+            >
+              <div className="rp-row-main">
+                <div className="rp-item-title">
+                  <strong>{primitive.label}</strong>
+                  <span className="rp-source-badge">
+                    {primitive.sourceType === "catalog"
+                      ? "Catalog"
+                      : "Action"}
+                  </span>
                 </div>
-
-                <label className="rp-suitability-editor">
-                  <span className="sr-only">
-                    {contextTitle(context)} suitability for{" "}
-                    {primitive.label}
-                  </span>
-                  <select
-                    value={state.suitability}
-                    onChange={(event) =>
-                      updateProfile((current) =>
-                        setContextSuitability(
-                          current,
-                          primitive.ref,
-                          context,
-                          event.target.value as ContextSuitability,
-                        ),
-                      )
-                    }
-                  >
-                    {contextSuitabilities.map((suitability) => (
-                      <option key={suitability} value={suitability}>
-                        {suitabilityLabel(context, suitability)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="rp-random-toggle">
-                  <input
-                    type="checkbox"
-                    checked={
-                      state.randomEligible &&
-                      canBeRandomEligible(state.suitability)
-                    }
-                    disabled={!canBeRandomEligible(state.suitability)}
-                    onChange={(event) =>
-                      updateProfile((current) =>
-                        setContextRandomEligible(
-                          current,
-                          primitive.ref,
-                          context,
-                          event.target.checked,
-                        ),
-                      )
-                    }
-                  />
-                  <span>
-                    {canBeRandomEligible(state.suitability)
-                      ? "Include"
-                      : "Unavailable"}
-                  </span>
-                </label>
-
-                <details className="rp-details">
-                  <summary>Details</summary>
-                  <div>
-                    {(action?.description || catalog?.description) && (
-                      <p>{action?.description || catalog?.description}</p>
-                    )}
-
-                    <dl>
-                      <div>
-                        <dt>Primitive</dt>
-                        <dd>
-                          {primitive.ref.kind}:{primitive.ref.id}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>Categories</dt>
-                        <dd>
-                          {primitive.contextCategories
-                            .map(
-                              (mapping) =>
-                                categoryById.get(mapping.id)?.label ??
-                                mapping.id,
-                            )
-                            .join(" · ")}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>Reference origin</dt>
-                        <dd>
-                          {primitive.sourceOrigins.length > 0
-                            ? primitive.sourceOrigins
-                                .map(
-                                  (origin) =>
-                                    origin.sourceSheet +
-                                    " · row " +
-                                    origin.sourceRow,
-                                )
-                                .join(" · ")
-                            : primitive.sourceType === "catalog"
-                              ? "M6 catalog"
-                              : "Normalized action library"}
-                        </dd>
-                      </div>
-                    </dl>
-
-                    <label className="rp-note-editor">
-                      <span>
-                        {context === "reward"
-                          ? "Reward-context note"
-                          : "Punishment-context note"}
-                      </span>
-                      <textarea
-                        value={state.note ?? ""}
-                        placeholder="Optional context, boundaries, or why this works…"
-                        onChange={(event) =>
-                          updateProfile((current) =>
-                            setContextNote(
-                              current,
-                              primitive.ref,
-                              context,
-                              event.target.value,
-                            ),
-                          )
-                        }
-                      />
-                    </label>
+                <div className="rp-category-line">
+                  {categoryLabels.join(" · ")}
+                </div>
+                {generalPreference && (
+                  <div className="rp-general-hint">
+                    General preference:{" "}
+                    {catalogPreferenceLabels[generalPreference]}
                   </div>
-                </details>
-              </article>
-            );
-          })
-        )}
-      </div>
+                )}
+                {proposal && (
+                  <div className="rp-proposal-hint">
+                    Profile suggestion:{" "}
+                    {proposalBandLabel(proposal, context)}
+                    {" · "}
+                    {Math.round(proposal.score * 100)}% fit
+                    {" · "}
+                    {Math.round(proposal.confidence * 100)}% confidence
+                  </div>
+                )}
+              </div>
+
+              <label className="rp-suitability-editor">
+                <span className="sr-only">
+                  {contextTitle(context)} suitability for{" "}
+                  {primitive.label}
+                </span>
+                <select
+                  value={state.suitability}
+                  onChange={(event) =>
+                    updateProfile((current) =>
+                      setContextSuitability(
+                        current,
+                        primitive.ref,
+                        context,
+                        event.target.value as ContextSuitability,
+                      ),
+                    )
+                  }
+                >
+                  {contextSuitabilities.map((suitability) => (
+                    <option key={suitability} value={suitability}>
+                      {suitabilityLabel(context, suitability)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="rp-random-toggle">
+                <input
+                  type="checkbox"
+                  checked={
+                    state.randomEligible &&
+                    canBeRandomEligible(state.suitability)
+                  }
+                  disabled={!canBeRandomEligible(state.suitability)}
+                  onChange={(event) =>
+                    updateProfile((current) =>
+                      setContextRandomEligible(
+                        current,
+                        primitive.ref,
+                        context,
+                        event.target.checked,
+                      ),
+                    )
+                  }
+                />
+                <span>
+                  {canBeRandomEligible(state.suitability)
+                    ? "Include"
+                    : "Unavailable"}
+                </span>
+              </label>
+
+              <details className="rp-details">
+                <summary>Details</summary>
+                <div>
+                  {(action?.description || catalog?.description) && (
+                    <p>{action?.description || catalog?.description}</p>
+                  )}
+
+                  <dl>
+                    <div>
+                      <dt>Primitive</dt>
+                      <dd>
+                        {primitive.ref.kind}:{primitive.ref.id}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Categories</dt>
+                      <dd>
+                        {primitive.contextCategories
+                          .map(
+                            (mapping) =>
+                              categoryById.get(mapping.id)?.label ??
+                              mapping.id,
+                          )
+                          .join(" · ")}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Reference origin</dt>
+                      <dd>
+                        {primitive.sourceOrigins.length > 0
+                          ? primitive.sourceOrigins
+                              .map(
+                                (origin) =>
+                                  origin.sourceSheet +
+                                  " · row " +
+                                  origin.sourceRow,
+                              )
+                              .join(" · ")
+                          : primitive.sourceType === "catalog"
+                            ? "M6 catalog"
+                            : "Normalized action library"}
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <label className="rp-note-editor">
+                    <span>
+                      {context === "reward"
+                        ? "Reward-context note"
+                        : "Punishment-context note"}
+                    </span>
+                    <textarea
+                      value={state.note ?? ""}
+                      placeholder="Optional context, boundaries, or why this works…"
+                      onChange={(event) =>
+                        updateProfile((current) =>
+                          setContextNote(
+                            current,
+                            primitive.ref,
+                            context,
+                            event.target.value,
+                          ),
+                        )
+                      }
+                    />
+                  </label>
+                </div>
+              </details>
+            </article>
+          );
+        }}
+      />
     </section>
   );
 }

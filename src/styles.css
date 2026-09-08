@@ -3432,3 +3432,138 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
     justify-self: start;
   }
 }
+
+
+/* Shared expandable grouped-list shell used by Catalog + M11 */
+.grouped-list-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0 .25rem;
+  color: var(--text-secondary);
+  font-size: .9rem;
+}
+
+.grouped-list-summary-copy,
+.grouped-list-actions {
+  display: flex;
+  align-items: baseline;
+  gap: .45rem;
+  flex-wrap: wrap;
+}
+
+.grouped-list-actions {
+  gap: .8rem;
+}
+
+.grouped-list-actions .text-button {
+  padding: 0;
+}
+
+.grouped-list-summary strong {
+  color: var(--text-primary);
+}
+
+.grouped-list {
+  overflow: hidden;
+}
+
+.grouped-list-group + .grouped-list-group {
+  border-top: 1px solid var(--border-strong);
+}
+
+.grouped-list-heading {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  padding: 1rem 1.1rem .8rem;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--bg-muted);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.grouped-list-heading:hover {
+  background: var(--bg-control-hover);
+}
+
+.grouped-list-heading:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.grouped-list-group.expanded .grouped-list-heading {
+  background: var(--bg-surface-raised);
+}
+
+.grouped-list-heading h2 {
+  margin: .12rem 0 0;
+  font-size: 1.05rem;
+}
+
+.grouped-list-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  color: var(--text-muted);
+  font-size: .8rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.grouped-list-chevron {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.grouped-list-empty {
+  padding: 3rem 1.25rem;
+  text-align: center;
+}
+
+.grouped-list-empty h2 {
+  margin: 0 0 .4rem;
+}
+
+.grouped-list-empty p {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 480px) {
+  .grouped-list-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .grouped-list-actions {
+    width: 100%;
+  }
+
+  .grouped-list-heading {
+    padding: .9rem 1rem;
+  }
+
+  .grouped-list-meta {
+    gap: .45rem;
+  }
+
+  .grouped-list-chevron {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+}
