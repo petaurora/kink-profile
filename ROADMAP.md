@@ -21,6 +21,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M8 | Optional | add quiz depth/adaptive follow-ups |
 | M9 | ✅ Complete | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
+| M11 | Planned | contextual rewards/punishments, randomizer, and reusable builders |
 
 ---
 
@@ -782,6 +783,76 @@ Before implementation, define privacy expectations and a threat model.
 
 ---
 
+
+## M11 — Rewards & Punishments
+
+**Goal:** turn the existing reward/punishment reference bank plus the stable M6 catalog into a practical contextual-use toolbox.
+
+See [docs/m11-rewards-punishments.md](docs/m11-rewards-punishments.md) for the detailed product/data contract.
+
+Core semantic rule:
+
+> Reward and punishment are contextual uses of an activity/action, not mutually exclusive item types.
+
+M11 intentionally does **not** add assignment, earning, demerits, punishment debt, task integration, completion tracking, or automatic escalation.
+
+### M11.1 — Runtime library + stable identity
+
+- [ ] normalize the existing rewards/punishments reference bank into stable runtime action IDs
+- [ ] preserve source provenance without treating source-sheet origin as a context restriction
+- [ ] deduplicate obvious source overlaps
+- [ ] link exact/meaningful action overlaps to stable M6 catalog IDs
+- [ ] expose one primitive universe across catalog items + action items
+
+### M11.2 — Contextual-use profiles
+
+- [ ] add independent reward and punishment suitability overlays
+- [ ] support Strong / Works / Depends / No / Never / Unset
+- [ ] keep contextual use orthogonal to general M6 preference and M7 aggregation
+- [ ] add independent random-pool eligibility
+- [ ] add searchable/filterable Reward and Punishment profile views
+- [ ] never infer punishment suitability from dislike/aversion
+
+### M11.3 — Randomizer
+
+- [ ] add Random reward
+- [ ] add Random punishment
+- [ ] select only explicitly positive + random-enabled entries
+- [ ] add Pick again and useful empty states
+- [ ] avoid immediate in-session reroll repetition
+- [ ] keep assignment/completion/history semantics out
+
+### M11.4 — Reward & punishment builders
+
+- [ ] add Build a reward
+- [ ] add Build a punishment
+- [ ] compose ordered components from catalog items + action items
+- [ ] allow recipe-local custom text
+- [ ] save/edit/duplicate/delete reusable recipes
+- [ ] keep recipe composition non-recursive in V1
+- [ ] mark recipes Needs review when a referenced component becomes context-`Never` or stale
+
+### M11.5 — Recipe randomization + lifecycle integration
+
+- [ ] optionally include valid saved recipes in random pools
+- [ ] extend full profile backup/import with authoritative M11 state
+- [ ] add an independent Rewards & Punishments selective-reset scope
+- [ ] preserve M11 state across unrelated reset scopes
+- [ ] keep M11 data out of the share summary by default
+
+### M11.6 — UX polish + integration
+
+- [ ] add first-class navigation
+- [ ] compact mobile list/filter behavior
+- [ ] prevent confusing duplicates between catalog-linked and action-library items
+- [ ] verify randomizer and builders use the same stable primitive model
+- [ ] regression-run M6/M7/M9 integration tests
+- [ ] finalize docs and mark M11 complete
+
+**M11 exit condition:** the user can define what works as a reward and what works as a punishment, randomly pick from explicitly approved pools, and create reusable multi-part reward/punishment recipes without the app becoming an assignment or behavior-management system.
+
+---
+
 # Parked ideas
 
 Interesting, but not current scope:
@@ -793,13 +864,12 @@ Interesting, but not current scope:
 - educational content for catalog items
 - relationship discussion prompts
 - quiz recommendations based on incomplete profile
-- rewards / consequences runtime system using `reference/rewards-punishments/` source data (schema + product semantics TBD)
 - anonymous aggregate statistics
 
 ---
 
 # Current next action
 
-**M7 is complete.**
+**M7 and M9 are complete. M11 is now fully scoped and ready for implementation when chosen.**
 
-The next product work should be chosen intentionally rather than treated as another required M7 slice. Existing roadmap options include optional M8 adaptive/deeper quizzes and the already-partial M9 settings/profile-lifecycle work.
+The next product work should still be chosen intentionally. Roadmap options include optional M8 adaptive/deeper quizzes, optional M10 cloud persistence, and the planned M11 Rewards & Punishments toolbox.
