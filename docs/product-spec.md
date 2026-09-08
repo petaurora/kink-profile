@@ -554,7 +554,9 @@ Is this part of a saved custom combination?
 
 Reward and punishment are contextual uses, not opposite ends of one scale. An item may work as both, either, or neither. Dislike/aversion must never automatically make an item a punishment candidate.
 
-M11 includes lightweight random selection and reusable reward/punishment builders, but explicitly excludes assignment, earning, demerits, debt, task integration, completion tracking, and automatic escalation.
+M11 includes a fast one-item-at-a-time **Reward / Punishment / Both** classification flow so the user does not have to build the profile through a giant table. The sorter is coarse: it may set contextual `works/no` states, while nuanced Strong / Depends / Never and random-pool controls remain in detailed editing.
+
+M11 also includes lightweight random selection and reusable reward/punishment builders, but explicitly excludes assignment, earning, demerits, debt, task integration, completion tracking, and automatic escalation.
 
 See [M11 Rewards & Punishments](m11-rewards-punishments.md) for the detailed contract.
 
