@@ -823,25 +823,40 @@ M11 intentionally does **not** add assignment, earning, demerits, punishment deb
 - [ ] accepting a proposal creates explicit Works, not Strong
 - [ ] prevent inferred values from feeding category affinity or M7 signals
 
-### M11.4 — Quick Reward / Punishment / Both sorter
+### M11.4 — Quick sorter + engagement pacing
 
-- [ ] add one-item-at-a-time classification cards
-- [ ] use Reward / Punishment / Both as primary choices
-- [ ] provide Neither / not a fit and Skip for now
-- [ ] map quick choices to coarse contextual Works/No only
-- [ ] optionally prioritize/show inferred suggestions without auto-selecting
-- [ ] add Continue unsorted, focused runs, Back / Undo, and resume
+- [ ] add one-item-at-a-time Reward / Punishment / Both / Neither classification cards
+- [ ] include all stable M6 catalog items plus normalized M11 action primitives
+- [ ] provide Skip for now, Continue unsorted, focused runs, Back / Undo, and resume
 - [ ] protect nuanced existing states from accidental overwrite
+- [ ] show persistent overall + focused-run progress
+- [ ] insert a lightweight randomized feedback beat after 1–7 new classifications
+- [ ] vary profile connections, category pulses, context contrasts, discovery counts, curated facts, and playful copy
+- [ ] add a larger non-blocking checkpoint animation every 25 new classifications
+- [ ] respect reduced-motion preferences
 
-### M11.5 — Randomizer
+### M11.5 — Independent Reward & Punishment pairwise rankings
+
+- [ ] add separate Reward and Punishment This-or-That flows
+- [ ] require each item to be directly context-classified before it can enter that context's ranking pool
+- [ ] do not require the whole primitive universe to be sorted before ranking unlocks
+- [ ] let Reward/Both positive states feed Reward ranking and Punishment/Both positive states feed Punishment ranking
+- [ ] keep Reward rank, Punishment rank, and M6 kink rank as three independent values
+- [ ] allow shared ranking-engine utilities without sharing M6 comparison/rating history
+- [ ] persist raw M11 contextual pairwise comparisons
+- [ ] use adaptive pair selection + confidence/refinement rather than exhaustive comparison
+- [ ] expose Top Rewards and Top Punishments
+
+### M11.6 — Randomizer
 
 - [ ] add Random reward / Random punishment
 - [ ] select only explicitly positive + random-enabled entries
 - [ ] never put inference-only items into the random pool
 - [ ] add Pick again, empty states, and in-session anti-repeat
+- [ ] do not silently weight random probability by contextual rank in V1
 - [ ] keep assignment/completion/history semantics out
 
-### M11.6 — Reward & punishment builders
+### M11.7 — Reward & punishment builders
 
 - [ ] add Build a reward / Build a punishment
 - [ ] compose ordered components from catalog + action primitives
@@ -850,27 +865,28 @@ M11 intentionally does **not** add assignment, earning, demerits, punishment deb
 - [ ] keep recipe composition non-recursive in V1
 - [ ] mark recipes Needs review when a referenced component becomes context-Never or stale
 
-### M11.7 — Recipe randomization + lifecycle integration
+### M11.8 — Recipe randomization + lifecycle integration
 
 - [ ] optionally include valid saved recipes in random pools
-- [ ] extend full profile backup/import with authoritative direct M11 state
+- [ ] extend full profile backup/import with authoritative direct M11 state + contextual pairwise history
 - [ ] keep category aggregates/inferred proposals recomputable
 - [ ] add an independent Rewards & Punishments selective-reset scope
 - [ ] preserve M11 state across unrelated reset scopes
 - [ ] keep M11 data out of share summary by default
 
-### M11.8 — Overall profile integration + UX polish
+### M11.9 — Overall profile integration + UX polish
 
 - [ ] add first-class navigation
 - [ ] add separate Reward and Punishment category summaries to the in-app overall profile
-- [ ] order confirmed highlights using direct state + bounded category relevance
+- [ ] add Top Rewards / Top Punishments when pairwise evidence is sufficient
+- [ ] use contextual rank to order confirmed highlights when available without replacing suitability/category context
 - [ ] show inferred Suggested to explore separately
 - [ ] keep M11 values out of M7 radar/orientation/Headspaces/Modes/Top Overall
 - [ ] compact mobile behavior + accessibility
 - [ ] regression-run M6/M7/M9 profile/evidence tests
 - [ ] finalize docs and mark M11 complete
 
-**M11 exit condition:** the user can get profile-derived Reward/Punishment proposals, quickly sort/refine them into direct contextual evidence, see category-weighted Reward/Punishment summaries on the overall profile, randomly pick from explicitly approved pools, and create reusable recipes without the app becoming an assignment or behavior-management system.
+**M11 exit condition:** the user can get profile-derived Reward/Punishment proposals, quickly sort/refine the full primitive universe with varied progress feedback, independently rank confirmed rewards and punishments, see contextual summaries/top lists, randomly pick from explicitly approved pools, and create reusable recipes without the app becoming an assignment or behavior-management system.
 
 ---
 
