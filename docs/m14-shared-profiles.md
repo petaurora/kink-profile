@@ -226,7 +226,7 @@ Migration must preserve:
 - pairwise history/runs
 - M7-compatible source evidence
 - M9 identity/settings
-- M11 data if implemented
+- M11 contextual profiles, contextual ranking history, random eligibility, and saved recipes
 - M13 saved scenes if implemented
 
 The migration should be versioned and tested.
