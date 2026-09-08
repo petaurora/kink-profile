@@ -302,4 +302,79 @@ describe("selective profile reset", () => {
     );
     expect(selection.rewardsPunishments).toBe(true);
   });
+
+
+  it("preserves M12 history for non-ranking resets and deletes it only with explicit ranking reset", () => {
+    const storage = seededStorage();
+    const catalog = loadCatalogProfile(storage);
+    catalog.rankingHistory = {
+      activeRunId: "run-current",
+      runs: {
+        "run-old": {
+          id: "run-old",
+          startedAt: "2026-09-01T00:00:00.000Z",
+          archivedAt: "2026-09-05T00:00:00.000Z",
+          status: "archived",
+          algorithmVersion: 1,
+          snapshots: {
+            categories: {},
+            overall: {
+              capturedAt: "2026-09-05T00:00:00.000Z",
+              confidence: 0.5,
+              items: [
+                {
+                  catalogId: "rope",
+                  rank: 1,
+                  comparisons: 4,
+                  confidence: 0.5,
+                },
+              ],
+            },
+          },
+        },
+        "run-current": {
+          id: "run-current",
+          startedAt: "2026-09-05T00:00:00.000Z",
+          status: "active",
+          algorithmVersion: 1,
+        },
+      },
+    };
+    catalog.comparisons = catalog.comparisons.map((comparison) => ({
+      ...comparison,
+      runId: "run-current",
+    }));
+    saveCatalogProfile(catalog, storage);
+
+    resetProfileData(
+      {
+        quizIds: [],
+        catalogPreferences: true,
+        rankingComparisons: false,
+        ...keepM11,
+        profileSettings: false,
+      },
+      storage,
+    );
+
+    expect(loadCatalogProfile(storage).rankingHistory?.runs["run-old"]).toBeDefined();
+
+    resetProfileData(
+      {
+        quizIds: [],
+        catalogPreferences: false,
+        rankingComparisons: true,
+        ...keepM11,
+        profileSettings: false,
+      },
+      storage,
+    );
+
+    const resetCatalog = loadCatalogProfile(storage);
+    expect(resetCatalog.comparisons).toEqual([]);
+    expect(Object.keys(resetCatalog.rankingHistory?.runs ?? {})).toEqual([
+      "ranking-run-initial",
+    ]);
+  });
+
 });

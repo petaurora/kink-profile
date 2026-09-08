@@ -1,11 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  IconArrowDown,
-  IconArrowUp,
-  IconMinus,
-  IconSparkles,
-} from "@tabler/icons-react";
 import { PairwiseComparisonPanel } from "./PairwiseComparisonPanel";
+import { RankingMovementIndicator } from "./RankingMovementIndicator";
 import {
   kinkCatalog,
   kinkCategories,
@@ -40,8 +35,6 @@ import { startNewKinkRankingRun } from "./lib/kinkRankingHistory";
 import {
   calculateRankingMovement,
   getPreviousComparableRankingSnapshot,
-  rankingMovementLabel,
-  type RankingMovement,
 } from "./lib/kinkRankingMovement";
 import type { StoredProfile } from "./lib/profileStorage";
 
@@ -74,68 +67,6 @@ function randomRunId() {
 function randomizePair(pair: [KinkCatalogItem, KinkCatalogItem] | null) {
   if (!pair) return null;
   return Math.random() < 0.5 ? pair : [pair[1], pair[0]] as [KinkCatalogItem, KinkCatalogItem];
-}
-
-function formatRunDate(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-
-  return new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
-}
-
-function RankingMovementIndicator({
-  movement,
-  open,
-  onToggle,
-}: {
-  movement: RankingMovement;
-  open: boolean;
-  onToggle: () => void;
-}) {
-  const label = rankingMovementLabel(movement);
-  const Icon =
-    movement.kind === "up"
-      ? IconArrowUp
-      : movement.kind === "down"
-        ? IconArrowDown
-        : movement.kind === "same"
-          ? IconMinus
-          : IconSparkles;
-
-  const compact =
-    movement.kind === "new"
-      ? "NEW"
-      : movement.kind === "same"
-        ? "—"
-        : String(movement.places);
-
-  return (
-    <span className={`ranking-movement-wrap ${open ? "open" : ""}`}>
-      <button
-        type="button"
-        className={`ranking-movement ranking-movement-${movement.kind}`}
-        aria-label={label}
-        aria-expanded={open}
-        onClick={onToggle}
-      >
-        <Icon size={15} stroke={2.2} aria-hidden="true" />
-        <span>{compact}</span>
-      </button>
-      <span className="ranking-movement-popover" role="status">
-        <strong>{label}</strong>
-        <span>
-          {movement.previousRank === null
-            ? "Not ranked in the previous comparable run"
-            : `Previously #${movement.previousRank}`}
-        </span>
-        <span>Previous run: {formatRunDate(movement.previousCapturedAt)}</span>
-      </span>
-    </span>
-  );
 }
 
 function comparisonCountForScope(

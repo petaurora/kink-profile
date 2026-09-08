@@ -3926,3 +3926,23 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
     width: min(250px, calc(100vw - 4.5rem));
   }
 }
+
+
+/* M12.4 Overall Profile ranking-history context */
+.profile-source-chip-ranking {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding-right: 3px;
+  overflow: visible;
+}
+
+.profile-source-chip-ranking .ranking-movement {
+  min-height: 22px;
+  padding: .18rem .4rem;
+  font-size: .62rem;
+}
+
+.profile-source-chip-ranking .ranking-movement-popover {
+  font-size: .76rem;
+}
