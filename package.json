@@ -7,9 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "predev": "node scripts/generate-kink-catalog.mjs",
-    "prebuild": "node scripts/generate-kink-catalog.mjs",
-    "pretest": "node scripts/generate-kink-catalog.mjs",
+    "predev": "node scripts/generate-kink-catalog.mjs && node scripts/generate-reward-punishment-library.mjs",
+    "prebuild": "node scripts/generate-kink-catalog.mjs && node scripts/generate-reward-punishment-library.mjs",
+    "pretest": "node scripts/generate-kink-catalog.mjs && node scripts/generate-reward-punishment-library.mjs",
     "test": "vitest run"
   },
   "dependencies": {
