@@ -21,6 +21,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M8 | Optional | add quiz depth/adaptive follow-ups |
 | M9 | ✅ Complete | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
+| M11 | Planned | contextual rewards/punishments, randomizer, and reusable builders |
 
 ---
 
@@ -782,6 +783,113 @@ Before implementation, define privacy expectations and a threat model.
 
 ---
 
+
+## M11 — Rewards & Punishments
+
+**Goal:** turn the existing reward/punishment reference bank plus the stable M6 catalog into a practical contextual-use toolbox.
+
+See [docs/m11-rewards-punishments.md](docs/m11-rewards-punishments.md) for the detailed product/data contract.
+
+Core semantic rule:
+
+> Reward and punishment are contextual uses of an activity/action, not mutually exclusive item types.
+
+M11 intentionally does **not** add assignment, earning, demerits, punishment debt, task integration, completion tracking, or automatic escalation.
+
+### M11.1 — Runtime library + stable identity
+
+- [ ] normalize the source bank into stable runtime action IDs
+- [ ] define stable contextual category IDs + weighted primitive mappings
+- [ ] preserve source provenance without treating source origin/category text as runtime identity
+- [ ] deduplicate obvious source overlaps
+- [ ] link exact/meaningful action overlaps to stable M6 catalog IDs
+
+### M11.2 — Direct contextual-use profiles
+
+- [ ] add independent Reward and Punishment suitability overlays
+- [ ] support Strong / Works / Depends / No / Never / Unset
+- [ ] keep direct M11 use orthogonal to general M6 preference and M7 aggregation
+- [ ] add independent random-pool eligibility
+- [ ] add searchable/filterable Reward and Punishment profile views
+
+### M11.3 — Category aggregation + inferred proposals
+
+- [ ] derive separate Reward/Punishment category affinity from direct M11 evidence
+- [ ] keep category affinity separate from evidence breadth/coverage
+- [ ] infer contextual proposals from canonical M7 mappings + direct M11 category patterns + similar confirmed items
+- [ ] allow bounded M6 general-affinity support for Reward inference
+- [ ] never use dislike/aversion as positive Punishment evidence
+- [ ] keep inferred proposals visually/provenance-distinct from explicit choices
+- [ ] accepting a proposal creates explicit Works, not Strong
+- [ ] prevent inferred values from feeding category affinity or M7 signals
+
+### M11.4 — Quick sorter + engagement pacing
+
+- [ ] add one-item-at-a-time Reward / Punishment / Both / Neither classification cards
+- [ ] include all stable M6 catalog items plus normalized M11 action primitives
+- [ ] provide Skip for now, Continue unsorted, focused runs, Back / Undo, and resume
+- [ ] protect nuanced existing states from accidental overwrite
+- [ ] show persistent overall + focused-run progress
+- [ ] insert a lightweight randomized feedback beat after 1–7 new classifications
+- [ ] vary profile connections, category pulses, context contrasts, discovery counts, curated facts, and playful copy
+- [ ] add a larger non-blocking checkpoint animation every 25 new classifications
+- [ ] respect reduced-motion preferences
+
+### M11.5 — Independent Reward & Punishment pairwise rankings
+
+- [ ] add separate Reward and Punishment This-or-That flows
+- [ ] require each item to be directly context-classified before it can enter that context's ranking pool
+- [ ] do not require the whole primitive universe to be sorted before ranking unlocks
+- [ ] let Reward/Both positive states feed Reward ranking and Punishment/Both positive states feed Punishment ranking
+- [ ] keep Reward rank, Punishment rank, and M6 kink rank as three independent values
+- [ ] allow shared ranking-engine utilities without sharing M6 comparison/rating history
+- [ ] persist raw M11 contextual pairwise comparisons
+- [ ] use adaptive pair selection + confidence/refinement rather than exhaustive comparison
+- [ ] expose Top Rewards and Top Punishments
+
+### M11.6 — Randomizer
+
+- [ ] add Random reward / Random punishment
+- [ ] select only explicitly positive + random-enabled entries
+- [ ] never put inference-only items into the random pool
+- [ ] add Pick again, empty states, and in-session anti-repeat
+- [ ] do not silently weight random probability by contextual rank in V1
+- [ ] keep assignment/completion/history semantics out
+
+### M11.7 — Reward & punishment builders
+
+- [ ] add Build a reward / Build a punishment
+- [ ] compose ordered components from catalog + action primitives
+- [ ] allow recipe-local custom text
+- [ ] save/edit/duplicate/delete reusable recipes
+- [ ] keep recipe composition non-recursive in V1
+- [ ] mark recipes Needs review when a referenced component becomes context-Never or stale
+
+### M11.8 — Recipe randomization + lifecycle integration
+
+- [ ] optionally include valid saved recipes in random pools
+- [ ] extend full profile backup/import with authoritative direct M11 state + contextual pairwise history
+- [ ] keep category aggregates/inferred proposals recomputable
+- [ ] add an independent Rewards & Punishments selective-reset scope
+- [ ] preserve M11 state across unrelated reset scopes
+- [ ] keep M11 data out of share summary by default
+
+### M11.9 — Overall profile integration + UX polish
+
+- [ ] add first-class navigation
+- [ ] add separate Reward and Punishment category summaries to the in-app overall profile
+- [ ] add Top Rewards / Top Punishments when pairwise evidence is sufficient
+- [ ] use contextual rank to order confirmed highlights when available without replacing suitability/category context
+- [ ] show inferred Suggested to explore separately
+- [ ] keep M11 values out of M7 radar/orientation/Headspaces/Modes/Top Overall
+- [ ] compact mobile behavior + accessibility
+- [ ] regression-run M6/M7/M9 profile/evidence tests
+- [ ] finalize docs and mark M11 complete
+
+**M11 exit condition:** the user can get profile-derived Reward/Punishment proposals, quickly sort/refine the full primitive universe with varied progress feedback, independently rank confirmed rewards and punishments, see contextual summaries/top lists, randomly pick from explicitly approved pools, and create reusable recipes without the app becoming an assignment or behavior-management system.
+
+---
+
 # Parked ideas
 
 Interesting, but not current scope:
@@ -793,13 +901,12 @@ Interesting, but not current scope:
 - educational content for catalog items
 - relationship discussion prompts
 - quiz recommendations based on incomplete profile
-- rewards / consequences runtime system using `reference/rewards-punishments/` source data (schema + product semantics TBD)
 - anonymous aggregate statistics
 
 ---
 
 # Current next action
 
-**M7 is complete.**
+**M7 and M9 are complete. M11 is now fully scoped and ready for implementation when chosen.**
 
-The next product work should be chosen intentionally rather than treated as another required M7 slice. Existing roadmap options include optional M8 adaptive/deeper quizzes and the already-partial M9 settings/profile-lifecycle work.
+The next product work should still be chosen intentionally. Roadmap options include optional M8 adaptive/deeper quizzes, optional M10 cloud persistence, and the planned M11 Rewards & Punishments toolbox.

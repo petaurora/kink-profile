@@ -526,6 +526,56 @@ over:
 
 ---
 
+
+# Rewards & Punishments product area
+
+A future first-class Rewards & Punishments area is scoped as M11.
+
+It reuses the stable M6 catalog alongside a normalized action library derived from `reference/rewards-punishments/`.
+
+The product must preserve seven independent questions:
+
+```text
+GENERAL PREFERENCE
+Do I like this activity?
+
+REWARD SUITABILITY
+Does this work as a reward?
+
+PUNISHMENT SUITABILITY
+Does this work as a punishment/consequence?
+
+REWARD RANK
+Among confirmed rewards, which ones rise to the top?
+
+PUNISHMENT RANK
+Among confirmed punishments, which ones rise to the top?
+
+RANDOM ELIGIBILITY
+May the app pick this randomly?
+
+RECIPE MEMBERSHIP
+Is this part of a saved custom combination?
+```
+
+Reward and punishment are contextual uses, not opposite ends of one scale. An item may work as both, either, or neither. Dislike/aversion must never automatically make an item a punishment candidate.
+
+M11 follows the same source-aware philosophy as M6: direct contextual choices remain authoritative, while **inferred Reward/Punishment proposals** may be derived from canonical M7 signals, contextual category preferences, similar confirmed M11 items, and bounded M6 catalog context. Inference is visibly separate from explicit choice and may never feed itself back into category/profile evidence.
+
+Reward and Punishment also get independent **contextual category profiles**. Category affinity is derived from direct M11 choices, keeps evidence breadth separate from strength, and provides bounded weighting for proposal ordering and profile summaries.
+
+M11 includes a fast one-item-at-a-time **Reward / Punishment / Both** classification flow so the user does not have to build the profile through a giant table. The sorter may surface/prioritize inferred proposals, but the user's tap is what creates direct `works/no` evidence. Because the combined catalog/action universe is large, the sorter also uses persistent progress, randomized 1–7-item micro-feedback beats, and larger every-25 classification checkpoints so the experience changes rhythm without hiding real progress.
+
+Classification is the eligibility funnel for two later pairwise flows: **Reward This-or-That** and **Punishment This-or-That**. An item must have direct positive contextual evidence before entering that context's ranking pool, but the user does not need to finish sorting the entire universe before ranking. Reward rank, Punishment rank, and the existing M6 kink rank remain independent evidence channels even when they refer to the same catalog item.
+
+The in-app overall profile may add a distinct Rewards & Punishments section showing strongest contextual categories, Top Rewards / Top Punishments when sufficiently ranked, confirmed items, and clearly separate Suggested to explore items. These M11 values do not alter the M7 radar, orientation, roles, modes, Top Overall, or limits.
+
+M11 also includes lightweight random selection and reusable reward/punishment builders, but explicitly excludes assignment, earning, demerits, debt, task integration, completion tracking, and automatic escalation.
+
+See [M11 Rewards & Punishments](m11-rewards-punishments.md) for the detailed contract.
+
+---
+
 # Not current scope
 
 Do not add during the core quiz milestones:
