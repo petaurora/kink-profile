@@ -1297,42 +1297,11 @@ Verification: 67 tests pass across 6 test files, including 11 focused C7 matcher
 
 ---
 
-# Post-M6 catalog curation follow-up — parked
+# Post-M6 catalog curation
 
-M6's integration architecture is complete, but the **contents of the catalog remain intentionally curatable**.
+Broader catalog pruning, consolidation, metadata review, and the pending source-additions review are owned by [M16 — Data & Content Curation](m16-data-content-curation.md).
 
-A later catalog-maintenance pass should:
-
-1. review `reference/catalog/source-additions-2026-09-08.tsv` and selectively append only accepted items to `reference/catalog/kink-catalog.tsv`
-2. audit the existing runtime catalog for duplicates, near-duplicates, overly narrow variants, source-driven vocabulary, and items that do not earn their place in browsing/ranking
-3. remove, merge, rename, or re-categorize items where doing so makes the catalog easier to understand and more useful to rank
-4. re-check descriptions, aliases, category assignment, direction/role metadata, intensity/risk metadata, and signal mappings after curation
-5. re-run generator/schema/mapping validation before considering the curated catalog stable
-
-## Curation principle
-
-The catalog is **not append-only**.
-
-External lists are discovery inputs, not requirements. A source mentioning a term does not obligate the runtime catalog to keep it as a standalone item.
-
-Prefer:
-
-- one useful canonical concept over several vocabulary variants
-- aliases over duplicate rows when the distinction is naming only
-- consolidation when multiple rows would produce effectively the same preference/ranking decision
-- removing low-value or confusing items when they do not improve exploration
-- preserving separate rows only when the distinction can meaningfully change a user's preference, limit, ranking, context, or scene choice
-
-## Identity and stored-data safety
-
-Catalog cleanup must respect the stable-identity contract established in C1.
-
-- label/description cleanup keeps the existing Catalog ID
-- duplicate consolidation uses `catalog-aliases.tsv` and/or `catalog-id-replacements.tsv`
-- removing an item that may already have stored preference or comparison history needs an explicit archival/migration decision rather than silent deletion
-- category changes should preserve Catalog ID and consider the effect on category-scoped ranking history
-
-The goal is a **better decision surface**, not the largest possible catalog.
+M6 remains complete because the integration architecture is stable. M16 is the later **content/model quality pass** that may remove, merge, rename, re-categorize, or remap catalog items while preserving stored user evidence through the stable-identity/migration rules defined here.
 
 ---
 
