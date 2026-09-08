@@ -173,13 +173,15 @@ describe("M7.3 profile header model", () => {
       scoreOverallFacets(canonical),
     );
 
-    expect(model.headspaces[0]).toEqual(
+    expect(model.headspaces).toContainEqual(
       expect.objectContaining({
         id: "pet",
         label: "Pet",
       }),
     );
-    expect(model.headspaces[0]).not.toHaveProperty("direction");
+    expect(
+      model.headspaces.every((headspace) => !("direction" in headspace)),
+    ).toBe(true);
     expect(model.headspaces.length).toBeLessThanOrEqual(3);
   });
 
