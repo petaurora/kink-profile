@@ -10,13 +10,22 @@ A privacy-first React app for exploring BDSM, kink, power-dynamic, and headspace
 **M3 — Roles & Headspaces:** complete  
 **M4 — Bondage & Discipline:** complete  
 **M5 — Sadism & Masochism:** complete  
-**M6 — Catalog Integration:** complete
+**M6 — Catalog Integration:** complete  
+**M7 — Full Overall Profile:** complete  
+**M8 — Quiz Depth & Adaptive Follow-ups:** optional  
+**M9 — Settings, Profile Management & Sharing:** complete  
+**M10 — Optional Persistence:** optional  
+**M11 — Rewards & Punishments:** planned  
+**M12 — This-or-That Ranking History & Movement:** scoped  
+**M13 — Scene Builder:** planned  
+**M14 — Shared Profiles, Comparison & Partner Integration:** planned  
+**M15 — Contextual Activity Profiles:** planned
 
-The app now supports all four core quiz sections plus a playable catalog-ranking flow. The 551-item catalog is sourced from repo-native TSV, generated into app-owned runtime data before dev/build, and can be ranked within categories and across an Overall candidate pool built from current evidenced finalists plus eligible prior Overall participants.
+The app now supports all four core quiz sections, the full 551-item catalog with direct preferences and category/Overall This-or-That ranking, a source-aware aggregated profile, and a complete local profile-management/share workflow.
 
-The catalog now has a first-class direct preference table plus the category/Overall This-or-That ranking mini-game. Explicit preferences and raw pairwise comparisons remain browser-local in the shared catalog-profile store so direct state and ranking evidence stay independent and recalculable. M6 now also provides source-aware quiz-derived affinity, provenance, hardened recommendation eligibility/suppression, and no-feedback-loop guarantees.
+M6 keeps explicit preferences, raw pairwise comparisons, quiz-derived affinity, exclusions, and provenance independent and recalculable. M7 consumes those sources into the overall profile without flattening D/s authority, activity-side giving/receiving, or roles/headspaces into one concept. M9 adds editable profile identity, selective reset, versioned backup/restore, and local PNG/HTML/PDF share exports.
 
-C1 durable IDs, C2 metadata/signal mappings, C3 explicit preference + catalog table, C4 source-aware evidence convergence, C5 ranking hardening, C6 catalog result integration, and C7 affinity/recommendation hardening are implemented. **M6 is complete. M7 Full Overall Profile is next.**
+Future product work is formally scoped through M15: contextual Rewards & Punishments (M11), non-destructive ranking reruns/history (M12), a theme-driven Scene Builder (M13), independent shared-profile comparison/integration (M14), and sparse authority × activity-side contextual preference/ranking overlays (M15). M8 and M10 remain optional rather than prerequisites.
 
 The original 16-question prototype remains available as the **Starter Profile** sampler. It is not intended to be the final scoring model.
 
@@ -35,12 +44,19 @@ Start with [docs/README.md](docs/README.md).
 
 - [Product specification](docs/product-spec.md) — product behavior, taxonomy, UX, privacy, and scope
 - [Scoring & taxonomy model](docs/scoring-model.md) — signal-weighted scoring and catalog-affinity boundaries
-- [M6 catalog integration](docs/m6-catalog-integration.md) — stable catalog identity, explicit state, ranking hardening, signal mappings, and M7 boundary
-- [M6 C3 explicit preference + catalog table](docs/m6-c3-explicit-preference.md) — direct-management table + This-or-That mini-game boundary
-- [Source-aware profile evidence architecture](docs/profile-evidence-architecture.md) — C4/M7 evidence provenance, recomputation, quiz/catalog interconnection, and no-feedback-loop rules
-- [Kink This-or-That ranking](docs/kink-this-or-that-ranking.md) — category/Overall ranking flow, meaningful-evidence confidence, finalist promotion, and Overall-history semantics
+- [Authority, activity side & role semantics](docs/authority-activity-role-separation.md) — keeps D/s authority, giving/receiving activity side, and roles/headspaces orthogonal
+- [M6 catalog integration](docs/m6-catalog-integration.md) — stable catalog identity, explicit state, ranking hardening, signal mappings, and source-aware evidence boundaries
+- [Source-aware profile evidence architecture](docs/profile-evidence-architecture.md) — evidence provenance, recomputation, quiz/catalog interconnection, and no-feedback-loop rules
+- [Kink This-or-That ranking](docs/kink-this-or-that-ranking.md) — category/Overall ranking flow and the M12 temporal-reranking boundary
+- [M7 overall profile aggregation](docs/overall-profile-aggregation.md) — completed aggregate profile contract
+- [M9 settings, profile management & sharing](docs/m9-settings-profile-management.md) — completed local lifecycle, backup/restore, and share-export contract
+- [M11 Rewards & Punishments](docs/m11-rewards-punishments.md)
+- [M12 ranking history & movement](docs/m12-ranking-history-movement.md)
+- [M13 Scene Builder](docs/m13-scene-builder.md)
+- [M14 shared profiles](docs/m14-shared-profiles.md)
+- [M15 contextual activity profiles](docs/m15-contextual-activity-profiles.md)
 - [Roadmap](ROADMAP.md) — implementation milestones and current next work
-- [Reference data](reference/README.md) — repo-native TSV catalog source and intended use
+- [Reference data](reference/README.md) — repo-native source data and intended use
 
 ## Tech
 
@@ -81,4 +97,4 @@ Repository setup: under **Settings → Pages**, set **Source** to **Deploy from 
 
 There is currently no backend and no required account.
 
-Quiz answers/progress and kink-ranking comparisons are stored only in the current browser's `localStorage`. Optional cloud persistence is intentionally deferred until there is a real product need and a defined privacy model.
+Authoritative profile data remains browser-local in `localStorage`: quiz progress/results, catalog preferences, pairwise ranking history, and profile settings. M9 backup/restore and share exports are generated locally. Optional cloud persistence remains deferred until there is a real product need and a defined privacy/threat model.

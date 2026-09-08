@@ -41,7 +41,7 @@ This folder contains the product and scoring decisions that should guide impleme
     The completed M7 contract: canonical aggregation, nine broad facets, profile header/radar, role/mode summaries, Top Overall, limits, Interest Areas, catalog drill-down, explainability, and final integration.
 
 13. [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md)  
-    The planned Settings/profile-lifecycle contract: display name, selective reset, complete versioned backup/restore, share-summary presentation, and PNG/HTML/PDF output.
+    The completed Settings/profile-lifecycle contract: display name, selective reset, complete versioned backup/restore, share-summary presentation, and PNG/HTML/PDF output.
 
 14. [M11 Rewards & Punishments](m11-rewards-punishments.md)  
     The planned M11 contract: contextual reward/punishment overlays across catalog + action primitives, playful classification, independent Reward/Punishment pairwise rankings, random selection, reusable builders/recipes, stable identity, and lifecycle integration without assignment/tracking semantics.
@@ -55,11 +55,14 @@ This folder contains the product and scoring decisions that should guide impleme
 17. [M14 Shared Profiles, Comparison & Partner Integration](m14-shared-profiles.md)  
     The planned multi-profile contract: independent profile containers, derived comparison, complementary interaction mappings, participant intent, and shared M13 filtering.
 
-18. [Roadmap](../ROADMAP.md)  
+18. [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md)  
+    The planned sparse authority × activity-side contract: context-specific preferences, rankings, contextual profile lenses, motivation annotations, and M11/M12/M13/M14 integration without treating giving/receiving as authority.
+
+19. [Roadmap](../ROADMAP.md)  
     What is already implemented and what should be built next.
 
-19. [Reference Data](../reference/README.md)  
-    How the expanded kink catalog should be used without turning it into a 551-question test.
+20. [Reference Data](../reference/README.md)  
+    How the expanded kink catalog and rewards/punishments source bank should be used without turning them into giant questionnaires.
 
 ## Source of truth by topic
 
@@ -82,6 +85,7 @@ This folder contains the product and scoring decisions that should guide impleme
 | How should repeat This-or-That runs and rank movement work? | [M12 This-or-That Ranking History & Movement](m12-ranking-history-movement.md) |
 | How should profile context become a themed, low-decision scene builder? | [M13 Scene Builder](m13-scene-builder.md) |
 | How should multiple profiles be compared and used together without merging their evidence? | [M14 Shared Profiles](m14-shared-profiles.md) |
+| How should one activity vary by Dominant/submissive/non-D/s context and giving/receiving side? | [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md) |
 | What do we build next? | [Roadmap](../ROADMAP.md) |
 | What is implemented today? | [README](../README.md) + code |
 | How do we use the kink catalog? | [Reference Data](../reference/README.md) |
@@ -102,6 +106,7 @@ If overall profile aggregation or front-page facet behavior changes, update the 
 If settings, reset behavior, profile backup/restore, or share-summary export changes, update the M9 settings/profile-management spec.  
 If reward/punishment contextual-use semantics, action-library identity, randomizer eligibility, or recipe behavior changes, update the M11 rewards/punishments spec.  
 If scene themes, candidate filtering, current-session state, scene composition, or scene randomization changes, update the M13 scene-builder spec.  
-If multi-profile storage, comparison semantics, interaction mappings, participant intent, or shared scene filtering changes, update the M14 shared-profiles spec.
+If multi-profile storage, comparison semantics, interaction mappings, participant intent, or shared scene filtering changes, update the M14 shared-profiles spec.  
+If authority × activity-side contextual preferences/rankings, context capability metadata, motivation annotations, or M11/M12/M13/M14 contextual integration changes, update the M15 contextual-activity-profiles spec.
 
 The repository code remains authoritative for what is actually implemented.

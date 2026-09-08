@@ -8,7 +8,7 @@ M6 is not starting from zero.
 
 The new `kink-profile` repository imported the already-working catalog/ranking application baseline. C1 then established durable catalog identity, and C2 has now restored the pre-migration metadata/mapping implementation into this repository.
 
-C3 explicit preference + catalog table, C4 source-aware evidence convergence, C5 ranking hardening, C6 catalog result integration, and C7 signal-affinity/recommendation hardening are implemented. M6 is complete; M7 can now consume the catalog through the source-aware boundaries defined here.
+C3 explicit preference + catalog table, C4 source-aware evidence convergence, C5 ranking hardening, C6 catalog result integration, and C7 signal-affinity/recommendation hardening are implemented. M6 is complete, and the completed M7 profile now consumes the catalog through the source-aware boundaries defined here.
 
 Current baseline on `main`:
 
@@ -38,7 +38,7 @@ M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added dir
 
 Connect the catalog to the user's profile **without turning 551 rows into questionnaire homework**.
 
-M6 should leave us with a catalog system where:
+M6 leaves the app with a catalog system where:
 
 1. catalog items have durable identities
 2. users can explicitly classify an item without having to classify every item
@@ -670,7 +670,7 @@ The user must explicitly change explicit state.
 
 The imported ranking baseline correctly retains raw comparison history.
 
-M6 should tighten how each result contributes to ranking confidence.
+C5 tightened how each result contributes to ranking confidence.
 
 ## Left / right
 
@@ -704,7 +704,7 @@ It may be retained as interaction history so the selector can avoid immediate re
 - increase item ranking confidence
 - increase scope ranking confidence
 
-The current initial implementation counts shown skip/neither records toward comparison/confidence counts. M6 should correct that behavior.
+The imported pre-hardening implementation counted shown Skip/Neither records toward comparison/confidence counts. C5 corrected that behavior: those interactions may remain in raw history for repetition avoidance, but they do not increase ordering or scope confidence.
 
 ---
 
@@ -718,7 +718,7 @@ The initial ranking engine already supports:
 - rough confidence
 - close/under-compared pair selection
 
-M6 should add explicit eligibility and stronger evidence semantics.
+C3/C5 added explicit eligibility and stronger evidence semantics without changing raw-history retention.
 
 ## New-item behavior
 
@@ -792,11 +792,11 @@ This fulfills the original ranking design's requirement to preserve finalist par
 
 # Ranking tests
 
-The initial ranking slice has build coverage but no dedicated ranking test suite.
+The imported ranking slice originally had build coverage but no dedicated ranking test suite.
 
-M6 should add focused tests before ranking logic becomes profile-critical.
+M6 added focused ranking tests before the logic became profile-critical.
 
-Minimum cases:
+Covered cases include:
 
 - left/right Elo update
 - equal/tie behavior
@@ -1007,11 +1007,11 @@ Prefer a status such as archived/deprecated over hard deletion when user state m
 
 ---
 
-# What M6 should expose to M7
+# M6 → M7 interface boundary
 
-M7 should not need to understand TSV parsing or ranking internals.
+M7 does not need to understand TSV parsing or ranking internals.
 
-M6 should expose clean derived interfaces such as:
+M6 exposes/derives clean interfaces at this boundary, conceptually such as:
 
 ```ts
 getCatalogItem(id)
@@ -1203,7 +1203,7 @@ The catalog table now:
 
 The This-or-That comparison cards remain intentionally simple. Only the ranking **results** gain explicit-state + quiz-derived context.
 
-C6 does not create a merged explicit+pairwise Top Overall score/list. That remains M7.
+C6 intentionally does not create a merged explicit+pairwise Top Overall score/list. M7 later implemented that presentation-level aggregate while leaving the M6 source channels independent.
 
 ### Deferred catalog-result UX follow-up
 

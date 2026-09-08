@@ -25,6 +25,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M12 | Scoped | preserve This-or-That runs and show rank movement over time |
 | M13 | Planned | turn profile context into theme-driven, low-decision scene composition |
 | M14 | Planned | multi-profile comparison, complementary fit, and shared scene filtering |
+| M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
 
 ---
 
@@ -1069,6 +1070,93 @@ M14 must support both **mutual** and **complementary** fit. It must not reduce t
 
 ---
 
+## M15 — Contextual Activity Profiles
+
+**Goal:** let the same directional activity have different explicit preference, ranking, and contextual meaning across authority context and activity side without treating giving/receiving as Dominant/submissive identity.
+
+See [docs/m15-contextual-activity-profiles.md](docs/m15-contextual-activity-profiles.md) for the detailed product/data contract and [docs/authority-activity-role-separation.md](docs/authority-activity-role-separation.md) for the cross-cutting semantic boundary.
+
+Core principle:
+
+> **Authority context and activity side are orthogonal.**
+
+Directional activities may therefore support sparse combinations such as Dominant + Giving, Dominant + Receiving, submissive + Giving, submissive + Receiving, Non-D/s + Giving, and Non-D/s + Receiving. Unset context remains unknown rather than silently inheriting the general catalog preference.
+
+### M15.1 — Context taxonomy + capability metadata
+
+- [ ] define stable AuthorityContext / ActivitySide / ActivityContextKey vocabulary
+- [ ] mark which catalog/action primitives support giving, receiving, or both
+- [ ] validate context capabilities without creating six literal copies of every item
+- [ ] preserve roles/headspaces as a separate dimension
+
+### M15.2 — Sparse contextual preference storage
+
+- [ ] add versioned sparse context overlays keyed by stable primitive + ActivityContextKey
+- [ ] create records only for contexts the user actually explores/edits
+- [ ] keep general M6 preference independent
+- [ ] preserve global and context-specific Hard Limit authority
+
+### M15.3 — Contextual refinement UX
+
+- [ ] add a reusable one-context-at-a-time picker/lens
+- [ ] support contextual catalog refinement without a default six-column matrix
+- [ ] add quick refinement/deep links from contextual consumers
+- [ ] preserve unknown vs explicit context state
+
+### M15.4 — Contextual pairwise ranking + M12 compatibility
+
+- [ ] scope pairwise evidence by ActivityContextKey
+- [ ] keep contextual rankings independent from general M6 rank
+- [ ] extend M12 run/history semantics by scope rather than forking them
+- [ ] show movement only against the previous comparable context run
+
+### M15.5 — Contextual profile aggregation + exploration
+
+- [ ] derive context-specific category/profile lenses from direct contextual evidence
+- [ ] keep context affinity separate from evidence coverage
+- [ ] keep M15 contextual evidence from voting on M7 D/s orientation
+- [ ] keep inferred context proposals separate from direct state
+
+### M15.6 — Motivation / reason annotations
+
+- [ ] support optional reasons such as instructed, service, delegated responsibility, caretaking, sensation/play, and ritual/protocol
+- [ ] keep reasons explanatory rather than authority evidence
+- [ ] allow multiple reasons where appropriate
+
+### M15.7 — M11 Rewards & Punishments contextual integration
+
+- [ ] preserve broad M11 Reward/Punishment suitability as its own answer
+- [ ] add optional sparse context-specific M11 overlays
+- [ ] keep broad M11 state from masquerading as direct exact-context evidence
+- [ ] scope contextual Reward/Punishment ranking only when directly explored
+
+### M15.8 — M13 Scene Builder integration
+
+- [ ] let current-session intent select authority context + activity side
+- [ ] prioritize exact positive M15 evidence for exact-context scenes
+- [ ] respect exact-context and global exclusions
+- [ ] keep current-session intent separate from durable contextual preference
+
+### M15.9 — M14 Shared Profile contextual complementarity
+
+- [ ] compare each profile's selected context independently
+- [ ] support complements such as submissive + Giving ↔ Dominant + Receiving without relabeling either person
+- [ ] explain contextual complementarity
+- [ ] feed both selected contexts into shared M13 filtering
+
+### M15.10 — Lifecycle, exports, reset + polish
+
+- [ ] include authoritative M15 state in private backup/import
+- [ ] add independent contextual reset behavior
+- [ ] preserve unrelated M6/M11/M13/M14 state
+- [ ] keep verbose contextual detail out of share summary by default
+- [ ] regression-run dependent semantic boundaries
+- [ ] finalize docs and mark M15 complete
+
+**M15 exit condition:** the app can represent, refine, rank, explain, back up, and consume context-specific activity preferences without inferring authority from giving/receiving, eagerly duplicating every item, or contaminating the general M6/M7 profile.
+
+---
+
 # Parked ideas
 
 Interesting, but not current scope:
@@ -1084,6 +1172,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7 and M9 are complete. M11, M12, M13, and M14 are fully scoped.**
+**M7 and M9 are complete. M11, M12, M13, M14, and M15 are formally scoped.**
 
-The next product work should still be chosen intentionally. M13/M14 are future product layers, not an instruction to skip prerequisite or already-in-flight roadmap work: M13 is designed to consume the stable profile/reward systems, and M14 then extends M13 across two independent profiles.
+The next implementation slice should still be chosen intentionally. M11/M12/M13/M14 are distinct product layers, while M15 is a cross-cutting contextual model that those layers may consume. Before adding authority-sensitive giving/receiving behavior inside M11, M13, or M14, use the M15 context contract instead of inventing one-off semantics.

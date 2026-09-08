@@ -4,8 +4,10 @@
 
 Living product direction.
 
-**Implemented through:** M7 — Full Overall Profile  
-**Current:** choose the next roadmap slice intentionally; M8 is optional and M9 is partially implemented
+**Implemented:** M0–M7 and M9  
+**Optional/deferred:** M8 adaptive quiz depth and M10 cloud persistence  
+**Planned/scoped:** M11–M15  
+**Current:** choose the next roadmap slice intentionally; the implemented core profile/lifecycle is stable enough for the next product layer
 
 The app is now structurally a collection of independently completable quizzes rather than one monolithic assessment.
 
@@ -480,21 +482,22 @@ M7 owns the canonical cross-quiz signal profile and aggregate profile presentati
 
 ## Current
 
-M1 stores a versioned profile in browser `localStorage`, with quiz answers/progress separated per quiz.
+Authoritative profile state is browser-local. M1 established versioned quiz/profile storage and M6 added the shared catalog-profile store for explicit preferences plus raw pairwise history.
 
-The app also migrates the original M0 Starter Profile storage shape.
+M9 completed the local lifecycle layer:
+
+- editable profile display name
+- selective reset by independent source domain
+- versioned full-profile JSON backup export
+- validated full-profile restore
+- curated share-summary preview
+- local PNG, standalone HTML, and PDF share exports
+
+Derived profile views remain recomputable rather than becoming a second authoritative store.
 
 ## Later
 
-Potential user-controlled features:
-
-- export profile
-- import profile
-- clear/delete profile data
-- sanitized shareable result card
-- optional cloud sync
-
-Cloud persistence is explicitly **not required for MVP**.
+M10 may add optional cloud persistence only if it solves a real product problem and a privacy/threat model is defined first. Accounts/cloud sync are not prerequisites for the local product.
 
 ---
 
@@ -529,7 +532,7 @@ over:
 
 # Rewards & Punishments product area
 
-A future first-class Rewards & Punishments area is scoped as M11.
+M11 scopes the next first-class Rewards & Punishments product area.
 
 It reuses the stable M6 catalog alongside a normalized action library derived from `reference/rewards-punishments/`.
 
@@ -576,6 +579,38 @@ See [M11 Rewards & Punishments](m11-rewards-punishments.md) for the detailed con
 
 ---
 
+# Scoped future product layers
+
+The detailed contracts remain authoritative; this section records only the product-level boundaries.
+
+## M12 — Ranking history & movement
+
+M12 turns This-or-That into a repeatable preference pulse. Starting a new ranking run archives the previous run rather than deleting it or accumulating one lifetime Elo history. Only the active run contributes current pairwise evidence; previous comparable runs provide movement context.
+
+See [M12 Ranking History & Movement](m12-ranking-history-movement.md).
+
+## M13 — Scene Builder
+
+M13 uses the existing profile to reduce decision load for a specific moment. Theme selection, temporary Yes/Maybe/Not-tonight state, bounded candidate filtering, scene composition, and randomization are query/composition layers; they do not rewrite durable profile evidence.
+
+See [M13 Scene Builder](m13-scene-builder.md).
+
+## M14 — Shared Profiles
+
+M14 introduces multiple independent local profiles and a derived comparison layer. It must preserve each person's evidence separately, support both mutual and complementary fit, and feed both profiles plus temporary participant intent into M13 without creating a synthetic merged relationship profile or compatibility percentage.
+
+See [M14 Shared Profiles](m14-shared-profiles.md).
+
+## M15 — Contextual Activity Profiles
+
+M15 makes authority context and activity side explicitly orthogonal. A directional activity can therefore have sparse independent context such as Dominant + Giving, Dominant + Receiving, submissive + Giving, submissive + Receiving, Non-D/s + Giving, or Non-D/s + Receiving without duplicating every catalog row or inferring authority from physical behavior.
+
+M15 is a reusable contextual layer for catalog refinement/ranking, M11 reward/punishment use, M12 ranking history, M13 scene filtering, and M14 complementary comparison.
+
+See [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md) and [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md).
+
+---
+
 # Not current scope
 
 Do not add during the core quiz milestones:
@@ -589,13 +624,13 @@ Do not add during the core quiz milestones:
 - AI-generated interpretation
 - giant full-catalog questionnaire
 
-These ideas can be revisited after the quiz/profile model is useful on its own.
+These remain outside the scoped local product. In particular, M14 compares deliberately created/imported profiles; it does not add partner discovery/matching or collapse two people into a compatibility score.
 
 ---
 
 # Open product questions
 
-These do not block the current core quiz work.
+These do not block the implemented core app or selection of the next planned milestone.
 
 Already decided in M6: **Hard Limit is a distinct explicit state from Not Interested / Not Applicable.** It controls eligibility/recommendation behavior without erasing historical or derived evidence used for explainability.
 
