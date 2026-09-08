@@ -200,7 +200,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 - [x] archive the previous comparable ranking run on rerank
 - [x] start each new run with fresh pairwise scoring
 - [x] use only the active run as current M6/M7 pairwise evidence
-- [ ] show movement + previous rank against the prior comparable run
+- [x] **M12.3** — show movement + previous rank against the prior comparable run
 - [ ] preserve run history through backup/restore while keeping destructive reset separate
 
 ---
