@@ -41,7 +41,13 @@ The product is intentionally **not one giant questionnaire**. Each section shoul
 
 ## Documentation
 
-Start with [docs/README.md](docs/README.md).
+Start with the user-facing guides if you want to understand the app itself:
+
+- [Feature Guide](docs/feature-guide.md) — plain-language definitions, when to use each feature, and how the pieces fit together
+- [FAQ](docs/faq.md) — common questions about results, ranking, Rewards & Punishments, backup/sharing, and privacy
+- [Documentation index](docs/README.md) — deeper product, scoring, milestone, and implementation contracts
+
+For product and implementation detail:
 
 - [Product specification](docs/product-spec.md) — product behavior, taxonomy, UX, privacy, and scope
 - [Scoring & taxonomy model](docs/scoring-model.md) — signal-weighted scoring and catalog-affinity boundaries
