@@ -193,6 +193,20 @@ export const sceneThemeDefinitions: readonly SceneThemeDefinition[] = [
     ],
   },
   {
+    id: "power-exchange",
+    label: "Power Exchange",
+    description: "Negotiated authority, control, responsibility, and deliberate transfer or holding of direction.",
+    family: "facet",
+    mappings: [
+      { kind: "facet", id: "power_exchange", weight: 1 },
+      { kind: "signal", id: "receiving_control", weight: 0.85 },
+      { kind: "signal", id: "giving_control", weight: 0.85 },
+      { kind: "signal", id: "responsibility_transfer", weight: 0.7 },
+      { kind: "signal", id: "responsibility_holding", weight: 0.7 },
+      { kind: "catalog_category", id: "power-exchange-roles", weight: 0.9 },
+    ],
+  },
+  {
     id: "deep-submission",
     label: "Deeper Submission",
     description: "A more immersive chosen surrender of direction, responsibility, and obedience.",
