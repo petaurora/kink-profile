@@ -526,6 +526,40 @@ over:
 
 ---
 
+
+# Rewards & Punishments product area
+
+A future first-class Rewards & Punishments area is scoped as M11.
+
+It reuses the stable M6 catalog alongside a normalized action library derived from `reference/rewards-punishments/`.
+
+The product must preserve five independent questions:
+
+```text
+GENERAL PREFERENCE
+Do I like this activity?
+
+REWARD SUITABILITY
+Does this work as a reward?
+
+PUNISHMENT SUITABILITY
+Does this work as a punishment/consequence?
+
+RANDOM ELIGIBILITY
+May the app pick this randomly?
+
+RECIPE MEMBERSHIP
+Is this part of a saved custom combination?
+```
+
+Reward and punishment are contextual uses, not opposite ends of one scale. An item may work as both, either, or neither. Dislike/aversion must never automatically make an item a punishment candidate.
+
+M11 includes lightweight random selection and reusable reward/punishment builders, but explicitly excludes assignment, earning, demerits, debt, task integration, completion tracking, and automatic escalation.
+
+See [M11 Rewards & Punishments](m11-rewards-punishments.md) for the detailed contract.
+
+---
+
 # Not current scope
 
 Do not add during the core quiz milestones:
