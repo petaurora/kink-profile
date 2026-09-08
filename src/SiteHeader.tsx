@@ -1,8 +1,13 @@
 import { useState } from "react";
 import {
+  IconArrowsLeftRight,
   IconChevronDown,
+  IconGift,
+  IconHome,
+  IconList,
   IconPaw,
   IconSettings,
+  IconUser,
 } from "@tabler/icons-react";
 
 export type SiteHeaderDestination =
@@ -16,6 +21,7 @@ type SiteHeaderProps = {
   displayName: string;
   onNavigate: (destination: SiteHeaderDestination) => void;
   onOpenSettings: () => void;
+  activeDestination?: SiteHeaderDestination;
   settingsActive?: boolean;
 };
 
@@ -23,6 +29,7 @@ export function SiteHeader({
   displayName,
   onNavigate,
   onOpenSettings,
+  activeDestination,
   settingsActive = false,
 }: SiteHeaderProps) {
   const [navOpen, setNavOpen] = useState(false);
@@ -39,7 +46,7 @@ export function SiteHeader({
         <button
           type="button"
           className={"site-nav-trigger" + (navOpen ? " is-open" : "")}
-          aria-label="Open navigation"
+          aria-label={navOpen ? "Close navigation" : "Open navigation"}
           aria-expanded={navOpen}
           aria-controls="site-navigation-menu"
           onClick={() => setNavOpen((open) => !open)}
@@ -59,20 +66,47 @@ export function SiteHeader({
             className="site-nav-menu panel"
             aria-label="Primary navigation"
           >
-            <button type="button" onClick={() => navigate("hub")}>
-              Explore
+            <button
+              type="button"
+              aria-current={activeDestination === "hub" ? "page" : undefined}
+              onClick={() => navigate("hub")}
+            >
+              <IconHome size={17} stroke={1.9} aria-hidden="true" />
+              <span>Explore</span>
             </button>
-            <button type="button" onClick={() => navigate("profile")}>
-              View profile
+            <button
+              type="button"
+              aria-current={activeDestination === "profile" ? "page" : undefined}
+              onClick={() => navigate("profile")}
+            >
+              <IconUser size={17} stroke={1.9} aria-hidden="true" />
+              <span>View profile</span>
             </button>
-            <button type="button" onClick={() => navigate("ranking")}>
-              This or That
+            <button
+              type="button"
+              aria-current={activeDestination === "ranking" ? "page" : undefined}
+              onClick={() => navigate("ranking")}
+            >
+              <IconArrowsLeftRight size={17} stroke={1.9} aria-hidden="true" />
+              <span>This or That</span>
             </button>
-            <button type="button" onClick={() => navigate("catalog")}>
-              Catalog
+            <button
+              type="button"
+              aria-current={activeDestination === "catalog" ? "page" : undefined}
+              onClick={() => navigate("catalog")}
+            >
+              <IconList size={17} stroke={1.9} aria-hidden="true" />
+              <span>Catalog</span>
             </button>
-            <button type="button" onClick={() => navigate("rewards-punishments")}>
-              Rewards / Punishments
+            <button
+              type="button"
+              aria-current={
+                activeDestination === "rewards-punishments" ? "page" : undefined
+              }
+              onClick={() => navigate("rewards-punishments")}
+            >
+              <IconGift size={17} stroke={1.9} aria-hidden="true" />
+              <span>Rewards / Punishments</span>
             </button>
           </nav>
         )}

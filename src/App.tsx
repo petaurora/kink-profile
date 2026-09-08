@@ -874,6 +874,9 @@ export default function App({
     <>
       <SiteHeader
         displayName={displayName}
+        activeDestination={
+          screen === "quiz" || screen === "results" ? undefined : screen
+        }
         onNavigate={navigateFromHeader}
         onOpenSettings={() => onOpenSettings(screen)}
       />
