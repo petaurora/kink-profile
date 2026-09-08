@@ -17,7 +17,11 @@ import {
   type KinkComparison,
   type RankingScope,
 } from "./lib/kinkRanking";
-import { filterEligibleCatalogItems } from "./lib/catalogProfile";
+import {
+  filterEligibleCatalogItems,
+  getActiveKinkRankingComparisons,
+  getActiveKinkRankingRunId,
+} from "./lib/catalogProfile";
 import {
   loadCatalogProfile,
   saveCatalogProfile,
@@ -88,9 +92,15 @@ export function KinkThisOrThat({
     [profile.preferences],
   );
 
+  const activeComparisons = useMemo(
+    () => getActiveKinkRankingComparisons(profile),
+    [profile],
+  );
+  const activeRunId = getActiveKinkRankingRunId(profile);
+
   const finalists = useMemo(
-    () => selectCategoryFinalists(eligibleCatalog, profile.comparisons, 5),
-    [eligibleCatalog, profile.comparisons],
+    () => selectCategoryFinalists(eligibleCatalog, activeComparisons, 5),
+    [eligibleCatalog, activeComparisons],
   );
 
   const overallCandidates = useMemo(
@@ -98,9 +108,9 @@ export function KinkThisOrThat({
       selectOverallCandidates(
         eligibleCatalog,
         finalists,
-        profile.comparisons,
+        activeComparisons,
       ),
-    [eligibleCatalog, finalists, profile.comparisons],
+    [eligibleCatalog, finalists, activeComparisons],
   );
 
   const activeCatalog = mode === "overall"
@@ -112,20 +122,20 @@ export function KinkThisOrThat({
     : { type: "category", categoryId };
 
   const snapshot = useMemo(
-    () => calculateRanking(activeCatalog, profile.comparisons, scope),
-    [activeCatalog, profile.comparisons, mode, categoryId],
+    () => calculateRanking(activeCatalog, activeComparisons, scope),
+    [activeCatalog, activeComparisons, mode, categoryId],
   );
 
   const basePair = useMemo(
-    () => selectNextPair(activeCatalog, profile.comparisons, scope),
-    [activeCatalog, profile.comparisons, mode, categoryId, pairNonce],
+    () => selectNextPair(activeCatalog, activeComparisons, scope),
+    [activeCatalog, activeComparisons, mode, categoryId, pairNonce],
   );
 
   const pair = useMemo(() => randomizePair(basePair), [basePair, pairNonce]);
 
-  const totalInScope = comparisonCountForScope(profile.comparisons, scope);
+  const totalInScope = comparisonCountForScope(activeComparisons, scope);
   const orderingInScope = countOrderingComparisonsForScope(
-    profile.comparisons,
+    activeComparisons,
     scope,
   );
   const sessionAnswered = Math.max(0, totalInScope - sessionStartCount);
@@ -147,7 +157,7 @@ export function KinkThisOrThat({
       kinkCategories.map((category) => {
         const categoryScope: RankingScope = { type: "category", categoryId: category.id };
         const comparisons = countOrderingComparisonsForScope(
-          profile.comparisons,
+          activeComparisons,
           categoryScope,
         );
         const categoryCatalog = eligibleCatalog.filter(
@@ -155,7 +165,7 @@ export function KinkThisOrThat({
         );
         const categorySnapshot = calculateRanking(
           categoryCatalog,
-          profile.comparisons,
+          activeComparisons,
           categoryScope,
         );
 
@@ -166,11 +176,11 @@ export function KinkThisOrThat({
           confidenceLabel: comparisons === 0 ? "Not started" : confidenceLabel(categorySnapshot.confidence),
         };
       }),
-    [eligibleCatalog, profile.comparisons],
+    [eligibleCatalog, activeComparisons],
   );
 
   const lastRankedCategoryId = useMemo(() => {
-    const latest = profile.comparisons
+    const latest = activeComparisons
       .filter(
         (comparison) =>
           comparison.scope.type === "category" &&
@@ -180,7 +190,7 @@ export function KinkThisOrThat({
       .sort((a, b) => b.timestamp.localeCompare(a.timestamp))[0];
 
     return latest?.scope.type === "category" ? latest.scope.categoryId : null;
-  }, [profile.comparisons]);
+  }, [activeComparisons]);
 
   const continueCategory = categorySummaries.find(
     (category) => category.id === lastRankedCategoryId,
@@ -233,6 +243,7 @@ export function KinkThisOrThat({
 
     const comparison: KinkComparison = {
       id: randomId(),
+      runId: activeRunId,
       leftKinkId: pair[0].id,
       rightKinkId: pair[1].id,
       scope,
@@ -255,7 +266,7 @@ export function KinkThisOrThat({
     setShowResults(false);
     setPairNonce((value) => value + 1);
     setSessionStartCount(
-      comparisonCountForScope(profile.comparisons, { type: "overall" }),
+      comparisonCountForScope(activeComparisons, { type: "overall" }),
     );
   };
 
@@ -272,7 +283,7 @@ export function KinkThisOrThat({
     setShowResults(false);
     setPairNonce((value) => value + 1);
     setSessionStartCount(
-      comparisonCountForScope(profile.comparisons, {
+      comparisonCountForScope(activeComparisons, {
         type: "category",
         categoryId: nextCategoryId,
       }),
