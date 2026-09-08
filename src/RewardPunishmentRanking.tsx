@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
+import { kinkCatalog } from "./data/kinkCatalog.generated";
 import {
+  getRewardPunishmentAction,
   rewardPunishmentCategories,
   rewardPunishmentPrimitiveKey,
   rewardPunishmentPrimitives,
@@ -44,6 +46,17 @@ function primaryCategoryLabel(primitive: RewardPunishmentPrimitive) {
       (category) => category.id === mapping.id,
     )?.label ?? mapping.id
   );
+}
+
+const catalogDescriptionById = new Map(
+  kinkCatalog.map((item) => [item.id, item.description]),
+);
+
+function primitiveDescription(primitive: RewardPunishmentPrimitive) {
+  if (primitive.ref.kind === "catalog") {
+    return catalogDescriptionById.get(primitive.ref.id);
+  }
+  return getRewardPunishmentAction(primitive.ref.id)?.description;
 }
 
 export function RewardPunishmentRanking({
@@ -235,6 +248,11 @@ export function RewardPunishmentRanking({
               >
                 <span>{primaryCategoryLabel(primitive)}</span>
                 <strong>{primitive.label}</strong>
+                {primitiveDescription(primitive) && (
+                  <p className="rp-ranking-choice-description">
+                    {primitiveDescription(primitive)}
+                  </p>
+                )}
                 <small>Pick this</small>
               </button>
             ))}

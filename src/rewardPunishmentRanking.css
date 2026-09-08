@@ -361,3 +361,23 @@
     flex-direction: column;
   }
 }
+
+
+.rp-ranking-choice-description {
+  margin: -6px 0 18px;
+  color: var(--text-secondary);
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 520px) {
+  .rp-ranking-choice-description {
+    margin: -2px 0 10px;
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: .68rem;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
