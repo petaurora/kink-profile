@@ -2061,7 +2061,6 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 .ranking-heading,
 .ranking-toolbar,
 .session-picker,
-.versus-panel,
 .ranking-results {
   padding: clamp(1.25rem, 3vw, 2rem);
 }
@@ -2173,93 +2172,6 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   font-size: 0.82rem;
 }
 
-.versus-panel {
-  display: grid;
-  gap: 1.25rem;
-}
-
-.versus-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.versus-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  gap: 1rem;
-  align-items: stretch;
-}
-
-.kink-choice {
-  min-height: 290px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 20px;
-  background: var(--bg-control);
-  color: var(--text-primary);
-  padding: clamp(1.25rem, 4vw, 2.25rem);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 0.8rem;
-  text-align: left;
-  cursor: pointer;
-  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
-}
-
-.kink-choice:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent-primary);
-  background: var(--bg-surface-raised);
-}
-
-.kink-choice strong {
-  font-size: clamp(1.45rem, 3vw, 2.25rem);
-  line-height: 1.05;
-}
-
-.kink-choice p {
-  color: var(--text-secondary);
-  margin: 0;
-  line-height: 1.5;
-}
-
-.choice-category,
-.pick-label {
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 800;
-}
-
-.choice-category {
-  color: var(--accent-primary);
-}
-
-.pick-label {
-  margin-top: auto;
-  color: var(--text-secondary);
-}
-
-.versus-or {
-  align-self: center;
-  color: var(--text-secondary);
-  font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.12em;
-}
-
-.comparison-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
 .ranking-results-heading {
   display: flex;
   justify-content: space-between;
@@ -2330,17 +2242,6 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .versus-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .versus-or {
-    justify-self: center;
-  }
-
-  .kink-choice {
-    min-height: 220px;
-  }
 }
 
 

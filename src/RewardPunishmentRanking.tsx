@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { PairwiseComparisonPanel } from "./PairwiseComparisonPanel";
 import { kinkCatalog } from "./data/kinkCatalog.generated";
 import {
   getRewardPunishmentAction,
@@ -229,69 +230,62 @@ export function RewardPunishmentRanking({
           </p>
         </section>
       ) : pair ? (
-        <article className="rp-ranking-versus panel">
-          <div className="rp-ranking-versus-meta">
-            <span>{contextTitle(context)}</span>
-            <span>
+        <PairwiseComparisonPanel
+          ariaLabel={`${contextTitle(context)} contextual comparison`}
+          metaStart={contextTitle(context)}
+          metaEnd={
+            <>
               {activeSnapshot.items.length} eligible ·{" "}
               {activeSnapshot.orderingComparisons} ordering comps
-            </span>
-          </div>
-
-          <div className="rp-ranking-pair">
-            {pair.map((primitive, index) => (
+            </>
+          }
+          left={{
+            id: rewardPunishmentPrimitiveKey(pair[0].ref),
+            eyebrow: primaryCategoryLabel(pair[0]),
+            label: pair[0].label,
+            description: primitiveDescription(pair[0]),
+          }}
+          right={{
+            id: rewardPunishmentPrimitiveKey(pair[1].ref),
+            eyebrow: primaryCategoryLabel(pair[1]),
+            label: pair[1].label,
+            description: primitiveDescription(pair[1]),
+          }}
+          onPick={(side) => answer(side)}
+          actions={
+            <>
               <button
-                key={rewardPunishmentPrimitiveKey(primitive.ref)}
-                type="button"
-                className="rp-ranking-choice"
-                onClick={() => answer(index === 0 ? "left" : "right")}
+                className="secondary compact"
+                onClick={() => answer("equal")}
               >
-                <span>{primaryCategoryLabel(primitive)}</span>
-                <strong>{primitive.label}</strong>
-                {primitiveDescription(primitive) && (
-                  <p className="rp-ranking-choice-description">
-                    {primitiveDescription(primitive)}
-                  </p>
-                )}
-                <small>Pick this</small>
+                Equal
               </button>
-            ))}
-            <div className="rp-ranking-or" aria-hidden="true">
-              OR
-            </div>
-          </div>
-
-          <div className="rp-ranking-actions">
-            <button
-              className="secondary compact"
-              onClick={() => answer("equal")}
-            >
-              Equal
-            </button>
-            <button
-              className="text-button"
-              onClick={() => answer("skip")}
-            >
-              Skip / don't know
-            </button>
-          </div>
-
-          <div className="rp-ranking-reclassify">
-            <span>Wrong pool?</span>
-            <button
-              className="text-button"
-              onClick={() => onReclassify(pair[0], context)}
-            >
-              Reclassify {pair[0].label}
-            </button>
-            <button
-              className="text-button"
-              onClick={() => onReclassify(pair[1], context)}
-            >
-              Reclassify {pair[1].label}
-            </button>
-          </div>
-        </article>
+              <button
+                className="text-button"
+                onClick={() => answer("skip")}
+              >
+                Skip / don't know
+              </button>
+            </>
+          }
+          footer={
+            <>
+              <span>Wrong pool?</span>
+              <button
+                className="text-button"
+                onClick={() => onReclassify(pair[0], context)}
+              >
+                Reclassify {pair[0].label}
+              </button>
+              <button
+                className="text-button"
+                onClick={() => onReclassify(pair[1], context)}
+              >
+                Reclassify {pair[1].label}
+              </button>
+            </>
+          }
+        />
       ) : (
         <section className="rp-ranking-empty panel">
           <p className="eyebrow">Current pool exhausted</p>
