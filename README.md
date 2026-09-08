@@ -15,17 +15,18 @@ A privacy-first React app for exploring BDSM, kink, power-dynamic, and headspace
 **M8 — Quiz Depth & Adaptive Follow-ups:** optional  
 **M9 — Settings, Profile Management & Sharing:** complete  
 **M10 — Optional Persistence:** optional  
-**M11 — Rewards & Punishments:** planned  
-**M12 — This-or-That Ranking History & Movement:** scoped  
+**M11 — Rewards & Punishments:** complete  
+**M12 — This-or-That Ranking History & Movement:** complete  
 **M13 — Scene Builder:** planned  
 **M14 — Shared Profiles, Comparison & Partner Integration:** planned  
-**M15 — Contextual Activity Profiles:** planned
+**M15 — Contextual Activity Profiles:** planned  
+**M16 — Data & Content Curation:** planned
 
-The app now supports all four core quiz sections, the full 551-item catalog with direct preferences and category/Overall This-or-That ranking, a source-aware aggregated profile, and a complete local profile-management/share workflow.
+The app now supports all four core quiz sections, the full 551-item catalog with direct preferences and category/Overall This-or-That ranking, a source-aware aggregated profile, complete local profile management/sharing, contextual Rewards & Punishments with ranking/randomization/recipes, and non-destructive This-or-That ranking runs with movement history.
 
-M6 keeps explicit preferences, raw pairwise comparisons, quiz-derived affinity, exclusions, and provenance independent and recalculable. M7 consumes those sources into the overall profile without flattening D/s authority, activity-side giving/receiving, or roles/headspaces into one concept. M9 adds editable profile identity, selective reset, versioned backup/restore, and local PNG/HTML/PDF share exports.
+M6 keeps explicit preferences, raw pairwise comparisons, quiz-derived affinity, exclusions, and provenance independent and recalculable. M7 consumes those sources into the overall profile without flattening D/s authority, activity-side giving/receiving, or roles/headspaces into one concept. M9 adds editable profile identity, selective reset, versioned backup/restore, and local PNG/HTML/PDF share exports. M11 adds independent Reward/Punishment contextual evidence without feeding it back into general kink scoring. M12 makes pairwise reranking temporal: only the active run is current evidence, while archived runs provide history and movement context.
 
-Future product work is formally scoped through M15: contextual Rewards & Punishments (M11), non-destructive ranking reruns/history (M12), a theme-driven Scene Builder (M13), independent shared-profile comparison/integration (M14), and sparse authority × activity-side contextual preference/ranking overlays (M15). M8 and M10 remain optional rather than prerequisites.
+M11 and M12 are complete. Future product work is formally scoped through M16: a theme-driven Scene Builder (M13), independent shared-profile comparison/integration (M14), sparse authority × activity-side contextual preference/ranking overlays (M15), and whole-app data/content curation with a mobile-friendly review workbench (M16). M8 and M10 remain optional rather than prerequisites.
 
 The original 16-question prototype remains available as the **Starter Profile** sampler. It is not intended to be the final scoring model.
 
@@ -55,6 +56,7 @@ Start with [docs/README.md](docs/README.md).
 - [M13 Scene Builder](docs/m13-scene-builder.md)
 - [M14 shared profiles](docs/m14-shared-profiles.md)
 - [M15 contextual activity profiles](docs/m15-contextual-activity-profiles.md)
+- [M16 data & content curation](docs/m16-data-content-curation.md)
 - [Roadmap](ROADMAP.md) — implementation milestones and current next work
 - [Reference data](reference/README.md) — repo-native source data and intended use
 
@@ -97,4 +99,4 @@ Repository setup: under **Settings → Pages**, set **Source** to **Deploy from 
 
 There is currently no backend and no required account.
 
-Authoritative profile data remains browser-local in `localStorage`: quiz progress/results, catalog preferences, pairwise ranking history, and profile settings. M9 backup/restore and share exports are generated locally. Optional cloud persistence remains deferred until there is a real product need and a defined privacy/threat model.
+Authoritative profile data remains browser-local in `localStorage`: quiz progress/results, catalog preferences, active and archived pairwise ranking runs, profile settings, and authoritative M11 Rewards & Punishments state such as contextual choices, rankings, and saved recipes. M9 backup/restore and share exports are generated locally. Optional cloud persistence remains deferred until there is a real product need and a defined privacy/threat model.
