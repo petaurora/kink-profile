@@ -1870,8 +1870,11 @@ That section is intentionally separate from M7 aggregation:
 - Reward-category affinity and Punishment-category affinity are derived from direct M11 contextual choices
 - M11 inferred proposals may be shown only as a separate **Suggested to explore** list
 - confirmed M11 items remain distinct from inference
-- contextual category preference may weight ordering inside the M11 section
-- M11 category/proposal values do not become a tenth radar facet
+- Reward rank and Punishment rank are independent M11 pairwise signals, separate from M6 general kink rank
+- Top Rewards / Top Punishments may appear when contextual pairwise evidence is sufficiently refined
+- contextual rank may order confirmed highlights when available while suitability/category affinity remain separately visible
+- contextual category preference may weight ordering when pairwise evidence is absent or sparse
+- M11 category/proposal/rank values do not become a tenth radar facet
 - M11 values do not vote on authority orientation, Headspaces, Dynamic Modes, Top Overall, Hard Limits, or Interest Areas
 - M11 inferred values do not feed back into M7 canonical signals
 
