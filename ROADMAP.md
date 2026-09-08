@@ -21,7 +21,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M8 | Optional | add quiz depth/adaptive follow-ups |
 | M9 | ✅ Complete | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
-| M11 | 🚧 In progress | contextual rewards/punishments, randomizer, and reusable builders |
+| M11 | ✅ Complete | contextual rewards/punishments, randomizer, and reusable builders |
 | M12 | 🚧 In progress | preserve This-or-That runs and show rank movement over time |
 | M13 | Planned | theme-driven, low-decision scene composition |
 | M14 | Planned | multi-profile comparison, complementary fit, and shared scene filtering |
@@ -175,7 +175,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 
 ---
 
-## M11 — Rewards & Punishments
+## M11 — Rewards & Punishments ✅
 
 **Details:** [M11 Rewards & Punishments](docs/m11-rewards-punishments.md)
 
@@ -183,11 +183,11 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 - [x] **M11.2** — direct Reward/Punishment suitability profiles
 - [x] **M11.3** — category aggregation + inferred proposals
 - [x] **M11.4** — quick sorter + engagement pacing
-- [ ] **M11.5** — independent Reward/Punishment pairwise rankings
-- [ ] **M11.6** — random reward / punishment picker
-- [ ] **M11.7** — reward + punishment builders
+- [x] **M11.5** — independent Reward/Punishment pairwise rankings
+- [x] **M11.6** — random reward / punishment picker
+- [x] **M11.7** — reward + punishment builders
 - [x] **M11.8** — recipe randomization + lifecycle integration
-- [ ] **M11.9** — overall-profile integration + UX polish
+- [x] **M11.9** — overall-profile integration + UX polish
 
 ---
 
