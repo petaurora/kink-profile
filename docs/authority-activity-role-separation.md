@@ -188,7 +188,11 @@ No generic activity-side bucket may decide which headspaces are "submissive" or 
 
 # Future extension
 
-A later model may capture **motivation / authority context** for an individual activity, for example:
+This future direction is now explicitly scoped in [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md).
+
+M15 separates **authority context** (Dominant / submissive / non-D/s) from **activity side** (giving / receiving), so combinations such as submissive + giving and Dominant + receiving can be represented directly without inferring authority from physical behavior.
+
+M15 also allows optional motivation/context annotations such as:
 
 - because I was instructed to
 - as service
