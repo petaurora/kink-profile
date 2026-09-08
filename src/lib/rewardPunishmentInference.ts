@@ -537,43 +537,28 @@ export function buildInferredContextProposal(
       : null;
 
   const configuredWeights = rewardPunishmentProposalWeights[context];
-  const components = [
-    {
-      key: "canonicalSignal" as const,
-      configuredWeight: configuredWeights.canonicalSignal,
-      component: canonicalSignal,
-    },
-    {
-      key: "category" as const,
-      configuredWeight: configuredWeights.category,
-      component: category,
-    },
-    {
-      key: "similarity" as const,
-      configuredWeight: configuredWeights.similarity,
-      component: similarity,
-    },
-    {
-      key: "generalCatalog" as const,
-      configuredWeight: configuredWeights.generalCatalog,
-      component: generalCatalog,
-    },
-  ].filter(
-    (
-      item,
-    ): item is {
-      key:
-        | "canonicalSignal"
-        | "category"
-        | "similarity"
-        | "generalCatalog";
-      configuredWeight: number;
-      component: ProposalComponent;
-    } =>
-      item.configuredWeight > 0 &&
-      item.component !== null &&
-      item.component.confidence > 0,
-  );
+  const components: {
+    configuredWeight: number;
+    component: ProposalComponent;
+  }[] = [];
+
+  const addComponent = (
+    configuredWeight: number,
+    component: ProposalComponent | null,
+  ) => {
+    if (
+      configuredWeight > 0 &&
+      component !== null &&
+      component.confidence > 0
+    ) {
+      components.push({ configuredWeight, component });
+    }
+  };
+
+  addComponent(configuredWeights.canonicalSignal, canonicalSignal);
+  addComponent(configuredWeights.category, category);
+  addComponent(configuredWeights.similarity, similarity);
+  addComponent(configuredWeights.generalCatalog, generalCatalog);
 
   if (components.length === 0) return null;
 
