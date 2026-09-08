@@ -2,7 +2,7 @@
 
 ## Status
 
-**In progress. M12.1–M12.3 are implemented; M12.4 remains.**
+**Complete. M12.1–M12.4 are implemented.**
 
 M12 extends the existing This-or-That ranking system with temporal history.
 
@@ -582,12 +582,13 @@ A future explicit share-history option can be scoped separately if useful.
 
 ## M12.4 — Profile/lifecycle integration
 
-- [ ] ensure only active-run pairwise evidence feeds current M6/M7 ranking consumers
-- [ ] ensure archived runs never inflate current coverage/confidence
-- [ ] include run history in full private backup/restore
-- [ ] delete all run history only through explicit destructive reset
-- [ ] keep history out of default share-summary exports
-- [ ] regression-test catalog exclusions and source isolation across run boundaries
+- [x] ensure only active-run pairwise evidence feeds current M6/M7 ranking consumers
+- [x] ensure archived runs never inflate current coverage/confidence
+- [x] include run history in full private backup/restore
+- [x] delete all run history only through explicit destructive reset
+- [x] keep history out of default share-summary exports
+- [x] regression-test catalog exclusions and source isolation across run boundaries
+- [x] surface current This-or-That movement context on M7 Top Overall without treating history as a scoring signal
 
 **Exit condition:** temporal ranking history works without changing quiz semantics, explicit catalog truth, or source-aware profile boundaries.
 

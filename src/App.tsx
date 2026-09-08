@@ -6,6 +6,7 @@ import {
   IconMasksTheater,
   IconTransfer,
 } from "@tabler/icons-react";
+import { RankingMovementIndicator } from "./RankingMovementIndicator";
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { KinkThisOrThat } from "./KinkThisOrThat";
 import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
@@ -75,6 +76,10 @@ import {
   catalogPreferenceLabels,
 } from "./lib/catalogResults";
 import { buildProfileTopInterests } from "./lib/profileTopInterests";
+import {
+  calculateRankingMovement,
+  getPreviousComparableRankingSnapshot,
+} from "./lib/kinkRankingMovement";
 import { buildProfileHardLimits } from "./lib/profileHardLimits";
 import { buildProfileInterestAreas } from "./lib/profileInterestAreas";
 import {
@@ -493,6 +498,8 @@ export default function App({
   const [questionIndex, setQuestionIndex] = useState(0);
   const [showAllHeadspaces, setShowAllHeadspaces] = useState(false);
   const [showAllHardLimits, setShowAllHardLimits] = useState(false);
+  const [openProfileMovementId, setOpenProfileMovementId] =
+    useState<string | null>(null);
   const [catalogDrilldown, setCatalogDrilldown] =
     useState<CatalogDrilldownTarget>(() => allCatalogDrilldown("hub"));
 
@@ -714,6 +721,15 @@ export default function App({
   const topOverallInterests = useMemo(
     () => buildProfileTopInterests(catalogResultView),
     [catalogResultView],
+  );
+
+  const previousOverallRankingSnapshot = useMemo(
+    () =>
+      getPreviousComparableRankingSnapshot(
+        catalogProfileSnapshot,
+        { type: "overall" },
+      ),
+    [catalogProfileSnapshot],
   );
 
   const profileHardLimits = useMemo(
@@ -1239,8 +1255,33 @@ export default function App({
                           </span>
                         )}
                         {item.overallRank && (
-                          <span className="profile-source-chip">
-                            This or That · #{item.overallRank.rank}
+                          <span className="profile-source-chip profile-source-chip-ranking">
+                            <span>This or That · #{item.overallRank.rank}</span>
+                            {(() => {
+                              const movement = calculateRankingMovement(
+                                {
+                                  id: item.catalogId,
+                                  rank: item.overallRank.rank,
+                                  comparisons: item.overallRank.comparisons,
+                                },
+                                previousOverallRankingSnapshot,
+                              );
+                              if (!movement) return null;
+
+                              return (
+                                <RankingMovementIndicator
+                                  movement={movement}
+                                  open={openProfileMovementId === item.catalogId}
+                                  onToggle={() =>
+                                    setOpenProfileMovementId((current) =>
+                                      current === item.catalogId
+                                        ? null
+                                        : item.catalogId,
+                                    )
+                                  }
+                                />
+                              );
+                            })()}
                           </span>
                         )}
                       </div>

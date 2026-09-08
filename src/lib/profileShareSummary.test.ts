@@ -110,4 +110,76 @@ describe("profile share summary", () => {
     expect(serialized).not.toContain("RewardPunishmentRecipe");
     expect(serialized).not.toContain("contextual comparisons");
   });
+
+
+  it("keeps M12 run history and movement metadata out of default share summaries", () => {
+    const first = kinkCatalog[0]!;
+    const second = kinkCatalog[1]!;
+    const catalogProfile = createEmptyCatalogProfileState();
+
+    catalogProfile.preferences[first.id] = {
+      overall: "love",
+      updatedAt: "2026-09-08T20:00:00.000Z",
+    };
+    catalogProfile.rankingHistory = {
+      activeRunId: "private-active-run",
+      runs: {
+        "private-archived-run": {
+          id: "private-archived-run",
+          startedAt: "2026-09-01T00:00:00.000Z",
+          archivedAt: "2026-09-07T00:00:00.000Z",
+          status: "archived",
+          algorithmVersion: 1,
+          snapshots: {
+            categories: {},
+            overall: {
+              capturedAt: "2026-09-07T00:00:00.000Z",
+              confidence: 0.8,
+              items: [
+                {
+                  catalogId: first.id,
+                  rank: 7,
+                  comparisons: 8,
+                  confidence: 1,
+                },
+              ],
+            },
+          },
+        },
+        "private-active-run": {
+          id: "private-active-run",
+          startedAt: "2026-09-07T00:00:00.000Z",
+          status: "active",
+          algorithmVersion: 1,
+        },
+      },
+    };
+    catalogProfile.comparisons.push({
+      id: "private-current-comparison",
+      runId: "private-active-run",
+      leftKinkId: first.id,
+      rightKinkId: second.id,
+      scope: { type: "overall" },
+      result: "left",
+      timestamp: "2026-09-08T20:30:00.000Z",
+    });
+
+    const serialized = JSON.stringify(
+      buildProfileShareSummary(
+        "babygirl",
+        createEmptyProfile(),
+        catalogProfile,
+        "2026-09-08T21:30:00.000Z",
+      ),
+    );
+
+    expect(serialized).not.toContain("private-archived-run");
+    expect(serialized).not.toContain("private-active-run");
+    expect(serialized).not.toContain("private-current-comparison");
+    expect(serialized).not.toContain("rankingHistory");
+    expect(serialized).not.toContain("snapshots");
+    expect(serialized).not.toContain("previousRank");
+    expect(serialized).not.toContain("previousCapturedAt");
+  });
+
 });

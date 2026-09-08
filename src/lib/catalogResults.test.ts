@@ -295,4 +295,75 @@ describe("catalog result integration", () => {
     expect(result?.overallRank).toBeUndefined();
     expect(result?.meaningfulPairwiseComparisons).toBe(0);
   });
+
+
+  it("uses only the active ranking run for current rank and confidence", () => {
+    const catalog = [item("a", "A"), item("b", "B")];
+    const profile = createEmptyCatalogProfileState("2026-09-01T00:00:00.000Z");
+    profile.rankingHistory = {
+      activeRunId: "run-2",
+      runs: {
+        "run-1": {
+          id: "run-1",
+          startedAt: "2026-09-01T00:00:00.000Z",
+          archivedAt: "2026-09-05T00:00:00.000Z",
+          status: "archived",
+          algorithmVersion: 1,
+          snapshots: {
+            categories: {},
+            overall: {
+              capturedAt: "2026-09-05T00:00:00.000Z",
+              confidence: 0.5,
+              items: [
+                { catalogId: "a", rank: 1, comparisons: 8, confidence: 1 },
+                { catalogId: "b", rank: 2, comparisons: 8, confidence: 1 },
+              ],
+            },
+          },
+        },
+        "run-2": {
+          id: "run-2",
+          startedAt: "2026-09-05T00:00:00.000Z",
+          status: "active",
+          algorithmVersion: 1,
+        },
+      },
+    };
+    profile.comparisons = [
+      {
+        ...comparison(
+          "old-1",
+          "a",
+          "b",
+          "left",
+          { type: "overall" },
+          "2026-09-02T00:00:00.000Z",
+        ),
+        runId: "run-1",
+      },
+      {
+        ...comparison(
+          "current-1",
+          "a",
+          "b",
+          "right",
+          { type: "overall" },
+          "2026-09-06T00:00:00.000Z",
+        ),
+        runId: "run-2",
+      },
+    ];
+
+    const view = buildCatalogResultView(
+      { schemaVersion: 2, quizzes: {} },
+      profile,
+      catalog,
+    );
+
+    expect(view.byCatalogId.get("b")?.overallRank?.rank).toBe(1);
+    expect(view.byCatalogId.get("a")?.overallRank?.rank).toBe(2);
+    expect(view.byCatalogId.get("a")?.overallRank?.comparisons).toBe(1);
+    expect(view.byCatalogId.get("b")?.overallRank?.comparisons).toBe(1);
+  });
+
 });

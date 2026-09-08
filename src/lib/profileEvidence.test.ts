@@ -637,4 +637,66 @@ describe("current app integration", () => {
     );
     expect(catalogProfile.preferences).toEqual({});
   });
+
+
+  it("keeps archived This-or-That evidence out of current profile signal projection", () => {
+    const profile = createEmptyCatalogProfileState("2026-09-01T00:00:00.000Z");
+    profile.rankingHistory = {
+      activeRunId: "run-current",
+      runs: {
+        "run-old": {
+          id: "run-old",
+          startedAt: "2026-09-01T00:00:00.000Z",
+          archivedAt: "2026-09-05T00:00:00.000Z",
+          status: "archived",
+          algorithmVersion: 1,
+          snapshots: { categories: {} },
+        },
+        "run-current": {
+          id: "run-current",
+          startedAt: "2026-09-05T00:00:00.000Z",
+          status: "active",
+          algorithmVersion: 1,
+        },
+      },
+    };
+    profile.comparisons = [
+      {
+        id: "old-comparison",
+        runId: "run-old",
+        leftKinkId: "item-a",
+        rightKinkId: "item-b",
+        scope: { type: "overall" },
+        result: "left",
+        timestamp: "2026-09-02T00:00:00.000Z",
+      },
+      {
+        id: "current-comparison",
+        runId: "run-current",
+        leftKinkId: "item-a",
+        rightKinkId: "item-b",
+        scope: { type: "overall" },
+        result: "right",
+        timestamp: "2026-09-06T00:00:00.000Z",
+      },
+    ];
+
+    const projections = projectDirectCatalogEvidenceToSignals(profile, [
+      receivingControlItem,
+      {
+        id: "item-b",
+        signalMappings: [{ signalId: "structure" as const, weight: 1 }],
+      },
+    ]);
+
+    const pairwise = projections.filter(
+      (projection) => projection.kind === "pairwise_catalog_signal_projection",
+    );
+
+    expect(pairwise).toHaveLength(1);
+    expect(pairwise[0]?.sourceEvidenceId).toBe(
+      "catalog-pairwise:current-comparison",
+    );
+  });
+
 });

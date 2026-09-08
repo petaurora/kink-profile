@@ -351,4 +351,98 @@ describe("profile backup import", () => {
     );
     expect(after.profile).toEqual(before.profile);
   });
+
+
+  it("restores M12 active/archived run identity and historical snapshots exactly", () => {
+    const source = new MemoryStorage();
+    seedProfile(source, "history-source");
+
+    saveCatalogProfile(
+      {
+        schemaVersion: 1,
+        preferences: {},
+        comparisons: [
+          {
+            id: "history-old",
+            runId: "run-old",
+            leftKinkId: "rope",
+            rightKinkId: "cuffs",
+            scope: { type: "overall" },
+            result: "left",
+            timestamp: "2026-09-01T00:00:00.000Z",
+          },
+          {
+            id: "history-active",
+            runId: "run-current",
+            leftKinkId: "rope",
+            rightKinkId: "cuffs",
+            scope: { type: "overall" },
+            result: "right",
+            timestamp: "2026-09-08T00:00:00.000Z",
+          },
+        ],
+        rankingHistory: {
+          activeRunId: "run-current",
+          runs: {
+            "run-old": {
+              id: "run-old",
+              startedAt: "2026-09-01T00:00:00.000Z",
+              archivedAt: "2026-09-07T00:00:00.000Z",
+              status: "archived",
+              algorithmVersion: 1,
+              snapshots: {
+                categories: {},
+                overall: {
+                  capturedAt: "2026-09-07T00:00:00.000Z",
+                  confidence: 0.6,
+                  items: [
+                    {
+                      catalogId: "rope",
+                      rank: 3,
+                      comparisons: 6,
+                      confidence: 0.75,
+                    },
+                  ],
+                },
+              },
+            },
+            "run-current": {
+              id: "run-current",
+              startedAt: "2026-09-07T00:00:00.000Z",
+              status: "active",
+              algorithmVersion: 1,
+            },
+          },
+        },
+      },
+      source,
+    );
+
+    const backup = createProfileBackup(
+      source,
+      "2026-09-08T21:30:00.000Z",
+    );
+    const parsed = parseProfileBackupJson(
+      serializeProfileBackup(backup),
+    );
+    expect(parsed.ok).toBe(true);
+
+    const destination = new MemoryStorage();
+    seedProfile(destination, "destination");
+
+    if (!parsed.ok) throw new Error("expected valid backup");
+    restoreProfileBackup(parsed.backup, destination);
+
+    expect(loadCatalogProfile(destination)).toEqual(
+      backup.profile.catalog,
+    );
+    expect(
+      loadCatalogProfile(destination).rankingHistory?.runs["run-old"].snapshots?.overall?.items[0],
+    ).toMatchObject({
+      catalogId: "rope",
+      rank: 3,
+      comparisons: 6,
+    });
+  });
+
 });

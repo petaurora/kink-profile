@@ -22,7 +22,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M9 | ✅ Complete | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
 | M11 | ✅ Complete | contextual rewards/punishments, randomizer, and reusable builders |
-| M12 | 🚧 In progress | preserve This-or-That runs and show rank movement over time |
+| M12 | ✅ Complete | preserve This-or-That runs and show rank movement over time |
 | M13 | Planned | theme-driven, low-decision scene composition |
 | M14 | Planned | multi-profile comparison, complementary fit, and shared scene filtering |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
@@ -201,7 +201,8 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 - [x] start each new run with fresh pairwise scoring
 - [x] use only the active run as current M6/M7 pairwise evidence
 - [x] **M12.3** — show movement + previous rank against the prior comparable run
-- [ ] preserve run history through backup/restore while keeping destructive reset separate
+- [x] **M12.4** — Overall Profile movement context + lifecycle/privacy hardening
+- [x] preserve run history through backup/restore while keeping destructive reset separate
 
 ---
 

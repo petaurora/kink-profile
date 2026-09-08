@@ -234,4 +234,92 @@ describe("profile backup export", () => {
       "kitty-pet-kink-profile-2026-09-06.json",
     );
   });
+
+
+  it("includes complete M12 ranking run history and archived snapshots in private backup", () => {
+    const storage = seededStorage();
+    saveCatalogProfile(
+      {
+        schemaVersion: 1,
+        preferences: {},
+        comparisons: [
+          {
+            id: "old-cmp",
+            runId: "run-1",
+            leftKinkId: "rope",
+            rightKinkId: "cuffs",
+            scope: { type: "overall" },
+            result: "left",
+            timestamp: "2026-09-01T00:00:00.000Z",
+          },
+          {
+            id: "current-cmp",
+            runId: "run-2",
+            leftKinkId: "rope",
+            rightKinkId: "cuffs",
+            scope: { type: "overall" },
+            result: "right",
+            timestamp: "2026-09-06T00:00:00.000Z",
+          },
+        ],
+        rankingHistory: {
+          activeRunId: "run-2",
+          runs: {
+            "run-1": {
+              id: "run-1",
+              startedAt: "2026-09-01T00:00:00.000Z",
+              archivedAt: "2026-09-05T00:00:00.000Z",
+              status: "archived",
+              algorithmVersion: 1,
+              snapshots: {
+                categories: {},
+                overall: {
+                  capturedAt: "2026-09-05T00:00:00.000Z",
+                  confidence: 0.5,
+                  items: [
+                    {
+                      catalogId: "rope",
+                      rank: 1,
+                      comparisons: 4,
+                      confidence: 0.5,
+                    },
+                  ],
+                },
+              },
+            },
+            "run-2": {
+              id: "run-2",
+              startedAt: "2026-09-05T00:00:00.000Z",
+              status: "active",
+              algorithmVersion: 1,
+            },
+          },
+        },
+      },
+      storage,
+    );
+
+    const backup = createProfileBackup(
+      storage,
+      "2026-09-08T21:30:00.000Z",
+    );
+
+    expect(backup.profile.catalog.rankingHistory?.activeRunId).toBe("run-2");
+    expect(backup.profile.catalog.rankingHistory?.runs["run-1"]).toMatchObject({
+      status: "archived",
+      archivedAt: "2026-09-05T00:00:00.000Z",
+    });
+    expect(
+      backup.profile.catalog.rankingHistory?.runs["run-1"].snapshots?.overall?.items[0],
+    ).toMatchObject({
+      catalogId: "rope",
+      rank: 1,
+      comparisons: 4,
+    });
+    expect(backup.profile.catalog.comparisons.map((item) => item.runId)).toEqual([
+      "run-1",
+      "run-2",
+    ]);
+  });
+
 });
