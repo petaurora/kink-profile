@@ -59,7 +59,7 @@ This folder contains the product and scoring decisions that should guide impleme
     The planned sparse authority × activity-side contract: context-specific preferences, rankings, contextual profile lenses, motivation annotations, and M11/M12/M13/M14 integration without treating giving/receiving as authority.
 
 19. [Roadmap](../ROADMAP.md)  
-    What is already implemented and what should be built next.
+    Compact milestone status + slice checklists showing what is complete and what can be built next. Detailed milestone behavior belongs in the linked docs.
 
 20. [Reference Data](../reference/README.md)  
     How the expanded kink catalog and rewards/punishments source bank should be used without turning them into giant questionnaires.
@@ -93,6 +93,8 @@ This folder contains the product and scoring decisions that should guide impleme
 ## Documentation rule
 
 Avoid duplicating detailed decisions across files.
+
+The roadmap is deliberately compact: keep milestone/slice status there, and keep implementation rules, acceptance criteria, semantic decisions, and deeper design notes in the appropriate detailed document.
 
 If a scoring rule changes, update the scoring model and link to it elsewhere.  
 If milestone order changes, update the roadmap.  

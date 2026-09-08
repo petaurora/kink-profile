@@ -2,7 +2,7 @@
 
 Fast vertical slices, minimal ceremony.
 
-The goal is to keep the project organized without turning a fun side project into enterprise program management.
+This file is intentionally a **status map + milestone checklist**. Detailed product rules, data contracts, scoring semantics, and acceptance criteria belong in the linked milestone/design docs rather than being duplicated here.
 
 ---
 
@@ -23,7 +23,7 @@ The goal is to keep the project organized without turning a fun side project int
 | M10 | Optional | cloud persistence |
 | M11 | Planned | contextual rewards/punishments, randomizer, and reusable builders |
 | M12 | Scoped | preserve This-or-That runs and show rank movement over time |
-| M13 | Planned | turn profile context into theme-driven, low-decision scene composition |
+| M13 | Planned | theme-driven, low-decision scene composition |
 | M14 | Planned | multi-profile comparison, complementary fit, and shared scene filtering |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
 
@@ -31,1129 +31,218 @@ The goal is to keep the project organized without turning a fun side project int
 
 ## M0 — Prototype ✅
 
-**Status:** complete
+**Goal:** prove the basic experience.
 
-Prove the basic experience.
-
-- [x] React + TypeScript + Vite
-- [x] GitHub Pages deployment
-- [x] GitHub CI
-- [x] simple questionnaire
+- [x] React + TypeScript + Vite app
+- [x] simple questionnaire + ranked results + radar
 - [x] browser-local autosave
-- [x] ranked percentage results
-- [x] radar/spider chart
-- [x] responsive layout
+- [x] responsive UI
+- [x] GitHub CI + Pages deployment
 
-The M0 scoring model is intentionally simplistic and remains only in the Starter Profile sampler.
+The original M0 scorer remains only as the Starter Profile sampler.
 
 ---
 
 ## M1 — Quiz Hub + Multi-Quiz Architecture ✅
 
-**Status:** complete
+**Goal:** make quizzes independent, resumable modules rather than one monolithic assessment.
 
-Turn the single prototype into a reusable quiz platform.
-
-### Product
-
-- [x] quiz hub showing independent sections
-- [x] not started / in progress / complete / coming soon states
-- [x] resume partially completed quizzes
-- [x] reopen results for completed quizzes
-- [x] overall-profile shell that treats unexplored sections as unknown
-- [x] preserve the original questionnaire as a Starter Profile sampler
-
-### Technical
-
-- [x] introduce `QuizDefinition`
-- [x] separate quiz definitions from question data
-- [x] version browser-local profile storage
-- [x] migrate the original prototype storage shape
-- [x] persist progress/completion per quiz
-- [x] make results section-aware
-
-### Core section definitions
-
-- [x] Bondage & Discipline
-- [x] Dominance & Submission
-- [x] Sadism & Masochism
-- [x] Roles & Headspaces
-
-**Exit condition:** the app can host multiple quizzes even while only the Starter Profile has a real question bank. ✅
+- [x] reusable quiz-definition architecture
+- [x] independent progress/completion/results per quiz
+- [x] versioned browser-local profile storage + migration
+- [x] quiz hub with not-started / in-progress / complete states
+- [x] overall-profile shell that preserves unexplored sections as unknown
 
 ---
 
 ## M2 — Dominance & Submission Quiz ✅
 
-**Goal:** build the first real section using the signal-weighted model in [docs/scoring-model.md](docs/scoring-model.md).
+**Details:** [M2 D/s Contract](docs/m2-ds-design.md) · [Scoring Model](docs/scoring-model.md)
 
-Why D/s first: it exposes the distinction between activity, power exchange, and headspace better than the prototype questionnaire.
-
-### Design
-
-- [x] lock nine independent D/s signal definitions
-- [x] draft an 18-question standard bank
-- [x] define the initial weight matrix
-- [x] define scoring/coverage and result boundaries
-- [x] explicitly defer forced role labels, headspace scoring, and catalog inference
-
-See [docs/m2-ds-design.md](docs/m2-ds-design.md).
-
-### Initial signals
-
-- [x] receiving control
-- [x] giving control
-- [x] responsibility transfer
-- [x] service
-- [x] obedience
-- [x] structure
-- [x] ownership symbolism
-- [x] praise / approval
-- [x] autonomy
-
-### Questionnaire
-
-- [x] define the M2 signal vocabulary in code/config
-- [x] encode the reviewed 18-question standard bank
-- [x] measure important signals with multiple prompts
-- [x] allow a question to contribute to multiple signals
-- [x] avoid direct label/self-identification questions where possible
-- [x] calculate score coverage internally
-
-### Results
-
-- [x] ranked D/s signal results
-- [x] D/s radar chart
-- [x] short descriptive result copy
-- [x] distinguish unknown/low-coverage data from low interest
-
-**Exit condition:** results reveal underlying D/s preferences rather than merely repeating direct answers.
+- [x] lock D/s signal vocabulary
+- [x] build weighted 18-question bank
+- [x] calculate score + coverage independently
+- [x] render ranked results + D/s radar
+- [x] preserve unknown separately from low interest
 
 ---
 
 ## M3 — Roles & Headspaces ✅
 
-**Goal:** identify recognizable roles/headspaces while preserving the underlying psychological modes that explain why they resonate.
+**Details:** [M3 Roles & Headspaces Contract](docs/m3-headspaces-direction.md) · [Authority / Activity / Role Semantics](docs/authority-activity-role-separation.md)
 
-See [docs/m3-headspaces-direction.md](docs/m3-headspaces-direction.md) for the implemented v3 contract.
-
-### Taxonomy
-
-- [x] separate reusable signals from composed results
-- [x] separate **dynamic modes** from actual **roles/headspaces**
-- [x] keep roles/headspaces overlapping rather than mutually exclusive
-- [x] represent both receiving-side and giving-side roles
-- [x] keep M3 independently completable without requiring M2
-- [x] defer cross-quiz evidence merging to M7
-
-### Implemented roles / headspaces
-
-- [x] Pet
-- [x] Slave
-- [x] Little
-- [x] Middle
-- [x] Brat
-- [x] Prey
-- [x] Service Submissive
-- [x] Devotional Submissive
-- [x] Property / Object
-- [x] Owner / Handler
-- [x] Caregiver
-- [x] Brat Tamer
-- [x] Predator
-- [x] Trainer
-- [x] Master / Mistress
-
-### Explanatory dynamic modes
-
-- [x] Nurtured Play
-- [x] Devotion
-- [x] Service
-- [x] Protocol
-- [x] Surrender
-- [x] Playful Resistance
-- [x] Objectification
-- [x] Caretaking
-- [x] Authority
-- [x] Claiming
-- [x] Training / Shaping
-- [x] Primal / Feral
-
-### Work
-
-- [x] generalize D/s-specific signals into shared signal primitives
-- [x] add M3-specific role/headspace signals
-- [x] add younger-headspace evidence for Little/Middle
-- [x] add directional primal/pursuit evidence for Prey/Predator
-- [x] encode the 32-question M3 v3 bank
-- [x] calculate signal coverage
-- [x] calculate role/headspace composition + coverage
-- [x] calculate dynamic-mode composition + coverage
-- [x] render roles/headspaces as primary ranked results
-- [x] split self-positioned and partner-positioned headspace radars without treating the display groups as D/s orientation
-- [x] add an underlying dynamic-modes radar
-- [x] render dynamic modes as explanatory ranked results
-- [x] version the expanded M3 taxonomy as quiz version 3
-
-**Exit condition:** the app reports recognizable roles/headspaces such as Pet, Slave, Little, Middle, Brat, Prey, and Predator while using Surrender, Protocol, Claiming, and similar concepts as explanatory dynamic modes rather than mislabeled identities.
+- [x] separate signals, dynamic modes, and recognizable roles/headspaces
+- [x] support overlapping receiving-side and giving-side roles
+- [x] build the M3 v3 question bank
+- [x] render ranked Headspaces + Dynamic Modes
+- [x] keep role/headspace results separate from D/s authority orientation
 
 ---
 
 ## M4 — Bondage & Discipline ✅
 
-**Goal:** model physical restraint and structural discipline without conflating direction, restraint, protocol, accountability, or pain.
+**Details:** [M4 Bondage & Discipline Contract](docs/m4-bd-design.md)
 
-See [docs/m4-bd-design.md](docs/m4-bd-design.md) for the implemented contract.
-
-### Design direction
-
-- [x] separate Receiving Restraint from Giving Restraint
-- [x] separate Receiving Positioning from Giving Positioning
-- [x] separate Receiving Discipline from Giving Discipline
-- [x] distinguish physical restraint from Control Through Constraint
-- [x] keep Challenge / Escape independent from general restraint affinity
-- [x] explicitly keep pain/S&M signals out of M4
-- [x] keep direct gear/item preferences in M6 rather than the questionnaire
-- [x] draft a 26-question weighted bank
-- [x] define Bondage / Physical Control radar axes
-- [x] define Discipline / Structural Control radar axes
-- [x] review/approve the M4 design before implementation
-
-### Implemented signals
-
-- [x] receiving_restraint
-- [x] giving_restraint
-- [x] movement_restriction
-- [x] receiving_positioning
-- [x] giving_positioning
-- [x] receiving_constraint_control
-- [x] giving_constraint_control
-- [x] receiving_discipline
-- [x] giving_discipline
-- [x] accountability
-- [x] anticipation
-- [x] challenge_escape
-
-### Implementation
-
-- [x] add approved M4 signal IDs/definitions to shared config
-- [x] encode the approved M4 question bank and weights
-- [x] enable Bondage & Discipline in the quiz hub
-- [x] calculate M4 signal scores + coverage
-- [x] render unified ranked M4 results
-- [x] render Bondage / Physical Control radar
-- [x] render Discipline / Structural Control radar
-- [x] preserve M2/M3 section-local results
-- [x] keep M5 pain signals and M6 catalog inference out
-
-**Exit condition:** two users can have similarly high general B&D interest but visibly different profiles across restraint direction, positioning, constraint control, discipline, accountability, ritual/structure, anticipation, and challenge/escape.
+- [x] model restraint, positioning, constraint control, discipline, accountability, anticipation, and challenge separately
+- [x] preserve receiving/giving direction
+- [x] build weighted M4 question bank
+- [x] render B&D ranked results + radars
+- [x] keep pain and specific-item preference out of M4 scoring
 
 ---
 
 ## M5 — Sadism & Masochism ✅
 
-**Goal:** model consensual pain, physical intensity, endurance, challenge, anticipation, and emotional intensity without collapsing them into one S/M score.
+**Details:** [M5 Sadism & Masochism Contract](docs/m5-sm-design.md)
 
-See [docs/m5-sm-design.md](docs/m5-sm-design.md) for the implemented contract.
-
-### Design direction
-
-- [x] separate Pain Receiving from Pain Giving
-- [x] separate Receiving Intensity from Giving Intensity
-- [x] distinguish Pain from general Physical Intensity
-- [x] distinguish Endurance from Intensity
-- [x] distinguish Challenge from Intensity/Endurance
-- [x] make Endurance directional
-- [x] make Challenge directional
-- [x] reuse shared Anticipation where semantics match
-- [x] add Emotional Intensity as an independent signal
-- [x] explicitly keep Discipline and Restraint out of M5 scoring
-- [x] keep specific techniques/items in M6 rather than the questionnaire
-- [x] draft a 26-question weighted bank
-- [x] define Receiving / Masochistic radar axes
-- [x] define Giving / Sadistic radar axes
-- [x] review/approve the M5 design before implementation
-
-### Implemented signals
-
-- [x] pain_receiving
-- [x] pain_giving
-- [x] receiving_intensity
-- [x] giving_intensity
-- [x] receiving_endurance
-- [x] giving_endurance
-- [x] receiving_challenge
-- [x] giving_challenge
-- [x] emotional_intensity
-
-### Reused shared signal
-
-- [x] anticipation
-
-### Implementation
-
-- [x] add approved M5 signal IDs/definitions to shared config
-- [x] encode the approved 26-question M5 bank and weights
-- [x] enable Sadism & Masochism in the quiz hub
-- [x] calculate M5 signal scores + coverage
-- [x] render unified ranked M5 results
-- [x] render Receiving / Masochistic radar
-- [x] render Giving / Sadistic radar
-- [x] preserve M2–M4 section-local results
-- [x] keep M6 catalog inference out
-- [x] avoid forced Sadist/Masochist identity labels
-
-**Exit condition:** two users can have similarly high general S/M interest but visibly different profiles across pain, physical intensity, endurance, challenge, anticipation, emotional intensity, and receiving/giving direction.
+- [x] model pain, physical intensity, endurance, challenge, anticipation, and emotional intensity separately
+- [x] preserve receiving/giving direction
+- [x] build weighted M5 question bank
+- [x] render S/M ranked results + radars
+- [x] keep restraint/discipline and specific-item preference out of M5 scoring
 
 ---
 
 ## M6 — Catalog Integration ✅
 
-**Goal:** turn the existing 551-item runtime catalog + This-or-That flow into a durable, profile-aware catalog system without turning catalog rows into quiz questions.
+**Details:** [M6 Catalog Integration](docs/m6-catalog-integration.md) · [C3 Explicit Preference](docs/m6-c3-explicit-preference.md) · [This-or-That Ranking](docs/kink-this-or-that-ranking.md) · [Profile Evidence Architecture](docs/profile-evidence-architecture.md)
 
-See [docs/m6-catalog-integration.md](docs/m6-catalog-integration.md) for the M6 contract and [docs/kink-this-or-that-ranking.md](docs/kink-this-or-that-ranking.md) for pairwise-ranking behavior.
-
-### Imported pre-migration baseline
-
-The repository migration imported the already-working catalog/ranking baseline into the new `kink-profile` history. Old pull-request numbers are intentionally not used as implementation references here.
-
-The checklist below records the imported behavior **as it existed at migration time**. C3–C5 subsequently changed eligibility, meaningful-evidence confidence, finalist promotion, and Overall-candidate continuity without rewriting this historical baseline.
-
-- [x] export the workbook into repo-native TSV reference data
-- [x] make `reference/catalog/kink-catalog.tsv` the runtime catalog source
-- [x] generate app-owned runtime catalog data before dev/build
-- [x] remove runtime XLSX dependency
-- [x] expose categories + basic role/mode/intensity/risk metadata
-- [x] persist raw pairwise comparisons
-- [x] rank within categories
-- [x] exclude untouched categories from the Overall finalist pool
-- [x] advance the current Top 5 from ranked categories
-- [x] cross-rank current finalists
-- [x] Quick / Standard / Deep Dive / Gremlin sessions
-- [x] category progress-map home
-- [x] continue-where-you-left-off + next-category navigation
-- [x] separate Overall destination from the category home
-- [x] category + overall ranking views
-- [x] link ranking from the main hub
-
-### C1 — Durable catalog identity ✅
-
-- [x] add explicit stable Catalog IDs to source data
-- [x] add explicit stable Category IDs
-- [x] seed IDs from the exact IDs generated by pre-C1 `main`
-- [x] update generator validation for missing/duplicate IDs
-- [x] validate category ID/label consistency
-- [x] preserve existing comparison compatibility
-- [x] define validated ID-replacement migration support for merged/deprecated items
-
-### C2 — Metadata + signal mappings ✅
-
-- [x] add category metadata for all 35 stable Category IDs
-- [x] define broad domains + display order
-- [x] normalize receiving / giving / both direction
-- [x] add explicit alias source
-- [x] add category-default + item-specific Catalog → SignalId mappings
-- [x] validate mapping scopes / IDs / direction / SignalIds / controlled weights at build time
-- [x] emit domains / direction / aliases / resolved mappings into generated runtime catalog
-- [x] keep risk/context metadata separate from affinity scoring
-- [x] preserve the pre-migration seeded mapping layer: 93 source rules, 269 / 551 mapped items, 698 resolved item → signal associations
-
-### C3 — Explicit preference + catalog table ✅
-
-See [docs/m6-c3-explicit-preference.md](docs/m6-c3-explicit-preference.md) for the revised table-first explicit-preference model and the This-or-That mini-game boundary.
-
-- [x] define the canonical seven-state runtime enum
-- [x] represent unanswered by absence rather than a fake "unknown" state
-- [x] store optional `overall`, `receiving`, and `giving` values per Catalog ID
-- [x] resolve directional state as direction override → overall → unanswered
-- [x] never synthesize a generic overall state from directional overrides
-- [x] create `pet-profile-catalog-v1` as the logical catalog-profile store
-- [x] migrate raw comparisons from `pet-profile-kink-ranking-v1` without losing IDs, timestamps, scopes, or results
-- [x] keep the old ranking key readable/untouched for the migration window; do not dual-write
-- [x] add a first-class catalog/preferences destination separate from This-or-That
-- [x] search by canonical label + aliases
-- [x] filter by category + explicit state + unanswered
-- [x] order/group using category display order + item label
-- [x] provide responsive desktop table / mobile stacked rows
-- [x] edit the general/overall explicit state directly from each catalog row
-- [x] expose expandable item description/metadata without making the default row noisy
-- [x] surface read-only category/overall ranking context by the same Catalog ID where available
-- [x] keep This-or-That focused on pairwise ranking; do not embed explicit-preference controls in comparison cards
-- [x] keep pairwise choices independent from explicit-state edits
-- [x] make Hard Limit visually distinct from ordinary disinterest
-- [x] immediately exclude Hard Limit / Not Interested / Not Applicable items from new pair selection
-- [x] preserve Love / Like / Curious / Unsure / unanswered as ranking-eligible
-- [x] handle scopes with fewer than two eligible items without rendering a dead/blank ranking state
-- [x] add focused preference/storage/migration/eligibility tests
-
-C3 owns explicit-state semantics, persistence, the catalog-table management surface, migration, and the minimum eligibility behavior required to make exclusions authoritative. C4 now builds source-aware derived evidence around those durable outputs without replacing them.
-
-See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.md) for the source-aware profile contract.
-
-### C4 — Source-aware evidence convergence ✅
-
-- [x] define source-aware evidence identities for quiz, explicit catalog, pairwise, and derived inference
-- [x] treat C3 explicit state + raw comparisons as independent evidence sources
-- [x] expose a derived per-Catalog-ID evidence snapshot without collapsing source values
-- [x] centralize coverage-aware quiz-signal → catalog inference using the existing C2 mappings
-- [x] never persist quiz-derived catalog inference as explicit preference
-- [x] retain matched SignalIds/provenance for inferred affinity
-- [x] define catalog → signal projection semantics for independent explicit/pairwise evidence
-- [x] prohibit inferred catalog affinity from feeding back into signals
-- [x] define quiz-retake source replacement/deduplication semantics
-- [x] recompute derived catalog/profile views when quiz, explicit, or pairwise evidence changes
-- [x] keep affinity separate from confidence/coverage
-- [x] add source-isolation + no-feedback-loop tests
-- [x] preserve explicit exclusion authority when direct and inferred evidence conflict
-- [x] leave final cross-source signal aggregation/radar UI to M7
-
-**C4 exit condition:** quiz-derived inference, explicit preference, and pairwise evidence can coexist for the same Catalog ID; changing one preserves the others; derived values are recomputable; and circular evidence is impossible by construction.
-
-### C5 — Ranking hardening ✅
-
-- [x] stop Skip from inflating ranking confidence
-- [x] stop Neither from inflating ordering confidence
-- [x] decide whether one category comparison is sufficient for Top-5 promotion
-- [x] preserve prior Overall participants/history when a category Top 5 shifts
-- [x] add focused ranking tests
-
-### C6 — Catalog result integration ✅
-
-**Boundary:** surface explicit, pairwise, inferred, and exclusion channels together without synthesizing a new merged profile score/list. Presentation-level aggregation across independent direct sources remains M7.
-
-- [x] show explicit state alongside category rankings
-- [x] show explicit state alongside overall favorites
-- [x] expose hard-limit/exclusion summaries separately from favorites
-- [x] show inferred starting affinity separately from direct preference/ranking evidence
-- [x] keep source provenance/explainability available for catalog items
-- [x] keep exact ranks derived from raw comparison history where practical
-- [x] preserve category and overall ranking as separate useful results
-- [x] do not collapse explicit + pairwise evidence into an M7-style Top Overall aggregate
-
-### C7 — Signal-affinity hardening ✅
-
-**Inherited baseline from C4/C6:** inferred affinity is already visibly distinct from explicit preference/pairwise rank; matched SignalId + quiz provenance is already retained; and catalog → signal projection already accepts independent direct catalog evidence only.
-
-C7 hardens recommendation behavior around that existing model:
-
-- [x] harden the pure coverage-aware catalog affinity matcher introduced/centralized in C4
-- [x] add synthetic mapping / partial-coverage / unmapped-item edge-case tests
-- [x] suppress hard limit / not interested / not applicable items from recommendation candidates while keeping derived evidence inspectable
-- [x] use tentative "may be worth exploring" language for inference-only recommendations
-- [x] preserve matched-signal + quiz provenance through recommendation filtering/suppression
-- [x] regression-test the direct-evidence-only catalog → signal boundary and no-feedback-loop guarantee
-- [x] defer canonical cross-source signal input + profile-wide radar/recommendation UI to M7
-
-**Exit condition:** catalog definitions have durable identity; explicit state, relative ranking, and inferred affinity remain separate; ranking history survives normal catalog evolution; exclusions are authoritative; catalog items have validated SignalId mappings; and M7 can consume clean catalog favorites/mappings without understanding TSV/ranking internals.
+- [x] **C1** — durable catalog/category identity
+- [x] **C2** — metadata + catalog → signal mappings
+- [x] **C3** — explicit preference store + editable catalog
+- [x] **C4** — source-aware evidence convergence
+- [x] **C5** — This-or-That ranking hardening
+- [x] **C6** — catalog result integration
+- [x] **C7** — signal-affinity/recommendation hardening
 
 ---
 
 ## M7 — Full Overall Profile ✅
 
-**Goal:** turn the independent section + catalog evidence built through M6 into one coherent, source-aware profile.
+**Details:** [Overall Profile Aggregation](docs/overall-profile-aggregation.md) · [Profile Evidence Architecture](docs/profile-evidence-architecture.md)
 
-M1 provides the navigation/progress shell. M7 adds real cross-source aggregation and presentation.
-
-See [docs/profile-evidence-architecture.md](docs/profile-evidence-architecture.md) for the source-aware evidence contract and [docs/overall-profile-aggregation.md](docs/overall-profile-aggregation.md) for the detailed M7 implementation contract.
-
-### Implementation strategy
-
-M7 is intentionally split into **small, independently testable and mergeable slices**.
-
-Do not build the whole profile in one branch. Complete, test, and merge each slice before beginning the next one so data/math problems can be isolated from presentation problems.
-
-Conceptual progression:
-
-```text
-raw source evidence
-        ↓
-canonical signals
-        ↓
-overall facets
-        ↓
-profile presentation
-        ↓
-catalog summaries + drill-down
-        ↓
-explainability / polish
-```
-
-The previous O1–O6 grouping remains useful as a conceptual map:
-
-- **O1 → M7.1**
-- **O2 → M7.2**
-- **O3 → M7.3–M7.4**
-- **O4 → M7.5**
-- **O5 → M7.6–M7.9**
-- **O6 → M7.10–M7.11**
-
-### M7.1 — Canonical cross-source aggregation + inspection ✅
-
-**Purpose:** make the profile math inspectable before building presentation on top of it.
-
-- [x] consume independent quiz, explicit-catalog, and pairwise-catalog evidence
-- [x] merge repeated SignalIds without semantic double-counting
-- [x] define deterministic source weighting/deduplication rules
-- [x] preserve score separately from coverage/evidence strength
-- [x] preserve source traceability for every canonical signal
-- [x] replace only the affected quiz contribution on retake
-- [x] preserve manual catalog + ranking evidence across quiz retakes
-- [x] exclude inferred catalog affinity/resolved views from signal input
-- [x] add deterministic aggregation tests
-- [x] validate canonical signal score, coverage, and per-source contributions through the temporary inspection surface; remove that surface in M7.10/M7.11
-
-**Exit condition:** canonical SignalIds can be inspected and trusted independently of the final profile UI. ✅
-
-### M7.2 — Overall facet model ✅
-
-**Purpose:** turn canonical signals into broad profile themes.
-
-- [x] lock the nine-facet vocabulary without merging distinct concepts for visualization convenience
-- [x] lock facet composition weights in `src/data/overallFacets.ts`
-- [x] calculate facet affinity + coverage from canonical signals
-- [x] preserve unknown evidence as unknown rather than 0%
-- [x] preserve receiving/giving metadata for directional facets
-- [x] retain source provenance through contributing components
-- [x] add deterministic composition tests
-- [x] validate real-data facet composition through the temporary facet inspection surface; remove that surface in M7.10/M7.11
-
-**Locked facets:** Power Exchange; Structure & Protocol; Ownership & Belonging; Service & Devotion; Care & Nurture; Play & Resistance; Primal & Instinctive; Restraint & Physical Control; Intensity & Pain.
-
-**Exit condition:** broad profile facets are stable enough to present without depending on final profile UI. ✅
-
-### M7.3 — Profile header ✅
-
-**Purpose:** answer "what are the biggest things about this profile?" before showing detail.
-
-- [x] add concise human-readable strongest-theme summary
-- [x] add compact Orientation trait
-- [x] derive D/s orientation from authority-specific D/s evidence rather than generic activity direction
-- [x] keep pain/restraint/discipline/care/pursuit side preferences out of D/s classification
-- [x] keep delegated responsibility-holding neutral to Dominant/Submissive orientation
-- [x] add compact Headspaces traits without authority-direction buckets
-- [x] add compact Dynamic Modes traits
-- [x] present Submissive / Dominant / Dominant + submissive / Context-dependent / Still emerging
-- [x] suppress low-evidence composed labels rather than overclaim them
-- [x] avoid declaring one identity as the user's single result
-- [x] keep completion/progress mechanics out of the profile header
-- [x] test authority, activity-side, sparse, and partial profile cases
-
-**Exit condition:** the header provides a useful standalone summary while keeping authority separate from activity side. ✅
-
-### M7.4 — Overall radar ✅
-
-**Purpose:** visualize the broad M7 facet model.
-
-- [x] render all nine locked broad facets without merging distinct concepts
-- [x] keep unknown axes unscored rather than drawing artificial zero-interest values
-- [x] qualify sparse-but-known axes as limited evidence
-- [x] keep true known 0% distinct from unknown
-- [x] render incomplete profiles as open known-value runs rather than a fabricated closed polygon
-- [x] show the M7.3 strongest-theme summary beneath the radar
-- [x] retain directional metadata for future dominant/submissive radar modes
-- [x] add interactive axis/theme drill-down, finalized as M7.10 user-facing theme explainability
-- [x] add deterministic full/partial/sparse radar tests
-
-**Exit condition:** the overall radar accurately reflects M7.2 facets and incomplete-profile behavior. ✅
-
-### M7.5 — Headspaces + Dynamic Modes ✅
-
-**Purpose:** add recognizable profile language beneath the broad facets.
-
-- [x] show compact top 5 Headspaces across the full role/headspace set
-- [x] add Show all / Show less for the full known ranked Headspace list
-- [x] show top 5 strongest Dynamic Modes with percentages
-- [x] preserve independent overlapping scores
-- [x] keep role/headspace ranking orthogonal to Dominant/Submissive orientation
-- [x] allow Caregiver / Predator / Trainer / etc. to surface without treating them as dominant
-- [x] suppress very sparse composed labels rather than overclaim them
-- [x] qualify limited-but-usable evidence
-- [x] add deterministic overlap/ranking/coverage/semantic-boundary tests
-
-**Exit condition:** Headspaces and Dynamic Modes add recognizable detail without redefining authority orientation. ✅
-
-### M7.6 — Top Overall catalog interests ✅
-
-**Purpose:** make the abstract profile concrete using the user's strongest directly evidenced catalog interests.
-
-- [x] derive Top 10 from positive explicit preference + active Overall This-or-That rank
-- [x] keep explicit and pairwise source values independent underneath the aggregate
-- [x] exclude inference-only affinity from Top Overall
-- [x] exclude Hard Limit / Not Interested / Not Applicable even when historical rank remains
-- [x] keep Unsure from acting as positive explicit evidence by itself
-- [x] use confidence-aware pairwise placement in the derived presentation ordering
-- [x] treat missing direct channels as neutral rather than implicitly perfect
-- [x] use quiz-derived catalog affinity as a bounded, coverage-aware ordering modifier only after direct eligibility
-- [x] shrink quiz influence as Overall pairwise confidence increases
-- [x] keep quiz-only items ineligible for Top Overall
-- [x] define deterministic source-count / explicit-state / confidence / rank / label tie behavior
-- [x] preserve source traceability directly in each displayed row
-- [x] show fewer than 10 instead of padding with inferred/default items
-- [x] keep the aggregate ordering score presentation-only and non-authoritative
-- [x] add deterministic direct-evidence aggregation tests
-
-**Exit condition:** Top Overall is a stable direct-evidence ranking rather than an inferred recommendation list. ✅
-
-### M7.7 — Hard Limits ✅
-
-**Purpose:** keep explicit boundaries visible and semantically separate from preference strength.
-
-- [x] show explicit Hard Limits as their own summary
-- [x] default to a compact first 6 limits
-- [x] add Show all limits / Show less when needed
-- [x] keep Hard Limit distinct from Not Interested, Not Applicable, Unsure, and low pairwise rank
-- [x] keep limits unranked and alphabetically stable
-- [x] ensure limits never appear in Top Overall favorites
-- [x] preserve historical pairwise evidence without allowing it to override a current limit
-- [x] add deterministic exclusion/compact-list tests
-
-**Exit condition:** limits are clearly visible without being conflated with ranking or low affinity. ✅
-
-### M7.8 — Interest Areas ✅
-
-**Purpose:** summarize the catalog by useful themes without dumping every category onto the profile.
-
-- [x] derive category relevance from positive direct evidence
-- [x] exclude inference-only and exclusion/disinterest-only items
-- [x] use up to 3 representative direct interests per category
-- [x] apply breadth-aware relevance
-- [x] show at most 6 strongest/relevant categories
-- [x] show fewer rather than padding sparse profiles
-- [x] keep relevance scores internal
-- [x] keep full category exploration out of the main profile
-- [x] add deterministic dense/sparse/category-selection tests
-
-**Exit condition:** Interest Areas provide useful category-level shape without making the profile busy. ✅
-
-### M7.9 — Explore / catalog drill-down ✅
-
-**Purpose:** provide deeper exploration without expanding all categories inline.
-
-- [x] make each Interest Area open its focused catalog category
-- [x] auto-expand the selected category in the existing editable catalog
-- [x] add Explore all categories from the profile
-- [x] add compact Curious / Unsure / Hard Limits state-filter shortcuts
-- [x] preserve category rank, Overall rank, pairwise history, inference, and explicit editing in the existing catalog
-- [x] return focused catalog entry back to the profile
-- [x] preserve normal hub → catalog → hub behavior
-- [x] add visible focused-filter context with an Explore full catalog escape
-- [x] normalize stale category ids rather than creating broken focused routes
-- [x] keep the catalog as the single preference editing surface
-- [x] add deterministic routing/filter tests
-
-**Exit condition:** users can move from summary to editable catalog detail without cluttering the main profile. ✅
-
-### M7.10 — Explainability + coverage ✅
-
-**Purpose:** make the profile explainable without turning the main view into a scoring debugger.
-
-- [x] replace temporary M7.1/M7.2 inspection panels with user-facing facet explanation
-- [x] keep affinity separate from evidence coverage
-- [x] preserve unknown as unknown rather than artificial 0%
-- [x] add Not explored / Limited / Growing / Well supported evidence states
-- [x] show human-readable contributing signals without SignalIds or composition weights
-- [x] preserve quiz identity/version in source summaries
-- [x] summarize direct catalog and This-or-That evidence without raw evidence IDs
-- [x] qualify materially conflicting independent sources without rewriting the score
-- [x] link sparse facets to relevant unfinished quizzes where available
-- [x] provide a catalog refinement fallback for sparse facets when appropriate
-- [x] move guided-section completion into subordinate collapsed Exploration status
-- [x] remove the large profile completion card from the main presentation hierarchy
-- [x] keep authority / activity side / role semantics separate in explainability
-- [x] add deterministic high/low/conflict/partial/unknown/source tests
-
-**Exit condition:** users can understand why a result exists and distinguish affinity from evidence coverage. ✅
-
-### M7.11 — Final integration + polish ✅
-
-**Purpose:** remove implementation scaffolding and make the full M7 experience coherent.
-
-- [x] remove remaining inspection-era runtime naming/scaffolding
-- [x] verify final profile hierarchy across header, radar, roles/modes, direct interests, limits, Interest Areas, and explainability
-- [x] tighten mobile headline scale and section density
-- [x] verify empty/partial/full-profile behavior with deterministic integration tests
-- [x] improve radar/explanation keyboard and focus behavior
-- [x] fix profile → catalog → profile refinement routing
-- [x] regression-run M2–M6 section-local scoring, catalog, ranking, storage, and evidence tests in the full CI suite
-- [x] clean stale M7/M3 documentation and semantic wording
-- [x] mark M7 complete
-
-**Exit condition:** M7 reads as one coherent profile experience while preserving the source-aware architecture underneath. ✅
-
-## M8 — Quiz Depth & Adaptive Follow-ups
-
-**Goal:** support deeper exploration without forcing everyone through a giant assessment.
-
-Possible modes:
-
-- [ ] Quick
-- [ ] Standard
-- [ ] Deep Dive
-
-Possible adaptive behavior:
-
-- [ ] skip irrelevant follow-ups
-- [ ] deepen strong or ambiguous signals
-- [ ] preserve scoring comparability
-- [ ] show approximate time/question count before starting
-
-Do not build this until the fixed mini-quizzes demonstrate a need for it.
+- [x] **M7.1** — canonical cross-source aggregation + inspection
+- [x] **M7.2** — overall facet model
+- [x] **M7.3** — profile header
+- [x] **M7.4** — overall radar
+- [x] **M7.5** — Headspaces + Dynamic Modes
+- [x] **M7.6** — Top Overall catalog interests
+- [x] **M7.7** — Hard Limits
+- [x] **M7.8** — Interest Areas
+- [x] **M7.9** — Explore / catalog drill-down
+- [x] **M7.10** — explainability + coverage
+- [x] **M7.11** — final integration + polish
 
 ---
 
-## M9 — Settings, Profile Management & Sharing
+## M8 — Quiz Depth & Adaptive Follow-ups
 
-**Goal:** give the user a dedicated place to manage profile identity, local data lifecycle, backups/restores, and deliberately shareable profile output.
+**Status:** optional; only build if the fixed quizzes demonstrate a real need.
 
-M9 is a separate product area from M7. M7 owns the profile itself; M9 owns managing, moving, resetting, and sharing that profile.
+- [ ] Quick / Standard / Deep Dive quiz modes
+- [ ] adaptive follow-ups for strong, weak, or ambiguous signals
+- [ ] preserve scoring comparability across quiz depth
+- [ ] show approximate effort before starting
 
-See [docs/m9-settings-profile-management.md](docs/m9-settings-profile-management.md) for the detailed implementation contract.
+---
 
-M8 is not a prerequisite for M9. The share-summary slices depend on the stable M7 profile presentation/data contract, while settings/reset/backup work can remain independent of adaptive quiz depth.
+## M9 — Settings, Profile Management & Sharing ✅
 
-### M9.1 — Settings shell + profile identity ✅
+**Details:** [M9 Settings, Profile Management & Sharing](docs/m9-settings-profile-management.md)
 
-- [x] add a first-class Settings destination
-- [x] organize Settings into Profile, Data, and Sharing groups
-- [x] replace hard-coded user-facing "Pet" profile naming with an editable profile display name
-- [x] update profile-facing labels/headings to use the configured display name where appropriate
-- [x] keep broader identity/pronoun customization out of this slice
-
-### M9.2 — Selective reset ✅
-
-- [x] provide a reset flow that never deletes data immediately from the first click
-- [x] allow selecting independent data sections to reset
-- [x] support quiz data, explicit catalog preferences, This-or-That/ranking data, and profile settings/identity as independent reset scopes
-- [x] support an explicit Reset Everything option
-- [x] preview what will be deleted before confirmation
-- [x] preserve unselected evidence sources
-- [x] recompute derived views after reset rather than persisting stale aggregates
-
-### M9.3 — Full profile export ✅
-
-- [x] export a complete machine-readable profile backup
-- [x] include schema/export version metadata
-- [x] include profile settings/identity and all authoritative persisted profile evidence
-- [x] include quiz progress/results, explicit catalog preference state, and raw This-or-That/ranking history
-- [x] keep recomputable derived values non-authoritative
-- [x] produce a portable JSON file suitable for later restore
-
-### M9.4 — Full profile import ✅
-
-- [x] validate file shape + supported schema/export version before changing local data
-- [x] show an import preview/summary before replacement
-- [x] import as a full-profile replacement in the initial implementation
-- [x] do not attempt merge-import in the first version
-- [x] reject invalid/incompatible files without partially mutating the current profile
-- [x] recompute derived profile state after successful import
-
-### M9.5 — Shareable profile summary ✅
-
-- [x] build a dedicated share-summary presentation from stable M7 outputs
-- [x] keep the share summary distinct from the full private backup/export
-- [x] include strongest themes, overall radar, orientation, Headspaces, Dynamic Modes, Top Overall, and explicit Hard Limits
-- [x] include M7.8 Interest Areas once its stable category-selection semantics landed
-- [x] intentionally omit internal provenance/debug data and machine-oriented storage detail
-- [x] design the summary so the same model + renderer can feed multiple output formats
-- [x] provide a preview before export
-
-### M9.6 — Summary export formats ✅
-
-- [x] support a high-density tall/mobile-friendly PNG render
-- [x] support a self-contained/shareable responsive HTML representation
-- [x] support a polished multi-page PDF representation
-- [x] reuse the same share-summary v2 content contract and renderer across formats instead of maintaining separate profile designs
-- [x] use section-aware PDF breaks and fixed export staging so mobile/desktop preview width does not produce clipped or unreadable exports
-- [x] keep all exports local and free of app navigation/admin chrome
-
-**M9 exit condition:** a user can rename the profile, selectively reset independent source data without collateral deletion, create and restore a complete versioned backup, and generate a polished shareable summary without exposing the full private profile data store.
-
-No account is required for this milestone.
+- [x] **M9.1** — Settings shell + editable profile identity
+- [x] **M9.2** — selective reset
+- [x] **M9.3** — full JSON profile export
+- [x] **M9.4** — validated full profile import
+- [x] **M9.5** — shareable profile summary
+- [x] **M9.6** — PNG / HTML / PDF exports
 
 ---
 
 ## M10 — Optional Persistence
 
-Only build this if it solves a real product problem.
+**Status:** optional; only build if local-only storage becomes a product limitation.
 
-Potential:
-
-- [ ] optional account
-- [ ] cloud sync
-- [ ] multi-device profile
-- [ ] encrypted/private storage model
-
-Before implementation, define privacy expectations and a threat model.
+- [ ] define privacy expectations + threat model
+- [ ] optional account model
+- [ ] cloud sync / multi-device profile
+- [ ] encrypted/private storage design
 
 ---
 
-
 ## M11 — Rewards & Punishments
 
-**Goal:** turn the existing reward/punishment reference bank plus the stable M6 catalog into a practical contextual-use toolbox.
+**Details:** [M11 Rewards & Punishments](docs/m11-rewards-punishments.md)
 
-See [docs/m11-rewards-punishments.md](docs/m11-rewards-punishments.md) for the detailed product/data contract.
-
-Core semantic rule:
-
-> Reward and punishment are contextual uses of an activity/action, not mutually exclusive item types.
-
-M11 intentionally does **not** add assignment, earning, demerits, punishment debt, task integration, completion tracking, or automatic escalation.
-
-### M11.1 — Runtime library + stable identity
-
-- [ ] normalize the source bank into stable runtime action IDs
-- [ ] define stable contextual category IDs + weighted primitive mappings
-- [ ] preserve source provenance without treating source origin/category text as runtime identity
-- [ ] deduplicate obvious source overlaps
-- [ ] link exact/meaningful action overlaps to stable M6 catalog IDs
-
-### M11.2 — Direct contextual-use profiles
-
-- [ ] add independent Reward and Punishment suitability overlays
-- [ ] support Strong / Works / Depends / No / Never / Unset
-- [ ] keep direct M11 use orthogonal to general M6 preference and M7 aggregation
-- [ ] add independent random-pool eligibility
-- [ ] add searchable/filterable Reward and Punishment profile views
-
-### M11.3 — Category aggregation + inferred proposals
-
-- [ ] derive separate Reward/Punishment category affinity from direct M11 evidence
-- [ ] keep category affinity separate from evidence breadth/coverage
-- [ ] infer contextual proposals from canonical M7 mappings + direct M11 category patterns + similar confirmed items
-- [ ] allow bounded M6 general-affinity support for Reward inference
-- [ ] never use dislike/aversion as positive Punishment evidence
-- [ ] keep inferred proposals visually/provenance-distinct from explicit choices
-- [ ] accepting a proposal creates explicit Works, not Strong
-- [ ] prevent inferred values from feeding category affinity or M7 signals
-
-### M11.4 — Quick sorter + engagement pacing
-
-- [ ] add one-item-at-a-time Reward / Punishment / Both / Neither classification cards
-- [ ] include all stable M6 catalog items plus normalized M11 action primitives
-- [ ] provide Skip for now, Continue unsorted, focused runs, Back / Undo, and resume
-- [ ] protect nuanced existing states from accidental overwrite
-- [ ] show persistent overall + focused-run progress
-- [ ] insert a lightweight randomized feedback beat after 1–7 new classifications
-- [ ] vary profile connections, category pulses, context contrasts, discovery counts, curated facts, and playful copy
-- [ ] add a larger non-blocking checkpoint animation every 25 new classifications
-- [ ] respect reduced-motion preferences
-
-### M11.5 — Independent Reward & Punishment pairwise rankings
-
-- [ ] add separate Reward and Punishment This-or-That flows
-- [ ] require each item to be directly context-classified before it can enter that context's ranking pool
-- [ ] do not require the whole primitive universe to be sorted before ranking unlocks
-- [ ] let Reward/Both positive states feed Reward ranking and Punishment/Both positive states feed Punishment ranking
-- [ ] keep Reward rank, Punishment rank, and M6 kink rank as three independent values
-- [ ] allow shared ranking-engine utilities without sharing M6 comparison/rating history
-- [ ] persist raw M11 contextual pairwise comparisons
-- [ ] use adaptive pair selection + confidence/refinement rather than exhaustive comparison
-- [ ] expose Top Rewards and Top Punishments
-
-### M11.6 — Randomizer
-
-- [ ] add Random reward / Random punishment
-- [ ] select only explicitly positive + random-enabled entries
-- [ ] never put inference-only items into the random pool
-- [ ] add Pick again, empty states, and in-session anti-repeat
-- [ ] do not silently weight random probability by contextual rank in V1
-- [ ] keep assignment/completion/history semantics out
-
-### M11.7 — Reward & punishment builders
-
-- [ ] add Build a reward / Build a punishment
-- [ ] compose ordered components from catalog + action primitives
-- [ ] allow recipe-local custom text
-- [ ] save/edit/duplicate/delete reusable recipes
-- [ ] keep recipe composition non-recursive in V1
-- [ ] mark recipes Needs review when a referenced component becomes context-Never or stale
-
-### M11.8 — Recipe randomization + lifecycle integration
-
-- [ ] optionally include valid saved recipes in random pools
-- [ ] extend full profile backup/import with authoritative direct M11 state + contextual pairwise history
-- [ ] keep category aggregates/inferred proposals recomputable
-- [ ] add an independent Rewards & Punishments selective-reset scope
-- [ ] preserve M11 state across unrelated reset scopes
-- [ ] keep M11 data out of share summary by default
-
-### M11.9 — Overall profile integration + UX polish
-
-- [ ] add first-class navigation
-- [ ] add separate Reward and Punishment category summaries to the in-app overall profile
-- [ ] add Top Rewards / Top Punishments when pairwise evidence is sufficient
-- [ ] use contextual rank to order confirmed highlights when available without replacing suitability/category context
-- [ ] show inferred Suggested to explore separately
-- [ ] keep M11 values out of M7 radar/orientation/Headspaces/Modes/Top Overall
-- [ ] compact mobile behavior + accessibility
-- [ ] regression-run M6/M7/M9 profile/evidence tests
-- [ ] finalize docs and mark M11 complete
-
-**M11 exit condition:** the user can get profile-derived Reward/Punishment proposals, quickly sort/refine the full primitive universe with varied progress feedback, independently rank confirmed rewards and punishments, see contextual summaries/top lists, randomly pick from explicitly approved pools, and create reusable recipes without the app becoming an assignment or behavior-management system.
+- [ ] **M11.1** — runtime library + stable identity
+- [ ] **M11.2** — direct Reward/Punishment suitability profiles
+- [ ] **M11.3** — category aggregation + inferred proposals
+- [ ] **M11.4** — quick sorter + engagement pacing
+- [ ] **M11.5** — independent Reward/Punishment pairwise rankings
+- [ ] **M11.6** — random reward / punishment picker
+- [ ] **M11.7** — reward + punishment builders
+- [ ] **M11.8** — recipe randomization + lifecycle integration
+- [ ] **M11.9** — overall-profile integration + UX polish
 
 ---
 
 ## M12 — This-or-That Ranking History & Movement
 
-**Goal:** make This-or-That a repeatable preference pulse rather than one lifetime-accumulating ranking.
+**Details:** [M12 Ranking History & Movement](docs/m12-ranking-history-movement.md)
 
-See [docs/m12-ranking-history-movement.md](docs/m12-ranking-history-movement.md) for the detailed contract.
-
-Core behavior:
-
-- [ ] preserve the current ranking as an archived run when the user chooses to rerank
-- [ ] start the new run with fresh pairwise scoring rather than carrying old Elo evidence forward
-- [ ] keep quizzes and explicit catalog preferences untouched
-- [ ] treat only the active run as current pairwise evidence for M6/M7
-- [ ] show rank movement against the previous comparable run
-- [ ] show the exact previous rank on hover/focus/tap
-- [ ] keep archived history in private backup/restore
-- [ ] keep destructive M9 ranking reset separate from non-destructive reranking
-- [ ] retain enough historical data for future trend views without requiring them in M12 v1
-
-**M12 exit condition:** the user can start a fresh This-or-That run without losing the previous one, and current category/Overall results clearly show what moved since the last comparable run.
+- [ ] archive the previous comparable ranking run on rerank
+- [ ] start each new run with fresh pairwise scoring
+- [ ] use only the active run as current M6/M7 pairwise evidence
+- [ ] show movement + previous rank against the prior comparable run
+- [ ] preserve run history through backup/restore while keeping destructive reset separate
 
 ---
 
 ## M13 — Scene Builder
 
-**Goal:** turn the existing profile into a small, relevant, consent-aware play space for a specific moment so the user does not have to reconstruct all profile context from memory.
+**Details:** [M13 Scene Builder](docs/m13-scene-builder.md)
 
-See [docs/m13-scene-builder.md](docs/m13-scene-builder.md) for the detailed product/data contract.
-
-Core principle:
-
-> **Externalize context. Preserve choice. Reduce decision load.**
-
-M13 is a composition layer over M3/M6/M7/M11 rather than a new competing preference model.
-
-### M13.1 — Theme taxonomy + mappings
-
-- [ ] define stable SceneThemeIds
-- [ ] map themes to existing catalog/signal/headspace/mode/facet metadata
-- [ ] validate all mappings
-- [ ] keep theme selection query-only and out of profile evidence
-
-### M13.2 — Profile-aware candidate engine
-
-- [ ] derive scene candidates from direct profile evidence + selected themes
-- [ ] enforce Hard Limit / Not Interested / Not Applicable exclusions
-- [ ] preserve direct vs inferred provenance
-- [ ] support multi-theme coverage across different scene components
-
-### M13.3 — Current-session state
-
-- [ ] add Yes tonight / Maybe tonight / Not tonight
-- [ ] keep session state temporary and separate from durable preference
-- [ ] let current-session exclusions override positive profile evidence
-
-### M13.4 — Theme-based suggestion surface
-
-- [ ] support multi-select themes such as Pain + Deeper Submission
-- [ ] add optional effort/exploration/intensity narrowing
-- [ ] return a bounded play-space menu rather than the whole catalog
-- [ ] keep inference-only ideas in a separate Suggested to explore lane
-
-### M13.5 — Scene arc / composition builder
-
-- [ ] compose ordered setup/headspace/warm-up/core/escalation/come-down/aftercare blocks
-- [ ] add/remove/reorder/replace components
-- [ ] preserve stable source IDs
-- [ ] support scene-local notes
-
-### M13.6 — Randomization + shuffle
-
-- [ ] Pick something
-- [ ] Build something
-- [ ] Shuffle one part
-- [ ] enforce all current eligibility rules
-- [ ] use short-term anti-repeat
-
-### M13.7 — M11 integration
-
-- [ ] support optional reward/punishment scene slots
-- [ ] consume M11 item/recipe eligibility without duplicating suitability logic
-- [ ] keep inference-only M11 proposals out of silent randomization
-
-### M13.8 — Saved scenes + lifecycle
-
-- [ ] save/edit/duplicate/delete reusable scene templates
-- [ ] mark stale/excluded references Needs review
-- [ ] add backup/import support
-- [ ] add independent saved-scene reset scope
-
-### M13.9 — Accessibility + polish
-
-- [ ] mobile-first low-decision interaction
-- [ ] keyboard/focus/reduced-motion support
-- [ ] empty/sparse/full-profile behavior
-- [ ] regression-run dependent profile boundaries
-- [ ] finalize docs and mark M13 complete
-
-**M13 exit condition:** a single profile can select desired themes, narrow the current-session state, receive a small profile-backed candidate set, compose or randomize those options into a reusable scene, and understand why suggestions fit without mutating the underlying profile.
+- [ ] **M13.1** — theme taxonomy + mappings
+- [ ] **M13.2** — profile-aware candidate engine
+- [ ] **M13.3** — current-session Yes / Maybe / Not tonight state
+- [ ] **M13.4** — theme-based suggestion surface
+- [ ] **M13.5** — scene arc / composition builder
+- [ ] **M13.6** — randomization + shuffle
+- [ ] **M13.7** — M11 Rewards & Punishments integration
+- [ ] **M13.8** — saved scenes + lifecycle
+- [ ] **M13.9** — accessibility + polish
 
 ---
 
 ## M14 — Shared Profiles, Comparison & Partner Integration
 
-**Goal:** let two independent profiles coexist locally, compare them without merging them, and derive a shared interaction space that can feed M13.
+**Details:** [M14 Shared Profiles](docs/m14-shared-profiles.md)
 
-See [docs/m14-shared-profiles.md](docs/m14-shared-profiles.md) for the detailed product/data contract.
-
-Core principle:
-
-> **Compare profiles; do not collapse people into one profile.**
-
-M14 must support both **mutual** and **complementary** fit. It must not reduce the pair to one compatibility percentage.
-
-### M14.1 — Multi-profile storage + migration
-
-- [ ] define stable ProfileId + profile registry
-- [ ] migrate the current single-profile state without evidence loss
-- [ ] scope all authoritative storage by ProfileId
-- [ ] add migration/regression tests
-
-### M14.2 — Profile management + switcher
-
-- [ ] create and switch profiles
-- [ ] rename/delete/reset one profile safely
-- [ ] import/export one profile independently
-- [ ] preserve M9 lifecycle semantics per profile
-
-### M14.3 — Derived comparison engine
-
-- [ ] classify mutual positive / complementary / curious / excluded / unknown states
-- [ ] preserve why each relationship was derived
-- [ ] keep comparison recomputable with no evidence feedback
-
-### M14.4 — Comparison UI
-
-- [ ] We both love
-- [ ] We fit together here
-- [ ] Maybe explore
-- [ ] Different flavors
-- [ ] Not for shared suggestions
-- [ ] preserve unknown as unknown rather than mismatch
-
-### M14.5 — Interaction mappings
-
-- [ ] define versioned activity-side complements such as pain_giving ↔ pain_receiving
-- [ ] define validated role/headspace and dynamic-mode relationships
-- [ ] preserve authority/activity-side/role semantic separation
-- [ ] add deterministic mapping tests
-
-### M14.6 — Current participant intent
-
-- [ ] let each profile choose a temporary current headspace/mode/activity-side intent
-- [ ] combine participant intent with session overrides
-- [ ] keep temporary intent out of permanent profile evidence
-
-### M14.7 — Shared M13 scene filtering
-
-- [ ] feed both profiles into the M13 candidate engine
-- [ ] enforce either-person exclusions
-- [ ] support complementary rather than only identical interests
-- [ ] explain why a shared scene item fits both people
-- [ ] keep inference-only items out of silent randomization
-
-### M14.8 — Lifecycle, privacy + polish
-
-- [ ] define app-level multi-profile backup behavior
-- [ ] preserve independent profile export/import
-- [ ] review comparison/share privacy boundaries
-- [ ] accessibility/mobile polish
-- [ ] regression-run M13 and existing profile boundaries
-- [ ] finalize docs and mark M14 complete
-
-**M14 exit condition:** two independent profiles can coexist locally, be compared without evidence contamination, and feed both profiles plus current participant intent into M13 so the Scene Builder can produce a bounded shared play space that fits both people.
+- [ ] **M14.1** — multi-profile storage + migration
+- [ ] **M14.2** — profile management + switcher
+- [ ] **M14.3** — derived comparison engine
+- [ ] **M14.4** — comparison UI
+- [ ] **M14.5** — interaction/complement mappings
+- [ ] **M14.6** — current participant intent
+- [ ] **M14.7** — shared M13 scene filtering
+- [ ] **M14.8** — lifecycle, privacy + polish
 
 ---
 
 ## M15 — Contextual Activity Profiles
 
-**Goal:** let the same directional activity have different explicit preference, ranking, and contextual meaning across authority context and activity side without treating giving/receiving as Dominant/submissive identity.
+**Details:** [M15 Contextual Activity Profiles](docs/m15-contextual-activity-profiles.md) · [Authority / Activity / Role Semantics](docs/authority-activity-role-separation.md)
 
-See [docs/m15-contextual-activity-profiles.md](docs/m15-contextual-activity-profiles.md) for the detailed product/data contract and [docs/authority-activity-role-separation.md](docs/authority-activity-role-separation.md) for the cross-cutting semantic boundary.
-
-Core principle:
-
-> **Authority context and activity side are orthogonal.**
-
-Directional activities may therefore support sparse combinations such as Dominant + Giving, Dominant + Receiving, submissive + Giving, submissive + Receiving, Non-D/s + Giving, and Non-D/s + Receiving. Unset context remains unknown rather than silently inheriting the general catalog preference.
-
-### M15.1 — Context taxonomy + capability metadata
-
-- [ ] define stable AuthorityContext / ActivitySide / ActivityContextKey vocabulary
-- [ ] mark which catalog/action primitives support giving, receiving, or both
-- [ ] validate context capabilities without creating six literal copies of every item
-- [ ] preserve roles/headspaces as a separate dimension
-
-### M15.2 — Sparse contextual preference storage
-
-- [ ] add versioned sparse context overlays keyed by stable primitive + ActivityContextKey
-- [ ] create records only for contexts the user actually explores/edits
-- [ ] keep general M6 preference independent
-- [ ] preserve global and context-specific Hard Limit authority
-
-### M15.3 — Contextual refinement UX
-
-- [ ] add a reusable one-context-at-a-time picker/lens
-- [ ] support contextual catalog refinement without a default six-column matrix
-- [ ] add quick refinement/deep links from contextual consumers
-- [ ] preserve unknown vs explicit context state
-
-### M15.4 — Contextual pairwise ranking + M12 compatibility
-
-- [ ] scope pairwise evidence by ActivityContextKey
-- [ ] keep contextual rankings independent from general M6 rank
-- [ ] extend M12 run/history semantics by scope rather than forking them
-- [ ] show movement only against the previous comparable context run
-
-### M15.5 — Contextual profile aggregation + exploration
-
-- [ ] derive context-specific category/profile lenses from direct contextual evidence
-- [ ] keep context affinity separate from evidence coverage
-- [ ] keep M15 contextual evidence from voting on M7 D/s orientation
-- [ ] keep inferred context proposals separate from direct state
-
-### M15.6 — Motivation / reason annotations
-
-- [ ] support optional reasons such as instructed, service, delegated responsibility, caretaking, sensation/play, and ritual/protocol
-- [ ] keep reasons explanatory rather than authority evidence
-- [ ] allow multiple reasons where appropriate
-
-### M15.7 — M11 Rewards & Punishments contextual integration
-
-- [ ] preserve broad M11 Reward/Punishment suitability as its own answer
-- [ ] add optional sparse context-specific M11 overlays
-- [ ] keep broad M11 state from masquerading as direct exact-context evidence
-- [ ] scope contextual Reward/Punishment ranking only when directly explored
-
-### M15.8 — M13 Scene Builder integration
-
-- [ ] let current-session intent select authority context + activity side
-- [ ] prioritize exact positive M15 evidence for exact-context scenes
-- [ ] respect exact-context and global exclusions
-- [ ] keep current-session intent separate from durable contextual preference
-
-### M15.9 — M14 Shared Profile contextual complementarity
-
-- [ ] compare each profile's selected context independently
-- [ ] support complements such as submissive + Giving ↔ Dominant + Receiving without relabeling either person
-- [ ] explain contextual complementarity
-- [ ] feed both selected contexts into shared M13 filtering
-
-### M15.10 — Lifecycle, exports, reset + polish
-
-- [ ] include authoritative M15 state in private backup/import
-- [ ] add independent contextual reset behavior
-- [ ] preserve unrelated M6/M11/M13/M14 state
-- [ ] keep verbose contextual detail out of share summary by default
-- [ ] regression-run dependent semantic boundaries
-- [ ] finalize docs and mark M15 complete
-
-**M15 exit condition:** the app can represent, refine, rank, explain, back up, and consume context-specific activity preferences without inferring authority from giving/receiving, eagerly duplicating every item, or contaminating the general M6/M7 profile.
+- [ ] **M15.1** — context taxonomy + activity capability metadata
+- [ ] **M15.2** — sparse contextual preference storage
+- [ ] **M15.3** — contextual refinement UX
+- [ ] **M15.4** — contextual pairwise ranking + M12 compatibility
+- [ ] **M15.5** — contextual profile aggregation + exploration
+- [ ] **M15.6** — motivation / reason annotations
+- [ ] **M15.7** — M11 contextual integration
+- [ ] **M15.8** — M13 Scene Builder integration
+- [ ] **M15.9** — M14 shared-profile contextual complementarity
+- [ ] **M15.10** — lifecycle, exports, reset + polish
 
 ---
 
@@ -1174,4 +263,4 @@ Interesting, but not current scope:
 
 **M7 and M9 are complete. M11, M12, M13, M14, and M15 are formally scoped.**
 
-The next implementation slice should still be chosen intentionally. M11/M12/M13/M14 are distinct product layers, while M15 is a cross-cutting contextual model that those layers may consume. Before adding authority-sensitive giving/receiving behavior inside M11, M13, or M14, use the M15 context contract instead of inventing one-off semantics.
+Choose the next implementation slice intentionally. M15 is the shared context model for any authority-sensitive giving/receiving behavior added inside M11, M13, or M14.
