@@ -1792,25 +1792,25 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 **Purpose:** make contextual classification fast and playful instead of requiring the full table.
 
-- [ ] add one-item-at-a-time classification cards
-- [ ] add primary Reward / Punishment / Both choices
-- [ ] add Neither / not a fit and Skip for now
-- [ ] map coarse choices to `works/no` without inventing `strong/depends/never`
-- [ ] do not change random eligibility from sorter choices
-- [ ] persist through the contextual overlay rather than a parallel answer model
-- [ ] add Continue unsorted and category/source-focused runs
-- [ ] allow high-confidence inferred proposals to prioritize the queue
-- [ ] optionally show Suggested: Reward / Punishment / Both without auto-selecting it
-- [ ] add Back / Undo and resume behavior
-- [ ] protect existing nuanced `strong/depends/never` states from accidental overwrite
-- [ ] add persistent overall + focused-run progress rails
-- [ ] add variable-cadence micro feedback after a random 1–7 new classifications
-- [ ] support profile connection / context contrast / category pulse / discovery count / curated fact / playful-copy feedback types
-- [ ] ensure feedback is deterministic/provenance-backed when it claims a profile relationship or factual statement
-- [ ] add non-blocking 25-item checkpoint animations + useful profile deltas
-- [ ] respect reduced-motion preferences
-- [ ] keep the table/list as the secondary detailed editing surface
-- [ ] add deterministic sorter-mapping/proposal/state-preservation/cadence tests
+- [x] add one-item-at-a-time classification cards
+- [x] add primary Reward / Punishment / Both choices
+- [x] add Neither / not a fit and Skip for now
+- [x] map coarse choices to `works/no` without inventing `strong/depends/never`
+- [x] do not change random eligibility from sorter choices
+- [x] persist through the contextual overlay rather than a parallel answer model
+- [x] add Continue unsorted and category/source-focused runs
+- [x] allow high-confidence inferred proposals to prioritize the queue
+- [x] optionally show Suggested: Reward / Punishment / Both without auto-selecting it
+- [x] add Back / Undo and resume behavior
+- [x] protect existing nuanced `strong/depends/never` states from accidental overwrite
+- [x] add persistent overall + focused-run progress rails
+- [x] add variable-cadence micro feedback after a random 1–7 new classifications
+- [x] support profile connection / context contrast / category pulse / discovery count / curated fact / playful-copy feedback types
+- [x] ensure feedback is deterministic/provenance-backed when it claims a profile relationship or factual statement
+- [x] add non-blocking 25-item checkpoint animations + useful profile deltas
+- [x] respect reduced-motion preferences
+- [x] keep the table/list as the secondary detailed editing surface
+- [x] add deterministic sorter-mapping/proposal/state-preservation/cadence tests
 
 **Exit condition:** the user can rapidly sort the primitive universe with visible progress and varied, useful feedback instead of grinding through a giant table.
 
