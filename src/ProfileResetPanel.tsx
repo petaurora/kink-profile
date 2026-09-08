@@ -43,6 +43,9 @@ function selectionLabels(selection: ProfileResetSelection) {
   (selection.rankingComparisons ? reset : keep).push(
     "This-or-That comparisons and rankings",
   );
+  (selection.rewardsPunishments ? reset : keep).push(
+    "Rewards & Punishments contextual data, rankings, and recipes",
+  );
   (selection.profileSettings ? reset : keep).push(
     "Profile name and settings",
   );
@@ -215,6 +218,29 @@ export function ProfileResetPanel({
           </fieldset>
 
           <fieldset className="settings-reset-group">
+            <legend>Rewards & Punishments</legend>
+            <label className="settings-reset-option">
+              <input
+                type="checkbox"
+                checked={selection.rewardsPunishments}
+                onChange={(event) =>
+                  setSelection((current) => ({
+                    ...current,
+                    rewardsPunishments: event.target.checked,
+                  }))
+                }
+              />
+              <span>
+                <strong>Rewards & Punishments</strong>
+                <small>
+                  Contextual suitability, notes, random-pool flags,
+                  Reward/Punishment pairwise history, and saved recipes.
+                </small>
+              </span>
+            </label>
+          </fieldset>
+
+          <fieldset className="settings-reset-group">
             <legend>Profile settings</legend>
             <label className="settings-reset-option">
               <input
@@ -282,6 +308,18 @@ export function ProfileResetPanel({
               <span>
                 <strong>{impact.rankingComparisonCount}</strong>
                 pairwise comparisons
+              </span>
+              <span>
+                <strong>{impact.rewardPunishmentPreferenceCount}</strong>
+                reward/punishment preferences
+              </span>
+              <span>
+                <strong>{impact.rewardPunishmentComparisonCount}</strong>
+                contextual comparisons
+              </span>
+              <span>
+                <strong>{impact.rewardPunishmentRecipeCount}</strong>
+                saved recipes
               </span>
             </div>
           )}

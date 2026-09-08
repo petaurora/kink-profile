@@ -10,11 +10,18 @@ import {
   parseKinkRankingHistory,
   saveCatalogProfile,
 } from "./catalogProfileStorage";
-import type { ComparisonResult, KinkComparison, RankingScope } from "./kinkRanking";
+import type {
+  ComparisonResult,
+  KinkComparison,
+  RankingScope,
+} from "./kinkRanking";
 import {
   PROFILE_BACKUP_FORMAT,
   PROFILE_BACKUP_VERSION,
+  isProfileBackupV2,
+  type ProfileBackup,
   type ProfileBackupV1,
+  type ProfileBackupV2,
 } from "./profileBackup";
 import {
   MAX_PROFILE_DISPLAY_NAME_LENGTH,
@@ -31,9 +38,15 @@ import {
   type StorageLike,
   type StoredProfile,
 } from "./profileStorage";
+import {
+  createEmptyRewardPunishmentAuthoritativeState,
+  loadRewardPunishmentAuthoritativeState,
+  parseRewardPunishmentAuthoritativeState,
+  saveRewardPunishmentAuthoritativeState,
+} from "./rewardPunishmentLifecycle";
 
 export type ProfileBackupParseResult =
-  | { ok: true; backup: ProfileBackupV1 }
+  | { ok: true; backup: ProfileBackup }
   | { ok: false; error: string };
 
 const comparisonResults = new Set<ComparisonResult>([
@@ -44,26 +57,39 @@ const comparisonResults = new Set<ComparisonResult>([
   "skip",
 ]);
 
-const knownQuizIds = new Set<QuizId>(quizzes.map((quiz) => quiz.id));
+const knownQuizIds = new Set<QuizId>(
+  quizzes.map((quiz) => quiz.id),
+);
 
 function browserStorage(): StorageLike {
   return localStorage;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  );
 }
 
 function isValidDateString(value: unknown): value is string {
-  return typeof value === "string" && !Number.isNaN(Date.parse(value));
+  return (
+    typeof value === "string" &&
+    !Number.isNaN(Date.parse(value))
+  );
 }
 
 function parseSettings(value: unknown): ProfileSettings | null {
   if (!isRecord(value)) return null;
-  if (value.schemaVersion !== PROFILE_SETTINGS_SCHEMA_VERSION) return null;
+  if (value.schemaVersion !== PROFILE_SETTINGS_SCHEMA_VERSION) {
+    return null;
+  }
   if (typeof value.displayName !== "string") return null;
 
-  const normalizedName = normalizeProfileDisplayName(value.displayName);
+  const normalizedName = normalizeProfileDisplayName(
+    value.displayName,
+  );
   if (
     normalizedName.length === 0 ||
     value.displayName.length > MAX_PROFILE_DISPLAY_NAME_LENGTH
@@ -89,8 +115,15 @@ function parseQuizProgress(value: unknown): QuizProgress | null {
   if (!isRecord(value.answers)) return null;
 
   const answers: Record<string, number> = {};
-  for (const [questionId, answer] of Object.entries(value.answers)) {
-    if (typeof answer !== "number" || !Number.isFinite(answer)) return null;
+  for (const [questionId, answer] of Object.entries(
+    value.answers,
+  )) {
+    if (
+      typeof answer !== "number" ||
+      !Number.isFinite(answer)
+    ) {
+      return null;
+    }
     answers[questionId] = answer;
   }
 
@@ -111,13 +144,19 @@ function parseQuizProgress(value: unknown): QuizProgress | null {
 }
 
 function parseStoredProfile(value: unknown): StoredProfile | null {
-  if (!isRecord(value) || value.schemaVersion !== 2 || !isRecord(value.quizzes)) {
+  if (
+    !isRecord(value) ||
+    value.schemaVersion !== 2 ||
+    !isRecord(value.quizzes)
+  ) {
     return null;
   }
 
   const parsedQuizzes: StoredProfile["quizzes"] = {};
 
-  for (const [quizId, progress] of Object.entries(value.quizzes)) {
+  for (const [quizId, progress] of Object.entries(
+    value.quizzes,
+  )) {
     if (!knownQuizIds.has(quizId as QuizId)) return null;
     const parsedProgress = parseQuizProgress(progress);
     if (!parsedProgress) return null;
@@ -130,14 +169,25 @@ function parseStoredProfile(value: unknown): StoredProfile | null {
   };
 }
 
-function parsePreference(value: unknown): CatalogItemPreference | null {
-  if (!isRecord(value) || !isValidDateString(value.updatedAt)) return null;
+function parsePreference(
+  value: unknown,
+): CatalogItemPreference | null {
+  if (
+    !isRecord(value) ||
+    !isValidDateString(value.updatedAt)
+  ) {
+    return null;
+  }
 
   const preference: CatalogItemPreference = {
     updatedAt: value.updatedAt,
   };
 
-  for (const context of ["overall", "receiving", "giving"] as const) {
+  for (const context of [
+    "overall",
+    "receiving",
+    "giving",
+  ] as const) {
     const state = value[context];
     if (state === undefined) continue;
     if (!isCatalogPreferenceState(state)) return null;
@@ -156,7 +206,9 @@ function parsePreference(value: unknown): CatalogItemPreference | null {
 }
 
 function parseScope(value: unknown): RankingScope | null {
-  if (!isRecord(value) || typeof value.type !== "string") return null;
+  if (!isRecord(value) || typeof value.type !== "string") {
+    return null;
+  }
   if (value.type === "overall") return { type: "overall" };
   if (
     value.type === "category" &&
@@ -190,7 +242,8 @@ function parseComparison(value: unknown): KinkComparison | null {
   }
 
   const runId =
-    typeof value.runId === "string" && value.runId.length > 0
+    typeof value.runId === "string" &&
+    value.runId.length > 0
       ? value.runId
       : undefined;
 
@@ -205,7 +258,9 @@ function parseComparison(value: unknown): KinkComparison | null {
   };
 }
 
-function parseCatalogProfile(value: unknown): CatalogProfileState | null {
+function parseCatalogProfile(
+  value: unknown,
+): CatalogProfileState | null {
   if (
     !isRecord(value) ||
     value.schemaVersion !== 1 ||
@@ -216,7 +271,9 @@ function parseCatalogProfile(value: unknown): CatalogProfileState | null {
   }
 
   const preferences: CatalogProfileState["preferences"] = {};
-  for (const [catalogId, rawPreference] of Object.entries(value.preferences)) {
+  for (const [catalogId, rawPreference] of Object.entries(
+    value.preferences,
+  )) {
     const preference = parsePreference(rawPreference);
     if (!preference) return null;
     preferences[catalogId] = preference;
@@ -233,7 +290,12 @@ function parseCatalogProfile(value: unknown): CatalogProfileState | null {
     value.rankingHistory === undefined
       ? undefined
       : parseKinkRankingHistory(value.rankingHistory, {});
-  if (value.rankingHistory !== undefined && !rankingHistory) return null;
+  if (
+    value.rankingHistory !== undefined &&
+    !rankingHistory
+  ) {
+    return null;
+  }
 
   return normalizeCatalogRankingHistory({
     schemaVersion: 1,
@@ -243,9 +305,14 @@ function parseCatalogProfile(value: unknown): CatalogProfileState | null {
   });
 }
 
-export function validateProfileBackup(value: unknown): ProfileBackupParseResult {
+export function validateProfileBackup(
+  value: unknown,
+): ProfileBackupParseResult {
   if (!isRecord(value)) {
-    return { ok: false, error: "This file is not a profile backup object." };
+    return {
+      ok: false,
+      error: "This file is not a profile backup object.",
+    };
   }
 
   if (value.format !== PROFILE_BACKUP_FORMAT) {
@@ -255,10 +322,12 @@ export function validateProfileBackup(value: unknown): ProfileBackupParseResult 
     };
   }
 
-  if (value.version !== PROFILE_BACKUP_VERSION) {
+  if (value.version !== 1 && value.version !== PROFILE_BACKUP_VERSION) {
     return {
       ok: false,
-      error: `Backup format v${String(value.version)} is not supported by this app version.`,
+      error: `Backup format v${String(
+        value.version,
+      )} is not supported by this app version.`,
     };
   }
 
@@ -280,42 +349,79 @@ export function validateProfileBackup(value: unknown): ProfileBackupParseResult 
   if (!settings) {
     return {
       ok: false,
-      error: "The profile settings section is invalid or unsupported.",
+      error:
+        "The profile settings section is invalid or unsupported.",
     };
   }
 
-  const storedProfile = parseStoredProfile(value.profile.quizzes);
+  const storedProfile = parseStoredProfile(
+    value.profile.quizzes,
+  );
   if (!storedProfile) {
     return {
       ok: false,
-      error: "The quiz data section is invalid or unsupported.",
+      error:
+        "The quiz data section is invalid or unsupported.",
     };
   }
 
-  const catalogProfile = parseCatalogProfile(value.profile.catalog);
+  const catalogProfile = parseCatalogProfile(
+    value.profile.catalog,
+  );
   if (!catalogProfile) {
     return {
       ok: false,
-      error: "The catalog or This-or-That data is invalid or unsupported.",
+      error:
+        "The catalog or This-or-That data is invalid or unsupported.",
     };
   }
 
-  return {
-    ok: true,
-    backup: {
+  if (value.version === 1) {
+    const backup: ProfileBackupV1 = {
       format: PROFILE_BACKUP_FORMAT,
-      version: PROFILE_BACKUP_VERSION,
+      version: 1,
       exportedAt: value.exportedAt,
       profile: {
         settings,
         quizzes: storedProfile,
         catalog: catalogProfile,
       },
+    };
+
+    return { ok: true, backup };
+  }
+
+  const rewardsPunishments =
+    parseRewardPunishmentAuthoritativeState(
+      value.profile.rewardsPunishments,
+    );
+
+  if (!rewardsPunishments) {
+    return {
+      ok: false,
+      error:
+        "The Rewards & Punishments data is invalid or unsupported.",
+    };
+  }
+
+  const backup: ProfileBackupV2 = {
+    format: PROFILE_BACKUP_FORMAT,
+    version: PROFILE_BACKUP_VERSION,
+    exportedAt: value.exportedAt,
+    profile: {
+      settings,
+      quizzes: storedProfile,
+      catalog: catalogProfile,
+      rewardsPunishments,
     },
   };
+
+  return { ok: true, backup };
 }
 
-export function parseProfileBackupJson(text: string): ProfileBackupParseResult {
+export function parseProfileBackupJson(
+  text: string,
+): ProfileBackupParseResult {
   let parsed: unknown;
 
   try {
@@ -331,23 +437,37 @@ export function parseProfileBackupJson(text: string): ProfileBackupParseResult {
 }
 
 export function restoreProfileBackup(
-  backup: ProfileBackupV1,
+  backup: ProfileBackup,
   storage: StorageLike = browserStorage(),
 ) {
   const previous = {
     settings: loadProfileSettings(storage),
     quizzes: loadProfile(storage),
     catalog: loadCatalogProfile(storage),
+    rewardsPunishments:
+      loadRewardPunishmentAuthoritativeState(storage),
   };
+
+  const nextRewardsPunishments = isProfileBackupV2(backup)
+    ? backup.profile.rewardsPunishments
+    : createEmptyRewardPunishmentAuthoritativeState();
 
   try {
     saveProfile(backup.profile.quizzes, storage);
     saveCatalogProfile(backup.profile.catalog, storage);
+    saveRewardPunishmentAuthoritativeState(
+      nextRewardsPunishments,
+      storage,
+    );
     saveProfileSettings(backup.profile.settings, storage);
   } catch (error) {
     try {
       saveProfile(previous.quizzes, storage);
       saveCatalogProfile(previous.catalog, storage);
+      saveRewardPunishmentAuthoritativeState(
+        previous.rewardsPunishments,
+        storage,
+      );
       saveProfileSettings(previous.settings, storage);
     } catch {
       throw new Error(

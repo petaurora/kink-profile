@@ -1,7 +1,8 @@
 import { type ChangeEvent, useState } from "react";
 import {
   getProfileBackupSummary,
-  type ProfileBackupV1,
+  isProfileBackupV2,
+  type ProfileBackup,
 } from "./lib/profileBackup";
 import {
   parseProfileBackupJson,
@@ -17,7 +18,7 @@ type ProfileImportPanelProps = {
 
 type ImportCandidate = {
   fileName: string;
-  backup: ProfileBackupV1;
+  backup: ProfileBackup;
 };
 
 export function ProfileImportPanel({
@@ -87,7 +88,7 @@ export function ProfileImportPanel({
           <h3>{completedName}'s profile is restored.</h3>
           <p>
             The authoritative source data has been replaced. Loading the profile remounts the
-            app and recomputes M7 from the restored quiz, catalog, and ranking evidence.
+            app and recomputes derived M7 and M11 views from the restored source evidence.
           </p>
           <button className="primary" onClick={onDone}>
             Load restored profile
@@ -183,7 +184,19 @@ export function ProfileImportPanel({
             </span>
             <span>
               <strong>{summary?.rankingComparisonCount ?? 0}</strong>
-              comparisons
+              kink comparisons
+            </span>
+            <span>
+              <strong>{summary?.rewardPunishmentPreferenceCount ?? 0}</strong>
+              R/P preferences
+            </span>
+            <span>
+              <strong>{summary?.rewardPunishmentComparisonCount ?? 0}</strong>
+              R/P comparisons
+            </span>
+            <span>
+              <strong>{summary?.rewardPunishmentRecipeCount ?? 0}</strong>
+              recipes
             </span>
           </div>
 
@@ -191,14 +204,17 @@ export function ProfileImportPanel({
             Settings store v{candidate.backup.profile.settings.schemaVersion}
             {" · "}Quiz store v{candidate.backup.profile.quizzes.schemaVersion}
             {" · "}Catalog store v{candidate.backup.profile.catalog.schemaVersion}
+            {isProfileBackupV2(candidate.backup)
+              ? ` · R/P store v${candidate.backup.profile.rewardsPunishments.schemaVersion}`
+              : " · Legacy backup: no Rewards & Punishments payload"}
           </p>
 
           <div className="settings-import-warning">
             <strong>This replaces the current profile.</strong>
             <span>
               Import does not merge histories. Your current profile name, quiz data, catalog
-              preferences, limits, and This-or-That history will be replaced by this validated
-              backup.
+              preferences/rankings, and Rewards & Punishments data will be replaced by this
+              validated backup. Legacy v1 backups restore M11 as empty because they predate it.
             </span>
           </div>
 

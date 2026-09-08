@@ -21,6 +21,15 @@ import {
   createResetEverythingSelection,
   resetProfileData,
 } from "./profileReset";
+import {
+  createEmptyRewardPunishmentAuthoritativeState,
+  loadRewardPunishmentAuthoritativeState,
+  saveRewardPunishmentAuthoritativeState,
+} from "./rewardPunishmentLifecycle";
+import {
+  rewardPunishmentPrimitiveKey,
+  rewardPunishmentPrimitives,
+} from "./rewardPunishmentLibrary";
 
 class MemoryStorage implements StorageLike {
   values = new Map<string, string>();
@@ -32,6 +41,37 @@ class MemoryStorage implements StorageLike {
   setItem(key: string, value: string) {
     this.values.set(key, value);
   }
+}
+
+function seedM11(storage: MemoryStorage) {
+  const [first, second] = rewardPunishmentPrimitives;
+  const state = createEmptyRewardPunishmentAuthoritativeState();
+  const firstKey = rewardPunishmentPrimitiveKey(first.ref);
+  state.profile.preferences[firstKey] = {
+    ref: first.ref,
+    reward: { suitability: "works", randomEligible: true },
+    punishment: { suitability: "no", randomEligible: false },
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  };
+  state.ranking.comparisons.push({
+    id: "rp-cmp",
+    context: "reward",
+    leftPrimitiveKey: firstKey,
+    rightPrimitiveKey: rewardPunishmentPrimitiveKey(second.ref),
+    result: "left",
+    timestamp: "2026-09-06T00:00:00.000Z",
+  });
+  state.recipes.recipes.push({
+    id: "recipe-1",
+    kind: "reward",
+    name: "Recipe",
+    components: [{ kind: "primitive", ref: first.ref }],
+    randomEligible: true,
+    createdAt: "2026-09-06T00:00:00.000Z",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  });
+  saveRewardPunishmentAuthoritativeState(state, storage);
+  return state;
 }
 
 function seededStorage() {
@@ -79,85 +119,137 @@ function seededStorage() {
     storage,
   );
 
+  seedM11(storage);
   return storage;
 }
 
+const keepM11 = {
+  rewardsPunishments: false,
+};
+
 describe("selective profile reset", () => {
-  it("resets one quiz while preserving every other source", () => {
+  it("resets one quiz while preserving every other source including M11", () => {
     const storage = seededStorage();
+    const beforeM11 =
+      loadRewardPunishmentAuthoritativeState(storage);
 
     resetProfileData(
       {
         quizIds: ["dominance-submission"],
         catalogPreferences: false,
         rankingComparisons: false,
+        ...keepM11,
         profileSettings: false,
       },
       storage,
     );
 
-    const profile = loadProfile(storage);
-    expect(profile.quizzes["dominance-submission"]).toBeUndefined();
-    expect(profile.quizzes["roles-headspaces"]?.answers).toEqual({ "hs-1": 2 });
-    expect(loadCatalogProfile(storage).preferences.rope?.overall).toBe("love");
-    expect(loadCatalogProfile(storage).comparisons).toHaveLength(1);
-    expect(loadProfileSettings(storage).displayName).toBe("babygirl");
+    expect(
+      loadProfile(storage).quizzes["dominance-submission"],
+    ).toBeUndefined();
+    expect(
+      loadProfile(storage).quizzes["roles-headspaces"]?.answers,
+    ).toEqual({ "hs-1": 2 });
+    expect(
+      loadRewardPunishmentAuthoritativeState(storage),
+    ).toEqual(beforeM11);
   });
 
-  it("resets explicit catalog preferences without touching rankings", () => {
+  it("resets catalog preferences without touching M6 rankings or M11", () => {
     const storage = seededStorage();
+    const beforeM11 =
+      loadRewardPunishmentAuthoritativeState(storage);
 
     resetProfileData(
       {
         quizIds: [],
         catalogPreferences: true,
         rankingComparisons: false,
+        ...keepM11,
         profileSettings: false,
       },
       storage,
     );
 
-    const catalog = loadCatalogProfile(storage);
-    expect(catalog.preferences).toEqual({});
-    expect(catalog.comparisons).toHaveLength(1);
-    expect(loadProfile(storage).quizzes["dominance-submission"]).toBeDefined();
+    expect(loadCatalogProfile(storage).preferences).toEqual({});
+    expect(loadCatalogProfile(storage).comparisons).toHaveLength(1);
+    expect(
+      loadRewardPunishmentAuthoritativeState(storage),
+    ).toEqual(beforeM11);
   });
 
-  it("resets ranking comparisons without touching explicit preferences", () => {
+  it("resets M6 ranking comparisons without touching M11 contextual ranking", () => {
     const storage = seededStorage();
+    const beforeM11 =
+      loadRewardPunishmentAuthoritativeState(storage);
 
     resetProfileData(
       {
         quizIds: [],
         catalogPreferences: false,
         rankingComparisons: true,
+        ...keepM11,
         profileSettings: false,
       },
       storage,
     );
 
-    const catalog = loadCatalogProfile(storage);
-    expect(catalog.preferences.rope?.overall).toBe("love");
-    expect(catalog.comparisons).toEqual([]);
+    expect(loadCatalogProfile(storage).comparisons).toEqual([]);
+    expect(
+      loadRewardPunishmentAuthoritativeState(storage),
+    ).toEqual(beforeM11);
   });
 
-  it("resets profile settings without touching profile evidence", () => {
+  it("resets Rewards & Punishments as one independent scope", () => {
     const storage = seededStorage();
+
+    resetProfileData(
+      {
+        quizIds: [],
+        catalogPreferences: false,
+        rankingComparisons: false,
+        rewardsPunishments: true,
+        profileSettings: false,
+      },
+      storage,
+    );
+
+    expect(
+      loadRewardPunishmentAuthoritativeState(storage),
+    ).toEqual(createEmptyRewardPunishmentAuthoritativeState());
+    expect(
+      loadProfile(storage).quizzes["dominance-submission"],
+    ).toBeDefined();
+    expect(
+      loadCatalogProfile(storage).preferences.rope?.overall,
+    ).toBe("love");
+    expect(loadProfileSettings(storage).displayName).toBe(
+      "babygirl",
+    );
+  });
+
+  it("resets profile settings without touching profile evidence or M11", () => {
+    const storage = seededStorage();
+    const beforeM11 =
+      loadRewardPunishmentAuthoritativeState(storage);
 
     const result = resetProfileData(
       {
         quizIds: [],
         catalogPreferences: false,
         rankingComparisons: false,
+        ...keepM11,
         profileSettings: true,
       },
       storage,
     );
 
-    expect(result.settings.displayName).toBe(DEFAULT_PROFILE_DISPLAY_NAME);
-    expect(loadProfileSettings(storage).displayName).toBe(DEFAULT_PROFILE_DISPLAY_NAME);
-    expect(loadProfile(storage).quizzes["dominance-submission"]).toBeDefined();
-    expect(loadCatalogProfile(storage).preferences.rope?.overall).toBe("love");
+    expect(result.settings.displayName).toBe(
+      DEFAULT_PROFILE_DISPLAY_NAME,
+    );
+    expect(
+      loadRewardPunishmentAuthoritativeState(storage),
+    ).toEqual(beforeM11);
   });
 
   it("reset everything clears every canonical source and blocks legacy ranking resurrection", () => {
@@ -180,20 +272,34 @@ describe("selective profile reset", () => {
       }),
     );
 
-    resetProfileData(createResetEverythingSelection(), storage);
+    resetProfileData(
+      createResetEverythingSelection(),
+      storage,
+    );
 
     expect(loadProfile(storage).quizzes).toEqual({});
     const catalog = loadCatalogProfile(storage);
     expect(catalog.preferences).toEqual({});
     expect(catalog.comparisons).toEqual([]);
-    expect(catalog.rankingHistory?.activeRunId).toBe("ranking-run-initial");
-    expect(Object.values(catalog.rankingHistory?.runs ?? {})).toHaveLength(1);
-    expect(loadProfileSettings(storage).displayName).toBe(DEFAULT_PROFILE_DISPLAY_NAME);
-    expect(storage.getItem(CATALOG_PROFILE_STORAGE_KEY)).not.toBeNull();
+    expect(catalog.rankingHistory?.activeRunId).toBe(
+      "ranking-run-initial",
+    );
+    expect(
+      loadRewardPunishmentAuthoritativeState(storage),
+    ).toEqual(createEmptyRewardPunishmentAuthoritativeState());
+    expect(loadProfileSettings(storage).displayName).toBe(
+      DEFAULT_PROFILE_DISPLAY_NAME,
+    );
+    expect(
+      storage.getItem(CATALOG_PROFILE_STORAGE_KEY),
+    ).not.toBeNull();
   });
 
-  it("reset everything includes every registered quiz", () => {
+  it("reset everything includes every registered quiz and M11", () => {
     const selection = createResetEverythingSelection();
-    expect(new Set(selection.quizIds)).toEqual(new Set(quizzes.map((quiz) => quiz.id)));
+    expect(new Set(selection.quizIds)).toEqual(
+      new Set(quizzes.map((quiz) => quiz.id)),
+    );
+    expect(selection.rewardsPunishments).toBe(true);
   });
 });
