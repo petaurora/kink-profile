@@ -222,6 +222,20 @@ export function KinkThisOrThat({
     [profile, mode, categoryId],
   );
 
+  const visibleRankingItems = useMemo(
+    () => snapshot.items.slice(0, mode === "overall" ? 25 : 10),
+    [mode, snapshot.items],
+  );
+
+  const visibleRankingMovements = useMemo(
+    () =>
+      calculateViewRelativeRankingMovements(
+        visibleRankingItems,
+        previousComparableSnapshot,
+      ),
+    [previousComparableSnapshot, visibleRankingItems],
+  );
+
   const basePair = useMemo(
     () => selectNextPair(activeCatalog, activeComparisons, scope),
     [activeCatalog, activeComparisons, mode, categoryId, pairNonce],
@@ -780,14 +794,9 @@ export function KinkThisOrThat({
           </div>
 
           <div className="ranking-list">
-            {snapshot.items
-              .slice(0, mode === "overall" ? 25 : 10)
-              .map((item, index, visibleItems) => {
+            {visibleRankingItems.map((item, index) => {
               const result = resultView?.byCatalogId.get(item.id);
-              const movement = calculateViewRelativeRankingMovements(
-                visibleItems,
-                previousComparableSnapshot,
-              ).get(item.id);
+              const movement = visibleRankingMovements.get(item.id);
               const movementId = `${mode}:${categoryId}:${item.id}`;
               const visibleRank = index + 1;
 
