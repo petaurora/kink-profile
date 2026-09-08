@@ -46,6 +46,11 @@ function primitiveCategoryLabels(primitive: RewardPunishmentPrimitive) {
     );
 }
 
+type RandomizerSessionPick = {
+  primitive: RewardPunishmentPrimitive;
+  context: RewardPunishmentContext;
+};
+
 function sourceOriginText(primitive: RewardPunishmentPrimitive) {
   if (primitive.sourceOrigins.length > 0) {
     return primitive.sourceOrigins
@@ -91,11 +96,22 @@ export function RewardPunishmentRandomizer({
   const [previousKeys, setPreviousKeys] = useState<
     Partial<Record<RewardPunishmentContext, string>>
   >({});
+  const [sessionHistory, setSessionHistory] = useState<
+    RandomizerSessionPick[]
+  >([]);
 
   const pick = (target: RewardPunishmentContext) => {
     const next = pickRewardPunishmentRandomPrimitive(pools[target], {
       previousPrimitiveKey: previousKeys[target],
     });
+
+    if (result) {
+      setSessionHistory((current) => [
+        { primitive: result, context },
+        ...current,
+      ]);
+    }
+
     setContext(target);
     setResult(next);
 
@@ -169,79 +185,126 @@ export function RewardPunishmentRandomizer({
       </div>
 
       {result ? (
-        <article className="rp-randomizer-result panel" aria-live="polite">
-          <div className="rp-randomizer-result-top">
-            <span className="rp-source-badge">
-              {result.sourceType === "catalog" ? "Catalog" : "Action"}
-            </span>
-            <span>{contextLabel(context)} suggestion</span>
-          </div>
+        <>
+          <article className="rp-randomizer-result panel" aria-live="polite">
+            <button
+              type="button"
+              className="rp-randomizer-reroll-card"
+              onClick={() => pick(context)}
+              aria-label={`Pick another random ${context}`}
+            >
+              <div className="rp-randomizer-result-top">
+                <span className="rp-source-badge">
+                  {result.sourceType === "catalog" ? "Catalog" : "Action"}
+                </span>
+                <span>{contextLabel(context)} suggestion</span>
+              </div>
 
-          <div className="rp-randomizer-result-content">
-            <h2>{result.label}</h2>
+              <div className="rp-randomizer-result-content">
+                <h2>{result.label}</h2>
 
-            {categoryLabels.length > 0 && (
-              <div className="rp-randomizer-categories">
-                {categoryLabels.map((label) => (
-                  <span key={label}>{label}</span>
+                {categoryLabels.length > 0 && (
+                  <div className="rp-randomizer-categories">
+                    {categoryLabels.map((label) => (
+                      <span key={label}>{label}</span>
+                    ))}
+                  </div>
+                )}
+
+                {description && (
+                  <p className="rp-randomizer-description">{description}</p>
+                )}
+
+                {state?.note && (
+                  <div className="rp-randomizer-note">
+                    <span className="eyebrow">Your context note</span>
+                    <p>{state.note}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="rp-randomizer-tap-hint">
+                <strong>Tap card to pick again</strong>
+                <span>Another eligible option will be suggested.</span>
+              </div>
+            </button>
+
+            <details className="rp-randomizer-source">
+              <summary>View source</summary>
+              <dl>
+                <div>
+                  <dt>Primitive</dt>
+                  <dd>
+                    {result.ref.kind}:{result.ref.id}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Runtime source</dt>
+                  <dd>
+                    {result.sourceType === "catalog"
+                      ? "M6 catalog primitive"
+                      : "M11 action primitive"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Reference origin</dt>
+                  <dd>{sourceOriginText(result)}</dd>
+                </div>
+                <div>
+                  <dt>Random eligibility</dt>
+                  <dd>
+                    Explicitly included · {state?.suitability ?? "unset"}
+                  </dd>
+                </div>
+              </dl>
+            </details>
+
+            <p className="rp-randomizer-disclaimer">
+              This is a suggestion only. The app does not mark it assigned,
+              earned, owed, due, or completed.
+            </p>
+          </article>
+
+          {sessionHistory.length > 0 && (
+            <section className="rp-randomizer-history panel">
+              <div className="rp-randomizer-history-heading">
+                <div>
+                  <p className="eyebrow">This session</p>
+                  <h2>Already rolled</h2>
+                </div>
+                <span>{sessionHistory.length} previous</span>
+              </div>
+
+              <div className="rp-randomizer-history-list">
+                {sessionHistory.map((entry, index) => (
+                  <div
+                    className="rp-randomizer-history-row"
+                    key={`${rewardPunishmentPrimitiveKey(entry.primitive.ref)}:${entry.context}:${index}`}
+                  >
+                    <span className="rp-randomizer-history-index">
+                      {sessionHistory.length - index}
+                    </span>
+                    <div>
+                      <strong>{entry.primitive.label}</strong>
+                      <span>
+                        {contextLabel(entry.context)}
+                        {" · "}
+                        {entry.primitive.sourceType === "catalog"
+                          ? "Catalog"
+                          : "Action"}
+                      </span>
+                    </div>
+                  </div>
                 ))}
               </div>
-            )}
 
-            {description && (
-              <p className="rp-randomizer-description">{description}</p>
-            )}
-          </div>
-
-          <div className="rp-randomizer-actions">
-            <button className="primary" onClick={() => pick(context)}>
-              Pick again
-            </button>
-          </div>
-
-          {state?.note && (
-            <div className="rp-randomizer-note">
-              <span className="eyebrow">Your context note</span>
-              <p>{state.note}</p>
-            </div>
+              <p className="rp-randomizer-history-note">
+                Temporary reroll trail only. It clears when you leave the
+                Randomizer.
+              </p>
+            </section>
           )}
-
-          <details className="rp-randomizer-source">
-            <summary>View source</summary>
-            <dl>
-              <div>
-                <dt>Primitive</dt>
-                <dd>
-                  {result.ref.kind}:{result.ref.id}
-                </dd>
-              </div>
-              <div>
-                <dt>Runtime source</dt>
-                <dd>
-                  {result.sourceType === "catalog"
-                    ? "M6 catalog primitive"
-                    : "M11 action primitive"}
-                </dd>
-              </div>
-              <div>
-                <dt>Reference origin</dt>
-                <dd>{sourceOriginText(result)}</dd>
-              </div>
-              <div>
-                <dt>Random eligibility</dt>
-                <dd>
-                  Explicitly included · {state?.suitability ?? "unset"}
-                </dd>
-              </div>
-            </dl>
-          </details>
-
-          <p className="rp-randomizer-disclaimer">
-            This is a suggestion only. The app does not mark it assigned,
-            earned, owed, due, or completed.
-          </p>
-        </article>
-      ) : (
+        </>      ) : (
         <section className="rp-randomizer-placeholder panel">
           <p className="eyebrow">Waiting for a pool</p>
           <h2>Pick Reward or Punishment above.</h2>
