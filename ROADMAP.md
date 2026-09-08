@@ -798,70 +798,79 @@ M11 intentionally does **not** add assignment, earning, demerits, punishment deb
 
 ### M11.1 — Runtime library + stable identity
 
-- [ ] normalize the existing rewards/punishments reference bank into stable runtime action IDs
-- [ ] preserve source provenance without treating source-sheet origin as a context restriction
+- [ ] normalize the source bank into stable runtime action IDs
+- [ ] define stable contextual category IDs + weighted primitive mappings
+- [ ] preserve source provenance without treating source origin/category text as runtime identity
 - [ ] deduplicate obvious source overlaps
 - [ ] link exact/meaningful action overlaps to stable M6 catalog IDs
-- [ ] expose one primitive universe across catalog items + action items
 
-### M11.2 — Contextual-use profiles
+### M11.2 — Direct contextual-use profiles
 
-- [ ] add independent reward and punishment suitability overlays
+- [ ] add independent Reward and Punishment suitability overlays
 - [ ] support Strong / Works / Depends / No / Never / Unset
-- [ ] keep contextual use orthogonal to general M6 preference and M7 aggregation
+- [ ] keep direct M11 use orthogonal to general M6 preference and M7 aggregation
 - [ ] add independent random-pool eligibility
 - [ ] add searchable/filterable Reward and Punishment profile views
-- [ ] never infer punishment suitability from dislike/aversion
 
-### M11.3 — Quick Reward / Punishment / Both sorter
+### M11.3 — Category aggregation + inferred proposals
+
+- [ ] derive separate Reward/Punishment category affinity from direct M11 evidence
+- [ ] keep category affinity separate from evidence breadth/coverage
+- [ ] infer contextual proposals from canonical M7 mappings + direct M11 category patterns + similar confirmed items
+- [ ] allow bounded M6 general-affinity support for Reward inference
+- [ ] never use dislike/aversion as positive Punishment evidence
+- [ ] keep inferred proposals visually/provenance-distinct from explicit choices
+- [ ] accepting a proposal creates explicit Works, not Strong
+- [ ] prevent inferred values from feeding category affinity or M7 signals
+
+### M11.4 — Quick Reward / Punishment / Both sorter
 
 - [ ] add one-item-at-a-time classification cards
-- [ ] use Reward / Punishment / Both as the primary choices
+- [ ] use Reward / Punishment / Both as primary choices
 - [ ] provide Neither / not a fit and Skip for now
-- [ ] map quick choices to coarse contextual `works/no` states only
-- [ ] do not auto-set Strong, Depends, Never, or random eligibility
-- [ ] add Continue unsorted and category/source-focused runs
-- [ ] add Back / Undo + resume
+- [ ] map quick choices to coarse contextual Works/No only
+- [ ] optionally prioritize/show inferred suggestions without auto-selecting
+- [ ] add Continue unsorted, focused runs, Back / Undo, and resume
 - [ ] protect nuanced existing states from accidental overwrite
-- [ ] keep the table/list as secondary detailed refinement
 
-### M11.4 — Randomizer
+### M11.5 — Randomizer
 
-- [ ] add Random reward
-- [ ] add Random punishment
+- [ ] add Random reward / Random punishment
 - [ ] select only explicitly positive + random-enabled entries
-- [ ] add Pick again and useful empty states
-- [ ] avoid immediate in-session reroll repetition
+- [ ] never put inference-only items into the random pool
+- [ ] add Pick again, empty states, and in-session anti-repeat
 - [ ] keep assignment/completion/history semantics out
 
-### M11.5 — Reward & punishment builders
+### M11.6 — Reward & punishment builders
 
-- [ ] add Build a reward
-- [ ] add Build a punishment
-- [ ] compose ordered components from catalog items + action items
+- [ ] add Build a reward / Build a punishment
+- [ ] compose ordered components from catalog + action primitives
 - [ ] allow recipe-local custom text
 - [ ] save/edit/duplicate/delete reusable recipes
 - [ ] keep recipe composition non-recursive in V1
-- [ ] mark recipes Needs review when a referenced component becomes context-`Never` or stale
+- [ ] mark recipes Needs review when a referenced component becomes context-Never or stale
 
-### M11.6 — Recipe randomization + lifecycle integration
+### M11.7 — Recipe randomization + lifecycle integration
 
 - [ ] optionally include valid saved recipes in random pools
-- [ ] extend full profile backup/import with authoritative M11 state
+- [ ] extend full profile backup/import with authoritative direct M11 state
+- [ ] keep category aggregates/inferred proposals recomputable
 - [ ] add an independent Rewards & Punishments selective-reset scope
 - [ ] preserve M11 state across unrelated reset scopes
-- [ ] keep M11 data out of the share summary by default
+- [ ] keep M11 data out of share summary by default
 
-### M11.7 — UX polish + integration
+### M11.8 — Overall profile integration + UX polish
 
 - [ ] add first-class navigation
-- [ ] compact mobile list/filter behavior
-- [ ] prevent confusing duplicates between catalog-linked and action-library items
-- [ ] verify randomizer and builders use the same stable primitive model
-- [ ] regression-run M6/M7/M9 integration tests
+- [ ] add separate Reward and Punishment category summaries to the in-app overall profile
+- [ ] order confirmed highlights using direct state + bounded category relevance
+- [ ] show inferred Suggested to explore separately
+- [ ] keep M11 values out of M7 radar/orientation/Headspaces/Modes/Top Overall
+- [ ] compact mobile behavior + accessibility
+- [ ] regression-run M6/M7/M9 profile/evidence tests
 - [ ] finalize docs and mark M11 complete
 
-**M11 exit condition:** the user can quickly sort what works as Reward / Punishment / Both, refine nuanced contextual suitability, randomly pick from explicitly approved pools, and create reusable multi-part reward/punishment recipes without the app becoming an assignment or behavior-management system.
+**M11 exit condition:** the user can get profile-derived Reward/Punishment proposals, quickly sort/refine them into direct contextual evidence, see category-weighted Reward/Punishment summaries on the overall profile, randomly pick from explicitly approved pools, and create reusable recipes without the app becoming an assignment or behavior-management system.
 
 ---
 
