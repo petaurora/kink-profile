@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { ExpandableGroupedList } from "./ExpandableGroupedList";
 import { RewardPunishmentSorter } from "./RewardPunishmentSorter";
+import { RewardPunishmentRanking } from "./RewardPunishmentRanking";
+import "./rewardPunishmentRanking.css";
 import {
   kinkCatalog,
   type KinkCatalogItem,
@@ -192,7 +194,7 @@ export function RewardPunishmentProfiles({
   const [suitabilityFilter, setSuitabilityFilter] =
     useState<SuitabilityFilter>("all");
   const [randomOnly, setRandomOnly] = useState(false);
-  const [view, setView] = useState<"sorter" | "details">("sorter");
+  const [view, setView] = useState<"sorter" | "ranking" | "details">("sorter");
 
   const commitProfile = (next: RewardPunishmentProfileState) => {
     saveRewardPunishmentProfile(next);
@@ -363,6 +365,19 @@ export function RewardPunishmentProfiles({
     setRandomOnly(false);
   };
 
+  const openDetailedForPrimitive = (
+    primitive: RewardPunishmentPrimitive,
+    targetContext: RewardPunishmentContext,
+  ) => {
+    setContext(targetContext);
+    setQuery(primitive.label);
+    setCategoryFilter("all");
+    setSourceFilter("all");
+    setSuitabilityFilter("all");
+    setRandomOnly(false);
+    setView("details");
+  };
+
   const activeCounts = contextCounts[context];
 
   const acceptProposal = (proposal: InferredContextProposal) => {
@@ -405,6 +420,15 @@ export function RewardPunishmentProfiles({
         </button>
         <button
           type="button"
+          className={view === "ranking" ? "rp-view-tab is-active" : "rp-view-tab"}
+          aria-pressed={view === "ranking"}
+          onClick={() => setView("ranking")}
+        >
+          <strong>Contextual ranking</strong>
+          <span>Reward This-or-That · Punishment This-or-That</span>
+        </button>
+        <button
+          type="button"
           className={view === "details" ? "rp-view-tab is-active" : "rp-view-tab"}
           aria-pressed={view === "details"}
           onClick={() => setView("details")}
@@ -421,6 +445,11 @@ export function RewardPunishmentProfiles({
           canonicalSignals={canonicalSignals}
           catalogResultView={catalogResultView}
           onExit={() => setView("details")}
+        />
+      ) : view === "ranking" ? (
+        <RewardPunishmentRanking
+          profile={profile}
+          onReclassify={openDetailedForPrimitive}
         />
       ) : (
         <>
