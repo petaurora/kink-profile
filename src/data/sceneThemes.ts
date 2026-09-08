@@ -363,7 +363,7 @@ export function validateSceneThemeDefinitions(
   const headspaceIds = new Set(roleHeadspaces.map((entry) => entry.id));
   const dynamicModeIds = new Set(dynamicModes.map((entry) => entry.id));
   const facetIds = new Set(overallFacetDefinitions.map((entry) => entry.id));
-  const categoryIds = new Set(kinkCategories.map((entry) => entry.id));
+  const categoryIds = new Set<string>(kinkCategories.map((entry) => entry.id));
 
   for (const theme of definitions) {
     if (!stableIdPattern.test(theme.id)) {
