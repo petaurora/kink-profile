@@ -494,6 +494,10 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   margin-top: 18px;
 }
 
+.hub-hero-copy-mobile {
+  display: none;
+}
+
 .hub-section-heading {
   display: flex;
   justify-content: space-between;
@@ -2525,6 +2529,11 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   grid-template-columns: minmax(0, 1fr);
 }
 
+.catalog-hub-preference-stack {
+  display: grid;
+  gap: 12px;
+}
+
 .catalog-hub-card {
   min-height: 290px;
   padding: clamp(24px, 4vw, 34px);
@@ -2550,6 +2559,32 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .catalog-hub-card button {
   align-self: flex-start;
+}
+
+.catalog-hub-card-compact {
+  min-height: 0;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.catalog-hub-card-compact h3 {
+  margin: 5px 0 4px;
+  font-size: 1.15rem;
+  line-height: 1.1;
+}
+
+.catalog-hub-card-compact p {
+  max-width: 720px;
+  font-size: .86rem;
+}
+
+.catalog-hub-card-compact button {
+  flex: 0 0 auto;
+  align-self: center;
 }
 
 .catalog-hub-game {
@@ -3482,5 +3517,209 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
   .return-to-top span {
     display: none;
+  }
+}
+
+
+/* Compact mobile hub navigation */
+@media (max-width: 680px) {
+  .hub-stack {
+    gap: 10px;
+  }
+
+  .hub-section-heading {
+    padding: 12px 2px 0;
+    gap: 6px;
+  }
+
+  .hub-section-heading > p {
+    display: none;
+  }
+
+  .hub-section-heading h2 {
+    font-size: clamp(1.35rem, 6vw, 1.65rem);
+    line-height: 1.05;
+  }
+
+  .hub-section-heading .eyebrow {
+    margin-bottom: 6px;
+  }
+
+  .quiz-card,
+  .quiz-card.quiz-card-complete {
+    min-height: 0;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .quiz-card::after,
+  .quiz-card.quiz-card-complete::after {
+    display: none;
+  }
+
+  .quiz-card-top {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .quiz-card-top .status-chip,
+  .quiz-card-complete .status-chip {
+    display: none;
+  }
+
+  .quiz-card-copy,
+  .quiz-card-complete-copy {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .quiz-card-copy .eyebrow,
+  .quiz-card-copy > p:not(.eyebrow) {
+    display: none;
+  }
+
+  .quiz-card-copy h2,
+  .quiz-card-complete-copy h2 {
+    margin: 0;
+    overflow: hidden;
+    font-size: .96rem;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .quiz-card .quiz-icon,
+  .quiz-card-complete .quiz-icon {
+    width: 32px;
+    border-radius: 10px;
+  }
+
+  .quiz-card-footer {
+    grid-column: 3;
+    grid-row: 1;
+    display: block;
+  }
+
+  .quiz-card-footer > div {
+    display: none;
+  }
+
+  .quiz-card .primary.compact,
+  .quiz-card .secondary.compact,
+  .quiz-card-complete .secondary.compact {
+    grid-column: auto;
+    justify-self: end;
+    padding: 7px 10px;
+    font-size: .72rem;
+    white-space: nowrap;
+  }
+
+  .card-progress {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: 0;
+  }
+
+  .catalog-hub-card {
+    min-height: 0;
+    padding: 15px 16px;
+    gap: 12px;
+  }
+
+  .catalog-hub-card h3 {
+    margin: 7px 0 5px;
+    font-size: 1.15rem;
+    line-height: 1.08;
+  }
+
+  .catalog-hub-card p {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0;
+    font-size: .8rem;
+    line-height: 1.4;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .catalog-kicker {
+    font-size: .62rem;
+  }
+
+  .catalog-hub-card .primary,
+  .catalog-hub-card .secondary {
+    padding: 9px 13px;
+    font-size: .74rem;
+  }
+
+  .catalog-hub-preference-stack {
+    gap: 8px;
+  }
+
+  .catalog-hub-card-compact {
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .catalog-hub-card-compact .catalog-kicker,
+  .catalog-hub-card-compact p {
+    display: none;
+  }
+
+  .catalog-hub-card-compact h3 {
+    margin: 0;
+    overflow: hidden;
+    font-size: .96rem;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .catalog-hub-card-compact button {
+    justify-self: end;
+    padding: 7px 10px;
+    font-size: .72rem;
+    white-space: nowrap;
+  }
+
+  .site-nav-menu {
+    width: min(340px, calc(100vw - 20px));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .site-nav-menu button {
+    padding: .66rem .7rem;
+    font-size: .78rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .hub-hero {
+    padding: 4px 0 2px;
+  }
+
+  .hub-hero h1 {
+    font-size: clamp(2.1rem, 10vw, 2.65rem);
+  }
+
+  .hub-hero-copy-desktop {
+    display: none;
+  }
+
+  .hub-hero-copy-mobile {
+    display: block;
+    margin-top: 10px !important;
+    font-size: .9rem;
+    line-height: 1.45 !important;
   }
 }

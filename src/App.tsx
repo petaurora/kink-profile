@@ -843,6 +843,11 @@ export default function App({
       return;
     }
 
+    if (destination === "rewards-punishments") {
+      openRewardsPunishments();
+      return;
+    }
+
     setScreen(destination);
   };
 
@@ -874,10 +879,14 @@ export default function App({
             <div>
               <p className="eyebrow">Build it your way</p>
               <h1>Not one giant fucking test.</h1>
-              <p className="hero-copy">
+              <p className="hero-copy hub-hero-copy-desktop">
                 Use guided quizzes to spot patterns, This or That to compare what actually wins,
                 and the catalog to get specific. Start anywhere, revisit anything, and refine as
                 much or as little as you want.
+              </p>
+              <p className="hero-copy hub-hero-copy-mobile">
+                Explore broadly, configure what works for you, then add context where it matters.
+                Revisit anything whenever you want.
               </p>
             </div>
           </div>
@@ -901,16 +910,16 @@ export default function App({
 
           <div className="hub-section-heading catalog-hub-heading">
             <div>
-              <p className="eyebrow">02 · Rank & compare</p>
-              <h2>Figure out what actually rises to the top.</h2>
+              <p className="eyebrow">02 · Configure your kinks</p>
+              <h2>Define what works for you.</h2>
             </div>
             <p>
-              Quick pairwise choices help reveal preference order without asking you to rate
-              everything in isolation.
+              Compare interests to discover preference order, then fine-tune individual
+              interests and limits directly. Use either path, or both.
             </p>
           </div>
 
-          <div className="catalog-hub-grid catalog-hub-grid-single">
+          <div className="catalog-hub-preference-stack">
             <article className="catalog-hub-card catalog-hub-game panel">
               <div>
                 <span className="catalog-kicker">Comparative discovery</span>
@@ -924,41 +933,28 @@ export default function App({
                 Play This or That
               </button>
             </article>
-          </div>
 
-          <div className="hub-section-heading catalog-hub-heading">
-            <div>
-              <p className="eyebrow">03 · Detailed refinement</p>
-              <h2>Get specific.</h2>
-            </div>
-            <p>
-              Fine-tune individual interests, curiosity, uncertainty, and limits directly in
-              the full catalog.
-            </p>
-          </div>
-
-          <div className="catalog-hub-grid catalog-hub-grid-single">
-            <article className="catalog-hub-card panel">
-              <div>
-                <span className="catalog-kicker">Fine-tune directly</span>
+            <article className="catalog-hub-card catalog-hub-card-compact panel">
+              <div className="catalog-hub-compact-copy">
+                <span className="catalog-kicker">Detailed refinement</span>
                 <h3>Browse & set preferences</h3>
                 <p>
-                  Search all 551 items and explicitly mark Love, Like, Curious, Unsure,
-                  Not Interested, Hard Limit, or N/A. Change anything whenever you want.
+                  Fine-tune individual interests, curiosity, uncertainty, and limits directly
+                  in the full catalog.
                 </p>
               </div>
               <button
-                className="secondary"
+                className="secondary compact"
                 onClick={() => openCatalog(allCatalogDrilldown("hub"))}
               >
-                Browse preferences
+                Browse catalog
               </button>
             </article>
           </div>
 
           <div className="hub-section-heading catalog-hub-heading">
             <div>
-              <p className="eyebrow">04 · Contextual toolbox</p>
+              <p className="eyebrow">03 · Contextual toolbox</p>
               <h2>What works as a reward or punishment?</h2>
             </div>
             <p>
