@@ -1750,16 +1750,16 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 **Purpose:** let the user explicitly define what actually works as a reward and/or punishment.
 
-- [ ] add M11 profile storage/versioning
-- [ ] add independent reward/punishment suitability overlays
-- [ ] add `strong / works / depends / no / never / unset`
-- [ ] add independent random-pool eligibility
-- [ ] force `never` out of random eligibility
-- [ ] add Reward and Punishment profile views
-- [ ] support search/category/source/suitability filters
-- [ ] optionally show read-only general M6 preference context
-- [ ] ensure M11 direct edits never mutate M6/M7 evidence
-- [ ] add deterministic overlay independence tests
+- [x] add M11 profile storage/versioning
+- [x] add independent reward/punishment suitability overlays
+- [x] add `strong / works / depends / no / never / unset`
+- [x] add independent random-pool eligibility
+- [x] force `never` out of random eligibility
+- [x] add Reward and Punishment profile views
+- [x] support search/category/source/suitability filters
+- [x] optionally show read-only general M6 preference context
+- [x] ensure M11 direct edits never mutate M6/M7 evidence
+- [x] add deterministic overlay independence tests
 
 **Exit condition:** direct contextual evidence is authoritative, independent, and ready to drive category aggregation.
 

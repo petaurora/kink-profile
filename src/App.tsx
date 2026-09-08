@@ -8,6 +8,7 @@ import {
 } from "@tabler/icons-react";
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { KinkThisOrThat } from "./KinkThisOrThat";
+import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
 import {
   SiteHeader,
   type SiteHeaderDestination,
@@ -88,7 +89,14 @@ import {
   scoreSignals,
 } from "./lib/scoring";
 
-export type Screen = "hub" | "quiz" | "results" | "profile" | "catalog" | "ranking";
+export type Screen =
+  | "hub"
+  | "quiz"
+  | "results"
+  | "profile"
+  | "catalog"
+  | "ranking"
+  | "rewards-punishments";
 
 type AppProps = {
   initialScreen?: Screen;
@@ -798,6 +806,11 @@ export default function App({
     setScreen("catalog");
   };
 
+  const openRewardsPunishments = () => {
+    setCatalogProfileSnapshot(loadCatalogProfile());
+    setScreen("rewards-punishments");
+  };
+
   const closeCatalog = () => {
     if (catalogDrilldown.returnTo === "profile") {
       openProfile();
@@ -942,6 +955,33 @@ export default function App({
               </button>
             </article>
           </div>
+
+          <div className="hub-section-heading catalog-hub-heading">
+            <div>
+              <p className="eyebrow">04 · Contextual toolbox</p>
+              <h2>What works as a reward or punishment?</h2>
+            </div>
+            <p>
+              Classify contextual use separately from your general kink preference. The same
+              activity can work as a reward, punishment, both, or neither.
+            </p>
+          </div>
+
+          <div className="catalog-hub-grid catalog-hub-grid-single">
+            <article className="catalog-hub-card panel">
+              <div>
+                <span className="catalog-kicker">Rewards & Punishments</span>
+                <h3>Build the contextual profiles</h3>
+                <p>
+                  Rate reward and punishment suitability independently, keep context notes,
+                  and choose which positive items may eventually join the random pools.
+                </p>
+              </div>
+              <button className="primary" onClick={openRewardsPunishments}>
+                Open rewards & punishments
+              </button>
+            </article>
+          </div>
         </section>
       )}
 
@@ -962,6 +1002,13 @@ export default function App({
       {screen === "ranking" && (
         <KinkThisOrThat
           quizProfile={profile}
+          onClose={() => setScreen("hub")}
+        />
+      )}
+
+      {screen === "rewards-punishments" && (
+        <RewardPunishmentProfiles
+          catalogProfile={catalogProfileSnapshot}
           onClose={() => setScreen("hub")}
         />
       )}
