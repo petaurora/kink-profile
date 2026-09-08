@@ -23,6 +23,8 @@ The goal is to keep the project organized without turning a fun side project int
 | M10 | Optional | cloud persistence |
 | M11 | Planned | contextual rewards/punishments, randomizer, and reusable builders |
 | M12 | Scoped | preserve This-or-That runs and show rank movement over time |
+| M13 | Planned | turn profile context into theme-driven, low-decision scene composition |
+| M14 | Planned | multi-profile comparison, complementary fit, and shared scene filtering |
 
 ---
 
@@ -913,12 +915,164 @@ Core behavior:
 
 ---
 
+## M13 — Scene Builder
+
+**Goal:** turn the existing profile into a small, relevant, consent-aware play space for a specific moment so the user does not have to reconstruct all profile context from memory.
+
+See [docs/m13-scene-builder.md](docs/m13-scene-builder.md) for the detailed product/data contract.
+
+Core principle:
+
+> **Externalize context. Preserve choice. Reduce decision load.**
+
+M13 is a composition layer over M3/M6/M7/M11 rather than a new competing preference model.
+
+### M13.1 — Theme taxonomy + mappings
+
+- [ ] define stable SceneThemeIds
+- [ ] map themes to existing catalog/signal/headspace/mode/facet metadata
+- [ ] validate all mappings
+- [ ] keep theme selection query-only and out of profile evidence
+
+### M13.2 — Profile-aware candidate engine
+
+- [ ] derive scene candidates from direct profile evidence + selected themes
+- [ ] enforce Hard Limit / Not Interested / Not Applicable exclusions
+- [ ] preserve direct vs inferred provenance
+- [ ] support multi-theme coverage across different scene components
+
+### M13.3 — Current-session state
+
+- [ ] add Yes tonight / Maybe tonight / Not tonight
+- [ ] keep session state temporary and separate from durable preference
+- [ ] let current-session exclusions override positive profile evidence
+
+### M13.4 — Theme-based suggestion surface
+
+- [ ] support multi-select themes such as Pain + Deeper Submission
+- [ ] add optional effort/exploration/intensity narrowing
+- [ ] return a bounded play-space menu rather than the whole catalog
+- [ ] keep inference-only ideas in a separate Suggested to explore lane
+
+### M13.5 — Scene arc / composition builder
+
+- [ ] compose ordered setup/headspace/warm-up/core/escalation/come-down/aftercare blocks
+- [ ] add/remove/reorder/replace components
+- [ ] preserve stable source IDs
+- [ ] support scene-local notes
+
+### M13.6 — Randomization + shuffle
+
+- [ ] Pick something
+- [ ] Build something
+- [ ] Shuffle one part
+- [ ] enforce all current eligibility rules
+- [ ] use short-term anti-repeat
+
+### M13.7 — M11 integration
+
+- [ ] support optional reward/punishment scene slots
+- [ ] consume M11 item/recipe eligibility without duplicating suitability logic
+- [ ] keep inference-only M11 proposals out of silent randomization
+
+### M13.8 — Saved scenes + lifecycle
+
+- [ ] save/edit/duplicate/delete reusable scene templates
+- [ ] mark stale/excluded references Needs review
+- [ ] add backup/import support
+- [ ] add independent saved-scene reset scope
+
+### M13.9 — Accessibility + polish
+
+- [ ] mobile-first low-decision interaction
+- [ ] keyboard/focus/reduced-motion support
+- [ ] empty/sparse/full-profile behavior
+- [ ] regression-run dependent profile boundaries
+- [ ] finalize docs and mark M13 complete
+
+**M13 exit condition:** a single profile can select desired themes, narrow the current-session state, receive a small profile-backed candidate set, compose or randomize those options into a reusable scene, and understand why suggestions fit without mutating the underlying profile.
+
+---
+
+## M14 — Shared Profiles, Comparison & Partner Integration
+
+**Goal:** let two independent profiles coexist locally, compare them without merging them, and derive a shared interaction space that can feed M13.
+
+See [docs/m14-shared-profiles.md](docs/m14-shared-profiles.md) for the detailed product/data contract.
+
+Core principle:
+
+> **Compare profiles; do not collapse people into one profile.**
+
+M14 must support both **mutual** and **complementary** fit. It must not reduce the pair to one compatibility percentage.
+
+### M14.1 — Multi-profile storage + migration
+
+- [ ] define stable ProfileId + profile registry
+- [ ] migrate the current single-profile state without evidence loss
+- [ ] scope all authoritative storage by ProfileId
+- [ ] add migration/regression tests
+
+### M14.2 — Profile management + switcher
+
+- [ ] create and switch profiles
+- [ ] rename/delete/reset one profile safely
+- [ ] import/export one profile independently
+- [ ] preserve M9 lifecycle semantics per profile
+
+### M14.3 — Derived comparison engine
+
+- [ ] classify mutual positive / complementary / curious / excluded / unknown states
+- [ ] preserve why each relationship was derived
+- [ ] keep comparison recomputable with no evidence feedback
+
+### M14.4 — Comparison UI
+
+- [ ] We both love
+- [ ] We fit together here
+- [ ] Maybe explore
+- [ ] Different flavors
+- [ ] Not for shared suggestions
+- [ ] preserve unknown as unknown rather than mismatch
+
+### M14.5 — Interaction mappings
+
+- [ ] define versioned activity-side complements such as pain_giving ↔ pain_receiving
+- [ ] define validated role/headspace and dynamic-mode relationships
+- [ ] preserve authority/activity-side/role semantic separation
+- [ ] add deterministic mapping tests
+
+### M14.6 — Current participant intent
+
+- [ ] let each profile choose a temporary current headspace/mode/activity-side intent
+- [ ] combine participant intent with session overrides
+- [ ] keep temporary intent out of permanent profile evidence
+
+### M14.7 — Shared M13 scene filtering
+
+- [ ] feed both profiles into the M13 candidate engine
+- [ ] enforce either-person exclusions
+- [ ] support complementary rather than only identical interests
+- [ ] explain why a shared scene item fits both people
+- [ ] keep inference-only items out of silent randomization
+
+### M14.8 — Lifecycle, privacy + polish
+
+- [ ] define app-level multi-profile backup behavior
+- [ ] preserve independent profile export/import
+- [ ] review comparison/share privacy boundaries
+- [ ] accessibility/mobile polish
+- [ ] regression-run M13 and existing profile boundaries
+- [ ] finalize docs and mark M14 complete
+
+**M14 exit condition:** two independent profiles can coexist locally, be compared without evidence contamination, and feed both profiles plus current participant intent into M13 so the Scene Builder can produce a bounded shared play space that fits both people.
+
+---
+
 # Parked ideas
 
 Interesting, but not current scope:
 
-- partner compatibility/comparison
-- consensual partner profile sharing
 - custom quizzes
 - AI interpretation of results
 - educational content for catalog items
@@ -930,6 +1084,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7 and M9 are complete. M11 and M12 are fully scoped and ready for implementation when chosen.**
+**M7 and M9 are complete. M11, M12, M13, and M14 are fully scoped.**
 
-The next product work should still be chosen intentionally. Roadmap options include optional M8 adaptive/deeper quizzes, optional M10 cloud persistence, the planned M11 Rewards & Punishments toolbox, and M12 This-or-That ranking history/movement.
+The next product work should still be chosen intentionally. M13/M14 are future product layers, not an instruction to skip prerequisite or already-in-flight roadmap work: M13 is designed to consume the stable profile/reward systems, and M14 then extends M13 across two independent profiles.
