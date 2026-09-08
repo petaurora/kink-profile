@@ -38,7 +38,7 @@ import {
 } from "./lib/catalogResults";
 import { startNewKinkRankingRun } from "./lib/kinkRankingHistory";
 import {
-  calculateRankingMovement,
+  calculateViewRelativeRankingMovements,
   getPreviousComparableRankingSnapshot,
   rankingMovementLabel,
   type RankingMovement,
@@ -780,17 +780,20 @@ export function KinkThisOrThat({
           </div>
 
           <div className="ranking-list">
-            {snapshot.items.slice(0, mode === "overall" ? 25 : 10).map((item) => {
+            {snapshot.items
+              .slice(0, mode === "overall" ? 25 : 10)
+              .map((item, index, visibleItems) => {
               const result = resultView?.byCatalogId.get(item.id);
-              const movement = calculateRankingMovement(
-                item,
+              const movement = calculateViewRelativeRankingMovements(
+                visibleItems,
                 previousComparableSnapshot,
-              );
+              ).get(item.id);
               const movementId = `${mode}:${categoryId}:${item.id}`;
+              const visibleRank = index + 1;
 
               return (
                 <div className="ranking-row" key={item.id}>
-                  <span className="ranking-position">{item.rank}</span>
+                  <span className="ranking-position">{visibleRank}</span>
                   <div className="ranking-row-copy">
                     <div className="ranking-row-title">
                       <strong>{item.label}</strong>
