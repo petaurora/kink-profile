@@ -38,7 +38,7 @@ M6 preserves that baseline. C1/C2 closed identity and mapping gaps; C3 added dir
 
 Connect the catalog to the user's profile **without turning 551 rows into questionnaire homework**.
 
-M6 should leave us with a catalog system where:
+M6 leaves the app with a catalog system where:
 
 1. catalog items have durable identities
 2. users can explicitly classify an item without having to classify every item
@@ -670,7 +670,7 @@ The user must explicitly change explicit state.
 
 The imported ranking baseline correctly retains raw comparison history.
 
-M6 should tighten how each result contributes to ranking confidence.
+C5 tightened how each result contributes to ranking confidence.
 
 ## Left / right
 
@@ -792,11 +792,11 @@ This fulfills the original ranking design's requirement to preserve finalist par
 
 # Ranking tests
 
-The initial ranking slice has build coverage but no dedicated ranking test suite.
+The imported ranking slice originally had build coverage but no dedicated ranking test suite.
 
-M6 should add focused tests before ranking logic becomes profile-critical.
+M6 added focused ranking tests before the logic became profile-critical.
 
-Minimum cases:
+Covered cases include:
 
 - left/right Elo update
 - equal/tie behavior
@@ -1007,11 +1007,11 @@ Prefer a status such as archived/deprecated over hard deletion when user state m
 
 ---
 
-# What M6 should expose to M7
+# M6 → M7 interface boundary
 
-M7 should not need to understand TSV parsing or ranking internals.
+M7 does not need to understand TSV parsing or ranking internals.
 
-M6 should expose clean derived interfaces such as:
+M6 exposes/derives clean interfaces at this boundary, conceptually such as:
 
 ```ts
 getCatalogItem(id)
