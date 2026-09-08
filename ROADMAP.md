@@ -21,7 +21,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M8 | Optional | add quiz depth/adaptive follow-ups |
 | M9 | ✅ Complete | settings, profile lifecycle, portability, and sharing |
 | M10 | Optional | cloud persistence |
-| M11 | Planned | contextual rewards/punishments, randomizer, and reusable builders |
+| M11 | 🚧 In progress | contextual rewards/punishments, randomizer, and reusable builders |
 | M12 | Scoped | preserve This-or-That runs and show rank movement over time |
 | M13 | Planned | theme-driven, low-decision scene composition |
 | M14 | Planned | multi-profile comparison, complementary fit, and shared scene filtering |
@@ -174,7 +174,7 @@ The original M0 scorer remains only as the Starter Profile sampler.
 
 **Details:** [M11 Rewards & Punishments](docs/m11-rewards-punishments.md)
 
-- [ ] **M11.1** — runtime library + stable identity
+- [x] **M11.1** — runtime library + stable identity
 - [ ] **M11.2** — direct Reward/Punishment suitability profiles
 - [ ] **M11.3** — category aggregation + inferred proposals
 - [ ] **M11.4** — quick sorter + engagement pacing
@@ -261,6 +261,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7 and M9 are complete. M11, M12, M13, M14, and M15 are formally scoped.**
+**M7 and M9 are complete. M11 implementation is underway; M12, M13, M14, and M15 are formally scoped.**
 
 Choose the next implementation slice intentionally. M15 is the shared context model for any authority-sensitive giving/receiving behavior added inside M11, M13, or M14.

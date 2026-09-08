@@ -6,3 +6,4 @@ dist
 .env.*
 !.env.example
 src/data/kinkCatalog.generated.ts
+src/data/rewardPunishmentLibrary.generated.ts

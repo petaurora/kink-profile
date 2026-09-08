@@ -7,6 +7,14 @@ is readable, searchable, and diffable in GitHub, while source provenance remains
 
 ## Files
 
+Runtime-normalized M11 inputs are checked in separately from the raw source bank so runtime identity never depends on source row order or display labels:
+
+- `context-categories.tsv` — versioned stable M11 contextual category taxonomy
+- `action-library.tsv` — normalized, deduplicated action primitives with stable IDs and preserved source provenance
+- `catalog-category-mappings.tsv` — bounded mappings from every M6 catalog category into the M11 contextual taxonomy
+- `catalog-source-links.tsv` — source ideas that intentionally reuse an existing M6 catalog primitive identity
+
+
 - `punishments.tsv` — 486 punishment/consequence ideas combined from six source sheets
 - `rewards.tsv` — 183 reward ideas combined from two source sheets
 - `system-guide.md` — reward/punishment principles, tiers, rules, and metadata reconstructed from the workbook's structured guide rows
@@ -19,6 +27,4 @@ that did not exist in a given source remain blank rather than being inferred.
 
 Total source ideas: **486 punishments + 183 rewards = 669 ideas**.
 
-These files are reference/source material only. A future rewards-and-consequences runtime
-model should define stable IDs and application semantics separately rather than using source
-row order as identity.
+The original combined/source TSVs remain immutable reference material. M11 runtime code consumes the normalized files above, preserving all 669 source origins while keeping source row order and raw source category text out of runtime identity.
