@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { ExpandableGroupedList } from "./ExpandableGroupedList";
 import {
   kinkCatalog,
   type KinkCatalogItem,
@@ -6,6 +7,7 @@ import {
 import {
   rewardPunishmentActions,
   rewardPunishmentCategories,
+  rewardPunishmentPrimitiveKey,
   rewardPunishmentPrimitives,
   type RewardPunishmentPrimitive,
 } from "./lib/rewardPunishmentLibrary";
@@ -29,7 +31,16 @@ import {
   getCatalogPreference,
   type CatalogProfileState,
 } from "./lib/catalogProfile";
-import { catalogPreferenceLabels } from "./lib/catalogResults";
+import {
+  catalogPreferenceLabels,
+  type CatalogResultView,
+} from "./lib/catalogResults";
+import type { CanonicalSignalResult } from "./lib/overallProfileSignals";
+import {
+  buildInferredContextProposals,
+  buildRewardPunishmentCategoryProfile,
+  type InferredContextProposal,
+} from "./lib/rewardPunishmentInference";
 import "./rewardPunishment.css";
 
 type SourceFilter = "all" | "catalog" | "action";
@@ -44,6 +55,26 @@ const catalogById = new Map(catalogItems.map((item) => [item.id, item]));
 const categoryById = new Map(
   rewardPunishmentCategories.map((category) => [category.id, category]),
 );
+
+const categoryOrderById = new Map(
+  rewardPunishmentCategories.map((category) => [
+    category.id,
+    category.displayOrder,
+  ]),
+);
+
+function primaryContextCategoryId(
+  primitive: RewardPunishmentPrimitive,
+) {
+  return primitive.contextCategories
+    .slice()
+    .sort(
+      (left, right) =>
+        right.weight - left.weight ||
+        (categoryOrderById.get(left.id) ?? Number.MAX_SAFE_INTEGER) -
+          (categoryOrderById.get(right.id) ?? Number.MAX_SAFE_INTEGER),
+    )[0]?.id;
+}
 
 function suitabilityLabel(
   context: RewardPunishmentContext,
@@ -112,11 +143,40 @@ function contextTitle(context: RewardPunishmentContext) {
   return context === "reward" ? "Reward profile" : "Punishment profile";
 }
 
+function contextNoun(context: RewardPunishmentContext) {
+  return context === "reward" ? "reward" : "punishment";
+}
+
+function categoryAffinityLabel(affinity: number, coverage: number) {
+  if (coverage < 0.2) return "Emerging";
+  if (affinity >= 0.8) return "Very strong";
+  if (affinity >= 0.65) return "Strong";
+  if (affinity >= 0.45) return "Mixed";
+  return "Low";
+}
+
+function proposalBandLabel(
+  proposal: InferredContextProposal,
+  context: RewardPunishmentContext,
+) {
+  const band =
+    proposal.band === "likely"
+      ? "Likely"
+      : proposal.band === "possible"
+        ? "Possible"
+        : "Weak";
+  return `${band} ${contextNoun(context)}`;
+}
+
 export function RewardPunishmentProfiles({
   catalogProfile,
+  catalogResultView,
+  canonicalSignals,
   onClose,
 }: {
   catalogProfile: CatalogProfileState;
+  catalogResultView: CatalogResultView;
+  canonicalSignals: readonly CanonicalSignalResult[];
   onClose: () => void;
 }) {
   const [profile, setProfile] = useState<RewardPunishmentProfileState>(() =>
@@ -163,6 +223,44 @@ export function RewardPunishmentProfiles({
       punishment: count("punishment"),
     };
   }, [profile]);
+
+  const categoryProfile = useMemo(
+    () => buildRewardPunishmentCategoryProfile(profile, context),
+    [context, profile],
+  );
+
+  const proposals = useMemo(
+    () =>
+      buildInferredContextProposals(
+        profile,
+        context,
+        canonicalSignals,
+        catalogResultView,
+      ),
+    [canonicalSignals, catalogResultView, context, profile],
+  );
+
+  const proposalByKey = useMemo(
+    () =>
+      new Map(
+        proposals.map((proposal) => [
+          rewardPunishmentPrimitiveKey(proposal.ref),
+          proposal,
+        ]),
+      ),
+    [proposals],
+  );
+
+  const featuredProposals = useMemo(
+    () =>
+      proposals
+        .filter(
+          (proposal) =>
+            proposal.band === "likely" || proposal.band === "possible",
+        )
+        .slice(0, 6),
+    [proposals],
+  );
 
   const visiblePrimitives = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -229,6 +327,27 @@ export function RewardPunishmentProfiles({
     suitabilityFilter,
   ]);
 
+  const visibleByCategory = useMemo(() => {
+    if (categoryFilter !== "all") {
+      const category = rewardPunishmentCategories.find(
+        (candidate) => candidate.id === categoryFilter,
+      );
+      return category && visiblePrimitives.length > 0
+        ? [{ category, items: visiblePrimitives }]
+        : [];
+    }
+
+    return rewardPunishmentCategories
+      .map((category) => ({
+        category,
+        items: visiblePrimitives.filter(
+          (primitive) =>
+            primaryContextCategoryId(primitive) === category.id,
+        ),
+      }))
+      .filter((group) => group.items.length > 0);
+  }, [categoryFilter, visiblePrimitives]);
+
   const resetFilters = () => {
     setQuery("");
     setCategoryFilter("all");
@@ -238,6 +357,17 @@ export function RewardPunishmentProfiles({
   };
 
   const activeCounts = contextCounts[context];
+
+  const acceptProposal = (proposal: InferredContextProposal) => {
+    updateProfile((current) =>
+      setContextSuitability(
+        current,
+        proposal.ref,
+        proposal.context,
+        "works",
+      ),
+    );
+  };
 
   return (
     <section className="rp-stack">
@@ -285,6 +415,125 @@ export function RewardPunishmentProfiles({
           Only your direct choices live here. Source-list origin and your broader
           catalog preference are context, not answers.
         </p>
+      </section>
+
+      <section className="rp-patterns panel">
+        <div className="rp-patterns-heading">
+          <div>
+            <p className="eyebrow">Direct category profile</p>
+            <h2>What your confirmed answers are actually showing.</h2>
+          </div>
+          <p>
+            Affinity and evidence breadth are separate. One strong answer can start
+            a pattern, but it cannot fake the confidence of a well-explored category.
+          </p>
+        </div>
+
+        {categoryProfile.length === 0 ? (
+          <div className="rp-patterns-empty">
+            Rate a few {contextNoun(context)} items and category patterns will
+            start appearing here.
+          </div>
+        ) : (
+          <div className="rp-pattern-grid">
+            {categoryProfile.slice(0, 6).map((category) => (
+              <article className="rp-pattern-card" key={category.categoryId}>
+                <div>
+                  <span>
+                    {categoryById.get(category.categoryId)?.label ??
+                      category.categoryId}
+                  </span>
+                  <strong>
+                    {categoryAffinityLabel(
+                      category.affinity,
+                      category.coverage,
+                    )}
+                  </strong>
+                </div>
+                <div className="rp-pattern-stats">
+                  <span>{Math.round(category.affinity * 100)}% affinity</span>
+                  <span>{Math.round(category.coverage * 100)}% evidence</span>
+                  <span>{category.evidenceCount} direct</span>
+                </div>
+                <div
+                  className="rp-pattern-track"
+                  aria-label={`${Math.round(category.coverage * 100)}% evidence coverage`}
+                >
+                  <span style={{ width: `${category.coverage * 100}%` }} />
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="rp-suggestions panel">
+        <div className="rp-suggestions-heading">
+          <div>
+            <p className="eyebrow">Profile suggestions</p>
+            <h2>Worth sorting next.</h2>
+          </div>
+          <p>
+            These are derived proposals, not answers. Accepting one records a
+            conservative <strong>Works</strong> state and does not add it to the
+            random pool.
+          </p>
+        </div>
+
+        {featuredProposals.length === 0 ? (
+          <div className="rp-suggestions-empty">
+            {activeCounts.direct === 0
+              ? `Direct ${contextNoun(context)} answers will make these suggestions more personal.`
+              : "No likely or possible proposals yet. Keep refining and the model will surface stronger candidates."}
+          </div>
+        ) : (
+          <div className="rp-suggestion-grid">
+            {featuredProposals.map((proposal) => {
+              const primitive = rewardPunishmentPrimitives.find(
+                (candidate) =>
+                  rewardPunishmentPrimitiveKey(candidate.ref) ===
+                  rewardPunishmentPrimitiveKey(proposal.ref),
+              );
+              if (!primitive) return null;
+
+              return (
+                <article
+                  className="rp-suggestion-card"
+                  key={rewardPunishmentPrimitiveKey(proposal.ref)}
+                >
+                  <div className="rp-suggestion-top">
+                    <span>Profile suggestion</span>
+                    <strong>{proposalBandLabel(proposal, context)}</strong>
+                  </div>
+                  <h3>{primitive.label}</h3>
+                  <div className="rp-suggestion-score">
+                    <span>{Math.round(proposal.score * 100)}% fit</span>
+                    <span>{Math.round(proposal.confidence * 100)}% confidence</span>
+                  </div>
+                  {proposal.categoryContributions.length > 0 && (
+                    <div className="rp-suggestion-categories">
+                      {proposal.categoryContributions
+                        .slice(0, 2)
+                        .map(
+                          (item) =>
+                            categoryById.get(item.categoryId)?.label ??
+                            item.categoryId,
+                        )
+                        .join(" · ")}
+                    </div>
+                  )}
+                  {proposal.reasons[0] && <p>{proposal.reasons[0]}</p>}
+                  <button
+                    className="secondary compact"
+                    onClick={() => acceptProposal(proposal)}
+                  >
+                    Accept as {contextNoun(context)}
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       <div className="rp-toolbar panel">
@@ -360,215 +609,242 @@ export function RewardPunishmentProfiles({
         </button>
       </div>
 
-      <div className="rp-list-summary">
-        <strong>{visiblePrimitives.length}</strong>
-        <span>matching primitives</span>
-        <span aria-hidden="true">·</span>
-        <span>
-          {rewardPunishmentPrimitives.length} total across catalog + action
-          library
-        </span>
-      </div>
+      <ExpandableGroupedList
+        groups={visibleByCategory.map(({ category, items }) => ({
+          id: category.id,
+          title: category.label,
+          eyebrow: "Context category",
+          items,
+        }))}
+        columnHeadings={[
+          "Item",
+          context === "reward" ? "Reward use" : "Punishment use",
+          "Random pool",
+          "More",
+        ]}
+        headClassName="rp-table-head"
+        listClassName="rp-table"
+        focusGroupId={
+          categoryFilter === "all" ? undefined : categoryFilter
+        }
+        expansionKey={context + ":" + categoryFilter}
+        summary={
+          <>
+            <strong>{visiblePrimitives.length}</strong>
+            <span>matching primitives</span>
+            <span aria-hidden="true">·</span>
+            <strong>{activeCounts.direct}</strong>
+            <span>directly rated in this context</span>
+          </>
+        }
+        emptyTitle="No matches."
+        emptyCopy="Try another search or clear one of the filters."
+        onClearFilters={resetFilters}
+        getGroupMeta={(group) => {
+          const directCount = group.items.filter(
+            (primitive) =>
+              getContextualUseState(
+                profile,
+                primitive.ref,
+                context,
+              ).suitability !== "unset",
+          ).length;
+          return `${group.items.length} shown · ${directCount} rated`;
+        }}
+        renderItem={(primitive) => {
+          const state = getContextualUseState(
+            profile,
+            primitive.ref,
+            context,
+          );
+          const categoryLabels = primitive.contextCategories
+            .map(
+              (mapping) =>
+                categoryById.get(mapping.id)?.label ?? mapping.id,
+            )
+            .slice(0, 2);
+          const generalPreference =
+            primitive.ref.kind === "catalog"
+              ? getCatalogPreference(
+                  catalogProfile.preferences[primitive.ref.id],
+                  "overall",
+                )
+              : undefined;
+          const action =
+            primitive.ref.kind === "action"
+              ? actionById.get(primitive.ref.id)
+              : undefined;
+          const catalog =
+            primitive.ref.kind === "catalog"
+              ? catalogById.get(primitive.ref.id)
+              : undefined;
+          const proposal = proposalByKey.get(
+            rewardPunishmentPrimitiveKey(primitive.ref),
+          );
 
-      <div className="rp-table panel">
-        <div className="rp-table-head" aria-hidden="true">
-          <span>Item</span>
-          <span>{context === "reward" ? "Reward use" : "Punishment use"}</span>
-          <span>Random pool</span>
-          <span>More</span>
-        </div>
-
-        {visiblePrimitives.length === 0 ? (
-          <div className="rp-empty">
-            <h2>No matches.</h2>
-            <p>Try another search or clear one of the filters.</p>
-            <button className="secondary compact" onClick={resetFilters}>
-              Clear filters
-            </button>
-          </div>
-        ) : (
-          visiblePrimitives.map((primitive) => {
-            const state = getContextualUseState(
-              profile,
-              primitive.ref,
-              context,
-            );
-            const categoryLabels = primitive.contextCategories
-              .map(
-                (mapping) =>
-                  categoryById.get(mapping.id)?.label ?? mapping.id,
-              )
-              .slice(0, 2);
-            const generalPreference =
-              primitive.ref.kind === "catalog"
-                ? getCatalogPreference(
-                    catalogProfile.preferences[primitive.ref.id],
-                    "overall",
-                  )
-                : undefined;
-            const action =
-              primitive.ref.kind === "action"
-                ? actionById.get(primitive.ref.id)
-                : undefined;
-            const catalog =
-              primitive.ref.kind === "catalog"
-                ? catalogById.get(primitive.ref.id)
-                : undefined;
-
-            return (
-              <article
-                className={
-                  state.suitability === "never"
-                    ? "rp-row is-never"
-                    : "rp-row"
-                }
-                key={primitive.sourceType + ":" + primitive.ref.id}
-              >
-                <div className="rp-row-main">
-                  <div className="rp-item-title">
-                    <strong>{primitive.label}</strong>
-                    <span className="rp-source-badge">
-                      {primitive.sourceType === "catalog"
-                        ? "Catalog"
-                        : "Action"}
-                    </span>
-                  </div>
-                  <div className="rp-category-line">
-                    {categoryLabels.join(" · ")}
-                  </div>
-                  {generalPreference && (
-                    <div className="rp-general-hint">
-                      General preference:{" "}
-                      {catalogPreferenceLabels[generalPreference]}
-                    </div>
-                  )}
+          return (
+            <article
+              className={
+                state.suitability === "never"
+                  ? "rp-row is-never"
+                  : "rp-row"
+              }
+              key={primitive.sourceType + ":" + primitive.ref.id}
+            >
+              <div className="rp-row-main">
+                <div className="rp-item-title">
+                  <strong>{primitive.label}</strong>
+                  <span className="rp-source-badge">
+                    {primitive.sourceType === "catalog"
+                      ? "Catalog"
+                      : "Action"}
+                  </span>
                 </div>
-
-                <label className="rp-suitability-editor">
-                  <span className="sr-only">
-                    {contextTitle(context)} suitability for{" "}
-                    {primitive.label}
-                  </span>
-                  <select
-                    value={state.suitability}
-                    onChange={(event) =>
-                      updateProfile((current) =>
-                        setContextSuitability(
-                          current,
-                          primitive.ref,
-                          context,
-                          event.target.value as ContextSuitability,
-                        ),
-                      )
-                    }
-                  >
-                    {contextSuitabilities.map((suitability) => (
-                      <option key={suitability} value={suitability}>
-                        {suitabilityLabel(context, suitability)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="rp-random-toggle">
-                  <input
-                    type="checkbox"
-                    checked={
-                      state.randomEligible &&
-                      canBeRandomEligible(state.suitability)
-                    }
-                    disabled={!canBeRandomEligible(state.suitability)}
-                    onChange={(event) =>
-                      updateProfile((current) =>
-                        setContextRandomEligible(
-                          current,
-                          primitive.ref,
-                          context,
-                          event.target.checked,
-                        ),
-                      )
-                    }
-                  />
-                  <span>
-                    {canBeRandomEligible(state.suitability)
-                      ? "Include"
-                      : "Unavailable"}
-                  </span>
-                </label>
-
-                <details className="rp-details">
-                  <summary>Details</summary>
-                  <div>
-                    {(action?.description || catalog?.description) && (
-                      <p>{action?.description || catalog?.description}</p>
-                    )}
-
-                    <dl>
-                      <div>
-                        <dt>Primitive</dt>
-                        <dd>
-                          {primitive.ref.kind}:{primitive.ref.id}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>Categories</dt>
-                        <dd>
-                          {primitive.contextCategories
-                            .map(
-                              (mapping) =>
-                                categoryById.get(mapping.id)?.label ??
-                                mapping.id,
-                            )
-                            .join(" · ")}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>Reference origin</dt>
-                        <dd>
-                          {primitive.sourceOrigins.length > 0
-                            ? primitive.sourceOrigins
-                                .map(
-                                  (origin) =>
-                                    origin.sourceSheet +
-                                    " · row " +
-                                    origin.sourceRow,
-                                )
-                                .join(" · ")
-                            : primitive.sourceType === "catalog"
-                              ? "M6 catalog"
-                              : "Normalized action library"}
-                        </dd>
-                      </div>
-                    </dl>
-
-                    <label className="rp-note-editor">
-                      <span>
-                        {context === "reward"
-                          ? "Reward-context note"
-                          : "Punishment-context note"}
-                      </span>
-                      <textarea
-                        value={state.note ?? ""}
-                        placeholder="Optional context, boundaries, or why this works…"
-                        onChange={(event) =>
-                          updateProfile((current) =>
-                            setContextNote(
-                              current,
-                              primitive.ref,
-                              context,
-                              event.target.value,
-                            ),
-                          )
-                        }
-                      />
-                    </label>
+                <div className="rp-category-line">
+                  {categoryLabels.join(" · ")}
+                </div>
+                {generalPreference && (
+                  <div className="rp-general-hint">
+                    General preference:{" "}
+                    {catalogPreferenceLabels[generalPreference]}
                   </div>
-                </details>
-              </article>
-            );
-          })
-        )}
-      </div>
+                )}
+                {proposal && (
+                  <div className="rp-proposal-hint">
+                    Profile suggestion:{" "}
+                    {proposalBandLabel(proposal, context)}
+                    {" · "}
+                    {Math.round(proposal.score * 100)}% fit
+                    {" · "}
+                    {Math.round(proposal.confidence * 100)}% confidence
+                  </div>
+                )}
+              </div>
+
+              <label className="rp-suitability-editor">
+                <span className="sr-only">
+                  {contextTitle(context)} suitability for{" "}
+                  {primitive.label}
+                </span>
+                <select
+                  value={state.suitability}
+                  onChange={(event) =>
+                    updateProfile((current) =>
+                      setContextSuitability(
+                        current,
+                        primitive.ref,
+                        context,
+                        event.target.value as ContextSuitability,
+                      ),
+                    )
+                  }
+                >
+                  {contextSuitabilities.map((suitability) => (
+                    <option key={suitability} value={suitability}>
+                      {suitabilityLabel(context, suitability)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="rp-random-toggle">
+                <input
+                  type="checkbox"
+                  checked={
+                    state.randomEligible &&
+                    canBeRandomEligible(state.suitability)
+                  }
+                  disabled={!canBeRandomEligible(state.suitability)}
+                  onChange={(event) =>
+                    updateProfile((current) =>
+                      setContextRandomEligible(
+                        current,
+                        primitive.ref,
+                        context,
+                        event.target.checked,
+                      ),
+                    )
+                  }
+                />
+                <span>
+                  {canBeRandomEligible(state.suitability)
+                    ? "Include"
+                    : "Unavailable"}
+                </span>
+              </label>
+
+              <details className="rp-details">
+                <summary>Details</summary>
+                <div>
+                  {(action?.description || catalog?.description) && (
+                    <p>{action?.description || catalog?.description}</p>
+                  )}
+
+                  <dl>
+                    <div>
+                      <dt>Primitive</dt>
+                      <dd>
+                        {primitive.ref.kind}:{primitive.ref.id}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Categories</dt>
+                      <dd>
+                        {primitive.contextCategories
+                          .map(
+                            (mapping) =>
+                              categoryById.get(mapping.id)?.label ??
+                              mapping.id,
+                          )
+                          .join(" · ")}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Reference origin</dt>
+                      <dd>
+                        {primitive.sourceOrigins.length > 0
+                          ? primitive.sourceOrigins
+                              .map(
+                                (origin) =>
+                                  origin.sourceSheet +
+                                  " · row " +
+                                  origin.sourceRow,
+                              )
+                              .join(" · ")
+                          : primitive.sourceType === "catalog"
+                            ? "M6 catalog"
+                            : "Normalized action library"}
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <label className="rp-note-editor">
+                    <span>
+                      {context === "reward"
+                        ? "Reward-context note"
+                        : "Punishment-context note"}
+                    </span>
+                    <textarea
+                      value={state.note ?? ""}
+                      placeholder="Optional context, boundaries, or why this works…"
+                      onChange={(event) =>
+                        updateProfile((current) =>
+                          setContextNote(
+                            current,
+                            primitive.ref,
+                            context,
+                            event.target.value,
+                          ),
+                        )
+                      }
+                    />
+                  </label>
+                </div>
+              </details>
+            </article>
+          );
+        }}
+      />
     </section>
   );
 }

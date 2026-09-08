@@ -1009,6 +1009,8 @@ export default function App({
       {screen === "rewards-punishments" && (
         <RewardPunishmentProfiles
           catalogProfile={catalogProfileSnapshot}
+          catalogResultView={catalogResultView}
+          canonicalSignals={canonicalSignals}
           onClose={() => setScreen("hub")}
         />
       )}

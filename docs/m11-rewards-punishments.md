@@ -1769,20 +1769,20 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 **Purpose:** give M11 the same "profile can suggest useful starting points" behavior as the M6 catalog without turning derived guesses into explicit answers.
 
-- [ ] derive separate Reward and Punishment category affinity from direct M11 evidence only
-- [ ] keep category affinity separate from category evidence breadth/coverage
-- [ ] use stable contextual-category mapping weights
-- [ ] add versioned inferred contextual proposal model with score + confidence + provenance
-- [ ] reuse canonical M7 signal evidence rather than raw quiz percentages
-- [ ] use M6 general affinity as bounded supporting evidence for Reward proposals
-- [ ] weight proposals by direct M11 contextual category preferences
-- [ ] use similar directly confirmed M11 items as supporting evidence
-- [ ] never use dislike/aversion as positive punishment evidence
-- [ ] enforce Hard Limit / context-`never` proposal blockers
-- [ ] keep inferred proposals out of random eligibility
-- [ ] accepting a proposal creates conservative explicit `works`, not `strong`
-- [ ] prevent inferred proposals from feeding category aggregation or M7 signals
-- [ ] add deterministic score/confidence/no-feedback-loop tests
+- [x] derive separate Reward and Punishment category affinity from direct M11 evidence only
+- [x] keep category affinity separate from category evidence breadth/coverage
+- [x] use stable contextual-category mapping weights
+- [x] add versioned inferred contextual proposal model with score + confidence + provenance
+- [x] reuse canonical M7 signal evidence rather than raw quiz percentages
+- [x] use M6 general affinity as bounded supporting evidence for Reward proposals
+- [x] weight proposals by direct M11 contextual category preferences
+- [x] use similar directly confirmed M11 items as supporting evidence
+- [x] never use dislike/aversion as positive punishment evidence
+- [x] enforce Hard Limit / context-`never` proposal blockers
+- [x] keep inferred proposals out of random eligibility
+- [x] accepting a proposal creates conservative explicit `works`, not `strong`
+- [x] prevent inferred proposals from feeding category aggregation or M7 signals
+- [x] add deterministic score/confidence/no-feedback-loop tests
 
 **Exit condition:** unrated items can show explainable Reward/Punishment proposals weighted by the user's category patterns while explicit choices remain authoritative.
 

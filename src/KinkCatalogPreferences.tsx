@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { ExpandableGroupedList } from "./ExpandableGroupedList";
 import {
   kinkCatalog,
   kinkCategories,
@@ -63,12 +64,6 @@ export function KinkCatalogPreferences({
     useState<CatalogPreferenceFilter>(
       initialFocus.preferenceFilter ?? "all",
     );
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    () =>
-      initialFocus.categoryId
-        ? new Set([initialFocus.categoryId])
-        : new Set(),
-  );
   const resultView = useMemo(
     () => buildCatalogResultView(quizProfile, profile),
     [quizProfile, profile],
@@ -132,26 +127,6 @@ export function KinkCatalogPreferences({
     setQuery("");
     setCategoryFilter("all");
     setPreferenceFilter("all");
-    setExpandedCategories(new Set());
-  };
-
-  const toggleCategory = (categoryId: string) => {
-    setExpandedCategories((current) => {
-      const next = new Set(current);
-      if (next.has(categoryId)) next.delete(categoryId);
-      else next.add(categoryId);
-      return next;
-    });
-  };
-
-  const expandVisibleCategories = () => {
-    setExpandedCategories(
-      new Set(visibleByCategory.map(({ category }) => category.id)),
-    );
-  };
-
-  const collapseAllCategories = () => {
-    setExpandedCategories(new Set());
   };
 
   return (
@@ -217,13 +192,7 @@ export function KinkCatalogPreferences({
           <span>Category</span>
           <select
             value={categoryFilter}
-            onChange={(event) => {
-              const nextCategory = event.target.value;
-              setCategoryFilter(nextCategory);
-              setExpandedCategories(
-                nextCategory === "all" ? new Set() : new Set([nextCategory]),
-              );
-            }}
+            onChange={(event) => setCategoryFilter(event.target.value)}
           >
             <option value="all">All categories</option>
             {kinkCategories.map((category) => (
@@ -326,270 +295,222 @@ export function KinkCatalogPreferences({
         </div>
       </section>
 
-      <div className="catalog-table-summary">
-        <div className="catalog-table-summary-copy">
-          <strong>{visibleItems.length}</strong>
-          <span>matching items</span>
-          <span aria-hidden="true">·</span>
-          <strong>{explicitlySetCount}</strong>
-          <span>with explicit preferences</span>
-        </div>
-        <div className="catalog-category-actions">
-          <button className="text-button" onClick={expandVisibleCategories}>
-            Expand all
-          </button>
-          <button className="text-button" onClick={collapseAllCategories}>
-            Collapse all
-          </button>
-        </div>
-      </div>
-
-      <div className="catalog-table panel">
-        <div className="catalog-table-head" aria-hidden="true">
-          <span>Kink</span>
-          <span>Preference</span>
-          <span>Evidence</span>
-          <span>More</span>
-        </div>
-
-        {visibleByCategory.length === 0 ? (
-          <div className="catalog-empty">
-            <h2>No matches.</h2>
-            <p>Try clearing a filter or searching another term.</p>
-            <button className="secondary compact" onClick={resetFilters}>
-              Clear filters
-            </button>
-          </div>
-        ) : (
-          visibleByCategory.map(({ category, items }) => {
-            const isExpanded = expandedCategories.has(category.id);
-
-            return (
-              <section
-                className={
-                  isExpanded
-                    ? "catalog-category-group expanded"
-                    : "catalog-category-group"
-                }
-                key={category.id}
-              >
-                <button
-                  type="button"
-                  className="catalog-category-heading"
-                  aria-expanded={isExpanded}
-                  onClick={() => toggleCategory(category.id)}
-                >
-                  <div>
-                    <span className="eyebrow">
-                      {category.domain.replaceAll("-", " ")}
-                    </span>
-                    <h2>{category.label}</h2>
-                  </div>
-                  <span className="catalog-category-meta">
-                    {items.length} shown
-                    <span className="catalog-category-chevron" aria-hidden="true">
-                      {isExpanded ? "−" : "+"}
-                    </span>
-                  </span>
-                </button>
-
-                {isExpanded && (
-                  <div className="catalog-rows">
-                    {items.map((item) => {
-                      const result = resultView.byCatalogId.get(item.id);
-                      const preference =
-                        result?.explicitState ??
-                        getCatalogPreference(
-                          profile.preferences[item.id],
-                          "overall",
-                        );
-                      const categoryRank = result?.categoryRank;
-                      const overallRank = result?.overallRank;
-                      const inferred = result?.inferred;
-                      const hasEvidence =
-                        Boolean(categoryRank) ||
-                        Boolean(overallRank) ||
-                        Boolean(inferred) ||
-                        (result?.meaningfulPairwiseComparisons ?? 0) > 0 ||
-                        Boolean(result?.excludedFromNewRanking);
-
-                      return (
-                        <article
-                          className={`catalog-row ${preferenceClass(preference)}`}
-                          key={item.id}
-                        >
-                          <div className="catalog-row-main">
-                            <strong>{item.label}</strong>
-                            {item.aliases.length > 0 && (
-                              <span className="catalog-row-alias">
-                                aka {item.aliases.slice(0, 2).join(" · ")}
-                              </span>
-                            )}
-                          </div>
-
-                          <label className="catalog-preference-editor">
-                            <span className="sr-only">
-                              Preference for {item.label}
-                            </span>
-                            <select
-                              value={preference ?? ""}
-                              onChange={(event) =>
-                                updatePreference(
-                                  item.id,
-                                  event.target.value
-                                    ? (event.target.value as CatalogPreferenceState)
-                                    : undefined,
-                                )
-                              }
-                            >
-                              <option value="">Not set</option>
-                              {catalogPreferenceStates.map((state) => (
-                                <option key={state} value={state}>
-                                  {catalogPreferenceLabels[state]}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-
-                          <div className="catalog-ranking-context">
-                            {categoryRank && (
-                              <span className="catalog-evidence-chip direct">
-                                Category #{categoryRank.rank}
-                              </span>
-                            )}
-                            {overallRank && (
-                              <span className="catalog-evidence-chip direct">
-                                Overall #{overallRank.rank}
-                              </span>
-                            )}
-                            {inferred && (
-                              <span className="catalog-evidence-chip inferred">
-                                Quiz-derived {Math.round(inferred.affinity)}%
-                              </span>
-                            )}
-                            {result?.excludedFromNewRanking && (
-                              <span className="catalog-evidence-chip excluded">
-                                Excluded from new pairs
-                              </span>
-                            )}
-                            {!hasEvidence && (
-                              <span className="catalog-not-ranked">
-                                No ranking or quiz inference yet
-                              </span>
-                            )}
-                          </div>
-
-                          <details className="catalog-row-details">
-                            <summary>Details</summary>
-                            <div>
-                              {item.description && <p>{item.description}</p>}
-
-                              <div className="catalog-evidence-details">
-                                <section>
-                                  <span className="eyebrow">Direct evidence</span>
-                                  <strong>
-                                    {preference
-                                      ? `Explicit: ${catalogPreferenceLabels[preference]}`
-                                      : "No explicit preference set"}
-                                  </strong>
-                                  <p>
-                                    {categoryRank
-                                      ? `Category #${categoryRank.rank} · ${categoryRank.comparisons} ordering comps`
-                                      : "No active category rank"}
-                                    {overallRank
-                                      ? ` · Overall #${overallRank.rank} · ${overallRank.comparisons} ordering comps`
-                                      : ""}
-                                  </p>
-                                  {(result?.meaningfulPairwiseComparisons ?? 0) > 0 &&
-                                    !categoryRank &&
-                                    !overallRank && (
-                                      <p>
-                                        {result?.meaningfulPairwiseComparisons} historical
-                                        ordering comparisons remain stored.
-                                      </p>
-                                    )}
-                                </section>
-
-                                <section>
-                                  <span className="eyebrow">Quiz-derived evidence</span>
-                                  {inferred ? (
-                                    <>
-                                      <strong>
-                                        {Math.round(inferred.affinity)}% affinity · {inferred.coverage}% coverage
-                                      </strong>
-                                      <p>
-                                        Derived from quiz signals only. This does not create
-                                        or override an explicit preference or pairwise rank.
-                                      </p>
-                                      <ul className="catalog-evidence-sources">
-                                        {inferred.matchedSignals.map((signal) => (
-                                          <li key={signal.signalId}>
-                                            <strong>{signal.signalLabel}</strong>
-                                            <span>
-                                              {Math.round(signal.signalAffinity)}% signal
-                                              {signal.sourceQuizLabels.length > 0
-                                                ? ` · via ${signal.sourceQuizLabels.join(", ")}`
-                                                : ""}
-                                            </span>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    </>
-                                  ) : (
-                                    <p>No mapped quiz evidence for this item yet.</p>
-                                  )}
-                                </section>
-                              </div>
-
-                              {inferred && result?.excludedFromNewRanking && (
-                                <p className="catalog-evidence-conflict-note">
-                                  The quiz-derived affinity is shown for explainability only.
-                                  Your explicit exclusion remains authoritative.
-                                </p>
-                              )}
-
-                              <dl>
-                                <div>
-                                  <dt>Direction</dt>
-                                  <dd>{item.direction}</dd>
-                                </div>
-                                {item.primaryMode && (
-                                  <div>
-                                    <dt>Mode</dt>
-                                    <dd>{item.primaryMode}</dd>
-                                  </div>
-                                )}
-                                {item.intensity && (
-                                  <div>
-                                    <dt>Intensity</dt>
-                                    <dd>{item.intensity}</dd>
-                                  </div>
-                                )}
-                                {item.riskLevel && (
-                                  <div>
-                                    <dt>Risk</dt>
-                                    <dd>{item.riskLevel}</dd>
-                                  </div>
-                                )}
-                                {item.aliases.length > 0 && (
-                                  <div>
-                                    <dt>Aliases</dt>
-                                    <dd>{item.aliases.join(", ")}</dd>
-                                  </div>
-                                )}
-                              </dl>
-                            </div>
-                          </details>
-                        </article>
-                      );
-                    })}
-                  </div>
-                )}
-              </section>
+      <ExpandableGroupedList
+        groups={visibleByCategory.map(({ category, items }) => ({
+          id: category.id,
+          title: category.label,
+          eyebrow: category.domain.replaceAll("-", " "),
+          items,
+        }))}
+        columnHeadings={["Kink", "Preference", "Evidence", "More"]}
+        headClassName="catalog-table-head"
+        listClassName="catalog-table"
+        focusGroupId={
+          categoryFilter === "all" ? undefined : categoryFilter
+        }
+        expansionKey={categoryFilter}
+        summary={
+          <>
+            <strong>{visibleItems.length}</strong>
+            <span>matching items</span>
+            <span aria-hidden="true">·</span>
+            <strong>{explicitlySetCount}</strong>
+            <span>with explicit preferences</span>
+          </>
+        }
+        emptyTitle="No matches."
+        emptyCopy="Try clearing a filter or searching another term."
+        onClearFilters={resetFilters}
+        renderItem={(item) => {
+          const result = resultView.byCatalogId.get(item.id);
+          const preference =
+            result?.explicitState ??
+            getCatalogPreference(
+              profile.preferences[item.id],
+              "overall",
             );
-          })
-        )}
-      </div>
+          const categoryRank = result?.categoryRank;
+          const overallRank = result?.overallRank;
+          const inferred = result?.inferred;
+          const hasEvidence =
+            Boolean(categoryRank) ||
+            Boolean(overallRank) ||
+            Boolean(inferred) ||
+            (result?.meaningfulPairwiseComparisons ?? 0) > 0 ||
+            Boolean(result?.excludedFromNewRanking);
+
+          return (
+            <article
+              className={`catalog-row ${preferenceClass(preference)}`}
+              key={item.id}
+            >
+              <div className="catalog-row-main">
+                <strong>{item.label}</strong>
+                {item.aliases.length > 0 && (
+                  <span className="catalog-row-alias">
+                    aka {item.aliases.slice(0, 2).join(" · ")}
+                  </span>
+                )}
+              </div>
+
+              <label className="catalog-preference-editor">
+                <span className="sr-only">
+                  Preference for {item.label}
+                </span>
+                <select
+                  value={preference ?? ""}
+                  onChange={(event) =>
+                    updatePreference(
+                      item.id,
+                      event.target.value
+                        ? (event.target.value as CatalogPreferenceState)
+                        : undefined,
+                    )
+                  }
+                >
+                  <option value="">Not set</option>
+                  {catalogPreferenceStates.map((state) => (
+                    <option key={state} value={state}>
+                      {catalogPreferenceLabels[state]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <div className="catalog-ranking-context">
+                {categoryRank && (
+                  <span className="catalog-evidence-chip direct">
+                    Category #{categoryRank.rank}
+                  </span>
+                )}
+                {overallRank && (
+                  <span className="catalog-evidence-chip direct">
+                    Overall #{overallRank.rank}
+                  </span>
+                )}
+                {inferred && (
+                  <span className="catalog-evidence-chip inferred">
+                    Quiz-derived {Math.round(inferred.affinity)}%
+                  </span>
+                )}
+                {result?.excludedFromNewRanking && (
+                  <span className="catalog-evidence-chip excluded">
+                    Excluded from new pairs
+                  </span>
+                )}
+                {!hasEvidence && (
+                  <span className="catalog-not-ranked">
+                    No ranking or quiz inference yet
+                  </span>
+                )}
+              </div>
+
+              <details className="catalog-row-details">
+                <summary>Details</summary>
+                <div>
+                  {item.description && <p>{item.description}</p>}
+
+                  <div className="catalog-evidence-details">
+                    <section>
+                      <span className="eyebrow">Direct evidence</span>
+                      <strong>
+                        {preference
+                          ? `Explicit: ${catalogPreferenceLabels[preference]}`
+                          : "No explicit preference set"}
+                      </strong>
+                      <p>
+                        {categoryRank
+                          ? `Category #${categoryRank.rank} · ${categoryRank.comparisons} ordering comps`
+                          : "No active category rank"}
+                        {overallRank
+                          ? ` · Overall #${overallRank.rank} · ${overallRank.comparisons} ordering comps`
+                          : ""}
+                      </p>
+                      {(result?.meaningfulPairwiseComparisons ?? 0) > 0 &&
+                        !categoryRank &&
+                        !overallRank && (
+                          <p>
+                            {result?.meaningfulPairwiseComparisons} historical
+                            ordering comparisons remain stored.
+                          </p>
+                        )}
+                    </section>
+
+                    <section>
+                      <span className="eyebrow">Quiz-derived evidence</span>
+                      {inferred ? (
+                        <>
+                          <strong>
+                            {Math.round(inferred.affinity)}% affinity ·{" "}
+                            {inferred.coverage}% coverage
+                          </strong>
+                          <p>
+                            Derived from quiz signals only. This does not create
+                            or override an explicit preference or pairwise rank.
+                          </p>
+                          <ul className="catalog-evidence-sources">
+                            {inferred.matchedSignals.map((signal) => (
+                              <li key={signal.signalId}>
+                                <strong>{signal.signalLabel}</strong>
+                                <span>
+                                  {Math.round(signal.signalAffinity)}% signal
+                                  {signal.sourceQuizLabels.length > 0
+                                    ? ` · via ${signal.sourceQuizLabels.join(", ")}`
+                                    : ""}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      ) : (
+                        <p>No mapped quiz evidence for this item yet.</p>
+                      )}
+                    </section>
+                  </div>
+
+                  {inferred && result?.excludedFromNewRanking && (
+                    <p className="catalog-evidence-conflict-note">
+                      The quiz-derived affinity is shown for explainability only.
+                      Your explicit exclusion remains authoritative.
+                    </p>
+                  )}
+
+                  <dl>
+                    <div>
+                      <dt>Direction</dt>
+                      <dd>{item.direction}</dd>
+                    </div>
+                    {item.primaryMode && (
+                      <div>
+                        <dt>Mode</dt>
+                        <dd>{item.primaryMode}</dd>
+                      </div>
+                    )}
+                    {item.intensity && (
+                      <div>
+                        <dt>Intensity</dt>
+                        <dd>{item.intensity}</dd>
+                      </div>
+                    )}
+                    {item.riskLevel && (
+                      <div>
+                        <dt>Risk</dt>
+                        <dd>{item.riskLevel}</dd>
+                      </div>
+                    )}
+                    {item.aliases.length > 0 && (
+                      <div>
+                        <dt>Aliases</dt>
+                        <dd>{item.aliases.join(", ")}</dd>
+                      </div>
+                    )}
+                  </dl>
+                </div>
+              </details>
+            </article>
+          );
+        }}
+      />
 
     </section>
   );
