@@ -44,7 +44,7 @@ This folder contains the product and scoring decisions that should guide impleme
     The planned Settings/profile-lifecycle contract: display name, selective reset, complete versioned backup/restore, share-summary presentation, and PNG/HTML/PDF output.
 
 14. [M11 Rewards & Punishments](m11-rewards-punishments.md)  
-    The planned M11 contract: contextual reward/punishment overlays across catalog + action primitives, random selection, reusable builders/recipes, stable identity, and lifecycle integration without assignment/tracking semantics.
+    The planned M11 contract: contextual reward/punishment overlays across catalog + action primitives, playful classification, independent Reward/Punishment pairwise rankings, random selection, reusable builders/recipes, stable identity, and lifecycle integration without assignment/tracking semantics.
 
 15. [Roadmap](../ROADMAP.md)  
     What is already implemented and what should be built next.
