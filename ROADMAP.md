@@ -256,13 +256,14 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 **Details:** [M16 Data & Content Curation](docs/m16-data-content-curation.md)
 
 - [ ] **M16.1** — inventory authored/derived data surfaces + review rubric
-- [ ] **M16.2** — quiz bank, signal-weight, and scoring-input review
-- [ ] **M16.3** — signal vocabulary, headspaces, radars, facets, labels, and thresholds review
-- [ ] **M16.4** — kink catalog pruning/consolidation + pending additions review
-- [ ] **M16.5** — rewards/punishments action library + contextual taxonomy curation
-- [ ] **M16.6** — cross-system taxonomy/mapping alignment
-- [ ] **M16.7** — stable-ID replacement, archival, migration, and import/export compatibility
-- [ ] **M16.8** — generator/test regression + representative-profile sanity review
+- [ ] **M16.2** — mobile-friendly Curation Workbench + local proposal/export workflow
+- [ ] **M16.3** — quiz bank, signal-weight, and scoring-input review
+- [ ] **M16.4** — signal vocabulary, headspaces, radars, facets, labels, and thresholds review
+- [ ] **M16.5** — kink catalog pruning/consolidation + pending additions review
+- [ ] **M16.6** — rewards/punishments action library + contextual taxonomy curation
+- [ ] **M16.7** — cross-system taxonomy/mapping alignment
+- [ ] **M16.8** — stable-ID replacement, archival, migration, and import/export compatibility
+- [ ] **M16.9** — generator/test regression + representative-profile sanity review
 
 M16 is intentionally a **curation milestone, not an expansion milestone**. Existing questions, axes, categories, items, mappings, and labels may be removed or merged when they no longer improve the profile or decision surface.
 
