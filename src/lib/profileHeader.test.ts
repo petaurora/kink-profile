@@ -6,6 +6,7 @@ import {
   buildProfileHeaderModel,
   deriveProfileOrientation,
 } from "./profileHeader";
+import { buildProfileRoleDetails } from "./profileRoleDetails";
 
 function signal(
   signalId: SignalId,
@@ -180,6 +181,36 @@ describe("M7.3 profile header model", () => {
     );
     expect(model.headspaces[0]).not.toHaveProperty("direction");
     expect(model.headspaces.length).toBeLessThanOrEqual(3);
+  });
+
+  it("keeps header headspace and dynamic-mode chips aligned with the detailed role section", () => {
+    const canonical = [
+      signal("younger_headspace", 95, 30, "roles-headspaces"),
+      signal("care_receiving", 95, 30, "roles-headspaces"),
+      signal("role_embodiment", 95, 30, "roles-headspaces"),
+      signal("responsibility_transfer", 95, 30, "roles-headspaces"),
+      signal("playfulness", 95, 30, "roles-headspaces"),
+      signal("praise_approval", 95, 30, "roles-headspaces"),
+      signal("devotion", 90, 100, "roles-headspaces"),
+      signal("belonging", 90, 100, "roles-headspaces"),
+      signal("service", 90, 100, "roles-headspaces"),
+      signal("ownership_symbolism", 90, 100, "roles-headspaces"),
+      signal("receiving_control", 90, 100, "roles-headspaces"),
+      signal("ritual_significance", 90, 100, "roles-headspaces"),
+    ];
+    const model = buildProfileHeaderModel(
+      canonical,
+      scoreOverallFacets(canonical),
+    );
+    const details = buildProfileRoleDetails(canonical);
+
+    expect(details.headspaces[0]?.id).toBe("little");
+    expect(model.headspaces.map((trait) => trait.id)).toEqual(
+      details.headspaces.slice(0, 3).map((trait) => trait.id),
+    );
+    expect(model.dynamicModes.map((trait) => trait.id)).toEqual(
+      details.dynamicModes.slice(0, 3).map((trait) => trait.id),
+    );
   });
 
   it("derives compact dynamic modes without exposing percentages in the summary sentence", () => {
