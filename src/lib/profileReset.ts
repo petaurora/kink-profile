@@ -15,7 +15,10 @@ import {
   type StoredProfile,
   type StorageLike,
 } from "./profileStorage";
-import type { CatalogProfileState } from "./catalogProfile";
+import {
+  createInitialKinkRankingHistory,
+  type CatalogProfileState,
+} from "./catalogProfile";
 
 export type ProfileResetSelection = {
   quizIds: QuizId[];
@@ -130,6 +133,9 @@ export function resetProfileData(
     comparisons: selection.rankingComparisons
       ? []
       : currentCatalogProfile.comparisons,
+    rankingHistory: selection.rankingComparisons
+      ? createInitialKinkRankingHistory()
+      : currentCatalogProfile.rankingHistory,
   };
 
   const nextSettings = selection.profileSettings
