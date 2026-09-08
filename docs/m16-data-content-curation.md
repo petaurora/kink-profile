@@ -128,7 +128,124 @@ Use a lightweight review rubric for each primitive:
 
 ---
 
-# M16.2 — Quiz bank + scoring review
+# M16.2 — Curation Workbench
+
+Build a lightweight, mobile-friendly review surface inspired by the M11 quick sorter so data cleanup can happen gradually instead of requiring a giant spreadsheet/code-editing session.
+
+## Core interaction
+
+The workbench should support:
+
+- **Surprise me** — show a random reviewable primitive
+- filter by primitive type and review state
+- skip / defer / mark reviewed without changing data
+- edit the primitive's own fields
+- edit the relationships/mappings that make that primitive meaningful
+- show validation warnings and derived consequences before saving
+- preserve a local review queue/history so the user can do a few items at a time
+- compare current repo value vs local proposed value
+- revert one field, one item, or the whole local curation session
+
+Initial primitive types should include:
+
+- kink/catalog item
+- reward/punishment action
+- quiz question
+- signal
+- dynamic mode
+- role/headspace
+- overall facet/radar dimension
+- catalog category/domain/alias/mapping
+- M11 contextual category/mapping
+- quiz definition
+
+As M13–M15 land, the same workbench should be extensible to scene themes, contextual-activity capability metadata, motivations, and shared-profile interaction mappings.
+
+## Relationship editor
+
+A primitive card should not be limited to scalar fields.
+
+Examples:
+
+- kink → category, aliases, signal mappings + weights
+- reward/punishment action → contextual categories + weights
+- question → SignalId weights
+- dynamic mode/headspace → SignalId composition weights
+- overall facet → SignalId weights + optional direction
+- catalog category → domain, display order, default signal mappings
+- M11 category → display order/version and catalog-category mappings
+
+Multi-value relationships should use searchable chips/rows with explicit weights rather than encoded strings.
+
+## Current catalog-mode distinction
+
+The catalog's existing `Primary Mode` field is **not** the same thing as M3 Dynamic Modes.
+
+Today:
+
+- `Primary Mode` is a single descriptive catalog field such as Physical/Psychological.
+- a catalog item may resolve to **multiple SignalId mappings** through category + item mappings.
+- M3 Dynamic Modes are composed definitions calculated from SignalIds; kinks are not directly assigned one or more Dynamic Modes.
+
+The workbench should show this distinction clearly.
+
+During M16, explicitly review whether `Primary Mode` should remain a single descriptive string, become a controlled multi-value taxonomy, or be replaced by better structured metadata.
+
+Do not add direct kink → Dynamic Mode mappings merely for convenience unless the curation pass finds a real semantic need. Prefer the existing signal graph when it can express the relationship without creating a second competing mapping system.
+
+## Local curation state
+
+Workbench edits are **proposals**, not profile evidence.
+
+Store them separately from the user's kink/reward/punishment profile.
+
+Conceptually:
+
+~~~ts
+interface CurationChange {
+  entityType: string;
+  entityId: string;
+  action: 'keep' | 'modify' | 'merge' | 'archive' | 'remove';
+  changes?: Record<string, unknown>;
+  replacementId?: string;
+  note?: string;
+  reviewedAt: string;
+}
+
+interface CurationWorkspace {
+  schemaVersion: number;
+  sourceRevision?: string;
+  changes: CurationChange[];
+}
+~~~
+
+The workbench must never make a curation edit look like a user preference answer.
+
+## Export / repo handoff
+
+Provide a dedicated export such as:
+
+`m16-curation-export.json`
+
+It should contain:
+
+- schema/version
+- optional source revision/catalog version
+- entity IDs/types
+- proposed field changes
+- proposed mapping changes
+- merge/archive/remove decisions
+- replacement IDs where applicable
+- curator notes
+- review timestamps/status
+
+The exported file is intended to be uploaded back to the repository workflow and applied through a deterministic script or reviewed PR.
+
+Do not require the browser to authenticate to GitHub or mutate the repo directly.
+
+---
+
+# M16.3 — Quiz bank + scoring review
 
 Review the authored questions and scoring inputs for M2–M5.
 
@@ -153,7 +270,7 @@ After changes:
 
 ---
 
-# M16.3 — Signals, headspaces, radars + profile dimensions
+# M16.4 — Signals, headspaces, radars + profile dimensions
 
 Review what the app claims to measure and display.
 
@@ -182,7 +299,7 @@ The correct result may be to add, remove, merge, rename, reorder, change mapping
 
 ---
 
-# M16.4 — Kink catalog curation
+# M16.5 — Kink catalog curation
 
 Review both:
 
@@ -212,7 +329,7 @@ If not, it may not deserve a standalone ranked row.
 
 ---
 
-# M16.5 — Rewards & punishments data curation
+# M16.6 — Rewards & punishments data curation
 
 Review the M11 action library and contextual taxonomy with the same standards as the kink catalog.
 
@@ -239,7 +356,7 @@ Do not keep an action merely because it appeared in a source spreadsheet.
 
 ---
 
-# M16.6 — Cross-system taxonomy alignment
+# M16.7 — Cross-system taxonomy alignment
 
 Review shared concepts across M2–M7, M11, M13, M14, and M15 so the app does not grow parallel vocabularies for the same idea.
 
@@ -270,7 +387,7 @@ Do merge/align when duplicate taxonomies would cause contradictory profile behav
 
 ---
 
-# M16.7 — Migration + identity cleanup
+# M16.8 — Migration + identity cleanup
 
 Before deleting or consolidating any stable primitive:
 
@@ -286,7 +403,7 @@ This slice owns the mechanics needed to safely apply the curation decisions made
 
 ---
 
-# M16.8 — Validation + regression review
+# M16.9 — Validation + regression review
 
 After curation:
 
