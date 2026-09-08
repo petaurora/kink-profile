@@ -104,6 +104,8 @@ Those source sheets are provenance, **not runtime truth**.
 
 An item that originally came from the reward sheet may still be useful as a punishment, and an item that originally came from the punishment sheet may still work as a reward.
 
+The broader **content-quality review** of this runtime library belongs to [M16 — Data & Content Curation](m16-data-content-curation.md). M16 may later remove, consolidate, rename, re-categorize, or remap normalized M11 actions when they are duplicative, unclear, or not useful enough to keep. M11 should establish stable behavior and identity without treating the first normalized dataset as permanently final.
+
 ### 4. The overall catalog is also eligible input
 
 Every stable M6 catalog item can be evaluated for reward and punishment use.

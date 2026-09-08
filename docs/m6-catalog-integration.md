@@ -1294,6 +1294,15 @@ The direct-evidence-only catalog → signal projection boundary remains unchange
 
 Verification: 67 tests pass across 6 test files, including 11 focused C7 matcher/recommendation tests, and the production TypeScript/Vite build passes.
 
+
+---
+
+# Post-M6 catalog curation
+
+Broader catalog pruning, consolidation, metadata review, and the pending source-additions review are owned by [M16 — Data & Content Curation](m16-data-content-curation.md).
+
+M6 remains complete because the integration architecture is stable. M16 is the later **content/model quality pass** that may remove, merge, rename, re-categorize, or remap catalog items while preserving stored user evidence through the stable-identity/migration rules defined here.
+
 ---
 
 # M6 exit condition ✅
