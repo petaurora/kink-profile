@@ -281,8 +281,8 @@ export function KinkThisOrThat({
       startNewKinkRankingRun(
         current,
         filterEligibleCatalogItems(kinkCatalog, current.preferences),
-        startedAt,
         randomRunId(),
+        startedAt,
       ),
     );
     setMode("category");
