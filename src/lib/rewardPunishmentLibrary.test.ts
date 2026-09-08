@@ -4,6 +4,7 @@ import {
   rewardPunishmentCatalogCategoryMappings,
   rewardPunishmentCatalogSourceOrigins,
   rewardPunishmentSourceIdeaCount,
+  type RewardPunishmentSourceOrigin,
 } from "../data/rewardPunishmentLibrary.generated";
 import {
   rewardPunishmentActions,
@@ -26,10 +27,21 @@ describe("M11 runtime library", () => {
   });
 
   it("accounts for every raw source idea exactly once after dedupe/catalog linking", () => {
-    const origins = [
-      ...rewardPunishmentActions.flatMap((action) => action.sourceOrigins),
-      ...Object.values(rewardPunishmentCatalogSourceOrigins).flatMap((items) => items),
-    ];
+    const origins: RewardPunishmentSourceOrigin[] = [];
+    for (const action of rewardPunishmentActions) {
+      origins.push(
+        ...(action.sourceOrigins as readonly RewardPunishmentSourceOrigin[]),
+      );
+    }
+
+    const catalogOrigins =
+      rewardPunishmentCatalogSourceOrigins as Readonly<
+        Record<string, readonly RewardPunishmentSourceOrigin[]>
+      >;
+    for (const linkedOrigins of Object.values(catalogOrigins)) {
+      origins.push(...linkedOrigins);
+    }
+
     expect(rewardPunishmentSourceIdeaCount).toBe(669);
     expect(origins).toHaveLength(669);
     const keys = origins.map((origin) =>
@@ -39,12 +51,17 @@ describe("M11 runtime library", () => {
   });
 
   it("uses catalog identity for exact source overlaps instead of duplicate action rows", () => {
+    const catalogOrigins =
+      rewardPunishmentCatalogSourceOrigins as Readonly<
+        Record<string, readonly RewardPunishmentSourceOrigin[]>
+      >;
+
     for (const catalogId of [
       "hairbrush-spanking",
       "wall-sit",
       "plank-hold",
       "hands-behind-back-posture",
-    ]) expect(rewardPunishmentCatalogSourceOrigins[catalogId]).toBeDefined();
+    ]) expect(catalogOrigins[catalogId]).toBeDefined();
 
     expect(
       rewardPunishmentActions.some(
