@@ -3824,3 +3824,96 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
     grid-template-columns: 1fr;
   }
 }
+
+
+/* M12.3 previous-rank movement */
+.ranking-row-title {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.ranking-movement-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.ranking-movement {
+  appearance: none;
+  border: 1px solid var(--accent-border);
+  border-radius: 999px;
+  background: var(--bg-control);
+  color: var(--accent-primary);
+  min-height: 28px;
+  padding: .25rem .5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .2rem;
+  font: inherit;
+  font-size: .74rem;
+  font-weight: 850;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ranking-movement-new {
+  letter-spacing: .04em;
+}
+
+.ranking-movement:hover,
+.ranking-movement:focus-visible,
+.ranking-movement-wrap.open .ranking-movement {
+  border-color: var(--accent-primary);
+  background: var(--bg-surface-raised);
+}
+
+.ranking-movement:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.ranking-movement-popover {
+  position: absolute;
+  z-index: 12;
+  top: calc(100% + .45rem);
+  right: 0;
+  width: max-content;
+  max-width: min(280px, calc(100vw - 2rem));
+  padding: .7rem .8rem;
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  background: var(--bg-surface-raised);
+  box-shadow: 0 12px 30px rgb(0 0 0 / 24%);
+  display: grid;
+  gap: .2rem;
+  color: var(--text-secondary);
+  font-size: .78rem;
+  line-height: 1.35;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-3px);
+  transition: opacity 120ms ease, transform 120ms ease, visibility 120ms ease;
+}
+
+.ranking-movement-popover strong {
+  color: var(--text-primary);
+}
+
+.ranking-movement-wrap:hover .ranking-movement-popover,
+.ranking-movement-wrap:focus-within .ranking-movement-popover,
+.ranking-movement-wrap.open .ranking-movement-popover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+@media (max-width: 520px) {
+  .ranking-movement-popover {
+    right: auto;
+    left: 0;
+    width: min(250px, calc(100vw - 4.5rem));
+  }
+}
