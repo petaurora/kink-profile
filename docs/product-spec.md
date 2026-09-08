@@ -4,10 +4,10 @@
 
 Living product direction.
 
-**Implemented:** M0–M7 and M9  
+**Implemented:** M0–M7, M9, M11, and M12  
 **Optional/deferred:** M8 adaptive quiz depth and M10 cloud persistence  
-**Planned/scoped:** M11–M15  
-**Current:** choose the next roadmap slice intentionally; the implemented core profile/lifecycle is stable enough for the next product layer
+**Planned/scoped:** M13–M16  
+**Current:** choose the next roadmap milestone intentionally; the profile/lifecycle, Rewards & Punishments, and temporal reranking foundations are implemented
 
 The app is now structurally a collection of independently completable quizzes rather than one monolithic assessment.
 
@@ -532,7 +532,7 @@ over:
 
 # Rewards & Punishments product area
 
-M11 scopes the next first-class Rewards & Punishments product area.
+M11 is the implemented first-class Rewards & Punishments product area.
 
 It reuses the stable M6 catalog alongside a normalized action library derived from `reference/rewards-punishments/`.
 
@@ -571,7 +571,7 @@ M11 includes a fast one-item-at-a-time **Reward / Punishment / Both** classifica
 
 Classification is the eligibility funnel for two later pairwise flows: **Reward This-or-That** and **Punishment This-or-That**. An item must have direct positive contextual evidence before entering that context's ranking pool, but the user does not need to finish sorting the entire universe before ranking. Reward rank, Punishment rank, and the existing M6 kink rank remain independent evidence channels even when they refer to the same catalog item.
 
-The in-app overall profile may add a distinct Rewards & Punishments section showing strongest contextual categories, Top Rewards / Top Punishments when sufficiently ranked, confirmed items, and clearly separate Suggested to explore items. These M11 values do not alter the M7 radar, orientation, roles, modes, Top Overall, or limits.
+The in-app overall profile includes a distinct Rewards & Punishments section showing strongest contextual categories, Top Rewards / Top Punishments when sufficiently ranked, confirmed items, and clearly separate Suggested to explore items. These M11 values do not alter the M7 radar, orientation, roles, modes, Top Overall, or limits.
 
 M11 also includes lightweight random selection and reusable reward/punishment builders, but explicitly excludes assignment, earning, demerits, debt, task integration, completion tracking, and automatic escalation.
 
@@ -579,13 +579,13 @@ See [M11 Rewards & Punishments](m11-rewards-punishments.md) for the detailed con
 
 ---
 
-# Scoped future product layers
+# Completed and scoped product layers
 
 The detailed contracts remain authoritative; this section records only the product-level boundaries.
 
 ## M12 — Ranking history & movement
 
-M12 turns This-or-That into a repeatable preference pulse. Starting a new ranking run archives the previous run rather than deleting it or accumulating one lifetime Elo history. Only the active run contributes current pairwise evidence; previous comparable runs provide movement context.
+M12 is implemented and turns This-or-That into a repeatable preference pulse. Starting a new ranking run archives the previous run rather than deleting it or accumulating one lifetime Elo history. Only the active run contributes current pairwise evidence; previous comparable runs provide movement context.
 
 See [M12 Ranking History & Movement](m12-ranking-history-movement.md).
 
@@ -608,6 +608,12 @@ M15 makes authority context and activity side explicitly orthogonal. A direction
 M15 is a reusable contextual layer for catalog refinement/ranking, M11 reward/punishment use, M12 ranking history, M13 scene filtering, and M14 complementary comparison.
 
 See [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md) and [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md).
+
+## M16 — Data & Content Curation
+
+M16 is the whole-app quality pass for authored data and model vocabulary. It owns the review workbench, quiz/signal/radar curation, kink-catalog pruning and consolidation, Rewards & Punishments data cleanup, cross-system taxonomy alignment, migration-safe identity changes, and regression validation. It may remove or merge existing data when those items no longer earn their complexity.
+
+See [M16 Data & Content Curation](m16-data-content-curation.md).
 
 ---
 
