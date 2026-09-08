@@ -2,7 +2,7 @@
 
 ## Status
 
-**Implemented and hardened through M6.**
+**Implemented and hardened through M6, with M12 temporal reranking integrated.**
 
 Current imported runtime behavior includes:
 
@@ -18,7 +18,7 @@ Current imported runtime behavior includes:
 
 See [M6 Catalog Integration](m6-catalog-integration.md) for the parent catalog contract and [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md) for the direct preference-management surface.
 
-Temporal reranking is scoped separately in [M12 This-or-That Ranking History & Movement](m12-ranking-history-movement.md). M12 preserves each ranking run as history instead of treating a fresh rerank as destructive deletion or as lifetime score accumulation.
+Temporal reranking is implemented separately in [M12 This-or-That Ranking History & Movement](m12-ranking-history-movement.md). M12 preserves each ranking run as history instead of treating a fresh rerank as destructive deletion or as lifetime score accumulation.
 
 ---
 
