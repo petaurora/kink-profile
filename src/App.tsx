@@ -847,13 +847,14 @@ export default function App({
   };
 
   return (
-    <main className="app-shell">
+    <>
       <SiteHeader
         displayName={displayName}
         onNavigate={navigateFromHeader}
         onOpenSettings={() => onOpenSettings(screen)}
       />
 
+      <main className="app-shell">
       {screen === "hub" && (
         <section className="hub-stack">
           <div className="hub-hero">
@@ -1829,6 +1830,7 @@ export default function App({
           </div>
         </section>
       )}
-    </main>
+      </main>
+    </>
   );
 }
