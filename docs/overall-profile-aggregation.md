@@ -106,15 +106,15 @@ The header should therefore:
 - avoid quiz/catalog/ranking completion statistics
 - avoid detailed source provenance or confidence mechanics unless the user drills deeper
 
-### Initial compact trait groups
+### Implemented compact trait groups
 
-The current preferred three groups are:
+The M7 profile header uses three compact groups:
 
 - **Orientation** — authority-specific Submissive, Dominant, Dominant + submissive, Context-dependent, or Still emerging
 - **Headspaces** — strongest recognizable role/headspace results without generic D/s bucketing
 - **Dynamic modes** — strongest explanatory patterns such as Surrender, Devotion, Claiming, or Primal / Feral
 
-These groups are a current UI direction and can be refined as M7 aggregation is implemented.
+These groups are the implemented M7 header contract. Future product layers may extend context around them without changing their underlying semantic separation.
 
 ---
 
@@ -481,9 +481,9 @@ Brat                    55%
 
 The percentages are useful context because they show relative strength, but the default view should remain compact rather than rendering the full ranked list immediately.
 
-Do **not** present a parallel giving/dominant headspace block in the initial M7 UI merely for symmetry. The giving/dominant presentation should be revisited as part of the broader future directional-profile work, once cross-source giving/receiving aggregation is mature enough to support it consistently.
+M7 intentionally does **not** present a parallel giving/dominant Headspace block merely for symmetry. The completed profile ranks recognizable Headspaces together and keeps D/s authority separate from activity-side giving/receiving.
 
-When that future support exists, receiving and giving headspaces should remain separate rather than being merged into one winner-take-all list.
+Any future authority × activity-side contextual presentation belongs to the M15 contextual model rather than being retrofitted into M7 as a second role bucket. See [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md) and [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md).
 
 ## Strongest dynamic modes
 
@@ -902,7 +902,7 @@ The critical rule is:
 
 > **Only independent catalog evidence may affect signals. Catalog affinity inferred from those signals may not.**
 
-The exact cross-source weighting remains an M7 implementation decision and must be deterministic/tested.
+The implemented cross-source weighting is deterministic and tested; the locked M7.1/M7.2 rules later in this document are authoritative.
 
 ---
 
@@ -971,7 +971,7 @@ Possible approaches:
 - partial radar plus unknown labels
 - only render axes above a minimum coverage, with an adjacent "not explored" list
 
-The visualization choice can be decided during M7 implementation.
+M7.4 resolved this directly: unknown axes remain unscored and create genuine gaps rather than being plotted as 0%; limited-evidence points are visually qualified.
 
 ---
 
@@ -1038,9 +1038,9 @@ The overall profile should preserve complexity while making it easier to underst
 
 ---
 
-# M7 implementation slices
+# M7 implementation slices ✅
 
-M7 should be implemented as a sequence of **small, independently testable and mergeable slices**. Each slice should be completed, validated with representative data, and merged before beginning the next one.
+M7 was implemented as a sequence of **small, independently testable and mergeable slices**. Each slice was completed and validated before the next, which kept data/math changes isolated from presentation work.
 
 The former O1–O6 grouping is preserved as a conceptual map:
 
