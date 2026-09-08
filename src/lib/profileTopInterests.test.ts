@@ -160,6 +160,102 @@ describe("M7.6 Top Overall direct-evidence aggregation", () => {
     ).toBeLessThan(top[1].aggregateScore);
   });
 
+  it("uses quiz affinity as a bounded modifier only after direct eligibility exists", () => {
+    const top = buildProfileTopInterests(
+      view([
+        result("high-fit", "High fit", {
+          explicitState: "love",
+          inferredAffinity: 100,
+        }),
+        result("low-fit", "Low fit", {
+          explicitState: "love",
+          inferredAffinity: 10,
+        }),
+      ]),
+    );
+
+    expect(top.map((item) => item.catalogId)).toEqual([
+      "high-fit",
+      "low-fit",
+    ]);
+    expect(top[0].directScore).toBe(top[1].directScore);
+    expect(top[0].quizFit).toEqual(
+      expect.objectContaining({
+        affinity: 100,
+        coverage: 100,
+        multiplier: 1.1,
+      }),
+    );
+    expect(top[0].aggregateScore).toBeGreaterThan(
+      top[0].directScore,
+    );
+  });
+
+  it("scales quiz influence down when Overall pairwise confidence is strong", () => {
+    const top = buildProfileTopInterests(
+      view([
+        result("ranked", "Ranked", {
+          explicitState: "love",
+          inferredAffinity: 100,
+          overallRank: {
+            rank: 1,
+            comparisons: 8,
+            confidence: 1,
+          },
+        }),
+      ]),
+    );
+
+    expect(top[0].quizFit?.multiplier).toBe(1.03);
+    expect(top[0].aggregateScore).toBe(
+      Math.round(top[0].directScore * 1.03 * 10) / 10,
+    );
+  });
+
+  it("makes quiz fit coverage-aware instead of treating sparse mappings as fully known", () => {
+    const full = result("full", "Full", {
+      explicitState: "like",
+      inferredAffinity: 100,
+    });
+    const sparse = result("sparse", "Sparse", {
+      explicitState: "like",
+      inferredAffinity: 100,
+    });
+
+    full.inferred = {
+      affinity: 100,
+      coverage: 100,
+      matchedSignals: [],
+    };
+    sparse.inferred = {
+      affinity: 100,
+      coverage: 20,
+      matchedSignals: [],
+    };
+
+    const top = buildProfileTopInterests(view([sparse, full]));
+
+    expect(top[0].catalogId).toBe("full");
+    expect(top[0].quizFit?.multiplier).toBe(1.1);
+    expect(top[1].quizFit?.multiplier).toBe(1.02);
+  });
+
+  it("does not let quiz fit create Top Overall eligibility", () => {
+    const top = buildProfileTopInterests(
+      view([
+        result("quiz-only", "Quiz only", {
+          inferredAffinity: 100,
+        }),
+        result("direct", "Direct", {
+          explicitState: "curious",
+          inferredAffinity: 20,
+        }),
+      ]),
+    );
+
+    expect(top.map((item) => item.catalogId)).toEqual(["direct"]);
+  });
+
   it("does not allow quiz-derived inference to place an item into Top Overall", () => {
     const top = buildProfileTopInterests(
       view([
