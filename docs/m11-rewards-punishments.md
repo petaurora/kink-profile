@@ -418,6 +418,149 @@ Do not require users to manually browse 669 source ideas plus the entire catalog
 
 ---
 
+
+# Quick sorter — Reward / Punishment / Both
+
+The primary classification experience should **not** require working through the full table/list editor.
+
+Add a fast card-by-card sorter inspired by This-or-That, but with contextual-use choices instead of pairwise comparison.
+
+Example:
+
+```text
+Hair pulling
+
+        [ Reward ]
+     [ Punishment ]
+         [ Both ]
+
+      Neither / not a fit
+        Skip for now
+```
+
+The core interaction should feel lightweight and game-like:
+
+- one item at a time
+- large tap targets
+- fast keyboard/mobile interaction
+- immediate advance after a choice
+- visible progress within the current set/category
+- easy Back / Undo
+- easy Exit and resume later
+- optional category-focused runs
+- an Unsorted view that naturally shrinks as the user classifies items
+
+The table/list remains available for search, bulk review, notes, random-pool flags, and nuanced editing. It is **not** the required primary path.
+
+## Sorter choices
+
+The three primary choices are:
+
+- **Reward**
+- **Punishment**
+- **Both**
+
+Secondary escape choices are required:
+
+- **Neither / not a fit**
+- **Skip for now**
+
+Do not force every primitive into one of the three positive contexts.
+
+## Sorter semantics
+
+The sorter performs **coarse contextual classification**.
+
+Recommended mapping:
+
+| Sorter choice | Reward suitability | Punishment suitability |
+| --- | --- | --- |
+| Reward | `works` | `no` |
+| Punishment | `no` | `works` |
+| Both | `works` | `works` |
+| Neither / not a fit | `no` | `no` |
+| Skip for now | unchanged | unchanged |
+
+Important:
+
+- sorter choices do **not** set `strong`
+- sorter choices do **not** set `never`
+- sorter choices do **not** set `depends`
+- sorter choices do **not** change random eligibility
+- sorter choices do **not** change the general M6 catalog preference
+- sorter choices do **not** affect M7 aggregation or D/s orientation
+
+The nuanced Reward/Punishment list/detail editor is where a coarse `works` or `no` can later be refined to:
+
+- Strong
+- Depends
+- Never
+- custom notes
+- random-pool inclusion/exclusion
+
+## Existing nuanced state
+
+If an item already has a more specific state such as `strong`, `depends`, or `never`, the sorter must not silently destroy that nuance.
+
+Preferred behavior:
+
+- items with untouched/unset or coarse `works/no` state are eligible for the normal Unsorted/coarse-review flow
+- items with nuanced states can be viewed/reclassified only with an explicit confirmation that the coarse sorter choice will replace the relevant contextual states
+- `never` should never be downgraded through an accidental quick tap
+
+## Scope selection
+
+The sorter should support useful runs instead of presenting the entire universe as one endless deck.
+
+Possible entry points:
+
+```text
+Sort rewards & punishments
+
+Continue unsorted
+Browse by category
+Catalog items
+Reward/punishment action ideas
+Review previous choices
+```
+
+Category runs should reuse stable runtime categories from the normalized action library/catalog.
+
+## Progress
+
+Persist sorter progress as the contextual-use states themselves rather than maintaining a second authoritative answer history.
+
+Optional UI-only/resumable state may remember:
+
+- current filter/category
+- current position
+- current shuffled/ordered deck seed or item order
+
+but the authoritative result remains the contextual overlay.
+
+## Not a pairwise ranker
+
+Despite borrowing the card-game feel from This-or-That, this feature does **not** produce a rank.
+
+It is a classification funnel:
+
+```text
+UNSORTED PRIMITIVES
+        │
+        ▼
+Reward / Punishment / Both / Neither
+        │
+        ▼
+COARSE CONTEXTUAL PROFILE
+        │
+        ▼
+optional nuanced refinement
+```
+
+Do not reuse Elo/pairwise-ranking semantics or compare one reward against another.
+
+---
+
 # Randomizer
 
 The randomizer is intentionally small.
@@ -808,7 +951,27 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ---
 
-## M11.3 — Randomizer
+## M11.3 — Quick Reward / Punishment / Both sorter
+
+**Purpose:** make contextual classification fast and playful instead of requiring the full table.
+
+- [ ] add one-item-at-a-time classification cards
+- [ ] add primary Reward / Punishment / Both choices
+- [ ] add Neither / not a fit and Skip for now
+- [ ] map coarse choices to `works/no` without inventing `strong/depends/never`
+- [ ] do not change random eligibility from sorter choices
+- [ ] persist through the contextual overlay rather than a parallel answer model
+- [ ] add Continue unsorted and category/source-focused runs
+- [ ] add Back / Undo and resume behavior
+- [ ] protect existing nuanced `strong/depends/never` states from accidental overwrite
+- [ ] keep the table/list as the secondary detailed editing surface
+- [ ] add deterministic sorter-mapping/state-preservation tests
+
+**Exit condition:** the user can rapidly sort the primitive universe into Reward / Punishment / Both / Neither without grinding through a giant table.
+
+---
+
+## M11.4 — Randomizer
 
 **Purpose:** provide the lightweight "just pick one" utility.
 
@@ -827,7 +990,7 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ---
 
-## M11.4 — Reward & punishment builders
+## M11.5 — Reward & punishment builders
 
 **Purpose:** compose reusable multi-part rewards and punishments.
 
@@ -847,7 +1010,7 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ---
 
-## M11.5 — Recipe randomization + lifecycle integration
+## M11.6 — Recipe randomization + lifecycle integration
 
 **Purpose:** make saved recipes first-class optional randomizer entries and preserve them through profile management.
 
@@ -863,7 +1026,7 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 ---
 
-## M11.6 — UX polish + integration
+## M11.7 — UX polish + integration
 
 **Purpose:** make the feature practical on mobile and coherent with the rest of the app.
 
@@ -878,7 +1041,7 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 - [ ] regression-run M6/M7/M9 profile tests
 - [ ] finalize docs and mark M11 complete
 
-**Exit condition:** the feature reads as one coherent toolbox: classify → randomize → build → reuse.
+**Exit condition:** the feature reads as one coherent toolbox: quick-sort → refine → randomize → build → reuse.
 
 ---
 
