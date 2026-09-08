@@ -191,7 +191,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 
 ---
 
-## M12 — This-or-That Ranking History & Movement
+## M12 — This-or-That Ranking History & Movement ✅
 
 **Details:** [M12 Ranking History & Movement](docs/m12-ranking-history-movement.md)
 
@@ -287,6 +287,13 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7 and M9 are complete. M11 implementation is underway; M12–M16 are formally scoped.**
+**M11 and M12 are complete. M13–M16 are formally scoped and unimplemented.**
 
-Choose the next implementation slice intentionally. M15 is the shared context model for any authority-sensitive giving/receiving behavior added inside M11, M13, or M14.
+Choose the next milestone intentionally:
+
+- **M13** turns the existing single-profile evidence into a low-decision Scene Builder.
+- **M14** introduces multiple independent profiles, comparison, and shared scene filtering.
+- **M15** adds the reusable authority × activity-side contextual model for direction-sensitive preferences and rankings.
+- **M16** is the whole-app data/content quality pass, including the mobile Curation Workbench, catalog cleanup, quiz/radar review, reward/punishment curation, and the M11 recipe-builder UX/model revisit.
+
+M16 can begin before M13–M15 because its first work is inventory/curation infrastructure; later model-specific editors can be added to the same workbench as those milestones land.

@@ -925,7 +925,7 @@ M9 backup/import must eventually include authoritative M15 state:
 
 - contextual explicit preferences
 - contextual pairwise comparisons
-- contextual ranking-run/history data when M12 is integrated
+- contextual ranking-run/history data using M12-compatible run scopes
 - motivation annotations
 - schema versions
 

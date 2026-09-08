@@ -1,8 +1,20 @@
 # Documentation
 
-This folder contains the product and scoring decisions that should guide implementation.
+This folder contains both user-facing product documentation and the deeper product/scoring contracts that guide implementation.
 
-## Read in this order
+## Using the app
+
+Start here if you want to understand the product without reading implementation specifications.
+
+1. [Feature Guide](feature-guide.md)  
+   Plain-language definitions of the current features, when to use them, how they affect the profile, and how the major evidence sources fit together.
+
+2. [FAQ](faq.md)  
+   Common behavioral questions about quizzes, the Overall Profile, direct catalog preferences, This-or-That, ranking history, Rewards & Punishments, backup/sharing, privacy, and planned features.
+
+The user-facing docs explain behavior; the specifications below remain authoritative for scoring rules, data contracts, and implementation boundaries.
+
+## Product & implementation docs — read in this order
 
 1. [Product Spec](product-spec.md)  
    What the app is, how the quiz sections fit together, how signals/dynamic modes/roles are separated, and what is in or out of scope.
@@ -44,10 +56,10 @@ This folder contains the product and scoring decisions that should guide impleme
     The completed Settings/profile-lifecycle contract: display name, selective reset, complete versioned backup/restore, share-summary presentation, and PNG/HTML/PDF output.
 
 14. [M11 Rewards & Punishments](m11-rewards-punishments.md)  
-    The planned M11 contract: contextual reward/punishment overlays across catalog + action primitives, playful classification, independent Reward/Punishment pairwise rankings, random selection, reusable builders/recipes, stable identity, and lifecycle integration without assignment/tracking semantics.
+    The completed M11 contract: contextual reward/punishment overlays across catalog + action primitives, playful classification, independent Reward/Punishment pairwise rankings, random selection, reusable builders/recipes, overall-profile integration, and lifecycle support without assignment/tracking semantics.
 
 15. [M12 This-or-That Ranking History & Movement](m12-ranking-history-movement.md)  
-    The scoped temporal-ranking contract: non-destructive reruns, archived run history, active-run-only current evidence, and previous-rank movement indicators.
+    The completed temporal-ranking contract: non-destructive reruns, archived run history, active-run-only current evidence, previous-rank movement indicators, and overall-profile movement context.
 
 16. [M13 Scene Builder](m13-scene-builder.md)  
     The planned profile-to-play composition layer: theme queries, current-session state, candidate filtering, scene arcs, randomization, M11 integration, and saved scenes.
@@ -58,16 +70,21 @@ This folder contains the product and scoring decisions that should guide impleme
 18. [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md)  
     The planned sparse authority × activity-side contract: context-specific preferences, rankings, contextual profile lenses, motivation annotations, and M11/M12/M13/M14 integration without treating giving/receiving as authority.
 
-19. [Roadmap](../ROADMAP.md)  
+19. [M16 Data & Content Curation](m16-data-content-curation.md)  
+    The planned whole-app curation contract: inventory/review rubric, mobile Curation Workbench, quiz/radar/signal review, kink-catalog and Rewards & Punishments cleanup, migration-safe identity changes, and regression validation.
+
+20. [Roadmap](../ROADMAP.md)  
     Compact milestone status + slice checklists showing what is complete and what can be built next. Detailed milestone behavior belongs in the linked docs.
 
-20. [Reference Data](../reference/README.md)  
+21. [Reference Data](../reference/README.md)  
     How the expanded kink catalog and rewards/punishments source bank should be used without turning them into giant questionnaires.
 
 ## Source of truth by topic
 
 | Question | Source |
 | --- | --- |
+| What does each feature do and how do I use it? | [Feature Guide](feature-guide.md) |
+| Why did the app behave this way? | [FAQ](faq.md) |
 | What are we building? | [Product Spec](product-spec.md) |
 | What exactly does M2 measure? | [M2 D/s Contract](m2-ds-design.md) |
 | How is M3 modeled? | [M3 Roles & Headspaces Contract](m3-headspaces-direction.md) |
@@ -86,6 +103,7 @@ This folder contains the product and scoring decisions that should guide impleme
 | How should profile context become a themed, low-decision scene builder? | [M13 Scene Builder](m13-scene-builder.md) |
 | How should multiple profiles be compared and used together without merging their evidence? | [M14 Shared Profiles](m14-shared-profiles.md) |
 | How should one activity vary by Dominant/submissive/non-D/s context and giving/receiving side? | [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md) |
+| How should authored data, taxonomies, mappings, quizzes, radars, catalog items, and Rewards/Punishments be reviewed and curated? | [M16 Data & Content Curation](m16-data-content-curation.md) |
 | What do we build next? | [Roadmap](../ROADMAP.md) |
 | What is implemented today? | [README](../README.md) + code |
 | How do we use the kink catalog? | [Reference Data](../reference/README.md) |
@@ -93,6 +111,8 @@ This folder contains the product and scoring decisions that should guide impleme
 ## Documentation rule
 
 Avoid duplicating detailed decisions across files.
+
+The Feature Guide and FAQ are the plain-language behavior layer. They should explain current product behavior without becoming a second scoring/data contract. When underlying behavior changes, update the authoritative spec first and then keep the user-facing wording aligned.
 
 The roadmap is deliberately compact: keep milestone/slice status there, and keep implementation rules, acceptance criteria, semantic decisions, and deeper design notes in the appropriate detailed document.
 
@@ -109,6 +129,7 @@ If settings, reset behavior, profile backup/restore, or share-summary export cha
 If reward/punishment contextual-use semantics, action-library identity, randomizer eligibility, or recipe behavior changes, update the M11 rewards/punishments spec.  
 If scene themes, candidate filtering, current-session state, scene composition, or scene randomization changes, update the M13 scene-builder spec.  
 If multi-profile storage, comparison semantics, interaction mappings, participant intent, or shared scene filtering changes, update the M14 shared-profiles spec.  
-If authority × activity-side contextual preferences/rankings, context capability metadata, motivation annotations, or M11/M12/M13/M14 contextual integration changes, update the M15 contextual-activity-profiles spec.
+If authority × activity-side contextual preferences/rankings, context capability metadata, motivation annotations, or M11/M12/M13/M14 contextual integration changes, update the M15 contextual-activity-profiles spec.  
+If authored datasets, curation workflow, taxonomy cleanup, replacement/migration rules, or the M11 recipe-builder review scope changes, update the M16 data/content curation spec.
 
 The repository code remains authoritative for what is actually implemented.

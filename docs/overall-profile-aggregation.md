@@ -1861,9 +1861,9 @@ The profile now reads in this order:
 
 Completion mechanics no longer interrupt the main profile narrative.
 
-### M11 profile extension boundary
+### Implemented M11 profile extension boundary
 
-M11 may extend this completed profile with one additional **Rewards & Punishments** section, preferably after Interest Areas and before the subordinate explainability/status material when there is enough M11 evidence.
+M11 extends this completed profile with one additional **Rewards & Punishments** section after the core M7 profile content when there is enough direct M11 evidence.
 
 That section is intentionally separate from M7 aggregation:
 
