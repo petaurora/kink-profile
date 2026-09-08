@@ -241,7 +241,7 @@ describe("profile backup import", () => {
 
     const key = Object.keys(
       backup.profile.rewardsPunishments.profile.preferences,
-    )[0];
+    )[0]!;
     backup.profile.rewardsPunishments.profile.preferences[
       key
     ].reward = {

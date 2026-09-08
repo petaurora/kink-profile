@@ -105,5 +105,9 @@ describe("profile share summary", () => {
     expect(serialized).not.toContain("answers");
     expect(serialized).not.toContain("schemaVersion");
     expect(serialized).not.toContain("relevanceScore");
+    expect(serialized).not.toContain("rewardsPunishments");
+    expect(serialized).not.toContain("randomEligible");
+    expect(serialized).not.toContain("RewardPunishmentRecipe");
+    expect(serialized).not.toContain("contextual comparisons");
   });
 });
