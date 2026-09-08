@@ -97,6 +97,10 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   border: 0;
   border-radius: 12px;
   padding: .72rem .8rem;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
   background: transparent;
   color: var(--text-primary);
   cursor: pointer;
@@ -104,8 +108,13 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   font-weight: 750;
 }
 
-.site-nav-menu button:hover {
+.site-nav-menu button:hover,
+.site-nav-menu button[aria-current="page"] {
   background: var(--bg-control-hover);
+}
+
+.site-nav-menu button[aria-current="page"] {
+  color: var(--accent-primary);
 }
 
 .brand {

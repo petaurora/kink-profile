@@ -1,6 +1,6 @@
 # M11 — Rewards & Punishments
 
-**Status:** in progress  
+**Status:** complete  
 **Roadmap milestone:** M11  
 **Primary boundary:** M11 models what can work as a reward or punishment, provides a lightweight randomizer, and lets the user build reusable reward/punishment recipes. It does **not** assign, earn, schedule, track, or enforce consequences.
 
@@ -1908,19 +1908,19 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 **Purpose:** make M11 a coherent part of the app/profile rather than a disconnected toolbox.
 
-- [ ] add first-class navigation
-- [ ] add in-app overall-profile Rewards & Punishments section
-- [ ] show top 3–4 meaningful Reward categories and Punishment categories separately
-- [ ] show Top Rewards / Top Punishments when contextual pairwise evidence is sufficient
-- [ ] order representative confirmed items using contextual rank when available, with suitability/category relevance retained as separate context
-- [ ] show inferred **Suggested to explore** items separately from confirmed items
-- [ ] never feed M11 category/proposal/rank values into M7 radar/orientation/Headspaces/Modes/Top Overall
-- [ ] compact mobile list/filter/profile behavior
-- [ ] prevent confusing duplicates between catalog-linked and action-library items
-- [ ] verify sorter, inference, contextual rankers, randomizer, and builders use the same stable primitive/category model
-- [ ] verify accessibility/keyboard behavior
-- [ ] regression-run M6/M7/M9 profile/evidence tests
-- [ ] finalize docs and mark M11 complete
+- [x] add first-class navigation
+- [x] add in-app overall-profile Rewards & Punishments section
+- [x] show top 3–4 meaningful Reward categories and Punishment categories separately
+- [x] show Top Rewards / Top Punishments when contextual pairwise evidence is sufficient
+- [x] order representative confirmed items using contextual rank when available, with suitability/category relevance retained as separate context
+- [x] show inferred **Suggested to explore** items separately from confirmed items
+- [x] never feed M11 category/proposal/rank values into M7 radar/orientation/Headspaces/Modes/Top Overall
+- [x] compact mobile list/filter/profile behavior
+- [x] prevent confusing duplicates between catalog-linked and action-library items
+- [x] verify sorter, inference, contextual rankers, randomizer, and builders use the same stable primitive/category model
+- [x] verify accessibility/keyboard behavior
+- [x] regression-run M6/M7/M9 profile/evidence tests
+- [x] finalize docs and mark M11 complete
 
 **Exit condition:** the feature reads as one coherent flow: infer/propose → quick-sort → contextual rank → refine → aggregate/profile → randomize → build → reuse.
 

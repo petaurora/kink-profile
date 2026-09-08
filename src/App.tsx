@@ -9,6 +9,7 @@ import {
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { KinkThisOrThat } from "./KinkThisOrThat";
 import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
+import { RewardPunishmentProfileSummary } from "./RewardPunishmentProfileSummary";
 import {
   SiteHeader,
   type SiteHeaderDestination,
@@ -486,6 +487,8 @@ export default function App({
     loadCatalogProfile(),
   );
   const [screen, setScreen] = useState<Screen>(initialScreen);
+  const [rewardPunishmentReturnScreen, setRewardPunishmentReturnScreen] =
+    useState<"hub" | "profile">("hub");
   const [activeQuizId, setActiveQuizId] = useState<QuizId>(defaultQuiz.id);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [showAllHeadspaces, setShowAllHeadspaces] = useState(false);
@@ -806,8 +809,11 @@ export default function App({
     setScreen("catalog");
   };
 
-  const openRewardsPunishments = () => {
+  const openRewardsPunishments = (
+    returnTo: "hub" | "profile" = "hub",
+  ) => {
     setCatalogProfileSnapshot(loadCatalogProfile());
+    setRewardPunishmentReturnScreen(returnTo);
     setScreen("rewards-punishments");
   };
 
@@ -844,7 +850,7 @@ export default function App({
     }
 
     if (destination === "rewards-punishments") {
-      openRewardsPunishments();
+      openRewardsPunishments(screen === "profile" ? "profile" : "hub");
       return;
     }
 
@@ -868,6 +874,9 @@ export default function App({
     <>
       <SiteHeader
         displayName={displayName}
+        activeDestination={
+          screen === "quiz" || screen === "results" ? undefined : screen
+        }
         onNavigate={navigateFromHeader}
         onOpenSettings={() => onOpenSettings(screen)}
       />
@@ -969,11 +978,14 @@ export default function App({
                 <span className="catalog-kicker">Rewards & Punishments</span>
                 <h3>Build the contextual profiles</h3>
                 <p>
-                  Rate reward and punishment suitability independently, keep context notes,
-                  and choose which positive items may eventually join the random pools.
+                  Sort contextual use, rank confirmed options, roll from approved pools,
+                  and build reusable reward/punishment recipes without changing general kink preference.
                 </p>
               </div>
-              <button className="primary" onClick={openRewardsPunishments}>
+              <button
+                className="primary"
+                onClick={() => openRewardsPunishments("hub")}
+              >
                 Open rewards & punishments
               </button>
             </article>
@@ -998,7 +1010,7 @@ export default function App({
       {screen === "ranking" && (
         <KinkThisOrThat
           quizProfile={profile}
-          onClose={() => setScreen("hub")}
+          onClose={() => setScreen(rewardPunishmentReturnScreen)}
         />
       )}
 
@@ -1260,6 +1272,12 @@ export default function App({
               </button>
             </div>
           </article>
+
+          <RewardPunishmentProfileSummary
+            canonicalSignals={canonicalSignals}
+            catalogResultView={catalogResultView}
+            onOpenToolbox={() => openRewardsPunishments("profile")}
+          />
 
           <article className="profile-limits panel">
             <div className="profile-limits-heading">
