@@ -49,10 +49,16 @@ This folder contains the product and scoring decisions that should guide impleme
 15. [M12 This-or-That Ranking History & Movement](m12-ranking-history-movement.md)  
     The scoped temporal-ranking contract: non-destructive reruns, archived run history, active-run-only current evidence, and previous-rank movement indicators.
 
-16. [Roadmap](../ROADMAP.md)  
+16. [M13 Scene Builder](m13-scene-builder.md)  
+    The planned profile-to-play composition layer: theme queries, current-session state, candidate filtering, scene arcs, randomization, M11 integration, and saved scenes.
+
+17. [M14 Shared Profiles, Comparison & Partner Integration](m14-shared-profiles.md)  
+    The planned multi-profile contract: independent profile containers, derived comparison, complementary interaction mappings, participant intent, and shared M13 filtering.
+
+18. [Roadmap](../ROADMAP.md)  
     What is already implemented and what should be built next.
 
-17. [Reference Data](../reference/README.md)  
+19. [Reference Data](../reference/README.md)  
     How the expanded kink catalog should be used without turning it into a 551-question test.
 
 ## Source of truth by topic
@@ -74,6 +80,8 @@ This folder contains the product and scoring decisions that should guide impleme
 | How should profile settings, reset, backup/restore, and sharing work? | [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md) |
 | How should rewards, punishments, randomization, and saved recipes work? | [M11 Rewards & Punishments](m11-rewards-punishments.md) |
 | How should repeat This-or-That runs and rank movement work? | [M12 This-or-That Ranking History & Movement](m12-ranking-history-movement.md) |
+| How should profile context become a themed, low-decision scene builder? | [M13 Scene Builder](m13-scene-builder.md) |
+| How should multiple profiles be compared and used together without merging their evidence? | [M14 Shared Profiles](m14-shared-profiles.md) |
 | What do we build next? | [Roadmap](../ROADMAP.md) |
 | What is implemented today? | [README](../README.md) + code |
 | How do we use the kink catalog? | [Reference Data](../reference/README.md) |
@@ -92,6 +100,8 @@ If authority orientation, activity-side direction, or role/headspace semantics c
 If pairwise catalog ranking behavior changes, update the this-or-that ranking spec. If temporal ranking-run/history behavior changes, update the M12 ranking-history spec.  
 If overall profile aggregation or front-page facet behavior changes, update the overall profile aggregation spec.  
 If settings, reset behavior, profile backup/restore, or share-summary export changes, update the M9 settings/profile-management spec.  
-If reward/punishment contextual-use semantics, action-library identity, randomizer eligibility, or recipe behavior changes, update the M11 rewards/punishments spec.
+If reward/punishment contextual-use semantics, action-library identity, randomizer eligibility, or recipe behavior changes, update the M11 rewards/punishments spec.  
+If scene themes, candidate filtering, current-session state, scene composition, or scene randomization changes, update the M13 scene-builder spec.  
+If multi-profile storage, comparison semantics, interaction mappings, participant intent, or shared scene filtering changes, update the M14 shared-profiles spec.
 
 The repository code remains authoritative for what is actually implemented.
