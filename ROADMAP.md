@@ -115,6 +115,17 @@ The original M0 scorer remains only as the Starter Profile sampler.
 - [x] **C6** — catalog result integration
 - [x] **C7** — signal-affinity/recommendation hardening
 
+### Post-M6 catalog curation follow-up — parked
+
+- [ ] review `reference/catalog/source-additions-2026-09-08.tsv` and selectively merge accepted rows into `kink-catalog.tsv`
+- [ ] audit the full catalog for duplicates, overlapping concepts, overly granular/source-driven rows, and items that are not useful enough to keep
+- [ ] remove, consolidate, rename, or re-categorize catalog items where that produces a cleaner exploration/ranking set
+- [ ] preserve existing profile/ranking data when IDs are consolidated or retired using aliases, replacements, or explicit migration semantics
+- [ ] re-check category balance, signal mappings, aliases, descriptions, intensity/risk metadata, and ranking usefulness after curation
+- [ ] run generator/schema/mapping validation after the curated catalog is finalized
+
+> The catalog is intentionally **curatable**, not append-only. Adding broader source coverage does not mean every discovered item must remain in the final runtime catalog.
+
 ---
 
 ## M7 — Full Overall Profile ✅
