@@ -1225,6 +1225,31 @@ A quick-sort **Both** therefore makes the primitive eligible for both contextual
 
 If a later explicit edit changes an item to `no` or `never`, current ranking views exclude it while preserving raw historical comparisons for explainability/recovery.
 
+## What the contextual rank means
+
+Reward and Punishment ranking need context-specific prompt language.
+
+Reward ranking asks:
+
+> **Which would feel more rewarding?**
+
+Punishment ranking asks:
+
+> **Which feels like the better-fit punishment/consequence?**
+
+Punishment rank must **not** be defined as:
+
+- which item is most disliked
+- which item is most painful
+- which item is most severe
+- which item would create the strongest aversion
+
+Those are different dimensions and may be unsafe or misleading if silently conflated.
+
+The M11 punishment pool already contains items the user explicitly said can work in that context. Pairwise ranking only orders those confirmed candidates by contextual fit/preference/effectiveness as the user understands it.
+
+If future product work needs severity/intensity, define it as a separate explicit dimension rather than deriving it from rank.
+
 ## Pairwise interaction
 
 The contextual ranker can reuse the familiar card interaction:
