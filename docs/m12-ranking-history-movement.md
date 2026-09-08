@@ -228,17 +228,24 @@ The visible row should stay compact. The exact prior rank belongs in the movemen
 
 # Rank movement semantics
 
-Movement compares **like-for-like scopes only**:
+Movement compares **like-for-like scopes and presentation views only**:
 
-- category rank → previous rank in that same category
-- Overall rank → previous Overall rank
+- category view → the previous comparable snapshot projected into that same category view
+- Overall view → the previous Overall snapshot projected into that same visible Overall view
+- filtered/shortlisted profile surface → the previous comparable snapshot projected onto the exact stable item identities shown by that surface
 
-Never compare a category rank to an Overall rank.
+Never compare a category rank to an Overall rank, and never compare a visible/presentation position to a hidden raw engine rank.
 
-For a current item:
+The invariant is:
+
+> **The rank printed on the row is the rank the movement badge compares.**
+
+Before calculating movement, project the previous snapshot onto the current view's stable item IDs, preserve previous ordering, then re-index that projected list from 1..N. Hidden or filtered-out items must not create phantom movement.
+
+For a current visible item:
 
 ```ts
-delta = previousRank - currentRank
+delta = previousVisibleRank - currentVisibleRank
 ```
 
 Therefore:

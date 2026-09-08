@@ -33,7 +33,7 @@ import {
 } from "./lib/catalogResults";
 import { startNewKinkRankingRun } from "./lib/kinkRankingHistory";
 import {
-  calculateRankingMovement,
+  calculateViewRelativeRankingMovements,
   getPreviousComparableRankingSnapshot,
 } from "./lib/kinkRankingMovement";
 import type { StoredProfile } from "./lib/profileStorage";
@@ -151,6 +151,20 @@ export function KinkThisOrThat({
   const previousComparableSnapshot = useMemo(
     () => getPreviousComparableRankingSnapshot(profile, scope),
     [profile, mode, categoryId],
+  );
+
+  const visibleRankingItems = useMemo(
+    () => snapshot.items.slice(0, mode === "overall" ? 25 : 10),
+    [mode, snapshot.items],
+  );
+
+  const visibleRankingMovements = useMemo(
+    () =>
+      calculateViewRelativeRankingMovements(
+        visibleRankingItems,
+        previousComparableSnapshot,
+      ),
+    [previousComparableSnapshot, visibleRankingItems],
   );
 
   const basePair = useMemo(
@@ -711,17 +725,15 @@ export function KinkThisOrThat({
           </div>
 
           <div className="ranking-list">
-            {snapshot.items.slice(0, mode === "overall" ? 25 : 10).map((item) => {
+            {visibleRankingItems.map((item, index) => {
               const result = resultView?.byCatalogId.get(item.id);
-              const movement = calculateRankingMovement(
-                item,
-                previousComparableSnapshot,
-              );
+              const movement = visibleRankingMovements.get(item.id);
               const movementId = `${mode}:${categoryId}:${item.id}`;
+              const visibleRank = index + 1;
 
               return (
                 <div className="ranking-row" key={item.id}>
-                  <span className="ranking-position">{item.rank}</span>
+                  <span className="ranking-position">{visibleRank}</span>
                   <div className="ranking-row-copy">
                     <div className="ranking-row-title">
                       <strong>{item.label}</strong>

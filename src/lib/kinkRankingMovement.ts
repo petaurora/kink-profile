@@ -125,3 +125,69 @@ export function rankingMovementLabel(movement: RankingMovement) {
   const direction = movement.kind === "up" ? "Up" : "Down";
   return `${direction} ${movement.places} place${movement.places === 1 ? "" : "s"}, previously rank ${movement.previousRank}`;
 }
+
+
+export type ViewRelativeRankingItem = Pick<
+  RankedKink,
+  "id" | "comparisons"
+>;
+
+export function calculateViewRelativeRankingMovements(
+  currentView: readonly ViewRelativeRankingItem[],
+  previous: PreviousComparableSnapshot | null,
+): ReadonlyMap<string, RankingMovement> {
+  const movements = new Map<string, RankingMovement>();
+  if (!previous) return movements;
+
+  const currentIds = new Set(currentView.map((item) => item.id));
+  const previousVisibleRanks = new Map(
+    previous.snapshot.items
+      .filter((item) => currentIds.has(item.catalogId))
+      .slice()
+      .sort(
+        (left, right) =>
+          left.rank - right.rank ||
+          left.catalogId.localeCompare(right.catalogId),
+      )
+      .map((item, index) => [item.catalogId, index + 1] as const),
+  );
+
+  currentView.forEach((item, index) => {
+    if (item.comparisons <= 0) return;
+
+    const currentViewRank = index + 1;
+    const previousViewRank = previousVisibleRanks.get(item.id);
+
+    if (previousViewRank === undefined) {
+      movements.set(item.id, {
+        kind: "new",
+        previousRank: null,
+        previousCapturedAt: previous.snapshot.capturedAt,
+        previousRunId: previous.run.id,
+      });
+      return;
+    }
+
+    const delta = previousViewRank - currentViewRank;
+    if (delta === 0) {
+      movements.set(item.id, {
+        kind: "same",
+        places: 0,
+        previousRank: previousViewRank,
+        previousCapturedAt: previous.snapshot.capturedAt,
+        previousRunId: previous.run.id,
+      });
+      return;
+    }
+
+    movements.set(item.id, {
+      kind: delta > 0 ? "up" : "down",
+      places: Math.abs(delta),
+      previousRank: previousViewRank,
+      previousCapturedAt: previous.snapshot.capturedAt,
+      previousRunId: previous.run.id,
+    });
+  });
+
+  return movements;
+}
