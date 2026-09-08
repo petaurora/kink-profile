@@ -20,17 +20,97 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 }
 
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  background: color-mix(in srgb, var(--bg-page) 92%, transparent);
+  backdrop-filter: blur(16px);
+}
+
+.site-header-inner {
+  width: min(1180px, calc(100% - 32px));
   min-height: 64px;
+  margin: 0 auto;
+  padding: 8px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
+}
+
+.site-header-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.site-nav-trigger,
+.header-icon-button {
+  display: inline-grid;
+  place-items: center;
+  min-width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: var(--bg-surface-emphasis);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.site-nav-trigger {
+  grid-template-columns: auto auto;
+  gap: 2px;
+  padding: 0 8px 0 10px;
+}
+
+.site-nav-trigger:hover,
+.header-icon-button:hover,
+.header-icon-button.is-active {
+  border-color: var(--accent-primary);
+  background: var(--bg-control-hover);
+}
+
+.site-nav-chevron {
+  transition: transform 140ms ease;
+}
+
+.site-nav-trigger.is-open .site-nav-chevron {
+  transform: rotate(180deg);
+}
+
+.site-nav-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 60;
+  width: max-content;
+  min-width: 190px;
+  padding: 8px;
+  display: grid;
+  gap: 3px;
+  border-radius: 18px;
+}
+
+.site-nav-menu button {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: .72rem .8rem;
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  font-weight: 750;
+}
+
+.site-nav-menu button:hover {
+  background: var(--bg-control-hover);
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   border: 0;
   padding: 0;
   background: transparent;
@@ -40,14 +120,8 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   font-size: 1.05rem;
 }
 
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--bg-surface-emphasis);
-  color: var(--text-primary);
+.header-icon-button {
+  padding: 0;
 }
 
 .eyebrow {
@@ -393,14 +467,6 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   gap: 14px;
 }
 
-.header-link {
-  border: 0;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-weight: 800;
-}
-
 .hub-stack,
 .profile-stack {
   display: grid;
@@ -410,7 +476,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 .hub-hero {
   padding: 18px 8px 10px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
+  grid-template-columns: minmax(0, 1fr);
   gap: 32px;
   align-items: end;
 }
@@ -426,41 +492,6 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 .hub-hero .hero-copy {
   max-width: 650px;
   margin-top: 18px;
-}
-
-.profile-summary {
-  position: relative;
-  display: flex;
-  min-height: 138px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  border: 1px solid var(--border-subtle);
-  border-radius: 20px;
-  padding: 18px 20px;
-  background: var(--bg-surface-emphasis);
-  color: var(--text-primary);
-  cursor: pointer;
-  text-align: left;
-}
-
-.profile-summary .eyebrow {
-  color: var(--text-secondary);
-  margin-bottom: auto;
-}
-
-.profile-summary-go {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 18px;
-  color: var(--text-primary);
-  font-size: .82rem;
-  font-weight: 800;
-}
-
-.profile-summary-go svg {
-  display: block;
 }
 
 .hub-section-heading {
@@ -858,10 +889,6 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 @media (max-width: 560px) {
   .header-actions {
     gap: 8px;
-  }
-
-  .header-link {
-    display: none;
   }
 
   .hub-hero {
@@ -3004,12 +3031,14 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 
 
-.catalog-return-top {
+.return-to-top {
   position: fixed;
   right: max(1rem, env(safe-area-inset-right));
-  /* Keep this above the global Settings FAB instead of sharing its corner. */
-  bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 3.75rem);
-  z-index: 20;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
   background: var(--bg-surface-raised);
@@ -3022,12 +3051,12 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   cursor: pointer;
 }
 
-.catalog-return-top:hover {
+.return-to-top:hover {
   border-color: var(--accent-primary);
   background: var(--bg-control-hover);
 }
 
-.catalog-return-top:focus-visible {
+.return-to-top:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
@@ -3160,9 +3189,9 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
     height: 1.6rem;
   }
 
-  .catalog-return-top {
+  .return-to-top {
     right: max(.75rem, env(safe-area-inset-right));
-    bottom: calc(max(.75rem, env(safe-area-inset-bottom)) + 3.5rem);
+    bottom: max(.75rem, env(safe-area-inset-bottom));
     padding: .65rem .85rem;
   }
 

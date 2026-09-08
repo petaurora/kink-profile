@@ -2,14 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import {
   IconAdjustmentsHeart,
   IconBolt,
-  IconChevronRight,
   IconHeart,
   IconMasksTheater,
-  IconPaw,
   IconTransfer,
 } from "@tabler/icons-react";
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { KinkThisOrThat } from "./KinkThisOrThat";
+import {
+  SiteHeader,
+  type SiteHeaderDestination,
+} from "./SiteHeader";
 import {
   answerOptions,
   dimensions,
@@ -86,7 +88,13 @@ import {
   scoreSignals,
 } from "./lib/scoring";
 
-type Screen = "hub" | "quiz" | "results" | "profile" | "catalog" | "ranking";
+export type Screen = "hub" | "quiz" | "results" | "profile" | "catalog" | "ranking";
+
+type AppProps = {
+  initialScreen?: Screen;
+  displayName: string;
+  onOpenSettings: (returnScreen: Screen) => void;
+};
 type Score = {
   id: string;
   label: string;
@@ -394,7 +402,9 @@ function QuizCard({
         </span>
 
         <div className="quiz-card-complete-copy">
-          <p className="eyebrow">{quiz.eyebrow}</p>
+          {quiz.eyebrow !== "Core section" && (
+            <p className="eyebrow">{quiz.eyebrow}</p>
+          )}
           <h2>{quiz.title}</h2>
         </div>
 
@@ -417,7 +427,9 @@ function QuizCard({
       </div>
 
       <div className="quiz-card-copy">
-        <p className="eyebrow">{quiz.eyebrow}</p>
+        {quiz.eyebrow !== "Core section" && (
+          <p className="eyebrow">{quiz.eyebrow}</p>
+        )}
         <h2>{quiz.title}</h2>
         <p>{quiz.description}</p>
       </div>
@@ -456,12 +468,16 @@ function QuizCard({
 
 const defaultQuiz = quizzes.find((quiz) => quiz.contributesToOverall) ?? quizzes[0];
 
-export default function App() {
+export default function App({
+  initialScreen = "hub",
+  displayName,
+  onOpenSettings,
+}: AppProps) {
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
   const [catalogProfileSnapshot, setCatalogProfileSnapshot] = useState(() =>
     loadCatalogProfile(),
   );
-  const [screen, setScreen] = useState<Screen>("hub");
+  const [screen, setScreen] = useState<Screen>(initialScreen);
   const [activeQuizId, setActiveQuizId] = useState<QuizId>(defaultQuiz.id);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [showAllHeadspaces, setShowAllHeadspaces] = useState(false);
@@ -803,6 +819,20 @@ export default function App() {
     openCatalog(allCatalogDrilldown());
   };
 
+  const navigateFromHeader = (destination: SiteHeaderDestination) => {
+    if (destination === "profile") {
+      openProfile();
+      return;
+    }
+
+    if (destination === "catalog") {
+      openCatalog(allCatalogDrilldown("hub"));
+      return;
+    }
+
+    setScreen(destination);
+  };
+
   const openFacetDetail = (facetId: OverallFacetId) => {
     const element = document.getElementById(`facet-detail-${facetId}`);
     if (element instanceof HTMLDetailsElement) {
@@ -817,22 +847,14 @@ export default function App() {
   };
 
   return (
-    <main className="app-shell">
-      <header className="site-header">
-        <button className="brand" onClick={() => setScreen("hub")}>
-          <span className="brand-mark">
-            <IconPaw size={18} stroke={2} aria-hidden="true" />
-          </span>
-          <span>Pet Profile</span>
-        </button>
+    <>
+      <SiteHeader
+        displayName={displayName}
+        onNavigate={navigateFromHeader}
+        onOpenSettings={() => onOpenSettings(screen)}
+      />
 
-        <div className="header-actions">
-          <button className="header-link" onClick={openProfile}>
-            My profile
-          </button>
-        </div>
-      </header>
-
+      <main className="app-shell">
       {screen === "hub" && (
         <section className="hub-stack">
           <div className="hub-hero">
@@ -845,14 +867,6 @@ export default function App() {
                 much or as little as you want.
               </p>
             </div>
-
-            <button className="profile-summary" onClick={openProfile}>
-              <span className="eyebrow">Your profile</span>
-              <span className="profile-summary-go">
-                View
-                <IconChevronRight size={17} stroke={2} aria-hidden="true" />
-              </span>
-            </button>
           </div>
 
           <div className="hub-section-heading">
@@ -960,9 +974,6 @@ export default function App() {
                 <p className="eyebrow">Your kink profile</p>
                 <h1>{profileHeader.summary}</h1>
               </div>
-              <button type="button" className="secondary" onClick={() => setScreen("hub")}>
-                Back to explore
-              </button>
             </div>
 
             <div className="profile-trait-grid">
@@ -1819,6 +1830,7 @@ export default function App() {
           </div>
         </section>
       )}
-    </main>
+      </main>
+    </>
   );
 }
