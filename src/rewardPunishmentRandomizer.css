@@ -1,0 +1,428 @@
+.rp-randomizer-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.rp-randomizer-intro {
+  padding: 20px 22px;
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(280px, 1.1fr);
+  gap: 24px;
+  align-items: end;
+}
+
+.rp-randomizer-intro h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+}
+
+.rp-randomizer-intro > p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.rp-randomizer-pools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.rp-randomizer-pool {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 18px;
+  align-items: center;
+}
+
+.rp-randomizer-pool h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.7rem);
+  letter-spacing: -.04em;
+}
+
+.rp-randomizer-pool p:not(.eyebrow) {
+  margin: 5px 0 0;
+  color: var(--text-muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.rp-randomizer-pool .text-button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.rp-randomizer-result {
+  padding: 0;
+  overflow: hidden;
+}
+
+.rp-randomizer-reroll-card {
+  appearance: none;
+  width: 100%;
+  border: 0;
+  padding: clamp(22px, 5vw, 42px);
+  display: block;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rp-randomizer-reroll-card:hover {
+  background: var(--bg-control-hover);
+}
+
+.rp-randomizer-reroll-card:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -3px;
+}
+
+.rp-randomizer-result-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: .76rem;
+  font-weight: 800;
+}
+
+.rp-randomizer-result-content {
+  display: grid;
+}
+
+.rp-randomizer-result h2 {
+  margin: 16px 0 0;
+  max-width: 860px;
+  font-size: clamp(2.1rem, 6vw, 5rem);
+  line-height: .98;
+  letter-spacing: -.05em;
+}
+
+.rp-randomizer-categories {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.rp-randomizer-categories span {
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: var(--text-secondary);
+  font-size: .72rem;
+  font-weight: 750;
+}
+
+.rp-randomizer-description {
+  max-width: 800px;
+  margin: 18px 0 0;
+  color: var(--text-secondary);
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+.rp-randomizer-note {
+  max-width: 800px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-muted);
+}
+
+.rp-randomizer-note p {
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+.rp-randomizer-source {
+  margin: 0 clamp(22px, 5vw, 42px);
+  max-width: 800px;
+}
+
+.rp-randomizer-source summary {
+  color: var(--accent-primary);
+  cursor: pointer;
+  font-size: .8rem;
+  font-weight: 800;
+}
+
+.rp-randomizer-source dl {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-muted);
+  display: grid;
+  gap: 8px;
+}
+
+.rp-randomizer-source dl > div {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.rp-randomizer-source dt {
+  color: var(--text-muted);
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.rp-randomizer-source dd {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: .78rem;
+  overflow-wrap: anywhere;
+}
+
+.rp-randomizer-disclaimer {
+  margin: 18px clamp(22px, 5vw, 42px) clamp(22px, 5vw, 42px);
+  color: var(--text-muted);
+  font-size: .72rem;
+}
+
+
+
+.rp-randomizer-tap-hint {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rp-randomizer-tap-hint strong {
+  color: var(--accent-primary);
+  font-size: .9rem;
+}
+
+.rp-randomizer-tap-hint span {
+  color: var(--text-muted);
+  font-size: .72rem;
+}
+
+.rp-randomizer-history {
+  padding: 18px 20px;
+}
+
+.rp-randomizer-history-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rp-randomizer-history-heading h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.rp-randomizer-history-heading > span {
+  color: var(--text-muted);
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.rp-randomizer-history-list {
+  margin-top: 12px;
+  display: grid;
+}
+
+.rp-randomizer-history-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.rp-randomizer-history-index {
+  color: var(--text-muted);
+  font-size: .7rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.rp-randomizer-history-row > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.rp-randomizer-history-row strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: .86rem;
+}
+
+.rp-randomizer-history-row > div > span {
+  color: var(--text-muted);
+  font-size: .7rem;
+}
+
+.rp-randomizer-history-note {
+  margin: 10px 0 0;
+  color: var(--text-muted);
+  font-size: .68rem;
+}
+
+.rp-randomizer-placeholder {
+  padding: clamp(26px, 6vw, 54px);
+  text-align: center;
+}
+
+.rp-randomizer-placeholder h2 {
+  margin: 4px 0 0;
+  font-size: clamp(1.6rem, 4vw, 2.7rem);
+}
+
+.rp-randomizer-placeholder p:not(.eyebrow) {
+  max-width: 620px;
+  margin: 10px auto 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+@media (max-width: 720px) {
+  .rp-randomizer-intro {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .rp-randomizer-pool {
+    grid-template-columns: 1fr;
+  }
+
+  .rp-randomizer-pool .primary {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 560px) {
+  .rp-randomizer-intro {
+    padding: 12px 14px;
+  }
+
+  .rp-randomizer-intro h2 {
+    font-size: 1.15rem;
+  }
+
+  .rp-randomizer-intro > p {
+    font-size: .72rem;
+  }
+
+  .rp-randomizer-pools {
+    gap: 7px;
+  }
+
+  .rp-randomizer-pool {
+    padding: 12px;
+    gap: 8px;
+    border-radius: 16px;
+  }
+
+  .rp-randomizer-pool h2 {
+    font-size: 1.3rem;
+  }
+
+  .rp-randomizer-pool p:not(.eyebrow) {
+    display: none;
+  }
+
+  .rp-randomizer-pool .primary {
+    width: 100%;
+    min-height: 42px;
+  }
+
+  .rp-randomizer-result {
+    border-radius: 20px;
+  }
+
+  .rp-randomizer-reroll-card {
+    padding: 16px;
+  }
+
+  .rp-randomizer-result h2 {
+    margin-top: 10px;
+    font-size: clamp(1.8rem, 9vw, 2.6rem);
+    line-height: 1.02;
+  }
+
+  .rp-randomizer-categories {
+    margin-top: 9px;
+    gap: 5px;
+  }
+
+  .rp-randomizer-categories span {
+    padding: 3px 6px;
+    font-size: .64rem;
+  }
+
+  .rp-randomizer-categories span:nth-child(n + 3) {
+    display: none;
+  }
+
+  .rp-randomizer-description {
+    margin-top: 11px;
+    font-size: .78rem;
+    line-height: 1.4;
+  }
+
+  .rp-randomizer-note {
+    margin-top: 10px;
+    padding: 9px 10px;
+  }
+
+  .rp-randomizer-note p {
+    font-size: .75rem;
+  }
+
+  .rp-randomizer-tap-hint {
+    margin-top: 14px;
+    padding-top: 10px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .rp-randomizer-tap-hint strong {
+    font-size: .8rem;
+  }
+
+  .rp-randomizer-tap-hint span {
+    font-size: .65rem;
+  }
+
+  .rp-randomizer-source {
+    margin: 0 16px;
+  }
+
+  .rp-randomizer-source dl > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .rp-randomizer-disclaimer {
+    margin: 12px 16px 16px;
+    line-height: 1.35;
+  }
+
+  .rp-randomizer-history {
+    padding: 12px 14px;
+  }
+
+  .rp-randomizer-history-row {
+    padding: 8px 0;
+  }
+}

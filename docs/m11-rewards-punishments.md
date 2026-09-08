@@ -1847,18 +1847,20 @@ A future explicit "include rewards/punishments in share summary" feature may be 
 
 **Purpose:** provide the lightweight "just pick one" utility.
 
-- [ ] add Random reward
-- [ ] add Random punishment
-- [ ] select only explicitly eligible positive-context items
-- [ ] never promote inferred proposals into the random pool
-- [ ] never fall back to unrated/unapproved source ideas
-- [ ] add Pick again
-- [ ] allow detail/view-source navigation
-- [ ] avoid immediate reroll repetition within the current session
-- [ ] add empty-pool states
-- [ ] keep contextual rank from silently becoming random probability weighting in V1
-- [ ] keep assignment/completion/history semantics out
-- [ ] add deterministic eligibility tests and injectable RNG for tests
+- [x] add Random reward
+- [x] add Random punishment
+- [x] select only explicitly eligible positive-context items
+- [x] never promote inferred proposals into the random pool
+- [x] never fall back to unrated/unapproved source ideas
+- [x] allow tap-the-result-card reroll
+- [x] show an ephemeral in-view reroll trail that clears when Randomizer unmounts
+- [x] never persist that trail as assignment/completion/profile history
+- [x] allow source/provenance inspection + empty-pool setup navigation
+- [x] avoid immediate reroll repetition within the current session
+- [x] add empty-pool states
+- [x] keep contextual rank from silently becoming random probability weighting in V1
+- [x] keep assignment/completion/history semantics out
+- [x] add deterministic eligibility tests and injectable RNG for tests
 
 **Exit condition:** either contextual pool can produce a valid random suggestion using only explicitly approved entries.
 
