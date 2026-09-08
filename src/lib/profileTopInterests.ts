@@ -9,14 +9,22 @@ import type {
 
 export type TopInterestEvidenceSource = "explicit" | "pairwise";
 
+export type ProfileTopInterestQuizFit = {
+  affinity: number;
+  coverage: number;
+  multiplier: number;
+};
+
 export type ProfileTopInterest = {
   catalogId: string;
   label: string;
   categoryId: string;
   aggregateScore: number;
+  directScore: number;
   sourceCount: number;
   explicitState?: CatalogPreferenceState;
   overallRank?: CatalogRankContext;
+  quizFit?: ProfileTopInterestQuizFit;
   sources: readonly TopInterestEvidenceSource[];
 };
 
@@ -41,9 +49,51 @@ const excludedExplicitStates = new Set<CatalogPreferenceState>([
 const neutralDirectScore = 50;
 const explicitWeight = 1;
 const minimumPairwiseWeight = 0.65;
+const maximumQuizBoost = 0.1;
+const minimumQuizBoostAtFullPairwiseConfidence = 0.03;
 
 function round1(value: number) {
   return Math.round((value + 1e-9) * 10) / 10;
+}
+
+function round4(value: number) {
+  return Math.round((value + 1e-12) * 10_000) / 10_000;
+}
+
+function quizFitMultiplier(result: CatalogResultItem) {
+  const inferred = result.inferred;
+  if (!inferred || inferred.coverage <= 0) {
+    return undefined;
+  }
+
+  const affinityStrength = Math.max(
+    0,
+    Math.min(1, inferred.affinity / 100),
+  );
+  const coverageStrength = Math.max(
+    0,
+    Math.min(1, inferred.coverage / 100),
+  );
+
+  // Quiz fit matters most when direct relative ranking has not been refined yet.
+  // As Overall This-or-That confidence grows, the maximum quiz influence shrinks
+  // from +10% toward +3%, so direct comparison evidence remains authoritative.
+  const pairwiseConfidence = Math.max(
+    0,
+    Math.min(1, result.overallRank?.confidence ?? 0),
+  );
+  const maxBoost =
+    maximumQuizBoost -
+    (maximumQuizBoost - minimumQuizBoostAtFullPairwiseConfidence) *
+      pairwiseConfidence;
+
+  return {
+    affinity: round1(inferred.affinity),
+    coverage: round1(inferred.coverage),
+    multiplier: round4(
+      1 + maxBoost * affinityStrength * coverageStrength,
+    ),
+  };
 }
 
 function pairwisePlacementScores(items: readonly CatalogResultItem[]) {
@@ -115,6 +165,11 @@ function buildCandidate(
     explicitOrderingScore * explicitWeight +
     pairwiseOrderingScore * pairwiseWeight;
   const totalWeight = explicitWeight + pairwiseWeight;
+  const directScore = round1(weightedTotal / totalWeight);
+  const quizFit = quizFitMultiplier(result);
+  const aggregateScore = round1(
+    directScore * (quizFit?.multiplier ?? 1),
+  );
 
   const sources: TopInterestEvidenceSource[] = [];
   if (hasExplicit) sources.push("explicit");
@@ -124,10 +179,12 @@ function buildCandidate(
     catalogId: result.item.id,
     label: result.item.label,
     categoryId: result.item.categoryId,
-    aggregateScore: round1(weightedTotal / totalWeight),
+    aggregateScore,
+    directScore,
     sourceCount: sources.length,
     explicitState: hasExplicit ? result.explicitState : undefined,
     overallRank: hasPairwise ? result.overallRank : undefined,
+    quizFit,
     sources,
   };
 }
@@ -139,15 +196,20 @@ function buildCandidate(
  * - positive explicit overall catalog states (Love / Like / Curious)
  * - active Overall This-or-That rank context
  *
- * Quiz-derived/inferred affinity is not read at all and therefore cannot place
- * an item into Top Overall by itself.
+ * Quiz-derived affinity cannot make an item eligible for Top Overall by itself.
+ * Eligibility still requires positive explicit preference or active Overall
+ * This-or-That evidence.
+ *
+ * Once an item is directly eligible, quiz-derived affinity may apply a small,
+ * coverage-aware presentation multiplier. The boost is capped at +10% when
+ * pairwise evidence is absent and shrinks toward +3% as Overall ranking
+ * confidence approaches 100%, keeping direct comparisons authoritative.
  *
  * Explicit state and pairwise rank remain independent source values. Missing
  * direct evidence uses a neutral presentation prior instead of behaving like a
- * perfect score. That prevents large sets of explicit Love items from sorting
- * alphabetically ahead of items the user actually refined in Overall
- * This-or-That. The aggregateScore is presentation-only ordering metadata and
- * is never written back into either source.
+ * perfect score. The derived directScore, quiz multiplier, and aggregateScore
+ * are presentation-only ordering metadata and are never written back into any
+ * source.
  */
 export function buildProfileTopInterests(
   resultView: CatalogResultView,
