@@ -183,11 +183,11 @@ describe("selective profile reset", () => {
     resetProfileData(createResetEverythingSelection(), storage);
 
     expect(loadProfile(storage).quizzes).toEqual({});
-    expect(loadCatalogProfile(storage)).toEqual({
-      schemaVersion: 1,
-      preferences: {},
-      comparisons: [],
-    });
+    const catalog = loadCatalogProfile(storage);
+    expect(catalog.preferences).toEqual({});
+    expect(catalog.comparisons).toEqual([]);
+    expect(catalog.rankingHistory?.activeRunId).toBe("ranking-run-initial");
+    expect(Object.values(catalog.rankingHistory?.runs ?? {})).toHaveLength(1);
     expect(loadProfileSettings(storage).displayName).toBe(DEFAULT_PROFILE_DISPLAY_NAME);
     expect(storage.getItem(CATALOG_PROFILE_STORAGE_KEY)).not.toBeNull();
   });
