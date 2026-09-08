@@ -813,7 +813,19 @@ M11 intentionally does **not** add assignment, earning, demerits, punishment deb
 - [ ] add searchable/filterable Reward and Punishment profile views
 - [ ] never infer punishment suitability from dislike/aversion
 
-### M11.3 — Randomizer
+### M11.3 — Quick Reward / Punishment / Both sorter
+
+- [ ] add one-item-at-a-time classification cards
+- [ ] use Reward / Punishment / Both as the primary choices
+- [ ] provide Neither / not a fit and Skip for now
+- [ ] map quick choices to coarse contextual `works/no` states only
+- [ ] do not auto-set Strong, Depends, Never, or random eligibility
+- [ ] add Continue unsorted and category/source-focused runs
+- [ ] add Back / Undo + resume
+- [ ] protect nuanced existing states from accidental overwrite
+- [ ] keep the table/list as secondary detailed refinement
+
+### M11.4 — Randomizer
 
 - [ ] add Random reward
 - [ ] add Random punishment
@@ -822,7 +834,7 @@ M11 intentionally does **not** add assignment, earning, demerits, punishment deb
 - [ ] avoid immediate in-session reroll repetition
 - [ ] keep assignment/completion/history semantics out
 
-### M11.4 — Reward & punishment builders
+### M11.5 — Reward & punishment builders
 
 - [ ] add Build a reward
 - [ ] add Build a punishment
@@ -832,7 +844,7 @@ M11 intentionally does **not** add assignment, earning, demerits, punishment deb
 - [ ] keep recipe composition non-recursive in V1
 - [ ] mark recipes Needs review when a referenced component becomes context-`Never` or stale
 
-### M11.5 — Recipe randomization + lifecycle integration
+### M11.6 — Recipe randomization + lifecycle integration
 
 - [ ] optionally include valid saved recipes in random pools
 - [ ] extend full profile backup/import with authoritative M11 state
@@ -840,7 +852,7 @@ M11 intentionally does **not** add assignment, earning, demerits, punishment deb
 - [ ] preserve M11 state across unrelated reset scopes
 - [ ] keep M11 data out of the share summary by default
 
-### M11.6 — UX polish + integration
+### M11.7 — UX polish + integration
 
 - [ ] add first-class navigation
 - [ ] compact mobile list/filter behavior
@@ -849,7 +861,7 @@ M11 intentionally does **not** add assignment, earning, demerits, punishment deb
 - [ ] regression-run M6/M7/M9 integration tests
 - [ ] finalize docs and mark M11 complete
 
-**M11 exit condition:** the user can define what works as a reward and what works as a punishment, randomly pick from explicitly approved pools, and create reusable multi-part reward/punishment recipes without the app becoming an assignment or behavior-management system.
+**M11 exit condition:** the user can quickly sort what works as Reward / Punishment / Both, refine nuanced contextual suitability, randomly pick from explicitly approved pools, and create reusable multi-part reward/punishment recipes without the app becoming an assignment or behavior-management system.
 
 ---
 
