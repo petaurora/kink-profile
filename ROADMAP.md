@@ -26,6 +26,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M13 | Planned | theme-driven, low-decision scene composition |
 | M14 | Planned | multi-profile comparison, complementary fit, and shared scene filtering |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
+| M16 | Planned | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
 
 ---
 
@@ -115,16 +116,9 @@ The original M0 scorer remains only as the Starter Profile sampler.
 - [x] **C6** — catalog result integration
 - [x] **C7** — signal-affinity/recommendation hardening
 
-### Post-M6 catalog curation follow-up — parked
+### Post-M6 content review
 
-- [ ] review `reference/catalog/source-additions-2026-09-08.tsv` and selectively merge accepted rows into `kink-catalog.tsv`
-- [ ] audit the full catalog for duplicates, overlapping concepts, overly granular/source-driven rows, and items that are not useful enough to keep
-- [ ] remove, consolidate, rename, or re-categorize catalog items where that produces a cleaner exploration/ranking set
-- [ ] preserve existing profile/ranking data when IDs are consolidated or retired using aliases, replacements, or explicit migration semantics
-- [ ] re-check category balance, signal mappings, aliases, descriptions, intensity/risk metadata, and ranking usefulness after curation
-- [ ] run generator/schema/mapping validation after the curated catalog is finalized
-
-> The catalog is intentionally **curatable**, not append-only. Adding broader source coverage does not mean every discovered item must remain in the final runtime catalog.
+Broader catalog pruning/merging and the pending source-additions review are now owned by **M16 — Data & Content Curation** rather than being a catalog-only follow-up.
 
 ---
 
@@ -257,6 +251,23 @@ The original M0 scorer remains only as the Starter Profile sampler.
 
 ---
 
+## M16 — Data & Content Curation
+
+**Details:** [M16 Data & Content Curation](docs/m16-data-content-curation.md)
+
+- [ ] **M16.1** — inventory authored/derived data surfaces + review rubric
+- [ ] **M16.2** — quiz bank, signal-weight, and scoring-input review
+- [ ] **M16.3** — signal vocabulary, headspaces, radars, facets, labels, and thresholds review
+- [ ] **M16.4** — kink catalog pruning/consolidation + pending additions review
+- [ ] **M16.5** — rewards/punishments action library + contextual taxonomy curation
+- [ ] **M16.6** — cross-system taxonomy/mapping alignment
+- [ ] **M16.7** — stable-ID replacement, archival, migration, and import/export compatibility
+- [ ] **M16.8** — generator/test regression + representative-profile sanity review
+
+M16 is intentionally a **curation milestone, not an expansion milestone**. Existing questions, axes, categories, items, mappings, and labels may be removed or merged when they no longer improve the profile or decision surface.
+
+---
+
 # Parked ideas
 
 Interesting, but not current scope:
@@ -272,6 +283,6 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M7 and M9 are complete. M11 implementation is underway; M12, M13, M14, and M15 are formally scoped.**
+**M7 and M9 are complete. M11 implementation is underway; M12–M16 are formally scoped.**
 
 Choose the next implementation slice intentionally. M15 is the shared context model for any authority-sensitive giving/receiving behavior added inside M11, M13, or M14.
