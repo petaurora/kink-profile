@@ -175,7 +175,7 @@ The original M0 scorer remains only as the Starter Profile sampler.
 **Details:** [M11 Rewards & Punishments](docs/m11-rewards-punishments.md)
 
 - [x] **M11.1** — runtime library + stable identity
-- [ ] **M11.2** — direct Reward/Punishment suitability profiles
+- [x] **M11.2** — direct Reward/Punishment suitability profiles
 - [ ] **M11.3** — category aggregation + inferred proposals
 - [ ] **M11.4** — quick sorter + engagement pacing
 - [ ] **M11.5** — independent Reward/Punishment pairwise rankings
