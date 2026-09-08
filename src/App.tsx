@@ -982,7 +982,10 @@ export default function App({
                   and build reusable reward/punishment recipes without changing general kink preference.
                 </p>
               </div>
-              <button className="primary" onClick={openRewardsPunishments}>
+              <button
+                className="primary"
+                onClick={() => openRewardsPunishments("hub")}
+              >
                 Open rewards & punishments
               </button>
             </article>
