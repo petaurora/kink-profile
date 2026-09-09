@@ -275,6 +275,14 @@ export function shuffleSceneComponent(
     };
   }
 
+  if (component.source.kind !== "catalog") {
+    return {
+      composition,
+      state,
+      replacement: undefined,
+    };
+  }
+
   const replacements = replacementCandidatesForComponent(
     composition,
     componentId,
