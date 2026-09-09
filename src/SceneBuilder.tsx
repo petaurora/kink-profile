@@ -816,7 +816,7 @@ export function SceneBuilder({
     );
     let nextComposition = result.composition;
 
-    if (rewardPunishmentMode !== "none") {
+    if (!sharedContext && rewardPunishmentMode !== "none") {
       const addOn = pickSceneRewardPunishment(
         rewardPunishmentProfile,
         rewardPunishmentRecipes.recipes,
@@ -1084,8 +1084,14 @@ export function SceneBuilder({
         <section className="scene-results">
           <div className="scene-results-heading">
             <div>
-              <p className="eyebrow">03 · Your play space</p>
-              <h2>Strongest profile-backed matches</h2>
+              <p className="eyebrow">
+                03 · {sharedContext ? "Shared play space" : "Your play space"}
+              </p>
+              <h2>
+                {sharedContext
+                  ? "Strongest matches supported by both profiles"
+                  : "Strongest profile-backed matches"}
+              </h2>
             </div>
             <span>
               {candidateView.confirmed.length} eligible · showing{" "}
@@ -1181,8 +1187,9 @@ export function SceneBuilder({
               <div className="scene-rp-control-copy">
                 <strong>Optional reward / punishment</strong>
                 <span>
-                  Uses only M11 items and recipes already marked eligible
-                  for random use.
+                  {sharedContext
+                    ? "Shared M11 add-ons stay disabled until both profiles' reward/punishment suitability can be intersected safely."
+                    : "Uses only M11 items and recipes already marked eligible for random use."}
                 </span>
               </div>
 
