@@ -187,6 +187,7 @@
 
 .curation-filter-row button.is-active,
 .curation-review-filter button.is-active,
+.curation-gap-toggle.is-active,
 .curation-action-grid button.is-active,
 .curation-primary-actions button.is-active,
 .curation-lifecycle-actions button.is-active {
@@ -216,6 +217,16 @@
   border: 0;
   outline: 0;
   color: inherit;
+}
+
+.curation-gap-toggle {
+  justify-self: start;
+  border-radius: 999px;
+  padding: 0.46rem 0.68rem;
+  border: 1px solid rgba(240, 211, 231, 0.14);
+  background: rgba(240, 211, 231, 0.045);
+  color: inherit;
+  font-size: 0.86rem;
 }
 
 .curation-card {
@@ -606,6 +617,11 @@
   .curation-control-row {
     grid-template-columns: 1fr;
     gap: 0.55rem;
+  }
+
+  .curation-gap-toggle {
+    justify-self: stretch;
+    text-align: center;
   }
 
   .curation-filter-row {
