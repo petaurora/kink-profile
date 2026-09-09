@@ -181,6 +181,36 @@ describe("profile backup import", () => {
     if (result.ok) expect(result.backup).toEqual(backup);
   });
 
+  it("accepts retired Starter Profile data for backward compatibility", () => {
+    const storage = new MemoryStorage();
+    seedProfile(storage);
+    const backup = createProfileBackup(
+      storage,
+      "2026-09-06T22:00:00.000Z",
+    );
+
+    backup.profile.quizzes.quizzes["starter-profile"] = {
+      quizVersion: 1,
+      answers: {
+        "pet-1": 4,
+        "submission-1": 3,
+      },
+      completedAt: "2026-09-01T12:00:00.000Z",
+    };
+
+    const result = validateProfileBackup(backup);
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(
+        result.backup.profile.quizzes.quizzes["starter-profile"]?.answers,
+      ).toEqual({
+        "pet-1": 4,
+        "submission-1": 3,
+      });
+    }
+  });
+
   it("accepts legacy v1 backups and treats missing M11/scenes as empty on full restore", () => {
     const source = new MemoryStorage();
     seedProfile(source, "legacy-source");
