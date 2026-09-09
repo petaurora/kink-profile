@@ -75,22 +75,29 @@ describe("M16.2 structured curation editor", () => {
     ]);
   });
 
-  it("exposes Signal → Overall Facet memberships through the same shared relation editor", () => {
+  it("shows every Overall Facet in the Signal theme matrix", () => {
     const praise = entry("signal", "praise_approval");
     const model = buildCurationEditorModel(praise);
     if (!model) throw new Error("Missing signal editor");
 
-    const memberships = model.fields.find(
+    const matrix = model.fields.find(
       (field) =>
-        field.kind === "weighted-relations" &&
-        field.key === "facetMemberships",
+        field.kind === "facet-matrix" &&
+        field.key === "facetRelationships",
     );
 
-    expect(memberships).toBeDefined();
-    if (!memberships || memberships.kind !== "weighted-relations") return;
+    expect(matrix).toBeDefined();
+    if (!matrix || matrix.kind !== "facet-matrix") return;
 
-    expect(memberships.options.length).toBeGreaterThan(1);
-    expect(memberships.value.length).toBeGreaterThan(1);
+    expect(matrix.options).toHaveLength(overallFacetDefinitions.length);
+    expect(matrix.value).toHaveLength(overallFacetDefinitions.length);
+    expect(
+      matrix.value.every((relationship) =>
+        ["supports", "neutral", "opposes"].includes(
+          relationship.relationship,
+        ),
+      ),
+    ).toBe(true);
   });
 
   it("exposes the complete valid target universe for shared relation editors", () => {
@@ -126,17 +133,16 @@ describe("M16.2 structured curation editor", () => {
       entry("signal", "praise_approval"),
     );
     if (!signalModel) throw new Error("Missing Signal model");
-    const facetMemberships = signalModel.fields.find(
+    const facetMatrix = signalModel.fields.find(
       (field) =>
-        field.kind === "weighted-relations" &&
-        field.key === "facetMemberships",
+        field.kind === "facet-matrix" &&
+        field.key === "facetRelationships",
     );
-    if (!facetMemberships || facetMemberships.kind !== "weighted-relations") {
-      throw new Error("Missing Signal facet membership field");
+    if (!facetMatrix || facetMatrix.kind !== "facet-matrix") {
+      throw new Error("Missing Signal facet relationship matrix");
     }
-    expect(facetMemberships.options.length).toBe(
-      overallFacetDefinitions.length,
-    );
+    expect(facetMatrix.options.length).toBe(overallFacetDefinitions.length);
+    expect(facetMatrix.value.length).toBe(overallFacetDefinitions.length);
 
     const actionModel = buildCurationEditorModel(
       entry("reward-punishment-action", "action-achievement-ceremony"),
@@ -153,6 +159,26 @@ describe("M16.2 structured curation editor", () => {
     expect(contextCategories.options.length).toBe(
       rewardPunishmentCategories.length,
     );
+  });
+
+  it("keeps Overall Facet editing theme-only with support/opposition semantics", () => {
+    const model = buildCurationEditorModel(
+      entry("overall-facet", "power_exchange"),
+    );
+    if (!model) throw new Error("Missing Overall Facet model");
+
+    expect(model.fields.some((field) => field.key === "directional")).toBe(false);
+
+    const signals = model.fields.find(
+      (field) =>
+        field.kind === "weighted-relations" && field.key === "signals",
+    );
+    if (!signals || signals.kind !== "weighted-relations") {
+      throw new Error("Missing Overall Facet signal relationships");
+    }
+
+    expect(signals.allowDirection).toBeFalsy();
+    expect(signals.allowRelationship).toBe(true);
   });
 
   it("exposes category semantic bridges as shared weighted-relation editors", () => {
