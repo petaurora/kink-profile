@@ -468,6 +468,7 @@ You can independently reset areas such as:
 - explicit catalog preferences
 - This-or-That and ranking history
 - Rewards & Punishments contextual data, rankings, and recipes
+- saved Scene Builder scenes
 - profile name and settings
 - everything
 
