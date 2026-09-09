@@ -61,8 +61,8 @@ describe("M13.8 saved scene review lifecycle", () => {
   });
 
   it("marks durable catalog exclusions", () => {
-    const view = emptyCatalogView();
-    view.byCatalogId.set(
+    const byCatalogId = new Map();
+    byCatalogId.set(
       "item",
       {
         item: {
@@ -72,6 +72,10 @@ describe("M13.8 saved scene review lifecycle", () => {
         explicitState: "hard_limit",
       } as never,
     );
+    const view = {
+      ...emptyCatalogView(),
+      byCatalogId,
+    } as unknown as CatalogResultView;
 
     const scene = createSavedScene(
       {
