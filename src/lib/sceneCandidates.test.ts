@@ -34,7 +34,6 @@ function result(
       signalMappings: overrides.signalMappings ?? [],
       description: "",
       typicalRole: "Both",
-      primaryMode: "",
       intensity: "",
       riskLevel: "",
     },
