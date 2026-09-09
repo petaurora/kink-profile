@@ -399,6 +399,18 @@ const categories = [...categoryMetadata.values()]
   .map((category) => ({
     ...category,
     itemCount: categoryCounts.get(category.id) ?? 0,
+    signalMappings: [...(categoryMappings.get(category.id) ?? [])]
+      .map((mapping) => ({
+        signalId: mapping.signalId,
+        weight: mapping.weight,
+        appliesTo: mapping.appliesTo,
+        notes: mapping.notes,
+      }))
+      .sort(
+        (a, b) =>
+          a.signalId.localeCompare(b.signalId) ||
+          a.appliesTo.localeCompare(b.appliesTo),
+      ),
   }))
   .sort(
     (a, b) =>
@@ -506,12 +518,20 @@ export type KinkCatalogItem = {
   riskLevel: string;
 };
 
+export type KinkCatalogCategorySignalMapping = {
+  signalId: SignalId;
+  weight: number;
+  appliesTo: "any" | "receiving" | "giving";
+  notes: string;
+};
+
 export type KinkCatalogCategory = {
   id: string;
   label: string;
   domain: KinkCatalogDomain;
   displayOrder: number;
   itemCount: number;
+  signalMappings: readonly KinkCatalogCategorySignalMapping[];
 };
 
 export const kinkCatalog = ${JSON.stringify(items, null, 2)} as const satisfies readonly KinkCatalogItem[];
