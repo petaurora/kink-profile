@@ -12,6 +12,7 @@ import {
   type RewardPunishmentPreference,
   type RewardPunishmentProfileState,
 } from "./rewardPunishmentProfile";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export const REWARD_PUNISHMENT_PROFILE_STORAGE_KEY =
   "pet-profile-rewards-punishments-v1";
@@ -22,7 +23,7 @@ export type RewardPunishmentStorageLike = Pick<
 >;
 
 function browserStorage(): RewardPunishmentStorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
