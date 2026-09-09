@@ -1,4 +1,4 @@
-import { quizzes, type QuizId } from "../data/quizzes";
+import { supportedQuizIds, type QuizId } from "../data/quizzes";
 import {
   isCatalogPreferenceState,
   normalizeCatalogRankingHistory,
@@ -67,9 +67,7 @@ const comparisonResults = new Set<ComparisonResult>([
   "skip",
 ]);
 
-const knownQuizIds = new Set<QuizId>(
-  quizzes.map((quiz) => quiz.id),
-);
+const knownQuizIds = new Set<QuizId>(supportedQuizIds);
 
 function browserStorage(): StorageLike {
   return localStorage;
