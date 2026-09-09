@@ -678,19 +678,8 @@
     gap: 0.4rem;
   }
 
-  .curation-relation-name {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.12rem;
-  }
-
   .curation-relation-name > span {
     font-size: 0.84rem;
-  }
-
-  .curation-relation-name > button {
-    padding: 0;
-    font-size: 0.66rem;
   }
 
   .curation-relation-remove {
@@ -865,9 +854,6 @@
 
 .curation-relation-name {
   min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
 }
 
 .curation-relation-name > span {
@@ -878,20 +864,7 @@
   overflow-wrap: anywhere;
 }
 
-.curation-relation-name > button {
-  flex: 0 0 auto;
-  padding: 0.15rem 0.35rem;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font-size: 0.7rem;
-  opacity: 0.62;
-  text-decoration: underline;
-  text-underline-offset: 0.15rem;
-}
-
 .curation-weight-input,
-.curation-relation-change,
 .curation-relation-direction {
   min-width: 0;
   display: grid;
@@ -899,18 +872,15 @@
 }
 
 .curation-weight-input > span,
-.curation-relation-change > span,
 .curation-relation-direction > span {
   font-size: 0.66rem;
   opacity: 0.55;
 }
 
-.curation-relation-change,
 .curation-relation-direction {
   grid-column: 1 / -1;
 }
 
-.curation-relation-change select,
 .curation-relation-direction select {
   width: 100%;
 }
