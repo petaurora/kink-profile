@@ -130,20 +130,14 @@ function hasComplementaryDirectionalPreference(
   profileA: SharedCatalogEvidence,
   profileB: SharedCatalogEvidence,
 ) {
-  const aGiving = profileA.giving ?? profileA.overall;
-  const aReceiving = profileA.receiving ?? profileA.overall;
-  const bGiving = profileB.giving ?? profileB.overall;
-  const bReceiving = profileB.receiving ?? profileB.overall;
-
+  // Overall preference is intentionally NOT used as a side fallback here.
+  // "We both like this" is mutual interest, not evidence that one person
+  // specifically wants to give while the other specifically wants to receive.
   return (
-    (isPositiveState(aGiving) &&
-      !isExcludedCatalogState(aGiving) &&
-      isPositiveState(bReceiving) &&
-      !isExcludedCatalogState(bReceiving)) ||
-    (isPositiveState(aReceiving) &&
-      !isExcludedCatalogState(aReceiving) &&
-      isPositiveState(bGiving) &&
-      !isExcludedCatalogState(bGiving))
+    (isPositiveState(profileA.giving) &&
+      isPositiveState(profileB.receiving)) ||
+    (isPositiveState(profileA.receiving) &&
+      isPositiveState(profileB.giving))
   );
 }
 
