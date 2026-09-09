@@ -13,6 +13,7 @@ import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
 import { RewardPunishmentProfileSummary } from "./RewardPunishmentProfileSummary";
 import { SceneBuilder } from "./SceneBuilder";
 import { ProfileComparisonPage } from "./ProfileComparisonPage";
+import { CurationWorkbench } from "./CurationWorkbench";
 import {
   SiteHeader,
   type SiteHeaderDestination,
@@ -106,7 +107,8 @@ export type Screen =
   | "ranking"
   | "rewards-punishments"
   | "scene-builder"
-  | "compare-profiles";
+  | "compare-profiles"
+  | "curation-workbench";
 
 type AppProps = {
   initialScreen?: Screen;
@@ -894,6 +896,11 @@ export default function App({
       return;
     }
 
+    if (destination === "curation-workbench") {
+      setScreen("curation-workbench");
+      return;
+    }
+
     setScreen(destination);
   };
 
@@ -1139,6 +1146,10 @@ export default function App({
           }}
           onClose={() => setScreen("hub")}
         />
+      )}
+
+      {screen === "curation-workbench" && (
+        <CurationWorkbench onClose={() => setScreen("hub")} />
       )}
 
       {screen === "profile" && (
