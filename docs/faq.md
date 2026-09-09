@@ -468,7 +468,7 @@ Do not treat the private backup as the normal sharing format.
 
 ## What is included in the private backup?
 
-The goal of the backup is to preserve authoritative profile state, including current implemented domains such as quiz data, catalog preferences, ranking history, profile settings, and authoritative Rewards & Punishments state.
+The goal of the backup is to preserve authoritative profile state, including current implemented domains such as quiz data, catalog preferences, ranking history, profile settings, authoritative Rewards & Punishments state, and saved Scene Builder scenes.
 
 Derived displays can be recalculated after restore.
 
@@ -500,7 +500,7 @@ The app validates and previews the backup before restoration.
 
 Yes.
 
-Settings supports selective reset for areas such as selected quizzes, explicit catalog preferences, ranking history, Rewards & Punishments, and profile identity/settings.
+Settings supports selective reset for areas such as selected quizzes, explicit catalog preferences, ranking history, Rewards & Punishments, saved scenes, and profile identity/settings.
 
 The review screen shows what will reset and what will remain before deletion.
 
@@ -536,13 +536,27 @@ The app generates the file locally for deliberate sharing. It does not automatic
 
 ---
 
-# Future features
+# Profile comparison and future work
 
-## Can I have two full profiles in the app and compare them?
+## Can I compare my profile with someone else's now?
 
-That is planned in M14 Shared Profiles.
+Yes.
 
-The design keeps the profiles independent and derives comparisons rather than merging two people into one synthetic profile.
+Use **Compare profiles** and upload the other person's Full Profile Export JSON. The app validates it locally and derives mutual, complementary, curious, excluded, and unexplored comparison states without replacing or merging your current profile.
+
+You can also select temporary current intent for each person and open **Build shared scene** to filter Scene Builder from the space supported by both profiles.
+
+## Does uploading someone else's profile save it in my app?
+
+No.
+
+The current M14 flow is **compare once**. The uploaded profile is temporary comparison input and is not imported or saved as another editable profile. Leaving/ending the comparison discards that temporary comparison state.
+
+## Can I keep multiple full profiles or linked partner profiles permanently?
+
+That part of M14 is intentionally **needs refinement**.
+
+The product is reconsidering whether persistence should mean saved read-only linked profiles, multiple editable local profiles, account-owned linked profiles later, or simply temporary comparison. A global profile switcher is not currently an approved direction.
 
 ## Can I say I like the same activity differently depending on Dominant/submissive context and giving/receiving side?
 
