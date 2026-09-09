@@ -212,7 +212,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 
 - [x] **M13.1** — theme taxonomy + mappings
 - [x] **M13.2** — profile-aware candidate engine
-- [ ] **M13.3** — current-session Yes / Maybe / Not tonight state
+- [x] **M13.3** — current-session Yes / Maybe / Not tonight state
 - [ ] **M13.4** — theme-based suggestion surface
 - [ ] **M13.5** — scene arc / composition builder
 - [ ] **M13.6** — randomization + shuffle
