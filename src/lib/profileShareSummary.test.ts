@@ -112,6 +112,21 @@ describe("profile share summary", () => {
   });
 
 
+  it("keeps M13 saved scenes out of the default M9 share-summary contract", () => {
+    const model = buildProfileShareSummary(
+      "babygirl",
+      createEmptyProfile(),
+      createEmptyCatalogProfileState(),
+      "2026-09-09T14:00:00.000Z",
+    );
+    const serialized = JSON.stringify(model);
+
+    expect("scenes" in (model as unknown as Record<string, unknown>)).toBe(false);
+    expect(serialized).not.toContain("savedScene");
+    expect(serialized).not.toContain("sceneLibrary");
+    expect(serialized).not.toContain("scene-local");
+  });
+
   it("keeps M12 run history and movement metadata out of default share summaries", () => {
     const first = kinkCatalog[0]!;
     const second = kinkCatalog[1]!;
