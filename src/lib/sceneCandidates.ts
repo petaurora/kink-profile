@@ -43,6 +43,19 @@ export type SceneThemeMatch = {
   fit: number;
 };
 
+export type SceneCandidateSharedContext = {
+  state:
+    | "mutual_positive"
+    | "complementary"
+    | "mutual_curious"
+    | "one_positive_one_curious"
+    | "different_context"
+    | "unknown";
+  explanation: string;
+  profileASessionChoice?: SceneSessionChoice;
+  profileBSessionChoice?: SceneSessionChoice;
+};
+
 export type SceneCandidate = {
   catalogId: string;
   label: string;
@@ -64,6 +77,7 @@ export type SceneCandidate = {
   categoryRank?: CatalogRankContext;
   inferredAffinity?: number;
   inferredCoverage?: number;
+  sharedContext?: SceneCandidateSharedContext;
 };
 
 export type SceneCandidateLane = {
