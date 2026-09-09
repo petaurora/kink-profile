@@ -1,6 +1,6 @@
 # M13 — Scene Builder
 
-**Status:** in progress — M13.1–M13.6 complete  
+**Status:** in progress — M13.1–M13.7 complete  
 **Roadmap milestone:** M13  
 **Primary boundary:** M13 turns one person's existing profile into a small, relevant, consent-aware play space for a specific moment. It reduces decision load; it does not replace communication, assign obligations, or infer consent.
 
@@ -569,10 +569,10 @@ A future explicit scene-share artifact may be considered separately.
 
 ## M13.7 — M11 integration
 
-- [ ] add optional reward/punishment scene slots
-- [ ] consume M11 item/recipe eligibility
-- [ ] preserve M11 contextual state as authoritative
-- [ ] support random eligible reward/punishment placement
+- [x] add optional reward/punishment scene slots
+- [x] consume M11 item/recipe eligibility
+- [x] preserve M11 contextual state as authoritative
+- [x] support random eligible reward/punishment placement
 
 ## M13.8 — Saved scenes + lifecycle
 
