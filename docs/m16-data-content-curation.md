@@ -183,15 +183,21 @@ The catalog's existing `Primary Mode` field is **not** the same thing as M3 Dyna
 
 Today:
 
-- `Primary Mode` is a legacy descriptive catalog field such as Physical/Psychological.
-- the 551 current catalog rows use 15 free-form-ish descriptor combinations inherited from the original TSV.
+- `Primary Mode` was a legacy descriptive TSV column such as Physical/Psychological.
+- the 551 current source rows contain 15 descriptor combinations inherited from the original catalog.
 - it has no canonical scoring meaning and is **not** an M3 Dynamic Mode.
-- a catalog item may resolve to **multiple SignalId mappings** through category + item mappings.
-- M3 Dynamic Modes are composed definitions calculated from SignalIds; kinks are not directly assigned one or more Dynamic Modes.
+- no profile, scoring, recommendation, scene, ranking, or inference code consumes it.
+- it was only carried through the generated runtime type and displayed as decorative catalog metadata.
 
-The workbench should show this distinction clearly. During M16.5, `Primary Mode` is read-only and labeled **Legacy mode descriptor** rather than exposed as an editable free-text field.
+**M16.5 decision:** retire it from the runtime model now.
 
-During M16, explicitly decide whether this legacy descriptor should be removed, become a controlled multi-value taxonomy, or be replaced by better structured metadata.
+- the generator ignores `Primary Mode`
+- the catalog UI no longer displays it
+- the Curation Workbench no longer inventories or edits it
+- the TSV column remains temporarily as historical source data and can be physically removed during the catalog source cleanup sweep
+- do not replace it with direct kink → Dynamic Mode mappings unless a later curation pass finds a real semantic need
+
+A catalog item may still resolve to **multiple SignalId mappings** through category + item mappings. M3 Dynamic Modes remain composed definitions calculated from SignalIds rather than direct catalog assignments.
 
 Do not add direct kink → Dynamic Mode mappings merely for convenience unless the curation pass finds a real semantic need. Prefer the existing signal graph when it can express the relationship without creating a second competing mapping system.
 
