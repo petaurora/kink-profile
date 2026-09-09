@@ -1,7 +1,4 @@
 import {
-  dimensions,
-} from "../data/questions";
-import {
   dynamicModes,
   roleHeadspaces,
 } from "../data/headspacesQuiz";
@@ -109,11 +106,6 @@ const typicalRoleOptions = ["Receiving", "Giving", "Both"].map((value) => ({
 const availabilityOptions = ["available", "coming-soon"].map((value) => ({
   value,
   label: value === "available" ? "Available" : "Coming soon",
-}));
-
-const dimensionOptions = dimensions.map((dimension) => ({
-  value: dimension.id,
-  label: dimension.label,
 }));
 
 function weightsToRelations(
@@ -370,30 +362,19 @@ export function buildCurationEditorModel(
         },
       ];
 
-      if (question.kind === "weighted") {
-        fields.push(
-          relationField(
-            "weights",
-            "Signal weights",
-            weightsToRelations(question.weights),
-            signalOptions,
-            {
-              required: true,
-              helper:
-                "Changing scoring inputs changes what this question measures and may require a quiz version bump.",
-            },
-          ),
-        );
-      } else {
-        fields.push({
-          kind: "select",
-          key: "dimension",
-          label: "Legacy starter dimension",
-          value: question.dimension,
-          options: dimensionOptions,
-          required: true,
-        });
-      }
+      fields.push(
+        relationField(
+          "weights",
+          "Signal weights",
+          weightsToRelations(question.weights),
+          signalOptions,
+          {
+            required: true,
+            helper:
+              "Changing scoring inputs changes what this question measures and may require a quiz version bump.",
+          },
+        ),
+      );
 
       return { fields };
     }
@@ -908,7 +889,7 @@ export function getCurationConsequences(
       break;
 
     case "quiz-question":
-      if (keys.has("weights") || keys.has("dimension")) {
+      if (keys.has("weights")) {
         consequences.push(
           "This changes scoring semantics. Review the affected quiz version and synthetic result fixtures before applying it.",
         );
