@@ -178,12 +178,18 @@ export function CurationCurrentValuePanel({
         );
 
         if (facets.length === 0) {
+          const isSignal = entry.entityType === "signal";
           return (
             <div className="curation-facet-gap">
-              <strong>⚠ No Overall Facet route yet</strong>
+              <strong>
+                ⚠ {isSignal
+                  ? "Not assigned to an Overall Facet yet"
+                  : "No Overall Facet route yet"}
+              </strong>
               <small>
-                This primitive currently has no honest Signal → Overall Facet
-                projection. Treat it as an M16 semantic coverage gap.
+                {isSignal
+                  ? "This Signal is valid, but no Overall Facet currently includes it. Add one or more facet memberships in Modify if that omission is semantic rather than intentional."
+                  : "This primitive currently has no honest Signal → Overall Facet projection. Treat it as an M16 semantic coverage gap."}
               </small>
             </div>
           );
