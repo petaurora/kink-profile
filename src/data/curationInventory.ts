@@ -291,8 +291,8 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
     entityType: "quiz-question" as const,
     entityId: question.id,
     label: question.prompt,
-    summary: `${questionQuizLabels.get(question.id) ?? "Starter"} · ${question.kind}`,
-    source: "M0/M2-M5 quiz bank",
+    summary: `${questionQuizLabels.get(question.id) ?? "Quiz"} · weighted`,
+    source: "M2-M5 quiz bank",
     fields: [
       {
         key: "quiz",
@@ -302,10 +302,7 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
       {
         key: "weights",
         label: "Signal weights",
-        value:
-          question.kind === "weighted"
-            ? stringifyRecord(question.weights)
-            : `Legacy dimension: ${question.dimension}`,
+        value: stringifyRecord(question.weights),
       },
     ],
   })),
