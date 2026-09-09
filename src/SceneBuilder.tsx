@@ -255,7 +255,7 @@ function CandidateCard({
           <span className="scene-candidate-category">
             {candidate.categoryLabel}
           </span>
-          <h3>{componentLabel}</h3>
+          <h3>{candidate.label}</h3>
         </div>
 
         {candidate.bridge && (
@@ -1770,10 +1770,7 @@ export function SceneBuilder({
             )}
           </article>
 
-          <details
-            className="scene-library panel"
-            defaultOpen={sceneLibrary.scenes.length > 0}
-          >
+          <details className="scene-library panel">
             <summary>
               <div>
                 <span>Saved scenes</span>
