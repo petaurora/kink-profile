@@ -100,7 +100,7 @@ export const curationSurfaces: readonly CurationSurface[] = [
       "src/data/sadismMasochismQuiz.ts",
     ],
     status: "available",
-    notes: "Questions are reviewable in the workbench now; signal-weight editing comes in a later M16.2 slice.",
+    notes: "Questions and their signal-weight relationships are editable as structured local proposals in the workbench.",
   },
   {
     id: "signals",
@@ -152,7 +152,7 @@ export const curationSurfaces: readonly CurationSurface[] = [
       "src/lib/rewardPunishmentLibrary.ts",
     ],
     status: "available",
-    notes: "Normalized actions and contextual categories are reviewable now; richer relationship editing follows.",
+    notes: "Normalized actions, contextual categories, and weighted category relationships are editable as structured local proposals.",
   },
   {
     id: "profile-labels-thresholds",
