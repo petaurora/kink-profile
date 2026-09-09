@@ -30,11 +30,6 @@ describe("M16 curation inventory", () => {
   it("inventories the major authored data surfaces", () => {
     const surfaceIds = new Set(curationSurfaces.map((surface) => surface.id));
 
-    expect(surfaceIds).toEqual(
-      expect.objectContaining({
-        has: expect.any(Function),
-      }),
-    );
     expect(surfaceIds.has("quiz-bank")).toBe(true);
     expect(surfaceIds.has("signals")).toBe(true);
     expect(surfaceIds.has("roles-modes")).toBe(true);
