@@ -12,6 +12,7 @@ import { KinkThisOrThat } from "./KinkThisOrThat";
 import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
 import { RewardPunishmentProfileSummary } from "./RewardPunishmentProfileSummary";
 import { SceneBuilder } from "./SceneBuilder";
+import { ProfileComparisonPage } from "./ProfileComparisonPage";
 import {
   SiteHeader,
   type SiteHeaderDestination,
@@ -104,7 +105,8 @@ export type Screen =
   | "catalog"
   | "ranking"
   | "rewards-punishments"
-  | "scene-builder";
+  | "scene-builder"
+  | "compare-profiles";
 
 type AppProps = {
   initialScreen?: Screen;
@@ -840,6 +842,11 @@ export default function App({
     setScreen("scene-builder");
   };
 
+  const openProfileComparison = () => {
+    setCatalogProfileSnapshot(loadCatalogProfile());
+    setScreen("compare-profiles");
+  };
+
   const closeCatalog = () => {
     if (catalogDrilldown.returnTo === "profile") {
       openProfile();
@@ -879,6 +886,11 @@ export default function App({
 
     if (destination === "scene-builder") {
       openSceneBuilder();
+      return;
+    }
+
+    if (destination === "compare-profiles") {
+      openProfileComparison();
       return;
     }
 
@@ -1048,6 +1060,36 @@ export default function App({
               </button>
             </article>
           </div>
+
+          <div className="hub-section-heading catalog-hub-heading">
+            <div>
+              <p className="eyebrow">05 · Compare profiles</p>
+              <h2>See where two profiles overlap and complement.</h2>
+            </div>
+            <p>
+              Upload someone else's Full Profile Export for a temporary,
+              non-destructive comparison. Their data is not imported into yours.
+            </p>
+          </div>
+
+          <div className="catalog-hub-grid catalog-hub-grid-single">
+            <article className="catalog-hub-card panel">
+              <div>
+                <span className="catalog-kicker">Shared profile</span>
+                <h3>Compare with someone else</h3>
+                <p>
+                  Keep both people independent while surfacing mutual interests,
+                  complementary patterns, curiosity, different contexts, and boundaries.
+                </p>
+              </div>
+              <button
+                className="primary"
+                onClick={openProfileComparison}
+              >
+                Compare profiles
+              </button>
+            </article>
+          </div>
         </section>
       )}
 
@@ -1084,6 +1126,17 @@ export default function App({
       {screen === "scene-builder" && (
         <SceneBuilder
           catalogResultView={catalogResultView}
+          onClose={() => setScreen("hub")}
+        />
+      )}
+
+      {screen === "compare-profiles" && (
+        <ProfileComparisonPage
+          current={{
+            displayName,
+            profile,
+            catalogProfile: catalogProfileSnapshot,
+          }}
           onClose={() => setScreen("hub")}
         />
       )}
