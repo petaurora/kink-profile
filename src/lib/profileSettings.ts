@@ -1,3 +1,5 @@
+import { getActiveProfileStorage } from "./profileRegistry";
+
 export const PROFILE_SETTINGS_STORAGE_KEY = "pet-profile-settings-v1";
 export const PROFILE_SETTINGS_SCHEMA_VERSION = 1 as const;
 export const DEFAULT_PROFILE_DISPLAY_NAME = "Pet";
@@ -25,7 +27,9 @@ export function createDefaultProfileSettings(): ProfileSettings {
 }
 
 function browserStorage(): StorageLike | undefined {
-  return typeof localStorage === "undefined" ? undefined : localStorage;
+  return typeof localStorage === "undefined"
+    ? undefined
+    : getActiveProfileStorage(localStorage);
 }
 
 export function loadProfileSettings(
