@@ -179,8 +179,9 @@ export function resolveSceneRewardPunishmentSource(
   primitives: readonly RewardPunishmentPrimitive[] = rewardPunishmentPrimitives,
 ) {
   if (source.entry.kind === "recipe") {
+    const recipeId = source.entry.recipeId;
     const recipe = recipes.find(
-      (candidate) => candidate.id === source.entry.recipeId,
+      (candidate) => candidate.id === recipeId,
     );
     return recipe
       ? {
@@ -195,10 +196,11 @@ export function resolveSceneRewardPunishmentSource(
         };
   }
 
+  const ref = source.entry.ref;
   const primitive = primitives.find(
     (candidate) =>
-      candidate.ref.kind === source.entry.ref.kind &&
-      candidate.ref.id === source.entry.ref.id,
+      candidate.ref.kind === ref.kind &&
+      candidate.ref.id === ref.id,
   );
 
   return primitive
