@@ -1100,6 +1100,9 @@ export function SceneBuilder({
                   key={candidate.catalogId}
                   candidate={candidate}
                   onSetSessionChoice={setSessionChoice}
+                  sharedSessionControls={sharedSessionControlsFor(
+                    candidate.catalogId,
+                  )}
                   onAddToScene={addCandidateToScene}
                   isInScene={compositionCatalogIds.has(
                     candidate.catalogId,
@@ -1724,6 +1727,9 @@ export function SceneBuilder({
                     key={candidate.catalogId}
                     candidate={candidate}
                     onSetSessionChoice={setSessionChoice}
+                    sharedSessionControls={sharedSessionControlsFor(
+                      candidate.catalogId,
+                    )}
                   />
                 ))}
               </div>
