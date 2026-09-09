@@ -420,3 +420,181 @@
     gap: 0.2rem;
   }
 }
+
+
+.curation-structured-editor,
+.curation-editor-fields,
+.curation-validation-stack {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.curation-editor-field {
+  display: grid;
+  gap: 0.38rem;
+}
+
+.curation-editor-label {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.curation-editor-label small {
+  opacity: 0.68;
+  line-height: 1.35;
+}
+
+.curation-editor-field input,
+.curation-editor-field textarea,
+.curation-editor-field select,
+.curation-relation-row input,
+.curation-relation-row select {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(240, 211, 231, 0.16);
+  background: rgba(0, 0, 0, 0.13);
+  color: inherit;
+  padding: 0.7rem 0.75rem;
+}
+
+.curation-checkbox-field {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  padding: 0.75rem;
+  border-radius: 0.8rem;
+  background: rgba(240, 211, 231, 0.04);
+}
+
+.curation-checkbox-field input {
+  width: auto;
+  margin-top: 0.2rem;
+}
+
+.curation-checkbox-field span {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.curation-checkbox-field small {
+  opacity: 0.68;
+}
+
+.curation-relation-field {
+  padding: 0.85rem;
+  border-radius: 0.9rem;
+  background: rgba(240, 211, 231, 0.035);
+}
+
+.curation-relation-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.curation-relation-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(88px, 0.65fr) minmax(110px, 0.75fr) auto;
+  gap: 0.5rem;
+  align-items: end;
+}
+
+.curation-relation-row label {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.curation-relation-row label > span {
+  font-size: 0.74rem;
+  opacity: 0.62;
+}
+
+.curation-relation-remove {
+  display: grid;
+  place-items: center;
+  min-width: 2.55rem;
+  min-height: 2.55rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(240, 211, 231, 0.14);
+  background: rgba(240, 211, 231, 0.045);
+  color: inherit;
+}
+
+.curation-add-relation {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.curation-editor-empty {
+  margin: 0;
+  opacity: 0.65;
+}
+
+.curation-validation {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(240, 211, 231, 0.12);
+}
+
+.curation-validation p {
+  margin: 0;
+}
+
+.curation-validation.is-error {
+  background: rgba(255, 117, 117, 0.08);
+  border-color: rgba(255, 117, 117, 0.22);
+}
+
+.curation-validation.is-warning {
+  background: rgba(255, 213, 128, 0.06);
+  border-color: rgba(255, 213, 128, 0.16);
+}
+
+.curation-consequences {
+  padding: 0.8rem;
+  border-radius: 0.85rem;
+  background: rgba(240, 211, 231, 0.04);
+}
+
+.curation-consequences ul {
+  margin: 0.55rem 0 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.curation-editor-save-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.curation-editor-save-row > span {
+  opacity: 0.68;
+  font-size: 0.86rem;
+}
+
+@media (max-width: 720px) {
+  .curation-relation-row {
+    grid-template-columns: minmax(0, 1fr) 92px auto;
+  }
+
+  .curation-relation-row label:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .curation-editor-save-row {
+    display: grid;
+  }
+
+  .curation-editor-save-row button {
+    width: 100%;
+  }
+}
