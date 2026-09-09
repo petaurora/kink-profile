@@ -33,6 +33,7 @@ import {
   saveRewardPunishmentProfile,
 } from "./rewardPunishmentProfileStorage";
 import type { RewardPunishmentComparison } from "./rewardPunishmentRanking";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export const REWARD_PUNISHMENT_AUTHORITATIVE_SCHEMA_VERSION = 1 as const;
 
@@ -49,7 +50,7 @@ export type RewardPunishmentLifecycleStorageLike = Pick<
 >;
 
 function browserStorage(): RewardPunishmentLifecycleStorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
