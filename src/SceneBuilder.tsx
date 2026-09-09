@@ -403,6 +403,17 @@ export function SceneBuilder({
     [rewardPunishmentProfile, rewardPunishmentRecipes],
   );
 
+  const rewardPunishmentPoolCount = (
+    mode: SceneRewardPunishmentMode,
+  ) =>
+    mode === "reward"
+      ? rewardPunishmentAvailability.reward
+      : mode === "punishment"
+        ? rewardPunishmentAvailability.punishment
+        : mode === "either"
+          ? rewardPunishmentAvailability.either
+          : 0;
+
   useEffect(() => {
     if (!composition) return;
 
@@ -983,6 +994,76 @@ export function SceneBuilder({
               )}
             </div>
 
+            <div className="scene-rp-control">
+              <div className="scene-rp-control-copy">
+                <strong>Optional reward / punishment</strong>
+                <span>
+                  Uses only M11 items and recipes already marked eligible
+                  for random use.
+                </span>
+              </div>
+
+              <div
+                className="scene-rp-modes"
+                aria-label="Reward or punishment add-on"
+              >
+                {rewardPunishmentModes.map((mode) => {
+                  const count = rewardPunishmentPoolCount(mode.id);
+                  const unavailable =
+                    mode.id !== "none" && count === 0;
+
+                  return (
+                    <button
+                      type="button"
+                      key={mode.id}
+                      className={
+                        rewardPunishmentMode === mode.id
+                          ? "selected"
+                          : ""
+                      }
+                      aria-pressed={
+                        rewardPunishmentMode === mode.id
+                      }
+                      disabled={unavailable}
+                      title={
+                        unavailable
+                          ? "No M11 random-eligible options in this context."
+                          : undefined
+                      }
+                      onClick={() =>
+                        changeRewardPunishmentMode(mode.id)
+                      }
+                    >
+                      <span>{mode.label}</span>
+                      {mode.id !== "none" && (
+                        <small>{count}</small>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {rewardPunishmentMode !== "none" && (
+                <button
+                  type="button"
+                  className="secondary compact scene-rp-pick"
+                  disabled={
+                    rewardPunishmentPoolCount(
+                      rewardPunishmentMode,
+                    ) === 0
+                  }
+                  onClick={() => pickRewardPunishmentAddon()}
+                >
+                  <IconSparkles
+                    size={15}
+                    stroke={2}
+                    aria-hidden="true"
+                  />
+                  Pick add-on
+                </button>
+              )}
+            </div>
+
             {randomPick && (
               <div className="scene-random-pick" aria-live="polite">
                 <div>
@@ -1048,9 +1129,9 @@ export function SceneBuilder({
                 <span
                   key={phase.id}
                   className={
-                    phase.catalogEnabled
-                      ? "scene-arc-phase"
-                      : "scene-arc-phase reserved"
+                    phase.id === "reward_punishment"
+                      ? "scene-arc-phase m11"
+                      : "scene-arc-phase"
                   }
                   title={phase.description}
                 >
