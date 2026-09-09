@@ -182,6 +182,10 @@ export const curationSurfaces: readonly CurationSurface[] = [
   },
 ] as const;
 
+function firstNonEmpty(...values: readonly string[]) {
+  return values.find((value) => value.trim().length > 0) ?? "";
+}
+
 function stringifyRecord(value: Partial<Record<string, number>> | undefined) {
   if (!value) return "";
   return Object.entries(value)
@@ -209,7 +213,7 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
     entityType: "catalog-item" as const,
     entityId: item.id,
     label: item.label,
-    summary: item.description || item.categoryLabel,
+    summary: firstNonEmpty(item.description, item.categoryLabel),
     source: "M6 kink catalog",
     fields: [
       { key: "category", label: "Category", value: item.categoryLabel },
@@ -246,7 +250,11 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
     entityType: "reward-punishment-action" as const,
     entityId: action.id,
     label: action.label,
-    summary: action.description || action.notes || "Normalized M11 action",
+    summary: firstNonEmpty(
+      action.description,
+      action.notes,
+      "Normalized M11 action",
+    ),
     source: "M11 action library",
     fields: [
       {
