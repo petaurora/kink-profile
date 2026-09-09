@@ -21,7 +21,6 @@ function result(
       signalMappings: [],
       description: "",
       typicalRole: "Both",
-      primaryMode: "",
       intensity: "Variable",
       riskLevel: "",
     },
