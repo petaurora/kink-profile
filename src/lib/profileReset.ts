@@ -33,6 +33,7 @@ import {
   loadSceneLibraryState,
   saveSceneLibraryState,
 } from "./sceneLibraryStorage";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export type ProfileResetSelection = {
   quizIds: QuizId[];
@@ -64,7 +65,7 @@ export type ProfileResetImpact = {
 };
 
 function browserStorage(): StorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 export function createEmptyResetSelection(): ProfileResetSelection {
