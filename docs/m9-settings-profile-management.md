@@ -35,7 +35,7 @@ These are separate features and must not share a misleading "Export" action with
 
 ## Non-goals
 
-M9 does **not** add:
+M9 itself does **not** add:
 
 - accounts or authentication
 - cloud sync
@@ -262,6 +262,16 @@ Implemented v1 shape:
 `profile.catalog` contains both explicit catalog preferences and raw This-or-That comparison history because those are the two authoritative fields of the shared catalog-profile store. Ranking order/progress is derived from raw comparisons rather than exported as a redundant second source of truth.
 
 The envelope is intentionally independent from browser storage key names. Each nested authoritative store also retains its own schema version for future import migration.
+
+### Current backup-version history
+
+Later milestones extended the same M9 envelope without changing its purpose:
+
+- **v1** — settings + quizzes + catalog/ranking source state
+- **v2** — adds authoritative M11 Rewards & Punishments state
+- **v3 (current)** — adds authoritative M13 saved-scene library state
+
+The importer still supports v1 and v2. Missing later domains restore as empty rather than being guessed or merged. Scene Builder Tonight state and randomizer anti-repeat history remain session-only and are not part of the private backup.
 
 ## What belongs in the backup
 
@@ -586,6 +596,9 @@ PNG/PDF DOM capture uses `html2canvas` so mobile browsers do not rely on SVG `fo
 | Explicit catalog preferences | Yes | Yes | Selected/high-level interests/limits |
 | Raw This-or-That comparisons | Yes | Yes | No |
 | Ranking progress/history | With ranking reset | Yes | Resulting top interests only |
+| M11 Rewards & Punishments authoritative state | Yes | Yes (v2+) | High-level summary only where intentionally surfaced |
+| M13 saved scenes/templates | Yes | Yes (v3+) | No |
+| M13 Tonight/randomizer session state | Session reset/expiry | No | No |
 | M7 canonical/facet derived data | Recompute | Non-authoritative | Yes, via stable presentation outputs |
 | Internal provenance/debug data | Recompute/implementation-owned | Only if required for authoritative restore | No |
 
@@ -610,6 +623,8 @@ Importers should prefer:
 3. safe rejection.
 
 Never "best guess" an incompatible profile into current storage.
+
+Current full-profile backup format is v3. The format is still a **single-profile private backup/restore unit**. M14 compare-once reuses the same validator as a non-destructive temporary comparison input, but it does not route the file through restore/import.
 
 ---
 
