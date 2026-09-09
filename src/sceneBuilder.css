@@ -1038,3 +1038,125 @@
     width: 100%;
   }
 }
+
+
+.scene-randomizer {
+  padding: clamp(18px, 3vw, 28px);
+  display: grid;
+  gap: 12px;
+}
+
+.scene-randomizer-copy {
+  max-width: 760px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: .8rem;
+  line-height: 1.45;
+}
+
+.scene-randomizer-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.scene-randomizer-actions .primary-button,
+.scene-randomizer-actions .secondary-button,
+.scene-random-pick .secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.scene-randomizer-actions > span {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: .7rem;
+  font-weight: 750;
+}
+
+.scene-random-pick {
+  border: 1px solid var(--accent-border);
+  border-radius: 14px;
+  background: var(--bg-surface-emphasis);
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.scene-random-pick > div:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.scene-random-pick strong {
+  font-size: 1rem;
+}
+
+.scene-random-pick small {
+  color: var(--text-muted);
+  font-size: .7rem;
+  font-weight: 700;
+}
+
+.scene-random-pick > div:last-child {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scene-randomizer button:focus-visible,
+.scene-random-pick button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 680px) {
+  .scene-randomizer {
+    padding: 14px;
+  }
+
+  .scene-randomizer-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .scene-randomizer-actions > span {
+    grid-column: 1 / -1;
+    margin-left: 0;
+  }
+
+  .scene-random-pick {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scene-random-pick > div:last-child {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .scene-randomizer-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .scene-randomizer-actions > span {
+    grid-column: auto;
+  }
+
+  .scene-random-pick > div:last-child {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scene-random-pick .secondary-button {
+    width: 100%;
+  }
+}
