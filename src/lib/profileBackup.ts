@@ -17,6 +17,7 @@ import {
   loadSceneLibraryState,
 } from "./sceneLibraryStorage";
 import type { SceneLibraryState } from "./sceneLibrary";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export const PROFILE_BACKUP_FORMAT = "kink-profile" as const;
 export const PROFILE_BACKUP_VERSION = 3 as const;
@@ -75,7 +76,7 @@ export type ProfileBackupSummary = {
 };
 
 function browserStorage(): StorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 export function isProfileBackupV2(
