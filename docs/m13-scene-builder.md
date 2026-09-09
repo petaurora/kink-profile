@@ -496,11 +496,11 @@ Derived candidate lists should not be persisted as authoritative data.
 
 ## Backup/import
 
-M9 full-profile backup/import should eventually include saved scenes/templates.
+M9 full-profile backup/import **includes saved scenes/templates in backup format v3**. Legacy v1/v2 backups remain supported and restore missing saved-scene state as empty.
 
 ## Reset
 
-M13 should have an independent reset scope for saved scenes/templates.
+M13 has an independent reset scope for saved scenes/templates.
 
 Resetting scenes must not reset:
 
@@ -512,7 +512,7 @@ Resetting scenes must not reset:
 
 ## Share summary
 
-M13 scene data is private by default and should not automatically appear in the existing M9 share summary.
+M13 scene data is private by default and does not automatically appear in the existing M9 share summary.
 
 A future explicit scene-share artifact may be considered separately.
 
