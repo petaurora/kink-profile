@@ -1,3 +1,5 @@
+import { getActiveProfileSessionStorage } from "./profileRegistry";
+
 export const sceneSessionChoices = [
   "yes_tonight",
   "maybe_tonight",
@@ -91,7 +93,7 @@ export function isSceneSessionExcluded(
 }
 
 function browserSessionStorage(): SceneSessionStorageLike {
-  return sessionStorage;
+  return getActiveProfileSessionStorage(localStorage, sessionStorage);
 }
 
 export function loadSceneSessionState(
