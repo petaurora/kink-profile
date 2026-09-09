@@ -211,7 +211,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 **Details:** [M13 Scene Builder](docs/m13-scene-builder.md)
 
 - [x] **M13.1** — theme taxonomy + mappings
-- [ ] **M13.2** — profile-aware candidate engine
+- [x] **M13.2** — profile-aware candidate engine
 - [ ] **M13.3** — current-session Yes / Maybe / Not tonight state
 - [ ] **M13.4** — theme-based suggestion surface
 - [ ] **M13.5** — scene arc / composition builder

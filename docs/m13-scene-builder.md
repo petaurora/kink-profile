@@ -1,6 +1,6 @@
 # M13 — Scene Builder
 
-**Status:** in progress — M13.1 complete  
+**Status:** in progress — M13.1–M13.2 complete  
 **Roadmap milestone:** M13  
 **Primary boundary:** M13 turns one person's existing profile into a small, relevant, consent-aware play space for a specific moment. It reduces decision load; it does not replace communication, assign obligations, or infer consent.
 
@@ -529,11 +529,11 @@ A future explicit scene-share artifact may be considered separately.
 
 ## M13.2 — Profile-aware candidate engine
 
-- [ ] build pure candidate derivation
-- [ ] enforce explicit exclusions
-- [ ] combine theme fit with direct preference/rank/profile context
-- [ ] preserve direct vs inferred provenance
-- [ ] add deterministic multi-theme coverage behavior
+- [x] build pure candidate derivation
+- [x] enforce explicit exclusions
+- [x] combine theme fit with direct preference/rank/profile context
+- [x] preserve direct vs inferred provenance
+- [x] add deterministic multi-theme coverage behavior
 
 ## M13.3 — Current-session state
 
