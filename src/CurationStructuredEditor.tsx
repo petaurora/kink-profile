@@ -94,7 +94,10 @@ function CurationWeightedRelationsEditor({
         {field.helper && <small>{field.helper}</small>}
       </div>
 
-      <div className="curation-relation-columns" aria-hidden="true">
+      <div
+        className={`curation-relation-columns${field.allowDirection ? " has-direction" : ""}`}
+        aria-hidden="true"
+      >
         <span>Relationship</span>
         <span>Weight</span>
         {field.allowDirection && <span>Direction</span>}
@@ -103,7 +106,10 @@ function CurationWeightedRelationsEditor({
 
       <div className="curation-relation-list">
         {value.map((relation, index) => (
-          <div className="curation-relation-row" key={relation.id}>
+          <div
+            className={`curation-relation-row${field.allowDirection ? " has-direction" : ""}`}
+            key={relation.id}
+          >
             <label>
               <span className="curation-visually-hidden">Relationship</span>
               <select
