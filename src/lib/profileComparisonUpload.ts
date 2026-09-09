@@ -21,6 +21,8 @@ export type ComparisonProfileSource = {
 export type UploadedComparisonCandidate = {
   displayName: string;
   exportedAt: string;
+  currentInput: SharedProfileComparisonInput;
+  uploadedInput: SharedProfileComparisonInput;
   comparison: SharedProfileComparison;
 };
 
@@ -59,6 +61,8 @@ export function buildUploadedProfileComparison(
   return {
     displayName: uploaded.profile.settings.displayName,
     exportedAt: uploaded.exportedAt,
+    currentInput,
+    uploadedInput,
     comparison: buildSharedProfileComparison(
       currentInput,
       uploadedInput,

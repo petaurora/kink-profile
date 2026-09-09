@@ -1612,3 +1612,31 @@
     flex: 1;
   }
 }
+
+
+/* M14.7 — shared scene controls */
+
+.scene-tonight-shared {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+  display: grid;
+  gap: 7px;
+}
+
+.scene-tonight-shared .scene-tonight-control {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.scene-tonight-shared .scene-tonight-control > span {
+  max-width: 38%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .scene-tonight-shared .scene-tonight-control > span {
+    max-width: 100%;
+  }
+}

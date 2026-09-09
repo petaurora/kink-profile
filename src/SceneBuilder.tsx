@@ -26,6 +26,8 @@ import {
 } from "./lib/sceneCandidates";
 import {
   clearSceneSessionChoice,
+  createEmptySceneSessionState,
+  getSceneSessionChoice,
   loadSceneSessionState,
   saveSceneSessionState,
   setSceneSessionChoice,
@@ -86,11 +88,31 @@ import {
   saveSceneLibraryState,
 } from "./lib/sceneLibraryStorage";
 import { reviewSavedScene } from "./lib/sceneLifecycle";
+import {
+  buildSharedSceneCandidateView,
+} from "./lib/sharedSceneCandidates";
+import type {
+  SharedProfileComparison,
+} from "./lib/sharedProfileComparison";
+import type {
+  SharedParticipantIntent,
+} from "./lib/sharedParticipantIntent";
 import "./sceneBuilder.css";
+
+export type SceneBuilderSharedContext = {
+  profileAName: string;
+  profileBName: string;
+  partnerCatalogResultView: CatalogResultView;
+  comparison: SharedProfileComparison;
+  profileAIntent: SharedParticipantIntent;
+  profileBIntent: SharedParticipantIntent;
+};
 
 type SceneBuilderProps = {
   catalogResultView: CatalogResultView;
   onClose: () => void;
+  initialThemeIds?: readonly SceneThemeId[];
+  sharedContext?: SceneBuilderSharedContext;
 };
 
 const familyOrder: Array<{
@@ -220,6 +242,10 @@ function candidateReasons(candidate: SceneCandidate) {
     );
   }
 
+  if (candidate.sharedContext) {
+    reasons.push(candidate.sharedContext.explanation);
+  }
+
   if (candidate.provenance === "inference_only") {
     reasons.push("Suggested from profile signals");
   }
@@ -230,6 +256,7 @@ function candidateReasons(candidate: SceneCandidate) {
 function CandidateCard({
   candidate,
   onSetSessionChoice,
+  sharedSessionControls,
   onAddToScene,
   isInScene = false,
 }: {
@@ -238,6 +265,20 @@ function CandidateCard({
     catalogId: string,
     choice: SceneSessionChoice,
   ) => void;
+  sharedSessionControls?: {
+    profileAName: string;
+    profileBName: string;
+    profileASessionChoice?: SceneSessionChoice;
+    profileBSessionChoice?: SceneSessionChoice;
+    onSetProfileAChoice: (
+      catalogId: string,
+      choice: SceneSessionChoice,
+    ) => void;
+    onSetProfileBChoice: (
+      catalogId: string,
+      choice: SceneSessionChoice,
+    ) => void;
+  };
   onAddToScene?: (candidate: SceneCandidate) => void;
   isInScene?: boolean;
 }) {
@@ -292,29 +333,76 @@ function CandidateCard({
         </button>
       )}
 
-      <div
-        className="scene-tonight-control"
-        aria-label={`Current-session preference for ${candidate.label}`}
-      >
-        <span>Tonight</span>
-        <div>
-          {sessionChoices.map((choice) => (
-            <button
-              key={choice.id}
-              type="button"
-              className={
-                candidate.sessionChoice === choice.id ? "selected" : ""
-              }
-              aria-pressed={candidate.sessionChoice === choice.id}
-              onClick={() =>
-                onSetSessionChoice(candidate.catalogId, choice.id)
+      {sharedSessionControls ? (
+        <div className="scene-tonight-shared">
+          {[
+            {
+              name: sharedSessionControls.profileAName,
+              selected: sharedSessionControls.profileASessionChoice,
+              onSet: sharedSessionControls.onSetProfileAChoice,
+            },
+            {
+              name: sharedSessionControls.profileBName,
+              selected: sharedSessionControls.profileBSessionChoice,
+              onSet: sharedSessionControls.onSetProfileBChoice,
+            },
+          ].map((participant) => (
+            <div
+              className="scene-tonight-control"
+              key={participant.name}
+              aria-label={
+                "Current-session preference for " +
+                participant.name +
+                " on " +
+                candidate.label
               }
             >
-              {choice.shortLabel}
-            </button>
+              <span>{participant.name}</span>
+              <div>
+                {sessionChoices.map((choice) => (
+                  <button
+                    key={choice.id}
+                    type="button"
+                    className={
+                      participant.selected === choice.id ? "selected" : ""
+                    }
+                    aria-pressed={participant.selected === choice.id}
+                    onClick={() =>
+                      participant.onSet(candidate.catalogId, choice.id)
+                    }
+                  >
+                    {choice.shortLabel}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
-      </div>
+      ) : (
+        <div
+          className="scene-tonight-control"
+          aria-label={`Current-session preference for ${candidate.label}`}
+        >
+          <span>Tonight</span>
+          <div>
+            {sessionChoices.map((choice) => (
+              <button
+                key={choice.id}
+                type="button"
+                className={
+                  candidate.sessionChoice === choice.id ? "selected" : ""
+                }
+                aria-pressed={candidate.sessionChoice === choice.id}
+                onClick={() =>
+                  onSetSessionChoice(candidate.catalogId, choice.id)
+                }
+              >
+                {choice.shortLabel}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </article>
   );
 }
@@ -322,8 +410,12 @@ function CandidateCard({
 export function SceneBuilder({
   catalogResultView,
   onClose,
+  initialThemeIds = [],
+  sharedContext,
 }: SceneBuilderProps) {
-  const [selectedThemeIds, setSelectedThemeIds] = useState<SceneThemeId[]>([]);
+  const [selectedThemeIds, setSelectedThemeIds] = useState<SceneThemeId[]>(() => [
+    ...new Set(initialThemeIds),
+  ]);
   const [effort, setEffort] = useState<SceneEffort>("normal");
   const [exploration, setExploration] =
     useState<SceneExplorationMode>("mixed");
@@ -331,6 +423,9 @@ export function SceneBuilder({
     useState<SceneIntensityPreference>("any");
   const [sessionState, setSessionState] = useState(() =>
     loadSceneSessionState(),
+  );
+  const [partnerSessionState, setPartnerSessionState] = useState(() =>
+    createEmptySceneSessionState(),
   );
   const [composition, setComposition] =
     useState<SceneComposition | null>(null);
@@ -379,21 +474,36 @@ export function SceneBuilder({
 
   const candidateView = useMemo(
     () =>
-      buildSceneCandidateView(
-        catalogResultView,
-        selectedThemeIds,
-        {
-          exploration,
-          intensity,
-          sessionState,
-        },
-      ),
+      sharedContext
+        ? buildSharedSceneCandidateView(
+            catalogResultView,
+            sharedContext.partnerCatalogResultView,
+            sharedContext.comparison,
+            selectedThemeIds,
+            {
+              exploration,
+              intensity,
+              profileASessionState: sessionState,
+              profileBSessionState: partnerSessionState,
+            },
+          )
+        : buildSceneCandidateView(
+            catalogResultView,
+            selectedThemeIds,
+            {
+              exploration,
+              intensity,
+              sessionState,
+            },
+          ),
     [
       catalogResultView,
       exploration,
       intensity,
+      partnerSessionState,
       selectedThemeIds,
       sessionState,
+      sharedContext,
     ],
   );
 
@@ -440,11 +550,13 @@ export function SceneBuilder({
 
   const rewardPunishmentAvailability = useMemo(
     () =>
-      getSceneRewardPunishmentAvailability(
-        rewardPunishmentProfile,
-        rewardPunishmentRecipes.recipes,
-      ),
-    [rewardPunishmentProfile, rewardPunishmentRecipes],
+      sharedContext
+        ? { reward: 0, punishment: 0, either: 0 }
+        : getSceneRewardPunishmentAvailability(
+            rewardPunishmentProfile,
+            rewardPunishmentRecipes.recipes,
+          ),
+    [rewardPunishmentProfile, rewardPunishmentRecipes, sharedContext],
   );
 
   const rewardPunishmentPoolCount = (
@@ -503,20 +615,42 @@ export function SceneBuilder({
     selectedThemeIds,
   ]);
 
-  const activeOverrides = Object.entries(sessionState.overrides)
-    .map(([catalogId, override]) => {
-      const result = catalogResultView.byCatalogId.get(catalogId);
-      return {
-        catalogId,
-        label: result?.item.label ?? catalogId,
-        choice: override.choice,
-      };
-    })
-    .sort(
-      (left, right) =>
-        left.label.localeCompare(right.label) ||
-        left.catalogId.localeCompare(right.catalogId),
-    );
+  const activeOverrides = [
+    ...Object.entries(sessionState.overrides).map(
+      ([catalogId, override]) => {
+        const result = catalogResultView.byCatalogId.get(catalogId);
+        return {
+          participant: sharedContext?.profileAName,
+          participantKey: "profile-a",
+          catalogId,
+          label: result?.item.label ?? catalogId,
+          choice: override.choice,
+        };
+      },
+    ),
+    ...(sharedContext
+      ? Object.entries(partnerSessionState.overrides).map(
+          ([catalogId, override]) => {
+            const result =
+              sharedContext.partnerCatalogResultView.byCatalogId.get(
+                catalogId,
+              );
+            return {
+              participant: sharedContext.profileBName,
+              participantKey: "profile-b",
+              catalogId,
+              label: result?.item.label ?? catalogId,
+              choice: override.choice,
+            };
+          },
+        )
+      : []),
+  ].sort(
+    (left, right) =>
+      left.label.localeCompare(right.label) ||
+      (left.participant ?? "").localeCompare(right.participant ?? "") ||
+      left.catalogId.localeCompare(right.catalogId),
+  );
 
   const toggleTheme = (themeId: SceneThemeId) => {
     setSelectedThemeIds((current) =>
@@ -542,6 +676,41 @@ export function SceneBuilder({
       clearSceneSessionChoice(current, catalogId),
     );
   };
+
+  const setPartnerSessionChoice = (
+    catalogId: string,
+    choice: SceneSessionChoice,
+  ) => {
+    setPartnerSessionState((current) =>
+      current.overrides[catalogId]?.choice === choice
+        ? clearSceneSessionChoice(current, catalogId)
+        : setSceneSessionChoice(current, catalogId, choice),
+    );
+  };
+
+  const clearPartnerSessionChoice = (catalogId: string) => {
+    setPartnerSessionState((current) =>
+      clearSceneSessionChoice(current, catalogId),
+    );
+  };
+
+  const sharedSessionControlsFor = (catalogId: string) =>
+    sharedContext
+      ? {
+          profileAName: sharedContext.profileAName,
+          profileBName: sharedContext.profileBName,
+          profileASessionChoice: getSceneSessionChoice(
+            sessionState,
+            catalogId,
+          ),
+          profileBSessionChoice: getSceneSessionChoice(
+            partnerSessionState,
+            catalogId,
+          ),
+          onSetProfileAChoice: setSessionChoice,
+          onSetProfileBChoice: setPartnerSessionChoice,
+        }
+      : undefined;
 
   const makeStarterScene = () => {
     setComposition((current) => {
@@ -809,7 +978,7 @@ export function SceneBuilder({
     );
     let nextComposition = result.composition;
 
-    if (rewardPunishmentMode !== "none") {
+    if (!sharedContext && rewardPunishmentMode !== "none") {
       const addOn = pickSceneRewardPunishment(
         rewardPunishmentProfile,
         rewardPunishmentRecipes.recipes,
@@ -863,7 +1032,7 @@ export function SceneBuilder({
           onClick={onClose}
         >
           <IconArrowLeft size={17} stroke={2} aria-hidden="true" />
-          Back to hub
+          {sharedContext ? "Back to comparison" : "Back to hub"}
         </button>
 
         <div className="scene-builder-heading-copy">
@@ -871,11 +1040,14 @@ export function SceneBuilder({
             <IconSparkles size={24} stroke={1.8} />
           </span>
           <div>
-            <p className="eyebrow">Scene Builder</p>
+            <p className="eyebrow">
+              {sharedContext ? "Shared Scene Builder" : "Scene Builder"}
+            </p>
             <h1>What sounds good right now?</h1>
             <p>
-              Pick a few themes. Your profile gets shrunk into a small
-              play space instead of making you remember every possible option.
+              {sharedContext
+                ? "Build from the space both profiles support. Either person's boundaries and Not tonight choices remove an item from automatic shared suggestions."
+                : "Pick a few themes. Your profile gets shrunk into a small play space instead of making you remember every possible option."}
             </p>
           </div>
         </div>
@@ -1022,12 +1194,12 @@ export function SceneBuilder({
             <button
               type="button"
               className="text-button"
-              onClick={() =>
-                setSessionState({
-                  schemaVersion: 1,
-                  overrides: {},
-                })
-              }
+              onClick={() => {
+                setSessionState(createEmptySceneSessionState());
+                if (sharedContext) {
+                  setPartnerSessionState(createEmptySceneSessionState());
+                }
+              }}
             >
               Reset tonight
             </button>
@@ -1037,14 +1209,21 @@ export function SceneBuilder({
             {activeOverrides.map((override) => (
               <span
                 className={`scene-session-chip scene-session-${override.choice}`}
-                key={override.catalogId}
+                key={override.participantKey + ":" + override.catalogId}
               >
                 <strong>{override.label}</strong>
-                <small>{sessionChoiceLabel(override.choice)}</small>
+                <small>
+                  {override.participant ? override.participant + " · " : ""}
+                  {sessionChoiceLabel(override.choice)}
+                </small>
                 <button
                   type="button"
                   aria-label={`Clear current-session preference for ${override.label}`}
-                  onClick={() => clearSessionChoice(override.catalogId)}
+                  onClick={() =>
+                    override.participantKey === "profile-b"
+                      ? clearPartnerSessionChoice(override.catalogId)
+                      : clearSessionChoice(override.catalogId)
+                  }
                 >
                   <IconX size={14} stroke={2} aria-hidden="true" />
                 </button>
@@ -1067,8 +1246,14 @@ export function SceneBuilder({
         <section className="scene-results">
           <div className="scene-results-heading">
             <div>
-              <p className="eyebrow">03 · Your play space</p>
-              <h2>Strongest profile-backed matches</h2>
+              <p className="eyebrow">
+                03 · {sharedContext ? "Shared play space" : "Your play space"}
+              </p>
+              <h2>
+                {sharedContext
+                  ? "Strongest matches supported by both profiles"
+                  : "Strongest profile-backed matches"}
+              </h2>
             </div>
             <span>
               {candidateView.confirmed.length} eligible · showing{" "}
@@ -1083,6 +1268,9 @@ export function SceneBuilder({
                   key={candidate.catalogId}
                   candidate={candidate}
                   onSetSessionChoice={setSessionChoice}
+                  sharedSessionControls={sharedSessionControlsFor(
+                    candidate.catalogId,
+                  )}
                   onAddToScene={addCandidateToScene}
                   isInScene={compositionCatalogIds.has(
                     candidate.catalogId,
@@ -1161,8 +1349,9 @@ export function SceneBuilder({
               <div className="scene-rp-control-copy">
                 <strong>Optional reward / punishment</strong>
                 <span>
-                  Uses only M11 items and recipes already marked eligible
-                  for random use.
+                  {sharedContext
+                    ? "Shared M11 add-ons stay disabled until both profiles' reward/punishment suitability can be intersected safely."
+                    : "Uses only M11 items and recipes already marked eligible for random use."}
                 </span>
               </div>
 
@@ -1951,6 +2140,9 @@ export function SceneBuilder({
                     key={candidate.catalogId}
                     candidate={candidate}
                     onSetSessionChoice={setSessionChoice}
+                    sharedSessionControls={sharedSessionControlsFor(
+                      candidate.catalogId,
+                    )}
                   />
                 ))}
               </div>

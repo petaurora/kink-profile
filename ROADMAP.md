@@ -232,8 +232,8 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 - [x] **M14.3** — derived comparison engine
 - [x] **M14.4** — comparison UI
 - [x] **M14.5** — interaction/complement mappings
-- [ ] **M14.6** — current participant intent
-- [ ] **M14.7** — shared M13 scene filtering
+- [x] **M14.6** — current participant intent
+- [x] **M14.7** — shared M13 scene filtering
 - [ ] **M14.8** — lifecycle, privacy + polish
 
 ---
