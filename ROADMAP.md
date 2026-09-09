@@ -214,7 +214,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 - [x] **M13.2** — profile-aware candidate engine
 - [x] **M13.3** — current-session Yes / Maybe / Not tonight state
 - [x] **M13.4** — theme-based suggestion surface
-- [ ] **M13.5** — scene arc / composition builder
+- [x] **M13.5** — scene arc / composition builder
 - [ ] **M13.6** — randomization + shuffle
 - [ ] **M13.7** — M11 Rewards & Punishments integration
 - [ ] **M13.8** — saved scenes + lifecycle
