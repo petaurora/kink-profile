@@ -520,6 +520,20 @@ Requirements:
 - raw quiz answers and raw pairwise comparison history should not be required for a normal comparison presentation
 - no cloud/account requirement in M14 V1
 
+Current compare-once behavior:
+
+- uploaded JSON is parsed locally in the browser
+- it is not routed through the destructive M9 import path
+- the raw parsed backup is not retained in React state after comparison models
+  and a small non-sensitive count summary are derived
+- only the catalog result views and derived comparison needed by M14/M13 are
+  retained for the active comparison
+- v2 Rewards & Punishments backup data may be validated/summarized but is not
+  retained by the M14 comparison model or used in shared Scene Builder yet
+- leaving/end-comparison unmounts or explicitly clears the temporary comparison
+  state and current participant intent
+- no uploaded comparison profile is written to localStorage
+
 If M10 cloud persistence later exists, pair sharing requires a separate consent/threat-model design.
 
 ---
@@ -530,11 +544,54 @@ If M10 cloud persistence later exists, pair sharing requires a separate consent/
 
 A full app-level backup may eventually contain multiple profiles.
 
-However, M14 should preserve the ability to export one profile independently.
+However, M14 must preserve the ability to export one profile independently.
+
+### App-level multi-profile backup strategy
+
+M14.1–M14.2 should treat the existing M9 Full Profile Export as the canonical
+**single-profile leaf format**, not replace it with a multi-person payload.
+
+Conceptually, a future app-level backup wraps independently restorable profile
+backups:
+
+```ts
+interface MultiProfileAppBackup {
+  format: "kink-profile-app";
+  version: 1;
+  exportedAt: string;
+  activeProfileId: ProfileId;
+  profiles: Array<{
+    profileId: ProfileId;
+    backup: ProfileBackup;
+  }>;
+}
+```
+
+Requirements:
+
+- app-level and single-profile backup formats are versioned independently
+- each nested profile remains independently valid/restorable
+- stable ProfileIds belong to the app-level envelope, not the person's evidence
+- restore validates the complete envelope before mutating durable state
+- restore never merges evidence from two profile entries
+- the existing `kink-profile` Full Profile Export remains the normal
+  single-profile share/transfer format
+- derived comparison output is recomputable and is not backed up as evidence
+- current participant intent and item-level Tonight choices are ephemeral and
+  are never included in a durable backup
+- future durable pair-specific settings, if introduced, require an explicit
+  pair-state section rather than being written into either profile
+
+The compare-once M14.0 flow continues to consume a normal single-profile backup,
+so this future envelope does not change today's upload contract.
 
 ## Import
 
-Importing a profile should create or deliberately replace a chosen profile; it must never silently merge evidence between two people.
+Importing a profile should create or deliberately replace a chosen profile; it
+must never silently merge evidence between two people.
+
+Compare-once upload remains a separate action from import. It validates the same
+single-profile backup format but performs no durable write.
 
 ## Reset/delete
 
@@ -632,12 +689,17 @@ would violate the same either-person exclusion rule.
 
 ## M14.8 — Lifecycle, privacy + polish
 
-- [ ] app-level multi-profile backup strategy
-- [ ] independent profile export/import remains supported
-- [ ] comparison/share privacy review
-- [ ] accessibility/mobile polish
+- [x] app-level multi-profile backup strategy
+- [x] independent profile export/import remains supported
+- [x] comparison/share privacy review
+- [x] accessibility/mobile polish
 - [ ] regression-run M6/M7/M9/M11/M13 boundaries
 - [ ] finalize docs and mark M14 complete
+
+M14.8 deliberately does **not** mark the milestone complete while M14.1–M14.2
+remain open. The compare-once lifecycle is polished and privacy-reviewed, but
+persistent local profiles still need stable identity, migration, management,
+and switching before the full M14 exit condition is satisfied.
 
 ---
 
