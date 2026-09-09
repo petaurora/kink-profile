@@ -157,9 +157,13 @@ describe("M13.6 scene randomizer", () => {
       rng: () => 0,
     });
 
-    const ids = result.composition.components.map(
-      (component) => component.source.catalogId,
-    );
+    const ids = result.composition.components
+      .filter((component) => component.source.kind === "catalog")
+      .map((component) =>
+        component.source.kind === "catalog"
+          ? component.source.catalogId
+          : "",
+      );
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids.length).toBeGreaterThan(0);
   });
@@ -183,9 +187,13 @@ describe("M13.6 scene randomizer", () => {
     );
 
     expect(
-      result.composition.components.map(
-        (component) => component.source.catalogId,
-      ),
+      result.composition.components
+        .filter((component) => component.source.kind === "catalog")
+        .map((component) =>
+          component.source.kind === "catalog"
+            ? component.source.catalogId
+            : "",
+        ),
     ).not.toContain("inferred");
   });
 
