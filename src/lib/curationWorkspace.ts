@@ -11,11 +11,24 @@ export type CurationReviewAction =
   | "archive"
   | "remove";
 
+export type CurationWeightedRelation = {
+  id: string;
+  weight: number;
+  direction?: "receiving" | "giving";
+};
+
+export type CurationChangeValue =
+  | string
+  | number
+  | boolean
+  | string[]
+  | CurationWeightedRelation[];
+
 export type CurationChange = {
   entityType: CurationPrimitiveType;
   entityId: string;
   action: CurationReviewAction;
-  changes?: Record<string, string>;
+  changes?: Record<string, CurationChangeValue>;
   replacementId?: string;
   note?: string;
   reviewedAt: string;
