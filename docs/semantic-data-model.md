@@ -8,7 +8,15 @@ This document is the quick relationship map for the profile's authored semantic 
 
 Overall Facet affinity is **derived descriptive metadata**. It is not user preference evidence and must not feed back into quiz answers, rankings, catalog preferences, reward/punishment suitability, or other stored profile state.
 
-Signal ↔ Overall Facet is **many-to-many**. One Signal may contribute to multiple Overall Facets, and one Overall Facet is composed from many Signals. The canonical source remains `overallFacets.ts` (Facet → Signal composition); the Workbench may expose a reverse Signal → Facet editor for convenience, but that reverse view must apply changes back to the facet definitions rather than create duplicate stored mappings.
+Signal ↔ Overall Facet is **many-to-many**. Overall Facets are nine broad, non-directional **themes**. One Signal may relate to multiple themes and one theme may relate to many Signals.
+
+Each Signal/theme pair is conceptually classified as:
+
+- **Supports** — the Signal is positive evidence for the theme.
+- **Neutral** — the Signal does not meaningfully define the theme.
+- **Opposes** — stronger affinity for the Signal works against the theme.
+
+Non-neutral relationships carry a 0–1 strength. The runtime facet definition is sparse: omitted pairs are Neutral. The Signal Workbench renders all nine themes so the full matrix can be reviewed without creating a second source of truth.
 
 If a primitive cannot honestly resolve into Overall Facets, keep the gap visible for M16 review rather than inventing a mapping.
 
@@ -85,11 +93,20 @@ Those two routes answer different questions:
 - Catalog Category → Signals describes what the kink category **means**.
 - Catalog Category → R/P Context describes which reward/punishment **experience buckets resemble it**.
 
-## Direction semantics
+## Granularity and direction semantics
 
-Giving/receiving is activity side, not authority identity.
+Overall Facets intentionally **do not** have giving/receiving or Dominant/submissive sides. They are thematic compression.
 
-A SignalId such as `receiving_restraint` or a category mapping with `Applies To = receiving` must never be interpreted as submissive. Likewise, giving-side activity does not imply Dominant identity.
+Granular distinctions stay below the facet layer:
+
+- Signals can encode activity side directly, such as `care_giving` vs `care_receiving`.
+- catalog mappings may retain `Applies To = giving|receiving` when that distinction is meaningful.
+- roles, headspaces, and dynamic modes can compose different granular Signals.
+- Dominant/submissive authority orientation remains distinct from giving/receiving activity side.
+
+For example, both `care_giving` and `care_receiving` may support **Care & Nurture**, while only one of them might also support another theme.
+
+Giving-side activity must never be inferred as Dominant identity, and receiving-side activity must never be inferred as submissive identity.
 
 ## Current M16 coverage gaps
 
@@ -97,8 +114,8 @@ The semantic bridge deliberately exposes incomplete coverage instead of hiding i
 
 At the start of M16.7:
 
-- 45 canonical SignalIds exist; 42 are currently referenced by at least one Overall Facet.
-- `role_embodiment`, `younger_headspace`, and `anticipation` currently have no Overall Facet route.
+- 45 canonical SignalIds exist.
+- `role_embodiment`, `younger_headspace`, and `anticipation` currently have no non-neutral authored theme relationship. They remain Signal-matrix review targets rather than generic "facet gaps".
 - 17 of 35 kink catalog categories currently have authored category-level Signal mappings; 18 do not.
 - R/P `Sexual / Scene` currently has no honest Signal mapping in the existing vocabulary.
 
