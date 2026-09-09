@@ -5,6 +5,7 @@ import {
   type RewardPunishmentRecipeState,
 } from "./rewardPunishmentRecipes";
 import type { RewardPunishmentPrimitiveRef } from "./rewardPunishmentLibrary";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export const REWARD_PUNISHMENT_RECIPE_STORAGE_KEY =
   "pet-profile-rewards-punishments-recipes-v1";
@@ -15,7 +16,7 @@ export type RewardPunishmentRecipeStorageLike = Pick<
 >;
 
 function browserStorage(): RewardPunishmentRecipeStorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 function parsePrimitiveRef(value: unknown): RewardPunishmentPrimitiveRef | null {
