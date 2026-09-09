@@ -20,6 +20,7 @@ import {
 } from "./rewardPunishmentLibrary";
 import type {
   CurationChangeValue,
+  CurationFacetRelationship,
   CurationWeightedRelation,
 } from "./curationWorkspace";
 
@@ -68,6 +69,12 @@ export type CurationEditorField =
       options: readonly CurationEditorOption[];
       required?: boolean;
       allowDirection?: boolean;
+      allowRelationship?: boolean;
+    })
+  | (CurationEditorFieldBase & {
+      kind: "facet-matrix";
+      value: readonly CurationFacetRelationship[];
+      options: readonly CurationEditorOption[];
     });
 
 export type CurationEditorModel = {
@@ -133,7 +140,7 @@ function cloneValue(value: CurationChangeValue): CurationChangeValue {
 
 function fieldValue(field: CurationEditorField): CurationChangeValue {
   if (field.kind === "string-list") return [...field.value];
-  if (field.kind === "weighted-relations") {
+  if (field.kind === "weighted-relations" || field.kind === "facet-matrix") {
     return field.value.map((relation) => ({ ...relation }));
   }
   return field.value;
@@ -148,6 +155,7 @@ function relationField(
     helper?: string;
     required?: boolean;
     allowDirection?: boolean;
+    allowRelationship?: boolean;
   } = {},
 ): CurationEditorField {
   return {
