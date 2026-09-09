@@ -227,7 +227,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 **Details:** [M14 Shared Profiles](docs/m14-shared-profiles.md)
 
 - [x] **M14.0** — compare once via uploaded full-profile backup
-- [ ] **M14.1** — multi-profile storage + migration
+- [x] **M14.1** — multi-profile storage + migration
 - [ ] **M14.2** — profile management + switcher
 - [x] **M14.3** — derived comparison engine
 - [x] **M14.4** — comparison UI
