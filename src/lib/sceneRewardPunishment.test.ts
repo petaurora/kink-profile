@@ -103,6 +103,36 @@ describe("M13.7 M11 scene integration", () => {
     ).toBeNull();
   });
 
+  it("keeps M11 suitability authoritative even if randomEligible is true", () => {
+    let profile = createEmptyRewardPunishmentProfileState();
+    profile = setContextSuitability(
+      profile,
+      rewardPrimitive.ref,
+      "reward",
+      "no",
+      "now",
+    );
+    profile = setContextRandomEligible(
+      profile,
+      rewardPrimitive.ref,
+      "reward",
+      true,
+      "now",
+    );
+
+    expect(
+      pickSceneRewardPunishment(
+        profile,
+        [],
+        "reward",
+        {
+          primitives: [rewardPrimitive],
+          rng: () => 0,
+        },
+      ),
+    ).toBeNull();
+  });
+
   it("chooses the context before the entry for Either mode", () => {
     const reward = pickSceneRewardPunishment(
       eligibleProfile(),
