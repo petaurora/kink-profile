@@ -81,6 +81,31 @@ function normalizeRng(value: number) {
   return value;
 }
 
+export function getSceneRewardPunishmentAvailability(
+  profile: RewardPunishmentProfileState,
+  recipes: readonly RewardPunishmentRecipe[],
+  primitives: readonly RewardPunishmentPrimitive[] = rewardPunishmentPrimitives,
+) {
+  const reward = contextPool(
+    profile,
+    recipes,
+    "reward",
+    primitives,
+  ).length;
+  const punishment = contextPool(
+    profile,
+    recipes,
+    "punishment",
+    primitives,
+  ).length;
+
+  return {
+    reward,
+    punishment,
+    either: reward + punishment,
+  };
+}
+
 export function sceneRewardPunishmentPickKey(
   context: RewardPunishmentContext,
   entry: RewardPunishmentRandomEntry,
