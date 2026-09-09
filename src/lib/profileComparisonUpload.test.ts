@@ -72,6 +72,11 @@ describe("buildUploadedProfileComparison", () => {
 
     expect(result.displayName).toBe("Taylor");
     expect(result.exportedAt).toBe(uploaded.exportedAt);
+    expect("currentInput" in result).toBe(false);
+    expect("uploadedInput" in result).toBe(false);
+    expect("backup" in result).toBe(false);
+    expect(result.currentCatalogResults).toBeDefined();
+    expect(result.uploadedCatalogResults).toBeDefined();
     expect(
       result.comparison.catalogItems.find(
         (item) => item.catalogId === "comparison-test-item",
