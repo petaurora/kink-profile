@@ -234,7 +234,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 - [x] **M14.5** — interaction/complement mappings
 - [x] **M14.6** — current participant intent
 - [x] **M14.7** — shared M13 scene filtering
-- [ ] **M14.8** — lifecycle, privacy + polish
+- [x] **M14.8** — lifecycle, privacy + polish
 
 ---
 
