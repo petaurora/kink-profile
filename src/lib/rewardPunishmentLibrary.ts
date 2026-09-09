@@ -1,5 +1,10 @@
 import { kinkCatalog } from "../data/kinkCatalog.generated";
 import {
+  blendSemanticSignalGroups,
+  deriveOverallFacetAffinities,
+  type SemanticSignalMapping,
+} from "./semanticFacetAffinity";
+import {
   rewardPunishmentActions,
   rewardPunishmentCatalogCategoryMappings,
   rewardPunishmentCatalogSourceOrigins,
@@ -30,6 +35,7 @@ export type RewardPunishmentPrimitive = {
   label: string;
   sourceType: "catalog" | "action";
   contextCategories: readonly RewardPunishmentContextCategoryMapping[];
+  signalMappings: readonly SemanticSignalMapping[];
   sourceOrigins: readonly RewardPunishmentSourceOrigin[];
 };
 
@@ -43,6 +49,35 @@ const catalogSourceOrigins =
     Record<string, readonly RewardPunishmentSourceOrigin[]>
   >;
 
+const categoryById = new Map(
+  rewardPunishmentCategories.map((category) => [category.id, category]),
+);
+
+export function getRewardPunishmentCategorySignalMappings(
+  categoryId: RewardPunishmentCategoryId,
+): readonly SemanticSignalMapping[] {
+  return categoryById.get(categoryId)?.signalMappings ?? [];
+}
+
+export function deriveRewardPunishmentContextSignalMappings(
+  contextCategories: readonly RewardPunishmentContextCategoryMapping[],
+): SemanticSignalMapping[] {
+  return blendSemanticSignalGroups(
+    contextCategories.map((mapping) => ({
+      weight: mapping.weight,
+      signals: getRewardPunishmentCategorySignalMappings(mapping.id),
+    })),
+  );
+}
+
+export function getRewardPunishmentCategoryFacetAffinities(
+  categoryId: RewardPunishmentCategoryId,
+) {
+  return deriveOverallFacetAffinities(
+    getRewardPunishmentCategorySignalMappings(categoryId),
+  );
+}
+
 export function rewardPunishmentPrimitiveKey(
   ref: RewardPunishmentPrimitiveRef,
 ): string {
@@ -55,6 +90,7 @@ export const rewardPunishmentPrimitives: readonly RewardPunishmentPrimitive[] = 
     label: item.label,
     sourceType: "catalog" as const,
     contextCategories: catalogCategoryMappings[item.categoryId] ?? [],
+    signalMappings: item.signalMappings,
     sourceOrigins: catalogSourceOrigins[item.id] ?? [],
   })),
   ...rewardPunishmentActions.map((action) => ({
@@ -62,12 +98,21 @@ export const rewardPunishmentPrimitives: readonly RewardPunishmentPrimitive[] = 
     label: action.label,
     sourceType: "action" as const,
     contextCategories: action.contextCategories,
+    signalMappings: deriveRewardPunishmentContextSignalMappings(
+      action.contextCategories,
+    ),
     sourceOrigins: action.sourceOrigins,
   })),
 ];
 
 export function getRewardPunishmentAction(id: string) {
   return rewardPunishmentActions.find((action) => action.id === id);
+}
+
+export function getRewardPunishmentPrimitiveFacetAffinities(
+  primitive: RewardPunishmentPrimitive,
+) {
+  return deriveOverallFacetAffinities(primitive.signalMappings);
 }
 
 export function getRewardPunishmentPrimitive(
