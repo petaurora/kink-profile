@@ -406,6 +406,54 @@ The recipe is preserved so you can repair it rather than silently deleting it.
 
 ---
 
+# Scene Builder
+
+## Does choosing a Scene Builder theme change my profile?
+
+No.
+
+Themes are current-session queries. They narrow and organize existing profile evidence but do not write back into catalog preferences, quiz scores, headspaces, dynamic modes, or Overall Profile scores.
+
+## What does Yes / Maybe / Not tonight do?
+
+Those are temporary session choices for Scene Builder.
+
+**Not tonight** removes an item from automatic suggestions and randomization for the current session even if the permanent profile strongly likes it. **Yes** and **Maybe** can make a non-excluded item explicitly usable for the moment without changing the durable profile.
+
+## Can an inferred suggestion be randomly selected?
+
+Not by default.
+
+Inference-only items can appear under **Suggested to explore**, but they do not enter automatic Pick something, Build something, or Shuffle pools unless the user explicitly establishes current-session support through the allowed flow.
+
+## What is the difference between Pick something and Build something?
+
+**Pick something** returns one random eligible activity.
+
+**Build something** creates an ordered multi-part scene using the selected themes, effort, filters, and current-session eligibility.
+
+Random selection is uniform inside the valid pool rather than secretly weighting the highest-ranked item to win most often.
+
+## Can I save a scene?
+
+Yes.
+
+Saved scenes are local reusable templates. You can load, edit, duplicate, or delete them. They keep stable references to catalog items and M11 reward/punishment items or recipes.
+
+## What does Needs review mean on a saved scene?
+
+One or more referenced sources changed after the scene was saved.
+
+For example, a catalog item may now be excluded or unavailable, or an M11 reward/punishment item or recipe may no longer be confirmed for that context. The app keeps the saved component visible so it can be repaired instead of silently deleting it.
+
+## Are saved scenes included in my share summary?
+
+No.
+
+They are private by default. Saved scenes are included in the full machine-readable backup and can be reset independently, but the default M9 share summary does not include them.
+
+---
+
 # Settings, backup, and sharing
 
 ## What is the difference between Export profile backup and Export share summary?
@@ -489,10 +537,6 @@ The app generates the file locally for deliberate sharing. It does not automatic
 ---
 
 # Future features
-
-## Where is the Scene Builder?
-
-It is planned as M13 and is not part of the current implemented feature set.
 
 ## Can I have two full profiles in the app and compare them?
 
