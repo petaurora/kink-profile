@@ -8,6 +8,8 @@ This document is the quick relationship map for the profile's authored semantic 
 
 Overall Facet affinity is **derived descriptive metadata**. It is not user preference evidence and must not feed back into quiz answers, rankings, catalog preferences, reward/punishment suitability, or other stored profile state.
 
+Signal ↔ Overall Facet is **many-to-many**. One Signal may contribute to multiple Overall Facets, and one Overall Facet is composed from many Signals. The canonical source remains `overallFacets.ts` (Facet → Signal composition); the Workbench may expose a reverse Signal → Facet editor for convenience, but that reverse view must apply changes back to the facet definitions rather than create duplicate stored mappings.
+
 If a primitive cannot honestly resolve into Overall Facets, keep the gap visible for M16 review rather than inventing a mapping.
 
 ## Relationship map
