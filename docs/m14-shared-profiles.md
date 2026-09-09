@@ -600,10 +600,15 @@ the comparison engine or UI contract.
 
 ## M14.6 — Current participant intent
 
-- [ ] allow each profile to select current headspace/mode/activity-side intent
-- [ ] keep intent session-local
-- [ ] combine participant intent with current-session overrides
-- [ ] do not mutate permanent profile evidence
+- [x] allow each profile to select current headspace/mode/activity-side intent
+- [x] keep intent session-local
+- [ ] combine participant intent with current-session item overrides in the shared M13 consumer
+- [x] do not mutate permanent profile evidence
+
+Current-intent selections are deliberately held in the active comparison component
+rather than durable storage because compare-once profiles do not yet have stable
+ProfileIds. Compatible current choices may show validated M14.5 pairings, but
+they remain session/query context rather than profile evidence.
 
 ## M14.7 — Shared M13 scene filtering
 
