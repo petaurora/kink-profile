@@ -53,26 +53,24 @@ function parseRelationships(value: string): ParsedRelationship[] | null {
     .map((item) => item.trim())
     .filter(Boolean);
 
-  const parsed = entries.map((entry) => {
+  const parsed: ParsedRelationship[] = [];
+
+  for (const entry of entries) {
     const match = entry.match(
       /^(.+?):\s*(-?\d+(?:\.\d+)?)(?:\s*\(([^)]+)\))?$/,
     );
     if (!match) return null;
 
     const [, id, weight, direction] = match;
-    return {
+    parsed.push({
       id,
       label: relationshipLabels.get(id) ?? humanizeId(id),
       weight,
-      direction,
-    };
-  });
+      direction: direction || undefined,
+    });
+  }
 
-  return parsed.every(
-    (entry): entry is ParsedRelationship => entry !== null,
-  )
-    ? parsed
-    : null;
+  return parsed;
 }
 
 function CurationRelationshipDetails({
