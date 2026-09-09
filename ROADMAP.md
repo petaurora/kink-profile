@@ -267,7 +267,7 @@ plus linked/read-only partner profiles, or temporary comparison only.
 **Details:** [M16 Data & Content Curation](docs/m16-data-content-curation.md)
 
 - [x] **M16.1** — inventory authored/derived data surfaces + review rubric
-- [ ] **M16.2** — mobile-friendly Curation Workbench + local proposal/export workflow _(foundation in progress)_
+- [ ] **M16.2** — mobile-friendly Curation Workbench + local proposal/export workflow _(structured editors + validation in progress)_
 - [ ] **M16.3** — quiz bank, signal-weight, and scoring-input review
 - [ ] **M16.4** — signal vocabulary, headspaces, radars, facets, labels, and thresholds review
 - [ ] **M16.5** — kink catalog pruning/consolidation + pending additions review
