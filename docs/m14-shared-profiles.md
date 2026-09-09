@@ -1,6 +1,6 @@
 # M14 — Shared Profiles, Comparison & Partner Integration
 
-**Status:** planned  
+**Status:** in progress  
 **Roadmap milestone:** M14  
 **Primary boundary:** M14 allows two independent profiles to coexist in the same app, compares them without merging them, derives a shared interaction space, and lets that shared space filter M13 Scene Builder suggestions.
 
@@ -546,6 +546,18 @@ Shared derived comparison should recompute afterward.
 
 # M14 slices
 
+## M14.0 — Compare once via uploaded profile
+
+- [x] accept an M9 Full Profile Export as temporary comparison input
+- [x] validate with the existing backup parser
+- [x] derive the full comparison without importing or merging data
+- [x] keep uploaded comparison data ephemeral
+- [x] make the flow explicit that the current profile is never replaced
+
+This provides a useful local comparison path before persistent multi-profile
+storage exists. M14.1–M14.2 can later add saved/linked profiles without changing
+the comparison engine or UI contract.
+
 ## M14.1 — Multi-profile storage + migration
 
 - [ ] define stable ProfileId + profile registry
@@ -563,28 +575,28 @@ Shared derived comparison should recompute afterward.
 
 ## M14.3 — Derived comparison engine
 
-- [ ] compare stable catalog IDs
-- [ ] classify mutual/complementary/curious/excluded/unknown states
-- [ ] preserve provenance/explanation
-- [ ] keep comparison fully derived/no feedback
+- [x] compare stable catalog IDs
+- [x] classify mutual/complementary/curious/excluded/unknown states
+- [x] preserve provenance/explanation
+- [x] keep comparison fully derived/no feedback
 
 ## M14.4 — Comparison UI
 
-- [ ] We both love
-- [ ] We fit together here
-- [ ] Maybe explore
-- [ ] Different flavors
-- [ ] Not for shared suggestions
-- [ ] sparse/incomplete profile handling
-- [ ] plain-language why-this-match explanations
+- [x] We both love
+- [x] We fit together here
+- [x] Maybe explore
+- [x] Different flavors
+- [x] Not for shared suggestions
+- [x] sparse/incomplete profile handling
+- [x] plain-language why-this-match explanations
 
 ## M14.5 — Interaction mappings
 
-- [ ] define versioned directional activity mappings
-- [ ] define validated role/headspace mappings
-- [ ] define dynamic-mode relationship mappings
-- [ ] preserve authority/activity/role semantic boundaries
-- [ ] add deterministic mapping tests
+- [x] define versioned directional activity mappings
+- [x] define validated role/headspace mappings
+- [x] define dynamic-mode relationship mappings
+- [x] preserve authority/activity/role semantic boundaries
+- [x] add deterministic mapping tests
 
 ## M14.6 — Current participant intent
 
