@@ -1,3 +1,5 @@
+import { getActiveProfileStorage } from "./profileRegistry";
+
 export const REWARD_PUNISHMENT_SORTER_UI_STORAGE_KEY =
   "pet-profile-rewards-punishments-sorter-ui-v1";
 
@@ -12,7 +14,7 @@ export type RewardPunishmentSorterStorageLike = Pick<
 >;
 
 function browserStorage(): RewardPunishmentSorterStorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 function baselineCheckpoint(classifiedCount: number) {
