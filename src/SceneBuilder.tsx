@@ -1772,7 +1772,7 @@ export function SceneBuilder({
 
           <details
             className="scene-library panel"
-            open={sceneLibrary.scenes.length > 0}
+            defaultOpen={sceneLibrary.scenes.length > 0}
           >
             <summary>
               <div>
