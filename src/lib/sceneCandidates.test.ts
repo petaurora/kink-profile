@@ -8,6 +8,10 @@ import {
   calculateSceneThemeFit,
 } from "./sceneCandidates";
 import { getSceneTheme } from "../data/sceneThemes";
+import {
+  createEmptySceneSessionState,
+  setSceneSessionChoice,
+} from "./sceneSession";
 
 function result(
   overrides: Partial<CatalogResultItem> & {
@@ -184,6 +188,69 @@ describe("M13.2 scene candidate engine", () => {
       provenance: "pairwise",
       automaticEligible: true,
     });
+  });
+
+  it("lets Not tonight override strong durable profile evidence", () => {
+    let sessionState = createEmptySceneSessionState();
+    sessionState = setSceneSessionChoice(
+      sessionState,
+      "blocked-tonight",
+      "not_tonight",
+      "now",
+    );
+
+    const candidateView = buildSceneCandidateView(
+      view([
+        result({
+          id: "blocked-tonight",
+          label: "Blocked tonight",
+          categoryId: "impact-play",
+          explicitState: "love",
+          meaningfulPairwiseComparisons: 8,
+          overallRank: { rank: 1, comparisons: 8, confidence: 1 },
+        }),
+      ]),
+      ["pain"],
+      { sessionState },
+    );
+
+    expect(candidateView.confirmed).toEqual([]);
+    expect(candidateView.suggestedToExplore).toEqual([]);
+  });
+
+  it("lets current-session Yes promote a non-excluded item without rewriting profile provenance", () => {
+    let sessionState = createEmptySceneSessionState();
+    sessionState = setSceneSessionChoice(
+      sessionState,
+      "yes-tonight",
+      "yes_tonight",
+      "now",
+    );
+
+    const candidateView = buildSceneCandidateView(
+      view([
+        result({
+          id: "yes-tonight",
+          label: "Yes tonight",
+          categoryId: "impact-play",
+          inferred: {
+            affinity: 88,
+            coverage: 70,
+            matchedSignals: [],
+          },
+        }),
+      ]),
+      ["pain"],
+      { sessionState },
+    );
+
+    expect(candidateView.confirmed[0]).toMatchObject({
+      catalogId: "yes-tonight",
+      sessionChoice: "yes_tonight",
+      provenance: "session",
+      automaticEligible: true,
+    });
+    expect(candidateView.suggestedToExplore).toEqual([]);
   });
 
   it("creates complementary theme lanes and identifies bridge items", () => {
