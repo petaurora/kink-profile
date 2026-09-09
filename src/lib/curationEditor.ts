@@ -263,6 +263,24 @@ export function buildCurationEditorModel(
             step: 1,
             required: true,
           },
+          relationField(
+            "signalMappings",
+            "Category signal mappings",
+            category.signalMappings.map((mapping) => ({
+              id: mapping.signalId,
+              weight: mapping.weight,
+              direction:
+                mapping.appliesTo === "any"
+                  ? undefined
+                  : mapping.appliesTo,
+            })),
+            signalOptions,
+            {
+              allowDirection: true,
+              helper:
+                "These authored category defaults are the semantic bridge into Signals. Overall Facet affinity is derived from them; direction is activity-side only.",
+            },
+          ),
         ],
       };
     }
@@ -336,6 +354,19 @@ export function buildCurationEditorModel(
             step: 1,
             required: true,
           },
+          relationField(
+            "signalMappings",
+            "Signal mappings",
+            category.signalMappings.map((mapping) => ({
+              id: mapping.signalId,
+              weight: mapping.weight,
+            })),
+            signalOptions,
+            {
+              helper:
+                "This is the authored semantic bridge for the R/P context category. Individual actions inherit/blend these Signals through their context-category weights; Overall Facets are derived downstream.",
+            },
+          ),
         ],
       };
     }
@@ -861,6 +892,11 @@ export function getCurationConsequences(
       consequences.push(
         "Category changes affect every catalog item assigned here and may require taxonomy/mapping review before application.",
       );
+      if (keys.has("signalMappings")) {
+        consequences.push(
+          "Changing category Signal mappings changes the derived Overall Facet affinity for this category and any item that inherits these defaults.",
+        );
+      }
       break;
 
     case "reward-punishment-action":
@@ -875,6 +911,11 @@ export function getCurationConsequences(
       consequences.push(
         "Changing this taxonomy category may affect M11 mappings and any action or catalog-category relationship pointing to it.",
       );
+      if (keys.has("signalMappings")) {
+        consequences.push(
+          "Changing these Signal mappings changes the semantic/facet projection inherited by every R/P action mapped to this category.",
+        );
+      }
       break;
 
     case "quiz-question":
