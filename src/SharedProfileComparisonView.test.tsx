@@ -138,13 +138,13 @@ describe("SharedProfileComparisonView", () => {
     );
 
     const excludedIndex = html.indexOf("Not for shared suggestions");
-    const unknownIndex = html.indexOf("Still unexplored");
-
-    expect(excludedIndex).toBeGreaterThan(-1);
-    expect(unknownIndex).toBeGreaterThan(excludedIndex);
-    expect(html).toContain(
+    const unknownSectionIndex = html.indexOf(
       "Unknown means there is not enough direct evidence yet",
     );
+
+    expect(excludedIndex).toBeGreaterThan(-1);
+    expect(unknownSectionIndex).toBeGreaterThan(excludedIndex);
+    expect(html).toContain("Still unexplored");
   });
 
   it("does not present a synthetic compatibility percentage", () => {
