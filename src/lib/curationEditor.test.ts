@@ -19,6 +19,25 @@ function entry(type: string, id?: string) {
 }
 
 describe("M16.2 structured curation editor", () => {
+  it("provides a shared structured editor model for every runtime primitive", () => {
+    const missing = curationInventory
+      .filter((item) => buildCurationEditorModel(item) === null)
+      .map((item) => `${item.entityType}:${item.entityId}`);
+
+    expect(missing).toEqual([]);
+  });
+
+  it("covers every primitive type with the shared editor pipeline", () => {
+    const types = new Set(curationInventory.map((item) => item.entityType));
+    const modeledTypes = new Set(
+      curationInventory
+        .filter((item) => buildCurationEditorModel(item) !== null)
+        .map((item) => item.entityType),
+    );
+
+    expect(modeledTypes).toEqual(types);
+  });
+
   it("keeps editor field keys unique for every workbench primitive", () => {
     for (const item of curationInventory) {
       const model = buildCurationEditorModel(item);
