@@ -51,6 +51,14 @@ describe("M16.2 structured curation editor", () => {
     }
   });
 
+  it("does not expose legacy catalog Primary Mode as editable free text", () => {
+    const kink = entry("catalog-item", "rope-bondage");
+    const model = buildCurationEditorModel(kink);
+    if (!model) throw new Error("Missing kink editor model");
+
+    expect(model.fields.some((field) => field.key === "primaryMode")).toBe(false);
+  });
+
   it("renders the Pet role basics exactly once", () => {
     const pet = entry("role-headspace", "pet");
     const model = buildCurationEditorModel(pet);
