@@ -175,7 +175,6 @@ const baseItems = catalogRows.map((row, index) => {
     direction,
     description: value(row, "Description"),
     typicalRole,
-    primaryMode: value(row, "Primary Mode"),
     intensity: value(row, "Intensity"),
     riskLevel: value(row, "Risk Level"),
   };
@@ -503,7 +502,6 @@ export type KinkCatalogItem = {
   signalMappings: readonly KinkCatalogSignalMapping[];
   description: string;
   typicalRole: string;
-  primaryMode: string;
   intensity: string;
   riskLevel: string;
 };
