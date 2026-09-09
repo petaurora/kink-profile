@@ -183,13 +183,15 @@ The catalog's existing `Primary Mode` field is **not** the same thing as M3 Dyna
 
 Today:
 
-- `Primary Mode` is a single descriptive catalog field such as Physical/Psychological.
+- `Primary Mode` is a legacy descriptive catalog field such as Physical/Psychological.
+- the 551 current catalog rows use 15 free-form-ish descriptor combinations inherited from the original TSV.
+- it has no canonical scoring meaning and is **not** an M3 Dynamic Mode.
 - a catalog item may resolve to **multiple SignalId mappings** through category + item mappings.
 - M3 Dynamic Modes are composed definitions calculated from SignalIds; kinks are not directly assigned one or more Dynamic Modes.
 
-The workbench should show this distinction clearly.
+The workbench should show this distinction clearly. During M16.5, `Primary Mode` is read-only and labeled **Legacy mode descriptor** rather than exposed as an editable free-text field.
 
-During M16, explicitly review whether `Primary Mode` should remain a single descriptive string, become a controlled multi-value taxonomy, or be replaced by better structured metadata.
+During M16, explicitly decide whether this legacy descriptor should be removed, become a controlled multi-value taxonomy, or be replaced by better structured metadata.
 
 Do not add direct kink → Dynamic Mode mappings merely for convenience unless the curation pass finds a real semantic need. Prefer the existing signal graph when it can express the relationship without creating a second competing mapping system.
 
