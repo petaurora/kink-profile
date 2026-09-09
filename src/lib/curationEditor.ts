@@ -86,6 +86,11 @@ const signalOptions = signalDefinitions.map((signal) => ({
   label: signal.label,
 }));
 
+const overallFacetOptions = overallFacetDefinitions.map((facet) => ({
+  value: facet.id,
+  label: facet.label,
+}));
+
 const catalogCategoryOptions = kinkCategories.map((category) => ({
   value: category.id,
   label: category.label,
@@ -487,6 +492,16 @@ export function buildCurationEditorModel(
       );
       if (!signal) return null;
 
+      const facetMemberships = overallFacetDefinitions.flatMap((facet) =>
+        facet.signals
+          .filter((mapping) => mapping.signalId === signal.id)
+          .map((mapping) => ({
+            id: facet.id,
+            weight: mapping.weight,
+            direction: mapping.direction,
+          })),
+      );
+
       return {
         fields: [
           {
@@ -510,6 +525,17 @@ export function buildCurationEditorModel(
             value: signal.description,
             required: true,
           },
+          relationField(
+            "facetMemberships",
+            "Overall Facet memberships",
+            facetMemberships,
+            overallFacetOptions,
+            {
+              allowDirection: true,
+              helper:
+                "Reverse editor for the existing Overall Facet → Signal composition. A Signal may belong to multiple facets. Saving this proposal should update the facet definitions, not create a second source of truth.",
+            },
+          ),
         ],
       };
     }
@@ -942,6 +968,11 @@ export function getCurationConsequences(
       consequences.push(
         `This signal is currently referenced by ${counts.weightedQuestions} weighted questions, ${counts.modes} dynamic modes, ${counts.roles} roles/headspaces, ${counts.facets} overall facets and ${counts.catalogItems} catalog items.`,
       );
+      if (keys.has("facetMemberships")) {
+        consequences.push(
+          "Changing Overall Facet memberships updates the reverse Signal → Facet view by modifying the canonical facet signal compositions.",
+        );
+      }
       consequences.push(
         "Changing signal meaning is cross-system taxonomy work; labels can be cheap, semantic redefinition is not.",
       );
