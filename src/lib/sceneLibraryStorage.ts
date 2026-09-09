@@ -4,12 +4,13 @@ import {
   type SceneLibraryState,
 } from "./sceneLibrary";
 import type { StorageLike } from "./profileStorage";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export const SCENE_LIBRARY_STORAGE_KEY =
   "pet-profile-saved-scenes-v1";
 
 function browserStorage(): StorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 export function loadSceneLibraryState(
