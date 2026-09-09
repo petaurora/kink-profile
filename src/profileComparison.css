@@ -586,3 +586,63 @@
     padding-left: 0;
   }
 }
+
+
+/* M14.7 — shared scene launch */
+
+.shared-scene-launch {
+  padding: clamp(18px, 3vw, 26px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.shared-scene-launch > div:first-child {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.shared-scene-launch h2 {
+  margin: 0;
+  font-size: clamp(1.2rem, 3vw, 1.65rem);
+  letter-spacing: -.035em;
+}
+
+.shared-scene-launch p:not(.eyebrow) {
+  max-width: 720px;
+  margin: 5px 0 0;
+  color: var(--text-secondary);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.shared-scene-launch small {
+  display: block;
+  margin-top: 7px;
+  color: var(--accent-primary);
+  font-size: .68rem;
+  font-weight: 800;
+}
+
+.shared-scene-launch > .primary {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+@media (max-width: 680px) {
+  .shared-scene-launch {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .shared-scene-launch > .primary {
+    width: 100%;
+  }
+}
