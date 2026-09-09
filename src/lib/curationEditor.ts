@@ -697,7 +697,9 @@ function normalizeRelations(value: CurationChangeValue | undefined) {
   if (!Array.isArray(value)) return [];
   return value
     .filter(
-      (relation): relation is CurationWeightedRelation =>
+      (
+        relation,
+      ): relation is CurationWeightedRelation | CurationFacetRelationship =>
         typeof relation === "object" &&
         relation !== null &&
         "id" in relation &&
@@ -706,11 +708,16 @@ function normalizeRelations(value: CurationChangeValue | undefined) {
     .map((relation) => ({
       id: relation.id,
       weight: relation.weight,
-      direction: relation.direction,
+      direction: "direction" in relation ? relation.direction : undefined,
+      relationship:
+        "relationship" in relation ? relation.relationship : undefined,
     }))
     .sort(
       (left, right) =>
         left.id.localeCompare(right.id) ||
+        String(left.relationship ?? "").localeCompare(
+          String(right.relationship ?? ""),
+        ) ||
         String(left.direction ?? "").localeCompare(String(right.direction ?? "")),
     );
 }
@@ -860,6 +867,70 @@ export function validateCurationDraft(
         ) {
           errors.push(
             `${field.label} has an invalid direction for "${relation.id}".`,
+          );
+        }
+
+        if (
+          relation.relationship &&
+          (!field.allowRelationship ||
+            !["supports", "opposes"].includes(relation.relationship))
+        ) {
+          errors.push(
+            `${field.label} has an invalid semantic relationship for "${relation.id}".`,
+          );
+        }
+      }
+      continue;
+    }
+
+    if (field.kind === "facet-matrix") {
+      if (!Array.isArray(value)) {
+        errors.push(`${field.label} must contain every Overall Facet.`);
+        continue;
+      }
+
+      const relationships = value.filter(
+        (item): item is CurationFacetRelationship =>
+          typeof item === "object" &&
+          item !== null &&
+          "id" in item &&
+          "relationship" in item &&
+          "weight" in item,
+      );
+
+      const ids = new Set(relationships.map((relationship) => relationship.id));
+      if (
+        relationships.length !== field.options.length ||
+        ids.size !== field.options.length
+      ) {
+        errors.push(
+          `${field.label} must classify all ${field.options.length} Overall Facets exactly once.`,
+        );
+      }
+
+      for (const relationship of relationships) {
+        if (!field.options.some((option) => option.value === relationship.id)) {
+          errors.push(
+            `${field.label} references unknown facet "${relationship.id}".`,
+          );
+        }
+        if (
+          !["supports", "neutral", "opposes"].includes(
+            relationship.relationship,
+          )
+        ) {
+          errors.push(
+            `${field.label} has an invalid state for "${relationship.id}".`,
+          );
+        }
+        if (
+          relationship.relationship !== "neutral" &&
+          (!Number.isFinite(relationship.weight) ||
+            relationship.weight <= 0 ||
+            relationship.weight > 1)
+        ) {
+          errors.push(
+            `${field.label} weight for "${relationship.id}" must be greater than 0 and no more than 1.`,
           );
         }
       }
