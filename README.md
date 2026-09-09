@@ -17,16 +17,16 @@ A privacy-first React app for exploring BDSM, kink, power-dynamic, and headspace
 **M10 — Optional Persistence:** optional  
 **M11 — Rewards & Punishments:** complete  
 **M12 — This-or-That Ranking History & Movement:** complete  
-**M13 — Scene Builder:** planned  
-**M14 — Shared Profiles, Comparison & Partner Integration:** planned  
+**M13 — Scene Builder:** complete  
+**M14 — Shared Profiles, Comparison & Partner Integration:** needs refinement  
 **M15 — Contextual Activity Profiles:** planned  
 **M16 — Data & Content Curation:** planned
 
-The app now supports all four core quiz sections, the full 551-item catalog with direct preferences and category/Overall This-or-That ranking, a source-aware aggregated profile, complete local profile management/sharing, contextual Rewards & Punishments with ranking/randomization/recipes, and non-destructive This-or-That ranking runs with movement history.
+The app now supports all four core quiz sections, the full 551-item catalog with direct preferences and category/Overall This-or-That ranking, a source-aware aggregated profile, complete local profile lifecycle/sharing, contextual Rewards & Punishments with ranking/randomization/recipes, non-destructive This-or-That reruns with movement history, a profile-aware Scene Builder with saved scenes, and temporary uploaded-profile comparison with shared scene filtering.
 
-M6 keeps explicit preferences, raw pairwise comparisons, quiz-derived affinity, exclusions, and provenance independent and recalculable. M7 consumes those sources into the overall profile without flattening D/s authority, activity-side giving/receiving, or roles/headspaces into one concept. M9 adds editable profile identity, selective reset, versioned backup/restore, and local PNG/HTML/PDF share exports. M11 adds independent Reward/Punishment contextual evidence without feeding it back into general kink scoring. M12 makes pairwise reranking temporal: only the active run is current evidence, while archived runs provide history and movement context.
+M6 keeps explicit preferences, raw pairwise comparisons, quiz-derived affinity, exclusions, and provenance independent and recalculable. M7 consumes those sources into the overall profile without flattening D/s authority, activity-side giving/receiving, or roles/headspaces into one concept. M9 adds editable profile identity, selective reset, versioned backup/restore, and local PNG/HTML/PDF share exports. M11 adds independent Reward/Punishment contextual evidence without feeding it back into general kink scoring. M12 makes pairwise reranking temporal: only the active run is current evidence, while archived runs provide history and movement context. M13 turns that profile into a bounded, theme-driven Scene Builder with temporary Tonight state, randomization, composition, and saved scenes. M14 currently supports non-destructive uploaded-profile comparison, complementary-fit views, participant intent, and shared Scene Builder filtering.
 
-M11 and M12 are complete. Future product work is formally scoped through M16: a theme-driven Scene Builder (M13), independent shared-profile comparison/integration (M14), sparse authority × activity-side contextual preference/ranking overlays (M15), and whole-app data/content curation with a mobile-friendly review workbench (M16). M8 and M10 remain optional rather than prerequisites.
+M11–M13 are complete. M14's implemented compare-once/shared-scene work remains active, but its persistent ownership/linking model is paused for refinement. M15 remains planned for sparse authority × activity-side contextual preferences/rankings, and M16 remains planned for whole-app data/content curation with a mobile-friendly review workbench. M8 and M10 remain optional rather than prerequisites.
 
 The original 16-question prototype remains available as the **Starter Profile** sampler. It is not intended to be the final scoring model.
 
@@ -105,4 +105,4 @@ Repository setup: under **Settings → Pages**, set **Source** to **Deploy from 
 
 There is currently no backend and no required account.
 
-Authoritative profile data remains browser-local in `localStorage`: quiz progress/results, catalog preferences, active and archived pairwise ranking runs, profile settings, and authoritative M11 Rewards & Punishments state such as contextual choices, rankings, and saved recipes. M9 backup/restore and share exports are generated locally. Optional cloud persistence remains deferred until there is a real product need and a defined privacy/threat model.
+Authoritative profile data remains browser-local in `localStorage`: quiz progress/results, catalog preferences, active and archived pairwise ranking runs, profile settings, authoritative M11 Rewards & Punishments state, and saved M13 scenes. Temporary Scene Builder Tonight/randomizer state uses session-scoped browser storage. M9 backup/restore and share exports are generated locally. Uploaded M14 comparison profiles are processed locally and are not imported or persisted as another profile. Optional cloud persistence remains deferred until there is a real product need and a defined privacy/threat model.

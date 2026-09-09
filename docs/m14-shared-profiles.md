@@ -1,8 +1,10 @@
 # M14 — Shared Profiles, Comparison & Partner Integration
 
-**Status:** in progress  
+**Status:** 🟡 needs refinement  
 **Roadmap milestone:** M14  
-**Primary boundary:** M14 allows two independent profiles to coexist in the same app, compares them without merging them, derives a shared interaction space, and lets that shared space filter M13 Scene Builder suggestions.
+**Current implemented boundary:** one owned/current profile can compare against a temporary uploaded profile, derive a shared interaction space, and feed that shared space into M13 Scene Builder without merging evidence.
+
+**Persistent-profile boundary:** paused for product-model refinement. The prior assumption that multiple people should exist as fully editable local profiles in one app is no longer an accepted architectural requirement.
 
 ---
 
@@ -21,19 +23,48 @@ The product principle is:
 
 > **Compare profiles; do not collapse people into one profile.**
 
+## Refinement checkpoint
+
+The comparison model is working, but the ownership/persistence model needs to be
+re-decided before further storage work.
+
+The unresolved product question is:
+
+> Does "multiple profiles" mean one user can act as multiple editable people,
+> or does it mean one owned profile can interact with other people's profiles?
+
+Models to evaluate before resuming M14.1–M14.2:
+
+1. **One owned profile + temporary comparisons** — uploaded profiles exist only
+   for the active comparison/session.
+2. **One owned profile + linked/read-only profiles** — other people can be
+   retained locally as partner snapshots without becoming editable identities.
+3. **Multiple fully editable local profiles** — the previously planned
+   active-profile/switcher model.
+4. **Account-owned profiles + linking later** — each person owns their own
+   profile; local upload remains the no-account fallback.
+
+Until this is resolved:
+
+- do not implement a global active-profile switcher
+- do not namespace all existing authoritative storage around ProfileId
+- do not treat another person's uploaded profile as editable local identity
+- preserve M14.0/M14.3–M14.8 compare-once behavior
+- keep shared comparison state derived and non-authoritative
+
 ---
 
 # High-level model
 
-M14 introduces multiple independent profile containers plus a derived shared view.
+The implemented model does **not** require two persisted identities.
 
 ```text
-PROFILE A                       PROFILE B
+CURRENT PROFILE                 TEMPORARY UPLOADED PROFILE
 quizzes                         quizzes
 catalog                         catalog
 rankings                        rankings
-M11 context                     M11 context
-M7 aggregate                    M7 aggregate
+M11 data*                       M11 data*
+saved scenes*                   saved scenes*
    │                               │
    └──────────────┬────────────────┘
                   ▼
@@ -42,11 +73,16 @@ M7 aggregate                    M7 aggregate
       ┌───────────┴───────────┐
       ▼                       ▼
  comparison view       M13 shared filtering
+
+* later backup domains are validated/summarized where needed but are not
+  currently retained as shared-comparison evidence
 ```
 
-The shared layer is derived.
+The shared layer is derived and temporary. It must never overwrite either
+person's authoritative evidence.
 
-It must never overwrite either person's authoritative evidence.
+A future persistent linking model may change how the second profile is retained,
+but it must not change this derivation/no-merge boundary.
 
 ---
 
@@ -169,9 +205,14 @@ Shared views must distinguish:
 
 ---
 
-# Multi-profile storage
+# Persistent profile storage — provisional design
 
-M14 requires evolving the current single-profile assumption.
+> **Status: needs refinement.** This section documents the previously proposed
+> fully editable multi-profile model for reference. It is not currently an
+> approved implementation direction.
+
+The prior M14 design assumed evolving the current single-profile model into
+multiple editable local profile containers.
 
 Conceptually:
 
@@ -192,7 +233,7 @@ interface AppProfileRegistry {
 }
 ```
 
-Exact implementation may differ, but requirements are:
+That proposal depended on:
 
 - stable ProfileId
 - multiple independent profile stores
@@ -201,13 +242,17 @@ Exact implementation may differ, but requirements are:
 - no evidence loss
 - no accidental cross-profile key collisions
 
+These are **not current requirements** unless the fully editable multi-profile
+model is explicitly chosen after refinement.
+
 ---
 
-# Migration
+# Migration — previous proposal only
 
-Existing users must keep all current data.
+If a future persistence model requires storage migration, existing users must
+keep all current data.
 
-M14.1 should migrate:
+The previous fully editable multi-profile proposal would have migrated:
 
 ```text
 current single-profile local state
@@ -229,13 +274,17 @@ Migration must preserve:
 - M11 contextual profiles, contextual ranking history, random eligibility, and saved recipes
 - M13 saved scenes if implemented
 
-The migration should be versioned and tested.
+Any future migration must be versioned and tested, but no ProfileId
+namespacing migration is currently approved.
 
 ---
 
-# Profile management
+# Profile management — provisional design
 
-Initial local-only behavior should support:
+> **Status: needs refinement.** These controls apply only if a true
+> multi-editable-profile model is chosen.
+
+The previous local-only design proposed:
 
 - create profile
 - switch active profile
@@ -250,9 +299,12 @@ M10 may later provide optional persistence/sync.
 
 ---
 
-# Shared-pair identity
+# Persistent pair identity — only if persistence is chosen
 
-A comparison needs stable identity independent of display names.
+The current compare-once flow does not need a durable pair identity.
+
+If future linked/persistent profiles introduce pair-owned durable state, that
+state needs stable identity independent of display names.
 
 Conceptually:
 
@@ -265,9 +317,11 @@ interface SharedPairRef {
 
 The canonical pair key should be order-stable so A+B and B+A do not create duplicate derived relationship state unless direction is intentionally part of a specific query.
 
-Shared-pair state should be minimal.
+Any shared-pair state should be minimal.
 
-Durable shared state may eventually include explicit pair-level choices, but V1 should prefer recomputable derived comparison.
+Durable pair state, if introduced later, must be explicitly justified. The
+current implementation keeps comparison results recomputable and current intent
+ephemeral.
 
 ---
 
@@ -528,8 +582,10 @@ Current compare-once behavior:
   and a small count summary are derived
 - only the catalog result views and derived comparison needed by M14/M13 are
   retained for the active comparison
-- v2 Rewards & Punishments backup data may be validated/summarized but is not
-  retained by the M14 comparison model or used in shared Scene Builder yet
+- later backup domains such as M11 Rewards & Punishments and v3 saved scenes
+  may be validated/summarized, but their raw payloads are not retained by the
+  M14 comparison model; shared M11 add-ons are not used in Shared Scene Builder
+  yet
 - leaving/end-comparison unmounts or explicitly clears the temporary comparison
   state and current participant intent
 - no uploaded comparison profile is written to localStorage
@@ -542,62 +598,47 @@ If M10 cloud persistence later exists, pair sharing requires a separate consent/
 
 ## Backup
 
-A full app-level backup may eventually contain multiple profiles.
+The existing M9 Full Profile Export remains the canonical private,
+single-profile backup/restore format.
 
-However, M14 must preserve the ability to export one profile independently.
+M14 compare-once accepts that file as **temporary comparison input** without
+turning it into an import or a second editable profile.
 
-### App-level multi-profile backup strategy
+### Previous app-level backup proposal — not approved
 
-M14.1–M14.2 should treat the existing M9 Full Profile Export as the canonical
-**single-profile leaf format**, not replace it with a multi-person payload.
+The earlier fully editable multi-profile design proposed a separate app-level
+envelope containing multiple independently restorable profile backups. That
+proposal is retained here only as design history; it is **not** a current M14
+requirement.
 
-Conceptually, a future app-level backup wraps independently restorable profile
-backups:
+If persistent linked profiles are chosen later, backup behavior must be designed
+for that ownership model rather than assuming the old multi-profile envelope.
 
-```ts
-interface MultiProfileAppBackup {
-  format: "kink-profile-app";
-  version: 1;
-  exportedAt: string;
-  activeProfileId: ProfileId;
-  profiles: Array<{
-    profileId: ProfileId;
-    backup: ProfileBackup;
-  }>;
-}
-```
+Regardless of the future model:
 
-Requirements:
-
-- app-level and single-profile backup formats are versioned independently
-- each nested profile remains independently valid/restorable
-- stable ProfileIds belong to the app-level envelope, not the person's evidence
-- restore validates the complete envelope before mutating durable state
-- restore never merges evidence from two profile entries
-- the existing `kink-profile` Full Profile Export remains the normal
-  single-profile share/transfer format
-- derived comparison output is recomputable and is not backed up as evidence
-- current participant intent and item-level Tonight choices are ephemeral and
-  are never included in a durable backup
-- future durable pair-specific settings, if introduced, require an explicit
-  pair-state section rather than being written into either profile
-
-The compare-once M14.0 flow continues to consume a normal single-profile backup,
-so this future envelope does not change today's upload contract.
+- the existing `kink-profile` Full Profile Export stays independently useful
+- derived comparison output is recomputable and is not profile evidence
+- current participant intent and item-level Tonight choices remain ephemeral
+- one person's evidence must never be silently merged into another person's
+  backup/profile
 
 ## Import
 
-Importing a profile should create or deliberately replace a chosen profile; it
-must never silently merge evidence between two people.
+Normal M9 import remains destructive replacement of the current owned profile.
 
-Compare-once upload remains a separate action from import. It validates the same
-single-profile backup format but performs no durable write.
+Compare-once upload is a separate action: it validates the same single-profile
+backup format but performs no durable write.
+
+A future saved/linked-profile action must use explicit language distinct from
+**Import profile backup** so ownership and editability are not ambiguous.
 
 ## Reset/delete
 
-Profile-specific reset/delete actions affect only the selected ProfileId.
+Current reset/delete behavior applies only to the owned local profile's
+authoritative domains.
 
-Shared derived comparison should recompute afterward.
+Future linked-profile removal semantics depend on the persistent ownership model
+and are intentionally unspecified for now.
 
 ---
 
@@ -611,24 +652,35 @@ Shared derived comparison should recompute afterward.
 - [x] keep uploaded comparison data ephemeral
 - [x] make the flow explicit that the current profile is never replaced
 
-This provides a useful local comparison path before persistent multi-profile
-storage exists. M14.1–M14.2 can later add saved/linked profiles without changing
-the comparison engine or UI contract.
+This is the currently implemented persistence boundary. M14.1–M14.2 must first
+decide whether any second-profile persistence should exist and, if so, whether
+it is read-only linking, editable identity switching, or account-owned linking.
+The existing comparison/no-merge contract should remain reusable either way.
 
-## M14.1 — Multi-profile storage + migration
+## M14.1 — Persistent profile/link storage model
 
-- [ ] define stable ProfileId + profile registry
-- [ ] migrate current single-profile state without evidence loss
-- [ ] scope all authoritative storage by ProfileId
-- [ ] add migration/regression tests
+**Status:** ⏸ needs refinement before implementation
 
-## M14.2 — Profile management + switcher
+The previous scope assumed a stable ProfileId registry, migration of the current
+single profile, and all authoritative stores namespaced by an active profile.
+That architecture is paused until the product decides between owned-profile,
+linked-profile, temporary-comparison, and fully editable multi-profile models.
 
-- [ ] create profile
-- [ ] switch active profile
-- [ ] rename/delete/reset one profile safely
-- [ ] import/export one profile independently
-- [ ] preserve existing M9 lifecycle semantics per profile
+No M14.1 storage migration should be merged while this decision is open.
+
+## M14.2 — Saved profile/link management UX
+
+**Status:** ⏸ needs refinement before implementation
+
+Do not build a profile switcher yet. The eventual UX depends on the ownership
+model selected in M14.1.
+
+Possible future management actions may include:
+- update/replace a linked person's snapshot
+- unlink/remove a comparison profile
+- import another profile for temporary or saved comparison
+- switch editable identities only if the fully editable multi-profile model is
+  explicitly chosen
 
 ## M14.3 — Derived comparison engine
 
@@ -662,9 +714,9 @@ the comparison engine or UI contract.
 - [x] combine participant intent with current-session item overrides in the shared M13 consumer
 - [x] do not mutate permanent profile evidence
 
-Current-intent selections are deliberately held in the active comparison component
-rather than durable storage because compare-once profiles do not yet have stable
-ProfileIds. Compatible current choices may show validated M14.5 pairings, but
+Current-intent selections are deliberately held in the active comparison
+component rather than durable storage. Compare-once intentionally does not
+require a stable persisted identity for the uploaded profile. Compatible current choices may show validated M14.5 pairings, but
 they remain session/query context rather than profile evidence.
 
 ## M14.7 — Shared M13 scene filtering
@@ -689,19 +741,19 @@ would violate the same either-person exclusion rule.
 
 ## M14.8 — Lifecycle, privacy + polish
 
-- [x] app-level multi-profile backup strategy
-- [x] independent profile export/import remains supported
+- [x] preserve independent M9 single-profile export/import behavior
+- [x] minimize retained compare-once upload data
 - [x] comparison/share privacy review
 - [x] accessibility/mobile polish
 - [x] regression-run M6/M7/M9/M11/M13 boundaries
-- [x] finalize M14.8 docs
-- [ ] mark M14 complete after M14.1–M14.2
+- [x] finalize compare-once lifecycle docs
+- [ ] define persistent backup/lifecycle only after the ownership/linking model is refined
+- [ ] mark M14 complete after the persistent ownership/linking model is refined
 
-M14.8 is complete, but it deliberately does **not** mark the full milestone
-complete while M14.1–M14.2 remain open. The compare-once lifecycle is polished
-and privacy-reviewed, but persistent local profiles still need stable identity,
-migration, management, and switching before the full M14 exit condition is
-satisfied.
+M14.8 is complete, but the full milestone remains open. Compare-once,
+comparison, participant-intent, and shared Scene Builder behavior are valid;
+the persistent multi-person ownership/linking model must be refined before any
+new M14 storage or management architecture is accepted.
 
 ---
 
@@ -725,4 +777,17 @@ M14 does not initially provide:
 
 # Exit condition
 
-M14 is complete when two independent profiles can coexist locally, be switched and managed without evidence contamination, produce an explainable shared comparison that distinguishes mutual and complementary fit from unknown/excluded states, and feed both profiles plus current participant intent into M13 so the Scene Builder can produce a bounded play space that fits both people.
+M14 is complete when:
+
+1. the product explicitly chooses and documents a profile ownership/linking
+   model,
+2. that model preserves independent evidence and privacy,
+3. shared comparison still distinguishes mutual/complementary/curious/unknown/
+   excluded states without merging people,
+4. participant intent and both profiles can safely constrain M13 Scene Builder,
+   and
+5. any persistent linked/profile lifecycle follows the chosen ownership model
+   without introducing accidental editability or identity confusion.
+
+The existing compare-once path already satisfies the comparison/shared-scene
+portion; persistence remains intentionally unresolved.

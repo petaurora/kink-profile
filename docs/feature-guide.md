@@ -46,8 +46,10 @@ You do not need to complete everything before the app becomes useful.
 3. **Play This-or-That** when you want to sort relative favorites without assigning numbers.
 4. **View your profile** to see the combined picture.
 5. **Use Rewards & Punishments** if you want to separately map what works in those contexts.
-6. **Export a private backup** once you have data you care about.
-7. **Use the share summary** when you want a curated version for another person.
+6. **Use Scene Builder** when you want the profile turned into a smaller, usable play space for right now.
+7. **Export a private backup** once you have data you care about.
+8. **Use the share summary** when you want a curated version for another person.
+9. **Compare profiles** when someone has shared their Full Profile Export and you want to explore overlap, complementarity, or a shared scene without importing their profile.
 
 You can return to any area later and refine it. The profile is meant to grow over time.
 
@@ -466,6 +468,7 @@ You can independently reset areas such as:
 - explicit catalog preferences
 - This-or-That and ranking history
 - Rewards & Punishments contextual data, rankings, and recipes
+- saved Scene Builder scenes
 - profile name and settings
 - everything
 
@@ -529,15 +532,60 @@ The app does not automatically publish the profile.
 
 A share summary is generated deliberately by the user. Exporting a private backup is also a deliberate local action.
 
+Uploaded profile comparison is also local and deliberate. The uploaded Full Profile Export is validated in the browser, reduced to the data needed for the active comparison, and is not imported, merged into your profile, or saved as another editable profile.
+
 ---
 
-# Planned features
+# Compare with another profile
 
-These features are specified but are not part of the current implemented feature set.
+The app can compare your current profile with someone else's **Full Profile Export** without replacing either person's evidence.
 
-## M14 — Shared Profiles
+## Upload and compare
 
-Multiple independent profiles, comparison between them, complementary-fit views, and shared filtering without merging two people into one synthetic profile.
+From **Compare profiles**, upload the other person's profile JSON.
+
+The comparison derives useful relationship states such as:
+
+- **We both love** — both profiles have direct positive interest
+- **We fit together here** — explicit giving/receiving or validated role/headspace/dynamic-mode complements
+- **Maybe explore** — shared curiosity or positive + curious
+- **Different flavors** — related positive interests with different directional/contextual patterns
+- **Not for shared suggestions** — either person's explicit exclusion wins
+- **Still unexplored** — there is not enough direct evidence yet
+
+There is no synthetic compatibility percentage, and the comparison does not feed results back into either profile.
+
+## What do you each want tonight?
+
+Both people can temporarily select current headspace, dynamic mode, or activity-side intent. Those choices can surface validated pairings and seed Shared Scene Builder themes.
+
+They are session/query context only. They do not change quiz results, catalog preferences, or permanent profile evidence.
+
+## Build a shared scene
+
+**Build shared scene** reuses the normal Scene Builder but filters from the space supported by both profiles.
+
+Either person's explicit exclusion or **Not tonight** removes an item from automatic shared suggestions. Complementary giving/receiving interests can fit even when the two people do not have identical overall ratings.
+
+Shared Rewards & Punishments add-ons are currently disabled because the app does not yet intersect M11 suitability from both profiles.
+
+## Is the uploaded profile saved?
+
+No. The current implementation is **compare once**.
+
+The uploaded profile is temporary comparison input, not another editable identity in the app. Persistent partner/profile linking is intentionally under product-model refinement.
+
+See [M14 Shared Profiles](m14-shared-profiles.md).
+
+---
+
+# Planned / refinement work
+
+## M14 — Persistent profile/linking model
+
+The comparison and shared-scene parts of M14 are implemented. What remains undecided is whether persistent support should mean temporary comparison only, saved read-only linked profiles, multiple fully editable local profiles, or account-owned profiles linked later.
+
+Do not assume a profile switcher is the intended end state.
 
 See [M14 Shared Profiles](m14-shared-profiles.md).
 
