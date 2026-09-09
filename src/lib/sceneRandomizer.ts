@@ -283,13 +283,14 @@ export function shuffleSceneComponent(
     };
   }
 
+  const currentCatalogId = component.source.catalogId;
   const replacements = replacementCandidatesForComponent(
     composition,
     componentId,
     candidates,
   ).filter(
     (candidate) =>
-      candidate.catalogId !== component.source.catalogId,
+      candidate.catalogId !== currentCatalogId,
   );
 
   const pick = chooseRandomSceneCandidate(replacements, state, rng);
