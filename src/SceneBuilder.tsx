@@ -798,7 +798,7 @@ export function SceneBuilder({
             <div className="scene-randomizer-actions">
               <button
                 type="button"
-                className="primary-button"
+                className="primary compact"
                 disabled={candidateView.confirmed.length === 0}
                 onClick={pickSomething}
               >
@@ -807,23 +807,25 @@ export function SceneBuilder({
               </button>
               <button
                 type="button"
-                className="secondary-button"
+                className="secondary compact"
                 disabled={candidateView.confirmed.length === 0}
                 onClick={buildSomething}
               >
                 <IconNotes size={16} stroke={2} aria-hidden="true" />
                 Build something
               </button>
-              <span>
-                Avoiding the last{" "}
-                {Math.min(
-                  randomizerState.recentCatalogIds.length,
-                  10,
-                )}{" "}
-                {randomizerState.recentCatalogIds.length === 1
-                  ? "pick"
-                  : "picks"}
-              </span>
+              {randomizerState.recentCatalogIds.length > 0 && (
+                <span>
+                  Avoiding{" "}
+                  {Math.min(
+                    randomizerState.recentCatalogIds.length,
+                    10,
+                  )} recent{" "}
+                  {randomizerState.recentCatalogIds.length === 1
+                    ? "pick"
+                    : "picks"}
+                </span>
+              )}
             </div>
 
             {randomPick && (
@@ -842,7 +844,7 @@ export function SceneBuilder({
                 <div>
                   <button
                     type="button"
-                    className="secondary-button"
+                    className="secondary compact"
                     disabled={compositionCatalogIds.has(
                       randomPick.catalogId,
                     )}
@@ -915,7 +917,7 @@ export function SceneBuilder({
                 </div>
                 <button
                   type="button"
-                  className="primary-button"
+                  className="primary compact"
                   disabled={candidateView.confirmed.length === 0}
                   onClick={makeStarterScene}
                 >
@@ -1118,7 +1120,7 @@ export function SceneBuilder({
                 <div className="scene-composition-footer">
                   <button
                     type="button"
-                    className="secondary-button"
+                    className="secondary compact"
                     disabled={
                       candidateView.coverageOrder.every((candidate) =>
                         compositionCatalogIds.has(candidate.catalogId),
