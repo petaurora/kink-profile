@@ -494,6 +494,14 @@ M9 completed the local lifecycle layer:
 - curated share-summary preview
 - local PNG, standalone HTML, and PDF share exports
 
+Later milestones extend that same lifecycle contract:
+
+- M11 authoritative Rewards & Punishments state is included in backup/restore and selective reset
+- M13 saved scenes are included in backup/restore and have an independent reset scope
+- the current Full Profile Export is v3; v1/v2 remain supported for restore
+- Scene Builder Tonight/randomizer state remains session-only and is not backed up
+- M14 uploaded comparison profiles are temporary comparison input, not another persisted profile
+
 Derived profile views remain recomputable rather than becoming a second authoritative store.
 
 ## Later
