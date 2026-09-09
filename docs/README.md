@@ -62,10 +62,10 @@ The user-facing docs explain behavior; the specifications below remain authorita
     The completed temporal-ranking contract: non-destructive reruns, archived run history, active-run-only current evidence, previous-rank movement indicators, and overall-profile movement context.
 
 16. [M13 Scene Builder](m13-scene-builder.md)  
-    The planned profile-to-play composition layer: theme queries, current-session state, candidate filtering, scene arcs, randomization, M11 integration, and saved scenes.
+    The completed profile-to-play composition layer: theme queries, current-session state, bounded candidate filtering, editable scene arcs, randomization, M11 integration, saved scenes, and lifecycle/accessibility hardening.
 
 17. [M14 Shared Profiles, Comparison & Partner Integration](m14-shared-profiles.md)  
-    The planned multi-profile contract: independent profile containers, derived comparison, complementary interaction mappings, participant intent, and shared M13 filtering.
+    The active comparison/shared-scene contract plus the current persistence-model refinement checkpoint: temporary uploaded-profile comparison is implemented; persistent profile ownership/linking remains intentionally undecided.
 
 18. [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md)  
     The planned sparse authority × activity-side contract: context-specific preferences, rankings, contextual profile lenses, motivation annotations, and M11/M12/M13/M14 integration without treating giving/receiving as authority.
@@ -101,7 +101,7 @@ The user-facing docs explain behavior; the specifications below remain authorita
 | How should rewards, punishments, randomization, and saved recipes work? | [M11 Rewards & Punishments](m11-rewards-punishments.md) |
 | How should repeat This-or-That runs and rank movement work? | [M12 This-or-That Ranking History & Movement](m12-ranking-history-movement.md) |
 | How should profile context become a themed, low-decision scene builder? | [M13 Scene Builder](m13-scene-builder.md) |
-| How should multiple profiles be compared and used together without merging their evidence? | [M14 Shared Profiles](m14-shared-profiles.md) |
+| How does uploaded-profile comparison work, and what is still unresolved about persistent linked/multiple profiles? | [M14 Shared Profiles](m14-shared-profiles.md) |
 | How should one activity vary by Dominant/submissive/non-D/s context and giving/receiving side? | [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md) |
 | How should authored data, taxonomies, mappings, quizzes, radars, catalog items, and Rewards/Punishments be reviewed and curated? | [M16 Data & Content Curation](m16-data-content-curation.md) |
 | What do we build next? | [Roadmap](../ROADMAP.md) |
@@ -128,7 +128,7 @@ If overall profile aggregation or front-page facet behavior changes, update the 
 If settings, reset behavior, profile backup/restore, or share-summary export changes, update the M9 settings/profile-management spec.  
 If reward/punishment contextual-use semantics, action-library identity, randomizer eligibility, or recipe behavior changes, update the M11 rewards/punishments spec.  
 If scene themes, candidate filtering, current-session state, scene composition, or scene randomization changes, update the M13 scene-builder spec.  
-If multi-profile storage, comparison semantics, interaction mappings, participant intent, or shared scene filtering changes, update the M14 shared-profiles spec.  
+If uploaded-profile comparison, interaction mappings, participant intent, shared scene filtering, or the unresolved persistent ownership/linking model changes, update the M14 shared-profiles spec.  
 If authority × activity-side contextual preferences/rankings, context capability metadata, motivation annotations, or M11/M12/M13/M14 contextual integration changes, update the M15 contextual-activity-profiles spec.  
 If authored datasets, curation workflow, taxonomy cleanup, replacement/migration rules, or the M11 recipe-builder review scope changes, update the M16 data/content curation spec.
 
