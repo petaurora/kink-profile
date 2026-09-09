@@ -1037,7 +1037,7 @@ export function SceneBuilder({
                 if (sharedContext) {
                   setPartnerSessionState(createEmptySceneSessionState());
                 }
-              }
+              }}
             >
               Reset tonight
             </button>
