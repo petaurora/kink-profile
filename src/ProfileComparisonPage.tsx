@@ -3,9 +3,11 @@ import {
   IconFileUpload,
   IconRefresh,
   IconShieldCheck,
+  IconSparkles,
   IconUsers,
 } from "@tabler/icons-react";
 import { SharedProfileComparisonView } from "./SharedProfileComparisonView";
+import { SceneBuilder } from "./SceneBuilder";
 import { SharedParticipantIntentPanel } from "./SharedParticipantIntentPanel";
 import {
   getProfileBackupSummary,
@@ -21,6 +23,9 @@ import {
   createEmptySharedParticipantIntent,
   type SharedParticipantIntent,
 } from "./lib/sharedParticipantIntent";
+import {
+  getSceneThemeIdsForSharedParticipantIntents,
+} from "./lib/sharedSceneCandidates";
 import "./profileComparison.css";
 
 type ProfileComparisonPageProps = {
@@ -44,6 +49,7 @@ export function ProfileComparisonPage({
     useState<SharedParticipantIntent>(() => createEmptySharedParticipantIntent());
   const [profileBIntent, setProfileBIntent] =
     useState<SharedParticipantIntent>(() => createEmptySharedParticipantIntent());
+  const [sharedSceneOpen, setSharedSceneOpen] = useState(false);
 
   const chooseFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -55,6 +61,7 @@ export function ProfileComparisonPage({
     setError(null);
     setProfileAIntent(createEmptySharedParticipantIntent());
     setProfileBIntent(createEmptySharedParticipantIntent());
+    setSharedSceneOpen(false);
 
     let text: string;
 
@@ -84,10 +91,35 @@ export function ProfileComparisonPage({
     setError(null);
     setProfileAIntent(createEmptySharedParticipantIntent());
     setProfileBIntent(createEmptySharedParticipantIntent());
+    setSharedSceneOpen(false);
   };
 
   if (candidate) {
     const summary = getProfileBackupSummary(candidate.backup);
+    const intentThemeIds =
+      getSceneThemeIdsForSharedParticipantIntents(
+        profileAIntent,
+        profileBIntent,
+      );
+
+    if (sharedSceneOpen) {
+      return (
+        <SceneBuilder
+          catalogResultView={candidate.built.currentInput.catalogResults}
+          initialThemeIds={intentThemeIds}
+          sharedContext={{
+            profileAName: current.displayName,
+            profileBName: candidate.built.displayName,
+            partnerCatalogResultView:
+              candidate.built.uploadedInput.catalogResults,
+            comparison: candidate.built.comparison,
+            profileAIntent,
+            profileBIntent,
+          }}
+          onClose={() => setSharedSceneOpen(false)}
+        />
+      );
+    }
 
     return (
       <section className="profile-comparison-page">
@@ -152,6 +184,38 @@ export function ProfileComparisonPage({
           onProfileAIntentChange={setProfileAIntent}
           onProfileBIntentChange={setProfileBIntent}
         />
+
+        <article className="shared-scene-launch panel">
+          <div>
+            <span className="comparison-upload-icon" aria-hidden="true">
+              <IconSparkles size={19} stroke={1.8} />
+            </span>
+            <div>
+              <p className="eyebrow">Shared Scene Builder</p>
+              <h2>Build from what fits both profiles.</h2>
+              <p>
+                Mutual and complementary interests can enter the automatic
+                pool. Either person's boundaries or Not tonight choice remove
+                an item. Current intent becomes a starting scene query.
+              </p>
+              {intentThemeIds.length > 0 && (
+                <small>
+                  {intentThemeIds.length} scene{" "}
+                  {intentThemeIds.length === 1 ? "theme" : "themes"} suggested
+                  from tonight's intent.
+                </small>
+              )}
+            </div>
+          </div>
+          <button
+            type="button"
+            className="primary"
+            onClick={() => setSharedSceneOpen(true)}
+          >
+            <IconSparkles size={17} stroke={2} aria-hidden="true" />
+            Build shared scene
+          </button>
+        </article>
 
         <SharedProfileComparisonView
           model={candidate.built.comparison}

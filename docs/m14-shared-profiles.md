@@ -602,7 +602,7 @@ the comparison engine or UI contract.
 
 - [x] allow each profile to select current headspace/mode/activity-side intent
 - [x] keep intent session-local
-- [ ] combine participant intent with current-session item overrides in the shared M13 consumer
+- [x] combine participant intent with current-session item overrides in the shared M13 consumer
 - [x] do not mutate permanent profile evidence
 
 Current-intent selections are deliberately held in the active comparison component
@@ -612,12 +612,23 @@ they remain session/query context rather than profile evidence.
 
 ## M14.7 — Shared M13 scene filtering
 
-- [ ] feed both profiles into the M13 candidate engine
-- [ ] enforce either-person exclusions
-- [ ] support complementary rather than only identical interests
-- [ ] support theme coverage across participants/components
-- [ ] keep inference-only items out of silent randomization
-- [ ] explain why a shared scene item fits both people
+- [x] feed both profiles into the M13 candidate engine
+- [x] enforce either-person exclusions
+- [x] support complementary rather than only identical interests
+- [x] support theme coverage across participants/components
+- [x] keep inference-only items out of silent randomization
+- [x] explain why a shared scene item fits both people
+
+Compare-once shared scenes reuse the existing M13 builder, composition, and
+randomizer rather than maintaining a second scene implementation. Either
+participant's permanent exclusion or current-session Not tonight removes an
+item from the automatic pool. Current participant intent seeds scene-query
+themes but remains non-authoritative.
+
+M11 reward/punishment add-ons are intentionally disabled in compare-once shared
+scene mode for now. The local M11 pool belongs to only one profile; using it in
+a shared scene without intersecting the uploaded profile's M11 suitability
+would violate the same either-person exclusion rule.
 
 ## M14.8 — Lifecycle, privacy + polish
 
