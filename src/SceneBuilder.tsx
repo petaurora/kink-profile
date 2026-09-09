@@ -3,10 +3,14 @@ import {
   IconArrowDown,
   IconArrowLeft,
   IconArrowUp,
+  IconAlertTriangle,
   IconArrowsExchange,
+  IconCopy,
+  IconDeviceFloppy,
   IconNotes,
   IconPlus,
   IconSparkles,
+  IconTrash,
   IconX,
 } from "@tabler/icons-react";
 import {
@@ -69,6 +73,19 @@ import {
   resolveSceneRewardPunishmentSource,
   type SceneRewardPunishmentMode,
 } from "./lib/sceneRewardPunishment";
+import {
+  createSavedScene,
+  deleteSavedScene,
+  duplicateSavedScene,
+  savedSceneToComposition,
+  updateSavedScene,
+  upsertSavedScene,
+} from "./lib/sceneLibrary";
+import {
+  loadSceneLibraryState,
+  saveSceneLibraryState,
+} from "./lib/sceneLibraryStorage";
+import { reviewSavedScene } from "./lib/sceneLifecycle";
 import "./sceneBuilder.css";
 
 type SceneBuilderProps = {
@@ -155,6 +172,19 @@ const sessionChoices: Array<{
   { id: "maybe_tonight", label: "Maybe tonight", shortLabel: "Maybe" },
   { id: "not_tonight", label: "Not tonight", shortLabel: "Not tonight" },
 ];
+
+function createSceneId() {
+  if (
+    typeof globalThis.crypto !== "undefined" &&
+    "randomUUID" in globalThis.crypto
+  ) {
+    return globalThis.crypto.randomUUID();
+  }
+
+  return `scene-${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2, 9)}`;
+}
 
 function sessionChoiceLabel(choice: SceneSessionChoice) {
   return (
@@ -319,6 +349,16 @@ export function SceneBuilder({
     useState<SceneRewardPunishmentMode>("none");
   const [lastRewardPunishmentKey, setLastRewardPunishmentKey] =
     useState<string | undefined>(undefined);
+  const [sceneLibrary, setSceneLibrary] = useState(() =>
+    loadSceneLibraryState(),
+  );
+  const [activeSavedSceneId, setActiveSavedSceneId] =
+    useState<string | null>(null);
+  const [sceneName, setSceneName] = useState("");
+  const [pendingDeleteSceneId, setPendingDeleteSceneId] =
+    useState<string | null>(null);
+  const [sceneSaveMessage, setSceneSaveMessage] =
+    useState<string | null>(null);
 
   useEffect(() => {
     saveSceneSessionState(sessionState);
@@ -327,6 +367,10 @@ export function SceneBuilder({
   useEffect(() => {
     saveSceneRandomizerState(randomizerState);
   }, [randomizerState]);
+
+  useEffect(() => {
+    saveSceneLibraryState(sceneLibrary);
+  }, [sceneLibrary]);
 
   const selectedThemeSet = useMemo(
     () => new Set(selectedThemeIds),
@@ -414,8 +458,29 @@ export function SceneBuilder({
           ? rewardPunishmentAvailability.either
           : 0;
 
+  const savedSceneReviews = useMemo(
+    () =>
+      new Map(
+        sceneLibrary.scenes.map((scene) => [
+          scene.id,
+          reviewSavedScene(scene, {
+            catalogResultView,
+            rewardPunishmentProfile,
+            rewardPunishmentRecipes:
+              rewardPunishmentRecipes.recipes,
+          }),
+        ]),
+      ),
+    [
+      catalogResultView,
+      rewardPunishmentProfile,
+      rewardPunishmentRecipes,
+      sceneLibrary.scenes,
+    ],
+  );
+
   useEffect(() => {
-    if (!composition) return;
+    if (!composition || activeSavedSceneId) return;
 
     const eligibleIds = new Set(
       candidateView.confirmed.map((candidate) => candidate.catalogId),
@@ -431,6 +496,7 @@ export function SceneBuilder({
       };
     });
   }, [
+    activeSavedSceneId,
     candidateView.confirmed,
     effort,
     exploration,
@@ -551,6 +617,102 @@ export function SceneBuilder({
         exploration,
       }),
     );
+  };
+
+  const saveCurrentScene = (asNew = false) => {
+    if (!composition || composition.components.length === 0) return;
+    const normalizedName = sceneName.trim();
+    if (!normalizedName) return;
+
+    if (!asNew && activeSavedSceneId) {
+      const existing = sceneLibrary.scenes.find(
+        (scene) => scene.id === activeSavedSceneId,
+      );
+      if (existing) {
+        const updated = updateSavedScene(
+          existing,
+          composition,
+          normalizedName,
+        );
+        setSceneLibrary((current) =>
+          upsertSavedScene(current, updated),
+        );
+        setSceneSaveMessage("Saved changes.");
+        return;
+      }
+    }
+
+    const saved = createSavedScene(
+      composition,
+      normalizedName,
+      {
+        id: createSceneId(),
+      },
+    );
+    setSceneLibrary((current) =>
+      upsertSavedScene(current, saved),
+    );
+    setActiveSavedSceneId(saved.id);
+    setSceneName(saved.name);
+    setSceneSaveMessage("Scene saved.");
+  };
+
+  const loadSavedScene = (sceneId: string) => {
+    const scene = sceneLibrary.scenes.find(
+      (candidate) => candidate.id === sceneId,
+    );
+    if (!scene) return;
+
+    setSelectedThemeIds([...scene.themeIds]);
+    setEffort(scene.effort);
+    setExploration(scene.exploration);
+    setIntensity("any");
+    setComposition(savedSceneToComposition(scene));
+    setActiveSavedSceneId(scene.id);
+    setSceneName(scene.name);
+    setPendingDeleteSceneId(null);
+    setSceneSaveMessage(null);
+
+    const rp = scene.components.find(
+      (component) =>
+        component.source.kind === "reward_punishment",
+    );
+    setRewardPunishmentMode(
+      rp?.source.kind === "reward_punishment"
+        ? rp.source.context
+        : "none",
+    );
+  };
+
+  const duplicateScene = (sceneId: string) => {
+    setSceneLibrary((current) =>
+      duplicateSavedScene(current, sceneId, {
+        id: createSceneId(),
+      }),
+    );
+    setPendingDeleteSceneId(null);
+  };
+
+  const deleteScene = (sceneId: string) => {
+    if (pendingDeleteSceneId !== sceneId) {
+      setPendingDeleteSceneId(sceneId);
+      return;
+    }
+
+    setSceneLibrary((current) =>
+      deleteSavedScene(current, sceneId),
+    );
+    if (activeSavedSceneId === sceneId) {
+      setActiveSavedSceneId(null);
+      setSceneName("");
+    }
+    setPendingDeleteSceneId(null);
+  };
+
+  const stopEditingSavedScene = () => {
+    setActiveSavedSceneId(null);
+    setSceneName("");
+    setSceneSaveMessage(null);
   };
 
   const pickRewardPunishmentAddon = (
@@ -1108,7 +1270,10 @@ export function SceneBuilder({
             )}
           </article>
 
-          <article className="scene-composition panel">
+          <article
+            className="scene-composition panel"
+            id="scene-composition"
+          >
             <div className="scene-section-heading">
               <div>
                 <p className="eyebrow">05 · Build the scene</p>
@@ -1124,6 +1289,76 @@ export function SceneBuilder({
                 </button>
               )}
             </div>
+
+            {composition && composition.components.length > 0 && (
+              <div className="scene-save-bar">
+                <label>
+                  <span>
+                    {activeSavedSceneId
+                      ? "Editing saved scene"
+                      : "Save this scene"}
+                  </span>
+                  <input
+                    type="text"
+                    value={sceneName}
+                    maxLength={80}
+                    placeholder="Give it a name…"
+                    onChange={(event) => {
+                      setSceneName(event.target.value);
+                      setSceneSaveMessage(null);
+                    }}
+                  />
+                </label>
+
+                <div className="scene-save-actions">
+                  <button
+                    type="button"
+                    className="primary compact"
+                    disabled={!sceneName.trim()}
+                    onClick={() => saveCurrentScene(false)}
+                  >
+                    <IconDeviceFloppy
+                      size={15}
+                      stroke={2}
+                      aria-hidden="true"
+                    />
+                    {activeSavedSceneId
+                      ? "Save changes"
+                      : "Save scene"}
+                  </button>
+                  {activeSavedSceneId && (
+                    <>
+                      <button
+                        type="button"
+                        className="secondary compact"
+                        disabled={!sceneName.trim()}
+                        onClick={() => saveCurrentScene(true)}
+                      >
+                        <IconCopy
+                          size={15}
+                          stroke={2}
+                          aria-hidden="true"
+                        />
+                        Save as new
+                      </button>
+                      <button
+                        type="button"
+                        className="text-button"
+                        onClick={stopEditingSavedScene}
+                      >
+                        Stop editing
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                {sceneSaveMessage && (
+                  <small aria-live="polite">
+                    {sceneSaveMessage}
+                  </small>
+                )}
+              </div>
+            )}
 
             <div className="scene-arc-guide" aria-label="Scene arc">
               {scenePhaseDefinitions.map((phase) => (
@@ -1518,6 +1753,164 @@ export function SceneBuilder({
               </>
             )}
           </article>
+
+          <details
+            className="scene-library panel"
+            open={sceneLibrary.scenes.length > 0}
+          >
+            <summary>
+              <div>
+                <span>Saved scenes</span>
+                <strong>
+                  {sceneLibrary.scenes.length}{" "}
+                  {sceneLibrary.scenes.length === 1
+                    ? "template"
+                    : "templates"}
+                </strong>
+              </div>
+              <small>Local + private</small>
+            </summary>
+
+            {sceneLibrary.scenes.length === 0 ? (
+              <div className="scene-library-empty">
+                Build a scene above, give it a name, and save it here
+                for later.
+              </div>
+            ) : (
+              <div className="scene-library-list">
+                {sceneLibrary.scenes.map((scene) => {
+                  const review = savedSceneReviews.get(scene.id);
+                  const needsReview =
+                    review?.status === "needs_review";
+                  const isActive =
+                    activeSavedSceneId === scene.id;
+
+                  return (
+                    <article
+                      className={
+                        "scene-library-card" +
+                        (isActive ? " active" : "") +
+                        (needsReview ? " needs-review" : "")
+                      }
+                      key={scene.id}
+                    >
+                      <div className="scene-library-card-main">
+                        <div className="scene-library-card-title">
+                          <strong>{scene.name}</strong>
+                          {needsReview ? (
+                            <span className="scene-review-badge">
+                              <IconAlertTriangle
+                                size={13}
+                                stroke={2}
+                                aria-hidden="true"
+                              />
+                              Needs review
+                            </span>
+                          ) : (
+                            <span className="scene-ready-badge">
+                              Ready
+                            </span>
+                          )}
+                        </div>
+                        <span>
+                          {scene.components.length}{" "}
+                          {scene.components.length === 1
+                            ? "part"
+                            : "parts"}{" "}
+                          · {scene.effort} ·{" "}
+                          {scene.themeIds
+                            .map(
+                              (id) =>
+                                sceneThemeDefinitions.find(
+                                  (theme) => theme.id === id,
+                                )?.label ?? id,
+                            )
+                            .join(" + ")}
+                        </span>
+                        <small>
+                          Updated{" "}
+                          {new Date(
+                            scene.updatedAt,
+                          ).toLocaleDateString()}
+                        </small>
+                      </div>
+
+                      <div className="scene-library-card-actions">
+                        <button
+                          type="button"
+                          className={
+                            isActive
+                              ? "primary compact"
+                              : "secondary compact"
+                          }
+                          onClick={() => loadSavedScene(scene.id)}
+                        >
+                          {isActive ? "Loaded" : "Load"}
+                        </button>
+                        <button
+                          type="button"
+                          className="icon-only"
+                          aria-label={`Duplicate ${scene.name}`}
+                          title="Duplicate"
+                          onClick={() => duplicateScene(scene.id)}
+                        >
+                          <IconCopy
+                            size={16}
+                            stroke={2}
+                            aria-hidden="true"
+                          />
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            pendingDeleteSceneId === scene.id
+                              ? "scene-delete-confirm"
+                              : "icon-only"
+                          }
+                          aria-label={
+                            pendingDeleteSceneId === scene.id
+                              ? `Confirm delete ${scene.name}`
+                              : `Delete ${scene.name}`
+                          }
+                          onClick={() => deleteScene(scene.id)}
+                        >
+                          {pendingDeleteSceneId === scene.id ? (
+                            "Confirm"
+                          ) : (
+                            <IconTrash
+                              size={16}
+                              stroke={2}
+                              aria-hidden="true"
+                            />
+                          )}
+                        </button>
+                      </div>
+
+                      {needsReview && review && (
+                        <details className="scene-review-details">
+                          <summary>
+                            {review.issues.length}{" "}
+                            {review.issues.length === 1
+                              ? "issue"
+                              : "issues"}
+                          </summary>
+                          <ul>
+                            {review.issues.map((issue) => (
+                              <li
+                                key={`${issue.componentId}:${issue.code}`}
+                              >
+                                {issue.message}
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </details>
 
           {candidateView.suggestedToExplore.length > 0 && (
             <details className="scene-suggested panel">
