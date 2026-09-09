@@ -4,10 +4,11 @@
 
 Living product direction.
 
-**Implemented:** M0–M7, M9, M11, and M12  
+**Implemented:** M0–M7, M9, M11–M13, plus M14 compare-once/comparison/shared-scene slices  
 **Optional/deferred:** M8 adaptive quiz depth and M10 cloud persistence  
-**Planned/scoped:** M13–M16  
-**Current:** choose the next roadmap milestone intentionally; the profile/lifecycle, Rewards & Punishments, and temporal reranking foundations are implemented
+**Needs refinement:** M14 persistent profile ownership/linking model  
+**Planned/scoped:** M15–M16  
+**Current:** keep the working comparison/shared-scene behavior, pause persistent multi-profile architecture, and choose the next milestone intentionally
 
 The app is now structurally a collection of independently completable quizzes rather than one monolithic assessment.
 
@@ -591,13 +592,15 @@ See [M12 Ranking History & Movement](m12-ranking-history-movement.md).
 
 ## M13 — Scene Builder
 
-M13 uses the existing profile to reduce decision load for a specific moment. Theme selection, temporary Yes/Maybe/Not-tonight state, bounded candidate filtering, scene composition, and randomization are query/composition layers; they do not rewrite durable profile evidence.
+M13 is implemented. It uses the existing profile to reduce decision load for a specific moment. Theme selection, temporary Yes/Maybe/Not-tonight state, bounded candidate filtering, editable scene composition, randomization, M11 add-ons, and saved scenes are query/composition/lifecycle layers; they do not rewrite durable preference evidence.
 
 See [M13 Scene Builder](m13-scene-builder.md).
 
-## M14 — Shared Profiles
+## M14 — Shared Profiles / Comparison
 
-M14 introduces multiple independent local profiles and a derived comparison layer. It must preserve each person's evidence separately, support both mutual and complementary fit, and feed both profiles plus temporary participant intent into M13 without creating a synthetic merged relationship profile or compatibility percentage.
+The implemented M14 boundary compares the current profile against a temporary uploaded Full Profile Export. It preserves each person's evidence separately, supports both mutual and complementary fit, allows temporary participant intent, and can feed the derived shared space into M13 without creating a synthetic merged relationship profile or compatibility percentage.
+
+The persistent ownership model is **not settled**. Do not assume that future M14 support means multiple fully editable local profiles or a global profile switcher. The product must first choose between temporary comparison, saved read-only linked profiles, fully editable local profiles, or account-owned linking later.
 
 See [M14 Shared Profiles](m14-shared-profiles.md).
 
@@ -630,7 +633,7 @@ Do not add during the core quiz milestones:
 - AI-generated interpretation
 - giant full-catalog questionnaire
 
-These remain outside the scoped local product. In particular, M14 compares deliberately created/imported profiles; it does not add partner discovery/matching or collapse two people into a compatibility score.
+These remain outside the scoped local product. In particular, M14 compares deliberately supplied profiles; it does not add partner discovery/matching or collapse two people into a compatibility score.
 
 ---
 
