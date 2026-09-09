@@ -16,6 +16,7 @@ import {
   type CurationInventoryEntry,
   type CurationPrimitiveType,
 } from "./data/curationInventory";
+import { CurationCurrentValuePanel } from "./CurationCurrentValuePanel";
 import { CurationStructuredEditor } from "./CurationStructuredEditor";
 import {
   getDestructiveActionConsequences,
@@ -392,18 +393,7 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
           </div>
 
           {draftAction !== "modify" && (
-            <div className="curation-current-values">
-              <span className="catalog-kicker">Current repo value</span>
-              <div className="curation-field-grid">
-                {currentEntry.fields.map((field) => (
-                  <div key={field.key}>
-                    <span>{field.label}</span>
-                    <p>{field.value || "—"}</p>
-                  </div>
-                ))}
-              </div>
-              <small>Source: {currentEntry.source}</small>
-            </div>
+            <CurationCurrentValuePanel entry={currentEntry} />
           )}
 
           <div className="curation-primary-actions">
