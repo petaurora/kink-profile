@@ -9,6 +9,7 @@ import {
   IconSettings,
   IconSparkles,
   IconUser,
+  IconUsers,
 } from "@tabler/icons-react";
 
 export type SiteHeaderDestination =
@@ -17,7 +18,8 @@ export type SiteHeaderDestination =
   | "ranking"
   | "catalog"
   | "rewards-punishments"
-  | "scene-builder";
+  | "scene-builder"
+  | "compare-profiles";
 
 type SiteHeaderProps = {
   displayName: string;
@@ -119,6 +121,16 @@ export function SiteHeader({
             >
               <IconSparkles size={17} stroke={1.9} aria-hidden="true" />
               <span>Scene Builder</span>
+            </button>
+            <button
+              type="button"
+              aria-current={
+                activeDestination === "compare-profiles" ? "page" : undefined
+              }
+              onClick={() => navigate("compare-profiles")}
+            >
+              <IconUsers size={17} stroke={1.9} aria-hidden="true" />
+              <span>Compare profiles</span>
             </button>
           </nav>
         )}
