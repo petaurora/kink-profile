@@ -5,6 +5,7 @@ import { quizQuestions } from "./quizQuestions";
 import { quizzes } from "./quizzes";
 import { signalDefinitions } from "./signals";
 import {
+  deriveRewardPunishmentContextSignalMappings,
   rewardPunishmentActions,
   rewardPunishmentCategories,
 } from "../lib/rewardPunishmentLibrary";
@@ -196,9 +197,21 @@ function stringifyRecord(value: Partial<Record<string, number>> | undefined) {
 }
 
 function stringifyMappings(
-  mappings: readonly { signalId: string; weight: number }[],
+  mappings: readonly {
+    signalId: string;
+    weight: number;
+    appliesTo?: "any" | "receiving" | "giving";
+  }[],
 ) {
-  return mappings.map((mapping) => `${mapping.signalId}: ${mapping.weight}`).join(", ");
+  return mappings
+    .map((mapping) => {
+      const direction =
+        mapping.appliesTo && mapping.appliesTo !== "any"
+          ? ` (${mapping.appliesTo})`
+          : "";
+      return `${mapping.signalId}: ${mapping.weight}${direction}`;
+    })
+    .join(", ");
 }
 
 const questionQuizLabels = new Map<string, string>();
@@ -243,6 +256,11 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
         value: String(category.displayOrder),
       },
       { key: "itemCount", label: "Items", value: String(category.itemCount) },
+      {
+        key: "signalMappings",
+        label: "Category signal mappings",
+        value: stringifyMappings(category.signalMappings) || "—",
+      },
     ],
   })),
   ...rewardPunishmentActions.map((action) => ({
@@ -265,6 +283,16 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
             .join(", ") || "—",
       },
       {
+        key: "derivedSignalMappings",
+        label: "Derived signal mappings",
+        value:
+          stringifyMappings(
+            deriveRewardPunishmentContextSignalMappings(
+              action.contextCategories,
+            ),
+          ) || "—",
+      },
+      {
         key: "sourceOrigins",
         label: "Source rows",
         value: String(action.sourceOrigins.length),
@@ -283,6 +311,11 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
         key: "displayOrder",
         label: "Display order",
         value: String(category.displayOrder),
+      },
+      {
+        key: "signalMappings",
+        label: "Signal mappings",
+        value: stringifyMappings(category.signalMappings) || "—",
       },
     ],
   })),
