@@ -219,7 +219,7 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
       { key: "category", label: "Category", value: item.categoryLabel },
       { key: "domain", label: "Domain", value: item.domain },
       { key: "direction", label: "Direction", value: item.direction },
-      { key: "primaryMode", label: "Primary mode", value: item.primaryMode },
+      { key: "primaryMode", label: "Legacy mode descriptor", value: item.primaryMode },
       { key: "intensity", label: "Intensity", value: item.intensity },
       { key: "riskLevel", label: "Risk level", value: item.riskLevel },
       { key: "aliases", label: "Aliases", value: item.aliases.join(", ") || "—" },
