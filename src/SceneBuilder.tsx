@@ -23,6 +23,7 @@ import {
 import {
   clearSceneSessionChoice,
   createEmptySceneSessionState,
+  getSceneSessionChoice,
   loadSceneSessionState,
   saveSceneSessionState,
   setSceneSessionChoice,
@@ -869,7 +870,7 @@ export function SceneBuilder({
           onClick={onClose}
         >
           <IconArrowLeft size={17} stroke={2} aria-hidden="true" />
-          Back to hub
+          {sharedContext ? "Back to comparison" : "Back to hub"}
         </button>
 
         <div className="scene-builder-heading-copy">
@@ -877,11 +878,14 @@ export function SceneBuilder({
             <IconSparkles size={24} stroke={1.8} />
           </span>
           <div>
-            <p className="eyebrow">Scene Builder</p>
+            <p className="eyebrow">
+              {sharedContext ? "Shared Scene Builder" : "Scene Builder"}
+            </p>
             <h1>What sounds good right now?</h1>
             <p>
-              Pick a few themes. Your profile gets shrunk into a small
-              play space instead of making you remember every possible option.
+              {sharedContext
+                ? "Build from the space both profiles support. Either person's boundaries and Not tonight choices remove an item from automatic shared suggestions."
+                : "Pick a few themes. Your profile gets shrunk into a small play space instead of making you remember every possible option."}
             </p>
           </div>
         </div>
@@ -1028,11 +1032,11 @@ export function SceneBuilder({
             <button
               type="button"
               className="text-button"
-              onClick={() =>
-                setSessionState({
-                  schemaVersion: 1,
-                  overrides: {},
-                })
+              onClick={() => {
+                setSessionState(createEmptySceneSessionState());
+                if (sharedContext) {
+                  setPartnerSessionState(createEmptySceneSessionState());
+                }
               }
             >
               Reset tonight
@@ -1043,14 +1047,21 @@ export function SceneBuilder({
             {activeOverrides.map((override) => (
               <span
                 className={`scene-session-chip scene-session-${override.choice}`}
-                key={override.catalogId}
+                key={override.participantKey + ":" + override.catalogId}
               >
                 <strong>{override.label}</strong>
-                <small>{sessionChoiceLabel(override.choice)}</small>
+                <small>
+                  {override.participant ? override.participant + " · " : ""}
+                  {sessionChoiceLabel(override.choice)}
+                </small>
                 <button
                   type="button"
                   aria-label={`Clear current-session preference for ${override.label}`}
-                  onClick={() => clearSessionChoice(override.catalogId)}
+                  onClick={() =>
+                    override.participantKey === "profile-b"
+                      ? clearPartnerSessionChoice(override.catalogId)
+                      : clearSessionChoice(override.catalogId)
+                  }
                 >
                   <IconX size={14} stroke={2} aria-hidden="true" />
                 </button>
