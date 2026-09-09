@@ -214,7 +214,7 @@ function CurationWeightedRelationsEditor({
           role="listbox"
           aria-label={`Choose ${relationshipNoun} for ${field.label}`}
         >
-          {available.length > 8 && (
+          <div className="curation-relation-choice-header">
             <input
               className="curation-relation-choice-search"
               autoFocus
@@ -224,7 +224,8 @@ function CurationWeightedRelationsEditor({
               placeholder={`Search ${relationshipNoun}s…`}
               aria-label={`Search available ${relationshipNoun}s`}
             />
-          )}
+            <small>{available.length} available</small>
+          </div>
 
           <div className="curation-relation-choice-list">
             {filteredAvailable.map((option) => (
