@@ -8,7 +8,9 @@ function isEmptyValue(value: string) {
 function isExpandableField(key: string, value: string) {
   return (
     value.length > 64 ||
-    /mapping|weights|signals|questionIds|contextCategories/i.test(key)
+    /mapping|weights|signals|questionIds|contextCategories|notes|description/i.test(
+      key,
+    )
   );
 }
 
@@ -38,14 +40,14 @@ export function CurationCurrentValuePanel({
       <span className="catalog-kicker">Current repo value</span>
 
       {compactFields.length > 0 && (
-        <div className="curation-current-grid">
+        <dl className="curation-current-properties">
           {compactFields.map((field) => (
-            <div className="curation-current-item" key={field.key}>
-              <span>{field.label}</span>
-              <p>{field.value}</p>
+            <div className="curation-current-property" key={field.key}>
+              <dt>{field.label}</dt>
+              <dd>{field.value}</dd>
             </div>
           ))}
-        </div>
+        </dl>
       )}
 
       {expandableFields.length > 0 && (
