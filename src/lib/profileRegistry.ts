@@ -15,6 +15,7 @@ export type ProfileRegistryEntry = {
 export type AppProfileRegistry = {
   schemaVersion: typeof PROFILE_REGISTRY_SCHEMA_VERSION;
   activeProfileId: ProfileId;
+  legacyProfileId: ProfileId;
   profiles: ProfileRegistryEntry[];
 };
 
@@ -110,6 +111,7 @@ export function parseProfileRegistry(
   if (
     registry.schemaVersion !== PROFILE_REGISTRY_SCHEMA_VERSION ||
     !isProfileId(registry.activeProfileId) ||
+    !isProfileId(registry.legacyProfileId) ||
     !Array.isArray(registry.profiles)
   ) {
     return null;
@@ -131,6 +133,7 @@ export function parseProfileRegistry(
   return {
     schemaVersion: PROFILE_REGISTRY_SCHEMA_VERSION,
     activeProfileId: registry.activeProfileId,
+    legacyProfileId: registry.legacyProfileId,
     profiles: validProfiles,
   };
 }
@@ -185,6 +188,7 @@ function createRegistry(
   return {
     schemaVersion: PROFILE_REGISTRY_SCHEMA_VERSION,
     activeProfileId: profileId,
+    legacyProfileId: profileId,
     profiles: [
       {
         id: profileId,
@@ -351,13 +355,18 @@ export function getActiveProfileSessionStorage(
   localStorageBackend: ProfileRegistryStorageLike = browserLocalStorage(),
   sessionStorageBackend: ProfileRegistryStorageLike = browserSessionStorage(),
 ) {
-  const profileId = getActiveProfileId(localStorageBackend);
-
-  migrateKnownKeys(
-    sessionStorageBackend,
-    profileId,
-    PROFILE_SCOPED_SESSION_STORAGE_KEYS,
+  const registry = ensureProfileRegistry(
+    localStorageBackend,
   );
+  const profileId = registry.activeProfileId;
+
+  if (profileId === registry.legacyProfileId) {
+    migrateKnownKeys(
+      sessionStorageBackend,
+      profileId,
+      PROFILE_SCOPED_SESSION_STORAGE_KEYS,
+    );
+  }
 
   return createProfileScopedStorage(
     sessionStorageBackend,
