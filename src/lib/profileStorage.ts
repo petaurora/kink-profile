@@ -1,4 +1,5 @@
 import type { QuizId } from "../data/quizzes";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export type AnswerMap = Record<string, number>;
 
@@ -26,7 +27,7 @@ export function createEmptyProfile(): StoredProfile {
 }
 
 function browserStorage(): StorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 export function loadProfile(
