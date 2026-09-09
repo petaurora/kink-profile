@@ -32,7 +32,6 @@ function resultItem(
       direction: "both",
       aliases: [],
       typicalRole: "",
-      primaryMode: "Physical/Psychological",
       intensity: "Moderate",
       riskLevel: "Moderate",
       signalMappings: [],
