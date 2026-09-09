@@ -467,12 +467,23 @@ export function SceneBuilder({
   };
 
   const makeStarterScene = () => {
-    setComposition(
-      buildStarterSceneComposition(candidateView, {
+    setComposition((current) => {
+      let next = buildStarterSceneComposition(candidateView, {
         effort,
         exploration,
-      }),
-    );
+      });
+      const addOn = current?.components.find(
+        (component) =>
+          component.source.kind === "reward_punishment",
+      );
+      if (addOn?.source.kind === "reward_punishment") {
+        next = upsertRewardPunishmentSceneComponent(
+          next,
+          addOn.source,
+        );
+      }
+      return next;
+    });
   };
 
   const addCandidateToScene = (candidate: SceneCandidate) => {
@@ -577,6 +588,30 @@ export function SceneBuilder({
           : current,
       );
     }
+  };
+
+  const removeRewardPunishmentAddon = () => {
+    setRewardPunishmentMode("none");
+    setComposition((current) =>
+      current
+        ? removeRewardPunishmentSceneComponent(current)
+        : current,
+    );
+  };
+
+  const shuffleRewardPunishmentAddon = () => {
+    const component = composition?.components.find(
+      (entry) => entry.source.kind === "reward_punishment",
+    );
+    if (!component || component.source.kind !== "reward_punishment") {
+      return;
+    }
+
+    const mode =
+      rewardPunishmentMode === "none"
+        ? component.source.context
+        : rewardPunishmentMode;
+    pickRewardPunishmentAddon(mode);
   };
 
   const pickSomething = () => {
