@@ -135,7 +135,11 @@ function cloneValue(value: CurationChangeValue): CurationChangeValue {
 }
 
 function fieldValue(field: CurationEditorField): CurationChangeValue {
-  return cloneValue(field.value as CurationChangeValue);
+  if (field.kind === "string-list") return [...field.value];
+  if (field.kind === "weighted-relations") {
+    return field.value.map((relation) => ({ ...relation }));
+  }
+  return field.value;
 }
 
 function relationField(
@@ -838,10 +842,15 @@ export function validateCurationDraft(
 function countSignalReferences(signalId: string) {
   const weightedQuestions = quizQuestions.filter(
     (question) =>
-      question.kind === "weighted" && question.weights[signalId as keyof typeof question.weights],
+      question.kind === "weighted" &&
+      Object.prototype.hasOwnProperty.call(question.weights, signalId),
   ).length;
-  const modes = dynamicModes.filter((mode) => mode.weights[signalId as keyof typeof mode.weights]).length;
-  const roles = roleHeadspaces.filter((role) => role.weights[signalId as keyof typeof role.weights]).length;
+  const modes = dynamicModes.filter((mode) =>
+    Object.prototype.hasOwnProperty.call(mode.weights, signalId),
+  ).length;
+  const roles = roleHeadspaces.filter((role) =>
+    Object.prototype.hasOwnProperty.call(role.weights, signalId),
+  ).length;
   const facets = overallFacetDefinitions.filter((facet) =>
     facet.signals.some((signal) => signal.signalId === signalId),
   ).length;
