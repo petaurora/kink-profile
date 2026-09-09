@@ -10,7 +10,6 @@ export type OverallRadarAxis = {
   affinity: number | null;
   coverage: number;
   state: OverallRadarAxisState;
-  directional: boolean;
 };
 
 export type OverallRadarTheme = {
@@ -46,7 +45,6 @@ export function buildOverallRadarModel(
       affinity: unknown ? null : facet.affinity,
       coverage: facet.coverage,
       state,
-      directional: Boolean(facet.direction),
     };
   });
 
