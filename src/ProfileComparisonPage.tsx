@@ -11,7 +11,7 @@ import { SceneBuilder } from "./SceneBuilder";
 import { SharedParticipantIntentPanel } from "./SharedParticipantIntentPanel";
 import {
   getProfileBackupSummary,
-  type ProfileBackup,
+  type ProfileBackupSummary,
 } from "./lib/profileBackup";
 import { parseProfileBackupJson } from "./lib/profileImport";
 import {
@@ -35,7 +35,7 @@ type ProfileComparisonPageProps = {
 
 type UploadCandidate = {
   fileName: string;
-  backup: ProfileBackup;
+  summary: ProfileBackupSummary;
   built: UploadedComparisonCandidate;
 };
 
@@ -81,7 +81,7 @@ export function ProfileComparisonPage({
 
     setCandidate({
       fileName: file.name,
-      backup: parsed.backup,
+      summary: getProfileBackupSummary(parsed.backup),
       built: buildUploadedProfileComparison(current, parsed.backup),
     });
   };
@@ -94,8 +94,13 @@ export function ProfileComparisonPage({
     setSharedSceneOpen(false);
   };
 
+  const closeComparison = () => {
+    clearCandidate();
+    onClose();
+  };
+
   if (candidate) {
-    const summary = getProfileBackupSummary(candidate.backup);
+    const summary = candidate.summary;
     const intentThemeIds =
       getSceneThemeIdsForSharedParticipantIntents(
         profileAIntent,
@@ -105,13 +110,13 @@ export function ProfileComparisonPage({
     if (sharedSceneOpen) {
       return (
         <SceneBuilder
-          catalogResultView={candidate.built.currentInput.catalogResults}
+          catalogResultView={candidate.built.currentCatalogResults}
           initialThemeIds={intentThemeIds}
           sharedContext={{
             profileAName: current.displayName,
             profileBName: candidate.built.displayName,
             partnerCatalogResultView:
-              candidate.built.uploadedInput.catalogResults,
+              candidate.built.uploadedCatalogResults,
             comparison: candidate.built.comparison,
             profileAIntent,
             profileBIntent,
@@ -150,9 +155,9 @@ export function ProfileComparisonPage({
             <button
               type="button"
               className="text-button"
-              onClick={onClose}
+              onClick={closeComparison}
             >
-              Close comparison
+              End comparison
             </button>
           </div>
         </div>
@@ -175,6 +180,48 @@ export function ProfileComparisonPage({
             Temporary comparison only
           </span>
         </div>
+
+        <details className="comparison-privacy panel">
+          <summary>
+            <IconShieldCheck size={18} stroke={1.8} aria-hidden="true" />
+            <span>
+              <strong>How this comparison handles profile data</strong>
+              <small>Local, temporary, and separate from import.</small>
+            </span>
+          </summary>
+          <div className="comparison-privacy-body">
+            <p>
+              The uploaded JSON is parsed in the browser, reduced to the
+              derived data needed for this comparison, and is not retained as
+              the raw backup for the rest of the session.
+            </p>
+            <ul>
+              <li>It is not imported, merged, or saved as another profile.</li>
+              <li>
+                Ending the comparison or navigating away discards the temporary
+                uploaded comparison state and tonight intent.
+              </li>
+              <li>
+                Your normal Full Profile Export / Import remains independent
+                and keeps its existing backup behavior.
+              </li>
+              <li>
+                Shared Scene Builder uses only the bounded shared comparison
+                pool; shared reward/punishment add-ons remain disabled until
+                both profiles can be checked safely.
+              </li>
+            </ul>
+            {(summary.rewardPunishmentPreferenceCount > 0 ||
+              summary.rewardPunishmentComparisonCount > 0 ||
+              summary.rewardPunishmentRecipeCount > 0) && (
+              <p className="comparison-privacy-note">
+                This export contains Rewards & Punishments data. M14 comparison
+                does not currently retain or compare that section after the
+                backup is validated and summarized.
+              </p>
+            )}
+          </div>
+        </details>
 
         <SharedParticipantIntentPanel
           profileAName={current.displayName}
@@ -259,6 +306,7 @@ export function ProfileComparisonPage({
             <input
               type="file"
               accept=".json,application/json"
+              aria-describedby="comparison-upload-safety"
               onChange={chooseFile}
             />
             <span className="comparison-profile-chip is-upload">
@@ -269,13 +317,17 @@ export function ProfileComparisonPage({
           </label>
         </div>
 
-        <div className="comparison-upload-safety-note">
+        <div
+          className="comparison-upload-safety-note"
+          id="comparison-upload-safety"
+        >
           <IconShieldCheck size={20} stroke={1.8} aria-hidden="true" />
           <div>
             <strong>Your profile will not be replaced or modified.</strong>
             <span>
-              This is not an import. The uploaded file is not saved as another
-              local profile and disappears when you leave this comparison.
+              This is not an import. The file is processed locally, reduced to
+              the comparison data needed for this session, and discarded when
+              you leave.
             </span>
           </div>
         </div>

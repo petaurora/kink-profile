@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import type { ProfileBackupV1 } from "./profileBackup";
+import type {
+  ProfileBackupV1,
+  ProfileBackupV2,
+} from "./profileBackup";
+import {
+  createEmptyRewardPunishmentAuthoritativeState,
+} from "./rewardPunishmentLifecycle";
 import {
   buildUploadedProfileComparison,
   type ComparisonProfileSource,
@@ -72,6 +78,11 @@ describe("buildUploadedProfileComparison", () => {
 
     expect(result.displayName).toBe("Taylor");
     expect(result.exportedAt).toBe(uploaded.exportedAt);
+    expect("currentInput" in result).toBe(false);
+    expect("uploadedInput" in result).toBe(false);
+    expect("backup" in result).toBe(false);
+    expect(result.currentCatalogResults).toBeDefined();
+    expect(result.uploadedCatalogResults).toBeDefined();
     expect(
       result.comparison.catalogItems.find(
         (item) => item.catalogId === "comparison-test-item",
@@ -79,6 +90,27 @@ describe("buildUploadedProfileComparison", () => {
     ).toBe("mutual_positive");
     expect(JSON.stringify(current)).toBe(currentBefore);
     expect(JSON.stringify(uploaded)).toBe(uploadedBefore);
+  });
+
+  it("does not retain the M11 payload from a v2 backup", () => {
+    const legacy = backup("Other", "like");
+    const uploaded: ProfileBackupV2 = {
+      ...legacy,
+      version: 2,
+      profile: {
+        ...legacy.profile,
+        rewardsPunishments:
+          createEmptyRewardPunishmentAuthoritativeState(),
+      },
+    };
+
+    const result = buildUploadedProfileComparison(
+      source("Current", "love"),
+      uploaded,
+    );
+
+    expect(JSON.stringify(uploaded)).toContain("rewardsPunishments");
+    expect(JSON.stringify(result)).not.toContain("rewardsPunishments");
   });
 
   it("keeps an uploaded exclusion authoritative for shared suggestions", () => {

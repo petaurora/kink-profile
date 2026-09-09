@@ -394,3 +394,74 @@
     padding-left: 47px;
   }
 }
+
+
+/* M14.8 — compact secondary comparison sections */
+
+.shared-collapsible {
+  overflow: hidden;
+  padding: 8px clamp(18px, 4vw, 32px);
+}
+
+.shared-collapsible > details > summary {
+  list-style: none;
+  padding: 8px 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.shared-collapsible > details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.shared-collapsible > details > summary > span:nth-child(2) {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.shared-collapsible > details > summary > span:nth-child(2) strong {
+  font-size: .95rem;
+}
+
+.shared-collapsible > details > summary > span:nth-child(2) small {
+  color: var(--text-muted);
+  font-size: .74rem;
+  line-height: 1.4;
+}
+
+.shared-collapsible > details > summary > strong {
+  color: var(--text-secondary);
+  font-size: .82rem;
+}
+
+.shared-collapsible > details > summary:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+.shared-collapsible-list {
+  padding: 0 0 10px 56px;
+}
+
+.shared-collapsible-list > .shared-match-row:first-child {
+  border-top: 0;
+}
+
+@media (max-width: 560px) {
+  .shared-collapsible {
+    padding: 8px 18px;
+  }
+
+  .shared-collapsible > details > summary {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+  }
+
+  .shared-collapsible-list {
+    padding-left: 47px;
+  }
+}

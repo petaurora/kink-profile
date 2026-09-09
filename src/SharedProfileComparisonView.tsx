@@ -131,6 +131,52 @@ function CatalogSection({
   );
 }
 
+function CollapsibleCatalogSection({
+  icon,
+  title,
+  description,
+  items,
+  emptyCopy,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  items: readonly SharedCatalogItemComparison[];
+  emptyCopy: string;
+}) {
+  return (
+    <section className="shared-collapsible panel">
+      <details>
+        <summary>
+          <span className="shared-section-icon" aria-hidden="true">
+            {icon}
+          </span>
+          <span>
+            <strong>{title}</strong>
+            <small>{description}</small>
+          </span>
+          <strong>{items.length}</strong>
+        </summary>
+
+        {items.length > 0 ? (
+          <div className="shared-collapsible-list">
+            {items.slice(0, previewLimit).map((item) => (
+              <CatalogMatchRow key={item.catalogId} item={item} />
+            ))}
+            <MoreRows count={Math.max(0, items.length - previewLimit)}>
+              {items.slice(previewLimit).map((item) => (
+                <CatalogMatchRow key={item.catalogId} item={item} />
+              ))}
+            </MoreRows>
+          </div>
+        ) : (
+          <p className="shared-empty">{emptyCopy}</p>
+        )}
+      </details>
+    </section>
+  );
+}
+
 export function SharedProfileComparisonView({
   model,
   profileAName,
@@ -292,9 +338,8 @@ export function SharedProfileComparisonView({
         emptyCopy="Nothing is currently in the shared exploration lane."
       />
 
-      <CatalogSection
+      <CollapsibleCatalogSection
         icon={<IconPalette size={20} stroke={1.8} />}
-        eyebrow="Different contexts"
         title="Different flavors"
         description="Both profiles have positive directional interest, but not in a directly complementary side pairing."
         items={different}
