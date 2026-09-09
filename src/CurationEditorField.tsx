@@ -80,7 +80,9 @@ function CurationWeightedRelationsEditor({
     ? "signal"
     : /categor/i.test(field.label)
       ? "category"
-      : "relationship";
+      : /facet/i.test(field.label)
+        ? "facet"
+        : "relationship";
 
   const addRelationship = () => {
     const next = available.find(
