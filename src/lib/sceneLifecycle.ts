@@ -114,15 +114,16 @@ function reviewRewardPunishmentComponent(
     return [];
   }
 
+  const recipeId = source.entry.recipeId;
   const recipe = recipes.find(
-    (candidate) => candidate.id === source.entry.recipeId,
+    (candidate) => candidate.id === recipeId,
   );
   if (!recipe) {
     return [
       {
         componentId,
         code: "m11_recipe_missing",
-        label: source.entry.recipeId,
+        label: recipeId,
         message: "This saved Rewards & Punishments recipe no longer exists.",
       },
     ];
