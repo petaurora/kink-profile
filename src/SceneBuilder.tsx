@@ -211,6 +211,10 @@ function candidateReasons(candidate: SceneCandidate) {
     );
   }
 
+  if (candidate.sharedContext) {
+    reasons.push(candidate.sharedContext.explanation);
+  }
+
   if (candidate.provenance === "inference_only") {
     reasons.push("Suggested from profile signals");
   }
@@ -221,6 +225,7 @@ function candidateReasons(candidate: SceneCandidate) {
 function CandidateCard({
   candidate,
   onSetSessionChoice,
+  sharedSessionControls,
   onAddToScene,
   isInScene = false,
 }: {
@@ -229,6 +234,20 @@ function CandidateCard({
     catalogId: string,
     choice: SceneSessionChoice,
   ) => void;
+  sharedSessionControls?: {
+    profileAName: string;
+    profileBName: string;
+    profileASessionChoice?: SceneSessionChoice;
+    profileBSessionChoice?: SceneSessionChoice;
+    onSetProfileAChoice: (
+      catalogId: string,
+      choice: SceneSessionChoice,
+    ) => void;
+    onSetProfileBChoice: (
+      catalogId: string,
+      choice: SceneSessionChoice,
+    ) => void;
+  };
   onAddToScene?: (candidate: SceneCandidate) => void;
   isInScene?: boolean;
 }) {
@@ -283,29 +302,76 @@ function CandidateCard({
         </button>
       )}
 
-      <div
-        className="scene-tonight-control"
-        aria-label={`Current-session preference for ${candidate.label}`}
-      >
-        <span>Tonight</span>
-        <div>
-          {sessionChoices.map((choice) => (
-            <button
-              key={choice.id}
-              type="button"
-              className={
-                candidate.sessionChoice === choice.id ? "selected" : ""
-              }
-              aria-pressed={candidate.sessionChoice === choice.id}
-              onClick={() =>
-                onSetSessionChoice(candidate.catalogId, choice.id)
+      {sharedSessionControls ? (
+        <div className="scene-tonight-shared">
+          {[
+            {
+              name: sharedSessionControls.profileAName,
+              selected: sharedSessionControls.profileASessionChoice,
+              onSet: sharedSessionControls.onSetProfileAChoice,
+            },
+            {
+              name: sharedSessionControls.profileBName,
+              selected: sharedSessionControls.profileBSessionChoice,
+              onSet: sharedSessionControls.onSetProfileBChoice,
+            },
+          ].map((participant) => (
+            <div
+              className="scene-tonight-control"
+              key={participant.name}
+              aria-label={
+                "Current-session preference for " +
+                participant.name +
+                " on " +
+                candidate.label
               }
             >
-              {choice.shortLabel}
-            </button>
+              <span>{participant.name}</span>
+              <div>
+                {sessionChoices.map((choice) => (
+                  <button
+                    key={choice.id}
+                    type="button"
+                    className={
+                      participant.selected === choice.id ? "selected" : ""
+                    }
+                    aria-pressed={participant.selected === choice.id}
+                    onClick={() =>
+                      participant.onSet(candidate.catalogId, choice.id)
+                    }
+                  >
+                    {choice.shortLabel}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
-      </div>
+      ) : (
+        <div
+          className="scene-tonight-control"
+          aria-label={`Current-session preference for ${candidate.label}`}
+        >
+          <span>Tonight</span>
+          <div>
+            {sessionChoices.map((choice) => (
+              <button
+                key={choice.id}
+                type="button"
+                className={
+                  candidate.sessionChoice === choice.id ? "selected" : ""
+                }
+                aria-pressed={candidate.sessionChoice === choice.id}
+                onClick={() =>
+                  onSetSessionChoice(candidate.catalogId, choice.id)
+                }
+              >
+                {choice.shortLabel}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </article>
   );
 }
