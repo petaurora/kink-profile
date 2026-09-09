@@ -24,7 +24,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M11 | ✅ Complete | contextual rewards/punishments, randomizer, and reusable builders |
 | M12 | ✅ Complete | preserve This-or-That runs and show rank movement over time |
 | M13 | ✅ Complete | theme-driven, low-decision scene composition |
-| M14 | In progress | compare-once upload, derived comparison, complementary fit, and future shared scene filtering |
+| M14 | 🟡 Needs refinement | compare/upload + shared interaction work exists; persistent profile/linking model is being reconsidered |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
 | M16 | Planned | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
 
@@ -224,11 +224,18 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 
 ## M14 — Shared Profiles, Comparison & Partner Integration
 
+**Status:** 🟡 **Needs refinement**
+
 **Details:** [M14 Shared Profiles](docs/m14-shared-profiles.md)
 
+The implemented compare-once / comparison / shared-scene work remains valid.
+The persistent relationship model is paused while we reconsider whether the
+product should support multiple fully editable local profiles, one owned profile
+plus linked/read-only partner profiles, or temporary comparison only.
+
 - [x] **M14.0** — compare once via uploaded full-profile backup
-- [ ] **M14.1** — multi-profile storage + migration
-- [ ] **M14.2** — profile management + switcher
+- [~] **M14.1** — persistent profile/link storage model — **needs refinement**
+- [~] **M14.2** — saved profile/link management UX — **needs refinement**
 - [x] **M14.3** — derived comparison engine
 - [x] **M14.4** — comparison UI
 - [x] **M14.5** — interaction/complement mappings
@@ -288,11 +295,11 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M11–M13 are complete. M14 is in progress; M15–M16 remain formally scoped.**
+**M11–M13 are complete. M14 needs product-model refinement before persistent profile/linking work continues; M15–M16 remain formally scoped.**
 
 Choose the next milestone intentionally:
 
-- **M14** introduces multiple independent profiles, comparison, and shared scene filtering.
+- **M14** provides comparison + shared scene filtering today; its persistent multi-person/profile model is under refinement.
 - **M15** adds the reusable authority × activity-side contextual model for direction-sensitive preferences and rankings.
 - **M16** is the whole-app data/content quality pass, including the mobile Curation Workbench, catalog cleanup, quiz/radar review, reward/punishment curation, and the M11 recipe-builder UX/model revisit.
 
