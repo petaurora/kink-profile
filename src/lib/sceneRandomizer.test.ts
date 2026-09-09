@@ -1,10 +1,11 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import type { SceneCandidate } from "./sceneCandidates";
 import {
   addCatalogSceneComponent,
   createEmptySceneComposition,
 } from "./sceneComposition";
 import {
+  SCENE_RANDOMIZER_STORAGE_KEY,
   buildRandomSceneComposition,
   chooseRandomSceneCandidate,
   clearSceneRandomizerState,
@@ -13,6 +14,7 @@ import {
   recordSceneRandomPick,
   saveSceneRandomizerState,
   shuffleSceneComponent,
+  type SceneRandomizerStorageLike,
 } from "./sceneRandomizer";
 
 function candidate(
@@ -44,10 +46,26 @@ function candidate(
   };
 }
 
+function memoryStorage(): SceneRandomizerStorageLike & {
+  values: Map<string, string>;
+} {
+  const values = new Map<string, string>();
+
+  return {
+    values,
+    getItem(key) {
+      return values.get(key) ?? null;
+    },
+    setItem(key, value) {
+      values.set(key, value);
+    },
+    removeItem(key) {
+      values.delete(key);
+    },
+  };
+}
+
 describe("M13.6 scene randomizer", () => {
-  beforeEach(() => {
-    window.sessionStorage.clear();
-  });
 
   it("only selects automatic-eligible candidates", () => {
     const pick = chooseRandomSceneCandidate(
@@ -95,18 +113,20 @@ describe("M13.6 scene randomizer", () => {
   });
 
   it("persists short-term anti-repeat history in sessionStorage", () => {
+    const storage = memoryStorage();
     const state = recordSceneRandomPick(
       createEmptySceneRandomizerState(),
       "picked",
     );
 
-    saveSceneRandomizerState(state);
-    expect(loadSceneRandomizerState().recentCatalogIds).toEqual([
+    saveSceneRandomizerState(state, storage);
+    expect(storage.values.has(SCENE_RANDOMIZER_STORAGE_KEY)).toBe(true);
+    expect(loadSceneRandomizerState(storage).recentCatalogIds).toEqual([
       "picked",
     ]);
 
-    clearSceneRandomizerState();
-    expect(loadSceneRandomizerState()).toEqual(
+    clearSceneRandomizerState(storage);
+    expect(loadSceneRandomizerState(storage)).toEqual(
       createEmptySceneRandomizerState(),
     );
   });
