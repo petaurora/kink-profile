@@ -33,12 +33,14 @@ import {
   createEmptySceneComposition,
   moveSceneComponent,
   reconcileSceneComposition,
+  removeRewardPunishmentSceneComponent,
   removeSceneComponent,
   replacementCandidatesForComponent,
   replaceSceneComponent,
   scenePhaseDefinitions,
   updateSceneComponentNote,
   updateSceneComponentPhase,
+  upsertRewardPunishmentSceneComponent,
   type SceneComposition,
   type SceneEffort,
   type ScenePhaseId,
@@ -55,6 +57,18 @@ import {
   saveSceneRandomizerState,
   shuffleSceneComponent,
 } from "./lib/sceneRandomizer";
+import {
+  loadRewardPunishmentProfile,
+} from "./lib/rewardPunishmentProfileStorage";
+import {
+  loadRewardPunishmentRecipeState,
+} from "./lib/rewardPunishmentRecipeStorage";
+import {
+  getSceneRewardPunishmentAvailability,
+  pickSceneRewardPunishment,
+  resolveSceneRewardPunishmentSource,
+  type SceneRewardPunishmentMode,
+} from "./lib/sceneRewardPunishment";
 import "./sceneBuilder.css";
 
 type SceneBuilderProps = {
@@ -120,6 +134,16 @@ const intensityOptions: Array<{
   { id: "light", label: "Light" },
   { id: "moderate", label: "Moderate" },
   { id: "intense", label: "Intense" },
+];
+
+const rewardPunishmentModes: Array<{
+  id: SceneRewardPunishmentMode;
+  label: string;
+}> = [
+  { id: "none", label: "None" },
+  { id: "reward", label: "Reward" },
+  { id: "punishment", label: "Punishment" },
+  { id: "either", label: "Surprise me" },
 ];
 
 const sessionChoices: Array<{
@@ -285,6 +309,16 @@ export function SceneBuilder({
   );
   const [randomPick, setRandomPick] =
     useState<SceneCandidate | null>(null);
+  const [rewardPunishmentProfile] = useState(() =>
+    loadRewardPunishmentProfile(),
+  );
+  const [rewardPunishmentRecipes] = useState(() =>
+    loadRewardPunishmentRecipeState(),
+  );
+  const [rewardPunishmentMode, setRewardPunishmentMode] =
+    useState<SceneRewardPunishmentMode>("none");
+  const [lastRewardPunishmentKey, setLastRewardPunishmentKey] =
+    useState<string | undefined>(undefined);
 
   useEffect(() => {
     saveSceneSessionState(sessionState);
@@ -346,11 +380,27 @@ export function SceneBuilder({
   const compositionCatalogIds = useMemo(
     () =>
       new Set(
-        composition?.components.map(
-          (component) => component.source.catalogId,
-        ) ?? [],
+        composition?.components
+          .filter(
+            (component) => component.source.kind === "catalog",
+          )
+          .map((component) =>
+            component.source.kind === "catalog"
+              ? component.source.catalogId
+              : "",
+          )
+          .filter(Boolean) ?? [],
       ),
     [composition],
+  );
+
+  const rewardPunishmentAvailability = useMemo(
+    () =>
+      getSceneRewardPunishmentAvailability(
+        rewardPunishmentProfile,
+        rewardPunishmentRecipes.recipes,
+      ),
+    [rewardPunishmentProfile, rewardPunishmentRecipes],
   );
 
   useEffect(() => {
@@ -451,7 +501,7 @@ export function SceneBuilder({
     const component = composition.components.find(
       (entry) => entry.id === componentId,
     );
-    if (!component) return;
+    if (!component || component.source.kind !== "catalog") return;
 
     const replacement = replacementCandidatesForComponent(
       composition,
@@ -480,6 +530,55 @@ export function SceneBuilder({
     );
   };
 
+  const pickRewardPunishmentAddon = (
+    mode: SceneRewardPunishmentMode = rewardPunishmentMode,
+  ) => {
+    if (mode === "none") {
+      setComposition((current) =>
+        current
+          ? removeRewardPunishmentSceneComponent(current)
+          : current,
+      );
+      return;
+    }
+
+    const pick = pickSceneRewardPunishment(
+      rewardPunishmentProfile,
+      rewardPunishmentRecipes.recipes,
+      mode,
+      {
+        previousKey: lastRewardPunishmentKey,
+      },
+    );
+    if (!pick) return;
+
+    setComposition((current) =>
+      upsertRewardPunishmentSceneComponent(
+        current ??
+          createEmptySceneComposition({
+            themeIds: selectedThemeIds,
+            effort,
+            exploration,
+          }),
+        pick.source,
+      ),
+    );
+    setLastRewardPunishmentKey(pick.key);
+  };
+
+  const changeRewardPunishmentMode = (
+    mode: SceneRewardPunishmentMode,
+  ) => {
+    setRewardPunishmentMode(mode);
+    if (mode === "none") {
+      setComposition((current) =>
+        current
+          ? removeRewardPunishmentSceneComponent(current)
+          : current,
+      );
+    }
+  };
+
   const pickSomething = () => {
     const result = chooseRandomSceneCandidate(
       candidateView.confirmed,
@@ -499,7 +598,28 @@ export function SceneBuilder({
         state: randomizerState,
       },
     );
-    setComposition(result.composition);
+    let nextComposition = result.composition;
+
+    if (rewardPunishmentMode !== "none") {
+      const addOn = pickSceneRewardPunishment(
+        rewardPunishmentProfile,
+        rewardPunishmentRecipes.recipes,
+        rewardPunishmentMode,
+        {
+          previousKey: lastRewardPunishmentKey,
+        },
+      );
+
+      if (addOn) {
+        nextComposition = upsertRewardPunishmentSceneComponent(
+          nextComposition,
+          addOn.source,
+        );
+        setLastRewardPunishmentKey(addOn.key);
+      }
+    }
+
+    setComposition(nextComposition);
     setRandomizerState(result.state);
     setRandomPick(null);
   };
