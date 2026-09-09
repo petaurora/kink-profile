@@ -149,11 +149,12 @@ export const curationSurfaces: readonly CurationSurface[] = [
     sourcePaths: [
       "reference/rewards-punishments/action-library.tsv",
       "reference/rewards-punishments/context-categories.tsv",
+      "reference/rewards-punishments/context-signal-mappings.tsv",
       "reference/rewards-punishments/catalog-category-mappings.tsv",
       "src/lib/rewardPunishmentLibrary.ts",
     ],
     status: "available",
-    notes: "Normalized actions, contextual categories, and weighted category relationships are editable as structured local proposals.",
+    notes: "Normalized actions, contextual categories, category→Signal bridges, and weighted relationships are editable as structured local proposals; Overall Facet affinity is derived.",
   },
   {
     id: "profile-labels-thresholds",
