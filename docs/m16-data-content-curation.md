@@ -394,6 +394,10 @@ Do not keep an action merely because it appeared in a source spreadsheet.
 
 M16.7 establishes **SignalId → Overall Facet** as the canonical semantic projection path.
 
+Overall Facets are nine broad, non-directional **themes**. Giving/receiving and Dominant/submissive distinctions stay in granular Signals, modes, headspaces, and contextual mappings.
+
+Every Signal is reviewed against all nine themes as **Supports / Neutral / Opposes**, with strength on non-neutral relationships. The runtime representation stays sparse: omitted relationships are Neutral.
+
 Meaningful primitives should resolve into Overall Facet space through Signals whenever that relationship is honest. Do not add separately authored facet weights to every subsystem.
 
 Examples:
@@ -416,7 +420,7 @@ Do not invent semantic mappings just to satisfy a completeness counter.
 
 At the start of this slice, known gaps include:
 
-- 3 canonical SignalIds with no Overall Facet route: `role_embodiment`, `younger_headspace`, `anticipation`
+- 3 canonical SignalIds with no authored non-neutral theme relationship yet: `role_embodiment`, `younger_headspace`, `anticipation`
 - 18 of 35 catalog categories with no category-level Signal mapping
 - R/P `Sexual / Scene` with no honest mapping in the current Signal vocabulary
 
