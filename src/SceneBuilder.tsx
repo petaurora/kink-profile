@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  IconArrowDown,
   IconArrowLeft,
+  IconArrowUp,
+  IconArrowsExchange,
+  IconNotes,
+  IconPlus,
   IconSparkles,
   IconX,
 } from "@tabler/icons-react";
@@ -23,6 +28,22 @@ import {
   type SceneSessionChoice,
 } from "./lib/sceneSession";
 import {
+  addCatalogSceneComponent,
+  buildStarterSceneComposition,
+  createEmptySceneComposition,
+  moveSceneComponent,
+  reconcileSceneComposition,
+  removeSceneComponent,
+  replacementCandidatesForComponent,
+  replaceSceneComponent,
+  scenePhaseDefinitions,
+  updateSceneComponentNote,
+  updateSceneComponentPhase,
+  type SceneComposition,
+  type SceneEffort,
+  type ScenePhaseId,
+} from "./lib/sceneComposition";
+import {
   catalogPreferenceLabels,
   type CatalogResultView,
 } from "./lib/catalogResults";
@@ -32,8 +53,6 @@ type SceneBuilderProps = {
   catalogResultView: CatalogResultView;
   onClose: () => void;
 };
-
-type SceneEffort = "quick" | "normal" | "elaborate";
 
 const familyOrder: Array<{
   id: SceneThemeFamily;
@@ -149,12 +168,16 @@ function candidateReasons(candidate: SceneCandidate) {
 function CandidateCard({
   candidate,
   onSetSessionChoice,
+  onAddToScene,
+  isInScene = false,
 }: {
   candidate: SceneCandidate;
   onSetSessionChoice: (
     catalogId: string,
     choice: SceneSessionChoice,
   ) => void;
+  onAddToScene?: (candidate: SceneCandidate) => void;
+  isInScene?: boolean;
 }) {
   return (
     <article
@@ -194,6 +217,18 @@ function CandidateCard({
           <span key={reason}>{reason}</span>
         ))}
       </div>
+
+      {onAddToScene && (
+        <button
+          type="button"
+          className="scene-add-button"
+          disabled={isInScene}
+          onClick={() => onAddToScene(candidate)}
+        >
+          <IconPlus size={15} stroke={2} aria-hidden="true" />
+          {isInScene ? "In scene" : "Add to scene"}
+        </button>
+      )}
 
       <div
         className="scene-tonight-control"
@@ -235,6 +270,8 @@ export function SceneBuilder({
   const [sessionState, setSessionState] = useState(() =>
     loadSceneSessionState(),
   );
+  const [composition, setComposition] =
+    useState<SceneComposition | null>(null);
 
   useEffect(() => {
     saveSceneSessionState(sessionState);
@@ -278,6 +315,50 @@ export function SceneBuilder({
     effortConfig.suggestedLimit,
   );
 
+  const confirmedById = useMemo(
+    () =>
+      new Map(
+        candidateView.confirmed.map((candidate) => [
+          candidate.catalogId,
+          candidate,
+        ]),
+      ),
+    [candidateView.confirmed],
+  );
+
+  const compositionCatalogIds = useMemo(
+    () =>
+      new Set(
+        composition?.components.map(
+          (component) => component.source.catalogId,
+        ) ?? [],
+      ),
+    [composition],
+  );
+
+  useEffect(() => {
+    if (!composition) return;
+
+    const eligibleIds = new Set(
+      candidateView.confirmed.map((candidate) => candidate.catalogId),
+    );
+    setComposition((current) => {
+      if (!current) return current;
+      const reconciled = reconcileSceneComposition(current, eligibleIds);
+      return {
+        ...reconciled,
+        themeIds: [...selectedThemeIds],
+        effort,
+        exploration,
+      };
+    });
+  }, [
+    candidateView.confirmed,
+    effort,
+    exploration,
+    selectedThemeIds,
+  ]);
+
   const activeOverrides = Object.entries(sessionState.overrides)
     .map(([catalogId, override]) => {
       const result = catalogResultView.byCatalogId.get(catalogId);
@@ -315,6 +396,70 @@ export function SceneBuilder({
   const clearSessionChoice = (catalogId: string) => {
     setSessionState((current) =>
       clearSceneSessionChoice(current, catalogId),
+    );
+  };
+
+  const makeStarterScene = () => {
+    setComposition(
+      buildStarterSceneComposition(candidateView, {
+        effort,
+        exploration,
+      }),
+    );
+  };
+
+  const addCandidateToScene = (candidate: SceneCandidate) => {
+    setComposition((current) =>
+      addCatalogSceneComponent(
+        current ??
+          createEmptySceneComposition({
+            themeIds: selectedThemeIds,
+            effort,
+            exploration,
+          }),
+        candidate,
+      ),
+    );
+  };
+
+  const addNextCandidate = () => {
+    const next = candidateView.coverageOrder.find(
+      (candidate) => !compositionCatalogIds.has(candidate.catalogId),
+    );
+    if (next) addCandidateToScene(next);
+  };
+
+  const replaceComponent = (componentId: string) => {
+    if (!composition) return;
+    const component = composition.components.find(
+      (entry) => entry.id === componentId,
+    );
+    if (!component) return;
+
+    const replacement = replacementCandidatesForComponent(
+      composition,
+      componentId,
+      candidateView.coverageOrder,
+    ).find(
+      (candidate) =>
+        candidate.catalogId !== component.source.catalogId,
+    );
+    if (!replacement) return;
+
+    setComposition((current) =>
+      current
+        ? replaceSceneComponent(current, componentId, replacement)
+        : current,
+    );
+  };
+
+  const clearComposition = () => {
+    setComposition(
+      createEmptySceneComposition({
+        themeIds: selectedThemeIds,
+        effort,
+        exploration,
+      }),
     );
   };
 
@@ -547,6 +692,10 @@ export function SceneBuilder({
                   key={candidate.catalogId}
                   candidate={candidate}
                   onSetSessionChoice={setSessionChoice}
+                  onAddToScene={addCandidateToScene}
+                  isInScene={compositionCatalogIds.has(
+                    candidate.catalogId,
+                  )}
                 />
               ))}
             </div>
@@ -560,6 +709,264 @@ export function SceneBuilder({
               </p>
             </article>
           )}
+
+          <article className="scene-composition panel">
+            <div className="scene-section-heading">
+              <div>
+                <p className="eyebrow">04 · Build the scene</p>
+                <h2>Turn the menu into an editable arc.</h2>
+              </div>
+              {composition && composition.components.length > 0 && (
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={clearComposition}
+                >
+                  Clear scene
+                </button>
+              )}
+            </div>
+
+            <div className="scene-arc-guide" aria-label="Scene arc">
+              {scenePhaseDefinitions.map((phase) => (
+                <span
+                  key={phase.id}
+                  className={
+                    phase.catalogEnabled
+                      ? "scene-arc-phase"
+                      : "scene-arc-phase reserved"
+                  }
+                  title={phase.description}
+                >
+                  {phase.shortLabel}
+                  {phase.optional && <small>optional</small>}
+                </span>
+              ))}
+            </div>
+
+            {!composition || composition.components.length === 0 ? (
+              <div className="scene-composition-empty">
+                <div>
+                  <IconNotes size={23} stroke={1.7} aria-hidden="true" />
+                  <strong>Start with a sensible first draft.</strong>
+                  <span>
+                    This is deterministic, not random. You can change every
+                    part before M13.6 adds shuffle controls.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="primary-button"
+                  disabled={candidateView.confirmed.length === 0}
+                  onClick={makeStarterScene}
+                >
+                  <IconPlus size={16} stroke={2} aria-hidden="true" />
+                  Make a starter scene
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="scene-composition-list">
+                  {composition.components.map((component, index) => {
+                    const candidate = confirmedById.get(
+                      component.source.catalogId,
+                    );
+                    if (!candidate) return null;
+
+                    const replacements =
+                      replacementCandidatesForComponent(
+                        composition,
+                        component.id,
+                        candidateView.coverageOrder,
+                      ).filter(
+                        (replacement) =>
+                          replacement.catalogId !==
+                          component.source.catalogId,
+                      );
+
+                    return (
+                      <article
+                        className="scene-component"
+                        key={component.id}
+                      >
+                        <div className="scene-component-order">
+                          <span>{index + 1}</span>
+                          <div>
+                            <button
+                              type="button"
+                              aria-label={`Move ${candidate.label} up`}
+                              disabled={index === 0}
+                              onClick={() =>
+                                setComposition((current) =>
+                                  current
+                                    ? moveSceneComponent(
+                                        current,
+                                        component.id,
+                                        "up",
+                                      )
+                                    : current,
+                                )
+                              }
+                            >
+                              <IconArrowUp
+                                size={15}
+                                stroke={2}
+                                aria-hidden="true"
+                              />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Move ${candidate.label} down`}
+                              disabled={
+                                index ===
+                                composition.components.length - 1
+                              }
+                              onClick={() =>
+                                setComposition((current) =>
+                                  current
+                                    ? moveSceneComponent(
+                                        current,
+                                        component.id,
+                                        "down",
+                                      )
+                                    : current,
+                                )
+                              }
+                            >
+                              <IconArrowDown
+                                size={15}
+                                stroke={2}
+                                aria-hidden="true"
+                              />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="scene-component-body">
+                          <div className="scene-component-top">
+                            <div>
+                              <select
+                                aria-label={`Scene phase for ${candidate.label}`}
+                                value={component.phaseId}
+                                onChange={(event) =>
+                                  setComposition((current) =>
+                                    current
+                                      ? updateSceneComponentPhase(
+                                          current,
+                                          component.id,
+                                          event.target
+                                            .value as ScenePhaseId,
+                                        )
+                                      : current,
+                                  )
+                                }
+                              >
+                                {scenePhaseDefinitions
+                                  .filter(
+                                    (phase) => phase.catalogEnabled,
+                                  )
+                                  .map((phase) => (
+                                    <option
+                                      key={phase.id}
+                                      value={phase.id}
+                                    >
+                                      {phase.label}
+                                    </option>
+                                  ))}
+                              </select>
+                              <h3>{candidate.label}</h3>
+                              <span>{candidate.categoryLabel}</span>
+                            </div>
+
+                            <div className="scene-component-actions">
+                              <button
+                                type="button"
+                                disabled={replacements.length === 0}
+                                onClick={() =>
+                                  replaceComponent(component.id)
+                                }
+                              >
+                                <IconArrowsExchange
+                                  size={15}
+                                  stroke={2}
+                                  aria-hidden="true"
+                                />
+                                Replace
+                              </button>
+                              <button
+                                type="button"
+                                className="icon-only"
+                                aria-label={`Remove ${candidate.label} from scene`}
+                                onClick={() =>
+                                  setComposition((current) =>
+                                    current
+                                      ? removeSceneComponent(
+                                          current,
+                                          component.id,
+                                        )
+                                      : current,
+                                  )
+                                }
+                              >
+                                <IconX
+                                  size={16}
+                                  stroke={2}
+                                  aria-hidden="true"
+                                />
+                              </button>
+                            </div>
+                          </div>
+
+                          <label className="scene-component-note">
+                            <span>Scene-local note</span>
+                            <textarea
+                              rows={2}
+                              value={component.note}
+                              placeholder="Anything to remember for this part…"
+                              onChange={(event) =>
+                                setComposition((current) =>
+                                  current
+                                    ? updateSceneComponentNote(
+                                        current,
+                                        component.id,
+                                        event.target.value,
+                                      )
+                                    : current,
+                                )
+                              }
+                            />
+                          </label>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+
+                <div className="scene-composition-footer">
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    disabled={
+                      candidateView.coverageOrder.every((candidate) =>
+                        compositionCatalogIds.has(candidate.catalogId),
+                      )
+                    }
+                    onClick={addNextCandidate}
+                  >
+                    <IconPlus size={15} stroke={2} aria-hidden="true" />
+                    Add another
+                  </button>
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={makeStarterScene}
+                  >
+                    Rebuild starter
+                  </button>
+                </div>
+              </>
+            )}
+          </article>
 
           {candidateView.suggestedToExplore.length > 0 && (
             <details className="scene-suggested panel">

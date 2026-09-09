@@ -678,3 +678,363 @@
     white-space: nowrap;
   }
 }
+
+
+.scene-add-button {
+  width: 100%;
+  border: 1px solid var(--accent-border);
+  border-radius: 10px;
+  background: var(--bg-surface-emphasis);
+  color: var(--accent-primary);
+  padding: 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.scene-add-button:disabled {
+  border-color: var(--border-subtle);
+  background: var(--bg-muted);
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.scene-composition {
+  padding: clamp(18px, 3vw, 28px);
+  display: grid;
+  gap: 16px;
+}
+
+.scene-arc-guide {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 0 4px;
+  scrollbar-width: thin;
+}
+
+.scene-arc-phase {
+  flex: 0 0 auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  padding: 6px 9px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: .68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.scene-arc-phase small {
+  color: var(--text-muted);
+  font-size: .58rem;
+  font-weight: 700;
+}
+
+.scene-arc-phase.reserved {
+  border-style: dashed;
+  opacity: .7;
+}
+
+.scene-composition-empty {
+  border: 1px dashed var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-muted);
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.scene-composition-empty > div {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 3px 9px;
+  align-items: center;
+}
+
+.scene-composition-empty svg {
+  grid-row: 1 / span 2;
+  color: var(--accent-primary);
+}
+
+.scene-composition-empty strong {
+  font-size: .9rem;
+}
+
+.scene-composition-empty span {
+  color: var(--text-muted);
+  font-size: .74rem;
+  line-height: 1.4;
+}
+
+.scene-composition-empty .primary-button,
+.scene-composition-footer .secondary-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.scene-composition-list {
+  display: grid;
+  gap: 8px;
+}
+
+.scene-component {
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-surface);
+  padding: 11px;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.scene-component-order {
+  border-right: 1px solid var(--border-subtle);
+  padding-right: 9px;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 7px;
+}
+
+.scene-component-order > span {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--bg-surface-emphasis);
+  color: var(--accent-primary);
+  display: grid;
+  place-items: center;
+  font-size: .72rem;
+  font-weight: 900;
+}
+
+.scene-component-order > div {
+  display: grid;
+  gap: 3px;
+}
+
+.scene-component-order button,
+.scene-component-actions button {
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--bg-control);
+  color: var(--text-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.scene-component-order button {
+  width: 28px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.scene-component-order button:disabled,
+.scene-component-actions button:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+.scene-component-body {
+  min-width: 0;
+  display: grid;
+  gap: 9px;
+}
+
+.scene-component-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.scene-component-top > div:first-child {
+  min-width: 0;
+}
+
+.scene-component-top select {
+  max-width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: var(--bg-control);
+  color: var(--text-secondary);
+  padding: 5px 24px 5px 8px;
+  font: inherit;
+  font-size: .67rem;
+  font-weight: 800;
+}
+
+.scene-component-top h3 {
+  margin: 6px 0 1px;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.scene-component-top > div:first-child > span {
+  color: var(--text-muted);
+  font-size: .68rem;
+  font-weight: 700;
+}
+
+.scene-component-actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 5px;
+}
+
+.scene-component-actions button {
+  min-height: 30px;
+  padding: 6px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: .68rem;
+  font-weight: 800;
+}
+
+.scene-component-actions .icon-only {
+  width: 30px;
+  padding: 0;
+}
+
+.scene-component-note {
+  display: grid;
+  gap: 4px;
+}
+
+.scene-component-note > span {
+  color: var(--text-muted);
+  font-size: .64rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.scene-component-note textarea {
+  width: 100%;
+  min-height: 52px;
+  resize: vertical;
+  border: 1px solid var(--border-subtle);
+  border-radius: 9px;
+  background: var(--bg-control);
+  color: var(--text-primary);
+  padding: 8px 9px;
+  font: inherit;
+  font-size: .76rem;
+  line-height: 1.4;
+}
+
+.scene-component-note textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.scene-composition-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.scene-add-button:focus-visible,
+.scene-component-order button:focus-visible,
+.scene-component-actions button:focus-visible,
+.scene-component-top select:focus-visible,
+.scene-component-note textarea:focus-visible,
+.scene-composition-empty button:focus-visible,
+.scene-composition-footer button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 680px) {
+  .scene-composition {
+    padding: 14px;
+  }
+
+  .scene-composition-empty {
+    padding: 14px;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scene-composition-empty .primary-button {
+    width: 100%;
+  }
+
+  .scene-component {
+    grid-template-columns: 40px minmax(0, 1fr);
+    padding: 9px;
+    gap: 8px;
+  }
+
+  .scene-component-order {
+    padding-right: 7px;
+  }
+
+  .scene-component-top {
+    gap: 8px;
+  }
+
+  .scene-component-actions button:not(.icon-only) {
+    width: 30px;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .scene-component-actions button:not(.icon-only) svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scene-component {
+    grid-template-columns: 1fr;
+  }
+
+  .scene-component-order {
+    border-right: 0;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0 0 7px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .scene-component-order > div {
+    display: flex;
+  }
+
+  .scene-component-top {
+    align-items: flex-start;
+  }
+
+  .scene-composition-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scene-composition-footer .secondary-button {
+    width: 100%;
+  }
+}
