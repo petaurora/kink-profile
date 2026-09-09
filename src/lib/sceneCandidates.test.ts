@@ -6,6 +6,7 @@ import type {
 import {
   buildSceneCandidateView,
   calculateSceneThemeFit,
+  matchesSceneIntensityPreference,
 } from "./sceneCandidates";
 import { getSceneTheme } from "../data/sceneThemes";
 import {
@@ -169,6 +170,45 @@ describe("M13.2 scene candidate engine", () => {
     expect(candidateView.suggestedToExplore).toEqual([]);
   });
 
+  it("uses Familiar, Mix, and Explore as distinct candidate boundaries", () => {
+    const items = view([
+      result({
+        id: "liked",
+        label: "Liked",
+        categoryId: "impact-play",
+        explicitState: "like",
+      }),
+      result({
+        id: "ranked",
+        label: "Ranked",
+        categoryId: "impact-play",
+        meaningfulPairwiseComparisons: 4,
+        categoryRank: { rank: 2, comparisons: 4, confidence: 0.5 },
+      }),
+      result({
+        id: "curious",
+        label: "Curious",
+        categoryId: "impact-play",
+        explicitState: "curious",
+      }),
+    ]);
+
+    expect(
+      buildSceneCandidateView(items, ["pain"], { exploration: "familiar" })
+        .confirmed.map((item) => item.catalogId),
+    ).toEqual(["liked"]);
+
+    expect(
+      buildSceneCandidateView(items, ["pain"], { exploration: "mixed" })
+        .confirmed.map((item) => item.catalogId),
+    ).toEqual(expect.arrayContaining(["liked", "ranked"]));
+
+    expect(
+      buildSceneCandidateView(items, ["pain"], { exploration: "explore" })
+        .confirmed.map((item) => item.catalogId),
+    ).toEqual(expect.arrayContaining(["liked", "ranked", "curious"]));
+  });
+
   it("uses direct ranking evidence without pretending it is explicit preference", () => {
     const candidateView = buildSceneCandidateView(
       view([
@@ -251,6 +291,57 @@ describe("M13.2 scene candidate engine", () => {
       automaticEligible: true,
     });
     expect(candidateView.suggestedToExplore).toEqual([]);
+  });
+
+  it("applies scene-local intensity narrowing without changing profile eligibility", () => {
+    expect(matchesSceneIntensityPreference("Low", "light")).toBe(true);
+    expect(matchesSceneIntensityPreference("High", "light")).toBe(false);
+    expect(matchesSceneIntensityPreference("Moderate", "moderate")).toBe(true);
+    expect(matchesSceneIntensityPreference("High", "intense")).toBe(true);
+    expect(matchesSceneIntensityPreference("Variable", "light")).toBe(true);
+
+    const candidateView = buildSceneCandidateView(
+      view([
+        {
+          ...result({
+            id: "light",
+            label: "Light",
+            categoryId: "impact-play",
+            explicitState: "love",
+          }),
+          item: {
+            ...result({
+              id: "light",
+              label: "Light",
+              categoryId: "impact-play",
+            }).item,
+            intensity: "Low",
+          },
+        },
+        {
+          ...result({
+            id: "high",
+            label: "High",
+            categoryId: "impact-play",
+            explicitState: "love",
+          }),
+          item: {
+            ...result({
+              id: "high",
+              label: "High",
+              categoryId: "impact-play",
+            }).item,
+            intensity: "High",
+          },
+        },
+      ]),
+      ["pain"],
+      { intensity: "light" },
+    );
+
+    expect(candidateView.confirmed.map((item) => item.catalogId)).toEqual([
+      "light",
+    ]);
   });
 
   it("creates complementary theme lanes and identifies bridge items", () => {
