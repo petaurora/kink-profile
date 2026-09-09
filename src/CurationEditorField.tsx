@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   IconCirclePlus,
   IconInfoCircle,
@@ -34,16 +35,26 @@ function CurationFieldHeader({
   label: string;
   helper?: string;
 }) {
+  const [showHelp, setShowHelp] = useState(false);
+
   return (
-    <div className="curation-editor-label-row">
-      <strong>{label}</strong>
-      {helper && (
-        <details className="curation-field-help">
-          <summary aria-label={`About ${label}`}>
+    <div className="curation-editor-label-block">
+      <div className="curation-editor-label-row">
+        <strong>{label}</strong>
+        {helper && (
+          <button
+            className="curation-field-help-button"
+            type="button"
+            aria-label={`About ${label}`}
+            aria-expanded={showHelp}
+            onClick={() => setShowHelp((visible) => !visible)}
+          >
             <IconInfoCircle size={15} stroke={2} aria-hidden="true" />
-          </summary>
-          <small>{helper}</small>
-        </details>
+          </button>
+        )}
+      </div>
+      {helper && showHelp && (
+        <small className="curation-field-help-copy">{helper}</small>
       )}
     </div>
   );
@@ -58,6 +69,7 @@ function CurationWeightedRelationsEditor({
   value: readonly CurationWeightedRelation[];
   onChange: (next: CurationWeightedRelation[]) => void;
 }) {
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const available = field.options.filter(
     (option) => !value.some((relation) => relation.id === option.value),
   );
@@ -73,80 +85,107 @@ function CurationWeightedRelationsEditor({
         weight: 1,
       },
     ]);
+    setEditingIndex(value.length);
   };
+
+  const optionLabel = (id: string) =>
+    field.options.find((option) => option.value === id)?.label ?? id;
 
   return (
     <div className="curation-editor-field curation-editor-field-wide curation-relation-field">
       <CurationFieldHeader label={field.label} helper={field.helper} />
 
-      <div
-        className={`curation-relation-columns${field.allowDirection ? " has-direction" : ""}`}
-        aria-hidden="true"
-      >
-        <span>Relationship</span>
-        <span>Weight</span>
-        {field.allowDirection && <span>Direction</span>}
-        <span />
-      </div>
-
       <div className="curation-relation-list">
         {value.map((relation, index) => (
-          <div
-            className={`curation-relation-row${field.allowDirection ? " has-direction" : ""}`}
-            key={relation.id}
-          >
-            <label>
-              <span className="curation-visually-hidden">Relationship</span>
-              <select
-                aria-label={`${field.label} relationship ${index + 1}`}
-                value={relation.id}
-                onChange={(event) => {
-                  const next = [...value];
-                  next[index] = {
-                    ...relation,
-                    id: event.target.value,
-                  };
-                  onChange(next);
+          <div className="curation-relation-card" key={`${relation.id}-${index}`}>
+            <div className="curation-relation-card-top">
+              <div className="curation-relation-name">
+                <span>{optionLabel(relation.id)}</span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setEditingIndex((current) =>
+                      current === index ? null : index,
+                    )
+                  }
+                >
+                  {editingIndex === index ? "Done" : "Change"}
+                </button>
+              </div>
+
+              <label className="curation-weight-input">
+                <span>Weight</span>
+                <input
+                  aria-label={`${field.label} weight ${index + 1}`}
+                  type="number"
+                  min="0.05"
+                  max="1"
+                  step="0.05"
+                  value={relation.weight}
+                  onChange={(event) => {
+                    const next = [...value];
+                    next[index] = {
+                      ...relation,
+                      weight: Number(event.target.value),
+                    };
+                    onChange(next);
+                  }}
+                />
+              </label>
+
+              <button
+                type="button"
+                className="curation-relation-remove"
+                aria-label={`Remove ${relation.id} relationship`}
+                onClick={() => {
+                  onChange(
+                    value.filter(
+                      (_, candidateIndex) => candidateIndex !== index,
+                    ),
+                  );
+                  setEditingIndex(null);
                 }}
               >
-                {field.options.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                    disabled={
-                      option.value !== relation.id &&
-                      value.some((candidate) => candidate.id === option.value)
-                    }
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+                <IconTrash size={16} stroke={2} aria-hidden="true" />
+              </button>
+            </div>
 
-            <label className="curation-weight-input">
-              <span className="curation-visually-hidden">Weight</span>
-              <input
-                aria-label={`${field.label} weight ${index + 1}`}
-                type="number"
-                min="0.05"
-                max="1"
-                step="0.05"
-                value={relation.weight}
-                onChange={(event) => {
-                  const next = [...value];
-                  next[index] = {
-                    ...relation,
-                    weight: Number(event.target.value),
-                  };
-                  onChange(next);
-                }}
-              />
-            </label>
+            {editingIndex === index && (
+              <label className="curation-relation-change">
+                <span>Relationship</span>
+                <select
+                  aria-label={`${field.label} relationship ${index + 1}`}
+                  value={relation.id}
+                  onChange={(event) => {
+                    const next = [...value];
+                    next[index] = {
+                      ...relation,
+                      id: event.target.value,
+                    };
+                    onChange(next);
+                  }}
+                >
+                  {field.options.map((option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                      disabled={
+                        option.value !== relation.id &&
+                        value.some(
+                          (candidate) => candidate.id === option.value,
+                        )
+                      }
+                    >
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
 
             {field.allowDirection && (
-              <label>
-                <span className="curation-visually-hidden">Direction</span>
+              <label className="curation-relation-direction">
+                <span>Direction</span>
                 <select
                   aria-label={`${field.label} direction ${index + 1}`}
                   value={relation.direction ?? ""}
@@ -169,19 +208,6 @@ function CurationWeightedRelationsEditor({
                 </select>
               </label>
             )}
-
-            <button
-              type="button"
-              className="curation-relation-remove"
-              aria-label={`Remove ${relation.id} relationship`}
-              onClick={() =>
-                onChange(
-                  value.filter((_, candidateIndex) => candidateIndex !== index),
-                )
-              }
-            >
-              <IconTrash size={16} stroke={2} aria-hidden="true" />
-            </button>
           </div>
         ))}
 
