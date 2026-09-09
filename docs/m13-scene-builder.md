@@ -1,6 +1,6 @@
 # M13 — Scene Builder
 
-**Status:** in progress — M13.1–M13.4 complete  
+**Status:** in progress — M13.1–M13.5 complete  
 **Roadmap milestone:** M13  
 **Primary boundary:** M13 turns one person's existing profile into a small, relevant, consent-aware play space for a specific moment. It reduces decision load; it does not replace communication, assign obligations, or infer consent.
 
@@ -552,11 +552,11 @@ A future explicit scene-share artifact may be considered separately.
 
 ## M13.5 — Scene arc / composition builder
 
-- [ ] create ordered scene components
-- [ ] add/remove/reorder/replace components
-- [ ] support optional slots
-- [ ] retain stable source IDs
-- [ ] support scene-local notes
+- [x] create ordered scene components
+- [x] add/remove/reorder/replace components
+- [x] support optional slots
+- [x] retain stable source IDs
+- [x] support scene-local notes
 
 ## M13.6 — Randomization + shuffle
 
