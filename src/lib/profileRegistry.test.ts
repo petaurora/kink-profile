@@ -49,6 +49,7 @@ describe("profile registry migration", () => {
     expect(registry).toEqual({
       schemaVersion: 1,
       activeProfileId: profileA,
+      legacyProfileId: profileA,
       profiles: [
         {
           id: profileA,
@@ -184,6 +185,49 @@ describe("profile registry migration", () => {
     }
   });
 
+  it("does not copy the original profile's legacy session state into a later profile", () => {
+    const local = new MemoryStorage();
+    const session = new MemoryStorage();
+
+    local.setItem(
+      PROFILE_REGISTRY_STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        activeProfileId: profileB,
+        legacyProfileId: profileA,
+        profiles: [
+          {
+            id: profileA,
+            createdAt: now,
+            updatedAt: now,
+          },
+          {
+            id: profileB,
+            createdAt: now,
+            updatedAt: now,
+          },
+        ],
+      }),
+    );
+
+    session.setItem(
+      PROFILE_SCOPED_SESSION_STORAGE_KEYS[0],
+      "legacy session",
+    );
+
+    const scoped = getActiveProfileSessionStorage(
+      local,
+      session,
+    );
+
+    expect(
+      scoped.getItem(PROFILE_SCOPED_SESSION_STORAGE_KEYS[0]),
+    ).toBeNull();
+    expect(
+      session.getItem(PROFILE_SCOPED_SESSION_STORAGE_KEYS[0]),
+    ).toBe("legacy session");
+  });
+
   it("returns the active profile storage after migration", () => {
     const storage = new MemoryStorage();
     storage.setItem("pet-profile-settings-v1", "settings");
@@ -217,6 +261,7 @@ describe("profile registry migration", () => {
       parseProfileRegistry({
         schemaVersion: 1,
         activeProfileId: profileA,
+        legacyProfileId: profileA,
         profiles: [
           { id: profileA, createdAt: now, updatedAt: now },
           { id: profileA, createdAt: now, updatedAt: now },
