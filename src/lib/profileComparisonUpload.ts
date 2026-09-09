@@ -1,5 +1,8 @@
 import type { CatalogProfileState } from "./catalogProfile";
-import { buildCatalogResultView } from "./catalogResults";
+import {
+  buildCatalogResultView,
+  type CatalogResultView,
+} from "./catalogResults";
 import type { ProfileBackup } from "./profileBackup";
 import {
   buildCanonicalSignalProfile,
@@ -21,8 +24,8 @@ export type ComparisonProfileSource = {
 export type UploadedComparisonCandidate = {
   displayName: string;
   exportedAt: string;
-  currentInput: SharedProfileComparisonInput;
-  uploadedInput: SharedProfileComparisonInput;
+  currentCatalogResults: CatalogResultView;
+  uploadedCatalogResults: CatalogResultView;
   comparison: SharedProfileComparison;
 };
 
@@ -61,8 +64,8 @@ export function buildUploadedProfileComparison(
   return {
     displayName: uploaded.profile.settings.displayName,
     exportedAt: uploaded.exportedAt,
-    currentInput,
-    uploadedInput,
+    currentCatalogResults: currentInput.catalogResults,
+    uploadedCatalogResults: uploadedInput.catalogResults,
     comparison: buildSharedProfileComparison(
       currentInput,
       uploadedInput,
