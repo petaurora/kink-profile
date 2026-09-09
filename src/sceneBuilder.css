@@ -778,8 +778,8 @@
   line-height: 1.4;
 }
 
-.scene-composition-empty .primary-button,
-.scene-composition-footer .secondary-button {
+.scene-composition-empty .primary.compact,
+.scene-composition-footer .secondary.compact {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
@@ -977,7 +977,7 @@
     flex-direction: column;
   }
 
-  .scene-composition-empty .primary-button {
+  .scene-composition-empty .primary.compact {
     width: 100%;
   }
 
@@ -1034,7 +1034,7 @@
     flex-direction: column;
   }
 
-  .scene-composition-footer .secondary-button {
+  .scene-composition-footer .secondary.compact {
     width: 100%;
   }
 }
@@ -1061,13 +1061,18 @@
   gap: 8px;
 }
 
-.scene-randomizer-actions .primary-button,
-.scene-randomizer-actions .secondary-button,
-.scene-random-pick .secondary-button {
+.scene-randomizer-actions .primary.compact,
+.scene-randomizer-actions .secondary.compact,
+.scene-random-pick .secondary.compact {
+  min-height: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: .76rem;
+  white-space: nowrap;
 }
 
 .scene-randomizer-actions > span {
@@ -1144,11 +1149,11 @@
 
 @media (max-width: 480px) {
   .scene-randomizer-actions {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .scene-randomizer-actions > span {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
 
   .scene-random-pick > div:last-child {
@@ -1156,7 +1161,7 @@
     flex-direction: column;
   }
 
-  .scene-random-pick .secondary-button {
+  .scene-random-pick .secondary.compact {
     width: 100%;
   }
 }
