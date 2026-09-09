@@ -1,6 +1,6 @@
 # M13 — Scene Builder
 
-**Status:** in progress — M13.1–M13.7 complete  
+**Status:** in progress — M13.1–M13.8 complete  
 **Roadmap milestone:** M13  
 **Primary boundary:** M13 turns one person's existing profile into a small, relevant, consent-aware play space for a specific moment. It reduces decision load; it does not replace communication, assign obligations, or infer consent.
 
@@ -576,10 +576,10 @@ A future explicit scene-share artifact may be considered separately.
 
 ## M13.8 — Saved scenes + lifecycle
 
-- [ ] save/edit/duplicate/delete scene templates
-- [ ] mark scenes Needs review when referenced items become stale/excluded
-- [ ] add backup/import support
-- [ ] add independent scene reset scope
+- [x] save/edit/duplicate/delete scene templates
+- [x] mark scenes Needs review when referenced items become stale/excluded
+- [x] add backup/import support
+- [x] add independent scene reset scope
 
 ## M13.9 — Accessibility + polish
 
