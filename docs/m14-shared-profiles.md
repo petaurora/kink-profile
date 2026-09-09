@@ -525,7 +525,7 @@ Current compare-once behavior:
 - uploaded JSON is parsed locally in the browser
 - it is not routed through the destructive M9 import path
 - the raw parsed backup is not retained in React state after comparison models
-  and a small non-sensitive count summary are derived
+  and a small count summary are derived
 - only the catalog result views and derived comparison needed by M14/M13 are
   retained for the active comparison
 - v2 Rewards & Punishments backup data may be validated/summarized but is not
