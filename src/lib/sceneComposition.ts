@@ -3,6 +3,12 @@ import {
   type SceneThemeId,
 } from "../data/sceneThemes";
 import type {
+  RewardPunishmentPrimitiveRef,
+} from "./rewardPunishmentLibrary";
+import type {
+  RewardPunishmentContext,
+} from "./rewardPunishmentProfile";
+import type {
   SceneCandidate,
   SceneCandidateView,
   SceneExplorationMode,
@@ -74,7 +80,7 @@ export const scenePhaseDefinitions: readonly ScenePhaseDefinition[] = [
     id: "reward_punishment",
     label: "Reward / punishment",
     shortLabel: "Reward / punishment",
-    description: "Reserved for M11 integration in M13.7.",
+    description: "Optional M11-backed reward or punishment add-on.",
     optional: true,
     catalogEnabled: false,
   },
@@ -101,10 +107,30 @@ export type SceneCatalogSource = {
   catalogId: string;
 };
 
+export type SceneRewardPunishmentEntryRef =
+  | {
+      kind: "primitive";
+      ref: RewardPunishmentPrimitiveRef;
+    }
+  | {
+      kind: "recipe";
+      recipeId: string;
+    };
+
+export type SceneRewardPunishmentSource = {
+  kind: "reward_punishment";
+  context: RewardPunishmentContext;
+  entry: SceneRewardPunishmentEntryRef;
+};
+
+export type SceneComponentSource =
+  | SceneCatalogSource
+  | SceneRewardPunishmentSource;
+
 export type SceneCompositionComponent = {
   id: string;
   phaseId: ScenePhaseId;
-  source: SceneCatalogSource;
+  source: SceneComponentSource;
   note: string;
 };
 
@@ -115,6 +141,31 @@ export type SceneComposition = {
   exploration: SceneExplorationMode;
   components: readonly SceneCompositionComponent[];
 };
+
+export function isCatalogSceneSource(
+  source: SceneComponentSource,
+): source is SceneCatalogSource {
+  return source.kind === "catalog";
+}
+
+export function isRewardPunishmentSceneSource(
+  source: SceneComponentSource,
+): source is SceneRewardPunishmentSource {
+  return source.kind === "reward_punishment";
+}
+
+export function sceneComponentSourceKey(source: SceneComponentSource) {
+  if (source.kind === "catalog") {
+    return `catalog:${source.catalogId}`;
+  }
+
+  const entryKey =
+    source.entry.kind === "primitive"
+      ? `${source.entry.ref.kind}:${source.entry.ref.id}`
+      : `recipe:${source.entry.recipeId}`;
+
+  return `reward_punishment:${source.context}:${entryKey}`;
+}
 
 const phaseOrder = new Map(
   scenePhaseDefinitions.map((phase, index) => [phase.id, index]),
@@ -300,7 +351,9 @@ export function addCatalogSceneComponent(
   if (!candidate.automaticEligible) return composition;
   if (
     composition.components.some(
-      (component) => component.source.catalogId === candidate.catalogId,
+      (component) =>
+        component.source.kind === "catalog" &&
+        component.source.catalogId === candidate.catalogId,
     )
   ) {
     return composition;
@@ -318,12 +371,62 @@ export function addCatalogSceneComponent(
         id: nextComponentId(composition.components),
         phaseId: safePhaseId,
         source: {
-          kind: "catalog",
+          kind: "catalog" as const,
           catalogId: candidate.catalogId,
         },
         note: "",
       },
     ]),
+  };
+}
+
+export function upsertRewardPunishmentSceneComponent(
+  composition: SceneComposition,
+  source: SceneRewardPunishmentSource,
+) {
+  const existing = composition.components.find(
+    (component) => component.source.kind === "reward_punishment",
+  );
+
+  if (existing) {
+    return {
+      ...composition,
+      components: sortComponents(
+        composition.components.map((component) =>
+          component.id === existing.id
+            ? {
+                ...component,
+                phaseId: "reward_punishment" as const,
+                source,
+              }
+            : component,
+        ),
+      ),
+    };
+  }
+
+  return {
+    ...composition,
+    components: sortComponents([
+      ...composition.components,
+      {
+        id: nextComponentId(composition.components),
+        phaseId: "reward_punishment" as const,
+        source,
+        note: "",
+      },
+    ]),
+  };
+}
+
+export function removeRewardPunishmentSceneComponent(
+  composition: SceneComposition,
+) {
+  return {
+    ...composition,
+    components: composition.components.filter(
+      (component) => component.source.kind !== "reward_punishment",
+    ),
   };
 }
 
@@ -371,18 +474,29 @@ export function updateSceneComponentPhase(
   componentId: string,
   phaseId: ScenePhaseId,
 ) {
+  const component = composition.components.find(
+    (entry) => entry.id === componentId,
+  );
+  if (!component) return composition;
+
+  if (component.source.kind === "reward_punishment") {
+    return phaseId === "reward_punishment"
+      ? composition
+      : composition;
+  }
+
   const phase = scenePhaseDefinitions.find((entry) => entry.id === phaseId);
   if (!phase?.catalogEnabled) return composition;
 
   return {
     ...composition,
-    components: composition.components.map((component) =>
-      component.id === componentId
+    components: composition.components.map((entry) =>
+      entry.id === componentId
         ? {
-            ...component,
+            ...entry,
             phaseId,
           }
-        : component,
+        : entry,
     ),
   };
 }
@@ -411,10 +525,19 @@ export function replaceSceneComponent(
   replacement: SceneCandidate,
 ) {
   if (!replacement.automaticEligible) return composition;
+
+  const target = composition.components.find(
+    (component) => component.id === componentId,
+  );
+  if (!target || target.source.kind !== "catalog") {
+    return composition;
+  }
+
   if (
     composition.components.some(
       (component) =>
         component.id !== componentId &&
+        component.source.kind === "catalog" &&
         component.source.catalogId === replacement.catalogId,
     )
   ) {
@@ -445,12 +568,21 @@ export function replacementCandidatesForComponent(
   const component = composition.components.find(
     (entry) => entry.id === componentId,
   );
-  if (!component) return [];
+  if (!component || component.source.kind !== "catalog") return [];
 
   const usedIds = new Set(
     composition.components
-      .filter((entry) => entry.id !== componentId)
-      .map((entry) => entry.source.catalogId),
+      .filter(
+        (entry) =>
+          entry.id !== componentId &&
+          entry.source.kind === "catalog",
+      )
+      .map((entry) =>
+        entry.source.kind === "catalog"
+          ? entry.source.catalogId
+          : "",
+      )
+      .filter(Boolean),
   );
 
   return candidates
@@ -481,8 +613,10 @@ export function reconcileSceneComposition(
 ) {
   return {
     ...composition,
-    components: composition.components.filter((component) =>
-      eligibleCatalogIds.has(component.source.catalogId),
+    components: composition.components.filter(
+      (component) =>
+        component.source.kind !== "catalog" ||
+        eligibleCatalogIds.has(component.source.catalogId),
     ),
   };
 }
