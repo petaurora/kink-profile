@@ -1,6 +1,6 @@
 # M13 — Scene Builder
 
-**Status:** in progress — M13.1–M13.2 complete  
+**Status:** in progress — M13.1–M13.3 complete  
 **Roadmap milestone:** M13  
 **Primary boundary:** M13 turns one person's existing profile into a small, relevant, consent-aware play space for a specific moment. It reduces decision load; it does not replace communication, assign obligations, or infer consent.
 
@@ -537,10 +537,10 @@ A future explicit scene-share artifact may be considered separately.
 
 ## M13.3 — Current-session state
 
-- [ ] add Yes tonight / Maybe tonight / Not tonight
-- [ ] keep state temporary/non-authoritative
-- [ ] let session exclusions override positive profile evidence
-- [ ] clear/reset session state cleanly
+- [x] add Yes tonight / Maybe tonight / Not tonight
+- [x] keep state temporary/non-authoritative
+- [x] let session exclusions override positive profile evidence
+- [x] clear/reset session state cleanly
 
 ## M13.4 — Theme-based suggestion surface
 
