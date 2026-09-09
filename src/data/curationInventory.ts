@@ -186,7 +186,8 @@ function stringifyRecord(value: Partial<Record<string, number>> | undefined) {
   if (!value) return "";
   return Object.entries(value)
     .sort(([left], [right]) => left.localeCompare(right))
-    .filter((entry): entry is [string, number] => entry[1] !== undefined)\n    .map(([key, weight]) => `${key}: ${weight}`)
+    .filter((entry): entry is [string, number] => entry[1] !== undefined)
+    .map(([key, weight]) => `${key}: ${weight}`)
     .join(", ");
 }
 
