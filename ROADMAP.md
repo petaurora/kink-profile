@@ -24,7 +24,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M11 | ✅ Complete | contextual rewards/punishments, randomizer, and reusable builders |
 | M12 | ✅ Complete | preserve This-or-That runs and show rank movement over time |
 | M13 | 🚧 In progress | theme-driven, low-decision scene composition |
-| M14 | Planned | multi-profile comparison, complementary fit, and shared scene filtering |
+| M14 | In progress | compare-once upload, derived comparison, complementary fit, and future shared scene filtering |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
 | M16 | Planned | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
 
@@ -226,11 +226,12 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 
 **Details:** [M14 Shared Profiles](docs/m14-shared-profiles.md)
 
+- [x] **M14.0** — compare once via uploaded full-profile backup
 - [ ] **M14.1** — multi-profile storage + migration
 - [ ] **M14.2** — profile management + switcher
-- [ ] **M14.3** — derived comparison engine
-- [ ] **M14.4** — comparison UI
-- [ ] **M14.5** — interaction/complement mappings
+- [x] **M14.3** — derived comparison engine
+- [x] **M14.4** — comparison UI
+- [x] **M14.5** — interaction/complement mappings
 - [ ] **M14.6** — current participant intent
 - [ ] **M14.7** — shared M13 scene filtering
 - [ ] **M14.8** — lifecycle, privacy + polish
@@ -287,7 +288,7 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M11 and M12 are complete. M13 is in progress; M14–M16 remain formally scoped and unimplemented.**
+**M11 and M12 are complete. M13 and M14 are in progress; M15–M16 remain formally scoped.**
 
 Choose the next milestone intentionally:
 
