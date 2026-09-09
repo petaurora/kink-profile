@@ -22,6 +22,7 @@ import {
 } from "./lib/sceneCandidates";
 import {
   clearSceneSessionChoice,
+  createEmptySceneSessionState,
   loadSceneSessionState,
   saveSceneSessionState,
   setSceneSessionChoice,
@@ -69,11 +70,31 @@ import {
   resolveSceneRewardPunishmentSource,
   type SceneRewardPunishmentMode,
 } from "./lib/sceneRewardPunishment";
+import {
+  buildSharedSceneCandidateView,
+} from "./lib/sharedSceneCandidates";
+import type {
+  SharedProfileComparison,
+} from "./lib/sharedProfileComparison";
+import type {
+  SharedParticipantIntent,
+} from "./lib/sharedParticipantIntent";
 import "./sceneBuilder.css";
+
+export type SceneBuilderSharedContext = {
+  profileAName: string;
+  profileBName: string;
+  partnerCatalogResultView: CatalogResultView;
+  comparison: SharedProfileComparison;
+  profileAIntent: SharedParticipantIntent;
+  profileBIntent: SharedParticipantIntent;
+};
 
 type SceneBuilderProps = {
   catalogResultView: CatalogResultView;
   onClose: () => void;
+  initialThemeIds?: readonly SceneThemeId[];
+  sharedContext?: SceneBuilderSharedContext;
 };
 
 const familyOrder: Array<{
@@ -292,8 +313,12 @@ function CandidateCard({
 export function SceneBuilder({
   catalogResultView,
   onClose,
+  initialThemeIds = [],
+  sharedContext,
 }: SceneBuilderProps) {
-  const [selectedThemeIds, setSelectedThemeIds] = useState<SceneThemeId[]>([]);
+  const [selectedThemeIds, setSelectedThemeIds] = useState<SceneThemeId[]>(() => [
+    ...new Set(initialThemeIds),
+  ]);
   const [effort, setEffort] = useState<SceneEffort>("normal");
   const [exploration, setExploration] =
     useState<SceneExplorationMode>("mixed");
@@ -301,6 +326,9 @@ export function SceneBuilder({
     useState<SceneIntensityPreference>("any");
   const [sessionState, setSessionState] = useState(() =>
     loadSceneSessionState(),
+  );
+  const [partnerSessionState, setPartnerSessionState] = useState(() =>
+    createEmptySceneSessionState(),
   );
   const [composition, setComposition] =
     useState<SceneComposition | null>(null);
@@ -335,21 +363,36 @@ export function SceneBuilder({
 
   const candidateView = useMemo(
     () =>
-      buildSceneCandidateView(
-        catalogResultView,
-        selectedThemeIds,
-        {
-          exploration,
-          intensity,
-          sessionState,
-        },
-      ),
+      sharedContext
+        ? buildSharedSceneCandidateView(
+            catalogResultView,
+            sharedContext.partnerCatalogResultView,
+            sharedContext.comparison,
+            selectedThemeIds,
+            {
+              exploration,
+              intensity,
+              profileASessionState: sessionState,
+              profileBSessionState: partnerSessionState,
+            },
+          )
+        : buildSceneCandidateView(
+            catalogResultView,
+            selectedThemeIds,
+            {
+              exploration,
+              intensity,
+              sessionState,
+            },
+          ),
     [
       catalogResultView,
       exploration,
       intensity,
+      partnerSessionState,
       selectedThemeIds,
       sessionState,
+      sharedContext,
     ],
   );
 
