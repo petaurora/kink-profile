@@ -11,6 +11,7 @@ import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { KinkThisOrThat } from "./KinkThisOrThat";
 import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
 import { RewardPunishmentProfileSummary } from "./RewardPunishmentProfileSummary";
+import { SceneBuilder } from "./SceneBuilder";
 import {
   SiteHeader,
   type SiteHeaderDestination,
@@ -102,7 +103,8 @@ export type Screen =
   | "profile"
   | "catalog"
   | "ranking"
-  | "rewards-punishments";
+  | "rewards-punishments"
+  | "scene-builder";
 
 type AppProps = {
   initialScreen?: Screen;
@@ -833,6 +835,11 @@ export default function App({
     setScreen("rewards-punishments");
   };
 
+  const openSceneBuilder = () => {
+    setCatalogProfileSnapshot(loadCatalogProfile());
+    setScreen("scene-builder");
+  };
+
   const closeCatalog = () => {
     if (catalogDrilldown.returnTo === "profile") {
       openProfile();
@@ -867,6 +874,11 @@ export default function App({
 
     if (destination === "rewards-punishments") {
       openRewardsPunishments(screen === "profile" ? "profile" : "hub");
+      return;
+    }
+
+    if (destination === "scene-builder") {
+      openSceneBuilder();
       return;
     }
 
@@ -1006,6 +1018,36 @@ export default function App({
               </button>
             </article>
           </div>
+
+          <div className="hub-section-heading catalog-hub-heading">
+            <div>
+              <p className="eyebrow">04 · Put it together</p>
+              <h2>Build a scene without remembering everything.</h2>
+            </div>
+            <p>
+              Pick the themes that fit the moment and shrink your profile into a
+              small, relevant play space. Nothing inferred becomes automatic.
+            </p>
+          </div>
+
+          <div className="catalog-hub-grid catalog-hub-grid-single">
+            <article className="catalog-hub-card panel">
+              <div>
+                <span className="catalog-kicker">Scene Builder</span>
+                <h3>What sounds good right now?</h3>
+                <p>
+                  Combine themes like Pain + Surrender or Pet + Playful, tune the
+                  current vibe, and get a small menu backed by your actual profile.
+                </p>
+              </div>
+              <button
+                className="primary"
+                onClick={openSceneBuilder}
+              >
+                Build a scene
+              </button>
+            </article>
+          </div>
         </section>
       )}
 
@@ -1035,6 +1077,13 @@ export default function App({
           catalogProfile={catalogProfileSnapshot}
           catalogResultView={catalogResultView}
           canonicalSignals={canonicalSignals}
+          onClose={() => setScreen("hub")}
+        />
+      )}
+
+      {screen === "scene-builder" && (
+        <SceneBuilder
+          catalogResultView={catalogResultView}
           onClose={() => setScreen("hub")}
         />
       )}

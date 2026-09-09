@@ -1,6 +1,6 @@
 # M13 — Scene Builder
 
-**Status:** in progress — M13.1–M13.3 complete  
+**Status:** in progress — M13.1–M13.4 complete  
 **Roadmap milestone:** M13  
 **Primary boundary:** M13 turns one person's existing profile into a small, relevant, consent-aware play space for a specific moment. It reduces decision load; it does not replace communication, assign obligations, or infer consent.
 
@@ -544,11 +544,11 @@ A future explicit scene-share artifact may be considered separately.
 
 ## M13.4 — Theme-based suggestion surface
 
-- [ ] multi-select scene themes
-- [ ] optional effort/exploration/intensity narrowing
-- [ ] produce a bounded candidate menu
-- [ ] separate confirmed matches from Suggested to explore
-- [ ] add plain-language why-this-fits explanations
+- [x] multi-select scene themes
+- [x] optional effort/exploration/intensity narrowing
+- [x] produce a bounded candidate menu
+- [x] separate confirmed matches from Suggested to explore
+- [x] add plain-language why-this-fits explanations
 
 ## M13.5 — Scene arc / composition builder
 

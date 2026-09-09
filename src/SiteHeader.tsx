@@ -7,6 +7,7 @@ import {
   IconList,
   IconPaw,
   IconSettings,
+  IconSparkles,
   IconUser,
 } from "@tabler/icons-react";
 
@@ -15,7 +16,8 @@ export type SiteHeaderDestination =
   | "profile"
   | "ranking"
   | "catalog"
-  | "rewards-punishments";
+  | "rewards-punishments"
+  | "scene-builder";
 
 type SiteHeaderProps = {
   displayName: string;
@@ -107,6 +109,16 @@ export function SiteHeader({
             >
               <IconGift size={17} stroke={1.9} aria-hidden="true" />
               <span>Rewards / Punishments</span>
+            </button>
+            <button
+              type="button"
+              aria-current={
+                activeDestination === "scene-builder" ? "page" : undefined
+              }
+              onClick={() => navigate("scene-builder")}
+            >
+              <IconSparkles size={17} stroke={1.9} aria-hidden="true" />
+              <span>Scene Builder</span>
             </button>
           </nav>
         )}

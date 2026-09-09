@@ -24,6 +24,11 @@ import type {
 } from "./catalogResults";
 
 export type SceneExplorationMode = "familiar" | "mixed" | "explore";
+export type SceneIntensityPreference =
+  | "any"
+  | "light"
+  | "moderate"
+  | "intense";
 
 export type SceneCandidateProvenance =
   | "session"
@@ -44,6 +49,8 @@ export type SceneCandidate = {
   categoryId: string;
   categoryLabel: string;
   direction: CatalogResultItem["item"]["direction"];
+  intensity: string;
+  riskLevel: string;
   explicitState?: CatalogPreferenceState;
   sessionChoice?: SceneSessionChoice;
   provenance: SceneCandidateProvenance;
@@ -76,6 +83,7 @@ export type SceneCandidateView = {
 
 export type SceneCandidateOptions = {
   exploration?: SceneExplorationMode;
+  intensity?: SceneIntensityPreference;
   minimumThemeFit?: number;
   sessionState?: SceneSessionState;
 };
@@ -260,6 +268,8 @@ function directEvidenceStrength(
   }
 
   const pairwise =
+    exploration !== "familiar" &&
+    item.explicitState === undefined &&
     item.meaningfulPairwiseComparisons > 0
       ? Math.max(
           rankStrength(item.overallRank),
@@ -296,6 +306,29 @@ function isHardExcluded(item: CatalogResultItem) {
     item.explicitState === "not_interested" ||
     item.explicitState === "not_applicable"
   );
+}
+
+export function matchesSceneIntensityPreference(
+  intensity: string,
+  preference: SceneIntensityPreference,
+) {
+  if (preference === "any") return true;
+
+  const normalized = intensity.trim().toLocaleLowerCase();
+  if (!normalized || normalized === "variable") return true;
+
+  if (preference === "light") {
+    return normalized === "low" || normalized === "low-moderate";
+  }
+
+  if (preference === "moderate") {
+    return (
+      normalized === "low-moderate" ||
+      normalized === "moderate"
+    );
+  }
+
+  return normalized === "moderate-high" || normalized === "high";
 }
 
 function themeMatchesFor(
@@ -400,6 +433,8 @@ function toCandidate(
     categoryId: item.item.categoryId,
     categoryLabel: item.item.categoryLabel,
     direction: item.item.direction,
+    intensity: item.item.intensity,
+    riskLevel: item.item.riskLevel,
     explicitState: item.explicitState,
     sessionChoice,
     provenance,
@@ -484,6 +519,7 @@ export function buildSceneCandidateView(
   options: SceneCandidateOptions = {},
 ): SceneCandidateView {
   const exploration = options.exploration ?? "mixed";
+  const intensity = options.intensity ?? "any";
   const sessionState = options.sessionState;
   const minimumThemeFit = Math.max(
     1,
@@ -515,6 +551,9 @@ export function buildSceneCandidateView(
       item.item.id,
     );
     if (sessionChoice === "not_tonight") continue;
+    if (!matchesSceneIntensityPreference(item.item.intensity, intensity)) {
+      continue;
+    }
 
     const themeMatches = themeMatchesFor(
       item,
