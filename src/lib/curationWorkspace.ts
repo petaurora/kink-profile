@@ -24,13 +24,16 @@ export type CurationFacetRelationship = {
   weight: number;
 };
 
+export type CurationChangeListItem =
+  | string
+  | CurationWeightedRelation
+  | CurationFacetRelationship;
+
 export type CurationChangeValue =
   | string
   | number
   | boolean
-  | string[]
-  | CurationWeightedRelation[]
-  | CurationFacetRelationship[];
+  | CurationChangeListItem[];
 
 export type CurationChange = {
   entityType: CurationPrimitiveType;
