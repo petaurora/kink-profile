@@ -106,6 +106,38 @@ describe("M13.2 scene candidate engine", () => {
     expect(candidateView.suggestedToExplore).toEqual([]);
   });
 
+  it("keeps M6 hard limits authoritative even over current-session Yes", () => {
+    let sessionState = createEmptySceneSessionState();
+    sessionState = setSceneSessionChoice(
+      sessionState,
+      "blocked",
+      "yes_tonight",
+      "now",
+    );
+
+    const candidateView = buildSceneCandidateView(
+      view([
+        result({
+          id: "blocked",
+          label: "Blocked",
+          categoryId: "impact-play",
+          explicitState: "hard_limit",
+          meaningfulPairwiseComparisons: 8,
+          overallRank: {
+            rank: 1,
+            comparisons: 8,
+            confidence: 1,
+          },
+        }),
+      ]),
+      ["pain"],
+      { sessionState },
+    );
+
+    expect(candidateView.confirmed).toEqual([]);
+    expect(candidateView.suggestedToExplore).toEqual([]);
+  });
+
   it("keeps inference-only matches out of automatic candidates", () => {
     const candidateView = buildSceneCandidateView(
       view([
