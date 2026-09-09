@@ -1019,8 +1019,22 @@
   border: 1px solid rgba(240, 211, 231, 0.08);
 }
 
+.curation-relation-choice-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.curation-relation-choice-header small {
+  white-space: nowrap;
+  opacity: 0.55;
+  font-size: 0.68rem;
+}
+
 .curation-relation-choice-search {
   width: 100%;
+  min-width: 0;
   box-sizing: border-box;
   border-radius: 0.75rem;
   border: 1px solid rgba(240, 211, 231, 0.16);
