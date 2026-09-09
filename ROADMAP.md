@@ -206,7 +206,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 
 ---
 
-## M13 — Scene Builder
+## M13 — Scene Builder ✅
 
 **Details:** [M13 Scene Builder](docs/m13-scene-builder.md)
 
@@ -303,4 +303,4 @@ Choose the next milestone intentionally:
 - **M15** adds the reusable authority × activity-side contextual model for direction-sensitive preferences and rankings.
 - **M16** is the whole-app data/content quality pass, including the mobile Curation Workbench, catalog cleanup, quiz/radar review, reward/punishment curation, and the M11 recipe-builder UX/model revisit.
 
-M16 can begin before M13–M15 because its first work is inventory/curation infrastructure; later model-specific editors can be added to the same workbench as those milestones land.
+M16 can begin while M14 persistence is paused and before M15 because its first work is inventory/curation infrastructure; later model-specific editors can be added to the same workbench as those models land.
