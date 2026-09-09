@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   IconArrowRight,
   IconDownload,
+  IconDots,
   IconRefresh,
   IconSearch,
   IconTrash,
@@ -72,6 +73,7 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
     useState<CurationReviewAction | null>(null);
   const [draftReplacementId, setDraftReplacementId] = useState("");
   const [draftNote, setDraftNote] = useState("");
+  const [showLifecycleActions, setShowLifecycleActions] = useState(false);
 
   useEffect(() => {
     saveCurationWorkspace(workspace);
@@ -142,12 +144,18 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
       setDraftAction(null);
       setDraftReplacementId("");
       setDraftNote("");
+      setShowLifecycleActions(false);
       return;
     }
 
     setDraftAction(currentChange?.action ?? null);
     setDraftReplacementId(currentChange?.replacementId ?? "");
     setDraftNote(currentChange?.note ?? "");
+    setShowLifecycleActions(
+      currentChange?.action === "merge" ||
+        currentChange?.action === "archive" ||
+        currentChange?.action === "remove",
+    );
   }, [
     currentEntry?.entityId,
     currentEntry?.entityType,
@@ -383,37 +391,91 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
             <p>{currentEntry.summary}</p>
           </div>
 
-          <div className="curation-current-values">
-            <span className="catalog-kicker">Current repo value</span>
-            <div className="curation-field-grid">
-              {currentEntry.fields.map((field) => (
-                <div key={field.key}>
-                  <span>{field.label}</span>
-                  <p>{field.value || "—"}</p>
-                </div>
-              ))}
+          {draftAction !== "modify" && (
+            <div className="curation-current-values">
+              <span className="catalog-kicker">Current repo value</span>
+              <div className="curation-field-grid">
+                {currentEntry.fields.map((field) => (
+                  <div key={field.key}>
+                    <span>{field.label}</span>
+                    <p>{field.value || "—"}</p>
+                  </div>
+                ))}
+              </div>
+              <small>Source: {currentEntry.source}</small>
             </div>
-            <small>Source: {currentEntry.source}</small>
+          )}
+
+          <div className="curation-primary-actions">
+            <button
+              type="button"
+              className={draftAction === "keep" ? "is-active" : ""}
+              onClick={() => {
+                setDraftAction("keep");
+                saveDecision("keep");
+              }}
+            >
+              Keep
+            </button>
+            <button
+              type="button"
+              className={draftAction === "modify" ? "is-active" : ""}
+              onClick={() => setDraftAction("modify")}
+            >
+              Modify
+            </button>
+            <button
+              type="button"
+              className={
+                showLifecycleActions ||
+                draftAction === "merge" ||
+                draftAction === "archive" ||
+                draftAction === "remove"
+                  ? "is-active"
+                  : ""
+              }
+              aria-expanded={showLifecycleActions}
+              onClick={() => setShowLifecycleActions((visible) => !visible)}
+            >
+              <IconDots size={18} stroke={2} aria-hidden="true" />
+              More
+            </button>
           </div>
 
-          <div className="curation-action-grid">
-            {(Object.keys(actionLabels) as CurationReviewAction[]).map(
-              (action) => (
+          {showLifecycleActions && (
+            <div className="curation-lifecycle-actions">
+              {(["merge", "archive", "remove"] as const).map((action) => (
                 <button
                   type="button"
                   key={action}
                   className={draftAction === action ? "is-active" : ""}
-                  onClick={() => {
-                    setDraftAction(action);
-                    if (action === "keep") {
-                      saveDecision(action);
-                    }
-                  }}
+                  onClick={() => setDraftAction(action)}
                 >
                   {actionLabels[action]}
                 </button>
-              ),
-            )}
+              ))}
+            </div>
+          )}
+
+          <div className="curation-card-footer curation-card-nav">
+            <button className="secondary" type="button" onClick={chooseRandom}>
+              <IconRefresh size={17} stroke={2} aria-hidden="true" />
+              Surprise me
+            </button>
+            <button
+              className="secondary"
+              type="button"
+              onClick={() => {
+                const index = filteredEntries.findIndex(
+                  (entry) => entryKey(entry) === entryKey(currentEntry),
+                );
+                const next = filteredEntries[(index + 1) % filteredEntries.length];
+                setSelectedKey(entryKey(next));
+              }}
+            >
+              Next
+              <IconArrowRight size={17} stroke={2} aria-hidden="true" />
+            </button>
           </div>
 
           {draftAction === "modify" && (
@@ -510,26 +572,6 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          <div className="curation-card-footer">
-            <button className="secondary" type="button" onClick={chooseRandom}>
-              <IconRefresh size={17} stroke={2} aria-hidden="true" />
-              Surprise me
-            </button>
-            <button
-              className="secondary"
-              type="button"
-              onClick={() => {
-                const index = filteredEntries.findIndex(
-                  (entry) => entryKey(entry) === entryKey(currentEntry),
-                );
-                const next = filteredEntries[(index + 1) % filteredEntries.length];
-                setSelectedKey(entryKey(next));
-              }}
-            >
-              Next
-              <IconArrowRight size={17} stroke={2} aria-hidden="true" />
-            </button>
-          </div>
         </article>
       ) : (
         <div className="curation-empty panel">
