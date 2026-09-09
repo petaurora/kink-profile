@@ -1,8 +1,10 @@
 # M14 — Shared Profiles, Comparison & Partner Integration
 
-**Status:** in progress  
+**Status:** 🟡 needs refinement  
 **Roadmap milestone:** M14  
-**Primary boundary:** M14 allows two independent profiles to coexist in the same app, compares them without merging them, derives a shared interaction space, and lets that shared space filter M13 Scene Builder suggestions.
+**Current implemented boundary:** one owned/current profile can compare against a temporary uploaded profile, derive a shared interaction space, and feed that shared space into M13 Scene Builder without merging evidence.
+
+**Persistent-profile boundary:** paused for product-model refinement. The prior assumption that multiple people should exist as fully editable local profiles in one app is no longer an accepted architectural requirement.
 
 ---
 
@@ -20,6 +22,35 @@ Add first-class **shared-profile** support that answers:
 The product principle is:
 
 > **Compare profiles; do not collapse people into one profile.**
+
+## Refinement checkpoint
+
+The comparison model is working, but the ownership/persistence model needs to be
+re-decided before further storage work.
+
+The unresolved product question is:
+
+> Does "multiple profiles" mean one user can act as multiple editable people,
+> or does it mean one owned profile can interact with other people's profiles?
+
+Models to evaluate before resuming M14.1–M14.2:
+
+1. **One owned profile + temporary comparisons** — uploaded profiles exist only
+   for the active comparison/session.
+2. **One owned profile + linked/read-only profiles** — other people can be
+   retained locally as partner snapshots without becoming editable identities.
+3. **Multiple fully editable local profiles** — the previously planned
+   active-profile/switcher model.
+4. **Account-owned profiles + linking later** — each person owns their own
+   profile; local upload remains the no-account fallback.
+
+Until this is resolved:
+
+- do not implement a global active-profile switcher
+- do not namespace all existing authoritative storage around ProfileId
+- do not treat another person's uploaded profile as editable local identity
+- preserve M14.0/M14.3–M14.8 compare-once behavior
+- keep shared comparison state derived and non-authoritative
 
 ---
 
@@ -169,9 +200,14 @@ Shared views must distinguish:
 
 ---
 
-# Multi-profile storage
+# Persistent profile storage — provisional design
 
-M14 requires evolving the current single-profile assumption.
+> **Status: needs refinement.** This section documents the previously proposed
+> fully editable multi-profile model for reference. It is not currently an
+> approved implementation direction.
+
+The prior M14 design assumed evolving the current single-profile model into
+multiple editable local profile containers.
 
 Conceptually:
 
@@ -233,9 +269,12 @@ The migration should be versioned and tested.
 
 ---
 
-# Profile management
+# Profile management — provisional design
 
-Initial local-only behavior should support:
+> **Status: needs refinement.** These controls apply only if a true
+> multi-editable-profile model is chosen.
+
+The previous local-only design proposed:
 
 - create profile
 - switch active profile
@@ -615,20 +654,30 @@ This provides a useful local comparison path before persistent multi-profile
 storage exists. M14.1–M14.2 can later add saved/linked profiles without changing
 the comparison engine or UI contract.
 
-## M14.1 — Multi-profile storage + migration
+## M14.1 — Persistent profile/link storage model
 
-- [ ] define stable ProfileId + profile registry
-- [ ] migrate current single-profile state without evidence loss
-- [ ] scope all authoritative storage by ProfileId
-- [ ] add migration/regression tests
+**Status:** ⏸ needs refinement before implementation
 
-## M14.2 — Profile management + switcher
+The previous scope assumed a stable ProfileId registry, migration of the current
+single profile, and all authoritative stores namespaced by an active profile.
+That architecture is paused until the product decides between owned-profile,
+linked-profile, temporary-comparison, and fully editable multi-profile models.
 
-- [ ] create profile
-- [ ] switch active profile
-- [ ] rename/delete/reset one profile safely
-- [ ] import/export one profile independently
-- [ ] preserve existing M9 lifecycle semantics per profile
+No M14.1 storage migration should be merged while this decision is open.
+
+## M14.2 — Saved profile/link management UX
+
+**Status:** ⏸ needs refinement before implementation
+
+Do not build a profile switcher yet. The eventual UX depends on the ownership
+model selected in M14.1.
+
+Possible future management actions may include:
+- update/replace a linked person's snapshot
+- unlink/remove a comparison profile
+- import another profile for temporary or saved comparison
+- switch editable identities only if the fully editable multi-profile model is
+  explicitly chosen
 
 ## M14.3 — Derived comparison engine
 
@@ -695,13 +744,12 @@ would violate the same either-person exclusion rule.
 - [x] accessibility/mobile polish
 - [x] regression-run M6/M7/M9/M11/M13 boundaries
 - [x] finalize M14.8 docs
-- [ ] mark M14 complete after M14.1–M14.2
+- [ ] mark M14 complete after the persistent ownership/linking model is refined
 
-M14.8 is complete, but it deliberately does **not** mark the full milestone
-complete while M14.1–M14.2 remain open. The compare-once lifecycle is polished
-and privacy-reviewed, but persistent local profiles still need stable identity,
-migration, management, and switching before the full M14 exit condition is
-satisfied.
+M14.8 is complete, but the full milestone remains open. Compare-once,
+comparison, participant-intent, and shared Scene Builder behavior are valid;
+the persistent multi-person ownership/linking model must be refined before any
+new M14 storage or management architecture is accepted.
 
 ---
 
@@ -725,4 +773,17 @@ M14 does not initially provide:
 
 # Exit condition
 
-M14 is complete when two independent profiles can coexist locally, be switched and managed without evidence contamination, produce an explainable shared comparison that distinguishes mutual and complementary fit from unknown/excluded states, and feed both profiles plus current participant intent into M13 so the Scene Builder can produce a bounded play space that fits both people.
+M14 is complete when:
+
+1. the product explicitly chooses and documents a profile ownership/linking
+   model,
+2. that model preserves independent evidence and privacy,
+3. shared comparison still distinguishes mutual/complementary/curious/unknown/
+   excluded states without merging people,
+4. participant intent and both profiles can safely constrain M13 Scene Builder,
+   and
+5. any persistent linked/profile lifecycle follows the chosen ownership model
+   without introducing accidental editability or identity confusion.
+
+The existing compare-once path already satisfies the comparison/shared-scene
+portion; persistence remains intentionally unresolved.
