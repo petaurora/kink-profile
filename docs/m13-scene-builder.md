@@ -1,6 +1,6 @@
 # M13 — Scene Builder
 
-**Status:** in progress — M13.1–M13.5 complete  
+**Status:** in progress — M13.1–M13.6 complete  
 **Roadmap milestone:** M13  
 **Primary boundary:** M13 turns one person's existing profile into a small, relevant, consent-aware play space for a specific moment. It reduces decision load; it does not replace communication, assign obligations, or infer consent.
 
@@ -560,12 +560,12 @@ A future explicit scene-share artifact may be considered separately.
 
 ## M13.6 — Randomization + shuffle
 
-- [ ] Pick something
-- [ ] Build something
-- [ ] Shuffle one part
-- [ ] anti-repeat within current session
-- [ ] enforce all eligibility rules
-- [ ] keep inference-only items out of automatic selection
+- [x] Pick something
+- [x] Build something
+- [x] Shuffle one part
+- [x] anti-repeat within current session
+- [x] enforce all eligibility rules
+- [x] keep inference-only items out of automatic selection
 
 ## M13.7 — M11 integration
 

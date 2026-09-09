@@ -778,8 +778,8 @@
   line-height: 1.4;
 }
 
-.scene-composition-empty .primary-button,
-.scene-composition-footer .secondary-button {
+.scene-composition-empty .primary.compact,
+.scene-composition-footer .secondary.compact {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
@@ -977,7 +977,7 @@
     flex-direction: column;
   }
 
-  .scene-composition-empty .primary-button {
+  .scene-composition-empty .primary.compact {
     width: 100%;
   }
 
@@ -1034,7 +1034,134 @@
     flex-direction: column;
   }
 
-  .scene-composition-footer .secondary-button {
+  .scene-composition-footer .secondary.compact {
+    width: 100%;
+  }
+}
+
+
+.scene-randomizer {
+  padding: clamp(18px, 3vw, 28px);
+  display: grid;
+  gap: 12px;
+}
+
+.scene-randomizer-copy {
+  max-width: 760px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: .8rem;
+  line-height: 1.45;
+}
+
+.scene-randomizer-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.scene-randomizer-actions .primary.compact,
+.scene-randomizer-actions .secondary.compact,
+.scene-random-pick .secondary.compact {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: .76rem;
+  white-space: nowrap;
+}
+
+.scene-randomizer-actions > span {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: .7rem;
+  font-weight: 750;
+}
+
+.scene-random-pick {
+  border: 1px solid var(--accent-border);
+  border-radius: 14px;
+  background: var(--bg-surface-emphasis);
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.scene-random-pick > div:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.scene-random-pick strong {
+  font-size: 1rem;
+}
+
+.scene-random-pick small {
+  color: var(--text-muted);
+  font-size: .7rem;
+  font-weight: 700;
+}
+
+.scene-random-pick > div:last-child {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scene-randomizer button:focus-visible,
+.scene-random-pick button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 680px) {
+  .scene-randomizer {
+    padding: 14px;
+  }
+
+  .scene-randomizer-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .scene-randomizer-actions > span {
+    grid-column: 1 / -1;
+    margin-left: 0;
+  }
+
+  .scene-random-pick {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scene-random-pick > div:last-child {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .scene-randomizer-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scene-randomizer-actions > span {
+    grid-column: 1 / -1;
+  }
+
+  .scene-random-pick > div:last-child {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .scene-random-pick .secondary.compact {
     width: 100%;
   }
 }
