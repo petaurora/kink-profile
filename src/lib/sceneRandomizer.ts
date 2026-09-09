@@ -18,8 +18,19 @@ export type SceneRandomizerState = {
   recentCatalogIds: string[];
 };
 
-const STORAGE_KEY = "kink-profile-scene-randomizer-v1";
+export type SceneRandomizerStorageLike = Pick<
+  Storage,
+  "getItem" | "setItem" | "removeItem"
+>;
+
+export const SCENE_RANDOMIZER_STORAGE_KEY =
+  "kink-profile-scene-randomizer-v1";
+
 const MAX_RECENT = 10;
+
+function browserSessionStorage(): SceneRandomizerStorageLike {
+  return sessionStorage;
+}
 
 function normalizedState(value: unknown): SceneRandomizerState {
   if (
@@ -54,13 +65,11 @@ export function createEmptySceneRandomizerState(): SceneRandomizerState {
   };
 }
 
-export function loadSceneRandomizerState(): SceneRandomizerState {
-  if (typeof window === "undefined") {
-    return createEmptySceneRandomizerState();
-  }
-
+export function loadSceneRandomizerState(
+  storage: SceneRandomizerStorageLike = browserSessionStorage(),
+): SceneRandomizerState {
   try {
-    const raw = window.sessionStorage.getItem(STORAGE_KEY);
+    const raw = storage.getItem(SCENE_RANDOMIZER_STORAGE_KEY);
     if (!raw) return createEmptySceneRandomizerState();
     return normalizedState(JSON.parse(raw));
   } catch {
@@ -68,21 +77,26 @@ export function loadSceneRandomizerState(): SceneRandomizerState {
   }
 }
 
-export function saveSceneRandomizerState(state: SceneRandomizerState) {
-  if (typeof window === "undefined") return;
-
+export function saveSceneRandomizerState(
+  state: SceneRandomizerState,
+  storage: SceneRandomizerStorageLike = browserSessionStorage(),
+) {
   const normalized = normalizedState(state);
   if (normalized.recentCatalogIds.length === 0) {
-    window.sessionStorage.removeItem(STORAGE_KEY);
+    storage.removeItem(SCENE_RANDOMIZER_STORAGE_KEY);
     return;
   }
 
-  window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+  storage.setItem(
+    SCENE_RANDOMIZER_STORAGE_KEY,
+    JSON.stringify(normalized),
+  );
 }
 
-export function clearSceneRandomizerState() {
-  if (typeof window === "undefined") return;
-  window.sessionStorage.removeItem(STORAGE_KEY);
+export function clearSceneRandomizerState(
+  storage: SceneRandomizerStorageLike = browserSessionStorage(),
+) {
+  storage.removeItem(SCENE_RANDOMIZER_STORAGE_KEY);
 }
 
 export function recordSceneRandomPick(
