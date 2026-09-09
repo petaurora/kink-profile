@@ -33,12 +33,14 @@ import {
   createEmptySceneComposition,
   moveSceneComponent,
   reconcileSceneComposition,
+  removeRewardPunishmentSceneComponent,
   removeSceneComponent,
   replacementCandidatesForComponent,
   replaceSceneComponent,
   scenePhaseDefinitions,
   updateSceneComponentNote,
   updateSceneComponentPhase,
+  upsertRewardPunishmentSceneComponent,
   type SceneComposition,
   type SceneEffort,
   type ScenePhaseId,
@@ -55,6 +57,18 @@ import {
   saveSceneRandomizerState,
   shuffleSceneComponent,
 } from "./lib/sceneRandomizer";
+import {
+  loadRewardPunishmentProfile,
+} from "./lib/rewardPunishmentProfileStorage";
+import {
+  loadRewardPunishmentRecipeState,
+} from "./lib/rewardPunishmentRecipeStorage";
+import {
+  getSceneRewardPunishmentAvailability,
+  pickSceneRewardPunishment,
+  resolveSceneRewardPunishmentSource,
+  type SceneRewardPunishmentMode,
+} from "./lib/sceneRewardPunishment";
 import "./sceneBuilder.css";
 
 type SceneBuilderProps = {
@@ -120,6 +134,16 @@ const intensityOptions: Array<{
   { id: "light", label: "Light" },
   { id: "moderate", label: "Moderate" },
   { id: "intense", label: "Intense" },
+];
+
+const rewardPunishmentModes: Array<{
+  id: SceneRewardPunishmentMode;
+  label: string;
+}> = [
+  { id: "none", label: "None" },
+  { id: "reward", label: "Reward" },
+  { id: "punishment", label: "Punishment" },
+  { id: "either", label: "Surprise me" },
 ];
 
 const sessionChoices: Array<{
@@ -285,6 +309,16 @@ export function SceneBuilder({
   );
   const [randomPick, setRandomPick] =
     useState<SceneCandidate | null>(null);
+  const [rewardPunishmentProfile] = useState(() =>
+    loadRewardPunishmentProfile(),
+  );
+  const [rewardPunishmentRecipes] = useState(() =>
+    loadRewardPunishmentRecipeState(),
+  );
+  const [rewardPunishmentMode, setRewardPunishmentMode] =
+    useState<SceneRewardPunishmentMode>("none");
+  const [lastRewardPunishmentKey, setLastRewardPunishmentKey] =
+    useState<string | undefined>(undefined);
 
   useEffect(() => {
     saveSceneSessionState(sessionState);
@@ -346,12 +380,39 @@ export function SceneBuilder({
   const compositionCatalogIds = useMemo(
     () =>
       new Set(
-        composition?.components.map(
-          (component) => component.source.catalogId,
-        ) ?? [],
+        composition?.components
+          .filter(
+            (component) => component.source.kind === "catalog",
+          )
+          .map((component) =>
+            component.source.kind === "catalog"
+              ? component.source.catalogId
+              : "",
+          )
+          .filter(Boolean) ?? [],
       ),
     [composition],
   );
+
+  const rewardPunishmentAvailability = useMemo(
+    () =>
+      getSceneRewardPunishmentAvailability(
+        rewardPunishmentProfile,
+        rewardPunishmentRecipes.recipes,
+      ),
+    [rewardPunishmentProfile, rewardPunishmentRecipes],
+  );
+
+  const rewardPunishmentPoolCount = (
+    mode: SceneRewardPunishmentMode,
+  ) =>
+    mode === "reward"
+      ? rewardPunishmentAvailability.reward
+      : mode === "punishment"
+        ? rewardPunishmentAvailability.punishment
+        : mode === "either"
+          ? rewardPunishmentAvailability.either
+          : 0;
 
   useEffect(() => {
     if (!composition) return;
@@ -417,12 +478,23 @@ export function SceneBuilder({
   };
 
   const makeStarterScene = () => {
-    setComposition(
-      buildStarterSceneComposition(candidateView, {
+    setComposition((current) => {
+      let next = buildStarterSceneComposition(candidateView, {
         effort,
         exploration,
-      }),
-    );
+      });
+      const addOn = current?.components.find(
+        (component) =>
+          component.source.kind === "reward_punishment",
+      );
+      if (addOn?.source.kind === "reward_punishment") {
+        next = upsertRewardPunishmentSceneComponent(
+          next,
+          addOn.source,
+        );
+      }
+      return next;
+    });
   };
 
   const addCandidateToScene = (candidate: SceneCandidate) => {
@@ -451,15 +523,16 @@ export function SceneBuilder({
     const component = composition.components.find(
       (entry) => entry.id === componentId,
     );
-    if (!component) return;
+    if (!component || component.source.kind !== "catalog") return;
 
+    const currentCatalogId = component.source.catalogId;
     const replacement = replacementCandidatesForComponent(
       composition,
       componentId,
       candidateView.coverageOrder,
     ).find(
       (candidate) =>
-        candidate.catalogId !== component.source.catalogId,
+        candidate.catalogId !== currentCatalogId,
     );
     if (!replacement) return;
 
@@ -478,6 +551,79 @@ export function SceneBuilder({
         exploration,
       }),
     );
+  };
+
+  const pickRewardPunishmentAddon = (
+    mode: SceneRewardPunishmentMode = rewardPunishmentMode,
+  ) => {
+    if (mode === "none") {
+      setComposition((current) =>
+        current
+          ? removeRewardPunishmentSceneComponent(current)
+          : current,
+      );
+      return;
+    }
+
+    const pick = pickSceneRewardPunishment(
+      rewardPunishmentProfile,
+      rewardPunishmentRecipes.recipes,
+      mode,
+      {
+        previousKey: lastRewardPunishmentKey,
+      },
+    );
+    if (!pick) return;
+
+    setComposition((current) =>
+      upsertRewardPunishmentSceneComponent(
+        current ??
+          createEmptySceneComposition({
+            themeIds: selectedThemeIds,
+            effort,
+            exploration,
+          }),
+        pick.source,
+      ),
+    );
+    setLastRewardPunishmentKey(pick.key);
+  };
+
+  const changeRewardPunishmentMode = (
+    mode: SceneRewardPunishmentMode,
+  ) => {
+    setRewardPunishmentMode(mode);
+    if (mode === "none") {
+      setComposition((current) =>
+        current
+          ? removeRewardPunishmentSceneComponent(current)
+          : current,
+      );
+    }
+  };
+
+  const removeRewardPunishmentAddon = () => {
+    setRewardPunishmentMode("none");
+    setComposition((current) =>
+      current
+        ? removeRewardPunishmentSceneComponent(current)
+        : current,
+    );
+  };
+
+  const shuffleRewardPunishmentAddon = () => {
+    const component = composition?.components.find(
+      (entry) => entry.source.kind === "reward_punishment",
+    );
+    if (!component || component.source.kind !== "reward_punishment") {
+      return;
+    }
+
+    const mode =
+      rewardPunishmentMode === "none"
+        ? component.source.context
+        : rewardPunishmentMode;
+    pickRewardPunishmentAddon(mode);
   };
 
   const pickSomething = () => {
@@ -499,7 +645,28 @@ export function SceneBuilder({
         state: randomizerState,
       },
     );
-    setComposition(result.composition);
+    let nextComposition = result.composition;
+
+    if (rewardPunishmentMode !== "none") {
+      const addOn = pickSceneRewardPunishment(
+        rewardPunishmentProfile,
+        rewardPunishmentRecipes.recipes,
+        rewardPunishmentMode,
+        {
+          previousKey: lastRewardPunishmentKey,
+        },
+      );
+
+      if (addOn) {
+        nextComposition = upsertRewardPunishmentSceneComponent(
+          nextComposition,
+          addOn.source,
+        );
+        setLastRewardPunishmentKey(addOn.key);
+      }
+    }
+
+    setComposition(nextComposition);
     setRandomizerState(result.state);
     setRandomPick(null);
   };
@@ -828,6 +995,76 @@ export function SceneBuilder({
               )}
             </div>
 
+            <div className="scene-rp-control">
+              <div className="scene-rp-control-copy">
+                <strong>Optional reward / punishment</strong>
+                <span>
+                  Uses only M11 items and recipes already marked eligible
+                  for random use.
+                </span>
+              </div>
+
+              <div
+                className="scene-rp-modes"
+                aria-label="Reward or punishment add-on"
+              >
+                {rewardPunishmentModes.map((mode) => {
+                  const count = rewardPunishmentPoolCount(mode.id);
+                  const unavailable =
+                    mode.id !== "none" && count === 0;
+
+                  return (
+                    <button
+                      type="button"
+                      key={mode.id}
+                      className={
+                        rewardPunishmentMode === mode.id
+                          ? "selected"
+                          : ""
+                      }
+                      aria-pressed={
+                        rewardPunishmentMode === mode.id
+                      }
+                      disabled={unavailable}
+                      title={
+                        unavailable
+                          ? "No M11 random-eligible options in this context."
+                          : undefined
+                      }
+                      onClick={() =>
+                        changeRewardPunishmentMode(mode.id)
+                      }
+                    >
+                      <span>{mode.label}</span>
+                      {mode.id !== "none" && (
+                        <small>{count}</small>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {rewardPunishmentMode !== "none" && (
+                <button
+                  type="button"
+                  className="secondary compact scene-rp-pick"
+                  disabled={
+                    rewardPunishmentPoolCount(
+                      rewardPunishmentMode,
+                    ) === 0
+                  }
+                  onClick={() => pickRewardPunishmentAddon()}
+                >
+                  <IconSparkles
+                    size={15}
+                    stroke={2}
+                    aria-hidden="true"
+                  />
+                  Pick add-on
+                </button>
+              )}
+            </div>
+
             {randomPick && (
               <div className="scene-random-pick" aria-live="polite">
                 <div>
@@ -893,9 +1130,9 @@ export function SceneBuilder({
                 <span
                   key={phase.id}
                   className={
-                    phase.catalogEnabled
-                      ? "scene-arc-phase"
-                      : "scene-arc-phase reserved"
+                    phase.id === "reward_punishment"
+                      ? "scene-arc-phase m11"
+                      : "scene-arc-phase"
                   }
                   title={phase.description}
                 >
@@ -929,8 +1166,147 @@ export function SceneBuilder({
               <>
                 <div className="scene-composition-list">
                   {composition.components.map((component, index) => {
+                    if (
+                      component.source.kind === "reward_punishment"
+                    ) {
+                      const resolved =
+                        resolveSceneRewardPunishmentSource(
+                          component.source,
+                          rewardPunishmentRecipes.recipes,
+                        );
+                      const contextLabel =
+                        component.source.context === "reward"
+                          ? "Reward"
+                          : "Punishment";
+                      const accessibleLabel =
+                        `${contextLabel}: ${resolved.label}`;
+
+                      return (
+                        <article
+                          className="scene-component scene-component-m11"
+                          key={component.id}
+                        >
+                          <div className="scene-component-order">
+                            <span>{index + 1}</span>
+                            <div>
+                              <button
+                                type="button"
+                                aria-label={`Move ${accessibleLabel} up`}
+                                disabled={index === 0}
+                                onClick={() =>
+                                  setComposition((current) =>
+                                    current
+                                      ? moveSceneComponent(
+                                          current,
+                                          component.id,
+                                          "up",
+                                        )
+                                      : current,
+                                  )
+                                }
+                              >
+                                <IconArrowUp
+                                  size={15}
+                                  stroke={2}
+                                  aria-hidden="true"
+                                />
+                              </button>
+                              <button
+                                type="button"
+                                aria-label={`Move ${accessibleLabel} down`}
+                                disabled={
+                                  index ===
+                                  composition.components.length - 1
+                                }
+                                onClick={() =>
+                                  setComposition((current) =>
+                                    current
+                                      ? moveSceneComponent(
+                                          current,
+                                          component.id,
+                                          "down",
+                                        )
+                                      : current,
+                                  )
+                                }
+                              >
+                                <IconArrowDown
+                                  size={15}
+                                  stroke={2}
+                                  aria-hidden="true"
+                                />
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="scene-component-body">
+                            <div className="scene-component-top">
+                              <div>
+                                <span className="scene-component-fixed-phase">
+                                  Reward / punishment
+                                </span>
+                                <h3>{resolved.label}</h3>
+                                <span>
+                                  {contextLabel} · {resolved.kindLabel} ·
+                                  {" "}confirmed in M11
+                                </span>
+                              </div>
+
+                              <div className="scene-component-actions">
+                                <button
+                                  type="button"
+                                  onClick={shuffleRewardPunishmentAddon}
+                                >
+                                  <IconSparkles
+                                    size={15}
+                                    stroke={2}
+                                    aria-hidden="true"
+                                  />
+                                  Shuffle
+                                </button>
+                                <button
+                                  type="button"
+                                  className="icon-only"
+                                  aria-label={`Remove ${accessibleLabel} from scene`}
+                                  onClick={removeRewardPunishmentAddon}
+                                >
+                                  <IconX
+                                    size={16}
+                                    stroke={2}
+                                    aria-hidden="true"
+                                  />
+                                </button>
+                              </div>
+                            </div>
+
+                            <label className="scene-component-note">
+                              <span>Scene-local note</span>
+                              <textarea
+                                rows={2}
+                                value={component.note}
+                                placeholder="Anything to remember for this add-on…"
+                                onChange={(event) =>
+                                  setComposition((current) =>
+                                    current
+                                      ? updateSceneComponentNote(
+                                          current,
+                                          component.id,
+                                          event.target.value,
+                                        )
+                                      : current,
+                                  )
+                                }
+                              />
+                            </label>
+                          </div>
+                        </article>
+                      );
+                    }
+
+                    const currentCatalogId =
+                      component.source.catalogId;
                     const candidate = confirmedById.get(
-                      component.source.catalogId,
+                      currentCatalogId,
                     );
                     if (!candidate) return null;
 
@@ -942,7 +1318,7 @@ export function SceneBuilder({
                       ).filter(
                         (replacement) =>
                           replacement.catalogId !==
-                          component.source.catalogId,
+                          currentCatalogId,
                       );
 
                     return (
