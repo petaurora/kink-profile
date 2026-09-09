@@ -617,10 +617,31 @@ the comparison engine or UI contract.
 
 ## M14.1 — Multi-profile storage + migration
 
-- [ ] define stable ProfileId + profile registry
-- [ ] migrate current single-profile state without evidence loss
-- [ ] scope all authoritative storage by ProfileId
-- [ ] add migration/regression tests
+- [x] define stable ProfileId + profile registry
+- [x] migrate current single-profile state without evidence loss
+- [x] scope all authoritative storage by ProfileId
+- [x] add migration/regression tests
+
+The registry is a small global localStorage record with one stable active
+ProfileId and profile metadata. Existing single-profile data migrates
+copy-first into a profile namespace; the registry is written only after every
+known scoped write succeeds. Legacy source keys are intentionally left intact
+as a rollback/source-of-truth safety net, but normal runtime reads and writes
+use only the active profile namespace once the registry exists.
+
+Profile-scoped local state includes quizzes, catalog preferences/ranking
+history, settings/name, M11 profile/ranking/recipes, M11 sorter progress, and
+M13 saved scenes. Scene Builder Tonight overrides and randomizer history use
+the same ProfileId namespace in sessionStorage so switching profiles cannot
+bleed temporary state across people.
+
+The registry records the original migrated ProfileId separately so legacy
+sessionStorage is migrated only into that original profile, never into a later
+new profile.
+
+Migration regression tests compare a complete v3 Full Profile Export before
+and after namespacing to prove quizzes, catalog evidence, settings, M11 state,
+and saved scenes survive unchanged.
 
 ## M14.2 — Profile management + switcher
 
