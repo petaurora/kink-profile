@@ -40,7 +40,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 - [x] responsive UI
 - [x] GitHub CI + Pages deployment
 
-The original M0 scorer remains only as the Starter Profile sampler.
+The original M0 Starter Profile and its separate legacy dimension scorer were retired during M16.3. Old stored/exported Starter answers remain compatibility-only data.
 
 ---
 
@@ -268,7 +268,7 @@ plus linked/read-only partner profiles, or temporary comparison only.
 
 - [x] **M16.1** — inventory authored/derived data surfaces + review rubric
 - [ ] **M16.2** — mobile-friendly Curation Workbench + local proposal/export workflow _(structured editors + validation in progress)_
-- [ ] **M16.3** — quiz bank, signal-weight, and scoring-input review
+- [ ] **M16.3** — quiz bank, signal-weight, and scoring-input review _(legacy Starter scorer retired; broader quiz review pending)_
 - [ ] **M16.4** — signal vocabulary, headspaces, radars, facets, labels, and thresholds review
 - [ ] **M16.5** — kink catalog pruning/consolidation + pending additions review
 - [ ] **M16.6** — rewards/punishments action library + contextual taxonomy curation
