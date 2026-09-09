@@ -22,7 +22,6 @@ function item(
     signalMappings: [],
     description: "",
     typicalRole: "",
-    primaryMode: "",
     intensity: "",
     riskLevel: "",
   } as KinkCatalogItem;
