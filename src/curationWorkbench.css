@@ -775,13 +775,16 @@
     justify-content: center;
   }
 
-  .curation-relation-add-card {
-    grid-template-columns: 1fr;
+  .curation-relation-choice-panel {
+    padding: 0.45rem;
   }
 
-  .curation-relation-add-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .curation-relation-choice-list {
+    max-height: 42vh;
+  }
+
+  .curation-relation-choice {
+    padding: 0.62rem;
   }
 
   .curation-surface-row {
@@ -1007,45 +1010,62 @@
   gap: 0.4rem;
 }
 
-.curation-relation-add-card {
+.curation-relation-choice-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.55rem;
-  align-items: end;
-  padding: 0.55rem;
+  gap: 0.45rem;
+  padding: 0.5rem;
   border-radius: 0.75rem;
   background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(240, 211, 231, 0.08);
 }
 
-.curation-relation-add-select {
-  min-width: 0;
-  display: grid;
-  gap: 0.2rem;
-}
-
-.curation-relation-add-select > span {
-  font-size: 0.66rem;
-  opacity: 0.55;
-}
-
-.curation-relation-add-select select {
+.curation-relation-choice-search {
   width: 100%;
-  min-width: 0;
   box-sizing: border-box;
   border-radius: 0.75rem;
   border: 1px solid rgba(240, 211, 231, 0.16);
   background: rgba(0, 0, 0, 0.13);
   color: inherit;
-  padding: 0.7rem 0.75rem;
+  padding: 0.62rem 0.7rem;
 }
 
-.curation-relation-add-actions {
-  display: flex;
-  gap: 0.4rem;
+.curation-relation-choice-list {
+  display: grid;
+  gap: 0.3rem;
+  max-height: min(18rem, 48vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 
-.curation-relation-add-actions button {
-  min-height: 2.55rem;
+.curation-relation-choice {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 0.08rem;
+  text-align: left;
+  padding: 0.58rem 0.65rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(240, 211, 231, 0.08);
+  background: rgba(240, 211, 231, 0.035);
+  color: inherit;
+}
+
+.curation-relation-choice:active {
+  background: rgba(240, 211, 231, 0.12);
+}
+
+.curation-relation-choice strong {
+  min-width: 0;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.curation-relation-choice small {
+  font-size: 0.66rem;
+  opacity: 0.48;
+  overflow-wrap: anywhere;
 }
 
 .curation-editor-empty {
