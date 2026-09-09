@@ -525,13 +525,14 @@ export function SceneBuilder({
     );
     if (!component || component.source.kind !== "catalog") return;
 
+    const currentCatalogId = component.source.catalogId;
     const replacement = replacementCandidatesForComponent(
       composition,
       componentId,
       candidateView.coverageOrder,
     ).find(
       (candidate) =>
-        candidate.catalogId !== component.source.catalogId,
+        candidate.catalogId !== currentCatalogId,
     );
     if (!replacement) return;
 
@@ -1302,8 +1303,10 @@ export function SceneBuilder({
                       );
                     }
 
+                    const currentCatalogId =
+                      component.source.catalogId;
                     const candidate = confirmedById.get(
-                      component.source.catalogId,
+                      currentCatalogId,
                     );
                     if (!candidate) return null;
 
@@ -1315,7 +1318,7 @@ export function SceneBuilder({
                       ).filter(
                         (replacement) =>
                           replacement.catalogId !==
-                          component.source.catalogId,
+                          currentCatalogId,
                       );
 
                     return (
