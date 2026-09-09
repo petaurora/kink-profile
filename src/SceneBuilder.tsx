@@ -1165,6 +1165,143 @@ export function SceneBuilder({
               <>
                 <div className="scene-composition-list">
                   {composition.components.map((component, index) => {
+                    if (
+                      component.source.kind === "reward_punishment"
+                    ) {
+                      const resolved =
+                        resolveSceneRewardPunishmentSource(
+                          component.source,
+                          rewardPunishmentRecipes.recipes,
+                        );
+                      const contextLabel =
+                        component.source.context === "reward"
+                          ? "Reward"
+                          : "Punishment";
+                      const accessibleLabel =
+                        `${contextLabel}: ${resolved.label}`;
+
+                      return (
+                        <article
+                          className="scene-component scene-component-m11"
+                          key={component.id}
+                        >
+                          <div className="scene-component-order">
+                            <span>{index + 1}</span>
+                            <div>
+                              <button
+                                type="button"
+                                aria-label={`Move ${accessibleLabel} up`}
+                                disabled={index === 0}
+                                onClick={() =>
+                                  setComposition((current) =>
+                                    current
+                                      ? moveSceneComponent(
+                                          current,
+                                          component.id,
+                                          "up",
+                                        )
+                                      : current,
+                                  )
+                                }
+                              >
+                                <IconArrowUp
+                                  size={15}
+                                  stroke={2}
+                                  aria-hidden="true"
+                                />
+                              </button>
+                              <button
+                                type="button"
+                                aria-label={`Move ${accessibleLabel} down`}
+                                disabled={
+                                  index ===
+                                  composition.components.length - 1
+                                }
+                                onClick={() =>
+                                  setComposition((current) =>
+                                    current
+                                      ? moveSceneComponent(
+                                          current,
+                                          component.id,
+                                          "down",
+                                        )
+                                      : current,
+                                  )
+                                }
+                              >
+                                <IconArrowDown
+                                  size={15}
+                                  stroke={2}
+                                  aria-hidden="true"
+                                />
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="scene-component-body">
+                            <div className="scene-component-top">
+                              <div>
+                                <span className="scene-component-fixed-phase">
+                                  Reward / punishment
+                                </span>
+                                <h3>{resolved.label}</h3>
+                                <span>
+                                  {contextLabel} · {resolved.kindLabel} ·
+                                  {" "}confirmed in M11
+                                </span>
+                              </div>
+
+                              <div className="scene-component-actions">
+                                <button
+                                  type="button"
+                                  onClick={shuffleRewardPunishmentAddon}
+                                >
+                                  <IconSparkles
+                                    size={15}
+                                    stroke={2}
+                                    aria-hidden="true"
+                                  />
+                                  Shuffle
+                                </button>
+                                <button
+                                  type="button"
+                                  className="icon-only"
+                                  aria-label={`Remove ${accessibleLabel} from scene`}
+                                  onClick={removeRewardPunishmentAddon}
+                                >
+                                  <IconX
+                                    size={16}
+                                    stroke={2}
+                                    aria-hidden="true"
+                                  />
+                                </button>
+                              </div>
+                            </div>
+
+                            <label className="scene-component-note">
+                              <span>Scene-local note</span>
+                              <textarea
+                                rows={2}
+                                value={component.note}
+                                placeholder="Anything to remember for this add-on…"
+                                onChange={(event) =>
+                                  setComposition((current) =>
+                                    current
+                                      ? updateSceneComponentNote(
+                                          current,
+                                          component.id,
+                                          event.target.value,
+                                        )
+                                      : current,
+                                  )
+                                }
+                              />
+                            </label>
+                          </div>
+                        </article>
+                      );
+                    }
+
                     const candidate = confirmedById.get(
                       component.source.catalogId,
                     );
