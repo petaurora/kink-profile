@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import type { ProfileBackupV1 } from "./profileBackup";
+import type {
+  ProfileBackupV1,
+  ProfileBackupV2,
+} from "./profileBackup";
+import {
+  createEmptyRewardPunishmentAuthoritativeState,
+} from "./rewardPunishmentLifecycle";
 import {
   buildUploadedProfileComparison,
   type ComparisonProfileSource,
@@ -84,6 +90,27 @@ describe("buildUploadedProfileComparison", () => {
     ).toBe("mutual_positive");
     expect(JSON.stringify(current)).toBe(currentBefore);
     expect(JSON.stringify(uploaded)).toBe(uploadedBefore);
+  });
+
+  it("does not retain the M11 payload from a v2 backup", () => {
+    const legacy = backup("Other", "like");
+    const uploaded: ProfileBackupV2 = {
+      ...legacy,
+      version: 2,
+      profile: {
+        ...legacy.profile,
+        rewardsPunishments:
+          createEmptyRewardPunishmentAuthoritativeState(),
+      },
+    };
+
+    const result = buildUploadedProfileComparison(
+      source("Current", "love"),
+      uploaded,
+    );
+
+    expect(JSON.stringify(uploaded)).toContain("rewardsPunishments");
+    expect(JSON.stringify(result)).not.toContain("rewardsPunishments");
   });
 
   it("keeps an uploaded exclusion authoritative for shared suggestions", () => {
