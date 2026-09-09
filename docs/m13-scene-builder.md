@@ -1,6 +1,6 @@
 # M13 — Scene Builder
 
-**Status:** planned  
+**Status:** in progress — M13.1 complete  
 **Roadmap milestone:** M13  
 **Primary boundary:** M13 turns one person's existing profile into a small, relevant, consent-aware play space for a specific moment. It reduces decision load; it does not replace communication, assign obligations, or infer consent.
 
@@ -522,10 +522,10 @@ A future explicit scene-share artifact may be considered separately.
 
 ## M13.1 — Theme taxonomy + mappings
 
-- [ ] define stable SceneThemeIds
-- [ ] map themes to existing catalog/signal/headspace/mode/facet metadata
-- [ ] validate all mappings
-- [ ] lock theme semantics as query-only, never profile evidence
+- [x] define stable SceneThemeIds
+- [x] map themes to existing catalog/signal/headspace/mode/facet metadata
+- [x] validate all mappings
+- [x] lock theme semantics as query-only, never profile evidence
 
 ## M13.2 — Profile-aware candidate engine
 
