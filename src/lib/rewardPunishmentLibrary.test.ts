@@ -9,6 +9,8 @@ import {
 import {
   rewardPunishmentActions,
   rewardPunishmentCategories,
+  getRewardPunishmentCategoryFacetAffinities,
+  getRewardPunishmentCategorySignalMappings,
   rewardPunishmentPrimitiveKey,
   rewardPunishmentPrimitives,
   rewardPunishmentTaxonomyVersion,
@@ -90,6 +92,46 @@ describe("M11 runtime library", () => {
         rewardPunishmentCatalogCategoryMappings[item.categoryId]?.length ?? 0,
       ).toBeGreaterThan(0);
     }
+  });
+
+  it("bridges R/P context categories into canonical Signals and derived Overall Facets", () => {
+    const impactSignals = getRewardPunishmentCategorySignalMappings("impact");
+    expect(impactSignals).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ signalId: "pain_receiving", weight: 1 }),
+        expect.objectContaining({
+          signalId: "receiving_intensity",
+          weight: 0.75,
+        }),
+      ]),
+    );
+
+    const impactFacets = getRewardPunishmentCategoryFacetAffinities("impact");
+    expect(impactFacets[0]?.facetId).toBe("intensity_pain");
+  });
+
+  it("keeps known semantic gaps explicit instead of fabricating a facet mapping", () => {
+    expect(getRewardPunishmentCategorySignalMappings("sexual-scene")).toEqual(
+      [],
+    );
+    expect(getRewardPunishmentCategoryFacetAffinities("sexual-scene")).toEqual(
+      [],
+    );
+  });
+
+  it("derives action signal semantics through weighted R/P context categories", () => {
+    const ceremony = rewardPunishmentPrimitives.find(
+      (primitive) =>
+        primitive.ref.kind === "action" &&
+        primitive.ref.id === "action-achievement-ceremony",
+    );
+
+    expect(ceremony?.signalMappings.length).toBeGreaterThan(0);
+    expect(
+      ceremony?.signalMappings.some(
+        (mapping) => mapping.signalId === "praise_approval",
+      ),
+    ).toBe(true);
   });
 
   it("namespaces catalog and action primitive keys", () => {
