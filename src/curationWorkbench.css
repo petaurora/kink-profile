@@ -356,6 +356,55 @@
   line-height: 1.35;
 }
 
+.curation-current-mapping-list {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.curation-current-mapping-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 0.7rem;
+  align-items: center;
+  padding: 0.45rem 0.5rem;
+  border-radius: 0.65rem;
+  background: rgba(240, 211, 231, 0.035);
+}
+
+.curation-current-mapping-row > div {
+  min-width: 0;
+  display: grid;
+  gap: 0.08rem;
+}
+
+.curation-current-mapping-row strong {
+  min-width: 0;
+  font-size: 0.88rem;
+  line-height: 1.2;
+}
+
+.curation-current-mapping-row code {
+  font-size: 0.68rem;
+  opacity: 0.48;
+  overflow-wrap: anywhere;
+}
+
+.curation-current-mapping-weight {
+  min-width: 2.8rem;
+  text-align: center;
+  padding: 0.22rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(240, 211, 231, 0.08);
+  font-weight: 700;
+}
+
+.curation-current-mapping-direction {
+  grid-column: 1;
+  opacity: 0.58;
+  text-transform: capitalize;
+}
+
 .curation-current-source {
   opacity: 0.58;
 }
@@ -598,9 +647,14 @@
     font-size: 0.78rem;
   }
 
-  .curation-field-help summary {
+  .curation-field-help-button {
     width: 1.4rem;
     height: 1.4rem;
+  }
+
+  .curation-field-help-copy {
+    font-size: 0.68rem;
+    padding: 0.4rem 0.5rem;
   }
 
   .curation-editor-field input,
@@ -615,26 +669,28 @@
     padding: 0.7rem;
   }
 
-  .curation-relation-columns,
-  .curation-relation-row,
-  .curation-relation-columns.has-direction,
-  .curation-relation-row.has-direction {
+  .curation-relation-card {
+    padding: 0.45rem;
+  }
+
+  .curation-relation-card-top {
     grid-template-columns: minmax(0, 1fr) 64px 2.45rem;
     gap: 0.4rem;
   }
 
-  .curation-relation-columns.has-direction > span:nth-child(3) {
-    display: none;
+  .curation-relation-name {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.12rem;
   }
 
-  .curation-relation-row.has-direction > label:nth-child(3) {
-    grid-column: 1 / 3;
-    grid-row: 2;
+  .curation-relation-name > span {
+    font-size: 0.84rem;
   }
 
-  .curation-relation-row.has-direction > .curation-relation-remove {
-    grid-column: 3;
-    grid-row: 1;
+  .curation-relation-name > button {
+    padding: 0;
+    font-size: 0.66rem;
   }
 
   .curation-relation-remove {
@@ -705,43 +761,40 @@
   font-size: 0.82rem;
 }
 
-.curation-field-help {
-  position: relative;
-  margin-left: auto;
+.curation-editor-label-block {
+  min-width: 0;
+  display: grid;
+  gap: 0.25rem;
 }
 
-.curation-field-help summary {
-  list-style: none;
-  cursor: pointer;
+.curation-field-help-button {
+  margin-left: auto;
   display: grid;
   place-items: center;
   width: 1.55rem;
   height: 1.55rem;
+  padding: 0;
+  border: 0;
   border-radius: 999px;
+  background: transparent;
+  color: inherit;
   opacity: 0.58;
 }
 
-.curation-field-help summary::-webkit-details-marker {
-  display: none;
-}
-
-.curation-field-help[open] summary {
+.curation-field-help-button[aria-expanded="true"] {
   opacity: 1;
   background: rgba(240, 211, 231, 0.08);
 }
 
-.curation-field-help small {
-  position: absolute;
-  z-index: 4;
-  right: 0;
-  top: calc(100% + 0.25rem);
-  width: min(270px, 72vw);
-  padding: 0.6rem 0.7rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(240, 211, 231, 0.14);
-  background: #171747;
-  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.28);
+.curation-field-help-copy {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.45rem 0.55rem;
+  border-left: 2px solid rgba(240, 211, 231, 0.18);
+  font-size: 0.72rem;
   line-height: 1.35;
+  opacity: 0.72;
 }
 
 .curation-checkbox-copy {
@@ -751,8 +804,8 @@
 .curation-editor-field input,
 .curation-editor-field textarea,
 .curation-editor-field select,
-.curation-relation-row input,
-.curation-relation-row select {
+.curation-relation-card input,
+.curation-relation-card select {
   width: 100%;
   box-sizing: border-box;
   border-radius: 0.75rem;
@@ -790,37 +843,76 @@
   background: rgba(240, 211, 231, 0.035);
 }
 
-.curation-relation-columns,
-.curation-relation-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 82px 2.55rem;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.curation-relation-columns.has-direction,
-.curation-relation-row.has-direction {
-  grid-template-columns: minmax(0, 1fr) 82px 110px 2.55rem;
-}
-
-.curation-relation-columns {
-  padding: 0 0.2rem;
-  font-size: 0.72rem;
-  opacity: 0.58;
-}
-
 .curation-relation-list {
   display: grid;
   gap: 0.45rem;
 }
 
-.curation-relation-row {
-  align-items: stretch;
+.curation-relation-card {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.08);
 }
 
-.curation-relation-row label {
+.curation-relation-card-top {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) 78px 2.55rem;
+  gap: 0.45rem;
+  align-items: end;
+}
+
+.curation-relation-name {
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.curation-relation-name > span {
+  min-width: 0;
+  font-size: 0.88rem;
+  font-weight: 650;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.curation-relation-name > button {
+  flex: 0 0 auto;
+  padding: 0.15rem 0.35rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 0.7rem;
+  opacity: 0.62;
+  text-decoration: underline;
+  text-underline-offset: 0.15rem;
+}
+
+.curation-weight-input,
+.curation-relation-change,
+.curation-relation-direction {
+  min-width: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.curation-weight-input > span,
+.curation-relation-change > span,
+.curation-relation-direction > span {
+  font-size: 0.66rem;
+  opacity: 0.55;
+}
+
+.curation-relation-change,
+.curation-relation-direction {
+  grid-column: 1 / -1;
+}
+
+.curation-relation-change select,
+.curation-relation-direction select {
+  width: 100%;
 }
 
 .curation-visually-hidden {
