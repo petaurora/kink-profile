@@ -47,6 +47,14 @@ import {
   catalogPreferenceLabels,
   type CatalogResultView,
 } from "./lib/catalogResults";
+import {
+  buildRandomSceneComposition,
+  chooseRandomSceneCandidate,
+  clearSceneRandomizerState,
+  loadSceneRandomizerState,
+  saveSceneRandomizerState,
+  shuffleSceneComponent,
+} from "./lib/sceneRandomizer";
 import "./sceneBuilder.css";
 
 type SceneBuilderProps = {
@@ -272,10 +280,19 @@ export function SceneBuilder({
   );
   const [composition, setComposition] =
     useState<SceneComposition | null>(null);
+  const [randomizerState, setRandomizerState] = useState(() =>
+    loadSceneRandomizerState(),
+  );
+  const [randomPick, setRandomPick] =
+    useState<SceneCandidate | null>(null);
 
   useEffect(() => {
     saveSceneSessionState(sessionState);
   }, [sessionState]);
+
+  useEffect(() => {
+    saveSceneRandomizerState(randomizerState);
+  }, [randomizerState]);
 
   const selectedThemeSet = useMemo(
     () => new Set(selectedThemeIds),
@@ -461,6 +478,51 @@ export function SceneBuilder({
         exploration,
       }),
     );
+  };
+
+  const pickSomething = () => {
+    const result = chooseRandomSceneCandidate(
+      candidateView.confirmed,
+      randomizerState,
+    );
+    setRandomizerState(result.state);
+    setRandomPick(result.candidate ?? null);
+  };
+
+  const buildSomething = () => {
+    const result = buildRandomSceneComposition(
+      candidateView.confirmed,
+      {
+        themeIds: selectedThemeIds,
+        effort,
+        exploration,
+        state: randomizerState,
+      },
+    );
+    setComposition(result.composition);
+    setRandomizerState(result.state);
+    setRandomPick(null);
+  };
+
+  const shuffleComponent = (componentId: string) => {
+    if (!composition) return;
+
+    const result = shuffleSceneComponent(
+      composition,
+      componentId,
+      candidateView.confirmed,
+      randomizerState,
+    );
+    setComposition(result.composition);
+    setRandomizerState(result.state);
+  };
+
+  const resetRandomMemory = () => {
+    clearSceneRandomizerState();
+    setRandomizerState({
+      schemaVersion: 1,
+      recentCatalogIds: [],
+    });
   };
 
   return (
@@ -710,10 +772,107 @@ export function SceneBuilder({
             </article>
           )}
 
+          <article className="scene-randomizer panel">
+            <div className="scene-section-heading">
+              <div>
+                <p className="eyebrow">04 · Take the decision away</p>
+                <h2>Pick for me.</h2>
+              </div>
+              {randomizerState.recentCatalogIds.length > 0 && (
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={resetRandomMemory}
+                >
+                  Reset repeats
+                </button>
+              )}
+            </div>
+
+            <p className="scene-randomizer-copy">
+              Random means random inside the valid pool. Profile fit gets an
+              item into the pool; it does not secretly make the highest-ranked
+              item win every time.
+            </p>
+
+            <div className="scene-randomizer-actions">
+              <button
+                type="button"
+                className="primary-button"
+                disabled={candidateView.confirmed.length === 0}
+                onClick={pickSomething}
+              >
+                <IconSparkles size={16} stroke={2} aria-hidden="true" />
+                Pick something
+              </button>
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={candidateView.confirmed.length === 0}
+                onClick={buildSomething}
+              >
+                <IconNotes size={16} stroke={2} aria-hidden="true" />
+                Build something
+              </button>
+              <span>
+                Avoiding the last{" "}
+                {Math.min(
+                  randomizerState.recentCatalogIds.length,
+                  10,
+                )}{" "}
+                {randomizerState.recentCatalogIds.length === 1
+                  ? "pick"
+                  : "picks"}
+              </span>
+            </div>
+
+            {randomPick && (
+              <div className="scene-random-pick" aria-live="polite">
+                <div>
+                  <span className="scene-candidate-category">
+                    {randomPick.categoryLabel}
+                  </span>
+                  <strong>{randomPick.label}</strong>
+                  <small>
+                    {randomPick.themeMatches
+                      .map((match) => match.label)
+                      .join(" + ")}
+                  </small>
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    disabled={compositionCatalogIds.has(
+                      randomPick.catalogId,
+                    )}
+                    onClick={() => addCandidateToScene(randomPick)}
+                  >
+                    <IconPlus
+                      size={15}
+                      stroke={2}
+                      aria-hidden="true"
+                    />
+                    {compositionCatalogIds.has(randomPick.catalogId)
+                      ? "In scene"
+                      : "Add to scene"}
+                  </button>
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={pickSomething}
+                  >
+                    Another option
+                  </button>
+                </div>
+              </div>
+            )}
+          </article>
+
           <article className="scene-composition panel">
             <div className="scene-section-heading">
               <div>
-                <p className="eyebrow">04 · Build the scene</p>
+                <p className="eyebrow">05 · Build the scene</p>
                 <h2>Turn the menu into an editable arc.</h2>
               </div>
               {composition && composition.components.length > 0 && (
@@ -750,8 +909,8 @@ export function SceneBuilder({
                   <IconNotes size={23} stroke={1.7} aria-hidden="true" />
                   <strong>Start with a sensible first draft.</strong>
                   <span>
-                    This is deterministic, not random. You can change every
-                    part before M13.6 adds shuffle controls.
+                    This version is deterministic. Use Build something above
+                    when you want the app to choose the parts for you.
                   </span>
                 </div>
                 <button
@@ -892,6 +1051,20 @@ export function SceneBuilder({
                                   aria-hidden="true"
                                 />
                                 Replace
+                              </button>
+                              <button
+                                type="button"
+                                disabled={replacements.length === 0}
+                                onClick={() =>
+                                  shuffleComponent(component.id)
+                                }
+                              >
+                                <IconSparkles
+                                  size={15}
+                                  stroke={2}
+                                  aria-hidden="true"
+                                />
+                                Shuffle
                               </button>
                               <button
                                 type="button"
