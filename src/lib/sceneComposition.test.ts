@@ -7,6 +7,7 @@ import {
   moveSceneComponent,
   reconcileSceneComposition,
   replaceSceneComponent,
+  upsertRewardPunishmentSceneComponent,
   scenePhaseCandidateFit,
   scenePhaseDefinitions,
   updateSceneComponentNote,
@@ -76,10 +77,22 @@ describe("M13.5 scene composition", () => {
 
     expect(first).toEqual(second);
     expect(
-      first.components.map((component) => component.source.catalogId),
+      first.components
+        .filter((component) => component.source.kind === "catalog")
+        .map((component) =>
+          component.source.kind === "catalog"
+            ? component.source.catalogId
+            : "",
+        ),
     ).toEqual(expect.arrayContaining(["pet-item", "pain-item", "care-item"]));
-    expect(new Set(first.components.map((component) => component.source.catalogId)).size)
-      .toBe(first.components.length);
+    const firstCatalogIds = first.components
+      .filter((component) => component.source.kind === "catalog")
+      .map((component) =>
+        component.source.kind === "catalog"
+          ? component.source.catalogId
+          : "",
+      );
+    expect(new Set(firstCatalogIds).size).toBe(firstCatalogIds.length);
   });
 
   it("only places care-like candidates into aftercare", () => {
@@ -226,9 +239,93 @@ describe("M13.5 scene composition", () => {
     );
 
     expect(
-      reconciled.components.map(
-        (component) => component.source.catalogId,
-      ),
+      reconciled.components
+        .filter((component) => component.source.kind === "catalog")
+        .map((component) =>
+          component.source.kind === "catalog"
+            ? component.source.catalogId
+            : "",
+        ),
     ).toEqual(["keep"]);
   });
+  it("keeps one stable M11 add-on in the ordered reward/punishment slot", () => {
+    let composition = createEmptySceneComposition({
+      themeIds: ["pain"],
+      effort: "normal",
+      exploration: "mixed",
+    });
+
+    composition = upsertRewardPunishmentSceneComponent(composition, {
+      kind: "reward_punishment",
+      context: "reward",
+      entry: {
+        kind: "primitive",
+        ref: { kind: "catalog", id: "reward-one" },
+      },
+    });
+
+    const firstId = composition.components[0].id;
+    composition = updateSceneComponentNote(
+      composition,
+      firstId,
+      "Use only if earned.",
+    );
+
+    composition = upsertRewardPunishmentSceneComponent(composition, {
+      kind: "reward_punishment",
+      context: "punishment",
+      entry: {
+        kind: "recipe",
+        recipeId: "recipe-2",
+      },
+    });
+
+    expect(composition.components).toHaveLength(1);
+    expect(composition.components[0]).toMatchObject({
+      id: firstId,
+      phaseId: "reward_punishment",
+      note: "Use only if earned.",
+      source: {
+        kind: "reward_punishment",
+        context: "punishment",
+        entry: {
+          kind: "recipe",
+          recipeId: "recipe-2",
+        },
+      },
+    });
+  });
+
+  it("does not drop M11 add-ons when catalog eligibility changes", () => {
+    let composition = createEmptySceneComposition({
+      themeIds: ["pain"],
+      effort: "normal",
+      exploration: "mixed",
+    });
+
+    composition = addCatalogSceneComponent(
+      composition,
+      candidate("drop"),
+      "core_play",
+    );
+    composition = upsertRewardPunishmentSceneComponent(composition, {
+      kind: "reward_punishment",
+      context: "reward",
+      entry: {
+        kind: "primitive",
+        ref: { kind: "catalog", id: "reward-one" },
+      },
+    });
+
+    const reconciled = reconcileSceneComposition(
+      composition,
+      new Set<string>(),
+    );
+
+    expect(reconciled.components).toHaveLength(1);
+    expect(reconciled.components[0].source.kind).toBe(
+      "reward_punishment",
+    );
+  });
+
 });
