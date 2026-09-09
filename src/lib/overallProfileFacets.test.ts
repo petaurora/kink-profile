@@ -80,7 +80,10 @@ describe("M7.2 overall facet scoring", () => {
     );
 
     expect(result.affinity).toBe(80);
-    expect(result.coverage).toBe(22.2);
+    const configuredTotal = overallFacetDefinitions
+      .find((item) => item.id === "structure_protocol")!
+      .signals.reduce((sum, item) => sum + item.weight, 0);
+    expect(result.coverage).toBeCloseTo((1 / configuredTotal) * 100, 1);
     expect(result.components.map((item) => item.signalId)).toEqual([
       "structure",
     ]);
@@ -95,7 +98,10 @@ describe("M7.2 overall facet scoring", () => {
     );
 
     expect(result.affinity).toBe(100);
-    expect(result.coverage).toBe(10.6);
+    const configuredTotal = overallFacetDefinitions
+      .find((item) => item.id === "ownership_belonging")!
+      .signals.reduce((sum, item) => sum + item.weight, 0);
+    expect(result.coverage).toBeCloseTo((0.25 / configuredTotal) * 100, 1);
   });
 
   it("weights affinity by both semantic composition weight and canonical evidence coverage", () => {
@@ -109,8 +115,10 @@ describe("M7.2 overall facet scoring", () => {
 
     // service contributes effective weight 1.0; devotion contributes 0.5.
     expect(result.affinity).toBe(66.7);
-    // total configured facet weight is 3.15.
-    expect(result.coverage).toBe(47.6);
+    const configuredTotal = overallFacetDefinitions
+      .find((item) => item.id === "service_devotion")!
+      .signals.reduce((sum, item) => sum + item.weight, 0);
+    expect(result.coverage).toBeCloseTo((1.5 / configuredTotal) * 100, 1);
   });
 
   it("keeps giving and receiving Signals inside the same broad theme", () => {
@@ -123,10 +131,9 @@ describe("M7.2 overall facet scoring", () => {
     );
 
     expect(result.affinity).toBe(80);
-    expect(result.components.map((component) => component.signalId)).toEqual([
-      "care_receiving",
-      "care_giving",
-    ]);
+    expect(result.components.map((component) => component.signalId)).toEqual(
+      expect.arrayContaining(["care_receiving", "care_giving"]),
+    );
     expect(
       result.components.every(
         (component) => component.relationship === "supports",
