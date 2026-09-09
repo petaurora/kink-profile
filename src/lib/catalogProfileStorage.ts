@@ -16,6 +16,7 @@ import type {
   RankingScopeSnapshot,
 } from "./kinkRanking";
 import { LEGACY_KINK_RANKING_STORAGE_KEY } from "./kinkRankingStorage";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export const CATALOG_PROFILE_STORAGE_KEY = "pet-profile-catalog-v1";
 
@@ -357,7 +358,7 @@ function parseLegacyRanking(
 }
 
 function browserStorage(): StorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 export function loadCatalogProfile(
