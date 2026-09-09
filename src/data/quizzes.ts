@@ -26,6 +26,8 @@ export type QuizDefinition = {
   contributesToOverall: boolean;
 };
 
+export const retiredQuizIds: readonly RetiredQuizId[] = ["starter-profile"];
+
 export const quizzes: QuizDefinition[] = [
   {
     id: "bondage-discipline",
@@ -85,6 +87,11 @@ export const quizzes: QuizDefinition[] = [
   },
 ];
 
+
+export const supportedQuizIds: readonly QuizId[] = [
+  ...retiredQuizIds,
+  ...quizzes.map((quiz) => quiz.id),
+];
 
 export function getQuiz(id: QuizId) {
   return quizzes.find((quiz) => quiz.id === id);
