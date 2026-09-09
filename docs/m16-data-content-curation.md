@@ -183,13 +183,21 @@ The catalog's existing `Primary Mode` field is **not** the same thing as M3 Dyna
 
 Today:
 
-- `Primary Mode` is a single descriptive catalog field such as Physical/Psychological.
-- a catalog item may resolve to **multiple SignalId mappings** through category + item mappings.
-- M3 Dynamic Modes are composed definitions calculated from SignalIds; kinks are not directly assigned one or more Dynamic Modes.
+- `Primary Mode` was a legacy descriptive TSV column such as Physical/Psychological.
+- the 551 current source rows contain 15 descriptor combinations inherited from the original catalog.
+- it has no canonical scoring meaning and is **not** an M3 Dynamic Mode.
+- no profile, scoring, recommendation, scene, ranking, or inference code consumes it.
+- it was only carried through the generated runtime type and displayed as decorative catalog metadata.
 
-The workbench should show this distinction clearly.
+**M16.5 decision:** retire it from the runtime model now.
 
-During M16, explicitly review whether `Primary Mode` should remain a single descriptive string, become a controlled multi-value taxonomy, or be replaced by better structured metadata.
+- the generator ignores `Primary Mode`
+- the catalog UI no longer displays it
+- the Curation Workbench no longer inventories or edits it
+- the TSV column remains temporarily as historical source data and can be physically removed during the catalog source cleanup sweep
+- do not replace it with direct kink → Dynamic Mode mappings unless a later curation pass finds a real semantic need
+
+A catalog item may still resolve to **multiple SignalId mappings** through category + item mappings. M3 Dynamic Modes remain composed definitions calculated from SignalIds rather than direct catalog assignments.
 
 Do not add direct kink → Dynamic Mode mappings merely for convenience unless the curation pass finds a real semantic need. Prefer the existing signal graph when it can express the relationship without creating a second competing mapping system.
 
@@ -246,6 +254,21 @@ Do not require the browser to authenticate to GitHub or mutate the repo directly
 ---
 
 # M16.3 — Quiz bank + scoring review
+
+### Legacy Starter cleanup ✅
+
+The original M0 **Starter Profile** has been retired from the active quiz registry.
+Its separate `DimensionId` scoring vocabulary (`petPlay`, `submission`, `service`, etc.) was a prototype-only model that duplicated concepts now represented by the canonical SignalId system.
+
+Cleanup rules:
+
+- active quizzes use SignalId + weighted questions only
+- the Starter quiz no longer appears in the hub or result/scoring paths
+- the old legacy dimension model is no longer runtime code
+- `starter-profile` remains a supported **retired identity** only so old local data and backups can still be loaded/restored
+- retired Starter answers do not contribute signal evidence or the Overall Profile
+- do not migrate those old answers into canonical signals automatically; their original question semantics were not designed as equivalent evidence
+
 
 Review the authored questions and scoring inputs for M2–M5.
 

@@ -100,7 +100,7 @@ export const curationSurfaces: readonly CurationSurface[] = [
       "src/data/sadismMasochismQuiz.ts",
     ],
     status: "available",
-    notes: "Questions are reviewable in the workbench now; signal-weight editing comes in a later M16.2 slice.",
+    notes: "Questions and their signal-weight relationships are editable as structured local proposals in the workbench.",
   },
   {
     id: "signals",
@@ -152,7 +152,7 @@ export const curationSurfaces: readonly CurationSurface[] = [
       "src/lib/rewardPunishmentLibrary.ts",
     ],
     status: "available",
-    notes: "Normalized actions and contextual categories are reviewable now; richer relationship editing follows.",
+    notes: "Normalized actions, contextual categories, and weighted category relationships are editable as structured local proposals.",
   },
   {
     id: "profile-labels-thresholds",
@@ -219,7 +219,6 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
       { key: "category", label: "Category", value: item.categoryLabel },
       { key: "domain", label: "Domain", value: item.domain },
       { key: "direction", label: "Direction", value: item.direction },
-      { key: "primaryMode", label: "Primary mode", value: item.primaryMode },
       { key: "intensity", label: "Intensity", value: item.intensity },
       { key: "riskLevel", label: "Risk level", value: item.riskLevel },
       { key: "aliases", label: "Aliases", value: item.aliases.join(", ") || "—" },
@@ -291,8 +290,8 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
     entityType: "quiz-question" as const,
     entityId: question.id,
     label: question.prompt,
-    summary: `${questionQuizLabels.get(question.id) ?? "Starter"} · ${question.kind}`,
-    source: "M0/M2-M5 quiz bank",
+    summary: `${questionQuizLabels.get(question.id) ?? "Quiz"} · weighted`,
+    source: "M2-M5 quiz bank",
     fields: [
       {
         key: "quiz",
@@ -302,10 +301,7 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
       {
         key: "weights",
         label: "Signal weights",
-        value:
-          question.kind === "weighted"
-            ? stringifyRecord(question.weights)
-            : `Legacy dimension: ${question.dimension}`,
+        value: stringifyRecord(question.weights),
       },
     ],
   })),

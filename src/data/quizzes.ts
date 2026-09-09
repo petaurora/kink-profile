@@ -1,11 +1,12 @@
-import { questions } from "./questions";
 import { dsQuestionIds } from "./dsQuiz";
 import { headspaceQuestionIds } from "./headspacesQuiz";
 import { bondageDisciplineQuestionIds } from "./bondageDisciplineQuiz";
 import { sadismMasochismQuestionIds } from "./sadismMasochismQuiz";
 
+export type RetiredQuizId = "starter-profile";
+
 export type QuizId =
-  | "starter-profile"
+  | RetiredQuizId
   | "bondage-discipline"
   | "dominance-submission"
   | "sadism-masochism"
@@ -25,21 +26,9 @@ export type QuizDefinition = {
   contributesToOverall: boolean;
 };
 
+export const retiredQuizIds: readonly RetiredQuizId[] = ["starter-profile"];
+
 export const quizzes: QuizDefinition[] = [
-  {
-    id: "starter-profile",
-    title: "Starter Profile",
-    shortTitle: "Starter",
-    eyebrow: "Sampler",
-    description:
-      "A short cross-section of interests from the original prototype. Useful for trying the app while the deeper sections are built.",
-    icon: "heart",
-    estimatedMinutes: 4,
-    version: 1,
-    availability: "available",
-    questionIds: questions.map((question) => question.id),
-    contributesToOverall: false,
-  },
   {
     id: "bondage-discipline",
     title: "Bondage & Discipline",
@@ -98,7 +87,11 @@ export const quizzes: QuizDefinition[] = [
   },
 ];
 
-export const starterQuiz = quizzes[0];
+
+export const supportedQuizIds: readonly QuizId[] = [
+  ...retiredQuizIds,
+  ...quizzes.map((quiz) => quiz.id),
+];
 
 export function getQuiz(id: QuizId) {
   return quizzes.find((quiz) => quiz.id === id);

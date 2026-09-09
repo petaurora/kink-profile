@@ -122,7 +122,7 @@ describe("quiz signal evidence", () => {
     ]);
   });
 
-  it("does not create signal evidence for legacy/non-weighted quiz questions", () => {
+  it("does not create signal evidence from retired Starter Profile data", () => {
     const profile: StoredProfile = {
       schemaVersion: 2,
       quizzes: {

@@ -480,12 +480,6 @@ export function KinkCatalogPreferences({
                       <dt>Direction</dt>
                       <dd>{item.direction}</dd>
                     </div>
-                    {item.primaryMode && (
-                      <div>
-                        <dt>Mode</dt>
-                        <dd>{item.primaryMode}</dd>
-                      </div>
-                    )}
                     {item.intensity && (
                       <div>
                         <dt>Intensity</dt>

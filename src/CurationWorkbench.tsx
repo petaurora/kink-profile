@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   IconArrowRight,
   IconDownload,
+  IconDots,
   IconRefresh,
   IconSearch,
   IconTrash,
@@ -15,6 +16,12 @@ import {
   type CurationInventoryEntry,
   type CurationPrimitiveType,
 } from "./data/curationInventory";
+import { CurationCurrentValuePanel } from "./CurationCurrentValuePanel";
+import { CurationStructuredEditor } from "./CurationStructuredEditor";
+import {
+  getDestructiveActionConsequences,
+  validateMergeTarget,
+} from "./lib/curationEditor";
 import {
   createEmptyCurationWorkspace,
   exportCurationWorkspace,
@@ -23,6 +30,7 @@ import {
   removeCurationChange,
   saveCurationWorkspace,
   upsertCurationChange,
+  type CurationChangeValue,
   type CurationReviewAction,
   type CurationWorkspace,
 } from "./lib/curationWorkspace";
@@ -64,10 +72,9 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
   const [selectedKey, setSelectedKey] = useState("");
   const [draftAction, setDraftAction] =
     useState<CurationReviewAction | null>(null);
-  const [draftLabel, setDraftLabel] = useState("");
-  const [draftDescription, setDraftDescription] = useState("");
   const [draftReplacementId, setDraftReplacementId] = useState("");
   const [draftNote, setDraftNote] = useState("");
+  const [showLifecycleActions, setShowLifecycleActions] = useState(false);
 
   useEffect(() => {
     saveCurationWorkspace(workspace);
@@ -136,20 +143,20 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     if (!currentEntry) {
       setDraftAction(null);
-      setDraftLabel("");
-      setDraftDescription("");
       setDraftReplacementId("");
       setDraftNote("");
+      setShowLifecycleActions(false);
       return;
     }
 
     setDraftAction(currentChange?.action ?? null);
-    setDraftLabel(currentChange?.changes?.label ?? currentEntry.label);
-    setDraftDescription(
-      currentChange?.changes?.description ?? currentEntry.summary,
-    );
     setDraftReplacementId(currentChange?.replacementId ?? "");
     setDraftNote(currentChange?.note ?? "");
+    setShowLifecycleActions(
+      currentChange?.action === "merge" ||
+        currentChange?.action === "archive" ||
+        currentChange?.action === "remove",
+    );
   }, [
     currentEntry?.entityId,
     currentEntry?.entityType,
@@ -171,26 +178,24 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
     setSelectedKey(entryKey(next));
   };
 
-  const saveDecision = (action: CurationReviewAction) => {
+  const saveDecision = (
+    action: CurationReviewAction,
+    options?: {
+      changes?: Record<string, CurationChangeValue>;
+      note?: string;
+    },
+  ) => {
     if (!currentEntry) return;
-
-    const changes =
-      action === "modify"
-        ? {
-            label: draftLabel.trim(),
-            description: draftDescription.trim(),
-          }
-        : undefined;
 
     setWorkspace((previous) =>
       upsertCurationChange(previous, {
         entityType: currentEntry.entityType,
         entityId: currentEntry.entityId,
         action,
-        changes,
+        changes: options?.changes,
         replacementId:
           action === "merge" ? draftReplacementId.trim() || undefined : undefined,
-        note: draftNote.trim() || undefined,
+        note: (options?.note ?? draftNote).trim() || undefined,
         reviewedAt: new Date().toISOString(),
       }),
     );
@@ -387,113 +392,62 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
             <p>{currentEntry.summary}</p>
           </div>
 
-          <div className="curation-current-values">
-            <span className="catalog-kicker">Current repo value</span>
-            <div className="curation-field-grid">
-              {currentEntry.fields.map((field) => (
-                <div key={field.key}>
-                  <span>{field.label}</span>
-                  <p>{field.value || "—"}</p>
-                </div>
-              ))}
-            </div>
-            <small>Source: {currentEntry.source}</small>
+          {draftAction !== "modify" && (
+            <CurationCurrentValuePanel entry={currentEntry} />
+          )}
+
+          <div className="curation-primary-actions">
+            <button
+              type="button"
+              className={draftAction === "keep" ? "is-active" : ""}
+              onClick={() => {
+                setDraftAction("keep");
+                saveDecision("keep");
+              }}
+            >
+              Keep
+            </button>
+            <button
+              type="button"
+              className={draftAction === "modify" ? "is-active" : ""}
+              onClick={() => setDraftAction("modify")}
+            >
+              Modify
+            </button>
+            <button
+              type="button"
+              className={
+                showLifecycleActions ||
+                draftAction === "merge" ||
+                draftAction === "archive" ||
+                draftAction === "remove"
+                  ? "is-active"
+                  : ""
+              }
+              aria-expanded={showLifecycleActions}
+              onClick={() => setShowLifecycleActions((visible) => !visible)}
+            >
+              <IconDots size={18} stroke={2} aria-hidden="true" />
+              More
+            </button>
           </div>
 
-          <div className="curation-action-grid">
-            {(Object.keys(actionLabels) as CurationReviewAction[]).map(
-              (action) => (
+          {showLifecycleActions && (
+            <div className="curation-lifecycle-actions">
+              {(["merge", "archive", "remove"] as const).map((action) => (
                 <button
                   type="button"
                   key={action}
                   className={draftAction === action ? "is-active" : ""}
-                  onClick={() => {
-                    setDraftAction(action);
-                    if (action === "keep" || action === "archive" || action === "remove") {
-                      saveDecision(action);
-                    }
-                  }}
+                  onClick={() => setDraftAction(action)}
                 >
                   {actionLabels[action]}
                 </button>
-              ),
-            )}
-          </div>
-
-          {(draftAction === "modify" || draftAction === "merge") && (
-            <div className="curation-proposal panel">
-              <span className="catalog-kicker">Local proposal</span>
-
-              {draftAction === "modify" && (
-                <div className="curation-proposal-fields">
-                  <label>
-                    <span>Proposed label</span>
-                    <input
-                      value={draftLabel}
-                      onChange={(event) => setDraftLabel(event.target.value)}
-                    />
-                  </label>
-                  <label>
-                    <span>Proposed description / meaning</span>
-                    <textarea
-                      rows={4}
-                      value={draftDescription}
-                      onChange={(event) =>
-                        setDraftDescription(event.target.value)
-                      }
-                    />
-                  </label>
-                </div>
-              )}
-
-              {draftAction === "merge" && (
-                <label>
-                  <span>Replacement stable ID</span>
-                  <input
-                    value={draftReplacementId}
-                    onChange={(event) =>
-                      setDraftReplacementId(event.target.value)
-                    }
-                    placeholder="existing-stable-id"
-                  />
-                </label>
-              )}
-
-              <label>
-                <span>Curator note</span>
-                <textarea
-                  rows={3}
-                  value={draftNote}
-                  onChange={(event) => setDraftNote(event.target.value)}
-                  placeholder="Why does this change make the model better?"
-                />
-              </label>
-
-              <button
-                className="primary"
-                type="button"
-                onClick={() => saveDecision(draftAction)}
-                disabled={
-                  draftAction === "merge" && !draftReplacementId.trim()
-                }
-              >
-                Save proposal
-              </button>
+              ))}
             </div>
           )}
 
-          {currentChange && draftAction !== "modify" && draftAction !== "merge" && (
-            <div className="curation-saved-note">
-              <span>
-                Saved as <strong>{actionLabels[currentChange.action]}</strong>
-              </span>
-              <button type="button" className="link-button" onClick={clearCurrentReview}>
-                Clear this review
-              </button>
-            </div>
-          )}
-
-          <div className="curation-card-footer">
+          <div className="curation-card-footer curation-card-nav">
             <button className="secondary" type="button" onClick={chooseRandom}>
               <IconRefresh size={17} stroke={2} aria-hidden="true" />
               Surprise me
@@ -513,6 +467,101 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
               <IconArrowRight size={17} stroke={2} aria-hidden="true" />
             </button>
           </div>
+
+          {draftAction === "modify" && (
+            <div className="curation-proposal panel">
+              <span className="catalog-kicker">Structured local proposal</span>
+              <CurationStructuredEditor
+                entry={currentEntry}
+                change={currentChange}
+                onSave={(changes, note) =>
+                  saveDecision("modify", { changes, note })
+                }
+              />
+            </div>
+          )}
+
+          {(draftAction === "merge" ||
+            draftAction === "archive" ||
+            draftAction === "remove") && (
+            <div className="curation-proposal panel">
+              <span className="catalog-kicker">Identity / lifecycle proposal</span>
+
+              <div className="curation-consequences">
+                <div className="curation-editor-label">
+                  <strong>Before this can be applied</strong>
+                  <small>
+                    These are proposal-time warnings; the workbench still does not
+                    mutate runtime or profile data.
+                  </small>
+                </div>
+                <ul>
+                  {getDestructiveActionConsequences(
+                    currentEntry,
+                    draftAction,
+                  ).map((consequence) => (
+                    <li key={consequence}>{consequence}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {draftAction === "merge" && (
+                <>
+                  <label>
+                    <span>Replacement stable ID</span>
+                    <input
+                      value={draftReplacementId}
+                      onChange={(event) =>
+                        setDraftReplacementId(event.target.value)
+                      }
+                      placeholder="existing-stable-id"
+                    />
+                  </label>
+                  {validateMergeTarget(currentEntry, draftReplacementId).map(
+                    (error) => (
+                      <div className="curation-validation is-error" key={error}>
+                        <p>{error}</p>
+                      </div>
+                    ),
+                  )}
+                </>
+              )}
+
+              <label>
+                <span>Curator note</span>
+                <textarea
+                  rows={3}
+                  value={draftNote}
+                  onChange={(event) => setDraftNote(event.target.value)}
+                  placeholder="Why should this identity be changed?"
+                />
+              </label>
+
+              <button
+                className="primary"
+                type="button"
+                onClick={() => saveDecision(draftAction)}
+                disabled={
+                  draftAction === "merge" &&
+                  validateMergeTarget(currentEntry, draftReplacementId).length > 0
+                }
+              >
+                Save {actionLabels[draftAction]} proposal
+              </button>
+            </div>
+          )}
+
+          {currentChange && draftAction === "keep" && (
+            <div className="curation-saved-note">
+              <span>
+                Saved as <strong>{actionLabels[currentChange.action]}</strong>
+              </span>
+              <button type="button" className="link-button" onClick={clearCurrentReview}>
+                Clear this review
+              </button>
+            </div>
+          )}
+
         </article>
       ) : (
         <div className="curation-empty panel">

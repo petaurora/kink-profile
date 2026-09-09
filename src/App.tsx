@@ -18,10 +18,7 @@ import {
   SiteHeader,
   type SiteHeaderDestination,
 } from "./SiteHeader";
-import {
-  answerOptions,
-  dimensions,
-} from "./data/questions";
+import { answerOptions } from "./data/quizScale";
 import { dsSignals } from "./data/dsQuiz";
 import {
   bondageDisciplineSignalIds,
@@ -521,7 +518,6 @@ export default function App({
   const currentAnswer = currentQuestion ? answers[currentQuestion.id] : undefined;
   const canViewResults =
     activeQuestions.length > 0 && answeredCount >= activeQuestions.length;
-  const isWeightedQuiz = activeQuestions.some(isWeightedQuestion);
   const isHeadspaceQuiz = activeQuiz.id === "roles-headspaces";
   const isDsQuiz = activeQuiz.id === "dominance-submission";
   const isBdQuiz = activeQuiz.id === "bondage-discipline";
@@ -564,42 +560,16 @@ export default function App({
       ).sort((a, b) => b.percentage - a.percentage);
     }
 
-    return dimensions
-      .map((dimension) => {
-        const items = activeQuestions.filter(
-          (question) =>
-            question.kind === "legacy" && question.dimension === dimension.id,
-        );
-        const values = items
-          .map((question) => answers[question.id])
-          .filter((value): value is number => value !== undefined);
-        const total = values.reduce((sum, value) => sum + value, 0);
-        const percentage = values.length
-          ? Math.round((total / (values.length * 4)) * 100)
-          : 0;
-
-        return { ...dimension, percentage };
-      })
-      .filter((dimension) =>
-        activeQuestions.some(
-          (question) =>
-            question.kind === "legacy" && question.dimension === dimension.id,
-        ),
-      )
-      .sort((a, b) => b.percentage - a.percentage);
+    return [];
   }, [activeQuestions, answers, isBdQuiz, isDsQuiz, isHeadspaceQuiz, isSmQuiz]);
 
-  const radarScores = useMemo(() => {
-    if (isDsQuiz) {
-      return dsSignals
+  const radarScores = useMemo(
+    () =>
+      dsSignals
         .map((signal) => scores.find((score) => score.id === signal.id))
-        .filter((score): score is Score => score !== undefined);
-    }
-
-    return dimensions
-      .map((dimension) => scores.find((score) => score.id === dimension.id))
-      .filter((score): score is Score => score !== undefined);
-  }, [isDsQuiz, scores]);
+        .filter((score): score is Score => score !== undefined),
+    [scores],
+  );
 
   const bondageRadarScores = useMemo(
     () =>
@@ -1723,15 +1693,13 @@ export default function App({
           <article className="question-card panel">
             <div className="question-meta">
               <span>
-                {currentQuestion.kind === "weighted"
-                  ? isHeadspaceQuiz
-                    ? "Roles & inner experience"
-                    : isBdQuiz
-                      ? "Physical & structural control"
-                      : isSmQuiz
-                        ? "Pain & intensity"
-                        : "Power exchange"
-                  : dimensions.find((item) => item.id === currentQuestion.dimension)?.label}
+                {isHeadspaceQuiz
+                  ? "Roles & inner experience"
+                  : isBdQuiz
+                    ? "Physical & structural control"
+                    : isSmQuiz
+                      ? "Pain & intensity"
+                      : "Power exchange"}
               </span>
               <span>
                 {questionIndex + 1} / {activeQuestions.length}
@@ -1999,7 +1967,7 @@ export default function App({
                           <span style={{ width: `${score.percentage}%` }} />
                         </div>
                         <div className="result-caption">
-                          <span>{scoreLabel(score.percentage, isWeightedQuiz)}</span>
+                          <span>{scoreLabel(score.percentage, true)}</span>
                           <p>{score.description}</p>
                         </div>
                       </div>
