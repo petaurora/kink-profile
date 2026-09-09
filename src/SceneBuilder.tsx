@@ -88,6 +88,7 @@ import {
   saveSceneLibraryState,
 } from "./lib/sceneLibraryStorage";
 import { reviewSavedScene } from "./lib/sceneLifecycle";
+import { getSceneProfileReadiness } from "./lib/sceneProfileReadiness";
 import {
   buildSharedSceneCandidateView,
 } from "./lib/sharedSceneCandidates";
@@ -470,6 +471,11 @@ export function SceneBuilder({
   const selectedThemeSet = useMemo(
     () => new Set(selectedThemeIds),
     [selectedThemeIds],
+  );
+
+  const profileReadiness = useMemo(
+    () => getSceneProfileReadiness(catalogResultView),
+    [catalogResultView],
   );
 
   const candidateView = useMemo(
@@ -1091,6 +1097,7 @@ export function SceneBuilder({
                           : "scene-theme-chip"
                       }
                       aria-pressed={selectedThemeSet.has(theme.id)}
+                      aria-label={`${theme.label}. ${theme.description}`}
                       title={theme.description}
                       onClick={() => toggleTheme(theme.id)}
                     >
@@ -1103,7 +1110,11 @@ export function SceneBuilder({
           })}
         </div>
 
-        <div className="scene-selection-summary" aria-live="polite">
+        <div
+          className="scene-selection-summary"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           {selectedThemeIds.length === 0
             ? "Nothing selected yet."
             : `${selectedThemeIds.length} ${selectedThemeIds.length === 1 ? "theme" : "themes"} selected · ${selectedThemeIds
@@ -1255,7 +1266,7 @@ export function SceneBuilder({
                   : "Strongest profile-backed matches"}
               </h2>
             </div>
-            <span>
+            <span aria-live="polite" aria-atomic="true">
               {candidateView.confirmed.length} eligible · showing{" "}
               {confirmedMenu.length}
             </span>
@@ -1279,13 +1290,39 @@ export function SceneBuilder({
               ))}
             </div>
           ) : (
-            <article className="scene-empty panel">
-              <h2>No directly confirmed matches in this exact space yet.</h2>
-              <p>
-                Try another theme, loosen the optional filters, or review the
-                exploration suggestions below. Nothing inferred is silently
-                promoted into the automatic pool.
-              </p>
+            <article
+              className="scene-empty panel"
+              role="status"
+              aria-live="polite"
+            >
+              {profileReadiness.state === "unprofiled" && !sharedContext ? (
+                <>
+                  <h2>This profile does not have scene-ready evidence yet.</h2>
+                  <p>
+                    Define a few catalog preferences or rankings first. Scene
+                    Builder will stay conservative instead of turning unknown
+                    items into automatic picks.
+                  </p>
+                </>
+              ) : profileReadiness.state === "emerging" && !sharedContext ? (
+                <>
+                  <h2>This profile is still a little sparse for this space.</h2>
+                  <p>
+                    Try another theme or loosen the optional filters. Explore
+                    can surface inference-backed ideas separately, but they
+                    still will not enter randomization automatically.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h2>No directly confirmed matches in this exact space yet.</h2>
+                  <p>
+                    Try another theme, loosen the optional filters, or review
+                    the exploration suggestions below. Nothing inferred is
+                    silently promoted into the automatic pool.
+                  </p>
+                </>
+              )}
             </article>
           )}
 
@@ -1417,7 +1454,12 @@ export function SceneBuilder({
             </div>
 
             {randomPick && (
-              <div className="scene-random-pick" aria-live="polite">
+              <div
+                className="scene-random-pick"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 <div>
                   <span className="scene-candidate-category">
                     {randomPick.categoryLabel}
@@ -1542,7 +1584,7 @@ export function SceneBuilder({
                 </div>
 
                 {sceneSaveMessage && (
-                  <small aria-live="polite">
+                  <small role="status" aria-live="polite" aria-atomic="true">
                     {sceneSaveMessage}
                   </small>
                 )}
