@@ -30,6 +30,16 @@ import {
   rewardPunishmentPrimitiveKey,
   rewardPunishmentPrimitives,
 } from "./rewardPunishmentLibrary";
+import {
+  createEmptySceneLibraryState,
+  createSavedScene,
+  upsertSavedScene,
+} from "./sceneLibrary";
+import {
+  loadSceneLibraryState,
+  saveSceneLibraryState,
+} from "./sceneLibraryStorage";
+import { createEmptySceneComposition } from "./sceneComposition";
 
 class MemoryStorage implements StorageLike {
   values = new Map<string, string>();
@@ -120,11 +130,30 @@ function seededStorage() {
   );
 
   seedM11(storage);
+
+  const scene = createSavedScene(
+    createEmptySceneComposition({
+      themeIds: ["pain"],
+      effort: "quick",
+      exploration: "familiar",
+    }),
+    "Saved scene",
+    { id: "scene-1" },
+  );
+  saveSceneLibraryState(
+    upsertSavedScene(
+      createEmptySceneLibraryState(),
+      scene,
+    ),
+    storage,
+  );
+
   return storage;
 }
 
 const keepM11 = {
   rewardsPunishments: false,
+  savedScenes: false,
 };
 
 describe("selective profile reset", () => {
@@ -209,6 +238,7 @@ describe("selective profile reset", () => {
         catalogPreferences: false,
         rankingComparisons: false,
         rewardsPunishments: true,
+        savedScenes: false,
         profileSettings: false,
       },
       storage,
@@ -226,6 +256,37 @@ describe("selective profile reset", () => {
     expect(loadProfileSettings(storage).displayName).toBe(
       "babygirl",
     );
+  });
+
+  it("resets saved scenes as an independent scope", () => {
+    const storage = seededStorage();
+    const beforeM11 =
+      loadRewardPunishmentAuthoritativeState(storage);
+
+    resetProfileData(
+      {
+        quizIds: [],
+        catalogPreferences: false,
+        rankingComparisons: false,
+        rewardsPunishments: false,
+        savedScenes: true,
+        profileSettings: false,
+      },
+      storage,
+    );
+
+    expect(loadSceneLibraryState(storage)).toEqual(
+      createEmptySceneLibraryState(),
+    );
+    expect(
+      loadRewardPunishmentAuthoritativeState(storage),
+    ).toEqual(beforeM11);
+    expect(
+      loadProfile(storage).quizzes["dominance-submission"],
+    ).toBeDefined();
+    expect(
+      loadCatalogProfile(storage).preferences.rope?.overall,
+    ).toBe("love");
   });
 
   it("resets profile settings without touching profile evidence or M11", () => {
@@ -287,6 +348,9 @@ describe("selective profile reset", () => {
     expect(
       loadRewardPunishmentAuthoritativeState(storage),
     ).toEqual(createEmptyRewardPunishmentAuthoritativeState());
+    expect(loadSceneLibraryState(storage)).toEqual(
+      createEmptySceneLibraryState(),
+    );
     expect(loadProfileSettings(storage).displayName).toBe(
       DEFAULT_PROFILE_DISPLAY_NAME,
     );
@@ -295,12 +359,13 @@ describe("selective profile reset", () => {
     ).not.toBeNull();
   });
 
-  it("reset everything includes every registered quiz and M11", () => {
+  it("reset everything includes every registered quiz, M11, and saved scenes", () => {
     const selection = createResetEverythingSelection();
     expect(new Set(selection.quizIds)).toEqual(
       new Set(quizzes.map((quiz) => quiz.id)),
     );
     expect(selection.rewardsPunishments).toBe(true);
+    expect(selection.savedScenes).toBe(true);
   });
 
 

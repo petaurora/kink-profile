@@ -217,7 +217,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 - [x] **M13.5** — scene arc / composition builder
 - [x] **M13.6** — randomization + shuffle
 - [x] **M13.7** — M11 Rewards & Punishments integration
-- [ ] **M13.8** — saved scenes + lifecycle
+- [x] **M13.8** — saved scenes + lifecycle
 - [ ] **M13.9** — accessibility + polish
 
 ---

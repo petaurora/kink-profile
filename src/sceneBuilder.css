@@ -1328,6 +1328,292 @@
 }
 
 
+.scene-save-bar {
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-muted);
+  padding: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 12px;
+  align-items: end;
+}
+
+.scene-save-bar label {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.scene-save-bar label > span {
+  color: var(--text-muted);
+  font-size: .64rem;
+  font-weight: 850;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.scene-save-bar input {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--bg-control);
+  color: var(--text-primary);
+  padding: 8px 10px;
+  font: inherit;
+  font-size: .8rem;
+}
+
+.scene-save-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.scene-save-actions .primary.compact,
+.scene-save-actions .secondary.compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.scene-save-bar > small {
+  grid-column: 1 / -1;
+  color: var(--accent-primary);
+  font-size: .7rem;
+  font-weight: 750;
+}
+
+.scene-library {
+  padding: 0;
+  overflow: hidden;
+}
+
+.scene-library > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 15px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.scene-library > summary::-webkit-details-marker {
+  display: none;
+}
+
+.scene-library > summary > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.scene-library > summary span {
+  color: var(--text-muted);
+  font-size: .66rem;
+  font-weight: 850;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.scene-library > summary strong {
+  font-size: .92rem;
+}
+
+.scene-library > summary small {
+  color: var(--text-muted);
+  font-size: .68rem;
+  font-weight: 750;
+}
+
+.scene-library-empty {
+  border-top: 1px solid var(--border-subtle);
+  padding: 16px 18px;
+  color: var(--text-muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.scene-library-list {
+  border-top: 1px solid var(--border-subtle);
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.scene-library-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  padding: 11px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.scene-library-card.active {
+  border-color: var(--accent-border);
+  background: var(--bg-surface-emphasis);
+}
+
+.scene-library-card.needs-review {
+  border-style: dashed;
+}
+
+.scene-library-card-main {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.scene-library-card-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.scene-library-card-title > strong {
+  min-width: 0;
+  font-size: .9rem;
+  overflow-wrap: anywhere;
+}
+
+.scene-library-card-main > span,
+.scene-library-card-main > small {
+  color: var(--text-muted);
+  font-size: .68rem;
+  line-height: 1.35;
+}
+
+.scene-review-badge,
+.scene-ready-badge {
+  border-radius: 999px;
+  padding: 4px 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .6rem;
+  font-weight: 850;
+}
+
+.scene-review-badge {
+  border: 1px solid var(--accent-border);
+  background: var(--bg-surface-raised);
+  color: var(--accent-primary);
+}
+
+.scene-ready-badge {
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-muted);
+  color: var(--text-muted);
+}
+
+.scene-library-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.scene-library-card-actions .icon-only,
+.scene-library-card-actions .scene-delete-confirm {
+  min-width: 32px;
+  min-height: 32px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--bg-control);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  cursor: pointer;
+}
+
+.scene-library-card-actions .scene-delete-confirm {
+  padding: 0 8px;
+  border-color: var(--accent-border);
+  color: var(--accent-primary);
+  font-size: .66rem;
+  font-weight: 850;
+}
+
+.scene-review-details {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 7px;
+}
+
+.scene-review-details summary {
+  cursor: pointer;
+  color: var(--accent-primary);
+  font-size: .68rem;
+  font-weight: 800;
+}
+
+.scene-review-details ul {
+  margin: 7px 0 0;
+  padding-left: 18px;
+  color: var(--text-secondary);
+  font-size: .7rem;
+  line-height: 1.45;
+}
+
+.scene-save-bar input:focus-visible,
+.scene-library > summary:focus-visible,
+.scene-library-card button:focus-visible,
+.scene-review-details summary:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 680px) {
+  .scene-save-bar {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .scene-save-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scene-save-actions .text-button {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .scene-library-card {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .scene-library-card-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 430px) {
+  .scene-save-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .scene-save-actions .text-button {
+    grid-column: auto;
+  }
+
+  .scene-library-card-actions .primary.compact,
+  .scene-library-card-actions .secondary.compact {
+    flex: 1;
+  }
+}
+
+
 /* M14.7 — shared scene controls */
 
 .scene-tonight-shared {

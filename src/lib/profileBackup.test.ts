@@ -22,6 +22,13 @@ import {
   rewardPunishmentPrimitiveKey,
   rewardPunishmentPrimitives,
 } from "./rewardPunishmentLibrary";
+import {
+  createSavedScene,
+  createEmptySceneLibraryState,
+  upsertSavedScene,
+} from "./sceneLibrary";
+import { saveSceneLibraryState } from "./sceneLibraryStorage";
+import { createEmptySceneComposition } from "./sceneComposition";
 
 class MemoryStorage implements StorageLike {
   values = new Map<string, string>();
@@ -137,11 +144,32 @@ function seededStorage() {
   );
 
   seedM11(storage);
+
+  const savedScene = createSavedScene(
+    createEmptySceneComposition({
+      themeIds: ["pain"],
+      effort: "quick",
+      exploration: "familiar",
+    }),
+    "Saved scene",
+    {
+      id: "scene-1",
+      now: "2026-09-06T20:00:00.000Z",
+    },
+  );
+  saveSceneLibraryState(
+    upsertSavedScene(
+      createEmptySceneLibraryState(),
+      savedScene,
+    ),
+    storage,
+  );
+
   return storage;
 }
 
 describe("profile backup export", () => {
-  it("exports backup v2 containing every authoritative store including M11", () => {
+  it("exports backup v3 containing every authoritative store including M11 and saved scenes", () => {
     const backup = createProfileBackup(
       seededStorage(),
       "2026-09-06T22:00:00.000Z",
@@ -166,6 +194,8 @@ describe("profile backup export", () => {
     expect(
       backup.profile.rewardsPunishments.recipes.recipes,
     ).toHaveLength(1);
+    expect(backup.profile.scenes.scenes).toHaveLength(1);
+    expect(backup.profile.scenes.scenes[0].name).toBe("Saved scene");
   });
 
   it("backs up authoritative M11 state but not recomputable inference/category output or browser storage keys", () => {
@@ -180,6 +210,9 @@ describe("profile backup export", () => {
     expect(serialized).not.toContain("pet-profile-catalog-v1");
     expect(serialized).not.toContain(
       "pet-profile-rewards-punishments-v1",
+    );
+    expect(serialized).not.toContain(
+      "pet-profile-saved-scenes-v1",
     );
     expect(serialized).not.toContain("overallFacets");
     expect(serialized).not.toContain("canonicalSignals");
@@ -202,6 +235,7 @@ describe("profile backup export", () => {
       rewardPunishmentPreferenceCount: 1,
       rewardPunishmentComparisonCount: 1,
       rewardPunishmentRecipeCount: 1,
+      savedSceneCount: 1,
     });
   });
 

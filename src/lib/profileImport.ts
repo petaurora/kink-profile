@@ -18,10 +18,12 @@ import type {
 import {
   PROFILE_BACKUP_FORMAT,
   PROFILE_BACKUP_VERSION,
-  isProfileBackupV2,
+  hasRewardPunishmentBackupData,
+  isProfileBackupV3,
   type ProfileBackup,
   type ProfileBackupV1,
   type ProfileBackupV2,
+  type ProfileBackupV3,
 } from "./profileBackup";
 import {
   MAX_PROFILE_DISPLAY_NAME_LENGTH,
@@ -44,6 +46,14 @@ import {
   parseRewardPunishmentAuthoritativeState,
   saveRewardPunishmentAuthoritativeState,
 } from "./rewardPunishmentLifecycle";
+import {
+  createEmptySceneLibraryState,
+  parseSceneLibraryState,
+} from "./sceneLibrary";
+import {
+  loadSceneLibraryState,
+  saveSceneLibraryState,
+} from "./sceneLibraryStorage";
 
 export type ProfileBackupParseResult =
   | { ok: true; backup: ProfileBackup }
@@ -322,7 +332,11 @@ export function validateProfileBackup(
     };
   }
 
-  if (value.version !== 1 && value.version !== PROFILE_BACKUP_VERSION) {
+  if (
+    value.version !== 1 &&
+    value.version !== 2 &&
+    value.version !== PROFILE_BACKUP_VERSION
+  ) {
     return {
       ok: false,
       error: `Backup format v${String(
@@ -404,7 +418,32 @@ export function validateProfileBackup(
     };
   }
 
-  const backup: ProfileBackupV2 = {
+  if (value.version === 2) {
+    const backup: ProfileBackupV2 = {
+      format: PROFILE_BACKUP_FORMAT,
+      version: 2,
+      exportedAt: value.exportedAt,
+      profile: {
+        settings,
+        quizzes: storedProfile,
+        catalog: catalogProfile,
+        rewardsPunishments,
+      },
+    };
+
+    return { ok: true, backup };
+  }
+
+  const scenes = parseSceneLibraryState(value.profile.scenes);
+  if (!scenes) {
+    return {
+      ok: false,
+      error:
+        "The saved Scenes data is invalid or unsupported.",
+    };
+  }
+
+  const backup: ProfileBackupV3 = {
     format: PROFILE_BACKUP_FORMAT,
     version: PROFILE_BACKUP_VERSION,
     exportedAt: value.exportedAt,
@@ -413,6 +452,7 @@ export function validateProfileBackup(
       quizzes: storedProfile,
       catalog: catalogProfile,
       rewardsPunishments,
+      scenes,
     },
   };
 
@@ -446,11 +486,16 @@ export function restoreProfileBackup(
     catalog: loadCatalogProfile(storage),
     rewardsPunishments:
       loadRewardPunishmentAuthoritativeState(storage),
+    scenes: loadSceneLibraryState(storage),
   };
 
-  const nextRewardsPunishments = isProfileBackupV2(backup)
-    ? backup.profile.rewardsPunishments
-    : createEmptyRewardPunishmentAuthoritativeState();
+  const nextRewardsPunishments =
+    hasRewardPunishmentBackupData(backup)
+      ? backup.profile.rewardsPunishments
+      : createEmptyRewardPunishmentAuthoritativeState();
+  const nextScenes = isProfileBackupV3(backup)
+    ? backup.profile.scenes
+    : createEmptySceneLibraryState();
 
   try {
     saveProfile(backup.profile.quizzes, storage);
@@ -459,6 +504,7 @@ export function restoreProfileBackup(
       nextRewardsPunishments,
       storage,
     );
+    saveSceneLibraryState(nextScenes, storage);
     saveProfileSettings(backup.profile.settings, storage);
   } catch (error) {
     try {
@@ -468,6 +514,7 @@ export function restoreProfileBackup(
         previous.rewardsPunishments,
         storage,
       );
+      saveSceneLibraryState(previous.scenes, storage);
       saveProfileSettings(previous.settings, storage);
     } catch {
       throw new Error(

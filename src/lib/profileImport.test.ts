@@ -7,6 +7,7 @@ import {
   createProfileBackup,
   serializeProfileBackup,
   type ProfileBackupV1,
+  type ProfileBackupV2,
 } from "./profileBackup";
 import {
   loadProfileSettings,
@@ -32,6 +33,16 @@ import {
   rewardPunishmentPrimitiveKey,
   rewardPunishmentPrimitives,
 } from "./rewardPunishmentLibrary";
+import {
+  createEmptySceneLibraryState,
+  createSavedScene,
+  upsertSavedScene,
+} from "./sceneLibrary";
+import {
+  loadSceneLibraryState,
+  saveSceneLibraryState,
+} from "./sceneLibraryStorage";
+import { createEmptySceneComposition } from "./sceneComposition";
 
 class MemoryStorage implements StorageLike {
   values = new Map<string, string>();
@@ -131,6 +142,26 @@ function seedProfile(
   );
 
   seedM11(storage, displayName);
+
+  const scene = createSavedScene(
+    createEmptySceneComposition({
+      themeIds: ["pain"],
+      effort: "quick",
+      exploration: "familiar",
+    }),
+    `Scene ${displayName}`,
+    {
+      id: `scene-${displayName}`,
+      now: "2026-09-06T20:00:00.000Z",
+    },
+  );
+  saveSceneLibraryState(
+    upsertSavedScene(
+      createEmptySceneLibraryState(),
+      scene,
+    ),
+    storage,
+  );
 }
 
 describe("profile backup import", () => {
@@ -150,7 +181,7 @@ describe("profile backup import", () => {
     if (result.ok) expect(result.backup).toEqual(backup);
   });
 
-  it("accepts legacy v1 backups and treats missing M11 as empty on full restore", () => {
+  it("accepts legacy v1 backups and treats missing M11/scenes as empty on full restore", () => {
     const source = new MemoryStorage();
     seedProfile(source, "legacy-source");
     const current = createProfileBackup(
@@ -177,6 +208,42 @@ describe("profile backup import", () => {
 
     expect(loadRewardPunishmentAuthoritativeState(destination)).toEqual(
       createEmptyRewardPunishmentAuthoritativeState(),
+    );
+    expect(loadSceneLibraryState(destination)).toEqual(
+      createEmptySceneLibraryState(),
+    );
+  });
+
+  it("accepts legacy v2 backups, restores M11, and treats missing scenes as empty", () => {
+    const source = new MemoryStorage();
+    seedProfile(source, "legacy-v2");
+    const current = createProfileBackup(
+      source,
+      "2026-09-06T22:00:00.000Z",
+    );
+    const legacy: ProfileBackupV2 = {
+      format: current.format,
+      version: 2,
+      exportedAt: current.exportedAt,
+      profile: {
+        settings: current.profile.settings,
+        quizzes: current.profile.quizzes,
+        catalog: current.profile.catalog,
+        rewardsPunishments: current.profile.rewardsPunishments,
+      },
+    };
+
+    expect(validateProfileBackup(legacy).ok).toBe(true);
+
+    const destination = new MemoryStorage();
+    seedProfile(destination, "destination");
+    restoreProfileBackup(legacy, destination);
+
+    expect(loadRewardPunishmentAuthoritativeState(destination)).toEqual(
+      legacy.profile.rewardsPunishments,
+    );
+    expect(loadSceneLibraryState(destination)).toEqual(
+      createEmptySceneLibraryState(),
     );
   });
 
@@ -220,14 +287,14 @@ describe("profile backup import", () => {
     expect(
       validateProfileBackup({
         format: "kink-profile",
-        version: 3,
+        version: 4,
         exportedAt: "2026-09-06T22:00:00.000Z",
         profile: {},
       }),
     ).toEqual({
       ok: false,
       error:
-        "Backup format v3 is not supported by this app version.",
+        "Backup format v4 is not supported by this app version.",
     });
   });
 
@@ -256,7 +323,32 @@ describe("profile backup import", () => {
     });
   });
 
-  it("replaces every authoritative source including M11", () => {
+  it("rejects invalid saved scene data before restore", () => {
+    const storage = new MemoryStorage();
+    seedProfile(storage);
+    const backup = createProfileBackup(
+      storage,
+      "2026-09-06T22:00:00.000Z",
+    );
+
+    backup.profile.scenes = {
+      schemaVersion: 1,
+      scenes: [
+        {
+          ...backup.profile.scenes.scenes[0],
+          name: "",
+        },
+      ],
+    };
+
+    expect(validateProfileBackup(backup)).toEqual({
+      ok: false,
+      error:
+        "The saved Scenes data is invalid or unsupported.",
+    });
+  });
+
+  it("replaces every authoritative source including M11 and saved scenes", () => {
     const source = new MemoryStorage();
     seedProfile(source, "source");
     const backup = createProfileBackup(
@@ -287,6 +379,9 @@ describe("profile backup import", () => {
     expect(
       loadRewardPunishmentAuthoritativeState(destination),
     ).toEqual(backup.profile.rewardsPunishments);
+    expect(loadSceneLibraryState(destination)).toEqual(
+      backup.profile.scenes,
+    );
   });
 
   it("supports export -> replace -> import round-trip equivalence including M11", () => {

@@ -46,6 +46,9 @@ function selectionLabels(selection: ProfileResetSelection) {
   (selection.rewardsPunishments ? reset : keep).push(
     "Rewards & Punishments contextual data, rankings, and recipes",
   );
+  (selection.savedScenes ? reset : keep).push(
+    "Saved Scene Builder templates and scene-local notes",
+  );
   (selection.profileSettings ? reset : keep).push(
     "Profile name and settings",
   );
@@ -241,6 +244,30 @@ export function ProfileResetPanel({
           </fieldset>
 
           <fieldset className="settings-reset-group">
+            <legend>Scene Builder</legend>
+            <label className="settings-reset-option">
+              <input
+                type="checkbox"
+                checked={selection.savedScenes}
+                onChange={(event) =>
+                  setSelection((current) => ({
+                    ...current,
+                    savedScenes: event.target.checked,
+                  }))
+                }
+              />
+              <span>
+                <strong>Saved scenes</strong>
+                <small>
+                  Reusable Scene Builder templates and their scene-local notes.
+                  Current-session Yes/Maybe/Not tonight state is temporary and
+                  is not part of this persistent reset scope.
+                </small>
+              </span>
+            </label>
+          </fieldset>
+
+          <fieldset className="settings-reset-group">
             <legend>Profile settings</legend>
             <label className="settings-reset-option">
               <input
@@ -320,6 +347,10 @@ export function ProfileResetPanel({
               <span>
                 <strong>{impact.rewardPunishmentRecipeCount}</strong>
                 saved recipes
+              </span>
+              <span>
+                <strong>{impact.savedSceneCount}</strong>
+                saved scenes
               </span>
             </div>
           )}

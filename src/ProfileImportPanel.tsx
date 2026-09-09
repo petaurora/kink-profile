@@ -1,7 +1,8 @@
 import { type ChangeEvent, useState } from "react";
 import {
   getProfileBackupSummary,
-  isProfileBackupV2,
+  hasRewardPunishmentBackupData,
+  isProfileBackupV3,
   type ProfileBackup,
 } from "./lib/profileBackup";
 import {
@@ -198,23 +199,30 @@ export function ProfileImportPanel({
               <strong>{summary?.rewardPunishmentRecipeCount ?? 0}</strong>
               recipes
             </span>
+            <span>
+              <strong>{summary?.savedSceneCount ?? 0}</strong>
+              saved scenes
+            </span>
           </div>
 
           <p className="settings-import-versions">
             Settings store v{candidate.backup.profile.settings.schemaVersion}
             {" · "}Quiz store v{candidate.backup.profile.quizzes.schemaVersion}
             {" · "}Catalog store v{candidate.backup.profile.catalog.schemaVersion}
-            {isProfileBackupV2(candidate.backup)
+            {hasRewardPunishmentBackupData(candidate.backup)
               ? ` · R/P store v${candidate.backup.profile.rewardsPunishments.schemaVersion}`
               : " · Legacy backup: no Rewards & Punishments payload"}
+            {isProfileBackupV3(candidate.backup)
+              ? ` · Scenes store v${candidate.backup.profile.scenes.schemaVersion}`
+              : " · Legacy backup: no saved Scenes payload"}
           </p>
 
           <div className="settings-import-warning">
             <strong>This replaces the current profile.</strong>
             <span>
               Import does not merge histories. Your current profile name, quiz data, catalog
-              preferences/rankings, and Rewards & Punishments data will be replaced by this
-              validated backup. Legacy v1 backups restore M11 as empty because they predate it.
+              preferences/rankings, Rewards & Punishments data, and saved scenes will be replaced
+              by this validated backup. Legacy backups restore stores they predate as empty.
             </span>
           </div>
 

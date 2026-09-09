@@ -25,12 +25,21 @@ import {
   saveRewardPunishmentAuthoritativeState,
   type RewardPunishmentAuthoritativeState,
 } from "./rewardPunishmentLifecycle";
+import {
+  createEmptySceneLibraryState,
+  type SceneLibraryState,
+} from "./sceneLibrary";
+import {
+  loadSceneLibraryState,
+  saveSceneLibraryState,
+} from "./sceneLibraryStorage";
 
 export type ProfileResetSelection = {
   quizIds: QuizId[];
   catalogPreferences: boolean;
   rankingComparisons: boolean;
   rewardsPunishments: boolean;
+  savedScenes: boolean;
   profileSettings: boolean;
 };
 
@@ -38,6 +47,7 @@ export type ProfileResetResult = {
   profile: StoredProfile;
   catalogProfile: CatalogProfileState;
   rewardsPunishments: RewardPunishmentAuthoritativeState;
+  scenes: SceneLibraryState;
   settings: ProfileSettings;
 };
 
@@ -49,6 +59,7 @@ export type ProfileResetImpact = {
   rewardPunishmentPreferenceCount: number;
   rewardPunishmentComparisonCount: number;
   rewardPunishmentRecipeCount: number;
+  savedSceneCount: number;
   resetsProfileSettings: boolean;
 };
 
@@ -62,6 +73,7 @@ export function createEmptyResetSelection(): ProfileResetSelection {
     catalogPreferences: false,
     rankingComparisons: false,
     rewardsPunishments: false,
+    savedScenes: false,
     profileSettings: false,
   };
 }
@@ -72,6 +84,7 @@ export function createResetEverythingSelection(): ProfileResetSelection {
     catalogPreferences: true,
     rankingComparisons: true,
     rewardsPunishments: true,
+    savedScenes: true,
     profileSettings: true,
   };
 }
@@ -82,6 +95,7 @@ export function hasResetSelection(selection: ProfileResetSelection) {
     selection.catalogPreferences ||
     selection.rankingComparisons ||
     selection.rewardsPunishments ||
+    selection.savedScenes ||
     selection.profileSettings
   );
 }
@@ -96,6 +110,7 @@ export function isResetEverythingSelection(
     selection.catalogPreferences &&
     selection.rankingComparisons &&
     selection.rewardsPunishments &&
+    selection.savedScenes &&
     selection.profileSettings
   );
 }
@@ -108,6 +123,7 @@ export function getProfileResetImpact(
   const catalogProfile = loadCatalogProfile(storage);
   const rewardsPunishments =
     loadRewardPunishmentAuthoritativeState(storage);
+  const scenes = loadSceneLibraryState(storage);
 
   return {
     selectedQuizCount: selection.quizIds.filter(
@@ -141,6 +157,9 @@ export function getProfileResetImpact(
       selection.rewardsPunishments
         ? rewardsPunishments.recipes.recipes.length
         : 0,
+    savedSceneCount: selection.savedScenes
+      ? scenes.scenes.length
+      : 0,
     resetsProfileSettings: selection.profileSettings,
   };
 }
@@ -153,6 +172,7 @@ export function resetProfileData(
   const currentCatalogProfile = loadCatalogProfile(storage);
   const currentRewardsPunishments =
     loadRewardPunishmentAuthoritativeState(storage);
+  const currentScenes = loadSceneLibraryState(storage);
   const currentSettings = loadProfileSettings(storage);
 
   const nextQuizzes = { ...currentProfile.quizzes };
@@ -183,6 +203,10 @@ export function resetProfileData(
       ? createEmptyRewardPunishmentAuthoritativeState()
       : currentRewardsPunishments;
 
+  const nextScenes = selection.savedScenes
+    ? createEmptySceneLibraryState()
+    : currentScenes;
+
   const nextSettings = selection.profileSettings
     ? createDefaultProfileSettings()
     : currentSettings;
@@ -205,6 +229,10 @@ export function resetProfileData(
     );
   }
 
+  if (selection.savedScenes) {
+    saveSceneLibraryState(nextScenes, storage);
+  }
+
   if (selection.profileSettings) {
     saveProfileSettings(nextSettings, storage);
   }
@@ -213,6 +241,7 @@ export function resetProfileData(
     profile: nextProfile,
     catalogProfile: nextCatalogProfile,
     rewardsPunishments: nextRewardsPunishments,
+    scenes: nextScenes,
     settings: nextSettings,
   };
 }
