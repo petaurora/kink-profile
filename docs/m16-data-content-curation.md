@@ -390,6 +390,39 @@ Do not keep an action merely because it appeared in a source spreadsheet.
 
 # M16.7 — Cross-system taxonomy alignment
 
+## Semantic hub invariant
+
+M16.7 establishes **SignalId → Overall Facet** as the canonical semantic projection path.
+
+Meaningful primitives should resolve into Overall Facet space through Signals whenever that relationship is honest. Do not add separately authored facet weights to every subsystem.
+
+Examples:
+
+- quiz question → SignalIds → Overall Facets
+- role/headspace → SignalIds → Overall Facets
+- dynamic mode → SignalIds → Overall Facets
+- catalog category → category Signal mappings → Overall Facets
+- kink item → resolved category/item Signal mappings → Overall Facets
+- R/P category → authored Signal mappings → Overall Facets
+- R/P action → weighted R/P categories → derived Signal blend → Overall Facets
+
+Overall Facet affinity is descriptive metadata only. It must not feed back into stored preference evidence.
+
+See [Semantic Data Model](semantic-data-model.md) for the relationship diagram.
+
+### Coverage gaps are first-class review targets
+
+Do not invent semantic mappings just to satisfy a completeness counter.
+
+At the start of this slice, known gaps include:
+
+- 3 canonical SignalIds with no Overall Facet route: `role_embodiment`, `younger_headspace`, `anticipation`
+- 18 of 35 catalog categories with no category-level Signal mapping
+- R/P `Sexual / Scene` with no honest mapping in the current Signal vocabulary
+
+The Workbench should surface these as **No Overall Facet route yet** so M16 can distinguish missing mappings from missing facet dimensions or context-only metadata.
+
+
 Review shared concepts across M2–M7, M11, M13, M14, and M15 so the app does not grow parallel vocabularies for the same idea.
 
 Examples:
