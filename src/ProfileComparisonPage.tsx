@@ -6,6 +6,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { SharedProfileComparisonView } from "./SharedProfileComparisonView";
+import { SharedParticipantIntentPanel } from "./SharedParticipantIntentPanel";
 import {
   getProfileBackupSummary,
   type ProfileBackup,
@@ -16,6 +17,10 @@ import {
   type ComparisonProfileSource,
   type UploadedComparisonCandidate,
 } from "./lib/profileComparisonUpload";
+import {
+  createEmptySharedParticipantIntent,
+  type SharedParticipantIntent,
+} from "./lib/sharedParticipantIntent";
 import "./profileComparison.css";
 
 type ProfileComparisonPageProps = {
@@ -35,6 +40,10 @@ export function ProfileComparisonPage({
 }: ProfileComparisonPageProps) {
   const [candidate, setCandidate] = useState<UploadCandidate | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [profileAIntent, setProfileAIntent] =
+    useState<SharedParticipantIntent>(() => createEmptySharedParticipantIntent());
+  const [profileBIntent, setProfileBIntent] =
+    useState<SharedParticipantIntent>(() => createEmptySharedParticipantIntent());
 
   const chooseFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -44,6 +53,8 @@ export function ProfileComparisonPage({
 
     setCandidate(null);
     setError(null);
+    setProfileAIntent(createEmptySharedParticipantIntent());
+    setProfileBIntent(createEmptySharedParticipantIntent());
 
     let text: string;
 
@@ -71,6 +82,8 @@ export function ProfileComparisonPage({
   const clearCandidate = () => {
     setCandidate(null);
     setError(null);
+    setProfileAIntent(createEmptySharedParticipantIntent());
+    setProfileBIntent(createEmptySharedParticipantIntent());
   };
 
   if (candidate) {
@@ -130,6 +143,15 @@ export function ProfileComparisonPage({
             Temporary comparison only
           </span>
         </div>
+
+        <SharedParticipantIntentPanel
+          profileAName={current.displayName}
+          profileBName={candidate.built.displayName}
+          profileAIntent={profileAIntent}
+          profileBIntent={profileBIntent}
+          onProfileAIntentChange={setProfileAIntent}
+          onProfileBIntentChange={setProfileBIntent}
+        />
 
         <SharedProfileComparisonView
           model={candidate.built.comparison}
