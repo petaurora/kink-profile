@@ -19,7 +19,8 @@ export type SiteHeaderDestination =
   | "catalog"
   | "rewards-punishments"
   | "scene-builder"
-  | "compare-profiles";
+  | "compare-profiles"
+  | "curation-workbench";
 
 type SiteHeaderProps = {
   displayName: string;
@@ -131,6 +132,16 @@ export function SiteHeader({
             >
               <IconUsers size={17} stroke={1.9} aria-hidden="true" />
               <span>Compare profiles</span>
+            </button>
+            <button
+              type="button"
+              aria-current={
+                activeDestination === "curation-workbench" ? "page" : undefined
+              }
+              onClick={() => navigate("curation-workbench")}
+            >
+              <IconList size={17} stroke={1.9} aria-hidden="true" />
+              <span>Curation workbench</span>
             </button>
           </nav>
         )}
