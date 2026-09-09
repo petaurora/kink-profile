@@ -28,8 +28,8 @@ function resultItem(
       categoryLabel:
         categoryId === "impact-play" ? "Impact Play" : "Primal Play",
       description: "",
-      domain: "physical",
-      direction: "Both",
+      domain: "sm-intensity",
+      direction: "both",
       aliases: [],
       typicalRole: "",
       primaryMode: "Physical/Psychological",
