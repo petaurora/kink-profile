@@ -198,12 +198,6 @@ export function buildCurationEditorModel(
           },
           {
             kind: "text",
-            key: "primaryMode",
-            label: "Primary mode",
-            value: item.primaryMode,
-          },
-          {
-            kind: "text",
             key: "intensity",
             label: "Intensity",
             value: item.intensity,
