@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   IconCirclePlus,
   IconInfoCircle,
@@ -69,7 +68,6 @@ function CurationWeightedRelationsEditor({
   value: readonly CurationWeightedRelation[];
   onChange: (next: CurationWeightedRelation[]) => void;
 }) {
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const available = field.options.filter(
     (option) => !value.some((relation) => relation.id === option.value),
   );
@@ -85,7 +83,6 @@ function CurationWeightedRelationsEditor({
         weight: 1,
       },
     ]);
-    setEditingIndex(value.length);
   };
 
   const optionLabel = (id: string) =>
@@ -101,16 +98,6 @@ function CurationWeightedRelationsEditor({
             <div className="curation-relation-card-top">
               <div className="curation-relation-name">
                 <span>{optionLabel(relation.id)}</span>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setEditingIndex((current) =>
-                      current === index ? null : index,
-                    )
-                  }
-                >
-                  {editingIndex === index ? "Done" : "Change"}
-                </button>
               </div>
 
               <label className="curation-weight-input">
@@ -143,45 +130,11 @@ function CurationWeightedRelationsEditor({
                       (_, candidateIndex) => candidateIndex !== index,
                     ),
                   );
-                  setEditingIndex(null);
                 }}
               >
                 <IconTrash size={16} stroke={2} aria-hidden="true" />
               </button>
             </div>
-
-            {editingIndex === index && (
-              <label className="curation-relation-change">
-                <span>Relationship</span>
-                <select
-                  aria-label={`${field.label} relationship ${index + 1}`}
-                  value={relation.id}
-                  onChange={(event) => {
-                    const next = [...value];
-                    next[index] = {
-                      ...relation,
-                      id: event.target.value,
-                    };
-                    onChange(next);
-                  }}
-                >
-                  {field.options.map((option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                      disabled={
-                        option.value !== relation.id &&
-                        value.some(
-                          (candidate) => candidate.id === option.value,
-                        )
-                      }
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            )}
 
             {field.allowDirection && (
               <label className="curation-relation-direction">
