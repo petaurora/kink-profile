@@ -693,13 +693,15 @@ would violate the same either-person exclusion rule.
 - [x] independent profile export/import remains supported
 - [x] comparison/share privacy review
 - [x] accessibility/mobile polish
-- [ ] regression-run M6/M7/M9/M11/M13 boundaries
-- [ ] finalize docs and mark M14 complete
+- [x] regression-run M6/M7/M9/M11/M13 boundaries
+- [x] finalize M14.8 docs
+- [ ] mark M14 complete after M14.1–M14.2
 
-M14.8 deliberately does **not** mark the milestone complete while M14.1–M14.2
-remain open. The compare-once lifecycle is polished and privacy-reviewed, but
-persistent local profiles still need stable identity, migration, management,
-and switching before the full M14 exit condition is satisfied.
+M14.8 is complete, but it deliberately does **not** mark the full milestone
+complete while M14.1–M14.2 remain open. The compare-once lifecycle is polished
+and privacy-reviewed, but persistent local profiles still need stable identity,
+migration, management, and switching before the full M14 exit condition is
+satisfied.
 
 ---
 
