@@ -46,8 +46,10 @@ You do not need to complete everything before the app becomes useful.
 3. **Play This-or-That** when you want to sort relative favorites without assigning numbers.
 4. **View your profile** to see the combined picture.
 5. **Use Rewards & Punishments** if you want to separately map what works in those contexts.
-6. **Export a private backup** once you have data you care about.
-7. **Use the share summary** when you want a curated version for another person.
+6. **Use Scene Builder** when you want the profile turned into a smaller, usable play space for right now.
+7. **Export a private backup** once you have data you care about.
+8. **Use the share summary** when you want a curated version for another person.
+9. **Compare profiles** when someone has shared their Full Profile Export and you want to explore overlap, complementarity, or a shared scene without importing their profile.
 
 You can return to any area later and refine it. The profile is meant to grow over time.
 
