@@ -28,12 +28,15 @@ function resultItem(
       categoryLabel:
         categoryId === "impact-play" ? "Impact Play" : "Primal Play",
       description: "",
+      domain: "physical",
       direction: "Both",
-      mode: "Physical/Psychological",
+      aliases: [],
+      typicalRole: "",
+      primaryMode: "Physical/Psychological",
       intensity: "Moderate",
       riskLevel: "Moderate",
       signalMappings: [],
-    } as CatalogResultItem["item"],
+    },
     meaningfulPairwiseComparisons: 0,
     excludedFromNewRanking: false,
   };
