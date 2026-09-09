@@ -8,6 +8,9 @@ import {
   validateMergeTarget,
 } from "./curationEditor";
 import { curationInventory } from "../data/curationInventory";
+import { signalDefinitions } from "../data/signals";
+import { overallFacetDefinitions } from "../data/overallFacets";
+import { rewardPunishmentCategories } from "./rewardPunishmentLibrary";
 
 function entry(type: string, id?: string) {
   const found = curationInventory.find(
@@ -88,6 +91,68 @@ describe("M16.2 structured curation editor", () => {
 
     expect(memberships.options.length).toBeGreaterThan(1);
     expect(memberships.value.length).toBeGreaterThan(1);
+  });
+
+  it("exposes the complete valid target universe for shared relation editors", () => {
+    const signalTargetCases = [
+      ["catalog-item", "rope-bondage", "signalMappings"],
+      ["catalog-category", "bondage-restraint", "signalMappings"],
+      ["reward-punishment-category", "impact", "signalMappings"],
+      ["quiz-question", "ds-001", "weights"],
+      ["dynamic-mode", "submissive", "weights"],
+      ["role-headspace", "pet", "weights"],
+      ["overall-facet", "power_exchange", "signals"],
+    ] as const;
+
+    for (const [type, id, key] of signalTargetCases) {
+      const model = buildCurationEditorModel(entry(type, id));
+      if (!model) throw new Error(`Missing model ${type}:${id}`);
+
+      const field = model.fields.find(
+        (candidate) =>
+          candidate.kind === "weighted-relations" && candidate.key === key,
+      );
+      if (!field || field.kind !== "weighted-relations") {
+        throw new Error(`Missing relation field ${type}:${id}:${key}`);
+      }
+
+      expect(
+        field.options.length,
+        `${type}:${id} should expose every canonical Signal`,
+      ).toBe(signalDefinitions.length);
+    }
+
+    const signalModel = buildCurationEditorModel(
+      entry("signal", "praise_approval"),
+    );
+    if (!signalModel) throw new Error("Missing Signal model");
+    const facetMemberships = signalModel.fields.find(
+      (field) =>
+        field.kind === "weighted-relations" &&
+        field.key === "facetMemberships",
+    );
+    if (!facetMemberships || facetMemberships.kind !== "weighted-relations") {
+      throw new Error("Missing Signal facet membership field");
+    }
+    expect(facetMemberships.options.length).toBe(
+      overallFacetDefinitions.length,
+    );
+
+    const actionModel = buildCurationEditorModel(
+      entry("reward-punishment-action", "action-achievement-ceremony"),
+    );
+    if (!actionModel) throw new Error("Missing R/P action model");
+    const contextCategories = actionModel.fields.find(
+      (field) =>
+        field.kind === "weighted-relations" &&
+        field.key === "contextCategories",
+    );
+    if (!contextCategories || contextCategories.kind !== "weighted-relations") {
+      throw new Error("Missing R/P action context category field");
+    }
+    expect(contextCategories.options.length).toBe(
+      rewardPunishmentCategories.length,
+    );
   });
 
   it("exposes category semantic bridges as shared weighted-relation editors", () => {
