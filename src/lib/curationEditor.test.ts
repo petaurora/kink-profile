@@ -19,6 +19,32 @@ function entry(type: string, id?: string) {
 }
 
 describe("M16.2 structured curation editor", () => {
+  it("keeps editor field keys unique for every workbench primitive", () => {
+    for (const item of curationInventory) {
+      const model = buildCurationEditorModel(item);
+      if (!model) continue;
+
+      const keys = model.fields.map((field) => field.key);
+      expect(
+        new Set(keys).size,
+        `duplicate editor field on ${item.entityType}:${item.entityId}`,
+      ).toBe(keys.length);
+    }
+  });
+
+  it("renders the Pet role basics exactly once", () => {
+    const pet = entry("role-headspace", "pet");
+    const model = buildCurationEditorModel(pet);
+    if (!model) throw new Error("Missing Pet editor model");
+
+    expect(model.fields.map((field) => field.label)).toEqual([
+      "Label",
+      "Short label",
+      "Description",
+      "Signal composition",
+    ]);
+  });
+
   it("builds an editable weighted-question model and starts unchanged", () => {
     const question = entry("quiz-question", "ds-001");
     const model = buildCurationEditorModel(question);
