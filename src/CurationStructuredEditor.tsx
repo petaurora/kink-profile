@@ -88,7 +88,7 @@ function CurationWeightedRelationsEditor({
   };
 
   return (
-    <div className="curation-editor-field curation-relation-field">
+    <div className="curation-editor-field curation-editor-field-wide curation-relation-field">
       <div className="curation-editor-label">
         <strong>{field.label}</strong>
         {field.helper && <small>{field.helper}</small>}
