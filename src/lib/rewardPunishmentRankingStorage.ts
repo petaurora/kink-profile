@@ -7,6 +7,7 @@ import {
   type RewardPunishmentComparison,
   type RewardPunishmentComparisonResult,
 } from "./rewardPunishmentRanking";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export const REWARD_PUNISHMENT_RANKING_STORAGE_KEY =
   "pet-profile-rewards-punishments-ranking-v1";
@@ -22,7 +23,7 @@ export type RewardPunishmentRankingStorageLike = Pick<
 >;
 
 function browserStorage(): RewardPunishmentRankingStorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 export function createEmptyRewardPunishmentRankingState(): RewardPunishmentRankingState {
