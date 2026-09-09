@@ -1,6 +1,6 @@
 # M13 — Scene Builder
 
-**Status:** in progress — M13.1–M13.8 complete  
+**Status:** complete — M13.1–M13.9  
 **Roadmap milestone:** M13  
 **Primary boundary:** M13 turns one person's existing profile into a small, relevant, consent-aware play space for a specific moment. It reduces decision load; it does not replace communication, assign obligations, or infer consent.
 
@@ -583,12 +583,12 @@ A future explicit scene-share artifact may be considered separately.
 
 ## M13.9 — Accessibility + polish
 
-- [ ] mobile-first low-decision UI
-- [ ] keyboard/focus support
-- [ ] reduced-motion support
-- [ ] empty/sparse/full profile behavior
-- [ ] regression-run M6/M7/M9/M11 boundaries
-- [ ] finalize docs and mark M13 complete
+- [x] mobile-first low-decision UI
+- [x] keyboard/focus support
+- [x] reduced-motion support
+- [x] empty/sparse/full profile behavior
+- [x] regression-run M6/M7/M9/M11 boundaries
+- [x] finalize docs and mark M13 complete
 
 ---
 
@@ -614,3 +614,5 @@ Multi-profile/shared filtering belongs to M14.
 # Exit condition
 
 M13 is complete when a single profile can select one or more desired themes, optionally narrow the current-session state, receive a small profile-backed set of valid options, compose or randomize those options into a reusable scene, and understand why suggestions fit — without changing the authoritative underlying preference profile.
+
+**Exit condition met.** M13.9 also hardens keyboard/focus behavior, mobile touch targets, reduced-motion behavior, sparse-profile messaging, and regression coverage across the M6/M7/M9/M11 authority boundaries.

@@ -23,7 +23,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M10 | Optional | cloud persistence |
 | M11 | ✅ Complete | contextual rewards/punishments, randomizer, and reusable builders |
 | M12 | ✅ Complete | preserve This-or-That runs and show rank movement over time |
-| M13 | 🚧 In progress | theme-driven, low-decision scene composition |
+| M13 | ✅ Complete | theme-driven, low-decision scene composition |
 | M14 | In progress | compare-once upload, derived comparison, complementary fit, and future shared scene filtering |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
 | M16 | Planned | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
@@ -218,7 +218,7 @@ Broader catalog pruning/merging and the pending source-additions review are now 
 - [x] **M13.6** — randomization + shuffle
 - [x] **M13.7** — M11 Rewards & Punishments integration
 - [x] **M13.8** — saved scenes + lifecycle
-- [ ] **M13.9** — accessibility + polish
+- [x] **M13.9** — accessibility + polish
 
 ---
 
@@ -288,11 +288,10 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M11 and M12 are complete. M13 and M14 are in progress; M15–M16 remain formally scoped.**
+**M11–M13 are complete. M14 is in progress; M15–M16 remain formally scoped.**
 
 Choose the next milestone intentionally:
 
-- **M13** turns the existing single-profile evidence into a low-decision Scene Builder.
 - **M14** introduces multiple independent profiles, comparison, and shared scene filtering.
 - **M15** adds the reusable authority × activity-side contextual model for direction-sensitive preferences and rankings.
 - **M16** is the whole-app data/content quality pass, including the mobile Curation Workbench, catalog cleanup, quiz/radar review, reward/punishment curation, and the M11 recipe-builder UX/model revisit.

@@ -403,6 +403,51 @@ Technical reference: [M11 Rewards & Punishments](m11-rewards-punishments.md)
 
 ---
 
+# Compose the moment: Scene Builder
+
+Scene Builder turns the existing profile into a smaller, current-session play space. It does not create new preference evidence or infer consent.
+
+## Pick the space
+
+Choose one or more themes such as Pain, Restraint, Service, Pet, Surrender, Soft, Structured, or Playful. Themes are temporary queries over the existing profile.
+
+Optional tuning can narrow by:
+
+- effort: Quick / Normal / Elaborate
+- exploration: Familiar / Mix / Explore
+- catalog intensity
+
+## Tonight-only changes
+
+Each candidate can be marked **Yes**, **Maybe**, or **Not tonight** for the current session. These choices override scene suggestions for the moment without changing permanent catalog preferences.
+
+## Pick or build for me
+
+**Pick something** chooses randomly from the currently valid pool. **Build something** creates an ordered scene arc. Recent random picks are temporarily remembered to reduce immediate repeats.
+
+Inference-only suggestions stay under **Suggested to explore** and are never silently randomized.
+
+## Edit the scene arc
+
+A generated scene can be edited component by component:
+
+- add or remove an item
+- move it up or down
+- change its phase
+- replace or shuffle one part
+- add scene-local notes
+- optionally include an M11-backed Reward or Punishment
+
+## Save scenes
+
+Named scenes can be saved locally, loaded, edited, duplicated, and deleted. If an underlying catalog item or M11 reference later becomes stale or excluded, the saved scene is marked **Needs review** rather than silently rewritten.
+
+Saved scenes are included in the private full-profile backup and have their own selective-reset scope. They are not included in the default share summary.
+
+See [M13 Scene Builder](m13-scene-builder.md).
+
+---
+
 # Manage your profile: Settings
 
 ## Profile name
@@ -489,12 +534,6 @@ A share summary is generated deliberately by the user. Exporting a private backu
 # Planned features
 
 These features are specified but are not part of the current implemented feature set.
-
-## M13 — Scene Builder
-
-A profile-aware, low-decision way to choose themes, narrow what fits right now, and compose or randomize a scene without changing the permanent profile.
-
-See [M13 Scene Builder](m13-scene-builder.md).
 
 ## M14 — Shared Profiles
 
