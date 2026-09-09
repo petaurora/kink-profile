@@ -72,6 +72,33 @@ describe("M16.2 structured curation editor", () => {
     ]);
   });
 
+  it("exposes category semantic bridges as shared weighted-relation editors", () => {
+    const catalogCategory = entry("catalog-category", "bondage-restraint");
+    const catalogModel = buildCurationEditorModel(catalogCategory);
+    if (!catalogModel) throw new Error("Missing catalog category editor");
+
+    expect(
+      catalogModel.fields.some(
+        (field) =>
+          field.kind === "weighted-relations" &&
+          field.key === "signalMappings" &&
+          field.allowDirection,
+      ),
+    ).toBe(true);
+
+    const rpCategory = entry("reward-punishment-category", "impact");
+    const rpModel = buildCurationEditorModel(rpCategory);
+    if (!rpModel) throw new Error("Missing R/P category editor");
+
+    expect(
+      rpModel.fields.some(
+        (field) =>
+          field.kind === "weighted-relations" &&
+          field.key === "signalMappings",
+      ),
+    ).toBe(true);
+  });
+
   it("builds an editable weighted-question model and starts unchanged", () => {
     const question = entry("quiz-question", "ds-001");
     const model = buildCurationEditorModel(question);
