@@ -505,11 +505,13 @@ export function SceneBuilder({
 
   const rewardPunishmentAvailability = useMemo(
     () =>
-      getSceneRewardPunishmentAvailability(
-        rewardPunishmentProfile,
-        rewardPunishmentRecipes.recipes,
-      ),
-    [rewardPunishmentProfile, rewardPunishmentRecipes],
+      sharedContext
+        ? { reward: 0, punishment: 0, either: 0 }
+        : getSceneRewardPunishmentAvailability(
+            rewardPunishmentProfile,
+            rewardPunishmentRecipes.recipes,
+          ),
+    [rewardPunishmentProfile, rewardPunishmentRecipes, sharedContext],
   );
 
   const rewardPunishmentPoolCount = (
@@ -546,20 +548,42 @@ export function SceneBuilder({
     selectedThemeIds,
   ]);
 
-  const activeOverrides = Object.entries(sessionState.overrides)
-    .map(([catalogId, override]) => {
-      const result = catalogResultView.byCatalogId.get(catalogId);
-      return {
-        catalogId,
-        label: result?.item.label ?? catalogId,
-        choice: override.choice,
-      };
-    })
-    .sort(
-      (left, right) =>
-        left.label.localeCompare(right.label) ||
-        left.catalogId.localeCompare(right.catalogId),
-    );
+  const activeOverrides = [
+    ...Object.entries(sessionState.overrides).map(
+      ([catalogId, override]) => {
+        const result = catalogResultView.byCatalogId.get(catalogId);
+        return {
+          participant: sharedContext?.profileAName,
+          participantKey: "profile-a",
+          catalogId,
+          label: result?.item.label ?? catalogId,
+          choice: override.choice,
+        };
+      },
+    ),
+    ...(sharedContext
+      ? Object.entries(partnerSessionState.overrides).map(
+          ([catalogId, override]) => {
+            const result =
+              sharedContext.partnerCatalogResultView.byCatalogId.get(
+                catalogId,
+              );
+            return {
+              participant: sharedContext.profileBName,
+              participantKey: "profile-b",
+              catalogId,
+              label: result?.item.label ?? catalogId,
+              choice: override.choice,
+            };
+          },
+        )
+      : []),
+  ].sort(
+    (left, right) =>
+      left.label.localeCompare(right.label) ||
+      (left.participant ?? "").localeCompare(right.participant ?? "") ||
+      left.catalogId.localeCompare(right.catalogId),
+  );
 
   const toggleTheme = (themeId: SceneThemeId) => {
     setSelectedThemeIds((current) =>
@@ -585,6 +609,41 @@ export function SceneBuilder({
       clearSceneSessionChoice(current, catalogId),
     );
   };
+
+  const setPartnerSessionChoice = (
+    catalogId: string,
+    choice: SceneSessionChoice,
+  ) => {
+    setPartnerSessionState((current) =>
+      current.overrides[catalogId]?.choice === choice
+        ? clearSceneSessionChoice(current, catalogId)
+        : setSceneSessionChoice(current, catalogId, choice),
+    );
+  };
+
+  const clearPartnerSessionChoice = (catalogId: string) => {
+    setPartnerSessionState((current) =>
+      clearSceneSessionChoice(current, catalogId),
+    );
+  };
+
+  const sharedSessionControlsFor = (catalogId: string) =>
+    sharedContext
+      ? {
+          profileAName: sharedContext.profileAName,
+          profileBName: sharedContext.profileBName,
+          profileASessionChoice: getSceneSessionChoice(
+            sessionState,
+            catalogId,
+          ),
+          profileBSessionChoice: getSceneSessionChoice(
+            partnerSessionState,
+            catalogId,
+          ),
+          onSetProfileAChoice: setSessionChoice,
+          onSetProfileBChoice: setPartnerSessionChoice,
+        }
+      : undefined;
 
   const makeStarterScene = () => {
     setComposition((current) => {
