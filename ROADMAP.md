@@ -234,8 +234,8 @@ product should support multiple fully editable local profiles, one owned profile
 plus linked/read-only partner profiles, or temporary comparison only.
 
 - [x] **M14.0** — compare once via uploaded full-profile backup
-- [~] **M14.1** — persistent profile/link storage model — **needs refinement**
-- [~] **M14.2** — saved profile/link management UX — **needs refinement**
+- ⏸ **M14.1** — persistent profile/link storage model — **needs refinement**
+- ⏸ **M14.2** — saved profile/link management UX — **needs refinement**
 - [x] **M14.3** — derived comparison engine
 - [x] **M14.4** — comparison UI
 - [x] **M14.5** — interaction/complement mappings
