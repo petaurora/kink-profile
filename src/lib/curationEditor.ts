@@ -500,15 +500,18 @@ export function buildCurationEditorModel(
       );
       if (!signal) return null;
 
-      const facetMemberships = overallFacetDefinitions.flatMap((facet) =>
-        facet.signals
-          .filter((mapping) => mapping.signalId === signal.id)
-          .map((mapping) => ({
+      const facetRelationships: CurationFacetRelationship[] =
+        overallFacetDefinitions.map((facet) => {
+          const existing = facet.signals.find(
+            (mapping) => mapping.signalId === signal.id,
+          );
+
+          return {
             id: facet.id,
-            weight: mapping.weight,
-            direction: mapping.direction,
-          })),
-      );
+            relationship: existing?.relationship ?? (existing ? "supports" : "neutral"),
+            weight: existing?.weight ?? 1,
+          };
+        });
 
       return {
         fields: [
@@ -533,17 +536,15 @@ export function buildCurationEditorModel(
             value: signal.description,
             required: true,
           },
-          relationField(
-            "facetMemberships",
-            "Overall Facet memberships",
-            facetMemberships,
-            overallFacetOptions,
-            {
-              allowDirection: true,
-              helper:
-                "Reverse editor for the existing Overall Facet → Signal composition. A Signal may belong to multiple facets. Saving this proposal should update the facet definitions, not create a second source of truth.",
-            },
-          ),
+          {
+            kind: "facet-matrix",
+            key: "facetRelationships",
+            label: "Overall Facet relationships",
+            value: facetRelationships,
+            options: overallFacetOptions,
+            helper:
+              "All nine Overall Facets are broad themes. Classify how this Signal relates to each theme as Supports, Neutral, or Opposes. Giving/receiving and Dom/sub remain below the facet layer.",
+          },
         ],
       };
     }
@@ -653,26 +654,20 @@ export function buildCurationEditorModel(
             value: facet.description,
             required: true,
           },
-          {
-            kind: "boolean",
-            key: "directional",
-            label: "Directional facet",
-            value: facet.directional,
-          },
           relationField(
             "signals",
-            "Signal composition",
+            "Signal relationships",
             facet.signals.map((signal) => ({
               id: signal.signalId,
               weight: signal.weight,
-              direction: signal.direction,
+              relationship: signal.relationship ?? "supports",
             })),
             signalOptions,
             {
               required: true,
-              allowDirection: true,
+              allowRelationship: true,
               helper:
-                "Direction is activity-side evidence only. It must never be interpreted as Dominant/submissive authority.",
+                "Overall Facets are broad themes. Signals may support or oppose a theme; omitted Signals are neutral. Activity side and authority orientation stay in the granular Signal/mode/headspace layers.",
             },
           ),
         ],
@@ -976,7 +971,7 @@ export function getCurationConsequences(
       consequences.push(
         `This signal is currently referenced by ${counts.weightedQuestions} weighted questions, ${counts.modes} dynamic modes, ${counts.roles} roles/headspaces, ${counts.facets} overall facets and ${counts.catalogItems} catalog items.`,
       );
-      if (keys.has("facetMemberships")) {
+      if (keys.has("facetRelationships")) {
         consequences.push(
           "Changing Overall Facet memberships updates the reverse Signal → Facet view by modifying the canonical facet signal compositions.",
         );
@@ -997,7 +992,7 @@ export function getCurationConsequences(
       break;
 
     case "overall-facet":
-      if (keys.has("signals") || keys.has("directional")) {
+      if (keys.has("signals")) {
         consequences.push(
           "This changes M7 overall aggregation/radar semantics and should be sanity-checked against representative profiles.",
         );
