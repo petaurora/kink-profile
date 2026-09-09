@@ -16,6 +16,7 @@ const rewardPrimitive: RewardPunishmentPrimitive = {
   label: "Reward one",
   sourceType: "catalog",
   contextCategories: [],
+  signalMappings: [],
   sourceOrigins: [],
 };
 
@@ -24,6 +25,7 @@ const punishmentPrimitive: RewardPunishmentPrimitive = {
   label: "Punishment one",
   sourceType: "catalog",
   contextCategories: [],
+  signalMappings: [],
   sourceOrigins: [],
 };
 

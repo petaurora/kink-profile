@@ -69,12 +69,32 @@ function CurationWeightedRelationsEditor({
   value: readonly CurationWeightedRelation[];
   onChange: (next: CurationWeightedRelation[]) => void;
 }) {
+  const [showAddRelationship, setShowAddRelationship] = useState(false);
+  const [relationshipSearch, setRelationshipSearch] = useState("");
+
   const available = field.options.filter(
     (option) => !value.some((relation) => relation.id === option.value),
   );
 
-  const addRelationship = () => {
-    const next = available[0];
+  const relationshipNoun = /signal/i.test(field.label)
+    ? "signal"
+    : /categor/i.test(field.label)
+      ? "category"
+      : /facet/i.test(field.label)
+        ? "facet"
+        : "relationship";
+
+  const filteredAvailable = available.filter((option) => {
+    const query = relationshipSearch.trim().toLowerCase();
+    if (!query) return true;
+    return (
+      option.label.toLowerCase().includes(query) ||
+      option.value.toLowerCase().includes(query)
+    );
+  });
+
+  const addRelationship = (relationshipId: string) => {
+    const next = available.find((option) => option.value === relationshipId);
     if (!next) return;
 
     onChange([
@@ -84,6 +104,8 @@ function CurationWeightedRelationsEditor({
         weight: 1,
       },
     ]);
+    setRelationshipSearch("");
+    setShowAddRelationship(false);
   };
 
   const optionLabel = (id: string) =>
@@ -174,11 +196,60 @@ function CurationWeightedRelationsEditor({
         className="secondary curation-add-relation"
         type="button"
         disabled={available.length === 0}
-        onClick={addRelationship}
+        aria-expanded={showAddRelationship}
+        onClick={() => {
+          setRelationshipSearch("");
+          setShowAddRelationship((visible) => !visible);
+        }}
       >
         <IconCirclePlus size={17} stroke={2} aria-hidden="true" />
-        Add relationship
+        {showAddRelationship
+          ? `Choose ${relationshipNoun}`
+          : "Add relationship"}
       </button>
+
+      {showAddRelationship && (
+        <div
+          className="curation-relation-choice-panel"
+          role="listbox"
+          aria-label={`Choose ${relationshipNoun} for ${field.label}`}
+        >
+          <div className="curation-relation-choice-header">
+            <input
+              className="curation-relation-choice-search"
+              autoFocus
+              type="search"
+              value={relationshipSearch}
+              onChange={(event) => setRelationshipSearch(event.target.value)}
+              placeholder={`Search ${relationshipNoun}s…`}
+              aria-label={`Search available ${relationshipNoun}s`}
+            />
+            <small>{available.length} available</small>
+          </div>
+
+          <div className="curation-relation-choice-list">
+            {filteredAvailable.map((option) => (
+              <button
+                type="button"
+                role="option"
+                aria-selected="false"
+                className="curation-relation-choice"
+                key={option.value}
+                onClick={() => addRelationship(option.value)}
+              >
+                <strong>{option.label}</strong>
+                <small>{option.value}</small>
+              </button>
+            ))}
+
+            {filteredAvailable.length === 0 && (
+              <p className="curation-editor-empty">
+                No matching {relationshipNoun}s.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

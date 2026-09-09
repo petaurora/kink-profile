@@ -22,6 +22,7 @@ import {
   getDestructiveActionConsequences,
   validateMergeTarget,
 } from "./lib/curationEditor";
+import { getCurationPrimitiveFacetAffinities } from "./lib/curationSemanticProjection";
 import {
   createEmptyCurationWorkspace,
   exportCurationWorkspace,
@@ -69,6 +70,7 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
   const [reviewFilter, setReviewFilter] =
     useState<ReviewFilter>("unreviewed");
   const [search, setSearch] = useState("");
+  const [facetGapOnly, setFacetGapOnly] = useState(false);
   const [selectedKey, setSelectedKey] = useState("");
   const [draftAction, setDraftAction] =
     useState<CurationReviewAction | null>(null);
@@ -102,6 +104,16 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
       if (reviewFilter === "reviewed" && !reviewed) return false;
       if (reviewFilter === "unreviewed" && reviewed) return false;
 
+      if (
+        facetGapOnly &&
+        getCurationPrimitiveFacetAffinities(
+          entry.entityType,
+          entry.entityId,
+        ).length > 0
+      ) {
+        return false;
+      }
+
       if (!normalizedSearch) return true;
 
       return [
@@ -114,7 +126,7 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
         value.toLocaleLowerCase().includes(normalizedSearch),
       );
     });
-  }, [reviewFilter, reviewedKeys, search, typeFilter]);
+  }, [facetGapOnly, reviewFilter, reviewedKeys, search, typeFilter]);
 
   const currentEntry =
     filteredEntries.find((entry) => entryKey(entry) === selectedKey) ??
@@ -369,6 +381,15 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
             />
           </label>
         </div>
+
+        <button
+          type="button"
+          className={`curation-gap-toggle${facetGapOnly ? " is-active" : ""}`}
+          aria-pressed={facetGapOnly}
+          onClick={() => setFacetGapOnly((enabled) => !enabled)}
+        >
+          ⚠ Overall Facet gaps only
+        </button>
       </div>
 
       {currentEntry ? (

@@ -5,6 +5,7 @@ import { quizQuestions } from "./quizQuestions";
 import { quizzes } from "./quizzes";
 import { signalDefinitions } from "./signals";
 import {
+  deriveRewardPunishmentContextSignalMappings,
   rewardPunishmentActions,
   rewardPunishmentCategories,
 } from "../lib/rewardPunishmentLibrary";
@@ -148,11 +149,12 @@ export const curationSurfaces: readonly CurationSurface[] = [
     sourcePaths: [
       "reference/rewards-punishments/action-library.tsv",
       "reference/rewards-punishments/context-categories.tsv",
+      "reference/rewards-punishments/context-signal-mappings.tsv",
       "reference/rewards-punishments/catalog-category-mappings.tsv",
       "src/lib/rewardPunishmentLibrary.ts",
     ],
     status: "available",
-    notes: "Normalized actions, contextual categories, and weighted category relationships are editable as structured local proposals.",
+    notes: "Normalized actions, contextual categories, category→Signal bridges, and weighted relationships are editable as structured local proposals; Overall Facet affinity is derived.",
   },
   {
     id: "profile-labels-thresholds",
@@ -196,9 +198,21 @@ function stringifyRecord(value: Partial<Record<string, number>> | undefined) {
 }
 
 function stringifyMappings(
-  mappings: readonly { signalId: string; weight: number }[],
+  mappings: readonly {
+    signalId: string;
+    weight: number;
+    appliesTo?: "any" | "receiving" | "giving";
+  }[],
 ) {
-  return mappings.map((mapping) => `${mapping.signalId}: ${mapping.weight}`).join(", ");
+  return mappings
+    .map((mapping) => {
+      const direction =
+        mapping.appliesTo && mapping.appliesTo !== "any"
+          ? ` (${mapping.appliesTo})`
+          : "";
+      return `${mapping.signalId}: ${mapping.weight}${direction}`;
+    })
+    .join(", ");
 }
 
 const questionQuizLabels = new Map<string, string>();
@@ -243,6 +257,11 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
         value: String(category.displayOrder),
       },
       { key: "itemCount", label: "Items", value: String(category.itemCount) },
+      {
+        key: "signalMappings",
+        label: "Category signal mappings",
+        value: stringifyMappings(category.signalMappings) || "—",
+      },
     ],
   })),
   ...rewardPunishmentActions.map((action) => ({
@@ -265,6 +284,16 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
             .join(", ") || "—",
       },
       {
+        key: "derivedSignalMappings",
+        label: "Derived signal mappings",
+        value:
+          stringifyMappings(
+            deriveRewardPunishmentContextSignalMappings(
+              action.contextCategories,
+            ),
+          ) || "—",
+      },
+      {
         key: "sourceOrigins",
         label: "Source rows",
         value: String(action.sourceOrigins.length),
@@ -283,6 +312,11 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
         key: "displayOrder",
         label: "Display order",
         value: String(category.displayOrder),
+      },
+      {
+        key: "signalMappings",
+        label: "Signal mappings",
+        value: stringifyMappings(category.signalMappings) || "—",
       },
     ],
   })),

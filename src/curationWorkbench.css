@@ -187,6 +187,7 @@
 
 .curation-filter-row button.is-active,
 .curation-review-filter button.is-active,
+.curation-gap-toggle.is-active,
 .curation-action-grid button.is-active,
 .curation-primary-actions button.is-active,
 .curation-lifecycle-actions button.is-active {
@@ -216,6 +217,16 @@
   border: 0;
   outline: 0;
   color: inherit;
+}
+
+.curation-gap-toggle {
+  justify-self: start;
+  border-radius: 999px;
+  padding: 0.46rem 0.68rem;
+  border: 1px solid rgba(240, 211, 231, 0.14);
+  background: rgba(240, 211, 231, 0.045);
+  color: inherit;
+  font-size: 0.86rem;
 }
 
 .curation-card {
@@ -405,6 +416,73 @@
   text-transform: capitalize;
 }
 
+.curation-facet-affinity,
+.curation-facet-gap {
+  border-top: 1px solid rgba(240, 211, 231, 0.08);
+  padding-top: 0.45rem;
+}
+
+.curation-facet-affinity summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.65rem;
+  font-size: 0.8rem;
+}
+
+.curation-facet-affinity summary::-webkit-details-marker {
+  display: none;
+}
+
+.curation-facet-affinity summary small {
+  margin-left: auto;
+  opacity: 0.6;
+  text-align: right;
+}
+
+.curation-facet-affinity-list {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.45rem;
+}
+
+.curation-facet-affinity-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.38rem 0.5rem;
+  border-radius: 0.65rem;
+  background: rgba(240, 211, 231, 0.035);
+}
+
+.curation-facet-affinity-row span {
+  min-width: 0;
+  font-size: 0.84rem;
+}
+
+.curation-facet-affinity-row strong {
+  min-width: 3rem;
+  text-align: right;
+  font-size: 0.82rem;
+}
+
+.curation-facet-gap {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.curation-facet-gap strong {
+  font-size: 0.82rem;
+}
+
+.curation-facet-gap small {
+  opacity: 0.62;
+  line-height: 1.35;
+}
+
 .curation-current-source {
   opacity: 0.58;
 }
@@ -539,6 +617,11 @@
   .curation-control-row {
     grid-template-columns: 1fr;
     gap: 0.55rem;
+  }
+
+  .curation-gap-toggle {
+    justify-self: stretch;
+    text-align: center;
   }
 
   .curation-filter-row {
@@ -690,6 +773,18 @@
   .curation-add-relation {
     width: 100%;
     justify-content: center;
+  }
+
+  .curation-relation-choice-panel {
+    padding: 0.45rem;
+  }
+
+  .curation-relation-choice-list {
+    max-height: 42vh;
+  }
+
+  .curation-relation-choice {
+    padding: 0.62rem;
   }
 
   .curation-surface-row {
@@ -913,6 +1008,78 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+}
+
+.curation-relation-choice-panel {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(240, 211, 231, 0.08);
+}
+
+.curation-relation-choice-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.curation-relation-choice-header small {
+  white-space: nowrap;
+  opacity: 0.55;
+  font-size: 0.68rem;
+}
+
+.curation-relation-choice-search {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(240, 211, 231, 0.16);
+  background: rgba(0, 0, 0, 0.13);
+  color: inherit;
+  padding: 0.62rem 0.7rem;
+}
+
+.curation-relation-choice-list {
+  display: grid;
+  gap: 0.3rem;
+  max-height: min(18rem, 48vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.curation-relation-choice {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 0.08rem;
+  text-align: left;
+  padding: 0.58rem 0.65rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(240, 211, 231, 0.08);
+  background: rgba(240, 211, 231, 0.035);
+  color: inherit;
+}
+
+.curation-relation-choice:active {
+  background: rgba(240, 211, 231, 0.12);
+}
+
+.curation-relation-choice strong {
+  min-width: 0;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.curation-relation-choice small {
+  font-size: 0.66rem;
+  opacity: 0.48;
+  overflow-wrap: anywhere;
 }
 
 .curation-editor-empty {

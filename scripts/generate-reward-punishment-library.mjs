@@ -4,10 +4,12 @@ import path from "node:path";
 const categoriesPath = path.resolve("reference/rewards-punishments/context-categories.tsv");
 const actionsPath = path.resolve("reference/rewards-punishments/action-library.tsv");
 const catalogMappingsPath = path.resolve("reference/rewards-punishments/catalog-category-mappings.tsv");
+const contextSignalMappingsPath = path.resolve("reference/rewards-punishments/context-signal-mappings.tsv");
 const catalogLinksPath = path.resolve("reference/rewards-punishments/catalog-source-links.tsv");
 const rewardsPath = path.resolve("reference/rewards-punishments/rewards.tsv");
 const punishmentsPath = path.resolve("reference/rewards-punishments/punishments.tsv");
 const catalogPath = path.resolve("reference/catalog/kink-catalog.tsv");
+const signalsPath = path.resolve("src/data/signals.ts");
 const outputPath = path.resolve("src/data/rewardPunishmentLibrary.generated.ts");
 
 const stableIdPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -38,6 +40,12 @@ function rowsToRecords(rows) {
     Object.fromEntries(headers.map((header, index) => [header, row[index] ?? ""])));
 }
 function readRecords(filePath) { return rowsToRecords(parseDelimited(fs.readFileSync(filePath, "utf8"))); }
+function extractSignalIds() {
+  const source = fs.readFileSync(signalsPath, "utf8");
+  const match = source.match(/export type SignalId =([\s\S]*?);/);
+  if (!match) throw new Error("Could not locate SignalId union in src/data/signals.ts.");
+  return new Set([...match[1].matchAll(/"([^"]+)"/g)].map((entry) => entry[1]));
+}
 function value(row, field) { return String(row[field] ?? "").trim(); }
 function required(row, field, n, source) { const v = value(row, field); if (!v) throw new Error(source + " record " + n + ": missing " + field + "."); return v; }
 function stable(id, field, n, source) { if (!stableIdPattern.test(id)) throw new Error(source + " record " + n + ": invalid " + field + " " + id); }
@@ -55,7 +63,7 @@ function mappings(text, validIds, source, n) {
 }
 
 const categoryIds = new Set(); const orders = new Set(); let taxonomyVersion = null;
-const categories = readRecords(categoriesPath).map((row, index) => {
+const baseCategories = readRecords(categoriesPath).map((row, index) => {
   const n=index+2, id=required(row,"Category ID",n,"M11 categories"), label=required(row,"Category",n,"M11 categories");
   const displayOrder=Number(required(row,"Display Order",n,"M11 categories")), version=Number(required(row,"Taxonomy Version",n,"M11 categories"));
   stable(id,"Category ID",n,"M11 categories");
@@ -64,6 +72,27 @@ const categories = readRecords(categoriesPath).map((row, index) => {
   if(categoryIds.has(id))throw new Error("Duplicate M11 category ID "+id);
   taxonomyVersion=version;categoryIds.add(id);orders.add(displayOrder);return{id,label,displayOrder};
 }).sort((a,b)=>a.displayOrder-b.displayOrder);
+
+const signalIds = extractSignalIds();
+const contextSignalMappings = new Map();
+const contextSignalKeys = new Set();
+for (const [index,row] of readRecords(contextSignalMappingsPath).entries()) {
+  const n=index+2,cid=required(row,"Context Category ID",n,"M11 context signal mappings"),sid=required(row,"Signal ID",n,"M11 context signal mappings"),weight=Number(required(row,"Weight",n,"M11 context signal mappings"));
+  if(!categoryIds.has(cid))throw new Error("Unknown M11 context category "+cid+" at record "+n);
+  if(!signalIds.has(sid))throw new Error("Unknown Signal ID "+sid+" at record "+n);
+  if(!allowedWeights.has(weight))throw new Error("Unsupported M11 context signal weight "+weight+" at record "+n);
+  const key=cid+"|"+sid;if(contextSignalKeys.has(key))throw new Error("Duplicate M11 context signal mapping "+key);
+  contextSignalKeys.add(key);
+  const current=contextSignalMappings.get(cid)??[];
+  current.push({signalId:sid,weight,notes:value(row,"Notes")});
+  contextSignalMappings.set(cid,current);
+}
+for(const values of contextSignalMappings.values())values.sort((a,b)=>a.signalId.localeCompare(b.signalId));
+
+const categories = baseCategories.map((category)=>({
+  ...category,
+  signalMappings: contextSignalMappings.get(category.id) ?? [],
+}));
 
 const catalogItems=new Map(),catalogCategoryIds=new Set();
 for(const [index,row] of readRecords(catalogPath).entries()){
@@ -119,6 +148,7 @@ const out=[
 "export const rewardPunishmentTaxonomyVersion = "+taxonomyVersion+" as const;","",
 "export const rewardPunishmentCategories = "+JSON.stringify(categories,null,2)+" as const;","",
 "export type RewardPunishmentCategoryId = (typeof rewardPunishmentCategories)[number][\"id\"];",
+"export type RewardPunishmentSignalMapping = { signalId: import(\"./signals\").SignalId; weight: number; notes: string };",
 "export type RewardPunishmentContextCategoryMapping = { id: RewardPunishmentCategoryId; weight: number };",
 "export type RewardPunishmentSourceOrigin = { sourceKind: \"reward\" | \"punishment\"; sourceSheet: string; sourceFile: string; sourceRow: number; sourceCategory: string };",
 "export type RewardPunishmentActionDefinition = { id: string; label: string; description: string; notes: string; contextCategories: readonly RewardPunishmentContextCategoryMapping[]; sourceOrigins: readonly RewardPunishmentSourceOrigin[] };","",
@@ -128,4 +158,4 @@ const out=[
 "export const rewardPunishmentSourceIdeaCount = "+sourceByKey.size+" as const;",""
 ].join("\n");
 fs.mkdirSync(path.dirname(outputPath),{recursive:true});fs.writeFileSync(outputPath,out);
-console.log("Generated "+actions.length+" M11 actions across "+categories.length+" contextual categories; "+Object.keys(catalogCategoryMappings).length+" catalog categories mapped; "+used.size+" source rows accounted for.");
+console.log("Generated "+actions.length+" M11 actions across "+categories.length+" contextual categories; "+contextSignalKeys.size+" context→signal mappings; "+Object.keys(catalogCategoryMappings).length+" catalog categories mapped; "+used.size+" source rows accounted for.");

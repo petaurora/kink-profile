@@ -272,7 +272,7 @@ plus linked/read-only partner profiles, or temporary comparison only.
 - [ ] **M16.4** — signal vocabulary, headspaces, radars, facets, labels, and thresholds review
 - [ ] **M16.5** — kink catalog pruning/consolidation + pending additions review
 - [ ] **M16.6** — rewards/punishments action library + contextual taxonomy curation
-- [ ] **M16.7** — cross-system taxonomy/mapping alignment
+- [ ] **M16.7** — cross-system taxonomy/mapping alignment _(Signal → Overall Facet semantic bridge in progress)_
 - [ ] **M16.8** — stable-ID replacement, archival, migration, and import/export compatibility
 - [ ] **M16.9** — generator/test regression + representative-profile sanity review
 
