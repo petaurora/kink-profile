@@ -1,0 +1,30 @@
+Context Category ID	Signal ID	Weight	Notes
+care-pampering	care_receiving	1.00	Receiving deliberate care is the core semantic of pampering.
+care-pampering	praise_approval	0.25	Some pampering carries warm approval or reassurance.
+praise-recognition	praise_approval	1.00	Recognition and approval map directly to the canonical praise signal.
+choice-privilege	autonomy	1.00	Choice and earned privilege primarily increase personal agency.
+choice-privilege	playfulness	0.25	Some privilege rewards are playful rather than purely practical.
+connection-attention	belonging	1.00	Focused attention and connection primarily express belonging.
+connection-attention	care_receiving	0.50	Deliberate attention can also function as receiving care.
+connection-attention	praise_approval	0.25	Some focused attention includes reassurance or recognition.
+service	service	1.00	Service actions map directly to the canonical service signal.
+service	devotion	0.50	Service can carry relationship-centered dedication.
+accountability-structure	accountability	1.00	Follow-through and standards map directly to accountability.
+accountability-structure	structure	0.75	Tasks, timers, rules, and standards create explicit structure.
+accountability-structure	receiving_discipline	0.50	Corrective accountability can function as receiving discipline.
+impact	pain_receiving	1.00	Impact used as a reward or punishment is experienced on the receiving side.
+impact	receiving_intensity	0.75	Impact commonly creates physical intensity beyond pain alone.
+impact	receiving_discipline	0.25	Some impact actions also carry corrective meaning.
+restraint-control	movement_restriction	1.00	Reduced freedom of movement is central to restraint/control.
+restraint-control	receiving_restraint	0.75	The profile receives physical restraint in this R/P context.
+restraint-control	receiving_constraint_control	0.75	Physical limits can carry a control component.
+sensory-intensity	receiving_intensity	1.00	The category centers strong or unusual sensation experienced by the profile.
+sensory-intensity	pain_receiving	0.25	Some sensory-intensity actions include pain, but pain is not assumed.
+protocol-obedience	obedience	1.00	Following an instruction is the core semantic.
+protocol-obedience	structure	0.75	Protocols depend on explicit expectations and structure.
+protocol-obedience	ritual_significance	0.50	Formal repeated behavior can carry ritual meaning.
+protocol-obedience	receiving_control	0.50	The profile is accepting direction in this R/P context.
+playful-psychological	playfulness	1.00	Playfulness is the central shared semantic.
+playful-psychological	playful_resistance	0.75	Teasing and negotiated push-pull are common.
+playful-psychological	anticipation	0.50	Suspense and uncertainty are common psychological levers.
+playful-psychological	emotional_intensity	0.25	Some psychological actions increase emotional intensity.
