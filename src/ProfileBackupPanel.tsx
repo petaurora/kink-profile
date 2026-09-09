@@ -56,10 +56,10 @@ export function ProfileBackupPanel() {
 
       <p className="settings-backup-copy">
         This JSON contains the authoritative local profile data needed for restore: profile
-        settings, quiz answers/progress, catalog preferences and rankings, plus Rewards &
-        Punishments contextual ratings, pairwise history, random-pool flags, notes, and recipes.
-        Derived M7/M11 aggregates and inferred suggestions are recomputed instead of backed up as
-        another source of truth.
+        settings, quiz answers/progress, catalog preferences and rankings, Rewards &
+        Punishments contextual data and recipes, plus saved Scene Builder templates and their
+        scene-local notes. Derived M7/M11/M13 candidate views and current-session state are
+        recomputed instead of backed up as another source of truth.
       </p>
 
       <div className="settings-backup-summary" aria-label="Profile backup contents">
@@ -91,13 +91,17 @@ export function ProfileBackupPanel() {
           <strong>{summary.rewardPunishmentRecipeCount}</strong>
           recipes
         </span>
+        <span>
+          <strong>{summary.savedSceneCount}</strong>
+          saved scenes
+        </span>
       </div>
 
       <div className="settings-backup-private-note">
         <strong>Keep this file private.</strong>
         <span>
-          This is the full machine-readable backup. Rewards & Punishments remain excluded from
-          the curated share summary by default.
+          This is the full machine-readable backup. Rewards & Punishments and saved scenes remain
+          excluded from the curated share summary by default.
         </span>
       </div>
 
