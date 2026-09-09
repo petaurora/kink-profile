@@ -72,6 +72,24 @@ describe("M16.2 structured curation editor", () => {
     ]);
   });
 
+  it("exposes Signal → Overall Facet memberships through the same shared relation editor", () => {
+    const praise = entry("signal", "praise_approval");
+    const model = buildCurationEditorModel(praise);
+    if (!model) throw new Error("Missing signal editor");
+
+    const memberships = model.fields.find(
+      (field) =>
+        field.kind === "weighted-relations" &&
+        field.key === "facetMemberships",
+    );
+
+    expect(memberships).toBeDefined();
+    if (!memberships || memberships.kind !== "weighted-relations") return;
+
+    expect(memberships.options.length).toBeGreaterThan(1);
+    expect(memberships.value.length).toBeGreaterThan(1);
+  });
+
   it("exposes category semantic bridges as shared weighted-relation editors", () => {
     const catalogCategory = entry("catalog-category", "bondage-restraint");
     const catalogModel = buildCurationEditorModel(catalogCategory);
