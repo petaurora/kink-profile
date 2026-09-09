@@ -94,11 +94,18 @@ function CurationWeightedRelationsEditor({
         {field.helper && <small>{field.helper}</small>}
       </div>
 
+      <div className="curation-relation-columns" aria-hidden="true">
+        <span>Relationship</span>
+        <span>Weight</span>
+        {field.allowDirection && <span>Direction</span>}
+        <span />
+      </div>
+
       <div className="curation-relation-list">
         {value.map((relation, index) => (
           <div className="curation-relation-row" key={relation.id}>
             <label>
-              <span>Relationship</span>
+              <span className="curation-visually-hidden">Relationship</span>
               <select
                 value={relation.id}
                 onChange={(event) => {
@@ -126,7 +133,7 @@ function CurationWeightedRelationsEditor({
             </label>
 
             <label className="curation-weight-input">
-              <span>Weight</span>
+              <span className="curation-visually-hidden">Weight</span>
               <input
                 type="number"
                 min="0.05"
@@ -146,7 +153,7 @@ function CurationWeightedRelationsEditor({
 
             {field.allowDirection && (
               <label>
-                <span>Direction</span>
+                <span className="curation-visually-hidden">Direction</span>
                 <select
                   value={relation.direction ?? ""}
                   onChange={(event) => {
@@ -223,7 +230,7 @@ function CurationEditorFieldControl({
 
   if (field.kind === "boolean") {
     return (
-      <label className="curation-editor-field curation-checkbox-field">
+      <label className="curation-editor-field curation-editor-field-wide curation-checkbox-field">
         <input
           type="checkbox"
           checked={Boolean(value)}
@@ -241,7 +248,7 @@ function CurationEditorFieldControl({
     const list = asStringList(value);
 
     return (
-      <div className="curation-editor-field">
+      <div className="curation-editor-field curation-editor-field-wide">
         <div className="curation-editor-label">
           <strong>{field.label}</strong>
           {field.helper && <small>{field.helper}</small>}
@@ -265,7 +272,7 @@ function CurationEditorFieldControl({
 
   if (field.kind === "select") {
     return (
-      <label className="curation-editor-field">
+      <label className="curation-editor-field curation-editor-field-compact">
         <span className="curation-editor-label">
           <strong>{field.label}</strong>
           {field.helper && <small>{field.helper}</small>}
@@ -286,7 +293,7 @@ function CurationEditorFieldControl({
 
   if (field.kind === "number") {
     return (
-      <label className="curation-editor-field">
+      <label className="curation-editor-field curation-editor-field-compact">
         <span className="curation-editor-label">
           <strong>{field.label}</strong>
           {field.helper && <small>{field.helper}</small>}
@@ -304,7 +311,13 @@ function CurationEditorFieldControl({
   }
 
   return (
-    <label className="curation-editor-field">
+    <label
+      className={`curation-editor-field ${
+        field.kind === "textarea"
+          ? "curation-editor-field-wide"
+          : "curation-editor-field-compact"
+      }`}
+    >
       <span className="curation-editor-label">
         <strong>{field.label}</strong>
         {field.helper && <small>{field.helper}</small>}
@@ -404,18 +417,18 @@ export function CurationStructuredEditor({
         </div>
       )}
 
-      <label className="curation-editor-field">
-        <span className="curation-editor-label">
-          <strong>Curator note</strong>
-          <small>Optional context for whoever applies the exported proposal.</small>
-        </span>
+      <details className="curation-note-details">
+        <summary>
+          <span>Curator note</span>
+          <small>Optional</small>
+        </summary>
         <textarea
           rows={3}
           value={note}
           onChange={(event) => setNote(event.target.value)}
           placeholder="Why does this make the model better?"
         />
-      </label>
+      </details>
 
       <div className="curation-editor-save-row">
         <span>
