@@ -12,6 +12,7 @@ import {
 } from "./sceneComposition";
 import type { SceneExplorationMode } from "./sceneCandidates";
 import type { SceneThemeId } from "../data/sceneThemes";
+import { getActiveProfileSessionStorage } from "./profileRegistry";
 
 export type SceneRandomizerState = {
   schemaVersion: 1;
@@ -29,7 +30,7 @@ export const SCENE_RANDOMIZER_STORAGE_KEY =
 const MAX_RECENT = 10;
 
 function browserSessionStorage(): SceneRandomizerStorageLike {
-  return sessionStorage;
+  return getActiveProfileSessionStorage(localStorage, sessionStorage);
 }
 
 function normalizedState(value: unknown): SceneRandomizerState {
