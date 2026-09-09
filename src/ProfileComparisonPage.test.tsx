@@ -29,5 +29,7 @@ describe("ProfileComparisonPage", () => {
       "Your profile will not be replaced or modified.",
     );
     expect(html).toContain("This is not an import.");
+    expect(html).toContain("The file is processed locally");
+    expect(html).toContain('aria-describedby="comparison-upload-safety"');
   });
 });
