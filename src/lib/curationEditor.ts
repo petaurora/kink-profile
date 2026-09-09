@@ -812,11 +812,6 @@ export function validateCurationDraft(
     }
   }
 
-  const changes = buildCurationChangeSet(model, draft);
-  if (Object.keys(changes).length === 0) {
-    warnings.push("No values differ from the current repo data yet.");
-  }
-
   return { errors, warnings };
 }
 
