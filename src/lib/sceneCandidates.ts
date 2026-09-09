@@ -12,6 +12,11 @@ import type { SignalId } from "../data/signals";
 import type {
   CatalogPreferenceState,
 } from "./catalogProfile";
+import {
+  getSceneSessionChoice,
+  type SceneSessionChoice,
+  type SceneSessionState,
+} from "./sceneSession";
 import type {
   CatalogRankContext,
   CatalogResultItem,
@@ -21,6 +26,7 @@ import type {
 export type SceneExplorationMode = "familiar" | "mixed" | "explore";
 
 export type SceneCandidateProvenance =
+  | "session"
   | "explicit"
   | "pairwise"
   | "explicit_and_pairwise"
@@ -39,6 +45,7 @@ export type SceneCandidate = {
   categoryLabel: string;
   direction: CatalogResultItem["item"]["direction"];
   explicitState?: CatalogPreferenceState;
+  sessionChoice?: SceneSessionChoice;
   provenance: SceneCandidateProvenance;
   themeMatches: readonly SceneThemeMatch[];
   matchedThemeIds: readonly SceneThemeId[];
@@ -70,6 +77,7 @@ export type SceneCandidateView = {
 export type SceneCandidateOptions = {
   exploration?: SceneExplorationMode;
   minimumThemeFit?: number;
+  sessionState?: SceneSessionState;
 };
 
 const explicitStrength: Partial<Record<CatalogPreferenceState, number>> = {
@@ -226,16 +234,28 @@ function rankStrength(rank: CatalogRankContext | undefined) {
 function directEvidenceStrength(
   item: CatalogResultItem,
   exploration: SceneExplorationMode,
+  sessionChoice: SceneSessionChoice | undefined,
 ) {
+  const sessionStrength =
+    sessionChoice === "yes_tonight"
+      ? 1
+      : sessionChoice === "maybe_tonight"
+        ? 0.68
+        : 0;
+
   const explicit = item.explicitState
     ? explicitStrength[item.explicitState] ?? 0
     : 0;
 
-  if (item.explicitState === "unsure") {
+  if (sessionStrength <= 0 && item.explicitState === "unsure") {
     return 0;
   }
 
-  if (item.explicitState === "curious" && exploration !== "explore") {
+  if (
+    sessionStrength <= 0 &&
+    item.explicitState === "curious" &&
+    exploration !== "explore"
+  ) {
     return 0;
   }
 
@@ -248,16 +268,25 @@ function directEvidenceStrength(
         )
       : 0;
 
-  return Math.max(explicit, pairwise);
+  return Math.max(sessionStrength, explicit, pairwise);
 }
 
-function provenanceFor(item: CatalogResultItem): SceneCandidateProvenance {
+function provenanceFor(
+  item: CatalogResultItem,
+  sessionChoice: SceneSessionChoice | undefined,
+): SceneCandidateProvenance {
   const hasExplicit = item.explicitState !== undefined;
   const hasPairwise = item.meaningfulPairwiseComparisons > 0;
 
   if (hasExplicit && hasPairwise) return "explicit_and_pairwise";
   if (hasExplicit) return "explicit";
   if (hasPairwise) return "pairwise";
+  if (
+    sessionChoice === "yes_tonight" ||
+    sessionChoice === "maybe_tonight"
+  ) {
+    return "session";
+  }
   return "inference_only";
 }
 
@@ -308,14 +337,19 @@ function toCandidate(
   item: CatalogResultItem,
   themeMatches: readonly SceneThemeMatch[],
   exploration: SceneExplorationMode,
+  sessionChoice: SceneSessionChoice | undefined,
 ): SceneCandidate | undefined {
-  const provenance = provenanceFor(item);
+  const provenance = provenanceFor(item, sessionChoice);
   const bestThemeFit = Math.max(...themeMatches.map((match) => match.fit)) / 100;
   const averageThemeFit =
     themeMatches.reduce((sum, match) => sum + match.fit, 0) /
     themeMatches.length /
     100;
-  const directStrength = directEvidenceStrength(item, exploration);
+  const directStrength = directEvidenceStrength(
+    item,
+    exploration,
+    sessionChoice,
+  );
   const rankingStrength = Math.max(
     rankStrength(item.overallRank),
     rankStrength(item.categoryRank),
@@ -331,7 +365,12 @@ function toCandidate(
   const automaticEligible =
     provenance !== "inference_only" &&
     directStrength > 0 &&
-    (item.explicitState !== "curious" || exploration === "explore");
+    (
+      sessionChoice === "yes_tonight" ||
+      sessionChoice === "maybe_tonight" ||
+      item.explicitState !== "curious" ||
+      exploration === "explore"
+    );
 
   if (!automaticEligible && provenance !== "inference_only") {
     return undefined;
@@ -362,6 +401,7 @@ function toCandidate(
     categoryLabel: item.item.categoryLabel,
     direction: item.item.direction,
     explicitState: item.explicitState,
+    sessionChoice,
     provenance,
     themeMatches,
     matchedThemeIds: themeMatches.map((match) => match.themeId),
@@ -444,6 +484,7 @@ export function buildSceneCandidateView(
   options: SceneCandidateOptions = {},
 ): SceneCandidateView {
   const exploration = options.exploration ?? "mixed";
+  const sessionState = options.sessionState;
   const minimumThemeFit = Math.max(
     1,
     Math.min(100, options.minimumThemeFit ?? 18),
@@ -469,6 +510,12 @@ export function buildSceneCandidateView(
   for (const item of resultView.items) {
     if (isHardExcluded(item)) continue;
 
+    const sessionChoice = getSceneSessionChoice(
+      sessionState,
+      item.item.id,
+    );
+    if (sessionChoice === "not_tonight") continue;
+
     const themeMatches = themeMatchesFor(
       item,
       selectedThemes,
@@ -476,7 +523,12 @@ export function buildSceneCandidateView(
     );
     if (themeMatches.length === 0) continue;
 
-    const candidate = toCandidate(item, themeMatches, exploration);
+    const candidate = toCandidate(
+      item,
+      themeMatches,
+      exploration,
+      sessionChoice,
+    );
     if (!candidate) continue;
 
     if (candidate.provenance === "inference_only") {
