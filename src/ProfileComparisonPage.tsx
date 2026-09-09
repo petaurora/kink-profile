@@ -211,6 +211,15 @@ export function ProfileComparisonPage({
                 both profiles can be checked safely.
               </li>
             </ul>
+            {(summary.rewardPunishmentPreferenceCount > 0 ||
+              summary.rewardPunishmentComparisonCount > 0 ||
+              summary.rewardPunishmentRecipeCount > 0) && (
+              <p className="comparison-privacy-note">
+                This export contains Rewards & Punishments data. M14 comparison
+                does not currently retain or compare that section after the
+                backup is validated and summarized.
+              </p>
+            )}
           </div>
         </details>
 
@@ -297,6 +306,7 @@ export function ProfileComparisonPage({
             <input
               type="file"
               accept=".json,application/json"
+              aria-describedby="comparison-upload-safety"
               onChange={chooseFile}
             />
             <span className="comparison-profile-chip is-upload">
@@ -307,7 +317,10 @@ export function ProfileComparisonPage({
           </label>
         </div>
 
-        <div className="comparison-upload-safety-note">
+        <div
+          className="comparison-upload-safety-note"
+          id="comparison-upload-safety"
+        >
           <IconShieldCheck size={20} stroke={1.8} aria-hidden="true" />
           <div>
             <strong>Your profile will not be replaced or modified.</strong>
