@@ -54,6 +54,7 @@ import {
   loadSceneLibraryState,
   saveSceneLibraryState,
 } from "./sceneLibraryStorage";
+import { getActiveProfileStorage } from "./profileRegistry";
 
 export type ProfileBackupParseResult =
   | { ok: true; backup: ProfileBackup }
@@ -72,7 +73,7 @@ const knownQuizIds = new Set<QuizId>(
 );
 
 function browserStorage(): StorageLike {
-  return localStorage;
+  return getActiveProfileStorage(localStorage);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
