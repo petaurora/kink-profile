@@ -255,7 +255,7 @@ function CandidateCard({
           <span className="scene-candidate-category">
             {candidate.categoryLabel}
           </span>
-          <h3>{candidate.label}</h3>
+          <h3>{componentLabel}</h3>
         </div>
 
         {candidate.bridge && (
@@ -1543,7 +1543,19 @@ export function SceneBuilder({
                     const candidate = confirmedById.get(
                       currentCatalogId,
                     );
-                    if (!candidate) return null;
+                    const catalogResult =
+                      catalogResultView.byCatalogId.get(
+                        currentCatalogId,
+                      );
+                    const componentLabel =
+                      candidate?.label ??
+                      catalogResult?.item.label ??
+                      currentCatalogId;
+                    const componentCategoryLabel =
+                      candidate?.categoryLabel ??
+                      catalogResult?.item.categoryLabel ??
+                      "Unavailable catalog item";
+                    const componentUnavailable = !candidate;
 
                     const replacements =
                       replacementCandidatesForComponent(
@@ -1566,7 +1578,7 @@ export function SceneBuilder({
                           <div>
                             <button
                               type="button"
-                              aria-label={`Move ${candidate.label} up`}
+                              aria-label={`Move ${componentLabel} up`}
                               disabled={index === 0}
                               onClick={() =>
                                 setComposition((current) =>
@@ -1588,7 +1600,7 @@ export function SceneBuilder({
                             </button>
                             <button
                               type="button"
-                              aria-label={`Move ${candidate.label} down`}
+                              aria-label={`Move ${componentLabel} down`}
                               disabled={
                                 index ===
                                 composition.components.length - 1
@@ -1618,7 +1630,7 @@ export function SceneBuilder({
                           <div className="scene-component-top">
                             <div>
                               <select
-                                aria-label={`Scene phase for ${candidate.label}`}
+                                aria-label={`Scene phase for ${componentLabel}`}
                                 value={component.phaseId}
                                 onChange={(event) =>
                                   setComposition((current) =>
@@ -1646,8 +1658,12 @@ export function SceneBuilder({
                                     </option>
                                   ))}
                               </select>
-                              <h3>{candidate.label}</h3>
-                              <span>{candidate.categoryLabel}</span>
+                              <h3>{componentLabel}</h3>
+                              <span>
+                                {componentCategoryLabel}
+                                {componentUnavailable &&
+                                  " · Needs review"}
+                              </span>
                             </div>
 
                             <div className="scene-component-actions">
@@ -1682,7 +1698,7 @@ export function SceneBuilder({
                               <button
                                 type="button"
                                 className="icon-only"
-                                aria-label={`Remove ${candidate.label} from scene`}
+                                aria-label={`Remove ${componentLabel} from scene`}
                                 onClick={() =>
                                   setComposition((current) =>
                                     current
