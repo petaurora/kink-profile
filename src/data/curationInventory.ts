@@ -182,11 +182,11 @@ export const curationSurfaces: readonly CurationSurface[] = [
   },
 ] as const;
 
-function stringifyRecord(value: Record<string, number> | undefined) {
+function stringifyRecord(value: Partial<Record<string, number>> | undefined) {
   if (!value) return "";
   return Object.entries(value)
     .sort(([left], [right]) => left.localeCompare(right))
-    .map(([key, weight]) => `${key}: ${weight}`)
+    .filter((entry): entry is [string, number] => entry[1] !== undefined)\n    .map(([key, weight]) => `${key}: ${weight}`)
     .join(", ");
 }
 
