@@ -218,6 +218,34 @@ Base invariant:
 
 > Acts of usefulness, contribution, assistance, or attending to another person's needs can carry relational significance.
 
+Consumer review confirms current quiz evidence is almost entirely **Giving / Providing Service**:
+- doing something because a partner expects it,
+- anticipating a partner's needs,
+- being useful,
+- being recognized for serving well.
+
+Therefore:
+
+```text
+legacy Service quiz evidence
+→ Service.giving
+
+new Service.receiving
+→ remains unknown until explicitly measured
+```
+
+Keep Service distinct from Care:
+
+```text
+Service
+→ usefulness, contribution, tasks, attending to needs
+
+Care
+→ comfort, regulation, support, growth, wellbeing
+```
+
+Decision: **validated as one channel-capable Signal**.
+
 ### Obedience
 
 ```text
@@ -230,6 +258,28 @@ Base invariant:
 > Intentional compliance with clear direction can itself carry relational or psychological meaning.
 
 This does **not** make Obedience equivalent to authority. Authority can be appealing without obedience being the meaningful ingredient, and vice versa.
+
+Consumer review confirms current quiz evidence consistently measures the profile owner **following direction**:
+- being given instructions and expected to follow them,
+- doing something because a partner expects it,
+- standing rules / expectations,
+- following protocol exactly.
+
+Therefore:
+
+```text
+legacy Obedience quiz evidence
+→ Obedience.giving
+  human label: Following direction
+
+new Obedience.receiving
+→ Being obeyed
+→ remains unknown until explicitly measured
+```
+
+The shared invariant is intentional compliance with direction, which survives the perspective change cleanly.
+
+Decision: **validated as one channel-capable Signal**.
 
 ### Structure
 
@@ -578,9 +628,10 @@ This preserves provenance and avoids treating historical projection artifacts as
 
 Before runtime migration, validate:
 
-1. **Obedience** — confirm that Following Direction and Being Obeyed are best modeled as channels of one semantic concept rather than separate constructs.
-2. **Service** — confirm that Providing Service and Being Served share enough invariant meaning to remain one Signal.
-3. **Escape / Containment** — confirm the normalized name and channel labels.
-4. Validate all custom channel labels against actual UI language before migration.
+1. **Escape / Containment** — confirm the normalized name and channel labels.
+2. Validate all custom channel labels against actual UI language before migration.
 
-Movement Restriction is no longer an open question: consumer review supports keeping it Overall-only.
+Resolved by consumer review:
+- Movement Restriction → Overall-only physical-property Signal
+- Service → one channel-capable Signal
+- Obedience → one channel-capable Signal
