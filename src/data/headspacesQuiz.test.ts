@@ -8,14 +8,14 @@ import {
 import { canonicalRoleHeadspaces } from "./canonicalRoleCompositions";
 
 describe("M3 v4 role/headspace taxonomy", () => {
-  it("keeps merged concepts as one role/headspace each", () => {
+  it("keeps expressions and orientations out of the peer headspace layer", () => {
     const ids = roleHeadspaces.map((definition) => definition.id);
 
-    expect(ids).toContain("devotional_submissive");
     expect(ids).not.toContain("service_submissive");
+    expect(ids).not.toContain("devotional_submissive");
+    expect(ids).not.toContain("trainer");
 
     expect(ids).toContain("owner_handler");
-    expect(ids).not.toContain("trainer");
   });
 
   it("treats Object as a headspace without making Property a peer headspace", () => {
@@ -28,9 +28,10 @@ describe("M3 v4 role/headspace taxonomy", () => {
     expect(ids).not.toContain("property_object");
   });
 
-  it("preserves Service and Training / Shaping as explanatory dynamic modes", () => {
+  it("preserves Devotion, Service, and Training / Shaping as explanatory dynamic modes", () => {
     const ids = dynamicModes.map((definition) => definition.id);
 
+    expect(ids).toContain("devotion_mode");
     expect(ids).toContain("service_mode");
     expect(ids).toContain("training_mode");
   });
@@ -45,7 +46,7 @@ describe("M3 v4 role/headspace taxonomy", () => {
       .map((definition) => definition.id)
       .sort();
 
-    expect(roleIds).toHaveLength(13);
+    expect(roleIds).toHaveLength(12);
     expect(displayIds).toEqual(roleIds);
     expect(canonicalIds).toEqual(roleIds);
   });
