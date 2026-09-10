@@ -140,28 +140,18 @@ export const dynamicModes: ComposedDefinition[] = [
     },
   },
   {
-    id: "authority_mode",
-    label: "Authority",
-    shortLabel: "Authority",
+    id: "power_exchange_mode",
+    label: "Power Exchange",
+    shortLabel: "Power Exchange",
     description:
-      "Holding direction, making decisions, setting expectations, and being deliberately followed creates a meaningful position of authority.",
+      "Negotiated placement of control, direction, responsibility, and following makes the exchange of power itself a meaningful part of the dynamic.",
     weights: {
+      receiving_control: 1,
       giving_control: 1,
+      responsibility_transfer: 0.8,
       responsibility_holding: 0.8,
-      structure: 0.4,
-    },
-  },
-  {
-    id: "surrender_mode",
-    label: "Surrender",
-    shortLabel: "Surrender",
-    description:
-      "Chosen release of direction, responsibility, or decision load creates a distinct sense of letting go and following another person's lead.",
-    weights: {
-      responsibility_transfer: 1,
-      receiving_control: 0.8,
-      obedience: 0.5,
-      role_embodiment: 0.3,
+      obedience: 0.4,
+      structure: 0.3,
     },
   },
   {
