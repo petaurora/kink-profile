@@ -213,29 +213,16 @@ export function ProfileShareSummary({
         <ShareRadar axes={model.radarAxes} />
       </section>
 
-      <div className="share-two-column" data-share-block>
-        <section className="share-section">
-          <div className="share-section-heading">
-            <span>Headspaces</span>
-            <small>Strongest known headspace results</small>
-          </div>
-          <TraitList
-            items={model.headspaces}
-            emptyCopy="Still emerging."
-          />
-        </section>
-
-        <section className="share-section">
-          <div className="share-section-heading">
-            <span>Dynamic modes</span>
-            <small>Strongest underlying dynamics</small>
-          </div>
-          <TraitList
-            items={model.dynamicModes}
-            emptyCopy="Still emerging."
-          />
-        </section>
-      </div>
+      <section className="share-section" data-share-block>
+        <div className="share-section-heading">
+          <span>Headspaces</span>
+          <small>Strongest known headspace results</small>
+        </div>
+        <TraitList
+          items={model.headspaces}
+          emptyCopy="Still emerging."
+        />
+      </section>
 
       <section className="share-section" data-share-block>
         <div className="share-section-heading">

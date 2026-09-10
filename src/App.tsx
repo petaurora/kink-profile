@@ -31,7 +31,6 @@ import {
   sadismMasochismSignalIds,
 } from "./data/sadismMasochismQuiz";
 import {
-  dynamicModes,
   partnerPositionedRoleHeadspaceIds,
   headspaceSignalIds,
   selfPositionedRoleHeadspaceIds,
@@ -60,13 +59,10 @@ import { loadCatalogProfile } from "./lib/catalogProfileStorage";
 import { buildCanonicalSignalProfile } from "./lib/overallProfileSignals";
 import { scoreOverallFacets } from "./lib/overallProfileFacets";
 import { buildProfileHeaderModel } from "./lib/profileHeader";
-import {
-  buildOverallRadarModel,
-  getKnownRadarRuns,
-  type OverallRadarAxis,
-} from "./lib/overallRadar";
-import type { OverallFacetId } from "./data/overallFacets";
 import { buildProfileRoleDetails } from "./lib/profileRoleDetails";
+import { buildOverallRadarModel } from "./lib/overallRadar";
+import { ProfileCoxcombChart } from "./ProfileCoxcombChart";
+import type { OverallFacetId } from "./data/overallFacets";
 import {
   buildProfileExplainability,
   type ProfileExplainabilityAction,
@@ -246,150 +242,6 @@ function RadarChart({
         {scores.map((score, index) => {
           const [x, y] = pointFor(index, score.percentage / 100);
           return <circle key={score.id} cx={x} cy={y} r="4" className="radar-point" />;
-        })}
-      </svg>
-    </div>
-  );
-}
-
-function OverallRadarChart({
-  axes,
-  onSelectFacet,
-}: {
-  axes: readonly OverallRadarAxis[];
-  onSelectFacet: (facetId: OverallFacetId) => void;
-}) {
-  const size = 460;
-  const center = size / 2;
-  const radius = 148;
-
-  const pointFor = (index: number, scale = 1) => {
-    const angle = -Math.PI / 2 + (index * Math.PI * 2) / axes.length;
-    return [
-      center + Math.cos(angle) * radius * scale,
-      center + Math.sin(angle) * radius * scale,
-    ];
-  };
-
-  const ringPoints = (scale: number) =>
-    axes.map((_, index) => pointFor(index, scale).join(",")).join(" ");
-  const knownRuns = getKnownRadarRuns(axes);
-  const completeShape =
-    axes.length > 0 && axes.every((axis) => axis.state !== "unknown");
-
-  const selectFromKeyboard = (
-    event: React.KeyboardEvent<SVGGElement>,
-    facetId: OverallFacetId,
-  ) => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSelectFacet(facetId);
-  };
-
-  return (
-    <div className="overall-radar-wrap">
-      <svg
-        className="overall-radar"
-        viewBox={`0 0 ${size} ${size}`}
-        role="group"
-        aria-label="Overall profile radar. Each axis opens an explanation for that theme."
-      >
-        {[0.25, 0.5, 0.75, 1].map((ring) => (
-          <polygon
-            key={ring}
-            points={ringPoints(ring)}
-            className="overall-radar-ring"
-          />
-        ))}
-
-        {axes.map((axis, index) => {
-          const [x, y] = pointFor(index, 1);
-          const [labelX, labelY] = pointFor(index, 1.25);
-
-          return (
-            <g
-              key={axis.facetId}
-              className={`overall-radar-axis-group state-${axis.state}`}
-              role="button"
-              tabIndex={0}
-              aria-label={`${axis.label}: ${
-                axis.affinity === null
-                  ? "not explored yet"
-                  : `${axis.affinity}% affinity, ${
-                      axis.state === "limited"
-                        ? "limited evidence"
-                        : "evidence available"
-                    }`
-              }. Open theme explanation.`}
-              onClick={() => onSelectFacet(axis.facetId)}
-              onKeyDown={(event) => selectFromKeyboard(event, axis.facetId)}
-            >
-              <line
-                x1={center}
-                y1={center}
-                x2={x}
-                y2={y}
-                className="overall-radar-axis"
-              />
-              <text
-                x={labelX}
-                y={labelY}
-                textAnchor={
-                  labelX < center - 8
-                    ? "end"
-                    : labelX > center + 8
-                      ? "start"
-                      : "middle"
-                }
-                dominantBaseline="middle"
-                className="overall-radar-label"
-              >
-                {axis.shortLabel}
-              </text>
-            </g>
-          );
-        })}
-
-        {completeShape ? (
-          <polygon
-            points={axes
-              .map((axis, index) =>
-                pointFor(index, (axis.affinity ?? 0) / 100).join(","),
-              )
-              .join(" ")}
-            className="overall-radar-score"
-          />
-        ) : (
-          knownRuns.map((run, index) => (
-            <polyline
-              key={`run-${index}`}
-              points={run
-                .map((axisIndex) => {
-                  const axis = axes[axisIndex];
-                  return pointFor(
-                    axisIndex,
-                    (axis.affinity ?? 0) / 100,
-                  ).join(",");
-                })
-                .join(" ")}
-              className="overall-radar-score-partial"
-            />
-          ))
-        )}
-
-        {axes.map((axis, index) => {
-          if (axis.affinity === null) return null;
-          const [x, y] = pointFor(index, axis.affinity / 100);
-
-          return (
-            <circle
-              key={`point-${axis.facetId}`}
-              cx={x}
-              cy={y}
-              r={axis.state === "limited" ? 5 : 4}
-              className={`overall-radar-point state-${axis.state}`}
-            />
-          );
         })}
       </svg>
     </div>
@@ -619,28 +471,6 @@ export default function App({
     [scores],
   );
 
-  const dynamicModeScores = useMemo<Score[]>(() => {
-    if (!isHeadspaceQuiz) return [];
-
-    const signalScores = scoreSignals(
-      activeQuestions.filter(isWeightedQuestion),
-      answers,
-      getSignals(headspaceSignalIds),
-    );
-
-    return scoreHeadspaces(signalScores, dynamicModes).sort(
-      (a, b) => b.percentage - a.percentage,
-    );
-  }, [activeQuestions, answers, isHeadspaceQuiz]);
-
-  const dynamicModeRadarScores = useMemo(
-    () =>
-      dynamicModes
-        .map((mode) => dynamicModeScores.find((score) => score.id === mode.id))
-        .filter((score): score is Score => score !== undefined),
-    [dynamicModeScores],
-  );
-
   const coreQuizzes = quizzes.filter((quiz) => quiz.contributesToOverall);
   const canonicalSignals = useMemo(
     () => buildCanonicalSignalProfile(profile, catalogProfileSnapshot),
@@ -657,6 +487,11 @@ export default function App({
     [canonicalSignals, overallFacets],
   );
 
+  const profileRoleDetails = useMemo(
+    () => buildProfileRoleDetails(canonicalSignals),
+    [canonicalSignals],
+  );
+
   const overallRadar = useMemo(
     () =>
       buildOverallRadarModel(
@@ -664,11 +499,6 @@ export default function App({
         profileHeader.strongestFacetIds,
       ),
     [overallFacets, profileHeader.strongestFacetIds],
-  );
-
-  const profileRoleDetails = useMemo(
-    () => buildProfileRoleDetails(canonicalSignals),
-    [canonicalSignals],
   );
 
   const profileExplainability = useMemo(
@@ -1132,7 +962,7 @@ export default function App({
               </div>
             </div>
 
-            <div className="profile-trait-grid">
+            <div className="profile-trait-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
               <section className="profile-trait-group">
                 <span className="profile-trait-label">Orientation</span>
                 <strong className="profile-orientation">
@@ -1154,21 +984,6 @@ export default function App({
                   <strong className="profile-trait-emerging">Still emerging</strong>
                 )}
               </section>
-
-              <section className="profile-trait-group">
-                <span className="profile-trait-label">Dynamic modes</span>
-                {profileHeader.dynamicModes.length > 0 ? (
-                  <div className="profile-trait-chips">
-                    {profileHeader.dynamicModes.map((trait) => (
-                      <span className="profile-trait-chip" key={trait.id}>
-                        <strong>{trait.label}</strong>
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <strong className="profile-trait-emerging">Still emerging</strong>
-                )}
-              </section>
             </div>
           </article>
 
@@ -1179,12 +994,12 @@ export default function App({
                 <h2>The shape of your profile.</h2>
               </div>
               <p>
-                Each axis is one broad theme. Unexplored axes stay blank instead of
-                being treated as zero.
+                Each petal is one overall facet. Larger petals mean stronger affinity;
+                unexplored facets stay outlined instead of being treated as zero.
               </p>
             </div>
 
-            <OverallRadarChart
+            <ProfileCoxcombChart
               axes={overallRadar.axes}
               onSelectFacet={openFacetDetail}
             />
@@ -1212,15 +1027,15 @@ export default function App({
 
               {!overallRadar.hasCompleteShape && (
                 <p className="overall-radar-partial-note">
-                  Some facets are still emerging. Blank spokes remain genuinely
-                  unknown; outlined points mark results with limited evidence.
+                  Some facets are still emerging. Outlined petals remain genuinely
+                  unknown; dashed petals mark results with limited evidence.
                 </p>
               )}
             </div>
           </article>
 
           <section className="profile-role-detail-grid">
-            <article className="profile-role-panel panel">
+            <article className="profile-role-panel panel" style={{ gridColumn: "1 / -1" }}>
               <div className="profile-role-heading">
                 <div>
                   <p className="eyebrow">Recognizable roles</p>
@@ -1270,42 +1085,6 @@ export default function App({
                 >
                   {showAllHeadspaces ? "Show less" : "Show all headspaces"}
                 </button>
-              )}
-            </article>
-
-            <article className="profile-role-panel panel">
-              <div className="profile-role-heading">
-                <div>
-                  <p className="eyebrow">How it tends to feel</p>
-                  <h2>Dynamic modes</h2>
-                </div>
-                <p>
-                  These are overlapping patterns that help explain how different
-                  parts of the profile tend to come together.
-                </p>
-              </div>
-
-              {profileRoleDetails.featuredDynamicModes.length > 0 ? (
-                <div className="profile-mode-list">
-                  {profileRoleDetails.featuredDynamicModes.map((item) => (
-                    <div className="profile-mode-card" key={item.id}>
-                      <div>
-                        <strong>{item.label}</strong>
-                        <span>{item.affinity}%</span>
-                      </div>
-                      <div className="profile-role-track" aria-hidden="true">
-                        <span style={{ width: `${item.affinity}%` }} />
-                      </div>
-                      {item.state === "limited" && (
-                        <small>Limited evidence so far</small>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="profile-role-empty">
-                  Dynamic modes are still emerging.
-                </p>
               )}
             </article>
           </section>
@@ -1666,7 +1445,6 @@ export default function App({
               </div>
             </details>
           </article>
-
         </section>
       )}
 
@@ -1745,7 +1523,7 @@ export default function App({
               <h1>The shape matters more than any single score.</h1>
               <p>
                 {isHeadspaceQuiz
-                  ? "These role and headspace affinities can overlap. Pet, Slave, Little, Middle, Brat, Caregiver, Owner, Trainer, and others can all resonate in different contexts — the result is a profile, not one assigned identity."
+                  ? "These role and headspace affinities can overlap. Pet, Slave, Little, Middle, Brat, Caregiver, Owner / Handler, and others can all resonate in different contexts — the result is a profile, not one assigned identity."
                   : isBdQuiz
                     ? "Bondage and discipline are scored as distinct physical and structural preferences. Restraint, positioning, constraint control, discipline, accountability, ritual, anticipation, and challenge can all vary independently — and discipline is not treated as pain."
                     : isSmQuiz
@@ -1787,17 +1565,6 @@ export default function App({
                   <RadarChart
                     scores={partnerPositionedHeadspaceRadarScores}
                     ariaLabel="Partner-positioned roles and headspaces radar chart"
-                  />
-                </article>
-
-                <article className="panel chart-panel dynamic-radar-panel">
-                  <div className="section-heading">
-                    <p className="eyebrow">Psychological ingredients</p>
-                    <h2>Underlying dynamic modes</h2>
-                  </div>
-                  <RadarChart
-                    scores={dynamicModeRadarScores}
-                    ariaLabel="Underlying dynamic modes radar chart"
                   />
                 </article>
               </div>
@@ -1976,36 +1743,6 @@ export default function App({
                 </div>
               </article>
             </div>
-          )}
-
-          {isHeadspaceQuiz && (
-            <article className="panel ranked-panel">
-              <div className="section-heading">
-                <p className="eyebrow">Why these roles resonate</p>
-                <h2>Underlying dynamic modes</h2>
-              </div>
-
-              <div className="ranked-list">
-                {dynamicModeScores.map((score, index) => (
-                  <div className="result-row" key={score.id}>
-                    <div className="result-rank">{String(index + 1).padStart(2, "0")}</div>
-                    <div className="result-main">
-                      <div className="result-title">
-                        <strong>{score.label}</strong>
-                        <span>{score.percentage}%</span>
-                      </div>
-                      <div className="score-track">
-                        <span style={{ width: `${score.percentage}%` }} />
-                      </div>
-                      <div className="result-caption">
-                        <span>{scoreLabel(score.percentage, true)}</span>
-                        <p>{score.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </article>
           )}
 
           <div className="results-actions">

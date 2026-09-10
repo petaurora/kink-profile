@@ -10,7 +10,7 @@ import { buildProfileRoleDetails, type ProfileRoleScoreState } from "./profileRo
 import { buildProfileTopInterests } from "./profileTopInterests";
 import type { StoredProfile } from "./profileStorage";
 
-export const PROFILE_SHARE_SUMMARY_VERSION = 2 as const;
+export const PROFILE_SHARE_SUMMARY_VERSION = 3 as const;
 
 export type ShareRadarAxis = {
   id: string;
@@ -47,7 +47,6 @@ export type ProfileShareSummaryModel = {
   strongestThemes: readonly string[];
   radarAxes: readonly ShareRadarAxis[];
   headspaces: readonly ShareScoredTrait[];
-  dynamicModes: readonly ShareScoredTrait[];
   topInterests: readonly ShareInterest[];
   interestAreas: readonly ShareInterestArea[];
   hardLimits: readonly ShareInterest[];
@@ -89,12 +88,6 @@ export function buildProfileShareSummary(
       state: axis.state,
     })),
     headspaces: roles.featuredHeadspaces.map((trait) => ({
-      id: trait.id,
-      label: trait.label,
-      affinity: trait.affinity,
-      state: trait.state,
-    })),
-    dynamicModes: roles.featuredDynamicModes.map((trait) => ({
       id: trait.id,
       label: trait.label,
       affinity: trait.affinity,
