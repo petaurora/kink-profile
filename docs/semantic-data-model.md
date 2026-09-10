@@ -93,18 +93,41 @@ Those two routes answer different questions:
 - Catalog Category → Signals describes what the kink category **means**.
 - Catalog Category → R/P Context describes which reward/punishment **experience buckets resemble it**.
 
-## Granularity and direction semantics
+## Granularity and channel semantics
+
+**Detailed contract:** [M16 Signal + Channel Model](m16-signal-channel-model.md)
 
 Overall Facets intentionally **do not** have giving/receiving or Dominant/submissive sides. They are thematic compression.
 
-Granular distinctions stay below the facet layer:
+M16 is normalizing activity-side semantics so that:
 
-- Signals can encode activity side directly, such as `care_giving` vs `care_receiving`.
-- catalog mappings may retain `Applies To = giving|receiving` when that distinction is meaningful.
-- roles, headspaces, and dynamic modes can compose different granular Signals.
-- Dominant/submissive authority orientation remains distinct from giving/receiving activity side.
+- **Signal = semantic concept**
+- **channel = overall / receiving / giving perspective**
+- Overall evidence never invents a directional preference
+- directional evidence may roll upward into the broader Overall concept
+- downstream definitions reference Signal + optional channel
+- not every Signal requires Receiving/Giving channels
 
-For example, both `care_giving` and `care_receiving` may support **Care & Nurture**, while only one of them might also support another theme.
+Examples:
+
+```text
+Control
+  Overall
+  Receiving
+  Giving
+
+Care
+  Overall
+  Receiving
+  Giving
+
+Role Embodiment
+  Overall only
+```
+
+This replaces the long-term model of encoding activity side directly into IDs such as `care_giving` and `care_receiving`.
+
+The migration is not complete yet; existing runtime IDs remain valid until the channel migration is implemented.
 
 Giving-side activity must never be inferred as Dominant identity, and receiving-side activity must never be inferred as submissive identity.
 

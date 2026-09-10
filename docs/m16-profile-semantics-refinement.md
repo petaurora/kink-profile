@@ -185,7 +185,22 @@ These associated themes are explanatory metadata only and do not calculate the m
 
 ---
 
-# M16.4c — Signal vocabulary gap review
+# M16.4c — Signal vocabulary + channel-model review
+
+**Step 1 contract:** [M16 Signal + Channel Model](m16-signal-channel-model.md)
+
+Before adding new vocabulary, normalize the semantic boundary between a Signal concept and its activity-side channel:
+
+- Signal = semantic concept
+- channels = Overall / Receiving / Giving
+- Overall evidence must not fan out into directional evidence
+- directional evidence may inform Overall
+- not every Signal requires directional channels
+- downstream semantic definitions should reference Signal + optional channel
+
+After the channel contract is accepted, audit the current 45 runtime Signal IDs into base concepts and migration actions.
+
+## Vocabulary gap review
 
 Use representative profiles, catalog coverage, external comparison tools, and curation gaps only as **evidence that a concept may be missing**.
 
@@ -331,8 +346,12 @@ Representative profiles should include:
 - merge/remove/rebalance before adding
 - derive descriptive Overall Theme associations for each mode
 
-## Slice 5 — Signal vocabulary review
+## Slice 5 — Signal vocabulary + channel review
 
+- define and lock the Signal + channel semantic contract
+- audit the current 45 runtime Signal IDs into base concepts/channels
+- collapse true giving/receiving duplicate IDs
+- identify currently general Signals that deserve directional channels
 - evaluate missing semantic concepts
 - add only justified Signals
 - update quiz/catalog mappings and migrations as required
