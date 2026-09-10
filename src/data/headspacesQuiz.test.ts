@@ -45,7 +45,7 @@ describe("M3 v4 role/headspace taxonomy", () => {
       .map((definition) => definition.id)
       .sort();
 
-    expect(roleIds).toHaveLength(12);
+    expect(roleIds).toHaveLength(13);
     expect(displayIds).toEqual(roleIds);
     expect(canonicalIds).toEqual(roleIds);
   });
