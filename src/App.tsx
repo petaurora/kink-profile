@@ -314,9 +314,11 @@ function OverallRadarChart({
               role="button"
               tabIndex={0}
               aria-label={`${axis.label}: ${
-                axis.affinity === null || axis.prominence === null
+                axis.affinity === null ||
+                axis.prominence === null ||
+                axis.prominenceDelta === null
                   ? "not explored yet"
-                  : `${axis.prominence}% profile prominence, ${axis.affinity}% affinity, ${axis.coverage}% evidence coverage`
+                  : `${axis.prominenceDelta >= 0 ? "+" : ""}${axis.prominenceDelta} prominence points vs this profile's average; ${axis.prominence}% evidence-adjusted prominence, ${axis.affinity}% affinity, ${axis.coverage}% evidence coverage`
               }. Open theme explanation.`}
               onClick={() => onSelectFacet(axis.facetId)}
               onKeyDown={(event) => selectFromKeyboard(event, axis.facetId)}
@@ -351,7 +353,7 @@ function OverallRadarChart({
           <polygon
             points={axes
               .map((axis, index) =>
-                pointFor(index, (axis.prominence ?? 0) / 100).join(","),
+                pointFor(index, (axis.relativeEmphasis ?? 0) / 100).join(","),
               )
               .join(" ")}
             className="overall-radar-score"
@@ -365,7 +367,7 @@ function OverallRadarChart({
                   const axis = axes[axisIndex];
                   return pointFor(
                     axisIndex,
-                    (axis.prominence ?? 0) / 100,
+                    (axis.relativeEmphasis ?? 0) / 100,
                   ).join(",");
                 })
                 .join(" ")}
@@ -375,8 +377,8 @@ function OverallRadarChart({
         )}
 
         {axes.map((axis, index) => {
-          if (axis.prominence === null) return null;
-          const [x, y] = pointFor(index, axis.prominence / 100);
+          if (axis.relativeEmphasis === null) return null;
+          const [x, y] = pointFor(index, axis.relativeEmphasis / 100);
 
           return (
             <circle
@@ -1176,9 +1178,9 @@ export default function App({
                 <h2>The shape of your profile.</h2>
               </div>
               <p>
-                Each axis is one broad theme. Shape uses affinity adjusted by
-                evidence coverage; unexplored axes stay blank instead of being
-                treated as zero.
+                Each axis is one broad theme. Shape shows each theme relative
+                to your own average evidence-adjusted prominence; the middle
+                ring is your baseline. Unexplored axes stay blank.
               </p>
             </div>
 
@@ -1557,12 +1559,28 @@ export default function App({
                           {" "}Evidence coverage: {facet.coverage}%.
                           {facet.affinity !== null && (
                             <>
-                              {" "}Profile-shape prominence:{" "}
+                              {" "}Evidence-adjusted prominence:{" "}
                               {calculateOverallFacetProminence(
                                 facet.affinity,
                                 facet.coverage,
                               )}
                               %.
+                              {(() => {
+                                const axis = overallRadar.axes.find(
+                                  (item) => item.facetId === facet.facetId,
+                                );
+                                if (axis?.prominenceDelta === null || axis?.prominenceDelta === undefined) {
+                                  return null;
+                                }
+
+                                return (
+                                  <>
+                                    {" "}Relative emphasis:{" "}
+                                    {axis.prominenceDelta >= 0 ? "+" : ""}
+                                    {axis.prominenceDelta} vs your profile average.
+                                  </>
+                                );
+                              })()}
                             </>
                           )}
                         </span>
