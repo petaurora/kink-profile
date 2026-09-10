@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { overallFacetDefinitions } from "../data/overallFacets";
 import {
   blendSemanticSignalGroups,
   collapseSemanticSignalMappings,
@@ -21,18 +20,12 @@ describe("M16.7 semantic facet affinity", () => {
       { signalId: "praise_approval", weight: 1 },
     ]);
 
-    const configured = (facetId: "care_nurture" | "service_devotion") =>
-      overallFacetDefinitions
-        .find((facet) => facet.id === facetId)
-        ?.signals.find((signal) => signal.signalId === "praise_approval")
-        ?.weight;
-
     expect(
       facets.find((facet) => facet.facetId === "care_nurture")?.affinity,
-    ).toBeCloseTo(configured("care_nurture") ?? 0);
+    ).toBeCloseTo(0.3);
     expect(
       facets.find((facet) => facet.facetId === "service_devotion")?.affinity,
-    ).toBeCloseTo(configured("service_devotion") ?? 0);
+    ).toBeCloseTo(0.3);
   });
 
   it("collapses duplicate semantic paths by their strongest weight", () => {

@@ -104,7 +104,7 @@ function completedProfile(): StoredProfile {
 }
 
 describe("M7.10 profile explainability", () => {
-  it("keeps strong affinity separate from breadth of theme evidence", () => {
+  it("keeps strong affinity separate from established evidence", () => {
     const canonical = [
       signal("service", 92, 80, [
         {
@@ -153,15 +153,8 @@ describe("M7.10 profile explainability", () => {
     const service = facet(model, "service_devotion");
 
     expect(service.affinity).toBeGreaterThan(80);
-    const expectedEvidence =
-      service.coverage >= 55
-        ? ["established", "Well supported"]
-        : service.coverage >= 25
-          ? ["growing", "Growing evidence"]
-          : ["limited", "Limited evidence"];
-    expect([service.evidenceState, service.evidenceLabel]).toEqual(
-      expectedEvidence,
-    );
+    expect(service.evidenceState).toBe("established");
+    expect(service.evidenceLabel).toBe("Well supported");
     expect(service.sources[0]).toEqual(
       expect.objectContaining({
         label: "Roles & Headspaces",

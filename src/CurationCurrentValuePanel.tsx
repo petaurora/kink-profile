@@ -171,45 +171,50 @@ export function CurationCurrentValuePanel({
         </div>
       )}
 
-      {entry.entityType !== "signal" &&
-        (() => {
-          const facets = getCurationPrimitiveFacetAffinities(
-            entry.entityType,
-            entry.entityId,
-          );
+      {(() => {
+        const facets = getCurationPrimitiveFacetAffinities(
+          entry.entityType,
+          entry.entityId,
+        );
 
-          if (facets.length === 0) {
-            return (
-              <div className="curation-facet-gap">
-                <strong>⚠ No Overall Facet route yet</strong>
-                <small>
-                  This primitive currently has no honest Signal → Overall Facet
-                  projection. Treat it as an M16 semantic coverage gap.
-                </small>
-              </div>
-            );
-          }
-
-          const topFacet = facets[0];
+        if (facets.length === 0) {
+          const isSignal = entry.entityType === "signal";
           return (
-            <details className="curation-facet-affinity">
-              <summary>
-                <span>Derived Overall Facets</span>
-                <small>
-                  {topFacet.label} · {Math.round(topFacet.affinity * 100)}%
-                </small>
-              </summary>
-              <div className="curation-facet-affinity-list">
-                {facets.map((facet) => (
-                  <div className="curation-facet-affinity-row" key={facet.facetId}>
-                    <span>{facet.label}</span>
-                    <strong>{Math.round(facet.affinity * 100)}%</strong>
-                  </div>
-                ))}
-              </div>
-            </details>
+            <div className="curation-facet-gap">
+              <strong>
+                ⚠ {isSignal
+                  ? "Not assigned to an Overall Facet yet"
+                  : "No Overall Facet route yet"}
+              </strong>
+              <small>
+                {isSignal
+                  ? "This Signal is valid, but no Overall Facet currently includes it. Add one or more facet memberships in Modify if that omission is semantic rather than intentional."
+                  : "This primitive currently has no honest Signal → Overall Facet projection. Treat it as an M16 semantic coverage gap."}
+              </small>
+            </div>
           );
-        })()}
+        }
+
+        const topFacet = facets[0];
+        return (
+          <details className="curation-facet-affinity">
+            <summary>
+              <span>Derived Overall Facets</span>
+              <small>
+                {topFacet.label} · {Math.round(topFacet.affinity * 100)}%
+              </small>
+            </summary>
+            <div className="curation-facet-affinity-list">
+              {facets.map((facet) => (
+                <div className="curation-facet-affinity-row" key={facet.facetId}>
+                  <span>{facet.label}</span>
+                  <strong>{Math.round(facet.affinity * 100)}%</strong>
+                </div>
+              ))}
+            </div>
+          </details>
+        );
+      })()}
 
       <small className="curation-current-source">Source: {entry.source}</small>
     </div>

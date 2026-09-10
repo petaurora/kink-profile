@@ -1,8 +1,8 @@
 import {
   overallFacetDefinitions,
   type OverallFacetDefinition,
+  type OverallFacetDirection,
   type OverallFacetId,
-  type OverallFacetSignalRelationship,
 } from "../data/overallFacets";
 import type { SignalId } from "../data/signals";
 import type { CanonicalSignalResult } from "./overallProfileSignals";
@@ -10,10 +10,18 @@ import type { CanonicalSignalResult } from "./overallProfileSignals";
 export type OverallFacetComponentResult = {
   signalId: SignalId;
   configuredWeight: number;
-  relationship: OverallFacetSignalRelationship;
+  direction?: OverallFacetDirection;
   affinity: number;
   coverage: number;
   effectiveWeight: number;
+  sourceEvidenceIds: readonly string[];
+};
+
+export type OverallFacetDirectionalResult = {
+  direction: OverallFacetDirection;
+  affinity: number | null;
+  coverage: number;
+  contributingSignalIds: readonly SignalId[];
   sourceEvidenceIds: readonly string[];
 };
 
@@ -25,6 +33,10 @@ export type OverallFacetResult = {
   affinity: number | null;
   coverage: number;
   components: readonly OverallFacetComponentResult[];
+  direction?: {
+    receiving: OverallFacetDirectionalResult;
+    giving: OverallFacetDirectionalResult;
+  };
   sourceEvidenceIds: readonly string[];
 };
 
@@ -59,7 +71,7 @@ function scoreFacetComponents(
         {
           signalId: configured.signalId,
           configuredWeight: configured.weight,
-          relationship: configured.relationship ?? "supports",
+          direction: configured.direction,
           affinity: clampPercent(signal.affinity),
           coverage,
           effectiveWeight: configured.weight * (coverage / 100),
@@ -71,75 +83,70 @@ function scoreFacetComponents(
 }
 
 function compositionScore(
-  definition: OverallFacetDefinition,
   components: readonly OverallFacetComponentResult[],
+  configuredWeightTotal: number,
 ) {
-  const configuredWeightTotal = definition.signals.reduce(
-    (sum, signal) => sum + signal.weight,
-    0,
-  );
-  const configuredSupportWeightTotal = definition.signals
-    .filter((signal) => (signal.relationship ?? "supports") === "supports")
-    .reduce((sum, signal) => sum + signal.weight, 0);
   const effectiveWeight = components.reduce(
     (sum, component) => sum + component.effectiveWeight,
     0,
   );
-  const supporting = components.filter(
-    (component) => component.relationship === "supports",
-  );
-  const opposing = components.filter(
-    (component) => component.relationship === "opposes",
-  );
-  const effectiveSupportWeight = supporting.reduce(
-    (sum, component) => sum + component.effectiveWeight,
-    0,
-  );
 
-  const coverage =
-    configuredWeightTotal > 0
-      ? round1(
-          clampPercent((effectiveWeight / configuredWeightTotal) * 100),
-        )
-      : 0;
-
-  // Opposing evidence can reduce a known theme affinity, but low/absent opposing
-  // evidence must never manufacture positive theme affinity. We therefore need
-  // at least one known supporting component before producing an affinity.
-  if (effectiveSupportWeight <= 0 || configuredSupportWeightTotal <= 0) {
-    return { affinity: null, coverage };
+  if (effectiveWeight <= 0 || configuredWeightTotal <= 0) {
+    return { affinity: null, coverage: 0 };
   }
 
-  const supportAffinity =
-    supporting.reduce(
+  const affinity =
+    components.reduce(
       (sum, component) =>
         sum + component.affinity * component.effectiveWeight,
       0,
-    ) / effectiveSupportWeight;
-
-  const opposingPenalty =
-    opposing.reduce(
-      (sum, component) =>
-        sum + component.affinity * component.effectiveWeight,
-      0,
-    ) / configuredSupportWeightTotal;
+    ) / effectiveWeight;
 
   return {
-    affinity: round1(clampPercent(supportAffinity - opposingPenalty)),
-    coverage,
+    affinity: round1(clampPercent(affinity)),
+    coverage: round1(
+      clampPercent((effectiveWeight / configuredWeightTotal) * 100),
+    ),
+  };
+}
+
+function scoreDirection(
+  definition: OverallFacetDefinition,
+  components: readonly OverallFacetComponentResult[],
+  direction: OverallFacetDirection,
+): OverallFacetDirectionalResult {
+  const configuredWeightTotal = definition.signals
+    .filter((signal) => signal.direction === direction)
+    .reduce((sum, signal) => sum + signal.weight, 0);
+  const directionalComponents = components.filter(
+    (component) => component.direction === direction,
+  );
+  const score = compositionScore(
+    directionalComponents,
+    configuredWeightTotal,
+  );
+
+  return {
+    direction,
+    affinity: score.affinity,
+    coverage: score.coverage,
+    contributingSignalIds: directionalComponents
+      .map((component) => component.signalId)
+      .sort(),
+    sourceEvidenceIds: uniqueSorted(
+      directionalComponents.flatMap(
+        (component) => component.sourceEvidenceIds,
+      ),
+    ),
   };
 }
 
 /**
- * Compose canonical SignalIds into broad M7 theme facets.
+ * Compose canonical SignalIds into broad M7 facets.
  *
- * Overall Facets intentionally collapse granular signal distinctions. Activity
- * side (giving/receiving) and authority orientation remain below this layer.
- *
- * Supporting Signal relationships build theme affinity. Opposing Signal
- * relationships may reduce a known affinity, but their absence never creates
- * positive evidence. Neutral Signal/Facet pairs are omitted from the sparse
- * runtime definition.
+ * Missing signals reduce facet coverage; they never enter affinity as 0%.
+ * Affinity is calculated only from known evidence, weighted by both the
+ * configured semantic weight and that canonical signal's evidence coverage.
  */
 export function scoreOverallFacets(
   canonicalSignals: readonly CanonicalSignalResult[],
@@ -151,7 +158,11 @@ export function scoreOverallFacets(
 
   return definitions.map((definition) => {
     const components = scoreFacetComponents(definition, signalsById);
-    const score = compositionScore(definition, components);
+    const configuredWeightTotal = definition.signals.reduce(
+      (sum, signal) => sum + signal.weight,
+      0,
+    );
+    const score = compositionScore(components, configuredWeightTotal);
 
     return {
       facetId: definition.id,
@@ -161,6 +172,16 @@ export function scoreOverallFacets(
       affinity: score.affinity,
       coverage: score.coverage,
       components,
+      direction: definition.directional
+        ? {
+            receiving: scoreDirection(
+              definition,
+              components,
+              "receiving",
+            ),
+            giving: scoreDirection(definition, components, "giving"),
+          }
+        : undefined,
       sourceEvidenceIds: uniqueSorted(
         components.flatMap((component) => component.sourceEvidenceIds),
       ),
