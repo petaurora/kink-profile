@@ -27,6 +27,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M14 | 🟡 Needs refinement | compare/upload + shared interaction work exists; persistent profile/linking model is being reconsidered |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
 | M16 | 🟡 In progress | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
+| M17 | Planned | simple front/back Body Map with per-region Yes / Maybe / Neutral / No states |
 
 ---
 
@@ -280,6 +281,21 @@ M16 is intentionally a **curation milestone, not an expansion milestone**. Exist
 
 ---
 
+## M17 — Body Map
+
+**Details:** [M17 Body Map](docs/m17-body-map.md)
+
+- [ ] **M17.1** — region + four-state data contract
+- [ ] **M17.2** — responsive front/back interactive SVG
+- [ ] **M17.3** — tap region → choose Yes / Maybe / Neutral / No
+- [ ] **M17.4** — profile persistence, import/export + reset lifecycle
+- [ ] **M17.5** — read-only Body Map profile display
+- [ ] **M17.6** — mobile/accessibility QA
+
+M17 v1 is intentionally narrow: one general state per body region. Left/right regions may differ, and inner thighs are distinct. Interaction-specific maps, notes, partner comparison, and Scene Builder integration are deferred.
+
+---
+
 # Parked ideas
 
 Interesting, but not current scope:
@@ -295,12 +311,13 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M11–M13 are complete. M14 needs product-model refinement before persistent profile/linking work continues; M15–M16 remain formally scoped.**
+**M11–M13 are complete. M14 needs product-model refinement before persistent profile/linking work continues; M15–M17 remain formally scoped.**
 
 Choose the next milestone intentionally:
 
 - **M14** provides comparison + shared scene filtering today; its persistent multi-person/profile model is under refinement.
 - **M15** adds the reusable authority × activity-side contextual model for direction-sensitive preferences and rankings.
 - **M16** is the whole-app data/content quality pass, including the mobile Curation Workbench, catalog cleanup, quiz/radar review, reward/punishment curation, and the M11 recipe-builder UX/model revisit.
+- **M17** adds a simple visual Body Map with front/back selectable regions and one general Yes / Maybe / Neutral / No state per region.
 
-M16 can begin while M14 persistence is paused and before M15 because its first work is inventory/curation infrastructure; later model-specific editors can be added to the same workbench as those models land.
+M16 can begin while M14 persistence is paused and before M15 because its first work is inventory/curation infrastructure; later model-specific editors can be added to the same workbench as those models land. M17 is independently scoped and does not require the contextual M15 model.
