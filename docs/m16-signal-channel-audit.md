@@ -113,8 +113,8 @@ These pairs pass the base-description invariant cleanly.
 | --- | --- | --- | --- | --- |
 | `receiving_control` | Control | Receiving | Being controlled / Receiving control | COLLAPSE |
 | `giving_control` | Control | Giving | Exercising control | COLLAPSE |
-| `responsibility_transfer` | Responsibility | Receiving | Handing over responsibility | COLLAPSE |
-| `responsibility_holding` | Responsibility | Giving | Holding responsibility | COLLAPSE |
+| `responsibility_transfer` | Responsibility | Giving | Handing over responsibility | COLLAPSE |
+| `responsibility_holding` | Responsibility | Receiving | Taking / holding responsibility | COLLAPSE |
 | `care_receiving` | Care | Receiving | Being cared for | COLLAPSE |
 | `care_giving` | Care | Giving | Caring for someone | COLLAPSE |
 | `pursuit_receiving` | Pursuit | Receiving | Being pursued | COLLAPSE |
@@ -145,6 +145,25 @@ These pairs pass the base-description invariant cleanly.
 ### Responsibility
 
 > The deliberate placement of decision-making, direction, boundaries, or responsibility for an experience can itself carry meaning.
+
+Channel direction follows **responsibility itself**, not D/s orientation:
+
+```text
+Giving    → Handing over responsibility
+Receiving → Taking / holding responsibility
+```
+
+This is intentionally different from Control:
+
+```text
+Receiving Control + Giving Responsibility
+→ can coexist in Surrender
+
+Giving Control + Receiving Responsibility
+→ can coexist in Caretaking / Authority
+```
+
+That asymmetry is useful evidence that Give/Receive is not Dom/Sub.
 
 ### Care
 
