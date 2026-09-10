@@ -82,24 +82,20 @@ const channelOverrides: Readonly<
   prey: {
     playful_resistance: "giving",
   },
-  service_submissive: {
-    service: "giving",
-    devotion: "giving",
-    obedience: "giving",
-    praise_approval: "receiving",
-  },
   devotional_submissive: {
     devotion: "giving",
     service: "giving",
+    obedience: "giving",
+    praise_approval: "receiving",
     ownership_symbolism: "receiving",
   },
-  property_object: {
+  object: {
     objectification: "receiving",
-    ownership_symbolism: "receiving",
   },
   owner_handler: {
     ownership_symbolism: "giving",
     guidance_shaping: "giving",
+    structure: "giving",
   },
   caregiver: {
     guidance_shaping: "giving",
@@ -108,10 +104,6 @@ const channelOverrides: Readonly<
   brat_tamer: {
     playful_resistance: "receiving",
     guidance_shaping: "giving",
-  },
-  trainer: {
-    guidance_shaping: "giving",
-    structure: "giving",
   },
   master_mistress: {
     ownership_symbolism: "giving",
