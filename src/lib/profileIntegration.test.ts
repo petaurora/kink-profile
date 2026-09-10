@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { kinkCatalog } from "../data/kinkCatalog.generated";
 import { overallFacetDefinitions } from "../data/overallFacets";
-import type { SignalId } from "../data/signals";
+import type { CanonicalSignalId } from "../data/canonicalSignals";
 import {
   createEmptyCatalogProfileState,
   setCatalogPreference,
@@ -9,7 +9,6 @@ import {
 import { buildCatalogResultView } from "./catalogResults";
 import { buildOverallRadarModel } from "./overallRadar";
 import { scoreOverallFacets } from "./overallProfileFacets";
-import type { CanonicalSignalResult } from "./overallProfileSignals";
 import { buildProfileExplainability } from "./profileExplainability";
 import { buildProfileHardLimits } from "./profileHardLimits";
 import { buildProfileHeaderModel } from "./profileHeader";
@@ -26,52 +25,43 @@ import {
   rewardPunishmentPrimitives,
 } from "./rewardPunishmentLibrary";
 import { buildRewardPunishmentOverallProfileSummary } from "./rewardPunishmentProfileSummary";
+import {
+  buildCanonicalSignalFixtures,
+  type CanonicalSignalFixture,
+} from "./testCanonicalSignalFixtures";
 
-const authoritySignals = new Set<SignalId>([
-  "receiving_control",
-  "responsibility_transfer",
-  "obedience",
-  "giving_control",
-]);
+function ds(
+  signalId: CanonicalSignalFixture["signalId"],
+  affinity: number,
+  channel?: CanonicalSignalFixture["channel"],
+): CanonicalSignalFixture {
+  return {
+    signalId,
+    affinity,
+    coverage: 80,
+    channel,
+    sourceType: "quiz",
+    sourceId: "dominance-submission",
+  };
+}
 
-function canonical(
-  signalId: SignalId,
+function general(
+  signalId: CanonicalSignalFixture["signalId"],
   affinity = 78,
   coverage = 80,
-): CanonicalSignalResult {
-  const quizId = authoritySignals.has(signalId)
-    ? "dominance-submission"
-    : "roles-headspaces";
-
+  channel?: CanonicalSignalFixture["channel"],
+): CanonicalSignalFixture {
   return {
     signalId,
     affinity,
     coverage,
-    channels: [
-      {
-        sourceType: "quiz",
-        affinity,
-        coverage: 100,
-        reliability: 0.8,
-        effectiveWeight: 0.8,
-        contributions: [
-          {
-            sourceType: "quiz",
-            sourceId: quizId,
-            signalId,
-            affinity,
-            coverage: 100,
-            detail: quizId === "dominance-submission" ? "quiz v1" : "quiz v3",
-            sourceEvidenceIds: [`quiz:${quizId}:${signalId}`],
-          },
-        ],
-      },
-    ],
-    sourceEvidenceIds: [`quiz:${quizId}:${signalId}`],
+    channel,
+    sourceType: "quiz",
+    sourceId: "roles-headspaces",
   };
 }
 
-function allFacetSignals() {
+function allFacetSignals(): CanonicalSignalId[] {
   return [
     ...new Set(
       overallFacetDefinitions.flatMap((facet) =>
@@ -85,16 +75,12 @@ describe("M7.11 final profile integration", () => {
   it("keeps a completely empty profile truthful across every aggregate layer", () => {
     const stored = createEmptyProfile();
     const catalog = createEmptyCatalogProfileState();
-    const canonicalSignals: CanonicalSignalResult[] = [];
+    const canonicalSignals = buildCanonicalSignalFixtures([]);
     const facets = scoreOverallFacets(canonicalSignals);
     const header = buildProfileHeaderModel(canonicalSignals, facets);
     const radar = buildOverallRadarModel(facets, header.strongestFacetIds);
     const roles = buildProfileRoleDetails(canonicalSignals);
-    const explain = buildProfileExplainability(
-      canonicalSignals,
-      facets,
-      stored,
-    );
+    const explain = buildProfileExplainability(canonicalSignals, facets, stored);
     const catalogView = buildCatalogResultView(stored, catalog);
 
     expect(header.orientation.label).toBe("Still emerging");
@@ -104,9 +90,7 @@ describe("M7.11 final profile integration", () => {
     expect(radar.axes).toHaveLength(9);
     expect(radar.axes.every((axis) => axis.affinity === null)).toBe(true);
     expect(roles.headspaces).toEqual([]);
-    expect(explain.facets.every((facet) => facet.evidenceState === "unknown")).toBe(
-      true,
-    );
+    expect(explain.facets.every((facet) => facet.evidenceState === "unknown")).toBe(true);
     expect(buildProfileTopInterests(catalogView)).toEqual([]);
     expect(buildProfileHardLimits(catalogView).all).toEqual([]);
     expect(buildProfileInterestAreas(catalogView, [])).toEqual([]);
@@ -114,18 +98,14 @@ describe("M7.11 final profile integration", () => {
 
   it("keeps a partial profile open and qualified instead of fabricating a complete shape", () => {
     const stored = createEmptyProfile();
-    const canonicalSignals = [
-      canonical("service", 95, 30),
-      canonical("devotion", 92, 30),
-    ];
+    const canonicalSignals = buildCanonicalSignalFixtures([
+      general("service", 95, 30),
+      general("devotion", 92, 30),
+    ]);
     const facets = scoreOverallFacets(canonicalSignals);
     const header = buildProfileHeaderModel(canonicalSignals, facets);
     const radar = buildOverallRadarModel(facets, header.strongestFacetIds);
-    const explain = buildProfileExplainability(
-      canonicalSignals,
-      facets,
-      stored,
-    );
+    const explain = buildProfileExplainability(canonicalSignals, facets, stored);
     const service = explain.facets.find(
       (facet) => facet.facetId === "service_devotion",
     );
@@ -144,14 +124,14 @@ describe("M7.11 final profile integration", () => {
 
   it("keeps M11 contextual evidence completely isolated from M7 header/radar/Top Overall", () => {
     const stored = createEmptyProfile();
-    const canonicalSignals = [
-      canonical("receiving_control", 92),
-      canonical("responsibility_transfer", 90),
-      canonical("obedience", 88),
-      canonical("giving_control", 25),
-      canonical("service", 90),
-      canonical("devotion", 92),
-    ];
+    const canonicalSignals = buildCanonicalSignalFixtures([
+      ds("receiving_control", 92),
+      ds("responsibility_transfer", 90),
+      ds("obedience", 88, "giving"),
+      ds("giving_control", 25),
+      general("service", 90, 80, "giving"),
+      general("devotion", 92),
+    ]);
 
     let catalog = createEmptyCatalogProfileState();
     const loved = kinkCatalog[0]!;
@@ -165,10 +145,7 @@ describe("M7.11 final profile integration", () => {
 
     const catalogView = buildCatalogResultView(stored, catalog);
     const beforeFacets = scoreOverallFacets(canonicalSignals);
-    const beforeHeader = buildProfileHeaderModel(
-      canonicalSignals,
-      beforeFacets,
-    );
+    const beforeHeader = buildProfileHeaderModel(canonicalSignals, beforeFacets);
     const beforeRadar = buildOverallRadarModel(
       beforeFacets,
       beforeHeader.strongestFacetIds,
@@ -177,24 +154,14 @@ describe("M7.11 final profile integration", () => {
 
     let contextual = createEmptyRewardPunishmentProfileState();
     const [first, second, third] = rewardPunishmentPrimitives;
-    contextual = setContextSuitability(
-      contextual,
-      first.ref,
-      "reward",
-      "strong",
-    );
+    contextual = setContextSuitability(contextual, first.ref, "reward", "strong");
     contextual = setContextSuitability(
       contextual,
       second.ref,
       "punishment",
       "strong",
     );
-    contextual = setContextSuitability(
-      contextual,
-      third.ref,
-      "reward",
-      "works",
-    );
+    contextual = setContextSuitability(contextual, third.ref, "reward", "works");
 
     buildRewardPunishmentOverallProfileSummary(
       contextual,
@@ -213,10 +180,7 @@ describe("M7.11 final profile integration", () => {
     );
 
     const afterFacets = scoreOverallFacets(canonicalSignals);
-    const afterHeader = buildProfileHeaderModel(
-      canonicalSignals,
-      afterFacets,
-    );
+    const afterHeader = buildProfileHeaderModel(canonicalSignals, afterFacets);
     const afterRadar = buildOverallRadarModel(
       afterFacets,
       afterHeader.strongestFacetIds,
@@ -230,29 +194,23 @@ describe("M7.11 final profile integration", () => {
   });
 
   it("produces one coherent full-profile pipeline while preserving direct catalog boundaries", () => {
+    const canonicalSignals = buildCanonicalSignalFixtures([
+      ...allFacetSignals().map((signalId) => general(signalId)),
+      ds("control", 92, "receiving"),
+      ds("responsibility", 90, "giving"),
+      ds("obedience", 88, "giving"),
+      ds("control", 30, "giving"),
+    ]);
     const stored = createEmptyProfile();
-    const canonicalSignals = allFacetSignals().map((signalId) => {
-      if (signalId === "receiving_control") return canonical(signalId, 92);
-      if (signalId === "responsibility_transfer") return canonical(signalId, 90);
-      if (signalId === "obedience") return canonical(signalId, 88);
-      if (signalId === "giving_control") return canonical(signalId, 30);
-      return canonical(signalId);
-    });
     const facets = scoreOverallFacets(canonicalSignals);
     const header = buildProfileHeaderModel(canonicalSignals, facets);
     const radar = buildOverallRadarModel(facets, header.strongestFacetIds);
-    const explain = buildProfileExplainability(
-      canonicalSignals,
-      facets,
-      stored,
-    );
+    const explain = buildProfileExplainability(canonicalSignals, facets, stored);
 
     expect(header.orientation.label).toBe("Submissive");
     expect(radar.knownAxisCount).toBe(9);
     expect(radar.hasCompleteShape).toBe(true);
-    expect(explain.facets.every((facet) => facet.evidenceState === "established")).toBe(
-      true,
-    );
+    expect(explain.facets.every((facet) => facet.evidenceState === "established")).toBe(true);
 
     const loved = kinkCatalog[0];
     const limited = kinkCatalog[1];
