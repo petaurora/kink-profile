@@ -8,6 +8,7 @@ import {
   type SharedInteractionConceptRef,
   type SharedInteractionMapping,
 } from "../data/sharedInteractionMappings";
+import { legacySignalConceptTargets } from "../data/canonicalSignals";
 import {
   signalDefinitions,
   type SignalId,
@@ -304,30 +305,45 @@ function buildSemanticEvidenceMap(
   input: SharedProfileComparisonInput,
 ) {
   const evidence = new Map<string, SharedSemanticEvidence>();
+  const legacyTargets = Object.entries(legacySignalConceptTargets) as Array<
+    [SignalId, (typeof legacySignalConceptTargets)[SignalId]]
+  >;
 
   for (const signal of input.canonicalSignals) {
-    if (
-      signal.affinity < minimumSemanticAffinity ||
-      signal.coverage < minimumSemanticCoverage
-    ) {
-      continue;
+    for (const [legacySignalId, target] of legacyTargets) {
+      if (target.signalId !== signal.signalId) continue;
+
+      const channel =
+        target.inherentChannel === "receiving"
+          ? signal.receiving
+          : target.inherentChannel === "giving"
+            ? signal.giving
+            : signal.overall;
+      if (
+        !channel ||
+        channel.affinity === null ||
+        channel.affinity < minimumSemanticAffinity ||
+        channel.coverage < minimumSemanticCoverage
+      ) {
+        continue;
+      }
+
+      const definition = signalDefinitions.find(
+        (candidate) => candidate.id === legacySignalId,
+      );
+      const concept: SharedInteractionConceptRef = {
+        kind: "signal",
+        id: legacySignalId,
+      };
+
+      evidence.set(conceptKey(concept), {
+        concept,
+        label: definition?.label ?? legacySignalId,
+        affinity: clampPercent(channel.affinity),
+        coverage: clampPercent(channel.coverage),
+        source: "canonical_signal",
+      });
     }
-
-    const definition = signalDefinitions.find(
-      (candidate) => candidate.id === signal.signalId,
-    );
-    const concept: SharedInteractionConceptRef = {
-      kind: "signal",
-      id: signal.signalId as SignalId,
-    };
-
-    evidence.set(conceptKey(concept), {
-      concept,
-      label: definition?.label ?? signal.signalId,
-      affinity: clampPercent(signal.affinity),
-      coverage: clampPercent(signal.coverage),
-      source: "canonical_signal",
-    });
   }
 
   const roleDetails =

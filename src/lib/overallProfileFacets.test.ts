@@ -1,26 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { overallFacetDefinitions } from "../data/overallFacets";
-import type { SignalId } from "../data/signals";
 import {
   scoreOverallFacets,
   type OverallFacetResult,
 } from "./overallProfileFacets";
-import type { CanonicalSignalResult } from "./overallProfileSignals";
-
-function canonicalSignal(
-  signalId: SignalId,
-  affinity: number,
-  coverage = 100,
-  sourceEvidenceIds: readonly string[] = [`test:${signalId}`],
-): CanonicalSignalResult {
-  return {
-    signalId,
-    affinity,
-    coverage,
-    channels: [],
-    sourceEvidenceIds,
-  };
-}
+import { buildCanonicalSignalFixtures } from "./testCanonicalSignalFixtures";
 
 function facet(
   results: readonly OverallFacetResult[],
@@ -46,12 +30,16 @@ describe("M7.2 overall facet definitions", () => {
     ]);
   });
 
-  it("uses only valid positive primitive-signal weights", () => {
+  it("uses only valid positive canonical Signal weights", () => {
     for (const definition of overallFacetDefinitions) {
       expect(definition.signals.length).toBeGreaterThan(0);
-      expect(new Set(definition.signals.map((item) => item.signalId)).size).toBe(
-        definition.signals.length,
-      );
+      expect(
+        new Set(
+          definition.signals.map(
+            (item) => `${item.signalId}:${item.channel ?? "overall"}`,
+          ),
+        ).size,
+      ).toBe(definition.signals.length);
 
       for (const signal of definition.signals) {
         expect(signal.weight).toBeGreaterThan(0);
@@ -62,7 +50,7 @@ describe("M7.2 overall facet definitions", () => {
 });
 
 describe("M7.2 overall facet scoring", () => {
-  it("returns every facet as unknown when no canonical signal evidence exists", () => {
+  it("returns every facet as unknown when no canonical Signal evidence exists", () => {
     const results = scoreOverallFacets([]);
 
     expect(results).toHaveLength(9);
@@ -73,9 +61,13 @@ describe("M7.2 overall facet scoring", () => {
     }
   });
 
-  it("does not turn missing component signals into zero affinity", () => {
+  it("does not turn missing component Signals into zero affinity", () => {
     const result = facet(
-      scoreOverallFacets([canonicalSignal("structure", 80)]),
+      scoreOverallFacets(
+        buildCanonicalSignalFixtures([
+          { signalId: "structure", affinity: 80 },
+        ]),
+      ),
       "structure_protocol",
     );
 
@@ -91,9 +83,11 @@ describe("M7.2 overall facet scoring", () => {
 
   it("keeps strong sparse evidence high-affinity while lowering coverage", () => {
     const result = facet(
-      scoreOverallFacets([
-        canonicalSignal("ownership_symbolism", 100, 25),
-      ]),
+      scoreOverallFacets(
+        buildCanonicalSignalFixtures([
+          { signalId: "ownership_symbolism", affinity: 100, coverage: 25 },
+        ]),
+      ),
       "ownership_belonging",
     );
 
@@ -106,10 +100,12 @@ describe("M7.2 overall facet scoring", () => {
 
   it("weights affinity by both semantic composition weight and canonical evidence coverage", () => {
     const result = facet(
-      scoreOverallFacets([
-        canonicalSignal("service", 100, 100),
-        canonicalSignal("devotion", 0, 50),
-      ]),
+      scoreOverallFacets(
+        buildCanonicalSignalFixtures([
+          { signalId: "service", affinity: 100, coverage: 100 },
+          { signalId: "devotion", affinity: 0, coverage: 50 },
+        ]),
+      ),
       "service_devotion",
     );
 
@@ -121,24 +117,26 @@ describe("M7.2 overall facet scoring", () => {
     expect(result.coverage).toBeCloseTo((1.5 / configuredTotal) * 100, 1);
   });
 
-  it("keeps giving and receiving Signals inside the same broad theme", () => {
+  it("rolls receiving and giving evidence into the same broad canonical theme", () => {
     const result = facet(
-      scoreOverallFacets([
-        canonicalSignal("care_receiving", 95),
-        canonicalSignal("care_giving", 65),
-      ]),
+      scoreOverallFacets(
+        buildCanonicalSignalFixtures([
+          { signalId: "care_receiving", affinity: 95 },
+          { signalId: "care_giving", affinity: 65 },
+        ]),
+      ),
       "care_nurture",
     );
 
     expect(result.affinity).toBe(80);
-    expect(result.components.map((component) => component.signalId)).toEqual(
-      expect.arrayContaining(["care_receiving", "care_giving"]),
+    expect(result.components).toHaveLength(1);
+    expect(result.components[0]).toEqual(
+      expect.objectContaining({
+        signalId: "care",
+        signalChannel: "overall",
+      }),
     );
-    expect(
-      result.components.every(
-        (component) => component.relationship === "supports",
-      ),
-    ).toBe(true);
+    expect(result.components[0]?.relationship).toBe("supports");
   });
 
   it("lets opposing Signals reduce a known theme without treating their absence as positive evidence", () => {
@@ -148,7 +146,7 @@ describe("M7.2 overall facet scoring", () => {
       shortLabel: "Power",
       description: "Test theme",
       signals: [
-        { signalId: "receiving_control" as const, weight: 1 },
+        { signalId: "control" as const, weight: 1 },
         {
           signalId: "autonomy" as const,
           weight: 0.5,
@@ -158,35 +156,45 @@ describe("M7.2 overall facet scoring", () => {
     };
 
     const opposed = scoreOverallFacets(
-      [
-        canonicalSignal("receiving_control", 80),
-        canonicalSignal("autonomy", 100),
-      ],
+      buildCanonicalSignalFixtures([
+        { signalId: "receiving_control", affinity: 80 },
+        { signalId: "autonomy", affinity: 100 },
+      ]),
       [definition],
     )[0];
     expect(opposed.affinity).toBe(30);
 
     const noOpposition = scoreOverallFacets(
-      [
-        canonicalSignal("receiving_control", 80),
-        canonicalSignal("autonomy", 0),
-      ],
+      buildCanonicalSignalFixtures([
+        { signalId: "receiving_control", affinity: 80 },
+        { signalId: "autonomy", affinity: 0 },
+      ]),
       [definition],
     )[0];
     expect(noOpposition.affinity).toBe(80);
   });
 
-  it("retains source provenance from every canonical signal used by the facet", () => {
+  it("retains source provenance from every canonical Signal used by the facet", () => {
     const result = facet(
-      scoreOverallFacets([
-        canonicalSignal("primal_embodiment", 90, 80, [
-          "quiz:roles-headspaces:primal_embodiment",
+      scoreOverallFacets(
+        buildCanonicalSignalFixtures([
+          {
+            signalId: "primal_embodiment",
+            affinity: 90,
+            coverage: 80,
+            sourceEvidenceIds: ["quiz:roles-headspaces:primal_embodiment"],
+          },
+          {
+            signalId: "pursuit_receiving",
+            affinity: 80,
+            coverage: 60,
+            sourceEvidenceIds: [
+              "catalog-explicit:chase:receiving",
+              "catalog-pairwise:cmp-7",
+            ],
+          },
         ]),
-        canonicalSignal("pursuit_receiving", 80, 60, [
-          "catalog-explicit:chase:receiving",
-          "catalog-pairwise:cmp-7",
-        ]),
-      ]),
+      ),
       "primal_instinctive",
     );
 
@@ -200,10 +208,12 @@ describe("M7.2 overall facet scoring", () => {
 
   it("allows low affinity to be a known result rather than treating zero as unexplored", () => {
     const result = facet(
-      scoreOverallFacets([
-        canonicalSignal("pain_receiving", 0, 100),
-        canonicalSignal("pain_giving", 0, 100),
-      ]),
+      scoreOverallFacets(
+        buildCanonicalSignalFixtures([
+          { signalId: "pain_receiving", affinity: 0, coverage: 100 },
+          { signalId: "pain_giving", affinity: 0, coverage: 100 },
+        ]),
+      ),
       "intensity_pain",
     );
 

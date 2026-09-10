@@ -3,6 +3,12 @@ import {
   type OverallFacetId,
 } from "../data/overallFacets";
 import {
+  canonicalQuizSignalRef,
+  canonicalSignalDefinitions,
+  type CanonicalSignalId,
+  type SignalChannel,
+} from "../data/canonicalSignals";
+import {
   isWeightedQuestion,
   quizQuestions,
 } from "../data/quizQuestions";
@@ -12,14 +18,13 @@ import {
   type QuizDefinition,
   type QuizId,
 } from "../data/quizzes";
-import {
-  signalDefinitions,
-  type SignalId,
-} from "../data/signals";
+import type { SignalId as LegacySignalId } from "../data/signals";
 import type { OverallFacetResult } from "./overallProfileFacets";
-import type {
-  CanonicalSignalResult,
-  CanonicalSignalSourceType,
+import {
+  resolveSignalChannel,
+  signalResultById,
+  type CanonicalSignalResult,
+  type CanonicalSignalSourceType,
 } from "./overallProfileSignals";
 import type { StoredProfile } from "./profileStorage";
 
@@ -30,7 +35,8 @@ export type ProfileEvidenceState =
   | "established";
 
 export type ProfileExplainabilitySignal = {
-  signalId: SignalId;
+  signalId: CanonicalSignalId;
+  signalChannel: SignalChannel;
   label: string;
   affinity: number;
   coverage: number;
@@ -90,7 +96,7 @@ type MutableSourceSummary = {
 };
 
 const signalDefinitionById = new Map(
-  signalDefinitions.map((signal) => [signal.id, signal]),
+  canonicalSignalDefinitions.map((signal) => [signal.id, signal]),
 );
 const facetDefinitionById = new Map(
   overallFacetDefinitions.map((facet) => [facet.id, facet]),
@@ -165,14 +171,14 @@ function quizState(
 }
 
 function quizSignalIds(quiz: QuizDefinition) {
-  const result = new Set<SignalId>();
+  const result = new Set<CanonicalSignalId>();
 
   for (const questionId of quiz.questionIds) {
     const question = questionById.get(questionId);
     if (!question || !isWeightedQuestion(question)) continue;
 
-    for (const signalId of Object.keys(question.weights) as SignalId[]) {
-      result.add(signalId);
+    for (const signalId of Object.keys(question.weights) as LegacySignalId[]) {
+      result.add(canonicalQuizSignalRef(question.id, signalId).signalId);
     }
   }
 
@@ -261,20 +267,19 @@ function buildSources(
   facet: OverallFacetResult,
   canonicalSignals: readonly CanonicalSignalResult[],
 ): ProfileExplainabilitySource[] {
-  const signalById = new Map(
-    canonicalSignals.map((signal) => [signal.signalId, signal]),
-  );
+  const signalById = signalResultById(canonicalSignals);
   const sourceGroups = new Map<string, MutableSourceSummary>();
   const sourceDetails = new Map<string, Set<string>>();
   const contributionCounts = new Map<string, Set<string>>();
 
   for (const component of facet.components) {
     const canonical = signalById.get(component.signalId);
-    if (!canonical) continue;
+    const signal = resolveSignalChannel(canonical, component.signalChannel);
+    if (!signal) continue;
 
-    for (const channel of canonical.channels) {
-      if (channel.sourceType === "quiz") {
-        for (const contribution of channel.contributions) {
+    for (const source of signal.sources) {
+      if (source.sourceType === "quiz") {
+        for (const contribution of source.contributions) {
           const key = `quiz:${contribution.sourceId}`;
           const coveredWeight =
             component.configuredWeight *
@@ -313,17 +318,17 @@ function buildSources(
         continue;
       }
 
-      const key = channel.sourceType;
+      const key = source.sourceType;
       const coveredWeight =
         component.configuredWeight *
-        clamp01(channel.coverage / 100);
+        clamp01(source.coverage / 100);
       if (coveredWeight <= 0) continue;
 
       const current =
         sourceGroups.get(key) ??
         {
           id: key,
-          sourceType: channel.sourceType,
+          sourceType: source.sourceType,
           label: "",
           detail: "",
           weightedAffinity: 0,
@@ -333,10 +338,10 @@ function buildSources(
         };
 
       current.weightedAffinity +=
-        clampPercent(channel.affinity) * coveredWeight;
+        clampPercent(source.affinity) * coveredWeight;
       current.evidenceWeight += coveredWeight;
       current.configuredWeight += component.configuredWeight;
-      for (const contribution of channel.contributions) {
+      for (const contribution of source.contributions) {
         current.sourceIds.add(contribution.sourceId);
 
         const details = sourceDetails.get(key) ?? new Set<string>();
@@ -346,7 +351,7 @@ function buildSources(
       sourceGroups.set(key, current);
 
       const ids = contributionCounts.get(key) ?? new Set<string>();
-      for (const contribution of channel.contributions) {
+      for (const contribution of source.contributions) {
         ids.add(contribution.sourceId);
       }
       contributionCounts.set(key, ids);
@@ -373,9 +378,7 @@ function buildSources(
           sourceType: group.sourceType,
           label: display.label,
           detail: display.detail,
-          affinity: round1(
-            group.weightedAffinity / group.evidenceWeight,
-          ),
+          affinity: round1(group.weightedAffinity / group.evidenceWeight),
           evidence: round1(
             Math.min(
               100,
@@ -434,6 +437,16 @@ function buildNextStep(
   return undefined;
 }
 
+function signalDisplayLabel(
+  signalId: CanonicalSignalId,
+  signalChannel: SignalChannel,
+) {
+  const definition = signalDefinitionById.get(signalId);
+  if (!definition) return signalId;
+  if (signalChannel === "overall") return definition.label;
+  return definition.channels[signalChannel]?.label ?? definition.label;
+}
+
 export function buildProfileExplainability(
   canonicalSignals: readonly CanonicalSignalResult[],
   facets: readonly OverallFacetResult[],
@@ -456,9 +469,11 @@ export function buildProfileExplainability(
       .slice(0, 5)
       .map((component) => ({
         signalId: component.signalId,
-        label:
-          signalDefinitionById.get(component.signalId)?.label ??
+        signalChannel: component.signalChannel,
+        label: signalDisplayLabel(
           component.signalId,
+          component.signalChannel,
+        ),
         affinity: round1(component.affinity),
         coverage: round1(component.coverage),
       }));
@@ -478,11 +493,7 @@ export function buildProfileExplainability(
       conflictMessage: conflict
         ? "Different evidence sources are pulling this theme in noticeably different directions, so the combined result may shift as you refine it."
         : undefined,
-      nextStep: buildNextStep(
-        facet.facetId,
-        state,
-        storedProfile,
-      ),
+      nextStep: buildNextStep(facet.facetId, state, storedProfile),
     };
   });
 

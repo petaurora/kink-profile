@@ -1,10 +1,13 @@
 import {
-  dynamicModes,
-  roleHeadspaces,
-  type ComposedDefinition,
-} from "../data/headspacesQuiz";
-import type { SignalId } from "../data/signals";
-import type { CanonicalSignalResult } from "./overallProfileSignals";
+  canonicalDynamicModes,
+  canonicalRoleHeadspaces,
+  type CanonicalComposedDefinition,
+} from "../data/canonicalRoleCompositions";
+import {
+  resolveSignalChannel,
+  signalResultById,
+  type CanonicalSignalResult,
+} from "./normalizedProfileSignals";
 
 export type ProfileRoleScoreState = "known" | "limited";
 
@@ -44,11 +47,9 @@ function round1(value: number) {
 
 function scoreDefinitions(
   canonicalSignals: readonly CanonicalSignalResult[],
-  definitions: readonly ComposedDefinition[],
+  definitions: readonly CanonicalComposedDefinition[],
 ): ProfileRoleScore[] {
-  const bySignalId = new Map(
-    canonicalSignals.map((signal) => [signal.signalId, signal]),
-  );
+  const bySignalId = signalResultById(canonicalSignals);
 
   return definitions
     .flatMap((definition): ProfileRoleScore[] => {
@@ -56,21 +57,20 @@ function scoreDefinitions(
       let evidenceWeight = 0;
       let weightedAffinity = 0;
 
-      for (const [signalId, configuredWeight] of Object.entries(
-        definition.weights,
-      )) {
-        if (!configuredWeight || configuredWeight <= 0) continue;
+      for (const configured of definition.signals) {
+        if (configured.weight <= 0) continue;
 
-        totalWeight += configuredWeight;
-        const signal = bySignalId.get(signalId as SignalId);
-        if (!signal || signal.coverage <= 0) continue;
+        totalWeight += configured.weight;
+        const signal = resolveSignalChannel(
+          bySignalId.get(configured.signalId),
+          configured.channel ?? "overall",
+        );
+        if (!signal || signal.affinity === null || signal.coverage <= 0) continue;
 
         const coveredWeight =
-          configuredWeight * clamp01(signal.coverage / 100);
-
+          configured.weight * clamp01(signal.coverage / 100);
         evidenceWeight += coveredWeight;
-        weightedAffinity +=
-          clampPercent(signal.affinity) * coveredWeight;
+        weightedAffinity += clampPercent(signal.affinity) * coveredWeight;
       }
 
       if (totalWeight <= 0 || evidenceWeight <= 0) return [];
@@ -108,23 +108,17 @@ export function buildProfileRoleDetails(
 ): ProfileRoleDetailsModel {
   const headspaces = scoreDefinitions(
     canonicalSignals,
-    roleHeadspaces,
+    canonicalRoleHeadspaces,
   );
   const scoredDynamicModes = scoreDefinitions(
     canonicalSignals,
-    dynamicModes,
+    canonicalDynamicModes,
   );
 
   return {
     headspaces,
     dynamicModes: scoredDynamicModes,
-    featuredHeadspaces: headspaces.slice(
-      0,
-      featuredHeadspaceCount,
-    ),
-    featuredDynamicModes: scoredDynamicModes.slice(
-      0,
-      featuredDynamicModeCount,
-    ),
+    featuredHeadspaces: headspaces.slice(0, featuredHeadspaceCount),
+    featuredDynamicModes: scoredDynamicModes.slice(0, featuredDynamicModeCount),
   };
 }
