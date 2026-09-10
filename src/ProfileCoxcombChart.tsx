@@ -1,13 +1,25 @@
 import type { KeyboardEvent } from "react";
-import type { OverallFacetId } from "./data/overallFacets";
-import type { OverallRadarAxis } from "./lib/overallRadar";
 
-type ProfileCoxcombChartProps = {
-  axes: readonly OverallRadarAxis[];
-  onSelectFacet: (facetId: OverallFacetId) => void;
+export type ProfileCoxcombAxisState = "known" | "limited" | "unknown";
+
+export type ProfileCoxcombAxis<TId extends string = string> = {
+  facetId: TId;
+  label: string;
+  shortLabel: string;
+  affinity: number | null;
+  coverage: number;
+  state: ProfileCoxcombAxisState;
 };
 
-const bandColors = [
+type ProfileCoxcombChartProps<TId extends string> = {
+  axes: readonly ProfileCoxcombAxis<TId>[];
+  onSelectFacet: (facetId: TId) => void;
+  centerLabel?: string;
+  ariaLabel?: string;
+  bandColors?: readonly string[];
+};
+
+const defaultBandColors = [
   "#520E25",
   "#6b1740",
   "#81205c",
@@ -16,16 +28,26 @@ const bandColors = [
   "#d96fbc",
 ] as const;
 
-export function ProfileCoxcombChart({
+/**
+ * Reusable coxcomb / Nightingale-rose visualization.
+ *
+ * This component owns rendering and interaction only. Profile/facet scoring and
+ * semantic interpretation stay with the caller so the visualization can be
+ * reused or replaced independently during later chart cleanup.
+ */
+export function ProfileCoxcombChart<TId extends string>({
   axes,
   onSelectFacet,
-}: ProfileCoxcombChartProps) {
+  centerLabel = "PROFILE",
+  ariaLabel = "Profile coxcomb. Each petal is one profile dimension.",
+  bandColors = defaultBandColors,
+}: ProfileCoxcombChartProps<TId>) {
   const size = 500;
   const center = size / 2;
   const maxRadius = 158;
   const labelRadius = 184;
   const sectorAngle = (Math.PI * 2) / Math.max(axes.length, 1);
-  const bandCount = bandColors.length;
+  const bandCount = Math.max(bandColors.length, 1);
 
   const polar = (radius: number, angle: number) => [
     center + Math.cos(angle) * radius,
@@ -64,7 +86,7 @@ export function ProfileCoxcombChart({
 
   const selectFromKeyboard = (
     event: KeyboardEvent<SVGGElement>,
-    facetId: OverallFacetId,
+    facetId: TId,
   ) => {
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
@@ -77,7 +99,7 @@ export function ProfileCoxcombChart({
         className="overall-radar"
         viewBox={`0 0 ${size} ${size}`}
         role="group"
-        aria-label="Overall profile coxcomb. Each petal is one profile facet."
+        aria-label={ariaLabel}
       >
         {Array.from({ length: bandCount }, (_, index) => {
           const level = (index + 1) / bandCount;
@@ -113,7 +135,7 @@ export function ProfileCoxcombChart({
                 axis.affinity === null
                   ? "not explored yet"
                   : `${axis.affinity}% affinity, ${axis.coverage}% evidence`
-              }. Open theme explanation.`}
+              }. Open explanation.`}
               onClick={() => onSelectFacet(axis.facetId)}
               onKeyDown={(event) => selectFromKeyboard(event, axis.facetId)}
               style={{ cursor: "pointer" }}
@@ -134,7 +156,7 @@ export function ProfileCoxcombChart({
                   <path
                     key={`ghost-${axis.facetId}-${bandIndex}`}
                     d={annularWedgePath(index, bandInner, bandOuter)}
-                    fill={bandColors[bandIndex]}
+                    fill={bandColors[bandIndex] ?? defaultBandColors[0]}
                     opacity={unknown ? 0.06 : 0.035}
                   />
                 );
@@ -156,7 +178,7 @@ export function ProfileCoxcombChart({
                     <path
                       key={`fill-${axis.facetId}-${bandIndex}`}
                       d={annularWedgePath(index, bandInner, visibleOuter)}
-                      fill={bandColors[bandIndex]}
+                      fill={bandColors[bandIndex] ?? defaultBandColors[0]}
                       opacity={bandOpacity}
                     />
                   );
@@ -222,7 +244,7 @@ export function ProfileCoxcombChart({
           fontSize="10"
           fontWeight="800"
         >
-          PROFILE
+          {centerLabel}
         </text>
       </svg>
     </div>
