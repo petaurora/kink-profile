@@ -77,7 +77,7 @@ export const quizzes: QuizDefinition[] = [
     shortTitle: "Headspaces",
     eyebrow: "Core section",
     description:
-      "Explore roles and headspaces like Pet, Slave, Little, Middle, Brat, Prey, Predator, Caregiver, Owner / Handler, Devotional Submissive, Object, and more — plus the dynamic modes underneath them.",
+      "Explore roles and headspaces like Pet, Slave, Little, Middle, Brat, Prey, Predator, Caregiver, Owner / Handler, and Object — plus underlying modes like Devotion, Service, and Training / Shaping.",
     icon: "masks-theater",
     estimatedMinutes: 11,
     version: 4,
