@@ -499,6 +499,43 @@ reproject source evidence:
 
 Status: **EXPAND CHANNELS + RENAME**.
 
+### Naming review
+
+Candidate names:
+
+```text
+Escape / Containment
+  + names both roles directly
+  + distinguishes the concept from generic Challenge
+  - slightly broad
+
+Restraint Struggle
+  + closest to the current quiz evidence
+  + clearly physical
+  - foregrounds the restrained participant more than the container
+
+Containment Play
+  + clean and relational
+  - under-describes the appeal of testing / trying to get free
+
+Escape Play
+  + recognizable
+  - under-describes the giving/container side
+```
+
+Current recommendation:
+
+> **Escape / Containment**
+
+because the base Signal should name the shared interaction while custom channel labels carry the role-specific language:
+
+```text
+Receiving → Testing containment / trying to get free
+Giving    → Maintaining containment / preventing escape
+```
+
+Avoid **Challenge / Escape** because `Challenge` is already a separate Signal about pushing toward an agreed personal edge.
+
 ---
 
 
