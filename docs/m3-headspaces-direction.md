@@ -2,15 +2,15 @@
 
 ## Status
 
-**Implemented contract for M3 v3.**
+**Implemented contract for M3 v4.**
 
-This document records the corrected M3 taxonomy and implementation.
+This document records the current Roles & Headspaces taxonomy and the distinction between reusable experiential signals, explanatory dynamic modes, and recognizable roles/headspaces.
 
-The key distinction is:
+The key rule is:
 
 > **Dynamic modes are not the same thing as roles/headspaces.**
 
-M3 now models three layers:
+M3 models three layers:
 
 ```text
 answers
@@ -20,9 +20,85 @@ signals
   └─ roles / headspaces
 ```
 
-The primary user-facing result is the **role/headspace layer**.
+The role/headspace layer answers **what recognizable state or relational role is being inhabited**. Dynamic modes describe **how that role or interaction feels or functions** and can layer across multiple headspaces.
 
-Dynamic modes explain *why* those roles may resonate.
+---
+
+# M3 v4 refinement
+
+M3 v4 refines the role/headspace layer without changing the 32-question bank.
+
+## Devotion and Service are modes, not headspaces
+
+The former **Service Submissive** and **Devotional Submissive** peer results are removed from the headspace taxonomy.
+
+Neither concept cleanly describes a unique headspace:
+
+- **Devotion** can exist within Slave, Pet, Brat, Owner / Handler, Master / Mistress, or another role.
+- **Service** can be an expression of devotion, obedience, usefulness, care, delegated responsibility, or a role that is not submissive at all.
+- A Slave can be highly devotional and service-oriented without becoming a separate "Devotional Submissive" headspace.
+- There is no necessary dominant/submissive half to Devotion because Devotion itself is not authority-directional.
+
+Therefore:
+
+```text
+Devotion = dynamic mode
+Service  = dynamic mode
+```
+
+They remain independently measurable and visible in profile results, but do not compete with Pet, Slave, Object, etc. as peer identities.
+
+Examples:
+
+```text
+Slave
+├─ Surrender
+├─ Service
+├─ Devotion
+└─ Protocol
+
+Pet
+├─ Nurtured Play
+├─ Devotion
+└─ Claiming / belonging signals
+
+Owner / Handler
+├─ Claiming
+├─ Training / Shaping
+├─ Caretaking
+└─ Devotion (when supported)
+```
+
+## Owner / Handler absorbs Trainer
+
+Trainer is no longer a peer role/headspace. Training or shaping is treated as one way an **Owner / Handler** role can be expressed.
+
+The **Training / Shaping** dynamic mode remains distinct so the profile can still explain a preference for teaching, correction, repetition, development, or behavior shaping even when the user does not strongly identify with an Owner / Handler role.
+
+The merged Owner / Handler composition can be supported by:
+
+- ownership / claiming symbolism
+- guidance and shaping
+- responsibility holding
+- care giving
+- structure
+- giving control
+
+## Property / Object becomes Object
+
+The former **Property / Object** role is now **Object**.
+
+Property is not treated as its own headspace because property/ownership meaning is better represented by the reusable `ownership_symbolism` signal and can contribute to more specific roles such as Pet, Slave, Owner / Handler, or Master / Mistress.
+
+**Object** remains a headspace because consensual reduction into a role, purpose, function, or thing-like identity can describe a distinct internal mode independent of ownership framing.
+
+Object uses:
+
+- objectification
+- role embodiment
+- receiving control
+
+It does **not** require ownership symbolism.
 
 ---
 
@@ -32,51 +108,33 @@ The implemented M3 contract is:
 
 - standalone **32-question** Roles & Headspaces quiz
 - shared reusable signal vocabulary
-- M3-local signal evidence only
-- weighted **dynamic mode** compositions
+- M3-local signal evidence
+- weighted **dynamic-mode** compositions
 - weighted **role/headspace** compositions
-- 15 overlapping role/headspace affinities
-- 12 explanatory dynamic modes
+- **12** overlapping role/headspace affinities
+- **12** explanatory dynamic modes
 - ranked role/headspace results
 - separate self-positioned and partner-positioned role/headspace radars
 - a dedicated dynamic-mode radar
 - dynamic-mode ranked results shown underneath
 - no requirement to complete M2 first
-- no cross-quiz evidence merge yet
-- no catalog inference yet
+- no forced single-role identity
 
 The quiz should answer:
 
-> Which roles or headspaces may resonate with how I like a dynamic to feel?
+> Which recognizable roles or headspaces may resonate, and which underlying modes describe how those experiences tend to feel?
 
-Examples include:
-
-- Pet
-- Slave
-- Little
-- Middle
-- Brat
-- Prey
-- Service Submissive
-- Caregiver
-- Owner / Handler
-- Brat Tamer
-- Predator
-- Trainer
-
-It should **not** mistake concepts like Surrender, Protocol, or Claiming for role identities.
+It should **not** create a peer identity for every expression, relational motivation, or activity direction.
 
 ---
 
 # Taxonomy
 
-## Layer 1 — signals
+## Layer 1 — Signals
 
-Signals are reusable experiential preferences measured by questions.
+Signals are reusable experiential preferences measured by questions and reused by higher-order compositions.
 
-M3 reuses the M2 signals when the meaning genuinely matches and adds M3-specific signals.
-
-M3-specific signals:
+M3-specific signals include:
 
 - belonging
 - role_embodiment
@@ -94,13 +152,15 @@ M3-specific signals:
 - pursuit_receiving
 - pursuit_giving
 
-The `younger_headspace` signal exists because Little and Middle cannot be responsibly inferred from generic playfulness/care alone.
+M3 also reuses compatible shared signals such as control, responsibility transfer, service, obedience, structure, ownership symbolism, praise/approval, and autonomy.
 
-The primal/pursuit signals were added in M3 v3 so Prey and Predator are measured directionally rather than inferred from Pet, Brat, or generic control preferences.
+The `younger_headspace` signal exists because Little and Middle should not be inferred from generic playfulness or care alone.
 
-## Layer 2 — dynamic modes
+Primal embodiment and directional pursuit signals allow Prey and Predator to be measured independently rather than inferred from Pet, Brat, or generic control preferences.
 
-Dynamic modes describe **how the dynamic feels or functions psychologically**.
+## Layer 2 — Dynamic modes
+
+Dynamic modes describe **how the dynamic feels or functions psychologically or relationally**.
 
 Implemented modes:
 
@@ -117,13 +177,11 @@ Implemented modes:
 - Training / Shaping
 - Primal / Feral
 
-These are useful explanatory results, but they are not presented as the primary role/headspace taxonomy.
+These modes can overlap freely with multiple roles/headspaces and do not imply D/s orientation unless the underlying signals explicitly measure negotiated authority.
 
-## Layer 3 — roles / headspaces
+## Layer 3 — Roles / headspaces
 
 Roles/headspaces describe recognizable relational identities or modes a user may inhabit.
-
-Implemented initial set:
 
 ### Self-positioned roles / headspaces
 
@@ -133,9 +191,7 @@ Implemented initial set:
 - Middle
 - Brat
 - Prey
-- Service Submissive
-- Devotional Submissive
-- Property / Object
+- Object
 
 ### Partner-positioned roles / headspaces
 
@@ -143,7 +199,6 @@ Implemented initial set:
 - Caregiver
 - Brat Tamer
 - Predator
-- Trainer
 - Master / Mistress
 
 These categories are **not mutually exclusive**.
@@ -156,78 +211,7 @@ The two display groups are not authority classifications. In particular:
 - being cared for, pursued, restrained, or positioned does not imply submission
 - a role can be enacted as service, under instruction, through delegated responsibility, or outside D/s entirely
 
-Dominant/submissive orientation belongs to the explicit authority model, not to generic activity direction.
-
-A user may legitimately score highly on several roles at once.
-
-Example:
-
-```text
-Pet                94%
-Slave              88%
-Brat               76%
-Little             62%
-Service Submissive 59%
-```
-
-That is a valid profile, not a scoring failure.
-
----
-
-# Why the old M3 model was wrong
-
-The first M3 implementation treated these as headspaces:
-
-- Devotional
-- Service
-- Protocol
-- Surrender
-- Playful Resistance
-- Objectification
-- Caretaking / Guidance
-- Authority / Command
-- Ownership / Claiming
-- Training / Shaping
-
-Most of those are better understood as **underlying dynamic modes**.
-
-They explain the psychological ingredients of a role.
-
-For example:
-
-```text
-Slave
-├─ surrender
-├─ obedience
-├─ service
-├─ ownership symbolism
-├─ structure
-└─ devotion
-```
-
-Similarly:
-
-```text
-Brat
-├─ playful resistance
-├─ playfulness
-├─ autonomy
-└─ receiving control
-```
-
-And:
-
-```text
-Little
-├─ younger headspace
-├─ care receiving
-├─ role embodiment
-├─ responsibility transfer
-├─ playfulness
-└─ praise
-```
-
-The corrected model preserves the useful first-layer work without confusing ingredients with identities.
+Dominant/submissive orientation belongs to the explicit authority model, not to generic activity direction, relational devotion, or service.
 
 ---
 
@@ -288,38 +272,20 @@ Weights are evidence strengths, not percentages.
 - receiving_control 0.3
 - playful_resistance 0.2
 
-## Service Submissive
-
-- service 1.0
-- devotion 0.6
-- obedience 0.5
-- praise_approval 0.4
-- receiving_control 0.3
-- role_embodiment 0.3
-
-## Devotional Submissive
-
-- devotion 1.0
-- belonging 0.8
-- service 0.5
-- ownership_symbolism 0.4
-- receiving_control 0.3
-- ritual_significance 0.3
-
-## Property / Object
+## Object
 
 - objectification 1.0
-- ownership_symbolism 0.8
-- role_embodiment 0.6
+- role_embodiment 0.8
 - receiving_control 0.4
 
 ## Owner / Handler
 
 - ownership_symbolism 1.0
+- guidance_shaping 1.0
 - responsibility_holding 0.7
 - care_giving 0.6
+- structure 0.6
 - giving_control 0.5
-- guidance_shaping 0.3
 
 ## Caregiver
 
@@ -342,13 +308,6 @@ Weights are evidence strengths, not percentages.
 - primal_embodiment 0.9
 - role_embodiment 0.5
 - giving_control 0.3
-
-## Trainer
-
-- guidance_shaping 1.0
-- structure 0.6
-- responsibility_holding 0.5
-- giving_control 0.5
 
 ## Master / Mistress
 
@@ -448,62 +407,23 @@ Weights are evidence strengths, not percentages.
 
 ---
 
-# Questionnaire
+# Questionnaire and scoring
 
-M3 v3 contains **32 questions**.
+M3 v4 contains the same **32 questions** as M3 v3.
 
-The first 24 measure the original shared role/dynamic-mode signal space.
+The question bank continues to measure:
 
-Three questions measure younger-role/headspace evidence for Little/Middle.
+- shared relational and role signals
+- younger-headspace evidence for Little / Middle
+- primal embodiment
+- directional pursuit evidence for Prey / Predator
+- service and devotion independently at the signal level
+- guidance / shaping independently from ownership or authority
+- objectification independently from ownership symbolism
 
-Five additional M3 v3 questions measure primal embodiment plus directional pursuit evidence for Prey/Predator.
+The question UI remains neutral and should not expose which role/headspace or dynamic mode is currently receiving evidence.
 
-| ID | Prompt |
-| --- | --- |
-| HS-001 | Feeling that I meaningfully belong with or to a trusted partner can deepen a dynamic for me. |
-| HS-002 | Slipping into a distinct role can change how I think, feel, or behave in a way I enjoy. |
-| HS-003 | Playfulness, silliness, or a more instinctive mode can make a role feel especially immersive. |
-| HS-004 | Being deliberately looked after or guided by someone I trust can make me feel more settled in a dynamic. |
-| HS-005 | Warm approval or recognition can make a relational role feel especially rewarding. |
-| HS-006 | Doing something because it expresses dedication to a partner can give an ordinary act extra meaning. |
-| HS-007 | Small repeated rituals can become emotionally important to me even when they have little practical purpose. |
-| HS-008 | Being useful can feel like part of my role in a relationship, not just something helpful I happened to do. |
-| HS-009 | Formal manners, rules, or expected ways of behaving can make a dynamic feel more intentional. |
-| HS-010 | I can enjoy the internal feeling of stopping myself from steering and letting someone trusted hold the direction. |
-| HS-011 | Negotiated teasing or pushback can make authority more fun because it gives us something to play against. |
-| HS-012 | In the right consensual context, being reduced to a role, purpose, or function can feel immersively appealing. |
-| HS-013 | Being responsible for another person's comfort or sense of being held can feel deeply rewarding. |
-| HS-014 | I enjoy showing someone how to do something in the way I want while helping them improve. |
-| HS-015 | I enjoy being the person whose direction sets the tone when another person wants me in that position. |
-| HS-016 | Knowing another person has chosen to follow my direction can make authority feel emotionally significant. |
-| HS-017 | Consensually claiming someone or treating them as 'mine' can carry emotional meaning beyond practical control. |
-| HS-018 | Helping a willing partner practice expectations until they become natural can be satisfying. |
-| HS-019 | Agreed correction can feel constructive when it helps shape behavior toward a shared expectation. |
-| HS-020 | In the right negotiated context, defining a partner mainly by a role or function can be appealing. |
-| HS-021 | Creating rituals or formal expectations for another person can make my side of a dynamic feel more meaningful. |
-| HS-022 | Receiving someone's deliberate dedication can feel meaningful because of what their commitment represents. |
-| HS-023 | Having someone rely on me to hold direction or make the call can feel like a responsibility I want. |
-| HS-024 | Even in an immersive role, I value knowing which choices remain mine and which ones I deliberately hand over. |
-| HS-025 | In the right role, feeling younger, smaller, or less adult than I do in everyday life can be comforting or immersive. |
-| HS-026 | Being cared for in a way that lets me set aside some everyday adult responsibilities can feel appealing. |
-| HS-027 | A younger or youthful role can appeal to me even when I still want independence, opinions, and room to push back. |
-| HS-028 | In the right consensual scene, feeling more instinctive, feral, or driven by body-language than ordinary social rules can be deeply immersive. |
-| HS-029 | Being pursued or tracked by a willing partner can make a role feel exciting in a way ordinary power exchange does not. |
-| HS-030 | Within an agreed scene, the tension of trying to evade someone who intends to catch me can be especially appealing. |
-| HS-031 | Pursuing or tracking a willing partner can make me feel focused, instinctive, and strongly inside a role. |
-| HS-032 | Within an agreed scene, closing distance and eventually catching a partner who wants to be pursued can be especially appealing. |
-
-The question UI remains neutral:
-
-> Roles & inner experience
-
-It should not expose the role/headspace currently receiving evidence.
-
----
-
-# Scoring behavior
-
-For M3:
+Because the question bank and stored answer format are unchanged, existing M3 answers can be rescored against the v4 compositions. No stored derived-role migration is required.
 
 ```text
 question answers
@@ -514,9 +434,7 @@ M3-local signal scores + coverage
      └─ dynamic-mode composition + coverage
 ```
 
-The primary ranked results use **role/headspace compositions**.
-
-M3 v3 separates visualization into three radar charts:
+Visualization remains split into three radar charts:
 
 1. self-positioned roles and headspaces
 2. partner-positioned roles and headspaces
@@ -524,81 +442,38 @@ M3 v3 separates visualization into three radar charts:
 
 These are **display groupings, not D/s orientation buckets**.
 
-A self-positioned role is one primarily phrased as the role or headspace the user inhabits (for example Pet, Little, Prey, or Slave). A partner-positioned role is one primarily phrased as a role enacted toward another person (for example Caregiver, Trainer, Predator, or Owner / Handler).
-
-Neither grouping means submissive or dominant. A submissive person can score highly on partner-positioned roles, and a dominant person can score highly on self-positioned roles. Activity side, relational role, and negotiated authority are separate dimensions.
-
-Dynamic-mode ranked results remain beneath the primary role/headspace results as explanatory context.
-
-All compositions are independent.
-
-They do not sum to 100%.
-
-Autonomy never subtracts from another role/headspace.
-
-For example, high Autonomy + high Slave or Little is not automatically contradictory; it can describe consciously bounded or contextual role immersion.
-
----
-
-# Section independence
-
-M3 does not require M2.
-
-M2 and M3 may reuse the same stable signal IDs, but their evidence remains section-local.
-
-```text
-M2 answers → M2 signal evidence → D/s results
-
-M3 answers → M3 signal evidence
-                     ├→ role/headspace results
-                     └→ dynamic-mode results
-```
-
-Cross-quiz aggregation remains M7 work.
+All compositions are independent and do not sum to 100%.
 
 ---
 
 # Versioning
 
-The corrected taxonomy, younger-headspace evidence, Predator/Prey evidence, and split radar presentation make this **M3 quiz version 3**.
+M3 v4 changes the **composition taxonomy**, not the question bank.
 
-Older M3 v1/v2 results should not be treated as equivalent to v3 because:
+Changes from v3:
 
-- the question bank changed
-- the signal vocabulary changed
-- the composition taxonomy changed
-- the primary output layer changed
+- Service Submissive removed as a peer headspace
+- Devotional Submissive removed as a peer headspace
+- Devotion and Service remain independently measured dynamic modes
+- Trainer merged into Owner / Handler
+- Property / Object renamed and narrowed to Object
+- role/headspace count changed from 15 to 12
+- Training / Shaping remains an explanatory dynamic mode
+- ownership/property meaning remains available through `ownership_symbolism` instead of a peer Property headspace
 
----
-
-# Out of scope for M3
-
-Still deferred:
-
-- exhaustive BDSM role taxonomy
-- cross-quiz evidence merging
-- M7 overall aggregation
-- catalog recommendations
-- catalog rating/browsing
-- forced single-role identity
-- adaptive Quick/Deep modes
-- partner compatibility
-- AI-generated interpretation
-- cloud persistence
-
-The initial role set should expand only when we have enough signal evidence to measure additional roles meaningfully.
+M3 v3 answers remain compatible for rescoring because the 32 question IDs and answer scale are unchanged. Derived v3 role/headspace results should not be treated as identical to v4 results because the compositions changed.
 
 ---
 
 # Post-implementation review questions
 
-1. Do Pet, Slave, Little, Middle, Brat, and the other roles feel recognizably different in actual results?
-2. Do Little and Middle separate well enough from the same younger-headspace signal?
-3. Is Slave too broad, or does the composition capture a useful headspace?
-4. Should Owner and Handler eventually separate?
-5. Should Master and Mistress eventually be represented with one neutral display label?
-6. Are Service Submissive and Devotional Submissive distinct enough?
-7. Should Property / Object remain one result or split later?
+1. Do Pet, Slave, Little, Middle, Brat, Prey, and Object remain recognizably distinct in real profiles?
+2. Do Little and Middle separate well enough from the shared younger-headspace signal?
+3. Do Devotion and Service work better as cross-cutting modes now that they are no longer forced into a submissive identity?
+4. Does Owner / Handler absorb training/shaping naturally, or does the combined composition over-score people who only enjoy teaching?
+5. Does keeping Training / Shaping as a dynamic mode preserve the useful distinction?
+6. Does Object read as a distinct headspace when ownership symbolism is removed from its role composition?
+7. Should Brat Tamer remain a peer role/headspace or eventually become a contextual style?
 8. Do Prey and Predator separate cleanly because pursuit direction is measured independently?
 9. Which additional roles are important enough to justify new signals/questions rather than being inferred badly?
 10. Does 32 questions still feel acceptable for this section?

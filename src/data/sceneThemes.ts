@@ -180,16 +180,17 @@ export const sceneThemeDefinitions: readonly SceneThemeDefinition[] = [
     ],
   },
   {
+    // Keep the historical ID so saved scenes remain compatible.
     id: "devotional-submission",
-    label: "Devotional Submissive",
-    description: "Submission centered on dedication, belonging, service, and relationship meaning.",
-    family: "headspace",
+    label: "Devotion",
+    description: "Dedication, belonging, service, ritual, and relationship meaning that can layer onto any role or headspace.",
+    family: "dynamic_mode",
     mappings: [
-      { kind: "headspace", id: "devotional_submissive", weight: 1 },
       { kind: "signal", id: "devotion", weight: 1 },
       { kind: "signal", id: "belonging", weight: 0.7 },
       { kind: "signal", id: "service", weight: 0.55 },
-      { kind: "dynamic_mode", id: "devotion_mode", weight: 0.9 },
+      { kind: "dynamic_mode", id: "devotion_mode", weight: 1 },
+      { kind: "dynamic_mode", id: "service_mode", weight: 0.4 },
       { kind: "facet", id: "service_devotion", weight: 0.8 },
     ],
   },

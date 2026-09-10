@@ -45,8 +45,14 @@ describe("M13 scene theme taxonomy", () => {
 
   it("exposes stable lookup helpers for the candidate engine", () => {
     expect(getSceneTheme("pain")?.label).toBe("Pain");
+    expect(getSceneTheme("devotional-submission")).toEqual(
+      expect.objectContaining({ label: "Devotion", family: "dynamic_mode" }),
+    );
     expect(getSceneThemesByFamily("headspace").map((theme) => theme.id)).toEqual(
-      expect.arrayContaining(["pet", "prey", "devotional-submission"]),
+      expect.arrayContaining(["pet", "prey"]),
+    );
+    expect(getSceneThemesByFamily("headspace").map((theme) => theme.id)).not.toContain(
+      "devotional-submission",
     );
   });
 });
