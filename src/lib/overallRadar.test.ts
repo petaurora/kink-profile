@@ -4,6 +4,8 @@ import type { OverallFacetResult } from "./overallProfileFacets";
 import {
   buildOverallRadarModel,
   calculateOverallFacetProminence,
+  calculateProminenceBaseline,
+  calculateRelativeRadarEmphasis,
   getKnownRadarRuns,
   type OverallRadarAxis,
 } from "./overallRadar";
@@ -54,9 +56,62 @@ function axis(
             70,
             state === "limited" ? 15 : 80,
           ),
+    prominenceDelta: state === "unknown" ? null : 0,
+    relativeEmphasis: state === "unknown" ? null : 50,
     state,
   };
 }
+
+describe("M16.4 relative-emphasis radar experiment", () => {
+  it("centers the profile's known prominence values around their own baseline", () => {
+    expect(calculateProminenceBaseline([80, 70, 60, null])).toBe(70);
+  });
+
+  it("uses a fixed relative scale instead of stretching each profile to 0–100", () => {
+    expect(calculateRelativeRadarEmphasis(70, 70)).toBe(50);
+    expect(calculateRelativeRadarEmphasis(80, 70)).toBe(65);
+    expect(calculateRelativeRadarEmphasis(60, 70)).toBe(35);
+    expect(calculateRelativeRadarEmphasis(90, 70)).toBe(80);
+    expect(calculateRelativeRadarEmphasis(50, 70)).toBe(20);
+  });
+
+  it("keeps a genuinely uniform profile circular at the midpoint", () => {
+    const model = buildOverallRadarModel(
+      ids.map((id) => facet(id, 80, 64)),
+      [],
+    );
+
+    expect(model.prominenceBaseline).toBe(64);
+    expect(
+      model.axes.every(
+        (axis) =>
+          axis.prominence === 64 &&
+          axis.prominenceDelta === 0 &&
+          axis.relativeEmphasis === 50,
+      ),
+    ).toBe(true);
+  });
+
+  it("shows fixed deviations around the baseline without changing raw values", () => {
+    const model = buildOverallRadarModel(
+      [
+        facet("power_exchange", 100, 64),
+        facet("structure_protocol", 75, 64),
+        facet("ownership_belonging", 50, 64),
+      ],
+      [],
+    );
+
+    // Prominence is 80, 60, 40; baseline = 60.
+    expect(model.prominenceBaseline).toBe(60);
+    expect(model.axes.map((axis) => axis.relativeEmphasis)).toEqual([
+      80,
+      50,
+      20,
+    ]);
+    expect(model.axes.map((axis) => axis.affinity)).toEqual([100, 75, 50]);
+  });
+});
 
 describe("M16.4 radar prominence experiment", () => {
   it("combines affinity with the square root of evidence coverage", () => {
@@ -96,6 +151,8 @@ describe("M7.4 overall radar model", () => {
       expect.objectContaining({
         affinity: 82,
         prominence: calculateOverallFacetProminence(82, 70),
+        prominenceDelta: 0,
+        relativeEmphasis: 50,
         state: "known",
       }),
     );
@@ -103,6 +160,8 @@ describe("M7.4 overall radar model", () => {
       expect.objectContaining({
         affinity: null,
         prominence: null,
+        prominenceDelta: null,
+        relativeEmphasis: null,
         state: "unknown",
       }),
     );
