@@ -10,6 +10,8 @@ export type OverallRadarAxis = {
   affinity: number | null;
   coverage: number;
   prominence: number | null;
+  prominenceDelta: number | null;
+  relativeEmphasis: number | null;
   state: OverallRadarAxisState;
 };
 
@@ -23,9 +25,14 @@ export type OverallRadarModel = {
   strongestThemes: readonly OverallRadarTheme[];
   knownAxisCount: number;
   hasCompleteShape: boolean;
+  prominenceBaseline: number | null;
 };
 
 const limitedEvidenceThreshold = 25;
+const relativeEmphasisMidpoint = 50;
+const relativeEmphasisSensitivity = 1.5;
+const relativeEmphasisFloor = 10;
+const relativeEmphasisCeiling = 90;
 
 function clamp01(value: number) {
   if (!Number.isFinite(value)) return 0;
@@ -51,17 +58,48 @@ export function calculateOverallFacetProminence(
   return round1(affinity * Math.sqrt(clamp01(coverage / 100)));
 }
 
+export function calculateProminenceBaseline(
+  prominences: readonly (number | null)[],
+) {
+  const known = prominences.filter(
+    (value): value is number => value !== null && Number.isFinite(value),
+  );
+  if (known.length === 0) return null;
+  return round1(known.reduce((sum, value) => sum + value, 0) / known.length);
+}
+
+export function calculateRelativeRadarEmphasis(
+  prominence: number | null,
+  baseline: number | null,
+) {
+  if (prominence === null || baseline === null) return null;
+
+  const value =
+    relativeEmphasisMidpoint +
+    (prominence - baseline) * relativeEmphasisSensitivity;
+
+  return round1(
+    Math.min(
+      relativeEmphasisCeiling,
+      Math.max(relativeEmphasisFloor, value),
+    ),
+  );
+}
+
 export function buildOverallRadarModel(
   facets: readonly OverallFacetResult[],
   strongestFacetIds: readonly OverallFacetId[],
 ): OverallRadarModel {
-  const axes = facets.map((facet): OverallRadarAxis => {
+  const rawAxes = facets.map((facet) => {
     const unknown = facet.affinity === null || facet.coverage <= 0;
     const state: OverallRadarAxisState = unknown
       ? "unknown"
       : facet.coverage < limitedEvidenceThreshold
         ? "limited"
         : "known";
+    const prominence = unknown
+      ? null
+      : calculateOverallFacetProminence(facet.affinity, facet.coverage);
 
     return {
       facetId: facet.facetId,
@@ -69,12 +107,28 @@ export function buildOverallRadarModel(
       shortLabel: facet.shortLabel,
       affinity: unknown ? null : facet.affinity,
       coverage: facet.coverage,
-      prominence: unknown
-        ? null
-        : calculateOverallFacetProminence(facet.affinity, facet.coverage),
+      prominence,
       state,
     };
   });
+
+  const prominenceBaseline = calculateProminenceBaseline(
+    rawAxes.map((axis) => axis.prominence),
+  );
+
+  const axes = rawAxes.map(
+    (axis): OverallRadarAxis => ({
+      ...axis,
+      prominenceDelta:
+        axis.prominence === null || prominenceBaseline === null
+          ? null
+          : round1(axis.prominence - prominenceBaseline),
+      relativeEmphasis: calculateRelativeRadarEmphasis(
+        axis.prominence,
+        prominenceBaseline,
+      ),
+    }),
+  );
 
   const byId = new Map(axes.map((axis) => [axis.facetId, axis]));
   const strongestThemes = strongestFacetIds.flatMap((facetId) => {
@@ -91,6 +145,7 @@ export function buildOverallRadarModel(
     strongestThemes,
     knownAxisCount,
     hasCompleteShape: axes.length > 0 && knownAxisCount === axes.length,
+    prominenceBaseline,
   };
 }
 
