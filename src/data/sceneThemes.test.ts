@@ -43,11 +43,30 @@ describe("M13 scene theme taxonomy", () => {
     );
   });
 
-  it("exposes stable lookup helpers for the candidate engine", () => {
+  it("preserves stable theme IDs while using the revised mode taxonomy", () => {
     expect(getSceneTheme("pain")?.label).toBe("Pain");
     expect(getSceneTheme("devotional-submission")).toEqual(
       expect.objectContaining({ label: "Devotion", family: "dynamic_mode" }),
     );
+    expect(getSceneTheme("playful-resistance")).toEqual(
+      expect.objectContaining({ label: "Playful Challenge", family: "dynamic_mode" }),
+    );
+    expect(getSceneTheme("care")?.mappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "dynamic_mode", id: "care_mode" }),
+      ]),
+    );
+    expect(getSceneTheme("structured")?.mappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "dynamic_mode", id: "structure_mode" }),
+      ]),
+    );
+    expect(getSceneTheme("intense")?.mappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "dynamic_mode", id: "intensity_mode" }),
+      ]),
+    );
+
     expect(getSceneThemesByFamily("headspace").map((theme) => theme.id)).toEqual(
       expect.arrayContaining(["pet", "prey"]),
     );
