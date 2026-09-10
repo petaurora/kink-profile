@@ -3,6 +3,7 @@ import type { OverallFacetId } from "../data/overallFacets";
 import type { OverallFacetResult } from "./overallProfileFacets";
 import {
   buildOverallRadarModel,
+  calculateOverallFacetProminence,
   getKnownRadarRuns,
   type OverallRadarAxis,
 } from "./overallRadar";
@@ -46,9 +47,40 @@ function axis(
     shortLabel: facetId,
     affinity: state === "unknown" ? null : 70,
     coverage: state === "unknown" ? 0 : state === "limited" ? 15 : 80,
+    prominence:
+      state === "unknown"
+        ? null
+        : calculateOverallFacetProminence(
+            70,
+            state === "limited" ? 15 : 80,
+          ),
     state,
   };
 }
+
+describe("M16.4 radar prominence experiment", () => {
+  it("combines affinity with the square root of evidence coverage", () => {
+    expect(calculateOverallFacetProminence(80, 25)).toBe(40);
+    expect(calculateOverallFacetProminence(80, 100)).toBe(80);
+    expect(calculateOverallFacetProminence(80, 0)).toBeNull();
+    expect(calculateOverallFacetProminence(null, 80)).toBeNull();
+  });
+
+  it("preserves raw affinity while exposing a separate plotting prominence", () => {
+    const model = buildOverallRadarModel(
+      [facet("power_exchange", 90, 36)],
+      ["power_exchange"],
+    );
+
+    expect(model.axes[0]).toEqual(
+      expect.objectContaining({
+        affinity: 90,
+        coverage: 36,
+        prominence: 54,
+      }),
+    );
+  });
+});
 
 describe("M7.4 overall radar model", () => {
   it("preserves unexplored facets as null instead of plotting artificial zeroes", () => {
@@ -61,10 +93,18 @@ describe("M7.4 overall radar model", () => {
     );
 
     expect(model.axes[0]).toEqual(
-      expect.objectContaining({ affinity: 82, state: "known" }),
+      expect.objectContaining({
+        affinity: 82,
+        prominence: calculateOverallFacetProminence(82, 70),
+        state: "known",
+      }),
     );
     expect(model.axes[1]).toEqual(
-      expect.objectContaining({ affinity: null, state: "unknown" }),
+      expect.objectContaining({
+        affinity: null,
+        prominence: null,
+        state: "unknown",
+      }),
     );
     expect(model.knownAxisCount).toBe(1);
     expect(model.hasCompleteShape).toBe(false);
