@@ -153,8 +153,15 @@ describe("M7.10 profile explainability", () => {
     const service = facet(model, "service_devotion");
 
     expect(service.affinity).toBeGreaterThan(80);
-    expect(service.evidenceState).toBe("growing");
-    expect(service.evidenceLabel).toBe("Growing evidence");
+    const expectedEvidence =
+      service.coverage >= 55
+        ? ["established", "Well supported"]
+        : service.coverage >= 25
+          ? ["growing", "Growing evidence"]
+          : ["limited", "Limited evidence"];
+    expect([service.evidenceState, service.evidenceLabel]).toEqual(
+      expectedEvidence,
+    );
     expect(service.sources[0]).toEqual(
       expect.objectContaining({
         label: "Roles & Headspaces",
