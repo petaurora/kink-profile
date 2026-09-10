@@ -372,11 +372,13 @@ type SignalDefinition = {
 
   channels: {
     receiving?: {
-      label?: string;
+      label: string;
+      shortLabel?: string;
       description?: string;
     };
     giving?: {
-      label?: string;
+      label: string;
+      shortLabel?: string;
       description?: string;
     };
   };
@@ -385,21 +387,51 @@ type SignalDefinition = {
 
 Overall is implicit and always available from the base Signal definition.
 
-Signals may provide custom human-facing channel labels where generic “Receiving” / “Giving” wording would be awkward.
+Signals **should support custom human-facing channel labels** wherever generic “Receiving” / “Giving” wording is awkward, ambiguous, or less semantically precise.
 
-Example:
+The machine channel remains stable:
+
+```text
+overall
+receiving
+giving
+```
+
+while the human-facing label can vary by Signal.
+
+Examples:
 
 ```text
 Responsibility
 
-Receiving-side label:
+Receiving channel label:
   Handing over responsibility
 
-Giving-side label:
+Giving channel label:
   Holding responsibility
 ```
 
-The implementation should not distort language merely to satisfy a generic column heading.
+```text
+Pursuit
+
+Receiving channel label:
+  Being pursued
+
+Giving channel label:
+  Pursuing
+```
+
+```text
+Positioning
+
+Receiving channel label:
+  Being positioned
+
+Giving channel label:
+  Positioning another person
+```
+
+This is a presentation/semantics layer over stable channel IDs. The implementation should never distort language merely to satisfy a generic column heading.
 
 ---
 
@@ -608,8 +640,9 @@ After this contract is accepted, classify every current Signal using:
 2. Is the current Signal actually a directional version of another Signal?
 3. Does the concept support Receiving?
 4. Does the concept support Giving?
-5. Are custom side labels needed?
-6. Should any current pair remain separate concepts instead of channels?
+5. What are the clearest human-facing labels for each applicable channel?
+6. Do the channel descriptions need to differ from the base Signal description?
+7. Should any current pair remain separate concepts instead of channels?
 7. Is the Signal redundant once channel normalization happens?
 8. Which downstream definitions currently reference the old ID?
 9. Does the Signal need Overall-only evidence?
@@ -655,5 +688,6 @@ This document is the semantic contract those later changes must follow.
 6. **Not every Signal requires directional channels.**
 7. **Not-applicable, unknown, low affinity, and Neutral are distinct states.**
 8. **Downstream semantic definitions reference Signal + channel.**
-9. **Overall Facets remain broad non-directional themes.**
-10. **Schema uniformity must not override clear human semantics.**
+9. **Machine channel IDs stay stable while human-facing channel labels may vary by Signal.**
+10. **Overall Facets remain broad non-directional themes.**
+11. **Schema uniformity must not override clear human semantics.**
