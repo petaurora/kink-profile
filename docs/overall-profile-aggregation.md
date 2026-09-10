@@ -141,6 +141,7 @@ Rules:
 - one petal per Overall Facet
 - petal **area** represents affinity
 - implementation uses `sqrt(affinity)` for radius so area, rather than raw radius, is proportional to the score
+- guide rings are also area-scaled at 25%, 50%, 75%, and 100%
 - unknown facets remain outlined instead of becoming artificial zeroes
 - limited-evidence facets remain visibly qualified
 - facet petals are interactive and open the existing explainability detail
