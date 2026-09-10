@@ -338,80 +338,119 @@ These concepts currently have a coherent meaning without a useful activity-side 
 | `primal_embodiment` | KEEP GENERAL | describes internal/embodied mode |
 | `anticipation` | KEEP GENERAL | describes experienced suspense/expectation |
 | `emotional_intensity` | KEEP GENERAL | describes atmosphere / internal experience |
+| `movement_restriction` | KEEP GENERAL | describes reduced mobility as a physical property shared across receiving/giving restraint contexts |
 
 A future use case may justify channels for one of these, but grammar alone is not enough.
 
 ---
 
-# D. Needs semantic surgery before migration
+# D. Resolved semantic surgery
 
-## Movement Restriction
+## Movement Restriction — resolved as Overall-only
 
-Current:
+Consumer review shows that `movement_restriction` is deliberately used from both sides of restraint:
 
 ```text
-movement_restriction
-Reduced range or freedom of movement can itself be an appealing physical
-feature of restraint.
+Receiving-oriented quiz:
+"Having several parts of my movement restricted at once..."
+  → movement_restriction
+
+Giving-oriented quiz:
+"Securing a willing partner so they cannot freely reposition..."
+  → movement_restriction
 ```
 
-Problem:
+The shared invariant is not “receiving restraint.” It is the physical property of reduced mobility.
 
-- overlaps strongly with Restraint,
-- overlaps with Constraint Control,
-- currently reads like an experienced physical state,
-- but catalog category defaults can use it broadly.
+Keep the distinction:
 
-Candidate outcomes:
+```text
+Restraint
+→ binding / holding / immobilizing activity
 
-1. keep as a distinct **Overall-only physical-property Signal**,
-2. give it Receiving/Giving channels,
-3. merge it into Restraint,
-4. redefine it more narrowly as preference for reduced mobility independent of method or authority.
+Movement Restriction
+→ reduced mobility as a physical feature
 
-Do not decide by naming similarity. Review its quiz/catalog consumers first.
+Constraint Control
+→ negotiated authority expressed through physical limits
+```
+
+Decision:
+
+```text
+Movement Restriction
+  Overall only
+```
+
+Base invariant:
+
+> Reduced range or freedom of movement can itself be an appealing physical feature independent of who is applying or experiencing the restraint.
+
+Directional restraint questions may contribute upward to Movement Restriction.overall when they genuinely measure this property.
 
 ---
 
-## Challenge / Escape
+## Challenge / Escape — rename + channelize
 
-Current:
+Consumer review shows two clear perspectives of the same physical interaction:
+
+```text
+Current receiving-side evidence:
+- pulling against or testing agreed restraint
+- trying to get free
+
+Current giving-side evidence:
+- enjoying a partner testing or struggling against restraint
+- making containment more interactive
+```
+
+The current name `challenge_escape` is too vague and overlaps by name with the separate personal-edge **Challenge** Signal.
+
+Proposed normalized concept:
+
+```text
+Escape / Containment
+
+Receiving → Testing / escaping restraint
+Giving    → Containing / preventing escape
+```
+
+Base invariant:
+
+> Consensual struggle between escape attempts and containment within agreed restraint can add an interactive physical challenge.
+
+This preserves a useful distinction from neighboring concepts:
+
+```text
+Escape / Containment
+→ physical struggle between getting free and keeping contained
+
+Playful Resistance
+→ negotiated social / authority pushback and teasing
+
+Pursuit
+→ chase, tracking, closing distance, capture
+
+Challenge
+→ pushing toward an agreed personal edge
+```
+
+Migration action:
 
 ```text
 challenge_escape
-Testing, struggling against, escaping, catching, or containing agreed
-restraint can add interactive challenge.
+→ Escape / Containment
+
+reproject source evidence:
+  receiving quiz meaning → Receiving channel
+  giving quiz meaning    → Giving channel
+  broad catalog evidence → Overall only
 ```
 
-Problem:
-
-This single definition currently combines several meanings:
-
-- struggling / resisting,
-- escape attempts,
-- catching,
-- containing,
-- interactive challenge.
-
-It overlaps with:
-
-- Playful Resistance,
-- Pursuit,
-- Restraint,
-- Challenge.
-
-This is likely semantically overloaded.
-
-Candidate outcomes:
-
-1. narrow to **Escape / Struggle**,
-2. add channels such as Offering Escape/Resistance vs Containing/Meeting It,
-3. split into more than one concept,
-4. remove it if normalized neighboring Signals fully cover its useful meaning.
-
-Do not migrate this Signal until the semantic boundary is explicit.
+Status: **EXPAND CHANNELS + RENAME**.
 
 ---
+
 
 # Projected canonical vocabulary after this audit
 
@@ -431,15 +470,15 @@ High-confidence directional pairs:
 Remaining current singles:
 
 ```text
-10 expand to channel-capable concepts
-9 remain Overall-only
-2 require review
+11 expand to channel-capable concepts
+10 remain Overall-only
+0 unresolved legacy concepts
 ```
 
 Projected current-concept count before resolving REVIEW items:
 
 ```text
-12 + 10 + 9 + 2 = 33 concepts
+12 + 11 + 10 = 33 concepts
 ```
 
 Already-approved new concepts from Step 1:
@@ -535,14 +574,13 @@ This preserves provenance and avoids treating historical projection artifacts as
 
 ---
 
-# Open semantic questions
+# Remaining semantic validation questions
 
-Before implementation, explicitly resolve:
+Before runtime migration, validate:
 
-1. **Movement Restriction** — separate concept, channelized concept, or Restraint subtype?
-2. **Challenge / Escape** — narrow, channelize, split, or remove?
-3. Validate that **Obedience** as one concept with Giving/Receiving channels is more useful than keeping “following direction” and “being obeyed” under separate constructs.
-4. Validate that **Service** receiving/giving sides share enough invariant meaning to remain one Signal.
-5. Validate channel labels against actual UI language before migration.
+1. **Obedience** — confirm that Following Direction and Being Obeyed are best modeled as channels of one semantic concept rather than separate constructs.
+2. **Service** — confirm that Providing Service and Being Served share enough invariant meaning to remain one Signal.
+3. **Escape / Containment** — confirm the normalized name and channel labels.
+4. Validate all custom channel labels against actual UI language before migration.
 
-Everything else in this audit is currently high-confidence enough to use as the migration design baseline.
+Movement Restriction is no longer an open question: consumer review supports keeping it Overall-only.
