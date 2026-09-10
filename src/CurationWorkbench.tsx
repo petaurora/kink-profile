@@ -104,16 +104,14 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
       if (reviewFilter === "reviewed" && !reviewed) return false;
       if (reviewFilter === "unreviewed" && reviewed) return false;
 
-      if (facetGapOnly) {
-        if (entry.entityType === "signal") return false;
-        if (
-          getCurationPrimitiveFacetAffinities(
-            entry.entityType,
-            entry.entityId,
-          ).length > 0
-        ) {
-          return false;
-        }
+      if (
+        facetGapOnly &&
+        getCurationPrimitiveFacetAffinities(
+          entry.entityType,
+          entry.entityId,
+        ).length > 0
+      ) {
+        return false;
       }
 
       if (!normalizedSearch) return true;

@@ -15,25 +15,14 @@ export type CurationWeightedRelation = {
   id: string;
   weight: number;
   direction?: "receiving" | "giving";
-  relationship?: "supports" | "opposes";
 };
-
-export type CurationFacetRelationship = {
-  id: string;
-  relationship: "supports" | "neutral" | "opposes";
-  weight: number;
-};
-
-export type CurationChangeListItem =
-  | string
-  | CurationWeightedRelation
-  | CurationFacetRelationship;
 
 export type CurationChangeValue =
   | string
   | number
   | boolean
-  | CurationChangeListItem[];
+  | string[]
+  | CurationWeightedRelation[];
 
 export type CurationChange = {
   entityType: CurationPrimitiveType;

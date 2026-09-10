@@ -56,7 +56,7 @@ describe("M16.7 curation semantic projection", () => {
     ).toEqual([]);
 
     expect(
-      getCurationPrimitiveFacetAffinities("signal", "role_embodiment"),
+      getCurationPrimitiveFacetAffinities("signal", "anticipation"),
     ).toEqual([]);
   });
 });
