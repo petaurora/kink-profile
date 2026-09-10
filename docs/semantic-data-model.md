@@ -95,7 +95,8 @@ Those two routes answer different questions:
 
 ## Granularity and channel semantics
 
-**Detailed contract:** [M16 Signal + Channel Model](m16-signal-channel-model.md)
+**Detailed contract:** [M16 Signal + Channel Model](m16-signal-channel-model.md)  
+**Current 45-Signal audit:** [M16 Signal Channel Audit](m16-signal-channel-audit.md)
 
 Overall Facets intentionally **do not** have giving/receiving or Dominant/submissive sides. They are thematic compression.
 

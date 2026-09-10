@@ -1,62 +1,69 @@
 import { describe, expect, it } from "vitest";
-import type { SignalId } from "../data/signals";
+import type {
+  CanonicalSignalFixture,
+} from "./testCanonicalSignalFixtures";
+import { buildCanonicalSignalFixtures } from "./testCanonicalSignalFixtures";
 import { scoreOverallFacets } from "./overallProfileFacets";
-import type { CanonicalSignalResult } from "./overallProfileSignals";
 import {
   buildProfileHeaderModel,
   deriveProfileOrientation,
 } from "./profileHeader";
 import { buildProfileRoleDetails } from "./profileRoleDetails";
 
-function signal(
-  signalId: SignalId,
+function ds(
+  signalId: CanonicalSignalFixture["signalId"],
   affinity: number,
   coverage = 100,
-  quizId = "dominance-submission",
-): CanonicalSignalResult {
+  channel?: CanonicalSignalFixture["channel"],
+): CanonicalSignalFixture {
   return {
     signalId,
     affinity,
     coverage,
-    channels: [
-      {
-        sourceType: "quiz",
-        affinity,
-        coverage,
-        reliability: 0.8,
-        effectiveWeight: 0.8 * (coverage / 100),
-        contributions: [
-          {
-            sourceType: "quiz",
-            sourceId: quizId,
-            signalId,
-            affinity,
-            coverage,
-            sourceEvidenceIds: [`test:${quizId}:${signalId}`],
-          },
-        ],
-      },
-    ],
-    sourceEvidenceIds: [`test:${quizId}:${signalId}`],
+    channel,
+    sourceType: "quiz",
+    sourceId: "dominance-submission",
   };
+}
+
+function hs(
+  signalId: CanonicalSignalFixture["signalId"],
+  affinity: number,
+  coverage = 100,
+  channel?: CanonicalSignalFixture["channel"],
+): CanonicalSignalFixture {
+  return {
+    signalId,
+    affinity,
+    coverage,
+    channel,
+    sourceType: "quiz",
+    sourceId: "roles-headspaces",
+  };
+}
+
+function signals(fixtures: readonly CanonicalSignalFixture[]) {
+  return buildCanonicalSignalFixtures(fixtures);
 }
 
 describe("M7.3 profile orientation", () => {
   it("stays emerging when D/s authority evidence is too sparse", () => {
     expect(
-      deriveProfileOrientation([
-        signal("receiving_control", 100, 10),
-      ]).key,
+      deriveProfileOrientation(
+        signals([ds("receiving_control", 100, 10)]),
+      ).key,
     ).toBe("insufficient");
   });
 
   it("identifies a clear submissive lean from authority-specific D/s evidence", () => {
-    const orientation = deriveProfileOrientation([
-      signal("receiving_control", 92),
-      signal("responsibility_transfer", 88),
-      signal("obedience", 82),
-      signal("giving_control", 20),
-    ]);
+    const orientation = deriveProfileOrientation(
+      signals([
+        ds("receiving_control", 92),
+        ds("responsibility_transfer", 88),
+        ds("obedience", 82, 100, "giving"),
+        ds("giving_control", 20),
+      ]),
+    );
 
     expect(orientation.key).toBe("submissive");
     expect(orientation.submissiveAffinity).toBeGreaterThan(
@@ -66,61 +73,71 @@ describe("M7.3 profile orientation", () => {
 
   it("identifies a clear dominant lean from negotiated authority evidence", () => {
     expect(
-      deriveProfileOrientation([
-        signal("receiving_control", 20),
-        signal("responsibility_transfer", 25),
-        signal("obedience", 20),
-        signal("giving_control", 92),
-      ]).key,
+      deriveProfileOrientation(
+        signals([
+          ds("receiving_control", 20),
+          ds("responsibility_transfer", 25),
+          ds("obedience", 20, 100, "giving"),
+          ds("giving_control", 92),
+        ]),
+      ).key,
     ).toBe("dominant");
   });
 
   it("identifies genuinely strong authority evidence on both sides", () => {
     expect(
-      deriveProfileOrientation([
-        signal("receiving_control", 88),
-        signal("responsibility_transfer", 80),
-        signal("obedience", 75),
-        signal("giving_control", 84),
-      ]).key,
+      deriveProfileOrientation(
+        signals([
+          ds("receiving_control", 88),
+          ds("responsibility_transfer", 80),
+          ds("obedience", 75, 100, "giving"),
+          ds("giving_control", 84),
+        ]),
+      ).key,
     ).toBe("bidirectional");
   });
 
-  it("does not turn activity direction into authority orientation", () => {
-    const orientation = deriveProfileOrientation([
-      signal("receiving_control", 100),
-      signal("responsibility_transfer", 100),
-      signal("obedience", 100),
-      signal("giving_control", 68),
-      signal("care_giving", 100),
-      signal("pain_giving", 100),
-      signal("giving_intensity", 100),
-      signal("giving_restraint", 100),
-      signal("giving_discipline", 100),
-      signal("pursuit_giving", 100),
-    ]);
+  it("does not turn unrelated activity direction into authority orientation", () => {
+    const orientation = deriveProfileOrientation(
+      signals([
+        ds("receiving_control", 100),
+        ds("responsibility_transfer", 100),
+        ds("obedience", 100, 100, "giving"),
+        ds("giving_control", 68),
+        hs("care_giving", 100),
+        hs("pain_giving", 100),
+        hs("giving_intensity", 100),
+        hs("giving_restraint", 100),
+        hs("giving_discipline", 100),
+        hs("pursuit_giving", 100),
+      ]),
+    );
 
     expect(orientation.key).toBe("submissive");
     expect(orientation.label).toBe("Submissive");
   });
 
   it("does not treat delegated responsibility-holding as dominant authority", () => {
-    const orientation = deriveProfileOrientation([
-      signal("receiving_control", 95),
-      signal("responsibility_transfer", 95),
-      signal("obedience", 95),
-      signal("giving_control", 35),
-      signal("responsibility_holding", 100),
-    ]);
+    const orientation = deriveProfileOrientation(
+      signals([
+        ds("receiving_control", 95),
+        ds("responsibility_transfer", 95),
+        ds("obedience", 95, 100, "giving"),
+        ds("giving_control", 35),
+        hs("responsibility_holding", 100),
+      ]),
+    );
 
     expect(orientation.key).toBe("submissive");
   });
 
-  it("ignores authority-like signals from non-D/s quiz sources", () => {
-    const orientation = deriveProfileOrientation([
-      signal("giving_control", 100, 100, "roles-headspaces"),
-      signal("responsibility_holding", 100, 100, "roles-headspaces"),
-    ]);
+  it("ignores authority-like Signals from non-D/s quiz sources", () => {
+    const orientation = deriveProfileOrientation(
+      signals([
+        hs("giving_control", 100),
+        hs("responsibility_holding", 100),
+      ]),
+    );
 
     expect(orientation.key).toBe("insufficient");
     expect(orientation.label).toBe("Still emerging");
@@ -140,14 +157,14 @@ describe("M7.3 profile header model", () => {
   });
 
   it("does not let a nearly-unexplored 100% facet outrank a well-evidenced strong theme", () => {
-    const canonical = [
-      signal("ownership_symbolism", 100, 10),
-      signal("service", 75),
-      signal("devotion", 72),
-      signal("obedience", 70),
-      signal("ritual_significance", 65),
-      signal("praise_approval", 65),
-    ];
+    const canonical = signals([
+      hs("ownership_symbolism", 100, 10, "receiving"),
+      hs("service", 75, 100, "giving"),
+      hs("devotion", 72),
+      hs("obedience", 70, 100, "giving"),
+      hs("ritual_significance", 65),
+      hs("praise_approval", 65, 100, "receiving"),
+    ]);
     const model = buildProfileHeaderModel(
       canonical,
       scoreOverallFacets(canonical),
@@ -158,25 +175,22 @@ describe("M7.3 profile header model", () => {
   });
 
   it("derives recognizable headspaces without assigning an authority direction", () => {
-    const canonical = [
-      signal("belonging", 92),
-      signal("role_embodiment", 90),
-      signal("playfulness", 88),
-      signal("care_receiving", 90),
-      signal("ownership_symbolism", 82),
-      signal("praise_approval", 86),
-      signal("receiving_control", 75),
-    ];
+    const canonical = signals([
+      hs("belonging", 92),
+      hs("role_embodiment", 90),
+      hs("playfulness", 88),
+      hs("care_receiving", 90),
+      hs("ownership_symbolism", 82, 100, "receiving"),
+      hs("praise_approval", 86, 100, "receiving"),
+      hs("receiving_control", 75),
+    ]);
     const model = buildProfileHeaderModel(
       canonical,
       scoreOverallFacets(canonical),
     );
 
     expect(model.headspaces).toContainEqual(
-      expect.objectContaining({
-        id: "pet",
-        label: "Pet",
-      }),
+      expect.objectContaining({ id: "pet", label: "Pet" }),
     );
     expect(
       model.headspaces.every((headspace) => !("direction" in headspace)),
@@ -185,20 +199,20 @@ describe("M7.3 profile header model", () => {
   });
 
   it("keeps header headspace and dynamic-mode chips aligned with the detailed role section", () => {
-    const canonical = [
-      signal("younger_headspace", 95, 30, "roles-headspaces"),
-      signal("care_receiving", 95, 30, "roles-headspaces"),
-      signal("role_embodiment", 95, 30, "roles-headspaces"),
-      signal("responsibility_transfer", 95, 30, "roles-headspaces"),
-      signal("playfulness", 95, 30, "roles-headspaces"),
-      signal("praise_approval", 95, 30, "roles-headspaces"),
-      signal("devotion", 90, 100, "roles-headspaces"),
-      signal("belonging", 90, 100, "roles-headspaces"),
-      signal("service", 90, 100, "roles-headspaces"),
-      signal("ownership_symbolism", 90, 100, "roles-headspaces"),
-      signal("receiving_control", 90, 100, "roles-headspaces"),
-      signal("ritual_significance", 90, 100, "roles-headspaces"),
-    ];
+    const canonical = signals([
+      hs("younger_headspace", 95, 30),
+      hs("care_receiving", 95, 30),
+      hs("role_embodiment", 95, 30),
+      hs("responsibility_transfer", 95, 30),
+      hs("playfulness", 95, 30),
+      hs("praise_approval", 95, 30, "receiving"),
+      hs("devotion", 90),
+      hs("belonging", 90),
+      hs("service", 90, 100, "giving"),
+      hs("ownership_symbolism", 90, 100, "receiving"),
+      hs("receiving_control", 90),
+      hs("ritual_significance", 90),
+    ]);
     const model = buildProfileHeaderModel(
       canonical,
       scoreOverallFacets(canonical),
@@ -215,31 +229,29 @@ describe("M7.3 profile header model", () => {
   });
 
   it("derives compact dynamic modes without exposing percentages in the summary sentence", () => {
-    const canonical = [
-      signal("devotion", 92),
-      signal("belonging", 90),
-      signal("ritual_significance", 85),
-      signal("service", 88),
-      signal("ownership_symbolism", 80),
-      signal("role_embodiment", 78),
-    ];
+    const canonical = signals([
+      hs("devotion", 92),
+      hs("belonging", 90),
+      hs("ritual_significance", 85),
+      hs("service", 88, 100, "giving"),
+      hs("ownership_symbolism", 80),
+      hs("role_embodiment", 78),
+    ]);
     const model = buildProfileHeaderModel(
       canonical,
       scoreOverallFacets(canonical),
     );
 
-    expect(model.dynamicModes.some((mode) => mode.id === "devotion_mode")).toBe(
-      true,
-    );
+    expect(model.dynamicModes.some((mode) => mode.id === "devotion_mode")).toBe(true);
     expect(model.dynamicModes.length).toBeLessThanOrEqual(3);
     expect(model.summary).not.toMatch(/\d+%/);
   });
 
   it("filters weakly evidenced composed labels instead of overclaiming a role/headspace", () => {
-    const canonical = [
-      signal("ownership_symbolism", 100, 8),
-      signal("objectification", 100, 8),
-    ];
+    const canonical = signals([
+      hs("ownership_symbolism", 100, 8, "receiving"),
+      hs("objectification", 100, 8, "receiving"),
+    ]);
     const model = buildProfileHeaderModel(
       canonical,
       scoreOverallFacets(canonical),
@@ -249,20 +261,20 @@ describe("M7.3 profile header model", () => {
     expect(model.dynamicModes).toEqual([]);
   });
 
-  it("writes a receiving-oriented summary from real aggregated facets", () => {
-    const canonical = [
-      signal("receiving_control", 92),
-      signal("responsibility_transfer", 88),
-      signal("obedience", 84),
-      signal("giving_control", 20),
-      signal("responsibility_holding", 25),
-      signal("service", 90),
-      signal("devotion", 92),
-      signal("belonging", 88),
-      signal("ownership_symbolism", 85),
-      signal("ritual_significance", 80),
-      signal("praise_approval", 75),
-    ];
+  it("writes a submissive-oriented summary from real aggregated facets", () => {
+    const canonical = signals([
+      ds("receiving_control", 92),
+      ds("responsibility_transfer", 88),
+      ds("obedience", 84, 100, "giving"),
+      ds("giving_control", 20),
+      hs("responsibility_holding", 25),
+      hs("service", 90, 100, "giving"),
+      hs("devotion", 92),
+      hs("belonging", 88),
+      hs("ownership_symbolism", 85, 100, "receiving"),
+      hs("ritual_significance", 80),
+      hs("praise_approval", 75, 100, "receiving"),
+    ]);
     const model = buildProfileHeaderModel(
       canonical,
       scoreOverallFacets(canonical),
@@ -276,20 +288,20 @@ describe("M7.3 profile header model", () => {
   });
 
   it("keeps a submissive headline when non-power facets are strong on both activity sides", () => {
-    const canonical = [
-      signal("receiving_control", 100),
-      signal("responsibility_transfer", 100),
-      signal("obedience", 100),
-      signal("giving_control", 68),
-      signal("pain_receiving", 100),
-      signal("pain_giving", 100),
-      signal("receiving_intensity", 100),
-      signal("giving_intensity", 100),
-      signal("care_receiving", 90),
-      signal("care_giving", 95),
-      signal("service", 100),
-      signal("devotion", 95),
-    ];
+    const canonical = signals([
+      ds("receiving_control", 100),
+      ds("responsibility_transfer", 100),
+      ds("obedience", 100, 100, "giving"),
+      ds("giving_control", 68),
+      hs("pain_receiving", 100),
+      hs("pain_giving", 100),
+      hs("receiving_intensity", 100),
+      hs("giving_intensity", 100),
+      hs("care_receiving", 90),
+      hs("care_giving", 95),
+      hs("service", 100, 100, "giving"),
+      hs("devotion", 95),
+    ]);
     const model = buildProfileHeaderModel(
       canonical,
       scoreOverallFacets(canonical),

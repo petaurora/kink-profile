@@ -1,7 +1,14 @@
 import type { OverallFacetId } from "../data/overallFacets";
-import type { SignalId } from "../data/signals";
+import type {
+  CanonicalSignalId,
+  SignalChannel,
+} from "../data/canonicalSignals";
 import type { OverallFacetResult } from "./overallProfileFacets";
-import type { CanonicalSignalResult } from "./overallProfileSignals";
+import {
+  resolveSignalChannel,
+  signalResultById,
+  type CanonicalSignalResult,
+} from "./normalizedProfileSignals";
 import {
   buildProfileRoleDetails,
   type ProfileRoleScore,
@@ -41,7 +48,6 @@ export type ProfileHeaderModel = {
 const authorityCoverageFloor = 12;
 const orientationLeanThreshold = 15;
 const bidirectionalAffinityFloor = 60;
-
 const headlineFacetCoverageFloor = 12;
 const headlineFacetAffinityFloor = 45;
 const authorityAffinityFloor = 55;
@@ -76,30 +82,35 @@ function headlineStrength(affinity: number, coverage: number) {
 }
 
 type AuthoritySideSignal = {
-  signalId: SignalId;
+  signalId: CanonicalSignalId;
+  channel: SignalChannel;
   weight: number;
 };
 
 const authorityQuizId = "dominance-submission";
 
 const submissiveAuthoritySignals: readonly AuthoritySideSignal[] = [
-  { signalId: "receiving_control", weight: 1 },
-  { signalId: "responsibility_transfer", weight: 0.9 },
-  { signalId: "obedience", weight: 0.65 },
+  { signalId: "control", channel: "receiving", weight: 1 },
+  { signalId: "responsibility", channel: "giving", weight: 0.9 },
+  { signalId: "obedience", channel: "giving", weight: 0.65 },
 ];
 
 const dominantAuthoritySignals: readonly AuthoritySideSignal[] = [
-  { signalId: "giving_control", weight: 1 },
+  { signalId: "control", channel: "giving", weight: 1 },
 ];
 
 function authorityQuizSignal(
   canonicalSignals: readonly CanonicalSignalResult[],
-  signalId: SignalId,
+  definition: AuthoritySideSignal,
 ) {
-  const signal = canonicalSignals.find((item) => item.signalId === signalId);
+  const bySignalId = signalResultById(canonicalSignals);
+  const channel = resolveSignalChannel(
+    bySignalId.get(definition.signalId),
+    definition.channel,
+  );
   const contributions =
-    signal?.channels
-      .find((channel) => channel.sourceType === "quiz")
+    channel?.sources
+      .find((source) => source.sourceType === "quiz")
       ?.contributions.filter(
         (contribution) => contribution.sourceId === authorityQuizId,
       ) ?? [];
@@ -147,10 +158,7 @@ function scoreAuthoritySide(
 
   for (const definition of definitions) {
     totalWeight += definition.weight;
-    const signal = authorityQuizSignal(
-      canonicalSignals,
-      definition.signalId,
-    );
+    const signal = authorityQuizSignal(canonicalSignals, definition);
     if (signal.affinity === null || signal.coverage <= 0) continue;
 
     const coveredWeight =
@@ -297,9 +305,7 @@ function buildSummary(
   );
   const themes = joinNatural(phrases);
 
-  const orientationIntro: Partial<
-    Record<ProfileOrientationKey, string>
-  > = {
+  const orientationIntro: Partial<Record<ProfileOrientationKey, string>> = {
     submissive: "The profile leans submissive",
     dominant: "The profile leans dominant",
     bidirectional:
@@ -313,19 +319,15 @@ function buildSummary(
   if (intro && phrases.length > 0) {
     return `${intro}, with the strongest themes around ${themes}.`;
   }
-
   if (intro) {
     return `${intro}, while the broader themes are still emerging.`;
   }
-
   if (phrases.length === 1) {
     return `The clearest overall theme so far is ${themes}.`;
   }
-
   if (phrases.length > 1) {
     return `The clearest overall themes so far are ${themes}.`;
   }
-
   return "There is not enough evidence yet to describe the overall shape of this profile.";
 }
 

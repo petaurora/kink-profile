@@ -2,6 +2,7 @@ import {
   kinkCatalog,
   type KinkCatalogItem,
 } from "../data/kinkCatalog.generated";
+import { legacySignalConceptTargets } from "../data/canonicalSignals";
 import {
   rewardPunishmentCategories,
   rewardPunishmentPrimitiveKey,
@@ -216,20 +217,30 @@ function canonicalSignalComponent(
     canonicalSignals.map((signal) => [signal.signalId, signal]),
   );
   const matches = catalogItem.signalMappings.flatMap((mapping) => {
-    const signal = bySignalId.get(mapping.signalId);
-    if (!signal || signal.coverage <= 0 || mapping.weight <= 0) return [];
-    return [{ mapping, signal }];
+    const target = legacySignalConceptTargets[mapping.signalId];
+    const signal = bySignalId.get(target.signalId);
+    if (!signal || mapping.weight <= 0) return [];
+
+    const channel =
+      target.inherentChannel === "receiving"
+        ? signal.receiving
+        : target.inherentChannel === "giving"
+          ? signal.giving
+          : signal.overall;
+    if (!channel || channel.coverage <= 0 || channel.affinity === null) return [];
+
+    return [{ mapping, channel }];
   });
 
   const score = weightedMean(
-    matches.map(({ mapping, signal }) => ({
-      value: clamp01(signal.affinity / 100),
+    matches.map(({ mapping, channel }) => ({
+      value: clamp01(channel.affinity! / 100),
       weight: mapping.weight,
     })),
   );
   const confidence = weightedMean(
-    matches.map(({ mapping, signal }) => ({
-      value: clamp01(signal.coverage / 100),
+    matches.map(({ mapping, channel }) => ({
+      value: clamp01(channel.coverage / 100),
       weight: mapping.weight,
     })),
   );
@@ -240,7 +251,7 @@ function canonicalSignalComponent(
     confidence: round3(confidence),
     sourceEvidenceIds: [
       ...new Set(
-        matches.flatMap(({ signal }) => signal.sourceEvidenceIds),
+        matches.flatMap(({ channel }) => channel.sourceEvidenceIds),
       ),
     ].sort(),
   };

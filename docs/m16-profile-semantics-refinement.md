@@ -187,7 +187,8 @@ These associated themes are explanatory metadata only and do not calculate the m
 
 # M16.4c — Signal vocabulary + channel-model review
 
-**Step 1 contract:** [M16 Signal + Channel Model](m16-signal-channel-model.md)
+**Step 1 contract:** [M16 Signal + Channel Model](m16-signal-channel-model.md)  
+**Step 2 audit:** [M16 Signal Channel Audit](m16-signal-channel-audit.md)
 
 Before adding new vocabulary, normalize the semantic boundary between a Signal concept and its activity-side channel:
 

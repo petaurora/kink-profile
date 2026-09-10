@@ -4,11 +4,19 @@ import {
   type OverallFacetId,
   type OverallFacetSignalRelationship,
 } from "../data/overallFacets";
-import type { SignalId } from "../data/signals";
-import type { CanonicalSignalResult } from "./overallProfileSignals";
+import type {
+  CanonicalSignalId,
+  SignalChannel,
+} from "../data/canonicalSignals";
+import {
+  resolveSignalChannel,
+  signalResultById,
+  type CanonicalSignalResult,
+} from "./normalizedProfileSignals";
 
 export type OverallFacetComponentResult = {
-  signalId: SignalId;
+  signalId: CanonicalSignalId;
+  signalChannel: SignalChannel;
   configuredWeight: number;
   relationship: OverallFacetSignalRelationship;
   affinity: number;
@@ -47,17 +55,24 @@ function uniqueSorted(values: readonly string[]) {
 
 function scoreFacetComponents(
   definition: OverallFacetDefinition,
-  signalsById: ReadonlyMap<SignalId, CanonicalSignalResult>,
+  canonicalSignals: readonly CanonicalSignalResult[],
 ) {
+  const signalsById = signalResultById(canonicalSignals);
+
   return definition.signals.flatMap(
     (configured): OverallFacetComponentResult[] => {
-      const signal = signalsById.get(configured.signalId);
-      if (!signal || signal.coverage <= 0) return [];
+      const channel = configured.channel ?? "overall";
+      const signal = resolveSignalChannel(
+        signalsById.get(configured.signalId),
+        channel,
+      );
+      if (!signal || signal.affinity === null || signal.coverage <= 0) return [];
 
       const coverage = clampPercent(signal.coverage);
       return [
         {
           signalId: configured.signalId,
+          signalChannel: channel,
           configuredWeight: configured.weight,
           relationship: configured.relationship ?? "supports",
           affinity: clampPercent(signal.affinity),
@@ -103,9 +118,6 @@ function compositionScore(
         )
       : 0;
 
-  // Opposing evidence can reduce a known theme affinity, but low/absent opposing
-  // evidence must never manufacture positive theme affinity. We therefore need
-  // at least one known supporting component before producing an affinity.
   if (effectiveSupportWeight <= 0 || configuredSupportWeightTotal <= 0) {
     return { affinity: null, coverage };
   }
@@ -131,26 +143,16 @@ function compositionScore(
 }
 
 /**
- * Compose canonical SignalIds into broad M7 theme facets.
- *
- * Overall Facets intentionally collapse granular signal distinctions. Activity
- * side (giving/receiving) and authority orientation remain below this layer.
- *
- * Supporting Signal relationships build theme affinity. Opposing Signal
- * relationships may reduce a known affinity, but their absence never creates
- * positive evidence. Neutral Signal/Facet pairs are omitted from the sparse
- * runtime definition.
+ * Compose canonical Signal + optional channel references into broad theme
+ * facets. Facets remain non-directional; directional nuance lives entirely in
+ * the Signal reference feeding them.
  */
 export function scoreOverallFacets(
   canonicalSignals: readonly CanonicalSignalResult[],
   definitions: readonly OverallFacetDefinition[] = overallFacetDefinitions,
 ): OverallFacetResult[] {
-  const signalsById = new Map(
-    canonicalSignals.map((signal) => [signal.signalId, signal]),
-  );
-
   return definitions.map((definition) => {
-    const components = scoreFacetComponents(definition, signalsById);
+    const components = scoreFacetComponents(definition, canonicalSignals);
     const score = compositionScore(definition, components);
 
     return {

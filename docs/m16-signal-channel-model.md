@@ -147,9 +147,39 @@ Examples:
 - giving Praise → praising another person
 - giving Degradation → degrading another person
 
-Giving/receiving is **activity-side perspective only**.
+Giving/receiving follows the **direction of the Signal concept itself**.
 
-It must never imply:
+Use this test:
+
+```text
+Receiving
+→ the Signal concept is directed toward, transferred to,
+  or experienced by the profile owner
+
+Giving
+→ the Signal concept is directed from, transferred from,
+  performed by, or created by the profile owner
+```
+
+This is **activity/concept direction only**.
+
+It must never be reassigned merely because one side is commonly associated with a Dominant or submissive role.
+
+Example:
+
+```text
+Responsibility
+
+Handing responsibility to another person
+→ Giving Responsibility
+
+Accepting / holding responsibility for another person or interaction
+→ Receiving Responsibility
+```
+
+Even though handing over responsibility may occur in a submissive or receiving-control context, it remains **Giving Responsibility** because responsibility itself moves away from the profile owner.
+
+Giving/receiving must never imply:
 
 - Dominant / submissive identity
 - authority orientation
@@ -457,10 +487,10 @@ Examples:
 Responsibility
 
 Receiving channel label:
-  Handing over responsibility
+  Taking / holding responsibility
 
 Giving channel label:
-  Holding responsibility
+  Handing over responsibility
 ```
 
 ```text
@@ -513,7 +543,7 @@ Examples:
 
 ```text
 Surrender
-  Responsibility / receiving  1.0
+  Responsibility / giving     1.0
   Control / receiving         0.8
   Role Embodiment / overall   0.4
   Care / receiving            0.3
@@ -522,7 +552,7 @@ Surrender
 ```text
 Caretaking
   Care / giving               1.0
-  Responsibility / giving     0.9
+  Responsibility / receiving  0.9
   Control / giving            0.4
   Guidance / giving           0.3
 ```
@@ -748,3 +778,4 @@ This document is the semantic contract those later changes must follow.
 12. **A shared Signal requires a clear base semantic invariant across its channels.**
 13. **Channel descriptions specialize the base meaning; they do not redefine it.**
 14. **A grammatical opposite is not enough to justify a directional channel.**
+15. **Giving/Receiving follows the Signal concept's direction, never Dominant/submissive role orientation.**

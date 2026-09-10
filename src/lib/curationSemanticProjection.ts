@@ -120,6 +120,7 @@ export function getCurationPrimitiveSignalMappings(
       return facet
         ? facet.signals.map((signal) => ({
             signalId: signal.signalId,
+            channel: signal.channel,
             weight: signal.weight,
           }))
         : [];

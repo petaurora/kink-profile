@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { SignalId } from "../data/signals";
 import type { CatalogPreferenceState } from "./catalogProfile";
 import type {
   CatalogResultItem,
@@ -10,6 +11,7 @@ import {
   buildSharedProfileComparison,
   type SharedProfileComparisonInput,
 } from "./sharedProfileComparison";
+import { buildCanonicalSignalFixtures } from "./testCanonicalSignalFixtures";
 
 function catalogResult(
   id: string,
@@ -40,17 +42,13 @@ function resultView(items: readonly CatalogResultItem[]): CatalogResultView {
 }
 
 function canonicalSignal(
-  signalId: CanonicalSignalResult["signalId"],
+  signalId: SignalId,
   affinity = 90,
   coverage = 80,
 ): CanonicalSignalResult {
-  return {
-    signalId,
-    affinity,
-    coverage,
-    channels: [],
-    sourceEvidenceIds: [],
-  };
+  return buildCanonicalSignalFixtures([
+    { signalId, affinity, coverage },
+  ])[0]!;
 }
 
 function emptyRoleDetails(): ProfileRoleDetailsModel {
