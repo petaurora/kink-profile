@@ -1,3 +1,4 @@
+import type { KeyboardEvent } from "react";
 import type { OverallFacetId } from "./data/overallFacets";
 import type { OverallRadarAxis } from "./lib/overallRadar";
 
@@ -40,7 +41,7 @@ export function ProfileCoxcombChart({
   };
 
   const selectFromKeyboard = (
-    event: React.KeyboardEvent<SVGGElement>,
+    event: KeyboardEvent<SVGGElement>,
     facetId: OverallFacetId,
   ) => {
     if (event.key !== "Enter" && event.key !== " ") return;
