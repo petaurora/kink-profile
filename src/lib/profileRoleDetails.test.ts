@@ -8,7 +8,7 @@ function signals(fixtures: readonly CanonicalSignalFixture[]) {
 }
 
 describe("M7.5 profile role details", () => {
-  it("keeps overlapping headspaces independently scored without authority bucketing", () => {
+  it("keeps overlapping headspaces independently scored without promoting devotion to a headspace", () => {
     const model = buildProfileRoleDetails(
       signals([
         { signalId: "belonging", affinity: 95 },
@@ -29,8 +29,10 @@ describe("M7.5 profile role details", () => {
 
     const ids = model.headspaces.map((item) => item.id);
     expect(ids).toContain("pet");
-    expect(ids).toContain("devotional_submissive");
     expect(ids).not.toContain("service_submissive");
+    expect(ids).not.toContain("devotional_submissive");
+    expect(model.dynamicModes.map((item) => item.id)).toContain("devotion_mode");
+    expect(model.dynamicModes.map((item) => item.id)).toContain("service_mode");
     expect(model.headspaces[0].affinity).toBeGreaterThan(0);
   });
 
