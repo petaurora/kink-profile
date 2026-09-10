@@ -8,7 +8,7 @@ import {
 } from "./profileShareExport";
 
 const model: ProfileShareSummaryModel = {
-  version: 2,
+  version: 3,
   generatedAt: "2026-09-07T19:00:00.000Z",
   displayName: "Kitty / babygirl ♥",
   summary: "A compact share summary.",
@@ -16,7 +16,6 @@ const model: ProfileShareSummaryModel = {
   strongestThemes: ["Power Exchange"],
   radarAxes: [],
   headspaces: [],
-  dynamicModes: [],
   topInterests: [],
   interestAreas: [],
   hardLimits: [],
