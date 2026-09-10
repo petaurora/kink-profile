@@ -217,7 +217,6 @@ export const sceneThemeDefinitions: readonly SceneThemeDefinition[] = [
     description: "A more immersive chosen surrender of direction, responsibility, and obedience.",
     family: "vibe",
     mappings: [
-      { kind: "dynamic_mode", id: "power_exchange_mode", weight: 0.75 },
       { kind: "signal", id: "responsibility_transfer", weight: 1 },
       { kind: "signal", id: "receiving_control", weight: 0.9 },
       { kind: "signal", id: "obedience", weight: 0.7 },
@@ -232,7 +231,6 @@ export const sceneThemeDefinitions: readonly SceneThemeDefinition[] = [
     description: "Letting go of decision load or direction within chosen, negotiated authority.",
     family: "vibe",
     mappings: [
-      { kind: "dynamic_mode", id: "power_exchange_mode", weight: 0.7 },
       { kind: "signal", id: "responsibility_transfer", weight: 1 },
       { kind: "signal", id: "receiving_control", weight: 0.85 },
       { kind: "facet", id: "power_exchange", weight: 0.9 },
