@@ -23,7 +23,6 @@ export type DerivedFacetAffinity = {
     signalId: SignalId;
     sourceWeight: number;
     facetWeight: number;
-    relationship: "supports" | "opposes";
     contribution: number;
   }[];
 };
@@ -121,30 +120,24 @@ export function deriveOverallFacetAffinities(
         );
         if (!facetSignal) return [];
 
-        const relationship = facetSignal.relationship ?? "supports";
-        const magnitude = source.weight * facetSignal.weight;
-        const contribution =
-          relationship === "opposes" ? -magnitude : magnitude;
-        return magnitude > 0
+        const contribution = source.weight * facetSignal.weight;
+        return contribution > 0
           ? [
               {
                 signalId: source.signalId,
                 sourceWeight: source.weight,
                 facetWeight: facetSignal.weight,
-                relationship,
                 contribution,
               },
             ]
           : [];
       });
 
-      const affinity = Math.max(
-        0,
+      const affinity =
         matchedSignals.reduce(
           (sum, match) => sum + match.contribution,
           0,
-        ) / totalSourceWeight,
-      );
+        ) / totalSourceWeight;
 
       return {
         facetId: facet.id,

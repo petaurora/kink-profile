@@ -7,7 +7,6 @@ import {
 import type { CurationEditorField } from "./lib/curationEditor";
 import type {
   CurationChangeValue,
-  CurationFacetRelationship,
   CurationWeightedRelation,
 } from "./lib/curationWorkspace";
 
@@ -18,19 +17,6 @@ function asRelations(value: CurationChangeValue | undefined) {
           typeof item === "object" &&
           item !== null &&
           "id" in item &&
-          "weight" in item,
-      )
-    : [];
-}
-
-function asFacetRelationships(value: CurationChangeValue | undefined) {
-  return Array.isArray(value)
-    ? value.filter(
-        (item): item is CurationFacetRelationship =>
-          typeof item === "object" &&
-          item !== null &&
-          "id" in item &&
-          "relationship" in item &&
           "weight" in item,
       )
     : [];
@@ -116,7 +102,6 @@ function CurationWeightedRelationsEditor({
       {
         id: next.value,
         weight: 1,
-        relationship: field.allowRelationship ? "supports" : undefined,
       },
     ]);
     setRelationshipSearch("");
@@ -199,26 +184,6 @@ function CurationWeightedRelationsEditor({
                 </select>
               </label>
             )}
-
-            {field.allowRelationship && (
-              <div className="curation-relation-polarity" role="group" aria-label={`${field.label} semantic relationship ${index + 1}`}>
-                {(["supports", "opposes"] as const).map((relationship) => (
-                  <button
-                    type="button"
-                    className={(relation.relationship ?? "supports") === relationship ? "is-active" : ""}
-                    aria-pressed={(relation.relationship ?? "supports") === relationship}
-                    key={relationship}
-                    onClick={() => {
-                      const next = [...value];
-                      next[index] = { ...relation, relationship };
-                      onChange(next);
-                    }}
-                  >
-                    {relationship === "supports" ? "Supports" : "Opposes"}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         ))}
 
@@ -289,108 +254,6 @@ function CurationWeightedRelationsEditor({
   );
 }
 
-function CurationFacetMatrixEditor({
-  field,
-  value,
-  onChange,
-}: {
-  field: Extract<CurationEditorField, { kind: "facet-matrix" }>;
-  value: readonly CurationFacetRelationship[];
-  onChange: (next: CurationFacetRelationship[]) => void;
-}) {
-  const byId = new Map(value.map((relationship) => [relationship.id, relationship]));
-  const rows = field.options.map((option) => {
-    return (
-      byId.get(option.value) ?? {
-        id: option.value,
-        relationship: "neutral" as const,
-        weight: 1,
-      }
-    );
-  });
-
-  const updateRow = (
-    id: string,
-    update: Partial<CurationFacetRelationship>,
-  ) => {
-    onChange(
-      rows.map((row) => (row.id === id ? { ...row, ...update } : row)),
-    );
-  };
-
-  return (
-    <div className="curation-editor-field curation-editor-field-wide curation-facet-matrix">
-      <CurationFieldHeader label={field.label} helper={field.helper} />
-
-      <div className="curation-facet-matrix-list">
-        {rows.map((row) => {
-          const option = field.options.find((candidate) => candidate.value === row.id);
-          return (
-            <div className="curation-facet-matrix-row" key={row.id}>
-              <strong>{option?.label ?? row.id}</strong>
-
-              <div className="curation-facet-matrix-controls">
-                <div
-                  className="curation-facet-state"
-                  role="group"
-                  aria-label={`${option?.label ?? row.id} relationship`}
-                >
-                  {(["supports", "neutral", "opposes"] as const).map(
-                    (relationship) => (
-                      <button
-                        type="button"
-                        className={
-                          row.relationship === relationship ? "is-active" : ""
-                        }
-                        aria-pressed={row.relationship === relationship}
-                        key={relationship}
-                        onClick={() =>
-                          updateRow(row.id, {
-                            relationship,
-                            weight:
-                              relationship === "neutral" && !row.weight
-                                ? 1
-                                : row.weight || 1,
-                          })
-                        }
-                      >
-                        {relationship === "supports"
-                          ? "Supports"
-                          : relationship === "opposes"
-                            ? "Opposes"
-                            : "Neutral"}
-                      </button>
-                    ),
-                  )}
-                </div>
-
-                {row.relationship !== "neutral" && (
-                  <label className="curation-facet-weight">
-                    <span>Weight</span>
-                    <input
-                      type="number"
-                      min="0.05"
-                      max="1"
-                      step="0.05"
-                      value={row.weight}
-                      aria-label={`${option?.label ?? row.id} weight`}
-                      onChange={(event) =>
-                        updateRow(row.id, {
-                          weight: Number(event.target.value),
-                        })
-                      }
-                    />
-                  </label>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 export function CurationEditorFieldControl({
   field,
   value,
@@ -405,16 +268,6 @@ export function CurationEditorFieldControl({
       <CurationWeightedRelationsEditor
         field={field}
         value={asRelations(value)}
-        onChange={onChange}
-      />
-    );
-  }
-
-  if (field.kind === "facet-matrix") {
-    return (
-      <CurationFacetMatrixEditor
-        field={field}
-        value={asFacetRelationships(value)}
         onChange={onChange}
       />
     );

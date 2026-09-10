@@ -2,12 +2,12 @@ import {
   dynamicModes,
   roleHeadspaces,
 } from "../data/headspacesQuiz";
+import { overallFacetDefinitions } from "../data/overallFacets";
 import {
   getSceneTheme,
   type SceneThemeDefinition,
   type SceneThemeId,
 } from "../data/sceneThemes";
-import { deriveOverallFacetAffinities } from "./semanticFacetAffinity";
 import type { SignalId } from "../data/signals";
 import type {
   CatalogPreferenceState,
@@ -114,6 +114,9 @@ const roleHeadspaceById = new Map(
 const dynamicModeById = new Map(
   dynamicModes.map((definition) => [definition.id, definition]),
 );
+const facetById = new Map(
+  overallFacetDefinitions.map((definition) => [definition.id, definition]),
+);
 
 function clamp01(value: number) {
   if (!Number.isFinite(value)) return 0;
@@ -175,39 +178,20 @@ function expandedThemeSignalWeights(theme: SceneThemeDefinition) {
     }
 
     if (mapping.kind === "facet") {
-      // Overall Facets are broad themes, not reusable signal bundles.
-      // Their full semantic matrix can be intentionally dense, so expanding
-      // every facet relationship here would dilute direct Scene Theme matches.
-      continue;
+      const definition = facetById.get(mapping.id);
+      if (!definition) continue;
+
+      for (const signal of definition.signals) {
+        mergeSignalWeight(
+          weights,
+          signal.signalId,
+          mapping.weight * signal.weight,
+        );
+      }
     }
   }
 
   return weights;
-}
-
-function facetThemeFit(
-  item: CatalogResultItem,
-  theme: SceneThemeDefinition,
-) {
-  const facetMappings = theme.mappings.filter(
-    (mapping) => mapping.kind === "facet",
-  );
-  if (facetMappings.length === 0 || item.item.signalMappings.length === 0) {
-    return 0;
-  }
-
-  const affinities = new Map(
-    deriveOverallFacetAffinities(item.item.signalMappings).map((facet) => [
-      facet.facetId,
-      facet.affinity,
-    ]),
-  );
-
-  return facetMappings.reduce(
-    (best, mapping) =>
-      Math.max(best, (affinities.get(mapping.id) ?? 0) * mapping.weight),
-    0,
-  );
 }
 
 function categoryThemeFit(
@@ -258,7 +242,6 @@ export function calculateSceneThemeFit(
     Math.max(
       categoryThemeFit(item, theme),
       signalThemeFit(item, theme),
-      facetThemeFit(item, theme),
     ) * 100,
   );
 }

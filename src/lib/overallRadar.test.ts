@@ -47,6 +47,7 @@ function axis(
     affinity: state === "unknown" ? null : 70,
     coverage: state === "unknown" ? 0 : state === "limited" ? 15 : 80,
     state,
+    directional: false,
   };
 }
 
@@ -107,6 +108,33 @@ describe("M7.4 overall radar model", () => {
       { facetId: "service_devotion", label: "service_devotion" },
       { facetId: "power_exchange", label: "power_exchange" },
     ]);
+  });
+
+  it("retains directional capability metadata without changing the overall series", () => {
+    const directionalFacet: OverallFacetResult = {
+      ...facet("power_exchange", 75, 70),
+      direction: {
+        receiving: {
+          direction: "receiving",
+          affinity: 85,
+          coverage: 60,
+          contributingSignalIds: [],
+          sourceEvidenceIds: [],
+        },
+        giving: {
+          direction: "giving",
+          affinity: 55,
+          coverage: 50,
+          contributingSignalIds: [],
+          sourceEvidenceIds: [],
+        },
+      },
+    };
+
+    const model = buildOverallRadarModel([directionalFacet], []);
+
+    expect(model.axes[0].directional).toBe(true);
+    expect(model.axes[0].affinity).toBe(75);
   });
 
   it("recognizes a full nine-axis profile as a complete shape", () => {

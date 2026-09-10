@@ -197,19 +197,6 @@ function stringifyRecord(value: Partial<Record<string, number>> | undefined) {
     .join(", ");
 }
 
-function signalFacetSummary(signalId: string) {
-  const relationships = overallFacetDefinitions.map((facet) => {
-    const mapping = facet.signals.find((candidate) => candidate.signalId === signalId);
-    return mapping?.relationship ?? (mapping ? "supports" : "neutral");
-  });
-
-  const supports = relationships.filter((value) => value === "supports").length;
-  const opposes = relationships.filter((value) => value === "opposes").length;
-  const neutral = relationships.filter((value) => value === "neutral").length;
-
-  return `${supports} supports · ${opposes} opposes · ${neutral} neutral`;
-}
-
 function stringifyMappings(
   mappings: readonly {
     signalId: string;
@@ -385,11 +372,6 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
     source: "Shared signal vocabulary",
     fields: [
       { key: "shortLabel", label: "Short label", value: signal.shortLabel },
-      {
-        key: "facetSummary",
-        label: "Overall Facets",
-        value: signalFacetSummary(signal.id),
-      },
     ],
   })),
   ...dynamicModes.map((mode) => ({
@@ -428,12 +410,17 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
     source: "M7 overall facets",
     fields: [
       {
+        key: "directional",
+        label: "Directional",
+        value: facet.directional ? "Yes" : "No",
+      },
+      {
         key: "signals",
-        label: "Signal relationships",
+        label: "Signal composition",
         value: facet.signals
           .map(
             (signal) =>
-              `${signal.signalId}: ${signal.weight} (${signal.relationship ?? "supports"})`,
+              `${signal.signalId}: ${signal.weight}${signal.direction ? ` (${signal.direction})` : ""}`,
           )
           .join(", "),
       },
