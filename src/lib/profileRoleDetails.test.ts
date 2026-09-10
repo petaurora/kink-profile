@@ -29,8 +29,8 @@ describe("M7.5 profile role details", () => {
 
     const ids = model.headspaces.map((item) => item.id);
     expect(ids).toContain("pet");
-    expect(ids).toContain("service_submissive");
     expect(ids).toContain("devotional_submissive");
+    expect(ids).not.toContain("service_submissive");
     expect(model.headspaces[0].affinity).toBeGreaterThan(0);
   });
 
@@ -107,13 +107,14 @@ describe("M7.5 profile role details", () => {
     expect(model.featuredHeadspaces).toEqual(model.headspaces.slice(0, 5));
   });
 
-  it("allows caregiver or trainer-style headspaces to surface without classifying them as dominant", () => {
+  it("allows caregiver or owner-handler shaping to surface without classifying them as dominant", () => {
     const model = buildProfileRoleDetails(
       signals([
         { signalId: "care_giving", affinity: 96 },
         { signalId: "responsibility_holding", affinity: 92 },
         { signalId: "guidance_shaping", channel: "giving", affinity: 94 },
         { signalId: "structure", channel: "giving", affinity: 82 },
+        { signalId: "ownership_symbolism", channel: "giving", affinity: 90 },
         { signalId: "service", channel: "giving", affinity: 90 },
         { signalId: "devotion", channel: "giving", affinity: 88 },
         { signalId: "obedience", channel: "giving", affinity: 86 },
@@ -123,7 +124,8 @@ describe("M7.5 profile role details", () => {
 
     const ids = model.headspaces.map((item) => item.id);
     expect(ids).toContain("caregiver");
-    expect(ids).toContain("trainer");
+    expect(ids).toContain("owner_handler");
+    expect(ids).not.toContain("trainer");
     expect(model.featuredHeadspaces.length).toBeLessThanOrEqual(5);
   });
 
