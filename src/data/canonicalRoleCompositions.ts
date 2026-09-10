@@ -82,13 +82,6 @@ const channelOverrides: Readonly<
   prey: {
     playful_resistance: "giving",
   },
-  devotional_submissive: {
-    devotion: "giving",
-    service: "giving",
-    obedience: "giving",
-    praise_approval: "receiving",
-    ownership_symbolism: "receiving",
-  },
   object: {
     objectification: "receiving",
   },
