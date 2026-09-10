@@ -35,11 +35,11 @@ describe("M13 scene theme taxonomy", () => {
     }
   });
 
-  it("covers every supported theme family", () => {
+  it("covers every active theme family", () => {
     expect(
       new Set(sceneThemeDefinitions.map((theme) => theme.family)),
     ).toEqual(
-      new Set(["activity", "headspace", "dynamic_mode", "facet", "vibe"]),
+      new Set(["activity", "headspace", "dynamic_mode", "vibe"]),
     );
   });
 
