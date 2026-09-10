@@ -295,6 +295,8 @@ After changes:
 
 # M16.4 — Signals, headspaces, radars + profile dimensions
 
+**Detailed refinement spec:** [M16.4 Profile Semantics Refinement](m16-profile-semantics-refinement.md)
+
 Review what the app claims to measure and display.
 
 Audit:
@@ -307,6 +309,10 @@ Audit:
 - radar axes
 - strength labels / thresholds
 - cross-source aggregation mappings
+- evidence-adjusted radar prominence vs raw affinity
+- positive/opposing Signal relationships in composed Dynamic Modes
+- missing physical/experiential Dynamic Modes
+- missing Signal concepts needed to represent meaningful profile variation
 
 Questions to answer:
 
