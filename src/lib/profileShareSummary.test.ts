@@ -22,6 +22,7 @@ describe("profile share summary", () => {
     expect(model.radarAxes.every((axis) => axis.affinity === null)).toBe(true);
     expect(model.radarAxes.every((axis) => axis.state === "unknown")).toBe(true);
     expect(model.interestAreas).toEqual([]);
+    expect("dynamicModes" in (model as unknown as Record<string, unknown>)).toBe(false);
   });
 
   it("keeps positive interests, Interest Areas, and explicit Hard Limits semantically separate", () => {
@@ -111,7 +112,6 @@ describe("profile share summary", () => {
     expect(serialized).not.toContain("contextual comparisons");
   });
 
-
   it("keeps M13 saved scenes out of the default M9 share-summary contract", () => {
     const model = buildProfileShareSummary(
       "babygirl",
@@ -196,5 +196,4 @@ describe("profile share summary", () => {
     expect(serialized).not.toContain("previousRank");
     expect(serialized).not.toContain("previousCapturedAt");
   });
-
 });
