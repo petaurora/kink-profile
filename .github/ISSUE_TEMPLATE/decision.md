@@ -1,7 +1,7 @@
 ---
 name: Product / technical decision
 about: Resolve a consequential implementation-adjacent choice
- title: "decision: "
+title: "decision: "
 labels: ""
 assignees: ""
 ---
