@@ -159,6 +159,58 @@ It must never imply:
 
 ---
 
+# Base-description invariant
+
+The base Signal description must express the **shared semantic invariant** across every applicable channel.
+
+Channel descriptions specialize that meaning by perspective; they must not redefine the concept into something substantially different.
+
+Use this as a collapse test:
+
+> **Can the shared concept be described clearly and specifically without assuming a side?**
+
+If yes, the concepts may belong under one Signal with channels.
+
+If the only possible base description becomes vague, generic, or erases a psychologically meaningful distinction, **do not collapse the concepts merely because they resemble two sides of an interaction**.
+
+Examples:
+
+```text
+Pain
+  Base:
+    Consensual pain can itself be intrinsically appealing.
+
+  Receiving:
+    Experiencing consensual pain directed toward you.
+
+  Giving:
+    Creating consensual pain for a willing partner.
+
+  Result:
+    clear shared invariant → one Signal with channels
+```
+
+```text
+Exhibitionism + Voyeurism
+  Attempted base:
+    "Visual attention between people can be appealing."
+
+  Problem:
+    the abstraction loses the distinct psychological meanings of
+    being observed versus wanting to observe.
+
+  Result:
+    no useful shared invariant → keep separate Signals
+```
+
+A grammatical inverse is not sufficient justification for a channel pair.
+
+Likewise, the fact that “receiving X” and “giving X” can both be phrased does not mean both perspectives deserve scored channels.
+
+**Channel applicability is semantic, not syntactic.**
+
+---
+
 # Channel applicability
 
 The schema makes all three columns available, but not every Signal must support all three semantically.
@@ -637,16 +689,18 @@ The migration may additionally derive an Overall Control result from known direc
 After this contract is accepted, classify every current Signal using:
 
 1. What is the base semantic concept?
-2. Is the current Signal actually a directional version of another Signal?
-3. Does the concept support Receiving?
-4. Does the concept support Giving?
-5. What are the clearest human-facing labels for each applicable channel?
-6. Do the channel descriptions need to differ from the base Signal description?
-7. Should any current pair remain separate concepts instead of channels?
-7. Is the Signal redundant once channel normalization happens?
-8. Which downstream definitions currently reference the old ID?
-9. Does the Signal need Overall-only evidence?
-10. Does migration require compatibility aliases?
+2. Can its base description express a clear shared invariant without assuming a side?
+3. Is the current Signal actually a directional version of another Signal?
+4. Does the concept support Receiving?
+5. Does the concept support Giving?
+6. What are the clearest human-facing labels for each applicable channel?
+7. Do the channel descriptions specialize the base meaning without redefining it?
+8. Is either proposed channel merely grammatically possible rather than semantically useful?
+9. Should any current pair remain separate concepts instead of channels?
+10. Is the Signal redundant once channel normalization happens?
+11. Which downstream definitions currently reference the old ID?
+12. Does the Signal need Overall-only evidence?
+13. Does migration require compatibility aliases?
 
 Expected output:
 
@@ -691,3 +745,6 @@ This document is the semantic contract those later changes must follow.
 9. **Machine channel IDs stay stable while human-facing channel labels may vary by Signal.**
 10. **Overall Facets remain broad non-directional themes.**
 11. **Schema uniformity must not override clear human semantics.**
+12. **A shared Signal requires a clear base semantic invariant across its channels.**
+13. **Channel descriptions specialize the base meaning; they do not redefine it.**
+14. **A grammatical opposite is not enough to justify a directional channel.**
