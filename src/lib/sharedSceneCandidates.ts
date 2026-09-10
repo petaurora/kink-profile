@@ -512,6 +512,11 @@ export function getSceneThemeIdsForSharedIntentConcept(
           continue;
         }
 
+        // Dynamic modes are deliberately direction-neutral. Only explicit
+        // dynamic-mode mappings may translate them into scene themes; do not
+        // reverse-infer directional vibes from their component Signals.
+        if (concept.kind === "dynamic_mode") continue;
+
         if (mapping.kind !== "signal") continue;
 
         const conceptWeight = conceptSignals.get(mapping.id) ?? 0;
