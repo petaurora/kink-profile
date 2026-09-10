@@ -285,24 +285,6 @@ export const roleHeadspaces: ComposedDefinition[] = [
     },
   },
   {
-    id: "devotional_submissive",
-    label: "Devotional Submissive",
-    shortLabel: "Devotional",
-    description:
-      "A devotional-submissive headspace centers dedication, belonging, and chosen usefulness, with service, obedience, approval, ritual, or surrender gaining meaning from the relationship itself.",
-    weights: {
-      devotion: 1,
-      service: 0.9,
-      belonging: 0.8,
-      obedience: 0.5,
-      praise_approval: 0.4,
-      ownership_symbolism: 0.4,
-      receiving_control: 0.3,
-      role_embodiment: 0.3,
-      ritual_significance: 0.3,
-    },
-  },
-  {
     id: "object",
     label: "Object",
     shortLabel: "Object",
@@ -392,7 +374,6 @@ export const selfPositionedRoleHeadspaceIds = [
   "middle",
   "brat",
   "prey",
-  "devotional_submissive",
   "object",
 ] as const;
 
