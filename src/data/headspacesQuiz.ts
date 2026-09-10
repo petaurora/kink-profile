@@ -285,45 +285,32 @@ export const roleHeadspaces: ComposedDefinition[] = [
     },
   },
   {
-    id: "service_submissive",
-    label: "Service Submissive",
-    shortLabel: "Service sub",
-    description:
-      "A service-submissive role centers usefulness, devotion, chosen obedience, approval, and contribution within power exchange.",
-    weights: {
-      service: 1,
-      devotion: 0.6,
-      obedience: 0.5,
-      praise_approval: 0.4,
-      receiving_control: 0.3,
-      role_embodiment: 0.3,
-    },
-  },
-  {
     id: "devotional_submissive",
     label: "Devotional Submissive",
     shortLabel: "Devotional",
     description:
-      "A devotional-submissive role centers dedication and belonging, with service or surrender gaining meaning from the relationship itself.",
+      "A devotional-submissive headspace centers dedication, belonging, and chosen usefulness, with service, obedience, approval, ritual, or surrender gaining meaning from the relationship itself.",
     weights: {
       devotion: 1,
+      service: 0.9,
       belonging: 0.8,
-      service: 0.5,
+      obedience: 0.5,
+      praise_approval: 0.4,
       ownership_symbolism: 0.4,
       receiving_control: 0.3,
+      role_embodiment: 0.3,
       ritual_significance: 0.3,
     },
   },
   {
-    id: "property_object",
-    label: "Property / Object",
-    shortLabel: "Property",
+    id: "object",
+    label: "Object",
+    shortLabel: "Object",
     description:
-      "This headspace combines consensual objectification or property framing with ownership symbolism and immersive reduction into a role or function.",
+      "An object headspace centers consensual reduction into a role, purpose, function, or thing-like identity, with immersion coming from being treated less like the ordinary everyday self.",
     weights: {
       objectification: 1,
-      ownership_symbolism: 0.8,
-      role_embodiment: 0.6,
+      role_embodiment: 0.8,
       receiving_control: 0.4,
     },
   },
@@ -332,13 +319,14 @@ export const roleHeadspaces: ComposedDefinition[] = [
     label: "Owner / Handler",
     shortLabel: "Owner",
     description:
-      "An owner or handler role blends consensual claiming with responsibility, guidance, care, and negotiated authority.",
+      "An owner or handler role blends consensual claiming with responsibility, care, guidance, structure, and deliberate teaching or shaping over time.",
     weights: {
       ownership_symbolism: 1,
+      guidance_shaping: 1,
       responsibility_holding: 0.7,
       care_giving: 0.6,
+      structure: 0.6,
       giving_control: 0.5,
-      guidance_shaping: 0.3,
     },
   },
   {
@@ -382,19 +370,6 @@ export const roleHeadspaces: ComposedDefinition[] = [
     },
   },
   {
-    id: "trainer",
-    label: "Trainer",
-    shortLabel: "Trainer",
-    description:
-      "A trainer role emphasizes deliberate teaching, correction, structure, repetition, and shaping behavior over time.",
-    weights: {
-      guidance_shaping: 1,
-      structure: 0.6,
-      responsibility_holding: 0.5,
-      giving_control: 0.5,
-    },
-  },
-  {
     id: "master_mistress",
     label: "Master / Mistress",
     shortLabel: "Master",
@@ -417,9 +392,8 @@ export const selfPositionedRoleHeadspaceIds = [
   "middle",
   "brat",
   "prey",
-  "service_submissive",
   "devotional_submissive",
-  "property_object",
+  "object",
 ] as const;
 
 export const partnerPositionedRoleHeadspaceIds = [
@@ -427,7 +401,6 @@ export const partnerPositionedRoleHeadspaceIds = [
   "caregiver",
   "brat_tamer",
   "predator",
-  "trainer",
   "master_mistress",
 ] as const;
 
