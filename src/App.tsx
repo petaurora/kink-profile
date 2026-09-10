@@ -60,13 +60,12 @@ import { loadCatalogProfile } from "./lib/catalogProfileStorage";
 import { buildCanonicalSignalProfile } from "./lib/overallProfileSignals";
 import { scoreOverallFacets } from "./lib/overallProfileFacets";
 import { buildProfileHeaderModel } from "./lib/profileHeader";
-import {
-  buildOverallRadarModel,
-  getKnownRadarRuns,
-  type OverallRadarAxis,
-} from "./lib/overallRadar";
-import type { OverallFacetId } from "./data/overallFacets";
 import { buildProfileRoleDetails } from "./lib/profileRoleDetails";
+import {
+  buildProfileShapeRadarModel,
+  getKnownProfileShapeRadarRuns,
+  type ProfileShapeRadarAxis,
+} from "./lib/profileShapeRadar";
 import {
   buildProfileExplainability,
   type ProfileExplainabilityAction,
@@ -252,12 +251,10 @@ function RadarChart({
   );
 }
 
-function OverallRadarChart({
+function ProfileShapeRadarChart({
   axes,
-  onSelectFacet,
 }: {
-  axes: readonly OverallRadarAxis[];
-  onSelectFacet: (facetId: OverallFacetId) => void;
+  axes: readonly ProfileShapeRadarAxis[];
 }) {
   const size = 460;
   const center = size / 2;
@@ -273,26 +270,17 @@ function OverallRadarChart({
 
   const ringPoints = (scale: number) =>
     axes.map((_, index) => pointFor(index, scale).join(",")).join(" ");
-  const knownRuns = getKnownRadarRuns(axes);
+  const knownRuns = getKnownProfileShapeRadarRuns(axes);
   const completeShape =
     axes.length > 0 && axes.every((axis) => axis.state !== "unknown");
-
-  const selectFromKeyboard = (
-    event: React.KeyboardEvent<SVGGElement>,
-    facetId: OverallFacetId,
-  ) => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    onSelectFacet(facetId);
-  };
 
   return (
     <div className="overall-radar-wrap">
       <svg
         className="overall-radar"
         viewBox={`0 0 ${size} ${size}`}
-        role="group"
-        aria-label="Overall profile radar. Each axis opens an explanation for that theme."
+        role="img"
+        aria-label="Profile shape radar. Each axis is one dynamic mode."
       >
         {[0.25, 0.5, 0.75, 1].map((ring) => (
           <polygon
@@ -305,31 +293,23 @@ function OverallRadarChart({
         {axes.map((axis, index) => {
           const [x, y] = pointFor(index, 1);
           const [labelX, labelY] = pointFor(index, 1.25);
+          const unknown = axis.state === "unknown";
 
           return (
-            <g
-              key={axis.facetId}
-              className={`overall-radar-axis-group state-${axis.state}`}
-              role="button"
-              tabIndex={0}
-              aria-label={`${axis.label}: ${
-                axis.affinity === null
-                  ? "not explored yet"
-                  : `${axis.affinity}% affinity, ${
-                      axis.state === "limited"
-                        ? "limited evidence"
-                        : "evidence available"
-                    }`
-              }. Open theme explanation.`}
-              onClick={() => onSelectFacet(axis.facetId)}
-              onKeyDown={(event) => selectFromKeyboard(event, axis.facetId)}
-            >
+            <g key={axis.modeId}>
+              <title>
+                {axis.affinity === null
+                  ? `${axis.label}: not explored yet`
+                  : `${axis.label}: ${axis.affinity}% affinity, ${axis.coverage}% evidence`}
+              </title>
               <line
                 x1={center}
                 y1={center}
                 x2={x}
                 y2={y}
                 className="overall-radar-axis"
+                strokeDasharray={unknown ? "3 5" : undefined}
+                opacity={unknown ? 0.7 : undefined}
               />
               <text
                 x={labelX}
@@ -343,6 +323,7 @@ function OverallRadarChart({
                 }
                 dominantBaseline="middle"
                 className="overall-radar-label"
+                opacity={unknown ? 0.7 : undefined}
               >
                 {axis.shortLabel}
               </text>
@@ -383,7 +364,7 @@ function OverallRadarChart({
 
           return (
             <circle
-              key={`point-${axis.facetId}`}
+              key={`point-${axis.modeId}`}
               cx={x}
               cy={y}
               r={axis.state === "limited" ? 5 : 4}
@@ -657,18 +638,14 @@ export default function App({
     [canonicalSignals, overallFacets],
   );
 
-  const overallRadar = useMemo(
-    () =>
-      buildOverallRadarModel(
-        overallFacets,
-        profileHeader.strongestFacetIds,
-      ),
-    [overallFacets, profileHeader.strongestFacetIds],
-  );
-
   const profileRoleDetails = useMemo(
     () => buildProfileRoleDetails(canonicalSignals),
     [canonicalSignals],
+  );
+
+  const profileShapeRadar = useMemo(
+    () => buildProfileShapeRadarModel(profileRoleDetails.dynamicModes),
+    [profileRoleDetails.dynamicModes],
   );
 
   const profileExplainability = useMemo(
@@ -872,19 +849,6 @@ export default function App({
     }
 
     setScreen(destination);
-  };
-
-  const openFacetDetail = (facetId: OverallFacetId) => {
-    const element = document.getElementById(`facet-detail-${facetId}`);
-    if (element instanceof HTMLDetailsElement) {
-      element.open = true;
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.setTimeout(() => {
-        element
-          .querySelector<HTMLElement>("summary")
-          ?.focus({ preventScroll: true });
-      }, 250);
-    }
   };
 
   return (
@@ -1179,30 +1143,22 @@ export default function App({
                 <h2>The shape of your profile.</h2>
               </div>
               <p>
-                Each axis is one broad theme. Unexplored axes stay blank instead of
+                Each axis is one dynamic mode. Unexplored modes stay blank instead of
                 being treated as zero.
               </p>
             </div>
 
-            <OverallRadarChart
-              axes={overallRadar.axes}
-              onSelectFacet={openFacetDetail}
-            />
+            <ProfileShapeRadarChart axes={profileShapeRadar.axes} />
 
             <div className="overall-radar-footer">
               <div>
-                <span className="profile-trait-label">Strongest themes</span>
-                {overallRadar.strongestThemes.length > 0 ? (
-                  <div className="overall-radar-theme-list">
-                    {overallRadar.strongestThemes.map((theme) => (
-                      <button
-                        key={theme.facetId}
-                        type="button"
-                        className="overall-radar-theme"
-                        onClick={() => openFacetDetail(theme.facetId)}
-                      >
-                        {theme.label}
-                      </button>
+                <span className="profile-trait-label">Strongest modes</span>
+                {profileShapeRadar.strongestModes.length > 0 ? (
+                  <div className="profile-trait-chips">
+                    {profileShapeRadar.strongestModes.map((mode) => (
+                      <span className="profile-trait-chip" key={mode.modeId}>
+                        <strong>{mode.label}</strong>
+                      </span>
                     ))}
                   </div>
                 ) : (
@@ -1210,9 +1166,9 @@ export default function App({
                 )}
               </div>
 
-              {!overallRadar.hasCompleteShape && (
+              {!profileShapeRadar.hasCompleteShape && (
                 <p className="overall-radar-partial-note">
-                  Some facets are still emerging. Blank spokes remain genuinely
+                  Some dynamic modes are still emerging. Blank spokes remain genuinely
                   unknown; outlined points mark results with limited evidence.
                 </p>
               )}
