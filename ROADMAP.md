@@ -26,7 +26,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M13 | ✅ Complete | theme-driven, low-decision scene composition |
 | M14 | 🟡 Needs refinement | compare/upload + shared interaction work exists; persistent profile/linking model is being reconsidered |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
-| M16 | Planned | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
+| M16 | Planned | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |\n| M17 | Planned | simple front/back Body Map with per-region Yes / Maybe / Neutral / No states |
 
 ---
 
@@ -295,7 +295,7 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M11–M13 are complete. M14 needs product-model refinement before persistent profile/linking work continues; M15–M16 remain formally scoped.**
+**M11–M13 are complete. M14 needs product-model refinement before persistent profile/linking work continues; M15–M17 remain formally scoped.**
 
 Choose the next milestone intentionally:
 
