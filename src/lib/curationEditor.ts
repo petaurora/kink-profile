@@ -20,6 +20,7 @@ import {
 } from "./rewardPunishmentLibrary";
 import type {
   CurationChangeValue,
+  CurationFacetRelationship,
   CurationWeightedRelation,
 } from "./curationWorkspace";
 
@@ -68,6 +69,12 @@ export type CurationEditorField =
       options: readonly CurationEditorOption[];
       required?: boolean;
       allowDirection?: boolean;
+      allowRelationship?: boolean;
+    })
+  | (CurationEditorFieldBase & {
+      kind: "facet-matrix";
+      value: readonly CurationFacetRelationship[];
+      options: readonly CurationEditorOption[];
     });
 
 export type CurationEditorModel = {
@@ -133,7 +140,7 @@ function cloneValue(value: CurationChangeValue): CurationChangeValue {
 
 function fieldValue(field: CurationEditorField): CurationChangeValue {
   if (field.kind === "string-list") return [...field.value];
-  if (field.kind === "weighted-relations") {
+  if (field.kind === "weighted-relations" || field.kind === "facet-matrix") {
     return field.value.map((relation) => ({ ...relation }));
   }
   return field.value;
@@ -148,6 +155,7 @@ function relationField(
     helper?: string;
     required?: boolean;
     allowDirection?: boolean;
+    allowRelationship?: boolean;
   } = {},
 ): CurationEditorField {
   return {
@@ -492,15 +500,18 @@ export function buildCurationEditorModel(
       );
       if (!signal) return null;
 
-      const facetMemberships = overallFacetDefinitions.flatMap((facet) =>
-        facet.signals
-          .filter((mapping) => mapping.signalId === signal.id)
-          .map((mapping) => ({
+      const facetRelationships: CurationFacetRelationship[] =
+        overallFacetDefinitions.map((facet) => {
+          const existing = facet.signals.find(
+            (mapping) => mapping.signalId === signal.id,
+          );
+
+          return {
             id: facet.id,
-            weight: mapping.weight,
-            direction: mapping.direction,
-          })),
-      );
+            relationship: existing?.relationship ?? (existing ? "supports" : "neutral"),
+            weight: existing?.weight ?? 1,
+          };
+        });
 
       return {
         fields: [
@@ -525,17 +536,15 @@ export function buildCurationEditorModel(
             value: signal.description,
             required: true,
           },
-          relationField(
-            "facetMemberships",
-            "Overall Facet memberships",
-            facetMemberships,
-            overallFacetOptions,
-            {
-              allowDirection: true,
-              helper:
-                "Reverse editor for the existing Overall Facet → Signal composition. A Signal may belong to multiple facets. Saving this proposal should update the facet definitions, not create a second source of truth.",
-            },
-          ),
+          {
+            kind: "facet-matrix",
+            key: "facetRelationships",
+            label: "Overall Facet relationships",
+            value: facetRelationships,
+            options: overallFacetOptions,
+            helper:
+              "All nine Overall Facets are broad themes. Classify how this Signal relates to each theme as Supports, Neutral, or Opposes. Giving/receiving and Dom/sub remain below the facet layer.",
+          },
         ],
       };
     }
@@ -645,26 +654,20 @@ export function buildCurationEditorModel(
             value: facet.description,
             required: true,
           },
-          {
-            kind: "boolean",
-            key: "directional",
-            label: "Directional facet",
-            value: facet.directional,
-          },
           relationField(
             "signals",
-            "Signal composition",
+            "Signal relationships",
             facet.signals.map((signal) => ({
               id: signal.signalId,
               weight: signal.weight,
-              direction: signal.direction,
+              relationship: signal.relationship ?? "supports",
             })),
             signalOptions,
             {
               required: true,
-              allowDirection: true,
+              allowRelationship: true,
               helper:
-                "Direction is activity-side evidence only. It must never be interpreted as Dominant/submissive authority.",
+                "Overall Facets are broad themes. Signals may support or oppose a theme; omitted Signals are neutral. Activity side and authority orientation stay in the granular Signal/mode/headspace layers.",
             },
           ),
         ],
@@ -694,7 +697,9 @@ function normalizeRelations(value: CurationChangeValue | undefined) {
   if (!Array.isArray(value)) return [];
   return value
     .filter(
-      (relation): relation is CurationWeightedRelation =>
+      (
+        relation,
+      ): relation is CurationWeightedRelation | CurationFacetRelationship =>
         typeof relation === "object" &&
         relation !== null &&
         "id" in relation &&
@@ -703,11 +708,16 @@ function normalizeRelations(value: CurationChangeValue | undefined) {
     .map((relation) => ({
       id: relation.id,
       weight: relation.weight,
-      direction: relation.direction,
+      direction: "direction" in relation ? relation.direction : undefined,
+      relationship:
+        "relationship" in relation ? relation.relationship : undefined,
     }))
     .sort(
       (left, right) =>
         left.id.localeCompare(right.id) ||
+        String(left.relationship ?? "").localeCompare(
+          String(right.relationship ?? ""),
+        ) ||
         String(left.direction ?? "").localeCompare(String(right.direction ?? "")),
     );
 }
@@ -859,6 +869,70 @@ export function validateCurationDraft(
             `${field.label} has an invalid direction for "${relation.id}".`,
           );
         }
+
+        if (
+          relation.relationship &&
+          (!field.allowRelationship ||
+            !["supports", "opposes"].includes(relation.relationship))
+        ) {
+          errors.push(
+            `${field.label} has an invalid semantic relationship for "${relation.id}".`,
+          );
+        }
+      }
+      continue;
+    }
+
+    if (field.kind === "facet-matrix") {
+      if (!Array.isArray(value)) {
+        errors.push(`${field.label} must contain every Overall Facet.`);
+        continue;
+      }
+
+      const relationships = value.filter(
+        (item): item is CurationFacetRelationship =>
+          typeof item === "object" &&
+          item !== null &&
+          "id" in item &&
+          "relationship" in item &&
+          "weight" in item,
+      );
+
+      const ids = new Set(relationships.map((relationship) => relationship.id));
+      if (
+        relationships.length !== field.options.length ||
+        ids.size !== field.options.length
+      ) {
+        errors.push(
+          `${field.label} must classify all ${field.options.length} Overall Facets exactly once.`,
+        );
+      }
+
+      for (const relationship of relationships) {
+        if (!field.options.some((option) => option.value === relationship.id)) {
+          errors.push(
+            `${field.label} references unknown facet "${relationship.id}".`,
+          );
+        }
+        if (
+          !["supports", "neutral", "opposes"].includes(
+            relationship.relationship,
+          )
+        ) {
+          errors.push(
+            `${field.label} has an invalid state for "${relationship.id}".`,
+          );
+        }
+        if (
+          relationship.relationship !== "neutral" &&
+          (!Number.isFinite(relationship.weight) ||
+            relationship.weight <= 0 ||
+            relationship.weight > 1)
+        ) {
+          errors.push(
+            `${field.label} weight for "${relationship.id}" must be greater than 0 and no more than 1.`,
+          );
+        }
       }
     }
   }
@@ -968,7 +1042,7 @@ export function getCurationConsequences(
       consequences.push(
         `This signal is currently referenced by ${counts.weightedQuestions} weighted questions, ${counts.modes} dynamic modes, ${counts.roles} roles/headspaces, ${counts.facets} overall facets and ${counts.catalogItems} catalog items.`,
       );
-      if (keys.has("facetMemberships")) {
+      if (keys.has("facetRelationships")) {
         consequences.push(
           "Changing Overall Facet memberships updates the reverse Signal → Facet view by modifying the canonical facet signal compositions.",
         );
@@ -989,7 +1063,7 @@ export function getCurationConsequences(
       break;
 
     case "overall-facet":
-      if (keys.has("signals") || keys.has("directional")) {
+      if (keys.has("signals")) {
         consequences.push(
           "This changes M7 overall aggregation/radar semantics and should be sanity-checked against representative profiles.",
         );
