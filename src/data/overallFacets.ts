@@ -51,17 +51,17 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
     description:
       "Meaningful surrender, exercise, or transfer of negotiated authority and responsibility.",
     signals: [
-      { signalId: "receiving_control", weight: 1 },
       { signalId: "giving_control", weight: 1 },
-      {
-        signalId: "responsibility_transfer",
-        weight: 0.9,
-      },
-      {
-        signalId: "responsibility_holding",
-        weight: 0.8,
-      },
-      { signalId: "obedience", weight: 0.65 },
+      { signalId: "receiving_control", weight: 1 },
+      { signalId: "responsibility_holding", weight: 0.8 },
+      { signalId: "responsibility_transfer", weight: 0.9 },
+      { signalId: "obedience", weight: 0.5 },
+      { signalId: "giving_discipline", weight: 0.35 },
+      { signalId: "receiving_discipline", weight: 0.3 },
+      { signalId: "giving_constraint_control", weight: 0.5 },
+      { signalId: "receiving_constraint_control", weight: 0.5 },
+      { signalId: "ownership_symbolism", weight: 0.3 },
+      { signalId: "guidance_shaping", weight: 0.2 },
     ],
   },
   {
@@ -74,9 +74,15 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
       { signalId: "structure", weight: 1 },
       { signalId: "ritual_significance", weight: 0.8 },
       { signalId: "accountability", weight: 0.75 },
-      { signalId: "guidance_shaping", weight: 0.55 },
-      { signalId: "receiving_discipline", weight: 0.7 },
-      { signalId: "giving_discipline", weight: 0.7 },
+      { signalId: "obedience", weight: 0.7 },
+      { signalId: "giving_discipline", weight: 0.6 },
+      { signalId: "receiving_discipline", weight: 0.6 },
+      { signalId: "guidance_shaping", weight: 0.45 },
+      { signalId: "responsibility_holding", weight: 0.3 },
+      { signalId: "responsibility_transfer", weight: 0.3 },
+      { signalId: "giving_control", weight: 0.2 },
+      { signalId: "receiving_control", weight: 0.25 },
+      { signalId: "service", weight: 0.2 },
     ],
   },
   {
@@ -88,7 +94,12 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
     signals: [
       { signalId: "ownership_symbolism", weight: 1 },
       { signalId: "belonging", weight: 0.9 },
-      { signalId: "objectification", weight: 0.45 },
+      { signalId: "objectification", weight: 0.35 },
+      { signalId: "devotion", weight: 0.35 },
+      { signalId: "responsibility_holding", weight: 0.3 },
+      { signalId: "responsibility_transfer", weight: 0.25 },
+      { signalId: "giving_control", weight: 0.25 },
+      { signalId: "receiving_control", weight: 0.3 },
     ],
   },
   {
@@ -100,9 +111,11 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
     signals: [
       { signalId: "service", weight: 1 },
       { signalId: "devotion", weight: 1 },
-      { signalId: "obedience", weight: 0.5 },
-      { signalId: "ritual_significance", weight: 0.35 },
-      { signalId: "praise_approval", weight: 0.3 },
+      { signalId: "praise_approval", weight: 0.4 },
+      { signalId: "obedience", weight: 0.3 },
+      { signalId: "care_giving", weight: 0.3 },
+      { signalId: "belonging", weight: 0.2 },
+      { signalId: "ritual_significance", weight: 0.15 },
     ],
   },
   {
@@ -112,14 +125,15 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
     description:
       "Receiving or providing care, soothing, guidance, protection, and nurtured relational energy.",
     signals: [
-      { signalId: "care_receiving", weight: 1 },
       { signalId: "care_giving", weight: 1 },
-      { signalId: "guidance_shaping", weight: 0.55 },
-      {
-        signalId: "responsibility_holding",
-        weight: 0.45,
-      },
-      { signalId: "praise_approval", weight: 0.3 },
+      { signalId: "care_receiving", weight: 1 },
+      { signalId: "guidance_shaping", weight: 0.45 },
+      { signalId: "praise_approval", weight: 0.5 },
+      { signalId: "younger_headspace", weight: 0.35 },
+      { signalId: "responsibility_holding", weight: 0.3 },
+      { signalId: "responsibility_transfer", weight: 0.25 },
+      { signalId: "playfulness", weight: 0.2 },
+      { signalId: "belonging", weight: 0.2 },
     ],
   },
   {
@@ -131,8 +145,15 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
     signals: [
       { signalId: "playfulness", weight: 1 },
       { signalId: "playful_resistance", weight: 1 },
-      { signalId: "challenge_escape", weight: 0.6 },
-      { signalId: "autonomy", weight: 0.3 },
+      { signalId: "challenge_escape", weight: 0.7 },
+      { signalId: "autonomy", weight: 0.4 },
+      { signalId: "pursuit_receiving", weight: 0.3 },
+      { signalId: "pursuit_giving", weight: 0.2 },
+      { signalId: "younger_headspace", weight: 0.3 },
+      { signalId: "anticipation", weight: 0.2 },
+      { signalId: "giving_challenge", weight: 0.2 },
+      { signalId: "receiving_challenge", weight: 0.2 },
+      { signalId: "primal_embodiment", weight: 0.2 },
     ],
   },
   {
@@ -143,11 +164,15 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
       "Feral, pursuit, chase, predator/prey, embodied, and less-structured instinctive energy.",
     signals: [
       { signalId: "primal_embodiment", weight: 1 },
-      {
-        signalId: "pursuit_receiving",
-        weight: 0.85,
-      },
       { signalId: "pursuit_giving", weight: 0.85 },
+      { signalId: "pursuit_receiving", weight: 0.85 },
+      { signalId: "challenge_escape", weight: 0.3 },
+      { signalId: "giving_endurance", weight: 0.2 },
+      { signalId: "receiving_endurance", weight: 0.2 },
+      { signalId: "anticipation", weight: 0.2 },
+      { signalId: "playful_resistance", weight: 0.15 },
+      { signalId: "playfulness", weight: 0.1 },
+      { signalId: "emotional_intensity", weight: 0.15 },
     ],
   },
   {
@@ -157,25 +182,16 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
     description:
       "Physical restriction, body positioning, movement control, and constraint-oriented play.",
     signals: [
-      {
-        signalId: "receiving_restraint",
-        weight: 1,
-      },
       { signalId: "giving_restraint", weight: 1 },
+      { signalId: "receiving_restraint", weight: 1 },
       { signalId: "movement_restriction", weight: 0.9 },
-      {
-        signalId: "receiving_positioning",
-        weight: 0.7,
-      },
+      { signalId: "giving_constraint_control", weight: 0.8 },
+      { signalId: "receiving_constraint_control", weight: 0.8 },
       { signalId: "giving_positioning", weight: 0.7 },
-      {
-        signalId: "receiving_constraint_control",
-        weight: 0.8,
-      },
-      {
-        signalId: "giving_constraint_control",
-        weight: 0.8,
-      },
+      { signalId: "receiving_positioning", weight: 0.7 },
+      { signalId: "giving_control", weight: 0.2 },
+      { signalId: "receiving_control", weight: 0.2 },
+      { signalId: "anticipation", weight: 0.2 },
     ],
   },
   {
@@ -185,24 +201,17 @@ export const overallFacetDefinitions: readonly OverallFacetDefinition[] = [
     description:
       "Physical or emotional intensity, pain, endurance, and consensual challenge at an agreed edge.",
     signals: [
-      { signalId: "pain_receiving", weight: 1 },
       { signalId: "pain_giving", weight: 1 },
-      {
-        signalId: "receiving_intensity",
-        weight: 0.9,
-      },
+      { signalId: "pain_receiving", weight: 1 },
       { signalId: "giving_intensity", weight: 0.9 },
-      {
-        signalId: "receiving_endurance",
-        weight: 0.65,
-      },
+      { signalId: "receiving_intensity", weight: 0.9 },
       { signalId: "giving_endurance", weight: 0.65 },
-      {
-        signalId: "receiving_challenge",
-        weight: 0.65,
-      },
-      { signalId: "giving_challenge", weight: 0.65 },
+      { signalId: "receiving_endurance", weight: 0.65 },
+      { signalId: "giving_challenge", weight: 0.5 },
+      { signalId: "receiving_challenge", weight: 0.5 },
       { signalId: "emotional_intensity", weight: 0.55 },
+      { signalId: "anticipation", weight: 0.35 },
+      { signalId: "challenge_escape", weight: 0.2 },
     ],
   },
 ];
