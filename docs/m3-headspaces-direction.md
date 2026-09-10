@@ -20,7 +20,7 @@ signals
   └─ roles / headspaces
 ```
 
-The primary user-facing result is the **role/headspace layer**. Dynamic modes explain *why* those roles may resonate.
+The role/headspace layer answers **what recognizable state or relational role is being inhabited**. Dynamic modes describe **how that role or interaction feels or functions** and can layer across multiple headspaces.
 
 ---
 
@@ -28,31 +28,54 @@ The primary user-facing result is the **role/headspace layer**. Dynamic modes ex
 
 M3 v4 refines the role/headspace layer without changing the 32-question bank.
 
-### Service Submissive + Devotional Submissive
+## Devotion and Service are modes, not headspaces
 
-These are now one **Devotional Submissive** role/headspace.
+The former **Service Submissive** and **Devotional Submissive** peer results are removed from the headspace taxonomy.
 
-Service remains a distinct underlying dynamic mode because usefulness can be meaningful without necessarily being experienced as devotion. At the role/headspace layer, however, Service Submissive and Devotional Submissive were modeling overlapping expressions of the same relational state.
+Neither concept cleanly describes a unique headspace:
 
-The merged role can be supported by:
+- **Devotion** can exist within Slave, Pet, Brat, Owner / Handler, Master / Mistress, or another role.
+- **Service** can be an expression of devotion, obedience, usefulness, care, delegated responsibility, or a role that is not submissive at all.
+- A Slave can be highly devotional and service-oriented without becoming a separate "Devotional Submissive" headspace.
+- There is no necessary dominant/submissive half to Devotion because Devotion itself is not authority-directional.
 
-- devotion
-- service / usefulness
-- belonging
-- obedience
-- praise / approval
-- ownership symbolism
-- receiving control
-- role embodiment
-- ritual significance
+Therefore:
 
-### Owner / Handler + Trainer
+```text
+Devotion = dynamic mode
+Service  = dynamic mode
+```
+
+They remain independently measurable and visible in profile results, but do not compete with Pet, Slave, Object, etc. as peer identities.
+
+Examples:
+
+```text
+Slave
+├─ Surrender
+├─ Service
+├─ Devotion
+└─ Protocol
+
+Pet
+├─ Nurtured Play
+├─ Devotion
+└─ Claiming / belonging signals
+
+Owner / Handler
+├─ Claiming
+├─ Training / Shaping
+├─ Caretaking
+└─ Devotion (when supported)
+```
+
+## Owner / Handler absorbs Trainer
 
 Trainer is no longer a peer role/headspace. Training or shaping is treated as one way an **Owner / Handler** role can be expressed.
 
-The **Training / Shaping** dynamic mode remains distinct so the profile can still explain a strong preference for teaching, correction, repetition, development, or behavior shaping even when the user does not strongly identify with an Owner / Handler role.
+The **Training / Shaping** dynamic mode remains distinct so the profile can still explain a preference for teaching, correction, repetition, development, or behavior shaping even when the user does not strongly identify with an Owner / Handler role.
 
-The merged Owner / Handler role can be supported by:
+The merged Owner / Handler composition can be supported by:
 
 - ownership / claiming symbolism
 - guidance and shaping
@@ -61,7 +84,7 @@ The merged Owner / Handler role can be supported by:
 - structure
 - giving control
 
-### Property / Object → Object
+## Property / Object becomes Object
 
 The former **Property / Object** role is now **Object**.
 
@@ -69,7 +92,7 @@ Property is not treated as its own headspace because property/ownership meaning 
 
 **Object** remains a headspace because consensual reduction into a role, purpose, function, or thing-like identity can describe a distinct internal mode independent of ownership framing.
 
-Object therefore uses:
+Object uses:
 
 - objectification
 - role embodiment
@@ -86,9 +109,9 @@ The implemented M3 contract is:
 - standalone **32-question** Roles & Headspaces quiz
 - shared reusable signal vocabulary
 - M3-local signal evidence
-- weighted **dynamic mode** compositions
+- weighted **dynamic-mode** compositions
 - weighted **role/headspace** compositions
-- **13** overlapping role/headspace affinities
+- **12** overlapping role/headspace affinities
 - **12** explanatory dynamic modes
 - ranked role/headspace results
 - separate self-positioned and partner-positioned role/headspace radars
@@ -99,15 +122,15 @@ The implemented M3 contract is:
 
 The quiz should answer:
 
-> Which roles or headspaces may resonate with how I like a dynamic to feel?
+> Which recognizable roles or headspaces may resonate, and which underlying modes describe how those experiences tend to feel?
 
-It should **not** mistake concepts such as Surrender, Protocol, Service, Claiming, or Training / Shaping for peer role identities when those concepts are better represented as underlying dynamic modes.
+It should **not** create a peer identity for every expression, relational motivation, or activity direction.
 
 ---
 
 # Taxonomy
 
-## Layer 1 — signals
+## Layer 1 — Signals
 
 Signals are reusable experiential preferences measured by questions and reused by higher-order compositions.
 
@@ -135,9 +158,9 @@ The `younger_headspace` signal exists because Little and Middle should not be in
 
 Primal embodiment and directional pursuit signals allow Prey and Predator to be measured independently rather than inferred from Pet, Brat, or generic control preferences.
 
-## Layer 2 — dynamic modes
+## Layer 2 — Dynamic modes
 
-Dynamic modes describe **how the dynamic feels or functions psychologically**.
+Dynamic modes describe **how the dynamic feels or functions psychologically or relationally**.
 
 Implemented modes:
 
@@ -154,9 +177,9 @@ Implemented modes:
 - Training / Shaping
 - Primal / Feral
 
-These are explanatory results, not the primary role/headspace taxonomy.
+These modes can overlap freely with multiple roles/headspaces and do not imply D/s orientation unless the underlying signals explicitly measure negotiated authority.
 
-## Layer 3 — roles / headspaces
+## Layer 3 — Roles / headspaces
 
 Roles/headspaces describe recognizable relational identities or modes a user may inhabit.
 
@@ -168,7 +191,6 @@ Roles/headspaces describe recognizable relational identities or modes a user may
 - Middle
 - Brat
 - Prey
-- Devotional Submissive
 - Object
 
 ### Partner-positioned roles / headspaces
@@ -189,60 +211,7 @@ The two display groups are not authority classifications. In particular:
 - being cared for, pursued, restrained, or positioned does not imply submission
 - a role can be enacted as service, under instruction, through delegated responsibility, or outside D/s entirely
 
-Dominant/submissive orientation belongs to the explicit authority model, not to generic activity direction.
-
----
-
-# Why dynamic modes remain separate
-
-The role/headspace taxonomy deliberately avoids creating a new identity for every way a role can be expressed.
-
-For example:
-
-```text
-Devotional Submissive
-├─ devotion
-├─ service
-├─ belonging
-├─ obedience
-├─ praise / approval
-└─ ritual meaning
-```
-
-Service is still useful independently as a dynamic mode:
-
-```text
-Service
-├─ usefulness
-├─ contribution
-├─ role meaning
-└─ approval
-```
-
-Likewise:
-
-```text
-Owner / Handler
-├─ claiming / ownership meaning
-├─ responsibility
-├─ care
-├─ authority
-├─ guidance
-└─ shaping / training
-```
-
-while Training / Shaping remains independently visible as a dynamic mode:
-
-```text
-Training / Shaping
-├─ guidance
-├─ repetition
-├─ structure
-├─ correction
-└─ development
-```
-
-This preserves nuance without duplicating peer role identities.
+Dominant/submissive orientation belongs to the explicit authority model, not to generic activity direction, relational devotion, or service.
 
 ---
 
@@ -302,18 +271,6 @@ Weights are evidence strengths, not percentages.
 - role_embodiment 0.5
 - receiving_control 0.3
 - playful_resistance 0.2
-
-## Devotional Submissive
-
-- devotion 1.0
-- service 0.9
-- belonging 0.8
-- obedience 0.5
-- praise_approval 0.4
-- ownership_symbolism 0.4
-- receiving_control 0.3
-- role_embodiment 0.3
-- ritual_significance 0.3
 
 ## Object
 
@@ -450,7 +407,7 @@ Weights are evidence strengths, not percentages.
 
 ---
 
-# Questionnaire
+# Questionnaire and scoring
 
 M3 v4 contains the same **32 questions** as M3 v3.
 
@@ -464,15 +421,9 @@ The question bank continues to measure:
 - guidance / shaping independently from ownership or authority
 - objectification independently from ownership symbolism
 
-The question UI remains neutral and should not expose which role/headspace is currently receiving evidence.
+The question UI remains neutral and should not expose which role/headspace or dynamic mode is currently receiving evidence.
 
-Because the question bank and stored answer format are unchanged, existing M3 answers can be rescored against the v4 compositions. No stored role-result migration is required.
-
----
-
-# Scoring behavior
-
-For M3:
+Because the question bank and stored answer format are unchanged, existing M3 answers can be rescored against the v4 compositions. No stored derived-role migration is required.
 
 ```text
 question answers
@@ -483,8 +434,6 @@ M3-local signal scores + coverage
      └─ dynamic-mode composition + coverage
 ```
 
-The primary ranked results use **role/headspace compositions**.
-
 Visualization remains split into three radar charts:
 
 1. self-positioned roles and headspaces
@@ -493,33 +442,7 @@ Visualization remains split into three radar charts:
 
 These are **display groupings, not D/s orientation buckets**.
 
-A self-positioned role is primarily phrased as the role or headspace the user inhabits, such as Pet, Little, Prey, Slave, Devotional Submissive, or Object.
-
-A partner-positioned role is primarily phrased as a role enacted toward another person, such as Caregiver, Predator, Owner / Handler, or Master / Mistress.
-
-Neither grouping means submissive or dominant. Activity side, relational role, and negotiated authority remain separate dimensions.
-
 All compositions are independent and do not sum to 100%.
-
-Autonomy never automatically subtracts from another role/headspace. For example, high Autonomy + high Slave or Little can describe consciously bounded or contextual role immersion rather than a scoring contradiction.
-
----
-
-# Section independence
-
-M3 does not require M2.
-
-M2 and M3 may reuse stable signal concepts, but their direct quiz evidence remains section-local before overall aggregation.
-
-```text
-M2 answers → M2 signal evidence → D/s results
-
-M3 answers → M3 signal evidence
-                     ├→ role/headspace results
-                     └→ dynamic-mode results
-```
-
-The overall profile may later normalize and aggregate those signals through the canonical profile evidence model.
 
 ---
 
@@ -529,11 +452,13 @@ M3 v4 changes the **composition taxonomy**, not the question bank.
 
 Changes from v3:
 
-- Service Submissive merged into Devotional Submissive
+- Service Submissive removed as a peer headspace
+- Devotional Submissive removed as a peer headspace
+- Devotion and Service remain independently measured dynamic modes
 - Trainer merged into Owner / Handler
 - Property / Object renamed and narrowed to Object
-- role/headspace count changed from 15 to 13
-- Service and Training / Shaping remain explanatory dynamic modes
+- role/headspace count changed from 15 to 12
+- Training / Shaping remains an explanatory dynamic mode
 - ownership/property meaning remains available through `ownership_symbolism` instead of a peer Property headspace
 
 M3 v3 answers remain compatible for rescoring because the 32 question IDs and answer scale are unchanged. Derived v3 role/headspace results should not be treated as identical to v4 results because the compositions changed.
@@ -542,10 +467,10 @@ M3 v3 answers remain compatible for rescoring because the 32 question IDs and an
 
 # Post-implementation review questions
 
-1. Do Pet, Slave, Little, Middle, Brat, Prey, Devotional Submissive, and Object remain recognizably different in real profiles?
+1. Do Pet, Slave, Little, Middle, Brat, Prey, and Object remain recognizably distinct in real profiles?
 2. Do Little and Middle separate well enough from the shared younger-headspace signal?
-3. Does the merged Devotional Submissive composition represent both devotion-centered and service-centered expressions without becoming too broad?
-4. Does Owner / Handler now absorb training/shaping naturally, or does the combined composition over-score people who only enjoy teaching?
+3. Do Devotion and Service work better as cross-cutting modes now that they are no longer forced into a submissive identity?
+4. Does Owner / Handler absorb training/shaping naturally, or does the combined composition over-score people who only enjoy teaching?
 5. Does keeping Training / Shaping as a dynamic mode preserve the useful distinction?
 6. Does Object read as a distinct headspace when ownership symbolism is removed from its role composition?
 7. Should Brat Tamer remain a peer role/headspace or eventually become a contextual style?
