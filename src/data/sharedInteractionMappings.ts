@@ -61,6 +61,10 @@ export type SharedInteractionMapping = {
  * They are intentionally NOT evidence and must never write back into either
  * profile. In particular, activity-side complements such as giving pain ↔
  * receiving pain do not imply Dominant/submissive authority orientation.
+ *
+ * Dynamic modes are intentionally absent from complement mappings: modes are
+ * direction-neutral shared context. Complementarity belongs to directional
+ * Signals or explicit role pairings instead.
  */
 export const sharedInteractionMappings: readonly SharedInteractionMapping[] = [
   {
@@ -194,30 +198,6 @@ export const sharedInteractionMappings: readonly SharedInteractionMapping[] = [
     authoritySemantics: "activity_side_only",
     explanation:
       "One profile enjoys giving an agreed challenge while the other enjoys receiving one.",
-  },
-  {
-    id: "mode-authority-surrender",
-    version: sharedInteractionMappingVersion,
-    source: { kind: "dynamic_mode", id: "authority_mode" },
-    target: { kind: "dynamic_mode", id: "surrender_mode" },
-    relationshipKind: "dynamic_mode_complement",
-    strength: 1,
-    directionality: "bidirectional",
-    authoritySemantics: "explicit_authority_pair",
-    explanation:
-      "One profile resonates with Authority while the other resonates with chosen Surrender.",
-  },
-  {
-    id: "mode-caretaking-nurtured-play",
-    version: sharedInteractionMappingVersion,
-    source: { kind: "dynamic_mode", id: "caretaking_mode" },
-    target: { kind: "dynamic_mode", id: "nurtured_play" },
-    relationshipKind: "dynamic_mode_complement",
-    strength: 0.9,
-    directionality: "bidirectional",
-    authoritySemantics: "contextual_role",
-    explanation:
-      "One profile resonates with caretaking while the other resonates with being nurtured in play.",
   },
   {
     id: "headspace-predator-prey",
