@@ -106,7 +106,7 @@ describe("M16.2 structured curation editor", () => {
       ["catalog-category", "bondage-restraint", "signalMappings"],
       ["reward-punishment-category", "impact", "signalMappings"],
       ["quiz-question", "ds-001", "weights"],
-      ["dynamic-mode", "surrender_mode", "weights"],
+      ["dynamic-mode", "power_exchange_mode", "weights"],
       ["role-headspace", "pet", "weights"],
       ["overall-facet", "power_exchange", "signals"],
     ] as const;
