@@ -273,6 +273,67 @@ This rule should hold across quizzes, catalog ratings, ranking projections, impo
 
 ---
 
+# Overall is a roll-up, not a third activity side
+
+Receiving and Giving are directional perspectives.
+
+Overall is the broader concept-level result.
+
+That means:
+
+```text
+Receiving ─┐
+           ├── may inform → Overall
+Giving ────┘
+
+Overall ──X──► Receiving
+Overall ──X──► Giving
+```
+
+The three UI columns may look parallel, but their semantics are intentionally asymmetric.
+
+## Aggregation constraints
+
+The exact scoring formula is deferred to the migration/scoring slice, but it must obey these rules:
+
+- missing Receiving/Giving evidence is **unknown**, not zero
+- do not average an unknown side as 0
+- do not infer an unobserved opposite side
+- directional evidence may strengthen or refine Overall
+- broad Overall evidence remains valid broad evidence when directional evidence later exists
+- do not double-count the same source simply because it is represented in both a broad and directional view
+- contradictory directional evidence should remain visible rather than being erased by one flat mean
+- Overall should summarize the concept, while Receiving/Giving preserve asymmetry
+
+Example:
+
+```text
+Restraint
+  Overall:    Love
+  Receiving:  Love
+  Giving:     Unknown
+```
+
+must not become:
+
+```text
+Giving = Love
+```
+
+and must not reduce Overall because Giving is unknown.
+
+Likewise:
+
+```text
+Arousal Control
+  Receiving: high
+  Giving:    low
+```
+
+should preserve that split even if the resulting Overall concept affinity is moderate-to-high.
+
+---
+
 # Result model
 
 Conceptually, one Signal produces multiple channel results:
