@@ -51,6 +51,16 @@ describe("M13 scene theme taxonomy", () => {
     expect(getSceneTheme("playful-resistance")).toEqual(
       expect.objectContaining({ label: "Playful Challenge", family: "dynamic_mode" }),
     );
+    expect(getSceneTheme("power-exchange")).toEqual(
+      expect.objectContaining({ label: "Power Exchange", family: "dynamic_mode" }),
+    );
+    expect(getSceneTheme("power-exchange")?.mappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "dynamic_mode", id: "power_exchange_mode" }),
+      ]),
+    );
+    expect(getSceneTheme("surrender")?.family).toBe("vibe");
+    expect(getSceneTheme("deep-submission")?.family).toBe("vibe");
     expect(getSceneTheme("care")?.mappings).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ kind: "dynamic_mode", id: "care_mode" }),
