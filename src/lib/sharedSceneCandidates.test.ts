@@ -277,21 +277,21 @@ describe("shared participant intent → scene themes", () => {
     expect(ids).toContain("prey");
   });
 
-  it("turns Authority / Surrender current intent into power-exchange scene queries", () => {
+  it("turns neutral Power Exchange intent into the power-exchange scene query", () => {
     const ids = getSceneThemeIdsForSharedParticipantIntents(
       {
         selectedConcepts: [
-          { kind: "dynamic_mode", id: "surrender_mode" },
+          { kind: "dynamic_mode", id: "power_exchange_mode" },
         ],
       },
       {
         selectedConcepts: [
-          { kind: "dynamic_mode", id: "authority_mode" },
+          { kind: "dynamic_mode", id: "power_exchange_mode" },
         ],
       },
     );
 
     expect(ids).toContain("power-exchange");
-    expect(ids).toContain("surrender");
+    expect(ids).not.toContain("surrender");
   });
 });
