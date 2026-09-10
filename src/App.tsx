@@ -62,6 +62,7 @@ import { scoreOverallFacets } from "./lib/overallProfileFacets";
 import { buildProfileHeaderModel } from "./lib/profileHeader";
 import {
   buildOverallRadarModel,
+  calculateOverallFacetProminence,
   getKnownRadarRuns,
   type OverallRadarAxis,
 } from "./lib/overallRadar";
@@ -354,7 +355,7 @@ function OverallRadarChart({
           <polygon
             points={axes
               .map((axis, index) =>
-                pointFor(index, (axis.affinity ?? 0) / 100).join(","),
+                pointFor(index, (axis.prominence ?? 0) / 100).join(","),
               )
               .join(" ")}
             className="overall-radar-score"
@@ -368,7 +369,7 @@ function OverallRadarChart({
                   const axis = axes[axisIndex];
                   return pointFor(
                     axisIndex,
-                    (axis.affinity ?? 0) / 100,
+                    (axis.prominence ?? 0) / 100,
                   ).join(",");
                 })
                 .join(" ")}
@@ -378,8 +379,8 @@ function OverallRadarChart({
         )}
 
         {axes.map((axis, index) => {
-          if (axis.affinity === null) return null;
-          const [x, y] = pointFor(index, axis.affinity / 100);
+          if (axis.prominence === null) return null;
+          const [x, y] = pointFor(index, axis.prominence / 100);
 
           return (
             <circle
@@ -1179,8 +1180,9 @@ export default function App({
                 <h2>The shape of your profile.</h2>
               </div>
               <p>
-                Each axis is one broad theme. Unexplored axes stay blank instead of
-                being treated as zero.
+                Each axis is one broad theme. Shape uses affinity adjusted by
+                evidence coverage; unexplored axes stay blank instead of being
+                treated as zero.
               </p>
             </div>
 
@@ -1555,7 +1557,19 @@ export default function App({
                     <p className="profile-evidence-message">
                       {facet.evidenceMessage}
                       {facet.coverage > 0 && (
-                        <span> Evidence coverage: {facet.coverage}%.</span>
+                        <span>
+                          {" "}Evidence coverage: {facet.coverage}%.
+                          {facet.affinity !== null && (
+                            <>
+                              {" "}Profile-shape prominence:{" "}
+                              {calculateOverallFacetProminence(
+                                facet.affinity,
+                                facet.coverage,
+                              )}
+                              %.
+                            </>
+                          )}
+                        </span>
                       )}
                     </p>
 
