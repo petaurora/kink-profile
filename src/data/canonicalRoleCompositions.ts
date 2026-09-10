@@ -32,11 +32,11 @@ const channelOverrides: Readonly<
     pursuit_receiving: "overall",
     pursuit_giving: "overall",
   },
-  authority_mode: {
-    structure: "giving",
-  },
-  surrender_mode: {
-    obedience: "giving",
+  power_exchange_mode: {
+    receiving_control: "overall",
+    giving_control: "overall",
+    responsibility_transfer: "overall",
+    responsibility_holding: "overall",
   },
   intensity_mode: {
     receiving_intensity: "overall",
