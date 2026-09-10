@@ -73,7 +73,10 @@ The user-facing docs explain behavior; the specifications below remain authorita
 19. [M16 Data & Content Curation](m16-data-content-curation.md)  
     The planned whole-app curation contract: inventory/review rubric, mobile Curation Workbench, quiz/radar/signal review, kink-catalog and Rewards & Punishments cleanup, migration-safe identity changes, and regression validation.
 
-20. [M17 Body Map](m17-body-map.md)  \n    The planned lightweight body-boundary map: front/back selectable SVG regions, left/right distinctions, separate inner thighs, and one general Yes / Maybe / Neutral / No state per region.\n\n21. [Roadmap](../ROADMAP.md)  
+20. [M17 Body Map](m17-body-map.md)  
+    The planned lightweight body-boundary map: front/back selectable SVG regions, left/right distinctions, separate inner thighs, and one general Yes / Maybe / Neutral / No state per region.
+
+21. [Roadmap](../ROADMAP.md)  
     Compact milestone status + slice checklists showing what is complete and what can be built next. Detailed milestone behavior belongs in the linked docs.
 
 22. [Reference Data](../reference/README.md)  
@@ -103,7 +106,8 @@ The user-facing docs explain behavior; the specifications below remain authorita
 | How should profile context become a themed, low-decision scene builder? | [M13 Scene Builder](m13-scene-builder.md) |
 | How does uploaded-profile comparison work, and what is still unresolved about persistent linked/multiple profiles? | [M14 Shared Profiles](m14-shared-profiles.md) |
 | How should one activity vary by Dominant/submissive/non-D/s context and giving/receiving side? | [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md) |
-| How should authored data, taxonomies, mappings, quizzes, radars, catalog items, and Rewards/Punishments be reviewed and curated? | [M16 Data & Content Curation](m16-data-content-curation.md) |\n| How should the simple front/back body preference map work? | [M17 Body Map](m17-body-map.md) |
+| How should authored data, taxonomies, mappings, quizzes, radars, catalog items, and Rewards/Punishments be reviewed and curated? | [M16 Data & Content Curation](m16-data-content-curation.md) |
+| How should the simple front/back body preference map work? | [M17 Body Map](m17-body-map.md) |
 | What do we build next? | [Roadmap](../ROADMAP.md) |
 | What is implemented today? | [README](../README.md) + code |
 | How do we use the kink catalog? | [Reference Data](../reference/README.md) |
@@ -130,6 +134,7 @@ If reward/punishment contextual-use semantics, action-library identity, randomiz
 If scene themes, candidate filtering, current-session state, scene composition, or scene randomization changes, update the M13 scene-builder spec.  
 If uploaded-profile comparison, interaction mappings, participant intent, shared scene filtering, or the unresolved persistent ownership/linking model changes, update the M14 shared-profiles spec.  
 If authority × activity-side contextual preferences/rankings, context capability metadata, motivation annotations, or M11/M12/M13/M14 contextual integration changes, update the M15 contextual-activity-profiles spec.  
-If authored datasets, curation workflow, taxonomy cleanup, replacement/migration rules, or the M11 recipe-builder review scope changes, update the M16 data/content curation spec.  \nIf Body Map region identity, state semantics, persistence, editing flow, or profile display changes, update the M17 Body Map spec.
+If authored datasets, curation workflow, taxonomy cleanup, replacement/migration rules, or the M11 recipe-builder review scope changes, update the M16 data/content curation spec.  
+If Body Map region identity, state semantics, persistence, editing flow, or profile display changes, update the M17 Body Map spec.
 
 The repository code remains authoritative for what is actually implemented.
