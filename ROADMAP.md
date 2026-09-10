@@ -26,7 +26,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M13 | ✅ Complete | theme-driven, low-decision scene composition |
 | M14 | 🟡 Needs refinement | compare/upload + shared interaction work exists; persistent profile/linking model is being reconsidered |
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
-| M16 | Planned | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
+| M16 | 🟡 In progress | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
 
 ---
 
@@ -264,15 +264,15 @@ plus linked/read-only partner profiles, or temporary comparison only.
 
 ## M16 — Data & Content Curation
 
-**Details:** [M16 Data & Content Curation](docs/m16-data-content-curation.md)
+**Details:** [M16 Data & Content Curation](docs/m16-data-content-curation.md) · [M16.4 Profile Semantics Refinement](docs/m16-profile-semantics-refinement.md)
 
 - [x] **M16.1** — inventory authored/derived data surfaces + review rubric
 - [ ] **M16.2** — mobile-friendly Curation Workbench + local proposal/export workflow _(structured editors + validation in progress)_
 - [ ] **M16.3** — quiz bank, signal-weight, and scoring-input review _(legacy Starter scorer retired; broader quiz review pending)_
-- [ ] **M16.4** — signal vocabulary, headspaces, radars, facets, labels, and thresholds review
+- [ ] **M16.4** — profile semantics refinement: signal vocabulary, headspaces, dynamic modes, radar prominence, facets, labels, and thresholds review _(refinement scoped)_
 - [ ] **M16.5** — kink catalog pruning/consolidation + pending additions review
 - [ ] **M16.6** — rewards/punishments action library + contextual taxonomy curation
-- [ ] **M16.7** — cross-system taxonomy/mapping alignment _(Signal → Overall Facet semantic bridge in progress)_
+- [ ] **M16.7** — cross-system taxonomy/mapping alignment _(Signal → Overall Facet matrix + calibration in progress)_
 - [ ] **M16.8** — stable-ID replacement, archival, migration, and import/export compatibility
 - [ ] **M16.9** — generator/test regression + representative-profile sanity review
 
