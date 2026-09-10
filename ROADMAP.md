@@ -28,6 +28,7 @@ This file is intentionally a **status map + milestone checklist**. Detailed prod
 | M15 | Planned | sparse authority × activity-side contextual preferences, rankings, and integrations |
 | M16 | 🟡 In progress | whole-app data, taxonomy, mapping, quiz, radar, catalog, and reward/punishment curation |
 | M17 | Planned | simple front/back Body Map with per-region Yes / Maybe / Neutral / No states |
+| M18 | Planned | browser routing, page/feature boundaries, and application-structure refactor |
 
 ---
 
@@ -296,6 +297,23 @@ M17 v1 is intentionally narrow: one general state per body region. Left/right re
 
 ---
 
+## M18 — Application Architecture & Routing
+
+**Details:** [M18 Application Architecture & Routing](docs/m18-application-architecture-routing.md)
+
+- [ ] **M18.1** — hash-router foundation + common application shell
+- [ ] **M18.2** — Hub + Settings routing; remove duplicate Settings navigation state
+- [ ] **M18.3** — Quiz + Results routes and quiz-local orchestration
+- [ ] **M18.4** — Profile + Catalog + This-or-That routes
+- [ ] **M18.5** — Rewards, Scene Builder, Compare, and Curation routes; retire `Screen` state
+- [ ] **M18.6** — feature-folder organization + large component breakup
+- [ ] **M18.7** — style ownership / global stylesheet cleanup
+- [ ] **M18.8** — routing/deployment regression + architecture documentation closeout
+
+M18 is intentionally a **behavior-preserving architecture milestone**. Route/page extraction should land before redesigns or semantic changes. Hash routing is the initial hosting-safe contract for GitHub Pages production and dynamic PR-preview base paths.
+
+---
+
 # Parked ideas
 
 Interesting, but not current scope:
@@ -311,7 +329,7 @@ Interesting, but not current scope:
 
 # Current next action
 
-**M11–M13 are complete. M14 needs product-model refinement before persistent profile/linking work continues; M15–M17 remain formally scoped.**
+**M11–M13 are complete. M14 needs product-model refinement before persistent profile/linking work continues; M15–M18 remain formally scoped, with M16 already in progress.**
 
 Choose the next milestone intentionally:
 
@@ -319,5 +337,6 @@ Choose the next milestone intentionally:
 - **M15** adds the reusable authority × activity-side contextual model for direction-sensitive preferences and rankings.
 - **M16** is the whole-app data/content quality pass, including the mobile Curation Workbench, catalog cleanup, quiz/radar review, reward/punishment curation, and the M11 recipe-builder UX/model revisit.
 - **M17** adds a simple visual Body Map with front/back selectable regions and one general Yes / Maybe / Neutral / No state per region.
+- **M18** replaces app-level screen state with browser routing, extracts real pages/features, and breaks up the large UI files without intentionally changing behavior.
 
-M16 can begin while M14 persistence is paused and before M15 because its first work is inventory/curation infrastructure; later model-specific editors can be added to the same workbench as those models land. M17 is independently scoped and does not require the contextual M15 model.
+M16 can continue while M18 begins because most semantic/data curation is independent of the application shell. M17 should preferably land into the routed feature structure rather than adding another branch to the current monolithic App render tree.
