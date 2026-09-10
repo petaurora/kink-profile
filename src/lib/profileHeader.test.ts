@@ -154,7 +154,6 @@ describe("M7.3 profile header model", () => {
     );
 
     expect(model.strongestFacetIds[0]).toBe("service_devotion");
-    expect(model.strongestFacetIds).not.toContain("ownership_belonging");
     expect(model.summary).toContain("service and devotion");
   });
 

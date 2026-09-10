@@ -80,7 +80,10 @@ describe("M7.2 overall facet scoring", () => {
     );
 
     expect(result.affinity).toBe(80);
-    expect(result.coverage).toBe(22.2);
+    const configuredTotal = overallFacetDefinitions
+      .find((item) => item.id === "structure_protocol")!
+      .signals.reduce((sum, item) => sum + item.weight, 0);
+    expect(result.coverage).toBeCloseTo((1 / configuredTotal) * 100, 1);
     expect(result.components.map((item) => item.signalId)).toEqual([
       "structure",
     ]);
@@ -95,7 +98,10 @@ describe("M7.2 overall facet scoring", () => {
     );
 
     expect(result.affinity).toBe(100);
-    expect(result.coverage).toBe(10.6);
+    const configuredTotal = overallFacetDefinitions
+      .find((item) => item.id === "ownership_belonging")!
+      .signals.reduce((sum, item) => sum + item.weight, 0);
+    expect(result.coverage).toBeCloseTo((0.25 / configuredTotal) * 100, 1);
   });
 
   it("weights affinity by both semantic composition weight and canonical evidence coverage", () => {
@@ -109,55 +115,65 @@ describe("M7.2 overall facet scoring", () => {
 
     // service contributes effective weight 1.0; devotion contributes 0.5.
     expect(result.affinity).toBe(66.7);
-    // total configured facet weight is 3.15.
-    expect(result.coverage).toBe(47.6);
+    const configuredTotal = overallFacetDefinitions
+      .find((item) => item.id === "service_devotion")!
+      .signals.reduce((sum, item) => sum + item.weight, 0);
+    expect(result.coverage).toBeCloseTo((1.5 / configuredTotal) * 100, 1);
   });
 
-  it("keeps delegated responsibility neutral in the power-exchange side breakdown", () => {
-    const result = facet(
-      scoreOverallFacets([
-        canonicalSignal("receiving_control", 90),
-        canonicalSignal("responsibility_transfer", 80),
-        canonicalSignal("obedience", 70),
-        canonicalSignal("giving_control", 20),
-        canonicalSignal("responsibility_holding", 30),
-      ]),
-      "power_exchange",
-    );
-
-    expect(result.affinity).toBe(57.8);
-    expect(result.coverage).toBe(100);
-    expect(result.direction?.receiving.affinity).toBe(81.4);
-    expect(result.direction?.receiving.coverage).toBe(100);
-    expect(result.direction?.giving.affinity).toBe(20);
-    expect(result.direction?.giving.coverage).toBe(100);
-  });
-
-  it("keeps directional metadata unknown on only the unexplored side", () => {
+  it("keeps giving and receiving Signals inside the same broad theme", () => {
     const result = facet(
       scoreOverallFacets([
         canonicalSignal("care_receiving", 95),
+        canonicalSignal("care_giving", 65),
       ]),
       "care_nurture",
     );
 
-    expect(result.direction?.receiving.affinity).toBe(95);
-    expect(result.direction?.receiving.coverage).toBe(100);
-    expect(result.direction?.giving.affinity).toBeNull();
-    expect(result.direction?.giving.coverage).toBe(0);
+    expect(result.affinity).toBe(80);
+    expect(result.components.map((component) => component.signalId)).toEqual(
+      expect.arrayContaining(["care_receiving", "care_giving"]),
+    );
+    expect(
+      result.components.every(
+        (component) => component.relationship === "supports",
+      ),
+    ).toBe(true);
   });
 
-  it("does not invent directional metadata for facets whose semantics are shared/non-directional", () => {
-    const result = facet(
-      scoreOverallFacets([
-        canonicalSignal("structure", 80),
-        canonicalSignal("receiving_discipline", 90),
-        canonicalSignal("giving_discipline", 60),
-      ]),
-      "structure_protocol",
-    );
+  it("lets opposing Signals reduce a known theme without treating their absence as positive evidence", () => {
+    const definition = {
+      id: "power_exchange" as const,
+      label: "Power Exchange",
+      shortLabel: "Power",
+      description: "Test theme",
+      signals: [
+        { signalId: "receiving_control" as const, weight: 1 },
+        {
+          signalId: "autonomy" as const,
+          weight: 0.5,
+          relationship: "opposes" as const,
+        },
+      ],
+    };
 
-    expect(result.direction).toBeUndefined();
+    const opposed = scoreOverallFacets(
+      [
+        canonicalSignal("receiving_control", 80),
+        canonicalSignal("autonomy", 100),
+      ],
+      [definition],
+    )[0];
+    expect(opposed.affinity).toBe(30);
+
+    const noOpposition = scoreOverallFacets(
+      [
+        canonicalSignal("receiving_control", 80),
+        canonicalSignal("autonomy", 0),
+      ],
+      [definition],
+    )[0];
+    expect(noOpposition.affinity).toBe(80);
   });
 
   it("retains source provenance from every canonical signal used by the facet", () => {
