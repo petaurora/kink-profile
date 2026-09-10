@@ -35,19 +35,48 @@ describe("M13 scene theme taxonomy", () => {
     }
   });
 
-  it("covers every supported theme family", () => {
+  it("covers every active theme family", () => {
     expect(
       new Set(sceneThemeDefinitions.map((theme) => theme.family)),
     ).toEqual(
-      new Set(["activity", "headspace", "dynamic_mode", "facet", "vibe"]),
+      new Set(["activity", "headspace", "dynamic_mode", "vibe"]),
     );
   });
 
-  it("exposes stable lookup helpers for the candidate engine", () => {
+  it("preserves stable theme IDs while using the revised mode taxonomy", () => {
     expect(getSceneTheme("pain")?.label).toBe("Pain");
     expect(getSceneTheme("devotional-submission")).toEqual(
       expect.objectContaining({ label: "Devotion", family: "dynamic_mode" }),
     );
+    expect(getSceneTheme("playful-resistance")).toEqual(
+      expect.objectContaining({ label: "Playful Challenge", family: "dynamic_mode" }),
+    );
+    expect(getSceneTheme("power-exchange")).toEqual(
+      expect.objectContaining({ label: "Power Exchange", family: "dynamic_mode" }),
+    );
+    expect(getSceneTheme("power-exchange")?.mappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "dynamic_mode", id: "power_exchange_mode" }),
+      ]),
+    );
+    expect(getSceneTheme("surrender")?.family).toBe("vibe");
+    expect(getSceneTheme("deep-submission")?.family).toBe("vibe");
+    expect(getSceneTheme("care")?.mappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "dynamic_mode", id: "care_mode" }),
+      ]),
+    );
+    expect(getSceneTheme("structured")?.mappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "dynamic_mode", id: "structure_mode" }),
+      ]),
+    );
+    expect(getSceneTheme("intense")?.mappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ kind: "dynamic_mode", id: "intensity_mode" }),
+      ]),
+    );
+
     expect(getSceneThemesByFamily("headspace").map((theme) => theme.id)).toEqual(
       expect.arrayContaining(["pet", "prey"]),
     );

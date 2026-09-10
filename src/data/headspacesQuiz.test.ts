@@ -5,16 +5,18 @@ import {
   roleHeadspaces,
   selfPositionedRoleHeadspaceIds,
 } from "./headspacesQuiz";
-import { canonicalRoleHeadspaces } from "./canonicalRoleCompositions";
+import {
+  canonicalDynamicModes,
+  canonicalRoleHeadspaces,
+} from "./canonicalRoleCompositions";
 
-describe("M3 v4 role/headspace taxonomy", () => {
+describe("M3 v5 roles/headspaces and dynamic modes taxonomy", () => {
   it("keeps expressions and orientations out of the peer headspace layer", () => {
     const ids = roleHeadspaces.map((definition) => definition.id);
 
     expect(ids).not.toContain("service_submissive");
     expect(ids).not.toContain("devotional_submissive");
     expect(ids).not.toContain("trainer");
-
     expect(ids).toContain("owner_handler");
   });
 
@@ -28,12 +30,66 @@ describe("M3 v4 role/headspace taxonomy", () => {
     expect(ids).not.toContain("property_object");
   });
 
-  it("preserves Devotion, Service, and Training / Shaping as explanatory dynamic modes", () => {
-    const ids = dynamicModes.map((definition) => definition.id);
+  it("locks the revised 10-mode direction-neutral taxonomy", () => {
+    expect(dynamicModes.map((definition) => definition.label)).toEqual([
+      "Devotion",
+      "Protocol",
+      "Service",
+      "Structure",
+      "Care",
+      "Playful Challenge",
+      "Objectification",
+      "Primal / Feral",
+      "Power Exchange",
+      "Intensity",
+    ]);
 
-    expect(ids).toContain("devotion_mode");
-    expect(ids).toContain("service_mode");
-    expect(ids).toContain("training_mode");
+    const ids = dynamicModes.map((definition) => definition.id);
+    expect(ids).toContain("power_exchange_mode");
+    expect(ids).toContain("care_mode");
+    expect(ids).toContain("structure_mode");
+    expect(ids).toContain("intensity_mode");
+    expect(ids).not.toContain("authority_mode");
+    expect(ids).not.toContain("surrender_mode");
+    expect(ids).not.toContain("nurtured_play");
+    expect(ids).not.toContain("caretaking_mode");
+    expect(ids).not.toContain("training_mode");
+    expect(ids).not.toContain("claiming_mode");
+  });
+
+  it("keeps direction-neutral modes direction-neutral in canonical composition", () => {
+    const care = canonicalDynamicModes.find((mode) => mode.id === "care_mode");
+    const powerExchange = canonicalDynamicModes.find(
+      (mode) => mode.id === "power_exchange_mode",
+    );
+    const intensity = canonicalDynamicModes.find((mode) => mode.id === "intensity_mode");
+
+    expect(care?.signals.filter((signal) => signal.signalId === "care")).toEqual([
+      expect.objectContaining({ signalId: "care", channel: undefined, weight: 1 }),
+    ]);
+    expect(
+      powerExchange?.signals.filter((signal) => signal.signalId === "control"),
+    ).toEqual([
+      expect.objectContaining({ signalId: "control", channel: undefined, weight: 1 }),
+    ]);
+    expect(
+      powerExchange?.signals.filter((signal) => signal.signalId === "responsibility"),
+    ).toEqual([
+      expect.objectContaining({
+        signalId: "responsibility",
+        channel: undefined,
+        weight: 0.8,
+      }),
+    ]);
+    expect(
+      intensity?.signals.filter((signal) => signal.signalId === "physical_intensity"),
+    ).toEqual([
+      expect.objectContaining({
+        signalId: "physical_intensity",
+        channel: undefined,
+        weight: 1,
+      }),
+    ]);
   });
 
   it("keeps display groups and canonical compositions aligned with the taxonomy", () => {
@@ -42,12 +98,19 @@ describe("M3 v4 role/headspace taxonomy", () => {
       ...selfPositionedRoleHeadspaceIds,
       ...partnerPositionedRoleHeadspaceIds,
     ].sort();
-    const canonicalIds = canonicalRoleHeadspaces
+    const canonicalRoleIds = canonicalRoleHeadspaces
+      .map((definition) => definition.id)
+      .sort();
+    const canonicalModeIds = canonicalDynamicModes
       .map((definition) => definition.id)
       .sort();
 
     expect(roleIds).toHaveLength(12);
+    expect(dynamicModes).toHaveLength(10);
     expect(displayIds).toEqual(roleIds);
-    expect(canonicalIds).toEqual(roleIds);
+    expect(canonicalRoleIds).toEqual(roleIds);
+    expect(canonicalModeIds).toEqual(
+      dynamicModes.map((definition) => definition.id).sort(),
+    );
   });
 });

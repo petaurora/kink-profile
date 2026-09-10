@@ -24,38 +24,27 @@ export type CanonicalComposedDefinition = Omit<ComposedDefinition, "weights"> & 
 const channelOverrides: Readonly<
   Record<string, Partial<Record<LegacySignalId, SignalChannel>>>
 > = {
-  nurtured_play: {
-    praise_approval: "receiving",
+  care_mode: {
+    care_receiving: "overall",
+    care_giving: "overall",
   },
-  devotion_mode: {
-    service: "giving",
+  primal_mode: {
+    pursuit_receiving: "overall",
+    pursuit_giving: "overall",
   },
-  service_mode: {
-    service: "giving",
-    praise_approval: "receiving",
+  power_exchange_mode: {
+    receiving_control: "overall",
+    giving_control: "overall",
+    responsibility_transfer: "overall",
+    responsibility_holding: "overall",
   },
-  protocol_mode: {
-    obedience: "giving",
-  },
-  playful_resistance_mode: {
-    playful_resistance: "giving",
-  },
-  objectification_mode: {
-    objectification: "receiving",
-    ownership_symbolism: "receiving",
-  },
-  caretaking_mode: {
-    guidance_shaping: "giving",
-  },
-  authority_mode: {
-    structure: "giving",
-  },
-  claiming_mode: {
-    ownership_symbolism: "giving",
-  },
-  training_mode: {
-    guidance_shaping: "giving",
-    structure: "giving",
+  intensity_mode: {
+    receiving_intensity: "overall",
+    giving_intensity: "overall",
+    pain_receiving: "overall",
+    pain_giving: "overall",
+    receiving_endurance: "overall",
+    giving_endurance: "overall",
   },
 
   pet: {

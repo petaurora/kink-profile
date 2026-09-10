@@ -37,44 +37,17 @@ export const headspaceSignalIds: SignalId[] = [
 
 export const dynamicModes: ComposedDefinition[] = [
   {
-    id: "nurtured_play",
-    label: "Nurtured Play",
-    shortLabel: "Nurtured",
-    description:
-      "Playfulness, role immersion, belonging, care, and warm approval combine into a softer or more instinctive relational mode.",
-    weights: {
-      role_embodiment: 1,
-      playfulness: 0.9,
-      care_receiving: 0.7,
-      belonging: 0.6,
-      praise_approval: 0.4,
-    },
-  },
-  {
     id: "devotion_mode",
     label: "Devotion",
     shortLabel: "Devotion",
     description:
-      "Dedication, belonging, ritual, service, and relationship meaning make commitment itself part of the experience.",
+      "Dedication, loyalty, belonging, and relationship meaning make commitment itself part of the experience.",
     weights: {
       devotion: 1,
       belonging: 0.8,
-      ritual_significance: 0.7,
-      service: 0.5,
-      ownership_symbolism: 0.4,
-    },
-  },
-  {
-    id: "service_mode",
-    label: "Service",
-    shortLabel: "Service",
-    description:
-      "Usefulness and contribution feel relationally meaningful rather than merely practical.",
-    weights: {
-      service: 1,
-      devotion: 0.5,
-      role_embodiment: 0.4,
-      praise_approval: 0.3,
+      ritual_significance: 0.5,
+      service: 0.4,
+      ownership_symbolism: 0.3,
     },
   },
   {
@@ -82,102 +55,74 @@ export const dynamicModes: ComposedDefinition[] = [
     label: "Protocol",
     shortLabel: "Protocol",
     description:
-      "Formality, ritual, expectations, and behavioral structure make a dynamic feel intentional.",
+      "Formal expectations, ritual, prescribed behavior, and intentional ways of doing things make the dynamic feel ceremonial or defined.",
     weights: {
       ritual_significance: 1,
-      structure: 1,
-      obedience: 0.5,
-      role_embodiment: 0.3,
+      structure: 0.6,
+      obedience: 0.4,
+      role_embodiment: 0.2,
     },
   },
   {
-    id: "surrender_mode",
-    label: "Surrender",
-    shortLabel: "Surrender",
+    id: "service_mode",
+    label: "Service",
+    shortLabel: "Service",
     description:
-      "Chosen release of direction, responsibility, or decision load creates a distinct sense of letting go.",
+      "Usefulness, contribution, assistance, or attending to another person can carry relational meaning beyond the practical task itself.",
     weights: {
-      responsibility_transfer: 1,
-      receiving_control: 0.8,
-      role_embodiment: 0.4,
-      care_receiving: 0.3,
+      service: 1,
+      devotion: 0.3,
+      obedience: 0.3,
+      praise_approval: 0.2,
+    },
+  },
+  {
+    id: "structure_mode",
+    label: "Structure",
+    shortLabel: "Structure",
+    description:
+      "Clear expectations, consistency, guidance, accountability, correction, and deliberate shaping create a framework that holds the dynamic over time.",
+    weights: {
+      structure: 1,
+      guidance_shaping: 0.8,
+      accountability: 0.6,
+      obedience: 0.3,
+    },
+  },
+  {
+    id: "care_mode",
+    label: "Care",
+    shortLabel: "Care",
+    description:
+      "Comfort, soothing, support, regulation, nurturance, and deliberate attention to wellbeing make care itself part of the dynamic.",
+    weights: {
+      care_receiving: 1,
+      care_giving: 1,
+      praise_approval: 0.3,
+      belonging: 0.2,
     },
   },
   {
     id: "playful_resistance_mode",
-    label: "Playful Resistance",
-    shortLabel: "Resistance",
+    label: "Playful Challenge",
+    shortLabel: "Challenge",
     description:
-      "Teasing, negotiated pushback, challenge, and interactive authority make power exchange feel lively.",
+      "Teasing, negotiated pushback, provocation, and interactive challenge make the dynamic feel playful and responsive rather than purely compliant.",
     weights: {
       playful_resistance: 1,
-      playfulness: 0.7,
-      receiving_control: 0.3,
-      autonomy: 0.2,
+      playfulness: 0.8,
+      autonomy: 0.3,
     },
   },
   {
     id: "objectification_mode",
     label: "Objectification",
-    shortLabel: "Object",
+    shortLabel: "Objectification",
     description:
-      "Consensual role/function framing and deliberate reduction of ordinary identity can create immersion.",
+      "Consensual role or function framing that deliberately reduces ordinary identity can itself become a meaningful way the dynamic feels.",
     weights: {
       objectification: 1,
-      role_embodiment: 0.7,
-      receiving_control: 0.3,
-      ownership_symbolism: 0.3,
-    },
-  },
-  {
-    id: "caretaking_mode",
-    label: "Caretaking",
-    shortLabel: "Caretaking",
-    description:
-      "Holding responsibility for another person's comfort, direction, or growth feels meaningful.",
-    weights: {
-      care_giving: 1,
-      responsibility_holding: 0.9,
-      giving_control: 0.4,
-      guidance_shaping: 0.3,
-    },
-  },
-  {
-    id: "authority_mode",
-    label: "Authority",
-    shortLabel: "Authority",
-    description:
-      "Directing, setting the tone, and being deliberately followed creates a meaningful position of authority.",
-    weights: {
-      giving_control: 1,
-      responsibility_holding: 0.6,
-      structure: 0.3,
-    },
-  },
-  {
-    id: "claiming_mode",
-    label: "Claiming",
-    shortLabel: "Claiming",
-    description:
-      "Consensual claiming, belonging, commitment, and responsibility carry strong giving-side meaning.",
-    weights: {
-      ownership_symbolism: 1,
-      giving_control: 0.6,
-      belonging: 0.5,
-      responsibility_holding: 0.5,
-    },
-  },
-  {
-    id: "training_mode",
-    label: "Training / Shaping",
-    shortLabel: "Training",
-    description:
-      "Teaching, correcting, developing, and deliberately shaping behavior can make guidance part of the dynamic.",
-    weights: {
-      guidance_shaping: 1,
-      structure: 0.6,
-      giving_control: 0.5,
-      responsibility_holding: 0.4,
+      role_embodiment: 0.5,
     },
   },
   {
@@ -185,11 +130,44 @@ export const dynamicModes: ComposedDefinition[] = [
     label: "Primal / Feral",
     shortLabel: "Primal",
     description:
-      "Instinct, body-language, physical immediacy, and stepping outside ordinary social roles create a more feral or primal mode.",
+      "Instinct, body-language, physical immediacy, pursuit, and stepping outside ordinary social roles create a more feral or primal mode.",
     weights: {
       primal_embodiment: 1,
       role_embodiment: 0.5,
+      pursuit_receiving: 0.3,
+      pursuit_giving: 0.3,
       playfulness: 0.2,
+    },
+  },
+  {
+    id: "power_exchange_mode",
+    label: "Power Exchange",
+    shortLabel: "Power Exchange",
+    description:
+      "Negotiated placement of control, direction, responsibility, and following makes the exchange of power itself a meaningful part of the dynamic.",
+    weights: {
+      receiving_control: 1,
+      giving_control: 1,
+      responsibility_transfer: 0.8,
+      responsibility_holding: 0.8,
+      obedience: 0.4,
+      structure: 0.3,
+    },
+  },
+  {
+    id: "intensity_mode",
+    label: "Intensity",
+    shortLabel: "Intensity",
+    description:
+      "Physically or emotionally strong, overwhelming, painful, or sustained sensation can make intensity itself a central part of the experience.",
+    weights: {
+      receiving_intensity: 1,
+      giving_intensity: 1,
+      pain_receiving: 0.8,
+      pain_giving: 0.8,
+      receiving_endurance: 0.4,
+      giving_endurance: 0.4,
+      emotional_intensity: 0.6,
     },
   },
 ];

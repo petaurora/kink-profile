@@ -308,25 +308,25 @@ describe("buildSharedProfileComparison", () => {
     );
   });
 
-  it("supports explicit authority-coded complements only when the mapping itself is authority-coded", () => {
+  it("keeps explicit authority-coded complementarity at the role layer", () => {
     const comparison = buildSharedProfileComparison(
       input(
         [],
         {},
         [],
-        roleDetails([], [{ id: "authority_mode", label: "Authority" }]),
+        roleDetails([{ id: "master_mistress", label: "Master / Mistress" }]),
       ),
       input(
         [],
         {},
         [],
-        roleDetails([], [{ id: "surrender_mode", label: "Surrender" }]),
+        roleDetails([{ id: "slave", label: "Slave" }]),
       ),
     );
 
     expect(
       comparison.semanticComplements.find(
-        (match) => match.mappingId === "mode-authority-surrender",
+        (match) => match.mappingId === "headspace-master-mistress-slave",
       ),
     ).toEqual(
       expect.objectContaining({

@@ -6,17 +6,25 @@ import {
   hasSharedParticipantIntentConcept,
   toggleSharedParticipantIntentConcept,
 } from "./sharedParticipantIntent";
+import { dynamicModes } from "../data/headspacesQuiz";
 
 describe("shared participant intent", () => {
-  it("offers only concepts that participate in validated shared mappings", () => {
+  it("offers mapped complements plus every neutral dynamic mode", () => {
     const options = getSharedParticipantIntentOptions();
 
     expect(options.some((option) => option.key === "headspace:predator")).toBe(true);
     expect(options.some((option) => option.key === "headspace:prey")).toBe(true);
-    expect(options.some((option) => option.key === "dynamic_mode:authority_mode")).toBe(true);
+    expect(options.some((option) => option.key === "dynamic_mode:power_exchange_mode")).toBe(true);
     expect(options.some((option) => option.key === "signal:pain_giving")).toBe(true);
     expect(options.some((option) => option.key === "signal:pain_receiving")).toBe(true);
 
+    const optionModeIds = options
+      .filter((option) => option.kind === "dynamic_mode")
+      .map((option) => option.concept.id)
+      .sort();
+    expect(optionModeIds).toEqual(
+      dynamicModes.map((mode) => mode.id).sort(),
+    );
     expect(new Set(options.map((option) => option.key)).size).toBe(options.length);
   });
 
@@ -68,25 +76,19 @@ describe("shared participant intent", () => {
     expect(pairings[0].mapping.authoritySemantics).toBe("activity_side_only");
   });
 
-  it("preserves explicit authority semantics only for mapped authority concepts", () => {
+  it("treats Power Exchange as shared context rather than a complement pair", () => {
     const profileA = {
       selectedConcepts: [
-        { kind: "dynamic_mode", id: "authority_mode" } as const,
+        { kind: "dynamic_mode", id: "power_exchange_mode" } as const,
       ],
     };
     const profileB = {
       selectedConcepts: [
-        { kind: "dynamic_mode", id: "surrender_mode" } as const,
+        { kind: "dynamic_mode", id: "power_exchange_mode" } as const,
       ],
     };
 
-    const pairings = buildSharedParticipantIntentPairings(profileA, profileB);
-
-    expect(pairings).toHaveLength(1);
-    expect(pairings[0].mapping.id).toBe("mode-authority-surrender");
-    expect(pairings[0].mapping.authoritySemantics).toBe(
-      "explicit_authority_pair",
-    );
+    expect(buildSharedParticipantIntentPairings(profileA, profileB)).toEqual([]);
   });
 
   it("does not invent a pairing for two unrelated current choices", () => {

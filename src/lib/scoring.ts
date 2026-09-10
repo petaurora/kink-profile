@@ -68,33 +68,35 @@ export function scoreHeadspaces(
 ): ComposedScore[] {
   const byId = new Map(signalScores.map((signal) => [signal.id, signal]));
 
-  return definitions.map((headspace) => {
-    let totalWeight = 0;
-    let evidenceWeight = 0;
-    let weightedTotal = 0;
+  return definitions
+    .map((headspace) => {
+      let totalWeight = 0;
+      let evidenceWeight = 0;
+      let weightedTotal = 0;
 
-    for (const [signalId, weight] of Object.entries(headspace.weights)) {
-      if (!weight || weight <= 0) continue;
+      for (const [signalId, weight] of Object.entries(headspace.weights)) {
+        if (!weight || weight <= 0) continue;
 
-      totalWeight += weight;
-      const signal = byId.get(signalId as SignalId);
-      if (!signal || signal.coverage <= 0) continue;
+        totalWeight += weight;
+        const signal = byId.get(signalId as SignalId);
+        if (!signal || signal.coverage <= 0) continue;
 
-      const coverageFactor = signal.coverage / 100;
-      const coveredWeight = weight * coverageFactor;
-      evidenceWeight += coveredWeight;
-      weightedTotal += (signal.percentage / 100) * coveredWeight;
-    }
+        const coverageFactor = signal.coverage / 100;
+        const coveredWeight = weight * coverageFactor;
+        evidenceWeight += coveredWeight;
+        weightedTotal += (signal.percentage / 100) * coveredWeight;
+      }
 
-    return {
-      id: headspace.id,
-      label: headspace.label,
-      shortLabel: headspace.shortLabel,
-      description: headspace.description,
-      percentage:
-        evidenceWeight > 0 ? Math.round((weightedTotal / evidenceWeight) * 100) : 0,
-      coverage:
-        totalWeight > 0 ? Math.round((evidenceWeight / totalWeight) * 100) : 0,
-    };
-  });
+      return {
+        id: headspace.id,
+        label: headspace.label,
+        shortLabel: headspace.shortLabel,
+        description: headspace.description,
+        percentage:
+          evidenceWeight > 0 ? Math.round((weightedTotal / evidenceWeight) * 100) : 0,
+        coverage:
+          totalWeight > 0 ? Math.round((evidenceWeight / totalWeight) * 100) : 0,
+      };
+    })
+    .filter((score) => score.coverage > 0);
 }
