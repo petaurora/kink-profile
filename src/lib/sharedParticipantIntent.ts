@@ -62,6 +62,25 @@ export function sharedParticipantIntentConceptLabel(
 export function getSharedParticipantIntentOptions(): readonly SharedParticipantIntentOption[] {
   const byKey = new Map<string, SharedParticipantIntentOption>();
 
+  // Dynamic modes are shared, direction-neutral context. They do not need a
+  // complement mapping to be selectable for the current interaction.
+  for (const mode of dynamicModes) {
+    const concept: SharedInteractionConceptRef = {
+      kind: "dynamic_mode",
+      id: mode.id,
+    };
+    const key = sharedInteractionConceptKey(concept);
+    byKey.set(key, {
+      concept,
+      key,
+      label: mode.label,
+      kind: "dynamic_mode",
+    });
+  }
+
+  // Directional Signals and complementary roles are surfaced from explicit
+  // interaction mappings because those pairings carry actual compatibility
+  // semantics across two profiles.
   for (const mapping of sharedInteractionMappings) {
     for (const concept of [mapping.source, mapping.target]) {
       const key = sharedInteractionConceptKey(concept);
@@ -132,9 +151,9 @@ function pairingKey(
 }
 
 /**
- * Resolve only the pairings explicitly selected by both people for the current
- * interaction. These selections are query/session context, not profile
- * evidence, and must never write back into either permanent profile.
+ * Resolve only explicit complementary pairings selected by both people for the
+ * current interaction. Neutral dynamic modes are intentionally not pairings;
+ * they are shared context and are handled independently by scene queries.
  */
 export function buildSharedParticipantIntentPairings(
   profileA: SharedParticipantIntent,
