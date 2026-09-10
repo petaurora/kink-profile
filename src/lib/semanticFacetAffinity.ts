@@ -2,6 +2,11 @@ import {
   overallFacetDefinitions,
   type OverallFacetId,
 } from "../data/overallFacets";
+import {
+  legacySignalConceptTargets,
+  type CanonicalSignalId,
+  type SignalChannel,
+} from "../data/canonicalSignals";
 import type { SignalId } from "../data/signals";
 
 export type SemanticSignalMapping = {
@@ -21,11 +26,20 @@ export type DerivedFacetAffinity = {
   affinity: number;
   matchedSignals: readonly {
     signalId: SignalId;
+    canonicalSignalId: CanonicalSignalId;
+    signalChannel: SignalChannel;
     sourceWeight: number;
     facetWeight: number;
     relationship: "supports" | "opposes";
     contribution: number;
   }[];
+};
+
+type CanonicalSemanticSignalMapping = {
+  signalId: CanonicalSignalId;
+  channel: SignalChannel;
+  weight: number;
+  legacySignalIds: readonly SignalId[];
 };
 
 function clampWeight(value: number) {
@@ -34,9 +48,9 @@ function clampWeight(value: number) {
 }
 
 /**
- * Collapse multiple authored paths to the same SignalId without double-counting
- * the same semantic idea. Useful for category-level mappings that may have
- * receiving/giving variants in the source table.
+ * Collapse multiple authored paths to the same legacy SignalId without
+ * double-counting the same semantic idea. Source tables intentionally remain
+ * legacy-compatible during M16.4 so this helper keeps its existing contract.
  */
 export function collapseSemanticSignalMappings(
   mappings: readonly SemanticSignalMapping[],
@@ -58,10 +72,8 @@ export function collapseSemanticSignalMappings(
 }
 
 /**
- * Blend multiple weighted semantic groups into a single signal profile.
- *
- * Example: an R/P action mapped 1.0 to Praise and 0.5 to Playful blends the
- * signal profiles of those two context categories in the same proportions.
+ * Blend multiple weighted semantic groups into a single legacy-compatible
+ * signal profile. Canonicalization happens only when projecting into facets.
  */
 export function blendSemanticSignalGroups(
   groups: readonly WeightedSemanticSignalGroup[],
@@ -96,16 +108,60 @@ export function blendSemanticSignalGroups(
     .sort((left, right) => left.signalId.localeCompare(right.signalId));
 }
 
+function canonicalizeSemanticMappings(
+  mappings: readonly SemanticSignalMapping[],
+): CanonicalSemanticSignalMapping[] {
+  const byCanonicalKey = new Map<
+    string,
+    {
+      signalId: CanonicalSignalId;
+      channel: SignalChannel;
+      weight: number;
+      legacySignalIds: Set<SignalId>;
+    }
+  >();
+
+  for (const mapping of collapseSemanticSignalMappings(mappings)) {
+    const target = legacySignalConceptTargets[mapping.signalId];
+    const channel: SignalChannel = target.inherentChannel ?? "overall";
+    const key = `${target.signalId}::${channel}`;
+    const current = byCanonicalKey.get(key) ?? {
+      signalId: target.signalId,
+      channel,
+      weight: 0,
+      legacySignalIds: new Set<SignalId>(),
+    };
+
+    // Directional legacy IDs that collapse into the same canonical semantic
+    // path are alternate descriptions, not independent evidence. Keep the
+    // strongest authored weight instead of summing duplicates.
+    current.weight = Math.max(current.weight, mapping.weight);
+    current.legacySignalIds.add(mapping.signalId);
+    byCanonicalKey.set(key, current);
+  }
+
+  return [...byCanonicalKey.values()].map((item) => ({
+    signalId: item.signalId,
+    channel: item.channel,
+    weight: item.weight,
+    legacySignalIds: [...item.legacySignalIds].sort(),
+  }));
+}
+
 /**
- * Project canonical SignalIds into the shared Overall Facet space.
+ * Project legacy-compatible semantic Signal mappings into the canonical
+ * Overall Facet space.
  *
- * This is descriptive semantic affinity, not user preference evidence.
- * It must never write back into quiz answers, rankings, or profile state.
+ * This is descriptive semantic affinity, not user preference evidence. A
+ * directional legacy Signal is allowed to match an Overall facet reference to
+ * its canonical base concept; a facet that explicitly requests a channel only
+ * matches that channel. This preserves M11/M16 authored data while preventing
+ * the new facet vocabulary from silently dropping old semantic mappings.
  */
 export function deriveOverallFacetAffinities(
   mappings: readonly SemanticSignalMapping[],
 ): DerivedFacetAffinity[] {
-  const signals = collapseSemanticSignalMappings(mappings);
+  const signals = canonicalizeSemanticMappings(mappings);
   const totalSourceWeight = signals.reduce(
     (sum, mapping) => sum + mapping.weight,
     0,
@@ -117,7 +173,9 @@ export function deriveOverallFacetAffinities(
     .map((facet) => {
       const matchedSignals = signals.flatMap((source) => {
         const facetSignal = facet.signals.find(
-          (mapping) => mapping.signalId === source.signalId,
+          (mapping) =>
+            mapping.signalId === source.signalId &&
+            (!mapping.channel || mapping.channel === source.channel),
         );
         if (!facetSignal) return [];
 
@@ -125,17 +183,21 @@ export function deriveOverallFacetAffinities(
         const magnitude = source.weight * facetSignal.weight;
         const contribution =
           relationship === "opposes" ? -magnitude : magnitude;
-        return magnitude > 0
-          ? [
-              {
-                signalId: source.signalId,
-                sourceWeight: source.weight,
-                facetWeight: facetSignal.weight,
-                relationship,
-                contribution,
-              },
-            ]
-          : [];
+        if (magnitude <= 0) return [];
+
+        return [
+          {
+            // Keep one legacy representative for existing explainability/debug
+            // consumers while exposing the canonical identity explicitly.
+            signalId: source.legacySignalIds[0],
+            canonicalSignalId: source.signalId,
+            signalChannel: source.channel,
+            sourceWeight: source.weight,
+            facetWeight: facetSignal.weight,
+            relationship,
+            contribution,
+          },
+        ];
       });
 
       const affinity = Math.max(
