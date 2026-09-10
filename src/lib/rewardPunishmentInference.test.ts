@@ -19,6 +19,7 @@ import {
 } from "./rewardPunishmentInference";
 import type { CatalogResultView } from "./catalogResults";
 import type { CanonicalSignalResult } from "./overallProfileSignals";
+import { buildCanonicalSignalFixtures } from "./testCanonicalSignalFixtures";
 
 const impactA = rewardPunishmentPrimitives.find(
   (primitive) =>
@@ -191,15 +192,14 @@ describe("M11.3 inferred contextual proposals", () => {
         candidate.ref.id === mappedItem.id,
     )!;
     const mapping = mappedItem.signalMappings[0];
-    const canonicalSignals: CanonicalSignalResult[] = [
+    const canonicalSignals = buildCanonicalSignalFixtures([
       {
         signalId: mapping.signalId,
         affinity: 100,
         coverage: 80,
-        channels: [],
         sourceEvidenceIds: ["quiz:test:signal"],
       },
-    ];
+    ]);
 
     const proposal = proposalFor(
       primitive,
