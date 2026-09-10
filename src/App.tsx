@@ -314,13 +314,9 @@ function OverallRadarChart({
               role="button"
               tabIndex={0}
               aria-label={`${axis.label}: ${
-                axis.affinity === null
+                axis.affinity === null || axis.prominence === null
                   ? "not explored yet"
-                  : `${axis.affinity}% affinity, ${
-                      axis.state === "limited"
-                        ? "limited evidence"
-                        : "evidence available"
-                    }`
+                  : `${axis.prominence}% profile prominence, ${axis.affinity}% affinity, ${axis.coverage}% evidence coverage`
               }. Open theme explanation.`}
               onClick={() => onSelectFacet(axis.facetId)}
               onKeyDown={(event) => selectFromKeyboard(event, axis.facetId)}
