@@ -64,16 +64,28 @@ describe("sharedInteractionMappings", () => {
     );
     expect(pairs).toContain("signal:care_giving->signal:care_receiving");
     expect(pairs).toContain("signal:pursuit_giving->signal:pursuit_receiving");
+    expect(pairs).toContain("signal:giving_control->signal:receiving_control");
   });
 
-  it("contains the core role and dynamic-mode relationships from the M14 contract", () => {
+  it("keeps neutral dynamic modes out of complement mappings", () => {
     const ids = new Set(sharedInteractionMappings.map((mapping) => mapping.id));
 
-    expect(ids).toContain("mode-authority-surrender");
-    expect(ids).toContain("mode-caretaking-nurtured-play");
+    expect(ids).not.toContain("mode-authority-surrender");
+    expect(ids).not.toContain("mode-caretaking-nurtured-play");
+    expect(
+      sharedInteractionMappings.some(
+        (mapping) => mapping.relationshipKind === "dynamic_mode_complement",
+      ),
+    ).toBe(false);
+  });
+
+  it("contains the core role relationships from the M14 contract", () => {
+    const ids = new Set(sharedInteractionMappings.map((mapping) => mapping.id));
+
     expect(ids).toContain("headspace-predator-prey");
     expect(ids).toContain("headspace-owner-handler-pet");
     expect(ids).toContain("headspace-caregiver-little");
+    expect(ids).toContain("headspace-master-mistress-slave");
   });
 
   it("supports reverse lookup for bidirectional relationships", () => {
