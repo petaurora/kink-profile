@@ -7,6 +7,15 @@ type ProfileCoxcombChartProps = {
   onSelectFacet: (facetId: OverallFacetId) => void;
 };
 
+const bandColors = [
+  "#520E25",
+  "#6b1740",
+  "#81205c",
+  "#9a2f7c",
+  "#b9449f",
+  "#d96fbc",
+] as const;
+
 export function ProfileCoxcombChart({
   axes,
   onSelectFacet,
@@ -14,31 +23,44 @@ export function ProfileCoxcombChart({
   const size = 500;
   const center = size / 2;
   const maxRadius = 158;
-  const labelRadius = 196;
+  const labelRadius = 184;
   const sectorAngle = (Math.PI * 2) / Math.max(axes.length, 1);
-  const gapAngle = Math.min(0.055, sectorAngle * 0.08);
+  const bandCount = bandColors.length;
 
   const polar = (radius: number, angle: number) => [
     center + Math.cos(angle) * radius,
     center + Math.sin(angle) * radius,
   ];
 
-  const wedgePath = (index: number, radius: number) => {
-    if (radius <= 0) return "";
+  const annularWedgePath = (
+    index: number,
+    innerRadius: number,
+    outerRadius: number,
+  ) => {
+    if (outerRadius <= 0 || outerRadius <= innerRadius) return "";
+
     const middle = -Math.PI / 2 + index * sectorAngle;
-    const start = middle - sectorAngle / 2 + gapAngle;
-    const end = middle + sectorAngle / 2 - gapAngle;
-    const [startX, startY] = polar(radius, start);
-    const [endX, endY] = polar(radius, end);
+    const start = middle - sectorAngle / 2;
+    const end = middle + sectorAngle / 2;
+    const [outerStartX, outerStartY] = polar(outerRadius, start);
+    const [outerEndX, outerEndY] = polar(outerRadius, end);
+    const [innerEndX, innerEndY] = polar(innerRadius, end);
+    const [innerStartX, innerStartY] = polar(innerRadius, start);
     const largeArc = end - start > Math.PI ? 1 : 0;
 
     return [
-      `M ${center} ${center}`,
-      `L ${startX} ${startY}`,
-      `A ${radius} ${radius} 0 ${largeArc} 1 ${endX} ${endY}`,
+      `M ${outerStartX} ${outerStartY}`,
+      `A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${outerEndX} ${outerEndY}`,
+      `L ${innerEndX} ${innerEndY}`,
+      innerRadius > 0
+        ? `A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${innerStartX} ${innerStartY}`
+        : `L ${center} ${center}`,
       "Z",
     ].join(" ");
   };
+
+  const fullWedgePath = (index: number, radius: number) =>
+    annularWedgePath(index, 0, radius);
 
   const selectFromKeyboard = (
     event: KeyboardEvent<SVGGElement>,
@@ -57,18 +79,21 @@ export function ProfileCoxcombChart({
         role="group"
         aria-label="Overall profile coxcomb. Each petal is one profile facet."
       >
-        {[0.25, 0.5, 0.75, 1].map((level) => (
-          <circle
-            key={level}
-            cx={center}
-            cy={center}
-            r={maxRadius * Math.sqrt(level)}
-            fill="none"
-            stroke="var(--border-subtle)"
-            strokeWidth="1"
-            opacity="0.65"
-          />
-        ))}
+        {Array.from({ length: bandCount }, (_, index) => {
+          const level = (index + 1) / bandCount;
+          return (
+            <circle
+              key={level}
+              cx={center}
+              cy={center}
+              r={maxRadius * Math.sqrt(level)}
+              fill="none"
+              stroke="var(--border-subtle)"
+              strokeWidth="1"
+              opacity="0.22"
+            />
+          );
+        })}
 
         {axes.map((axis, index) => {
           const middle = -Math.PI / 2 + index * sectorAngle;
@@ -99,22 +124,61 @@ export function ProfileCoxcombChart({
                   : `${axis.label}: ${axis.affinity}% affinity · ${axis.coverage}% evidence`}
               </title>
 
+              {Array.from({ length: bandCount }, (_, bandIndex) => {
+                const bandInner =
+                  maxRadius * Math.sqrt(bandIndex / bandCount);
+                const bandOuter =
+                  maxRadius * Math.sqrt((bandIndex + 1) / bandCount);
+
+                return (
+                  <path
+                    key={`ghost-${axis.facetId}-${bandIndex}`}
+                    d={annularWedgePath(index, bandInner, bandOuter)}
+                    fill={bandColors[bandIndex]}
+                    opacity={unknown ? 0.06 : 0.035}
+                  />
+                );
+              })}
+
+              {!unknown &&
+                Array.from({ length: bandCount }, (_, bandIndex) => {
+                  const bandInner =
+                    maxRadius * Math.sqrt(bandIndex / bandCount);
+                  const bandOuter =
+                    maxRadius * Math.sqrt((bandIndex + 1) / bandCount);
+
+                  if (valueRadius <= bandInner) return null;
+
+                  const visibleOuter = Math.min(valueRadius, bandOuter);
+                  const bandOpacity = 0.34 + bandIndex * 0.055;
+
+                  return (
+                    <path
+                      key={`fill-${axis.facetId}-${bandIndex}`}
+                      d={annularWedgePath(index, bandInner, visibleOuter)}
+                      fill={bandColors[bandIndex]}
+                      opacity={bandOpacity}
+                    />
+                  );
+                })}
+
               <path
-                d={wedgePath(index, maxRadius)}
-                fill="transparent"
+                d={fullWedgePath(index, maxRadius)}
+                fill="none"
                 stroke="var(--border-subtle)"
                 strokeWidth="1"
                 strokeDasharray={unknown ? "4 5" : undefined}
-                opacity={unknown ? 0.55 : 0.8}
+                opacity={unknown ? 0.34 : 0.22}
               />
 
               {!unknown && (
                 <path
-                  d={wedgePath(index, valueRadius)}
-                  fill="var(--bg-accent-soft)"
+                  d={fullWedgePath(index, valueRadius)}
+                  fill="none"
                   stroke="var(--accent-primary)"
-                  strokeWidth={axis.state === "limited" ? 2 : 2.5}
+                  strokeWidth={axis.state === "limited" ? 1.5 : 1.8}
                   strokeDasharray={axis.state === "limited" ? "5 4" : undefined}
+                  opacity={axis.state === "limited" ? 0.42 : 0.5}
                 />
               )}
 
@@ -130,9 +194,9 @@ export function ProfileCoxcombChart({
                 }
                 dominantBaseline="middle"
                 fill={unknown ? "var(--text-muted)" : "var(--text-secondary)"}
-                fontSize="12"
+                fontSize="11"
                 fontWeight="800"
-                opacity={unknown ? 0.72 : 1}
+                opacity={unknown ? 0.68 : 0.94}
               >
                 {axis.shortLabel}
               </text>
@@ -147,6 +211,7 @@ export function ProfileCoxcombChart({
           fill="var(--bg-surface)"
           stroke="var(--border-subtle)"
           strokeWidth="1"
+          opacity="0.94"
         />
         <text
           x={center}
