@@ -199,9 +199,10 @@ export const sceneThemeDefinitions: readonly SceneThemeDefinition[] = [
   {
     id: "power-exchange",
     label: "Power Exchange",
-    description: "Negotiated authority, control, responsibility, and deliberate transfer or holding of direction.",
-    family: "facet",
+    description: "Negotiated placement of control, direction, responsibility, and following.",
+    family: "dynamic_mode",
     mappings: [
+      { kind: "dynamic_mode", id: "power_exchange_mode", weight: 1 },
       { kind: "facet", id: "power_exchange", weight: 1 },
       { kind: "signal", id: "receiving_control", weight: 0.85 },
       { kind: "signal", id: "giving_control", weight: 0.85 },
@@ -214,9 +215,9 @@ export const sceneThemeDefinitions: readonly SceneThemeDefinition[] = [
     id: "deep-submission",
     label: "Deeper Submission",
     description: "A more immersive chosen surrender of direction, responsibility, and obedience.",
-    family: "dynamic_mode",
+    family: "vibe",
     mappings: [
-      { kind: "dynamic_mode", id: "surrender_mode", weight: 1 },
+      { kind: "dynamic_mode", id: "power_exchange_mode", weight: 0.75 },
       { kind: "signal", id: "responsibility_transfer", weight: 1 },
       { kind: "signal", id: "receiving_control", weight: 0.9 },
       { kind: "signal", id: "obedience", weight: 0.7 },
@@ -229,9 +230,9 @@ export const sceneThemeDefinitions: readonly SceneThemeDefinition[] = [
     id: "surrender",
     label: "Surrender",
     description: "Letting go of decision load or direction within chosen, negotiated authority.",
-    family: "dynamic_mode",
+    family: "vibe",
     mappings: [
-      { kind: "dynamic_mode", id: "surrender_mode", weight: 1 },
+      { kind: "dynamic_mode", id: "power_exchange_mode", weight: 0.7 },
       { kind: "signal", id: "responsibility_transfer", weight: 1 },
       { kind: "signal", id: "receiving_control", weight: 0.85 },
       { kind: "facet", id: "power_exchange", weight: 0.9 },
