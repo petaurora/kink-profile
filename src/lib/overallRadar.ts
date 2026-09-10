@@ -9,6 +9,7 @@ export type OverallRadarAxis = {
   shortLabel: string;
   affinity: number | null;
   coverage: number;
+  prominence: number | null;
   state: OverallRadarAxisState;
 };
 
@@ -25,6 +26,30 @@ export type OverallRadarModel = {
 };
 
 const limitedEvidenceThreshold = 25;
+
+function clamp01(value: number) {
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(1, Math.max(0, value));
+}
+
+function round1(value: number) {
+  return Math.round((value + 1e-9) * 10) / 10;
+}
+
+/**
+ * Evidence-adjusted visual prominence for an Overall Facet.
+ *
+ * Affinity answers "how strongly does known evidence align with this theme?"
+ * Coverage answers "how much of this theme has meaningful evidence?"
+ * Prominence combines both for the profile-shape visualization.
+ */
+export function calculateOverallFacetProminence(
+  affinity: number | null,
+  coverage: number,
+) {
+  if (affinity === null || coverage <= 0) return null;
+  return round1(affinity * Math.sqrt(clamp01(coverage / 100)));
+}
 
 export function buildOverallRadarModel(
   facets: readonly OverallFacetResult[],
@@ -44,6 +69,9 @@ export function buildOverallRadarModel(
       shortLabel: facet.shortLabel,
       affinity: unknown ? null : facet.affinity,
       coverage: facet.coverage,
+      prominence: unknown
+        ? null
+        : calculateOverallFacetProminence(facet.affinity, facet.coverage),
       state,
     };
   });
