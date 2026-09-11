@@ -127,8 +127,8 @@ function RadialLauncher({
 }
 
 export function NavigationDesignLab() {
-  const [openLauncher, setOpenLauncher] = useState<LauncherId | null>("catalog");
-  const [lastAction, setLastAction] = useState("Catalog launcher open");
+  const [openLauncher, setOpenLauncher] = useState<LauncherId | null>(null);
+  const [lastAction, setLastAction] = useState("Hub selected");
 
   const helperText = useMemo(() => {
     if (openLauncher === "catalog") {
