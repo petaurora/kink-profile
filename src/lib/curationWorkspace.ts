@@ -173,6 +173,9 @@ export function exportCurationWorkspace(workspace: CurationWorkspace) {
     throw new Error(message);
   }
 
+  // Export content is intentionally derived only from workspace state. Do not
+  // add wall-clock metadata here: identical proposals should produce identical
+  // review artifacts.
   const changes = [...workspace.changes].sort((left, right) =>
     curationChangeKey(left.entityType, left.entityId).localeCompare(
       curationChangeKey(right.entityType, right.entityId),
