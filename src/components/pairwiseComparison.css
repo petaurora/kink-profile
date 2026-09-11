@@ -1,0 +1,163 @@
+.pairwise-panel {
+  padding: clamp(18px, 4vw, 32px);
+}
+
+.pairwise-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: .75rem;
+  font-weight: 800;
+}
+
+.pairwise-grid {
+  position: relative;
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pairwise-choice {
+  min-height: 220px;
+  border: 1px solid var(--border-strong);
+  border-radius: 22px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--bg-muted);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.pairwise-choice:hover {
+  border-color: var(--accent-primary);
+  background: var(--bg-control-hover);
+}
+
+.pairwise-choice-eyebrow,
+.pairwise-choice > small {
+  color: var(--text-muted);
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.pairwise-choice > strong {
+  margin: 8px 0 18px;
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+
+.pairwise-choice-description {
+  margin: -6px 0 18px;
+  color: var(--text-secondary);
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+.pairwise-choice > small {
+  margin-top: auto;
+  color: var(--accent-primary);
+}
+
+.pairwise-or {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-surface-raised);
+  color: var(--text-muted);
+  font-size: .65rem;
+  font-weight: 900;
+}
+
+.pairwise-actions,
+.pairwise-footer {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+}
+
+.pairwise-footer {
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: .75rem;
+}
+
+@media (max-width: 700px) {
+  .pairwise-grid {
+    gap: 8px;
+  }
+
+  .pairwise-choice {
+    min-height: 150px;
+    padding: 14px;
+  }
+
+  .pairwise-choice > strong {
+    font-size: clamp(1.2rem, 5vw, 1.7rem);
+  }
+}
+
+@media (max-width: 520px) {
+  .pairwise-panel {
+    padding: 12px;
+  }
+
+  .pairwise-meta {
+    font-size: .66rem;
+  }
+
+  .pairwise-choice {
+    min-height: 125px;
+    border-radius: 16px;
+    padding: 11px;
+  }
+
+  .pairwise-choice > strong {
+    margin: 6px 0 10px;
+    font-size: 1.12rem;
+  }
+
+  .pairwise-choice-eyebrow,
+  .pairwise-choice > small {
+    font-size: .62rem;
+  }
+
+  .pairwise-choice-description {
+    margin: -2px 0 10px;
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: .68rem;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .pairwise-or {
+    width: 30px;
+    height: 30px;
+    font-size: .55rem;
+  }
+
+  .pairwise-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
