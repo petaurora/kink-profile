@@ -24,7 +24,7 @@ A milestone document may be split across all three rather than moved wholesale.
 - [Scoring & Taxonomy Model](scoring-model.md) — weighted scoring, source aggregation, affinity vs coverage, and taxonomy boundaries
 - [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) — evidence provenance, recomputation, source separation, and no-feedback-loop rules
 - [Overall Profile Aggregation](overall-profile-aggregation.md) — aggregate profile behavior
-- [Kink This-or-That Ranking](kink-this-or-that-ranking.md) — pairwise ranking behavior and temporal reranking boundary
+- [Kink This-or-That Ranking](kink-this-or-that-ranking.md) — category/Overall pairwise ranking, temporal reranking, historical snapshots, and view-relative movement
 
 If a change alters one of these cross-system contracts, update the relevant document in the same PR.
 
@@ -44,7 +44,6 @@ The following feature contracts still carry milestone names because they describ
 - [M6 Catalog Integration](m6-catalog-integration.md)
 - [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)
 - [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md)
-- [M12 Ranking History & Movement](m12-ranking-history-movement.md)
 
 Their milestone prefix is historical; it does not own current work status. When one is materially revised, decide whether its surviving contract should move to a durable topic path rather than preserving the milestone name automatically.
 
