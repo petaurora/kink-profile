@@ -2,8 +2,11 @@ import { matchRoutes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import {
   appRoutePatterns,
+  hubRoute,
   legacyScreenRoutes,
   reservedRoutes,
+  settingsRoute,
+  siteHeaderRoutePaths,
 } from "./routes";
 
 const routeTable = [
@@ -36,13 +39,17 @@ describe("application route contract", () => {
     expect(matchedRouteId("/this-does-not-exist")).toBe("not-found");
   });
 
-  it("keeps legacy screen routes explicit during incremental migration", () => {
+  it("promotes Hub and Settings to first-class routed pages", () => {
+    expect(hubRoute).toEqual({ id: "hub", path: "/" });
+    expect(settingsRoute).toEqual({ id: "settings", path: "/settings" });
+  });
+
+  it("keeps only not-yet-migrated features behind legacy screen routes", () => {
     expect(
       Object.fromEntries(
         legacyScreenRoutes.map(({ path, screen }) => [path, screen]),
       ),
     ).toEqual({
-      "/": "hub",
       "/profile": "profile",
       "/catalog": "catalog",
       "/ranking": "ranking",
@@ -53,9 +60,21 @@ describe("application route contract", () => {
     });
   });
 
-  it("keeps state-dependent routes assigned to their owning migration slice", () => {
+  it("routes every header destination through browser navigation", () => {
+    expect(siteHeaderRoutePaths).toEqual({
+      hub: "/",
+      profile: "/profile",
+      ranking: "/ranking",
+      catalog: "/catalog",
+      "rewards-punishments": "/rewards",
+      "scene-builder": "/scene-builder",
+      "compare-profiles": "/compare",
+      "curation-workbench": "/curation",
+    });
+  });
+
+  it("keeps only quiz state assigned to the next migration slice", () => {
     expect(reservedRoutes).toEqual([
-      { id: "settings", path: "/settings", owner: "M18.2" },
       { id: "quiz", path: "/quizzes/:quizId", owner: "M18.3" },
       {
         id: "quiz-results",
