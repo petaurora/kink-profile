@@ -18,8 +18,14 @@ export type CurationWeightedRelation = {
   /** Canonical Signal channel used by the M16.2 Workbench authoring model. */
   channel?: SignalChannel;
   /**
-   * Legacy source applicability retained only while old editor/source adapters
-   * still compile. New Workbench Signal proposals must author `channel`.
+   * Catalog source applicability is not a Signal channel. This preserves the
+   * old TSV `Applies To` condition independently so a curator can edit both
+   * concepts without conflating them.
+   */
+  catalogAppliesTo?: "any" | "receiving" | "giving";
+  /**
+   * Deprecated compatibility field used only by the legacy editor adapter.
+   * New Workbench proposals must not emit this field.
    */
   direction?: "receiving" | "giving";
   relationship?: "supports" | "opposes";
