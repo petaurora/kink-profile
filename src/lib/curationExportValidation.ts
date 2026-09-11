@@ -155,7 +155,33 @@ export function validateCurationWorkspaceForExport(
   }
 
   const keys = new Set<string>();
-  for (const change of workspace.changes) {
+  for (const [index, rawChange] of workspace.changes.entries()) {
+    if (!rawChange || typeof rawChange !== "object") {
+      errors.push(`Proposal ${index + 1}: change must be an object.`);
+      continue;
+    }
+
+    const change = rawChange as CurationChange;
+    if (
+      typeof change.entityType !== "string" ||
+      typeof change.entityId !== "string" ||
+      typeof change.action !== "string" ||
+      typeof change.reviewedAt !== "string"
+    ) {
+      errors.push(`Proposal ${index + 1}: change metadata is incomplete or malformed.`);
+      continue;
+    }
+
+    if (
+      change.changes !== undefined &&
+      (typeof change.changes !== "object" ||
+        change.changes === null ||
+        Array.isArray(change.changes))
+    ) {
+      errors.push(`${changeKey(change)}: changes must be a field-value object.`);
+      continue;
+    }
+
     const key = changeKey(change);
     if (keys.has(key)) {
       errors.push(`${key}: duplicate proposal exists in the workspace.`);
