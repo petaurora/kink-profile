@@ -16,6 +16,7 @@ import {
   canonicalizeCurationEditorModel,
   validateCanonicalCurationDraft,
 } from "./lib/curationCanonicalEditorModel";
+import { buildCanonicalSignalEntityModel } from "./lib/curationCanonicalSignalEntity";
 import type {
   CurationChange,
   CurationChangeValue,
@@ -46,7 +47,11 @@ export function CurationStructuredEditor({
   change,
   onSave,
 }: CurationStructuredEditorProps) {
-  const sourceModel = useMemo(() => buildCurationEditorModel(entry), [entry]);
+  const sourceModel = useMemo(
+    () =>
+      buildCanonicalSignalEntityModel(entry) ?? buildCurationEditorModel(entry),
+    [entry],
+  );
   const model = useMemo(
     () => canonicalizeCurationEditorModel(entry, sourceModel),
     [entry, sourceModel],
