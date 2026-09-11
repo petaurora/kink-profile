@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { SiteHeader } from "../../app/SiteHeader";
 import { useProfileSettings } from "../../lib/profileSettingsContext";
 import { ProfileSettingsPage } from "./ProfileSettingsPage";
+import "./settings.css";
 
 type SettingsNavigationState = {
   from?: unknown;
