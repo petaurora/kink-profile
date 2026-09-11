@@ -2,12 +2,15 @@ import { matchRoutes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import {
   appRoutePatterns,
+  catalogRoute,
   hubRoute,
   legacyScreenRoutes,
+  profileRoute,
   quizResultsPath,
   quizResultsRoute,
   quizRoute,
   quizRoutePath,
+  rankingRoute,
   settingsRoute,
   siteHeaderRoutePaths,
 } from "./routes";
@@ -42,8 +45,11 @@ describe("application route contract", () => {
     expect(matchedRouteId("/this-does-not-exist")).toBe("not-found");
   });
 
-  it("promotes Hub, Settings, Quiz, and Results to first-class routes", () => {
+  it("promotes migrated destinations to first-class routes", () => {
     expect(hubRoute).toEqual({ id: "hub", path: "/" });
+    expect(profileRoute).toEqual({ id: "profile", path: "/profile" });
+    expect(catalogRoute).toEqual({ id: "catalog", path: "/catalog" });
+    expect(rankingRoute).toEqual({ id: "ranking", path: "/ranking" });
     expect(settingsRoute).toEqual({ id: "settings", path: "/settings" });
     expect(quizRoute).toEqual({ id: "quiz", path: "/quizzes/:quizId" });
     expect(quizResultsRoute).toEqual({
@@ -67,9 +73,6 @@ describe("application route contract", () => {
         legacyScreenRoutes.map(({ path, screen }) => [path, screen]),
       ),
     ).toEqual({
-      "/profile": "profile",
-      "/catalog": "catalog",
-      "/ranking": "ranking",
       "/rewards": "rewards-punishments",
       "/scene-builder": "scene-builder",
       "/compare": "compare-profiles",
