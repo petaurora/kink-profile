@@ -91,4 +91,38 @@ describe("curation export validation", () => {
       `${signal.entityType}:${signal.entityId}: replacement ID "definitely-not-a-real-signal" is not an existing signal.`,
     );
   });
+
+  it("rejects catalog mapping weights the source format cannot represent", () => {
+    const category = curationInventory.find(
+      (entry) =>
+        entry.entityType === "catalog-category" &&
+        entry.entityId === "asymmetry-incompleteness-irritation",
+    );
+    if (!category) throw new Error("Missing asymmetry catalog category fixture");
+
+    const workspace: CurationWorkspace = {
+      ...createEmptyCurationWorkspace(),
+      changes: [
+        {
+          entityType: category.entityType,
+          entityId: category.entityId,
+          action: "modify",
+          changes: {
+            signalMappings: [
+              {
+                id: "emotional_intensity",
+                weight: 0.2,
+                channel: "overall",
+              },
+            ],
+          },
+          reviewedAt: "2026-09-11T01:36:53.330Z",
+        },
+      ],
+    };
+
+    expect(validateCurationWorkspaceForExport(workspace).errors).toContain(
+      'catalog-category:asymmetry-incompleteness-irritation: signalMappings weight for "emotional_intensity" must be 0.25, 0.50, 0.75, or 1.00 for the catalog source format.',
+    );
+  });
 });
