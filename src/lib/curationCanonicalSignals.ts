@@ -77,10 +77,7 @@ export function isValidCurationSignalChannel(
   signalId: CanonicalSignalId,
   channel: SignalChannel,
 ) {
-  return (
-    channel === "overall" ||
-    signalSupportsChannel(signalId, channel)
-  );
+  return channel === "overall" || signalSupportsChannel(signalId, channel);
 }
 
 export function canonicalizeCurationSignalRef(
@@ -91,6 +88,20 @@ export function canonicalizeCurationSignalRef(
     quizQuestionId?: string;
   } = {},
 ): CurationSignalRef {
+  // Some stable IDs (for example service/obedience/structure) exist in both the
+  // legacy and canonical vocabularies. Once a caller supplies an explicit
+  // canonical channel, preserve that authoring intent rather than routing the
+  // ID back through the legacy compatibility interpretation.
+  if (options.channel !== undefined && isCanonicalSignalId(signalId)) {
+    return {
+      signalId,
+      channel: isValidCurationSignalChannel(signalId, options.channel)
+        ? options.channel
+        : "overall",
+      weight,
+    };
+  }
+
   if (isLegacySignalId(signalId)) {
     const ref = options.quizQuestionId
       ? canonicalQuizSignalRef(options.quizQuestionId, signalId)
