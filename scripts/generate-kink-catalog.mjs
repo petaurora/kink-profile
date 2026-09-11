@@ -10,7 +10,6 @@ const signalsPath = path.resolve("src/data/signals.ts");
 const outputPath = path.resolve("src/data/kinkCatalog.generated.ts");
 
 const stableIdPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const allowedMappingWeights = new Set([0.25, 0.5, 0.75, 1]);
 const allowedMappingScopes = new Set(["category", "item"]);
 const allowedMappingDirections = new Set(["any", "receiving", "giving"]);
 const roleDirections = new Map([
@@ -154,7 +153,7 @@ const baseItems = catalogRows.map((row, index) => {
   const existingCategoryLabel = catalogCategoryLabelsById.get(categoryId);
   if (existingCategoryLabel && existingCategoryLabel !== categoryLabel) {
     throw new Error(
-      `Catalog record ${recordNumber}: Category ID "${categoryId}" maps to both "${existingCategoryLabel}" and "${categoryLabel}".`,
+      `${sourceName} record ${recordNumber}: ${field} "${id}" must use lowercase kebab-case.`,
     );
   }
   catalogCategoryLabelsById.set(categoryId, categoryLabel);
@@ -323,9 +322,9 @@ for (const [index, row] of mappingRows.entries()) {
       `Catalog signal mappings record ${recordNumber}: unknown Signal ID "${signalId}".`,
     );
   }
-  if (!allowedMappingWeights.has(weight)) {
+  if (!Number.isFinite(weight) || weight < 0 || weight > 1) {
     throw new Error(
-      `Catalog signal mappings record ${recordNumber}: Weight "${weightText}" must be 0.25, 0.50, 0.75, or 1.00.`,
+      `Catalog signal mappings record ${recordNumber}: Weight "${weightText}" must be between 0 and 1.`,
     );
   }
 
