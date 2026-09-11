@@ -20,6 +20,7 @@ export type CurationExportValidationResult = {
 };
 
 const validActions = new Set(["keep", "modify", "merge", "archive", "remove"]);
+const catalogSourceMappingWeights = new Set([0.25, 0.5, 0.75, 1]);
 
 function changeKey(change: Pick<CurationChange, "entityType" | "entityId">) {
   return `${change.entityType}:${change.entityId}`;
@@ -55,6 +56,42 @@ function validateRelationCompatibility(
   return errors;
 }
 
+function validateSourceFormatConstraints(change: CurationChange) {
+  const errors: string[] = [];
+  if (!change.changes) return errors;
+
+  if (
+    change.entityType !== "catalog-item" &&
+    change.entityType !== "catalog-category"
+  ) {
+    return errors;
+  }
+
+  const mappings = change.changes.signalMappings;
+  if (!Array.isArray(mappings)) return errors;
+
+  const key = changeKey(change);
+  for (const mapping of mappings) {
+    if (
+      typeof mapping !== "object" ||
+      mapping === null ||
+      !("id" in mapping) ||
+      !("weight" in mapping)
+    ) {
+      continue;
+    }
+
+    const weight = Number(mapping.weight);
+    if (Number.isFinite(weight) && !catalogSourceMappingWeights.has(weight)) {
+      errors.push(
+        `${key}: signalMappings weight for "${String(mapping.id)}" must be 0.25, 0.50, 0.75, or 1.00 for the catalog source format.`,
+      );
+    }
+  }
+
+  return errors;
+}
+
 function validateChange(change: CurationChange) {
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -80,6 +117,7 @@ function validateChange(change: CurationChange) {
   }
 
   errors.push(...validateRelationCompatibility(key, change.changes));
+  errors.push(...validateSourceFormatConstraints(change));
 
   if (change.action === "modify") {
     if (!change.changes || Object.keys(change.changes).length === 0) {
