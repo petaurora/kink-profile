@@ -4,7 +4,10 @@ import {
   appRoutePatterns,
   hubRoute,
   legacyScreenRoutes,
-  reservedRoutes,
+  quizResultsPath,
+  quizResultsRoute,
+  quizRoute,
+  quizRoutePath,
   settingsRoute,
   siteHeaderRoutePaths,
 } from "./routes";
@@ -39,9 +42,23 @@ describe("application route contract", () => {
     expect(matchedRouteId("/this-does-not-exist")).toBe("not-found");
   });
 
-  it("promotes Hub and Settings to first-class routed pages", () => {
+  it("promotes Hub, Settings, Quiz, and Results to first-class routes", () => {
     expect(hubRoute).toEqual({ id: "hub", path: "/" });
     expect(settingsRoute).toEqual({ id: "settings", path: "/settings" });
+    expect(quizRoute).toEqual({ id: "quiz", path: "/quizzes/:quizId" });
+    expect(quizResultsRoute).toEqual({
+      id: "quiz-results",
+      path: "/quizzes/:quizId/results",
+    });
+  });
+
+  it("builds canonical quiz URLs from quiz IDs", () => {
+    expect(quizRoutePath("dominance-submission")).toBe(
+      "/quizzes/dominance-submission",
+    );
+    expect(quizResultsPath("dominance-submission")).toBe(
+      "/quizzes/dominance-submission/results",
+    );
   });
 
   it("keeps only not-yet-migrated features behind legacy screen routes", () => {
@@ -71,16 +88,5 @@ describe("application route contract", () => {
       "compare-profiles": "/compare",
       "curation-workbench": "/curation",
     });
-  });
-
-  it("keeps only quiz state assigned to the next migration slice", () => {
-    expect(reservedRoutes).toEqual([
-      { id: "quiz", path: "/quizzes/:quizId", owner: "M18.3" },
-      {
-        id: "quiz-results",
-        path: "/quizzes/:quizId/results",
-        owner: "M18.3",
-      },
-    ]);
   });
 });
