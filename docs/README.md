@@ -18,19 +18,21 @@ A milestone document may be split across all three rather than moved wholesale.
 
 ## Durable system contracts
 
-- [Semantic Data Model](semantic-data-model.md)
-- [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md)
-- [Signal + Channel Model](m16-signal-channel-model.md)
-- [Scoring & Taxonomy Model](scoring-model.md)
-- [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md)
-- [Overall Profile Aggregation](overall-profile-aggregation.md)
-- [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
+- [Semantic Data Model](semantic-data-model.md) — how evidence and semantic layers relate
+- [Signal + Channel Data Model](data-model/signal-channel-model.md) — canonical Signal identity, Overall/Receiving/Giving channels, compatibility boundaries, and aggregation semantics
+- [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md) — keeps authority, activity direction, and roles/headspaces distinct
+- [Scoring & Taxonomy Model](scoring-model.md) — weighted scoring, source aggregation, affinity vs coverage, and taxonomy boundaries
+- [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) — evidence provenance, recomputation, source separation, and no-feedback-loop rules
+- [Overall Profile Aggregation](overall-profile-aggregation.md) — aggregate profile behavior
+- [Kink This-or-That Ranking](kink-this-or-that-ranking.md) — pairwise ranking behavior and temporal reranking boundary
 
-If a change alters one of these cross-system contracts, update it in the same PR.
+If a change alters one of these cross-system contracts, update the relevant document in the same PR.
 
-## Feature contracts still carrying milestone names
+## Current product/feature contracts
 
-These remain useful because they describe behavior that currently exists. Their milestone prefix is historical; it does not own current work status.
+- [Curation Workbench](product/curation-workbench.md) — proposal workspace, canonical semantic editing, validation, and deterministic export
+
+The following feature contracts still carry milestone names because they describe implemented behavior that has not yet needed a durable topic-path rewrite:
 
 - [M2 Dominance & Submission](m2-ds-design.md)
 - [M3 Roles & Headspaces](m3-headspaces-direction.md)
@@ -44,24 +46,15 @@ These remain useful because they describe behavior that currently exists. Their 
 - [M13 Scene Builder](m13-scene-builder.md)
 - [M14 Shared Profiles / Comparison](m14-shared-profiles.md)
 
-When one of these files is materially revised, decide whether its surviving contract should move to a durable topic path such as `product/scene-builder.md` rather than preserving the milestone name automatically.
+Their milestone prefix is historical; it does not own current work status. When one is materially revised, decide whether its surviving contract should move to a durable topic path such as `product/scene-builder.md` rather than preserving the milestone name automatically.
 
-## Migration history and temporary transition docs
+## Active work is not documentation
 
-Completed migration/audit files may remain temporarily when they still provide useful compatibility context:
-
-- [M16 Signal Channel Audit](m16-signal-channel-audit.md)
-- [M16 Signal Channel Runtime Migration](m16-signal-channel-runtime-migration.md)
-- [M16 Workbench Signal + Channel Follow-up](m16-workbench-signal-channel-followup.md)
-
-The following still contain implementation-adjacent transition material and should be distilled when materially touched. Their checklists/status are **not** authoritative:
-
-- [M16 Data & Content Curation](m16-data-content-curation.md)
-- [M16 Profile Semantics Refinement](m16-profile-semantics-refinement.md)
-- [M16 Score Explainability](m16-score-explainability.md)
-- [M18 Application Architecture & Routing](m18-application-architecture-routing.md)
+Current M16 curation/refinement work is tracked by GitHub Issue #124 and its sub-issues. The completed Signal/channel migration and Workbench implementation history live in their closed Issues/PRs and git history rather than separate `m16-*` status documents.
 
 Planned product-design documents that do not describe implemented behavior should not live in `docs/` merely because they contain detailed specifications. Product/design reasoning belongs in Notion; actionable engineering scope belongs in the owning GitHub Issue. Once a feature lands, distill its surviving implemented rules back into durable repository documentation.
+
+Planned engineering architecture/refactor work follows the same current-system boundary: the owning GitHub Issue holds the implementation plan and locked technical decisions. Durable architecture documentation should describe the structure that actually landed, not a planned end state.
 
 ## Reference data
 
@@ -75,6 +68,7 @@ Research notes that do not need to ship with code belong in Notion.
 | --- | --- |
 | What does the app do? | Code + Feature Guide |
 | How do scoring/evidence/semantics work? | Durable repository contracts |
+| How does a current implemented feature work? | Current product/feature contract + code/tests |
 | What are we working on? | GitHub Issues |
 | What should happen next? | Repository Project |
 | What are we thinking/researching/deciding? | Kink Profile HQ in Notion |
