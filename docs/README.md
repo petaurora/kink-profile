@@ -30,6 +30,7 @@ If a change alters one of these cross-system contracts, update the relevant docu
 
 ## Current product/feature contracts
 
+- [Kink Catalog](product/kink-catalog.md) — stable catalog identity/metadata, explicit preference state, browse/edit behavior, result views, and inference/exclusion boundaries
 - [Profile Management](product/profile-management.md) — profile identity, selective reset, private backup/restore, and curated share exports
 - [Rewards & Punishments](product/rewards-punishments.md) — contextual suitability, inference, ranking, randomization, recipes, and lifecycle boundaries
 - [Scene Builder](product/scene-builder.md) — theme queries, session overrides, candidate eligibility, composition, randomization, and saved scenes
@@ -42,8 +43,6 @@ The following feature contracts still carry milestone names because they describ
 - [M3 Roles & Headspaces](m3-headspaces-direction.md)
 - [M4 Bondage & Discipline](m4-bd-design.md)
 - [M5 Sadism & Masochism](m5-sm-design.md)
-- [M6 Catalog Integration](m6-catalog-integration.md)
-- [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)
 
 Their milestone prefix is historical; it does not own current work status. When one is materially revised, decide whether its surviving contract should move to a durable topic path rather than preserving the milestone name automatically.
 
