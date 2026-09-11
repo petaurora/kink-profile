@@ -92,37 +92,38 @@ describe("curation export validation", () => {
     );
   });
 
-  it("rejects catalog mapping weights the source format cannot represent", () => {
-    const category = curationInventory.find(
-      (entry) =>
-        entry.entityType === "catalog-category" &&
-        entry.entityId === "asymmetry-incompleteness-irritation",
-    );
-    if (!category) throw new Error("Missing asymmetry catalog category fixture");
+  it.each([0, 0.2, 0.65, 1])(
+    "accepts continuous catalog mapping weight %s",
+    (weight) => {
+      const category = curationInventory.find(
+        (entry) =>
+          entry.entityType === "catalog-category" &&
+          entry.entityId === "asymmetry-incompleteness-irritation",
+      );
+      if (!category) throw new Error("Missing asymmetry catalog category fixture");
 
-    const workspace: CurationWorkspace = {
-      ...createEmptyCurationWorkspace(),
-      changes: [
-        {
-          entityType: category.entityType,
-          entityId: category.entityId,
-          action: "modify",
-          changes: {
-            signalMappings: [
-              {
-                id: "emotional_intensity",
-                weight: 0.2,
-                channel: "overall",
-              },
-            ],
+      const workspace: CurationWorkspace = {
+        ...createEmptyCurationWorkspace(),
+        changes: [
+          {
+            entityType: category.entityType,
+            entityId: category.entityId,
+            action: "modify",
+            changes: {
+              signalMappings: [
+                {
+                  id: "emotional_intensity",
+                  weight,
+                  channel: "overall",
+                },
+              ],
+            },
+            reviewedAt: "2026-09-11T01:36:53.330Z",
           },
-          reviewedAt: "2026-09-11T01:36:53.330Z",
-        },
-      ],
-    };
+        ],
+      };
 
-    expect(validateCurationWorkspaceForExport(workspace).errors).toContain(
-      'catalog-category:asymmetry-incompleteness-irritation: signalMappings weight for "emotional_intensity" must be 0.25, 0.50, 0.75, or 1.00 for the catalog source format.',
-    );
-  });
+      expect(validateCurationWorkspaceForExport(workspace).errors).toEqual([]);
+    },
+  );
 });
