@@ -374,11 +374,11 @@ export function validateCanonicalCurationDraft(
 
         if (
           !Number.isFinite(relation.weight) ||
-          relation.weight <= 0 ||
+          relation.weight < 0 ||
           relation.weight > 1
         ) {
           errors.push(
-            `${field.label} weight for "${relation.id}" must be greater than 0 and no more than 1.`,
+            `${field.label} weight for "${relation.id}" must be between 0 and 1.`,
           );
         }
 
@@ -462,11 +462,11 @@ export function validateCanonicalCurationDraft(
         if (
           relationship.relationship !== "neutral" &&
           (!Number.isFinite(relationship.weight) ||
-            relationship.weight <= 0 ||
+            relationship.weight < 0 ||
             relationship.weight > 1)
         ) {
           errors.push(
-            `${field.label} weight for "${relationship.id}" must be greater than 0 and no more than 1.`,
+            `${field.label} weight for "${relationship.id}" must be between 0 and 1.`,
           );
         }
       }
