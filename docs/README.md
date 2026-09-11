@@ -20,6 +20,7 @@ A milestone document may be split across all three rather than moved wholesale.
 
 - [Semantic Data Model](semantic-data-model.md) — how evidence and semantic layers relate
 - [Signal + Channel Data Model](data-model/signal-channel-model.md) — canonical Signal identity, Overall/Receiving/Giving channels, compatibility boundaries, and aggregation semantics
+- [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md) — current composed taxonomy and canonical Signal/channel composition rules
 - [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md) — keeps authority, activity direction, and roles/headspaces distinct
 - [Scoring & Taxonomy Model](scoring-model.md) — weighted scoring, source aggregation, affinity vs coverage, and taxonomy boundaries
 - [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) — evidence provenance, recomputation, source separation, and no-feedback-loop rules
@@ -30,22 +31,19 @@ If a change alters one of these cross-system contracts, update the relevant docu
 
 ## Current product/feature contracts
 
+- [Quizzes](product/quizzes.md) — current quiz sections, response/progress storage, weighted section-local scoring, and cross-profile evidence boundaries
+- [Kink Catalog](product/kink-catalog.md) — stable catalog identity/metadata, explicit preference state, browse/edit behavior, result views, and inference/exclusion boundaries
+- [Profile Management](product/profile-management.md) — profile identity, selective reset, private backup/restore, and curated share exports
 - [Rewards & Punishments](product/rewards-punishments.md) — contextual suitability, inference, ranking, randomization, recipes, and lifecycle boundaries
 - [Scene Builder](product/scene-builder.md) — theme queries, session overrides, candidate eligibility, composition, randomization, and saved scenes
 - [Curation Workbench](product/curation-workbench.md) — proposal workspace, canonical semantic editing, validation, and deterministic export
 - [Profile Comparison](product/profile-comparison.md) — temporary uploaded-profile comparison, shared semantics, participant intent, and Shared Scene Builder boundaries
 
-The following feature contracts still carry milestone names because they describe implemented behavior that has not yet needed a durable topic-path rewrite:
+## Milestone-named files
 
-- [M2 Dominance & Submission](m2-ds-design.md)
-- [M3 Roles & Headspaces](m3-headspaces-direction.md)
-- [M4 Bondage & Discipline](m4-bd-design.md)
-- [M5 Sadism & Masochism](m5-sm-design.md)
-- [M6 Catalog Integration](m6-catalog-integration.md)
-- [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)
-- [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md)
+Milestone-named Markdown files that remain under `docs/` are **compatibility pointers**, not canonical current-system contracts. They keep old repository links useful while directing readers to the durable topic-based contract, GitHub Issue/PR history, or Notion product-design context that now owns the surviving material.
 
-Their milestone prefix is historical; it does not own current work status. When one is materially revised, decide whether its surviving contract should move to a durable topic path rather than preserving the milestone name automatically.
+Do not add new current behavior to a compatibility pointer. Update the owning topic contract instead.
 
 ## Active work is not documentation
 
