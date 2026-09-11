@@ -1,29 +1,23 @@
 # Authority, Activity Side & Role Semantics
 
-## Status
-
-**Implemented semantic boundary.**
-
-This contract prevents three different concepts from being collapsed into one another:
+This contract prevents several related concepts from being collapsed into one another.
 
 ```text
-authority orientation     activity side             role / headspace
----------------------     -----------------------   -----------------------
-submissive / dominant     doing / experiencing      Pet / Prey / Caregiver
-                          giving / receiving         Trainer / Little / etc.
+authority orientation      Signal/activity perspective      role / headspace
+---------------------      ---------------------------      -----------------------
+submissive / dominant      overall / receiving / giving     Pet / Prey / Caregiver
+                                                           Trainer / Little / etc.
 ```
 
-They can correlate for some people, but they are not the same dimension.
+They can correlate for some people, but they are not the same semantic dimension.
 
----
-
-# 1. Authority orientation
+## 1. Authority orientation
 
 Authority orientation answers:
 
 > **Who holds negotiated authority or direction in the dynamic?**
 
-User-facing results may be:
+The aggregate profile may describe patterns such as:
 
 - Submissive
 - Dominant
@@ -31,176 +25,158 @@ User-facing results may be:
 - Context-dependent
 - Still emerging
 
-The current aggregate profile derives this from **authority-specific D/s quiz evidence** only.
+Authority must come from evidence that actually measures authority.
 
-Signals currently used:
-
-### Submissive-side authority evidence
-
-- `receiving_control`
-- `responsibility_transfer`
-- `obedience`
-
-### Dominant-side authority evidence
-
-- `giving_control`
-
-`responsibility_holding` is deliberately **not** dominant-side authority evidence by itself.
-
-Holding responsibility can be delegated, service-oriented, practical, caretaking, or situational.
-
-Example:
-
-> A Dominant tells a submissive partner that they are responsible for holding the Dominant accountable to an agreed rule.
-
-The submissive partner is holding responsibility and may even administer a consequence, but that does not reverse the authority orientation.
-
-Catalog preference/ranking evidence does not currently assign Dominant/Submissive orientation. Liking a kink is not enough to infer why, under whose authority, or from what relational mindset the user likes doing it.
-
----
-
-# 2. Activity side
-
-Activity side answers:
-
-> **Which part of the activity is appealing to do or experience?**
+It must **not** be inferred merely because a person likes doing or receiving a particular physical activity.
 
 Examples:
 
-| Activity | One side | Other side |
-| --- | --- | --- |
-| Pain | experience pain | cause pain |
-| Restraint | be restrained | apply restraint |
-| Positioning | be positioned | position someone |
-| Discipline | receive correction | administer correction |
-| Care | receive care | provide care |
-| Primal pursuit | be pursued | pursue |
+- administering impact does not prove Dominant orientation;
+- receiving impact does not prove submissive orientation;
+- applying restraint does not prove Dominant orientation;
+- being restrained does not prove submissive orientation;
+- holding responsibility can be delegated, service-oriented, caretaking, practical, or authority-holding depending on context.
 
-The implementation may still use `receiving` / `giving` signal IDs because they are useful compact plumbing.
+Catalog preference/ranking evidence does not automatically assign Dominant/submissive orientation. Liking an activity cannot reveal why it appeals, under whose authority it occurs, or what relational context gives it meaning.
 
-Those names describe **activity direction only**.
+## 2. Signal/activity perspective
 
-They must not be automatically translated into:
+The canonical profile models reusable semantic concepts as **Signal + channel**.
 
-- submissive / dominant
-- bottom / top identity
-- weak / strong
-- passive / active personality
-- authority holder / authority receiver
-
-Examples:
-
-- a submissive person can give pain as instructed service
-- a submissive person can apply restraints because their Dominant told them to
-- a submissive person can administer discipline or accountability under delegated authority
-- a dominant person can receive pain or restraint
-- a Caregiver role does not automatically imply dominance
-- Predator / Prey does not automatically map to Dominant / submissive
-
----
-
-# 3. Role / headspace
-
-Role/headspace answers:
-
-> **What recognizable relational or internal role feels resonant?**
-
-Examples:
-
-- Pet
-- Little
-- Middle
-- Brat
-- Prey
-- Predator
-- Caregiver
-- Trainer
-- Owner / Handler
-- Slave
-- Service Submissive
-- Master / Mistress
-
-Role/headspace scores are independent overlapping compositions.
-
-The aggregate profile ranks **all known headspaces together**. It does not first sort them into receiving/submissive vs giving/dominant buckets.
-
-Some role names explicitly contain authority semantics, such as:
-
-- Service Submissive
-- Devotional Submissive
-- Master / Mistress
-
-Those names retain their explicit meaning because the role definition itself encodes it.
-
-Other roles must not inherit a D/s orientation merely because their ingredients include an activity-side signal.
-
-For example:
-
-- Prey can involve `pursuit_receiving` without meaning submissive
-- Predator can involve `pursuit_giving` without meaning dominant
-- Caregiver can involve `care_giving` without meaning dominant
-- Pet can involve receiving care without meaning submissive
-- Trainer can involve guidance or correction without automatically meaning dominant
-
----
-
-# M3 visualization grouping
-
-The Roles & Headspaces quiz still uses two role/headspace radars so all 15 role labels do not have to fit on one chart.
-
-Those are now presentation groupings:
-
-1. **Self-positioned roles** — roles/headspaces primarily phrased as the state the user inhabits
-2. **Partner-positioned roles** — roles primarily phrased as something enacted toward another person
-
-These are **not authority buckets**.
-
-They replace the old receiving/submissive vs giving/dominant labels without changing the underlying quiz answers or role composition math.
-
----
-
-# M7 profile rule
-
-The aggregate profile keeps the three layers separate:
+Channels are:
 
 ```text
-D/s authority quiz
-      ↓
-authority orientation
-(Submissive / Dominant / both / etc.)
-
-activity-specific signals
-      ↓
-facet side metadata
-(pain, restraint, care, pursuit, etc.)
-
-canonical signals
-      ↓
-roles / headspaces
-(overlapping recognizable roles)
+overall
+receiving
+giving
 ```
 
-No activity-side result may vote on authority orientation.
+A channel answers which supported perspective of the Signal concept the evidence describes.
 
-No generic activity-side bucket may decide which headspaces are "submissive" or "dominant."
+Examples:
 
----
+| Signal | Receiving perspective | Giving perspective |
+| --- | --- | --- |
+| Pain | receiving pain | causing pain |
+| Restraint | being restrained | restraining someone |
+| Positioning | being positioned | positioning someone |
+| Discipline | receiving discipline | giving discipline |
+| Care | being cared for | caring for someone |
+| Pursuit | being pursued | pursuing |
 
-# Future extension
+Not every Signal supports directional channels. Concepts such as Role Embodiment can remain Overall-only.
 
-This future direction is now explicitly scoped in [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md).
+See [Signal + Channel Data Model](data-model/signal-channel-model.md).
 
-M15 separates **authority context** (Dominant / submissive / non-D/s) from **activity side** (giving / receiving), so combinations such as submissive + giving and Dominant + receiving can be represented directly without inferring authority from physical behavior.
+### Channel is not authority
 
-M15 also allows optional motivation/context annotations such as:
+The words `receiving` and `giving` describe the perspective of the semantic concept. They are not aliases for:
 
-- because I was instructed to
-- as service
-- because I hold delegated responsibility
-- because I am setting the rule
-- for caretaking
-- for sensation/play without power exchange
+- submissive / Dominant;
+- bottom / top identity;
+- weak / strong;
+- passive / active personality;
+- authority receiver / authority holder.
 
-That context is not currently represented well enough to infer it automatically.
+Examples:
 
-Until it is explicitly measured, the app must preserve uncertainty rather than assigning a mindset from the physical side of a kink.
+- a submissive person can give pain as instructed service;
+- a submissive person can apply restraints under direction;
+- a submissive person can administer accountability under delegated responsibility;
+- a Dominant person can receive pain or restraint;
+- a Caregiver role does not automatically imply dominance;
+- Predator / Prey does not automatically map to Dominant / submissive.
+
+## 3. Roles / headspaces
+
+Roles/headspaces answer:
+
+> **What recognizable relational or internal role/state resonates with the available evidence?**
+
+Examples include Pet, Little, Middle, Brat, Prey, Predator, Caregiver, Trainer, Owner / Handler, Slave, Service Submissive, and Master / Mistress.
+
+Role/headspace scores are independent overlapping compositions. They do not need to be mutually exclusive or sum to 100%.
+
+Their normalized definitions may reference canonical Signal channels when that channel genuinely helps define the role.
+
+That does not make the channel itself an authority label.
+
+Examples:
+
+- Prey may use Pursuit · Receiving without therefore meaning submissive;
+- Predator may use Pursuit · Giving without therefore meaning Dominant;
+- Caregiver may use Care · Giving without therefore meaning Dominant;
+- Pet may use Care · Receiving without therefore meaning submissive.
+
+Some **role names themselves** explicitly contain authority semantics, such as Service Submissive or Master / Mistress. In those cases, the authority meaning comes from the role definition/name, not from a generic Receiving/Giving channel.
+
+## 4. Contextual modes
+
+Contextual/dynamic modes are composed explanatory lenses such as patterns around care, service, ritual, primal energy, or power exchange.
+
+They are not authority orientation and are not another top-level evidence source.
+
+The hierarchy is:
+
+```text
+independent evidence
+      ↓
+canonical Signal + channel
+      ↓
+roles/headspaces and contextual modes
+```
+
+A composed mode may help explain *why* several roles or activities cluster together. It does not retroactively become direct evidence.
+
+## 5. Overall Facets
+
+Overall Facets are broad, non-directional themes such as Power Exchange, Care & Nurture, Restraint & Physical Control, and Intensity & Pain.
+
+A facet can intentionally consume a directional Signal channel, but the facet itself remains a thematic compression rather than a Receiving/Giving axis.
+
+For example, Service & Devotion may include Care · Giving as one component while still remaining a broad theme.
+
+Do not create `Dominant Power Exchange` / `submissive Power Exchange` facets merely to preserve activity-side information. Directional nuance belongs in canonical Signal references and explicit contextual models.
+
+## 6. Presentation grouping is not taxonomy
+
+A quiz or screen may group results to keep a visualization readable.
+
+Presentation grouping must not silently create a semantic rule such as:
+
+```text
+left chart = submissive
+right chart = Dominant
+```
+
+unless those categories are explicitly what the underlying model measures.
+
+Historical self-positioned / partner-positioned role groupings are presentation organization, not authority buckets.
+
+## 7. Context-specific preference
+
+The current general profile can preserve authority and activity-side semantics without claiming to know every combination of them.
+
+A future/contextual model may explicitly ask questions such as:
+
+```text
+How do I feel about giving this activity while in a submissive context?
+How do I feel about receiving it while in a Dominant context?
+```
+
+That work is tracked in GitHub Issue #113 rather than inferred from current activity-side evidence.
+
+Until a context is explicitly measured, preserve uncertainty.
+
+Do not infer motivation such as service, delegated responsibility, rule-setting, caretaking, sensation play, or authority merely from which physical side of an activity the user prefers.
+
+## Invariants
+
+1. Authority orientation requires authority-relevant evidence.
+2. Receiving/Giving Signal channels describe concept perspective, not authority identity.
+3. Roles/headspaces are derived overlapping states, not aliases for channel direction.
+4. Contextual modes are derived explanatory lenses, not direct evidence.
+5. Overall Facets are broad themes and remain non-directional.
+6. A user can coherently be submissive + giving or Dominant + receiving.
+7. A role that carries explicit authority meaning gets that meaning from the role definition, not from generic activity direction.
+8. Unknown context remains unknown until measured; the system must not fill semantic gaps with stereotypes.
