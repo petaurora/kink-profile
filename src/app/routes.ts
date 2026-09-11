@@ -21,6 +21,9 @@ export type LegacyScreenRoute = {
 };
 
 export const hubRoute = { id: "hub", path: "/" } as const;
+export const profileRoute = { id: "profile", path: "/profile" } as const;
+export const catalogRoute = { id: "catalog", path: "/catalog" } as const;
+export const rankingRoute = { id: "ranking", path: "/ranking" } as const;
 export const settingsRoute = { id: "settings", path: "/settings" } as const;
 export const quizRoute = {
   id: "quiz",
@@ -41,9 +44,9 @@ export function quizResultsPath(quizId: QuizId) {
 
 export const siteHeaderRoutePaths = {
   hub: "/",
-  profile: "/profile",
-  ranking: "/ranking",
-  catalog: "/catalog",
+  profile: profileRoute.path,
+  ranking: rankingRoute.path,
+  catalog: catalogRoute.path,
   "rewards-punishments": "/rewards",
   "scene-builder": "/scene-builder",
   "compare-profiles": "/compare",
@@ -51,9 +54,6 @@ export const siteHeaderRoutePaths = {
 } as const;
 
 export const legacyScreenRoutes: readonly LegacyScreenRoute[] = [
-  { id: "profile", path: "/profile", screen: "profile" },
-  { id: "catalog", path: "/catalog", screen: "catalog" },
-  { id: "ranking", path: "/ranking", screen: "ranking" },
   { id: "rewards", path: "/rewards", screen: "rewards-punishments" },
   { id: "scene-builder", path: "/scene-builder", screen: "scene-builder" },
   { id: "compare", path: "/compare", screen: "compare-profiles" },
@@ -62,6 +62,9 @@ export const legacyScreenRoutes: readonly LegacyScreenRoute[] = [
 
 export const appRoutePatterns = [
   hubRoute,
+  profileRoute,
+  catalogRoute,
+  rankingRoute,
   settingsRoute,
   quizRoute,
   quizResultsRoute,
