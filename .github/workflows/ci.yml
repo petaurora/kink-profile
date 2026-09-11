@@ -20,5 +20,9 @@ jobs:
         run: npm install
       - name: Test
         run: npm test
-      - name: Build
+      - name: Build production base
+        run: npm run build
+      - name: Build PR preview base
+        env:
+          VITE_BASE_PATH: /kink-profile/pr-ci/
         run: npm run build
