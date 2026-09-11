@@ -17,7 +17,6 @@ import type {
 import {
   canonicalizeCurationSignalRef,
   curationSignalOptions,
-  curationSignalRefKey,
   isCanonicalSignalId,
   isLegacySignalId,
   isValidCurationSignalChannel,
@@ -49,6 +48,22 @@ function canonicalizeRelation(
   entry: CurationInventoryEntry,
   relation: CurationWeightedRelation,
 ): CurationWeightedRelation | null {
+  // Saved v2 proposals already carry an explicit canonical channel. Prefer that
+  // interpretation even when the stable ID also existed in the legacy union.
+  if (relation.channel !== undefined && isCanonicalSignalId(relation.id)) {
+    const canonical = canonicalizeCurationSignalRef(relation.id, relation.weight, {
+      channel: relation.channel,
+    });
+
+    return {
+      id: canonical.signalId,
+      channel: canonical.channel,
+      weight: canonical.weight,
+      catalogAppliesTo: relation.catalogAppliesTo,
+      relationship: relation.relationship,
+    };
+  }
+
   if (isLegacySignalId(relation.id)) {
     const canonical = canonicalizeCurationSignalRef(relation.id, relation.weight, {
       quizQuestionId:
@@ -59,6 +74,10 @@ function canonicalizeRelation(
       id: canonical.signalId,
       channel: canonical.channel,
       weight: canonical.weight,
+      catalogAppliesTo:
+        entry.entityType === "catalog-category"
+          ? relation.catalogAppliesTo ?? relation.direction ?? "any"
+          : relation.catalogAppliesTo,
       relationship: relation.relationship,
     };
   }
@@ -73,8 +92,17 @@ function canonicalizeRelation(
     id: canonical.signalId,
     channel: canonical.channel,
     weight: canonical.weight,
+    catalogAppliesTo: relation.catalogAppliesTo,
     relationship: relation.relationship,
   };
+}
+
+function relationIdentity(relation: CurationWeightedRelation) {
+  return [
+    relation.id,
+    relation.channel ?? "overall",
+    relation.catalogAppliesTo ?? "",
+  ].join("::");
 }
 
 function collapseCanonicalRelations(
@@ -83,26 +111,22 @@ function collapseCanonicalRelations(
   const byKey = new Map<string, CurationWeightedRelation>();
 
   for (const relation of relations) {
-    const channel = relation.channel ?? "overall";
-    const key = curationSignalRefKey({
-      signalId: relation.id as never,
-      channel,
-    });
+    const normalized = {
+      ...relation,
+      channel: relation.channel ?? "overall",
+      direction: undefined,
+    };
+    const key = relationIdentity(normalized);
     const existing = byKey.get(key);
 
-    if (!existing || relation.weight > existing.weight) {
-      byKey.set(key, {
-        ...relation,
-        channel,
-      });
+    if (!existing || normalized.weight > existing.weight) {
+      byKey.set(key, normalized);
     }
   }
 
-  return [...byKey.values()].sort((left, right) => {
-    const leftKey = `${left.id}::${left.channel ?? "overall"}`;
-    const rightKey = `${right.id}::${right.channel ?? "overall"}`;
-    return leftKey.localeCompare(rightKey);
-  });
+  return [...byKey.values()].sort((left, right) =>
+    relationIdentity(left).localeCompare(relationIdentity(right)),
+  );
 }
 
 function canonicalOverallFacetRelations(entry: CurationInventoryEntry) {
@@ -148,7 +172,7 @@ export function canonicalizeCurationEditorModel(
         allowDirection: true,
         helper:
           entry.entityType === "catalog-category"
-            ? "Author the canonical Signal concept and semantic channel. Legacy catalog applicability is handled at the source-translation boundary and is not a Signal channel."
+            ? "Choose the canonical Signal concept and its semantic channel. Catalog applicability is edited separately because source item-side filtering is not a Signal channel."
             : field.helper,
       };
     }),
@@ -189,6 +213,8 @@ function normalizeRelations(value: CurationChangeValue | undefined) {
       id: relation.id,
       weight: relation.weight,
       channel: "channel" in relation ? relation.channel : undefined,
+      catalogAppliesTo:
+        "catalogAppliesTo" in relation ? relation.catalogAppliesTo : undefined,
       relationship:
         "relationship" in relation ? relation.relationship : undefined,
     }))
@@ -197,6 +223,9 @@ function normalizeRelations(value: CurationChangeValue | undefined) {
         left.id.localeCompare(right.id) ||
         String(left.channel ?? "overall").localeCompare(
           String(right.channel ?? "overall"),
+        ) ||
+        String(left.catalogAppliesTo ?? "").localeCompare(
+          String(right.catalogAppliesTo ?? ""),
         ) ||
         String(left.relationship ?? "").localeCompare(
           String(right.relationship ?? ""),
@@ -336,7 +365,7 @@ export function validateCanonicalCurationDraft(
 
         const channel = relation.channel ?? "overall";
         const key = field.allowDirection
-          ? `${relation.id}::${channel}`
+          ? [relation.id, channel, relation.catalogAppliesTo ?? ""].join("::")
           : relation.id;
         if (keys.has(key)) {
           errors.push(`${field.label} contains duplicate "${key}".`);
@@ -365,6 +394,15 @@ export function validateCanonicalCurationDraft(
         } else if (relation.channel) {
           errors.push(
             `${field.label} does not support channels for "${relation.id}".`,
+          );
+        }
+
+        if (
+          relation.catalogAppliesTo &&
+          !["any", "receiving", "giving"].includes(relation.catalogAppliesTo)
+        ) {
+          errors.push(
+            `${field.label} has an invalid catalog applicability for "${relation.id}".`,
           );
         }
 
