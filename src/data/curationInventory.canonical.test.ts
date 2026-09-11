@@ -3,6 +3,8 @@ import { canonicalSignalDefinitions } from "./canonicalSignals";
 import {
   curationInventory,
   curationInventoryCounts,
+  curationPrimitiveLabels,
+  curationSurfaces,
 } from "./curationInventory";
 import { buildCanonicalSignalEntityModel } from "../lib/curationCanonicalSignalEntity";
 
@@ -40,5 +42,16 @@ describe("M16.2 canonical Workbench Signal inventory", () => {
       "description",
       "facetRelationships",
     ]);
+  });
+
+  it("keeps underlying dynamic modes contextual instead of presenting them as profile dimensions", () => {
+    expect(curationPrimitiveLabels["dynamic-mode"]).toBe("Contextual modes");
+
+    const rolesModes = curationSurfaces.find((surface) => surface.id === "roles-modes");
+    expect(rolesModes?.label).toContain("contextual modes");
+    expect(rolesModes?.notes).toContain("not a competing top-level profile dimension system");
+
+    const facets = curationSurfaces.find((surface) => surface.id === "overall-facets");
+    expect(facets?.notes).toContain("canonical high-level profile dimensions");
   });
 });
