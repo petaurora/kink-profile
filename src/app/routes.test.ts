@@ -5,6 +5,7 @@ import {
   catalogRoute,
   compareRoute,
   curationRoute,
+  designLabNavigationRoute,
   hubRoute,
   profileRoute,
   quizResultsPath,
@@ -38,6 +39,7 @@ describe("application route contract", () => {
     ["/compare", "compare"],
     ["/curation", "curation"],
     ["/settings", "settings"],
+    ["/design-lab/navigation", "design-lab-navigation"],
     ["/quizzes/dominance-submission", "quiz"],
     ["/quizzes/dominance-submission/results", "quiz-results"],
   ])("matches direct entry %s", (pathname, expectedId) => {
@@ -61,6 +63,10 @@ describe("application route contract", () => {
     expect(compareRoute).toEqual({ id: "compare", path: "/compare" });
     expect(curationRoute).toEqual({ id: "curation", path: "/curation" });
     expect(settingsRoute).toEqual({ id: "settings", path: "/settings" });
+    expect(designLabNavigationRoute).toEqual({
+      id: "design-lab-navigation",
+      path: "/design-lab/navigation",
+    });
     expect(quizRoute).toEqual({ id: "quiz", path: "/quizzes/:quizId" });
     expect(quizResultsRoute).toEqual({
       id: "quiz-results",
