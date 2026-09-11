@@ -1,8 +1,10 @@
 # M16 — Data & Content Curation
 
-**Status:** planned  
-**Roadmap milestone:** M16  
+**Status:** active curation program  
+**Tracking:** [M16 parent issue #124](https://github.com/petaurora/kink-profile/issues/124) and its GitHub sub-issues  
 **Primary boundary:** M16 reviews and refines the app's authored data, taxonomies, labels, mappings, and result dimensions. It may add, remove, merge, rename, re-categorize, or rebalance data points where that improves clarity and usefulness, while preserving stored user data through explicit migrations when identity changes.
+
+GitHub Issues own current M16 scope, progress, and sequencing. This document preserves the durable curation principles and cross-cutting model rules that are useful beside the code.
 
 ---
 
@@ -10,27 +12,23 @@
 
 Do a deliberate **whole-app data/content sanity pass** after the major product systems exist.
 
-The app has accumulated useful primitives across multiple milestones:
-
-- quiz questions
-- quiz signal weights
-- signal vocabulary
-- role/headspace definitions
-- dynamic-mode/radar dimensions
-- overall-profile facets
-- catalog items and categories
-- catalog aliases and signal mappings
-- rewards/punishments actions and contextual categories
-- inferred/default metadata
-- labels, descriptions, risk/intensity metadata, and other authored values
-
 M16 asks:
 
 > **Does each data point still earn its place?**
 
-The goal is not to make the datasets larger.
+The goal is not to make the datasets larger. The goal is to make them **cleaner, more coherent, easier to understand, and more useful to rank/profile against**.
 
-The goal is to make them **cleaner, more coherent, easier to understand, and more useful to rank/profile against**.
+Major review surfaces include:
+
+- quiz questions and scoring inputs
+- canonical Signal vocabulary and channel semantics
+- role/headspace definitions
+- contextual/underlying mode compositions
+- Overall Facets and their Signal relationships
+- catalog items, categories, aliases, and mappings
+- rewards/punishments actions and contextual categories
+- inferred/default metadata
+- labels, descriptions, risk/intensity metadata, and other authored values
 
 ---
 
@@ -38,20 +36,7 @@ The goal is to make them **cleaner, more coherent, easier to understand, and mor
 
 ## 1. Nothing is sacred because it already exists
 
-Implemented data is still reviewable.
-
-M16 may:
-
-- remove a weak or confusing data point
-- merge near-duplicates
-- split an overloaded concept
-- rename unclear terminology
-- re-categorize an item
-- change a mapping
-- change a weight
-- change which dimensions appear on a radar
-- remove a radar dimension that does not communicate something useful
-- add a missing dimension when the current model collapses meaningfully different concepts
+Implemented data is still reviewable. M16 may remove weak concepts, merge near-duplicates, split overloaded concepts, rename unclear terminology, re-categorize items, or rebalance mappings and weights.
 
 Implementation history is not evidence that a concept belongs forever.
 
@@ -64,470 +49,173 @@ Prefer:
 - fewer useful primitives over exhaustive noisy coverage
 - canonical concepts + aliases over duplicate vocabulary rows
 - dimensions that produce understandable differences
-- questions that discriminate between signals instead of repeatedly asking the same thing
+- questions that discriminate between Signals instead of repeatedly asking the same thing
 - labels that mean what the scoring actually measures
 
 ## 3. Review semantics before UI polish
 
-If a radar looks wrong, first ask whether:
-
-- the underlying dimension is meaningful
-- the inputs actually measure it
-- the aggregation makes sense
-- the label accurately describes it
+If a profile visualization looks wrong, first ask whether the underlying dimension is meaningful, whether the inputs actually measure it, whether the aggregation makes sense, and whether the label describes what is scored.
 
 Do not solve a bad data model by only changing presentation.
 
 ## 4. Preserve evidence when identity changes
 
-Existing profile data may already reference:
+Existing profile data may already reference catalog IDs, reward/punishment action IDs, Signal IDs, quiz/question versions, ranking scopes, saved recipes, or future contextual-profile IDs.
 
-- Catalog IDs
-- reward/punishment action IDs
-- signal IDs
-- quiz IDs/question versions
-- ranking scopes
-- saved recipes
-- future contextual-profile IDs
+Do not silently delete or reuse stable IDs. Use explicit aliases, replacement maps, archival states, migration functions, and version bumps when cleanup would otherwise orphan stored data.
 
-Do not silently delete or reuse stable IDs.
+## 5. Keep semantic layers separate
 
-Use explicit aliases, replacement maps, archival states, migration functions, and version bumps when cleanup would otherwise orphan stored data.
+The canonical profile hierarchy is:
 
----
+```text
+source evidence
+    ↓
+canonical Signal + channel
+    ├──→ Overall Facets        canonical high-level profile themes
+    ├──→ Roles / Headspaces    recognizable role/state compositions
+    └──→ Contextual modes      underlying interaction context/composition
+```
 
-# M16.1 — Inventory + review rubric
+Overall Facets are the canonical high-level profile dimension system. Contextual modes may remain useful internally or downstream, but they are not a second competing top-level profile taxonomy.
 
-Create a single inventory of authored/derived data surfaces that need human review.
-
-Include at minimum:
-
-- M2 D/s questions + weights
-- M3 Roles & Headspaces questions, role definitions, and dynamic modes
-- M4 B&D questions + weights
-- M5 S/M questions + weights
-- shared SignalId vocabulary
-- radar/facet dimensions
-- M7 aggregation labels and thresholds
-- M6 kink catalog + categories + aliases + mappings
-- pending catalog additions
-- M11 rewards/punishments action library + contextual categories + mappings
-- inferred/default metadata used to propose values
-- any user-facing explanatory labels tied to those models
-
-Use a lightweight review rubric for each primitive:
-
-- **distinct?** — meaningfully different from neighboring concepts?
-- **useful?** — does keeping it improve a decision, profile, ranking, or explanation?
-- **clear?** — would a user understand what is being asked/displayed?
-- **measurable?** — do we actually have evidence capable of estimating it?
-- **balanced?** — is it over/underrepresented compared with adjacent concepts?
-- **mapped correctly?** — are its relationships/weights defensible?
-- **stable enough?** — can it retain identity or does it require migration?
-- **worth the interaction cost?** — especially for catalog sorting and quizzes
+Giving/Receiving is a Signal/activity-side distinction, not Dominant/submissive authority. See [Signal + Channel Model](m16-signal-channel-model.md) and [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md).
 
 ---
 
-# M16.2 — Curation Workbench
+# Curation Workbench — landed M16.2 behavior
 
-Build a lightweight, mobile-friendly review surface inspired by the M11 quick sorter so data cleanup can happen gradually instead of requiring a giant spreadsheet/code-editing session.
+The mobile-friendly Curation Workbench landed through [Issue #116](https://github.com/petaurora/kink-profile/issues/116) and PR #136.
 
-## Core interaction
+It is the preferred lazy-review surface for authored/derived data that would otherwise require hand-editing source tables or code.
 
-The workbench should support:
+## Current interaction model
 
-- **Surprise me** — show a random reviewable primitive
-- filter by primitive type and review state
-- skip / defer / mark reviewed without changing data
-- edit the primitive's own fields
-- edit the relationships/mappings that make that primitive meaningful
-- show validation warnings and derived consequences before saving
-- preserve a local review queue/history so the user can do a few items at a time
-- compare current repo value vs local proposed value
-- revert one field, one item, or the whole local curation session
+The Workbench supports:
 
-Initial primitive types should include:
-
-- kink/catalog item
-- reward/punishment action
-- quiz question
-- signal
-- dynamic mode
-- role/headspace
-- overall facet/radar dimension
-- catalog category/domain/alias/mapping
-- M11 contextual category/mapping
-- quiz definition
-
-As M13–M15 land, the same workbench should be extensible to scene themes, contextual-activity capability metadata, motivations, and shared-profile interaction mappings.
-
-## Relationship editor
-
-A primitive card should not be limited to scalar fields.
-
-Examples:
-
-- kink → category, aliases, signal mappings + weights
-- reward/punishment action → contextual categories + weights
-- question → SignalId weights
-- dynamic mode/headspace → SignalId composition weights
-- overall facet → SignalId weights + optional direction
-- catalog category → domain, display order, default signal mappings
-- M11 category → display order/version and catalog-category mappings
-
-Multi-value relationships should use searchable chips/rows with explicit weights rather than encoded strings.
-
-## Current catalog-mode distinction
-
-The catalog's existing `Primary Mode` field is **not** the same thing as M3 Dynamic Modes.
-
-Today:
-
-- `Primary Mode` was a legacy descriptive TSV column such as Physical/Psychological.
-- the 551 current source rows contain 15 descriptor combinations inherited from the original catalog.
-- it has no canonical scoring meaning and is **not** an M3 Dynamic Mode.
-- no profile, scoring, recommendation, scene, ranking, or inference code consumes it.
-- it was only carried through the generated runtime type and displayed as decorative catalog metadata.
-
-**M16.5 decision:** retire it from the runtime model now.
-
-- the generator ignores `Primary Mode`
-- the catalog UI no longer displays it
-- the Curation Workbench no longer inventories or edits it
-- the TSV column remains temporarily as historical source data and can be physically removed during the catalog source cleanup sweep
-- do not replace it with direct kink → Dynamic Mode mappings unless a later curation pass finds a real semantic need
-
-A catalog item may still resolve to **multiple SignalId mappings** through category + item mappings. M3 Dynamic Modes remain composed definitions calculated from SignalIds rather than direct catalog assignments.
-
-Do not add direct kink → Dynamic Mode mappings merely for convenience unless the curation pass finds a real semantic need. Prefer the existing signal graph when it can express the relationship without creating a second competing mapping system.
-
-## Local curation state
+- random/surprise review plus filtering by primitive type and review state
+- current repo value alongside a local proposed value
+- structured editing for scalar fields and relationship mappings
+- local proposal state that is separate from the user's preference/profile evidence
+- keep/modify/merge/archive/remove review actions where supported
+- canonical validation before proposal save/export
+- deterministic JSON export for repository handoff
 
 Workbench edits are **proposals**, not profile evidence.
 
-Store them separately from the user's kink/reward/punishment profile.
+## Canonical Signal authoring
 
-Conceptually:
+Signal relationships are authored as:
 
-~~~ts
-interface CurationChange {
-  entityType: string;
-  entityId: string;
-  action: 'keep' | 'modify' | 'merge' | 'archive' | 'remove';
-  changes?: Record<string, unknown>;
-  replacementId?: string;
-  note?: string;
-  reviewedAt: string;
-}
+```text
+canonical Signal concept
++ channel: overall | receiving | giving
++ weight: 0..1
++ relationship polarity where applicable
+```
 
-interface CurationWorkspace {
-  schemaVersion: number;
-  sourceRevision?: string;
-  changes: CurationChange[];
-}
-~~~
+The Workbench exposes the 37 canonical Signal concepts rather than the old 45 compatibility IDs. Only semantically valid channels are offered, and Overall-only Signals cannot acquire Receiving/Giving channels.
 
-The workbench must never make a curation edit look like a user preference answer.
+Legacy IDs remain behind source/import compatibility boundaries until broader M16 migration work retires them where safe.
 
-## Export / repo handoff
+Catalog item/activity-side applicability remains separate from Signal channel semantics.
 
-Provide a dedicated export such as:
+See [M16 Workbench Signal + Channel Follow-up](m16-workbench-signal-channel-followup.md) for the landed migration details.
 
-`m16-curation-export.json`
+## Proposal export / repo handoff
 
-It should contain:
+The dedicated proposal export is `m16-curation-export.json`.
 
-- schema/version
-- optional source revision/catalog version
-- entity IDs/types
-- proposed field changes
-- proposed mapping changes
-- merge/archive/remove decisions
-- replacement IDs where applicable
-- curator notes
-- review timestamps/status
+The artifact carries the curation workspace schema and proposed entity changes, including mapping changes and lifecycle/replacement metadata where applicable. Review timestamps live on the proposals themselves.
 
-The exported file is intended to be uploaded back to the repository workflow and applied through a deterministic script or reviewed PR.
+Before export, the complete saved workspace is revalidated against the current canonical editor model. Invalid or stale proposals are blocked.
 
-Do not require the browser to authenticate to GitHub or mutate the repo directly.
+Export serialization is deterministic: identical workspace state produces identical JSON.
+
+The intended workflow is deliberately simple:
+
+```text
+Workbench review
+→ export JSON
+→ upload / hand the artifact to the repository workflow
+→ review the proposal
+→ make the corresponding repo source changes in a PR
+```
+
+The browser does **not** authenticate to GitHub or mutate the repository directly. A dedicated auto-import/apply script is not required for the Workbench contract; repository edits may be applied during normal review/PR work.
 
 ---
 
-# M16.3 — Quiz bank + scoring review
+# Catalog source distinctions
 
-### Legacy Starter cleanup ✅
+The catalog's historical `Primary Mode` TSV field is **not** the same thing as the contextual/underlying mode composition layer.
 
-The original M0 **Starter Profile** has been retired from the active quiz registry.
-Its separate `DimensionId` scoring vocabulary (`petPlay`, `submission`, `service`, etc.) was a prototype-only model that duplicated concepts now represented by the canonical SignalId system.
+It was descriptive source metadata such as Physical/Psychological, not a canonical scoring construct. The runtime generator and Workbench do not treat it as a profile mode. The TSV column may remain as historical source data until catalog-source cleanup removes it safely.
 
-Cleanup rules:
+Catalog items should resolve semantic meaning through canonical Signal mappings rather than adding a parallel direct item → contextual-mode mapping system unless later curation demonstrates a real need.
 
-- active quizzes use SignalId + weighted questions only
-- the Starter quiz no longer appears in the hub or result/scoring paths
-- the old legacy dimension model is no longer runtime code
-- `starter-profile` remains a supported **retired identity** only so old local data and backups can still be loaded/restored
-- retired Starter answers do not contribute signal evidence or the Overall Profile
-- do not migrate those old answers into canonical signals automatically; their original question semantics were not designed as equivalent evidence
-
-
-Review the authored questions and scoring inputs for M2–M5.
-
-Check for:
-
-- duplicate or near-duplicate questions
-- questions that accidentally measure multiple unrelated things
-- signals with too few or too many questions
-- wording that pushes toward a socially desirable answer
-- unclear giving/receiving semantics
-- accidental Dom/sub vs giving/receiving conflation
-- weights that produce unintuitive outcomes
-- questions that no longer match the current signal vocabulary
-- questions that should be removed rather than rewritten
-
-After changes:
-
-- re-run synthetic scoring scenarios
-- compare expected vs actual results
-- document intentional score shifts
-- version quiz definitions when stored completion/results require it
-
----
-
-# M16.4 — Signals, headspaces, radars + profile dimensions
-
-**Detailed refinement spec:** [M16.4 Profile Semantics Refinement](m16-profile-semantics-refinement.md)
-
-Review what the app claims to measure and display.
-
-Audit:
-
-- SignalId vocabulary
-- Roles & Headspaces
-- Dynamic Modes
-- D/s, B&D, and S/M result dimensions
-- M7 overall facets
-- radar axes
-- strength labels / thresholds
-- cross-source aggregation mappings
-- evidence-adjusted radar prominence vs raw affinity
-- positive/opposing Signal relationships in composed Dynamic Modes
-- missing physical/experiential Dynamic Modes
-- missing Signal concepts needed to represent meaningful profile variation
-
-Questions to answer:
-
-- are any axes redundant?
-- are some axes too abstract to be useful?
-- are related but distinct concepts incorrectly collapsed?
-- is a displayed percentage supported by enough evidence?
-- does the label describe the underlying evidence?
-- should some values be ranked lists rather than radar axes?
-- are there dimensions that belong only in a detailed view rather than the headline profile?
-
-The correct result may be to add, remove, merge, rename, reorder, change mapping/weighting, or change presentation type.
-
----
-
-# M16.5 — Kink catalog curation
-
-Review both:
-
-- reference/catalog/kink-catalog.tsv
-- reference/catalog/source-additions-2026-09-08.tsv
-
-Tasks:
-
-- selectively merge useful pending additions
-- audit the full catalog for duplicates and near-duplicates
-- identify overly granular/source-driven rows
-- remove items that do not create a useful independent preference/ranking decision
-- consolidate terminology through aliases where appropriate
-- review category assignment
-- review Typical Role / Primary Mode / Intensity / Risk Level metadata
-- review category-default and item-specific signal mappings
-- identify missing concepts only after pruning/normalization
-- preserve stored profile/ranking history for retired or merged IDs
-
-The catalog is a **decision surface**, not an encyclopedia.
-
-A useful test:
+The catalog is a **decision surface, not an encyclopedia**. A useful retention test is:
 
 > Would a person plausibly answer this differently from the neighboring item?
 
-If not, it may not deserve a standalone ranked row.
+If not, the row may not deserve an independent ranked identity.
 
 ---
 
-# M16.6 — Rewards & punishments data curation
+# Cross-system semantic hub
 
-Review the M11 action library and contextual taxonomy with the same standards as the kink catalog.
+**Signal → Overall Facet** is the canonical broad-theme projection path.
 
-Audit:
-
-- normalized reward/punishment actions
-- duplicates inherited from source reference sheets
-- actions that should link to an M6 catalog item instead of existing separately
-- action variants that are genuinely contextually distinct
-- contextual categories
-- category weights
-- inferred/default suitability proposals
-- labels/descriptions
-- randomizer eligibility metadata
-- builder usefulness
-- **recipe-builder UX/model review** — revisit the M11.7 builder as a product surface, not just its recipe data:
-  - identify missing fields, actions, and composition flows discovered during real use
-  - review whether primitive search/add, inferred suggestions, custom recipe-local text, ordering, notes, tags, and save/edit/duplicate/delete are the right interaction model
-  - review mobile density and whether the builder is too long/busy or hides important context
-  - review component editing/reordering ergonomics and whether recipe steps need richer per-component metadata
-  - review Needs review / warning presentation and recovery flows
-  - review saved-recipe cards, recipe discoverability, naming, and organization
-  - remove controls or concepts that technically work but do not earn their interaction cost
-  - preserve the non-recursive recipe boundary unless real usage demonstrates a need to change it
-
-Important:
-
-> The original reward and punishment sheets are source material, not a required runtime inventory.
-
-M16 may remove or consolidate actions even after M11 has normalized them.
-
-Do not keep an action merely because it appeared in a source spreadsheet.
-
----
-
-# M16.7 — Cross-system taxonomy alignment
-
-## Semantic hub invariant
-
-M16.7 establishes **SignalId → Overall Facet** as the canonical semantic projection path.
-
-Overall Facets are nine broad, non-directional **themes**. Giving/receiving and Dominant/submissive distinctions stay in granular Signals, modes, headspaces, and contextual mappings.
-
-Every Signal is reviewed against all nine themes as **Supports / Neutral / Opposes**, with strength on non-neutral relationships. The runtime representation stays sparse: omitted relationships are Neutral.
-
-Meaningful primitives should resolve into Overall Facet space through Signals whenever that relationship is honest. Do not add separately authored facet weights to every subsystem.
+Overall Facets are nine broad, non-directional themes. Meaningful primitives should resolve into Overall Facet space through canonical Signals whenever that relationship is honest.
 
 Examples:
 
-- quiz question → SignalIds → Overall Facets
-- role/headspace → SignalIds → Overall Facets
-- dynamic mode → SignalIds → Overall Facets
-- catalog category → category Signal mappings → Overall Facets
-- kink item → resolved category/item Signal mappings → Overall Facets
-- R/P category → authored Signal mappings → Overall Facets
-- R/P action → weighted R/P categories → derived Signal blend → Overall Facets
+- quiz question → Signals → Overall Facets
+- role/headspace → Signals → Overall Facets
+- contextual mode → Signals → Overall Facets
+- catalog category/item → Signal mappings → Overall Facets
+- R/P category → Signal mappings → Overall Facets
+- R/P action → contextual categories → Signals → Overall Facets
 
-Overall Facet affinity is descriptive metadata only. It must not feed back into stored preference evidence.
+Overall Facet affinity is descriptive/derived profile metadata only. It must not feed back into stored preference evidence.
 
-See [Semantic Data Model](semantic-data-model.md) for the relationship diagram.
+Do not invent semantic mappings merely to make coverage counters reach 100%. A missing route is a legitimate curation finding.
 
-### Coverage gaps are first-class review targets
-
-Do not invent semantic mappings just to satisfy a completeness counter.
-
-At the start of this slice, known gaps include:
-
-- 3 canonical SignalIds with no authored non-neutral theme relationship yet: `role_embodiment`, `younger_headspace`, `anticipation`
-- 18 of 35 catalog categories with no category-level Signal mapping
-- R/P `Sexual / Scene` with no honest mapping in the current Signal vocabulary
-
-The Workbench should surface these as **No Overall Facet route yet** so M16 can distinguish missing mappings from missing facet dimensions or context-only metadata.
-
-
-Review shared concepts across M2–M7, M11, M13, M14, and M15 so the app does not grow parallel vocabularies for the same idea.
-
-Examples:
-
-- restraint
-- control
-- structure
-- service
-- devotion
-- pain/intensity
-- sensory play
-- anticipation
-- humiliation
-- care/nurture
-- primal
-- ownership/belonging
-
-Check whether each system should:
-
-- share one canonical concept
-- map between different context-specific concepts
-- remain intentionally separate
-
-Do **not** merge terms solely because they sound similar.
-
-Do merge/align when duplicate taxonomies would cause contradictory profile behavior.
+See [Semantic Data Model](semantic-data-model.md) for the relationship graph.
 
 ---
 
-# M16.8 — Migration + identity cleanup
+# Active M16 work
 
-Before deleting or consolidating any stable primitive:
+Current actionable work is tracked in GitHub rather than duplicated here:
 
-- inspect whether persisted profile data can reference it
-- define replacement/archival behavior
-- migrate stored values explicitly
-- preserve historical ranking evidence where meaningful
-- avoid reusing old IDs for new semantics
-- update import/export compatibility
-- add fixture coverage for old profiles
+- [#117 — Review quiz banks, weights, and scoring inputs](https://github.com/petaurora/kink-profile/issues/117)
+- [#118 — Finish profile semantics refinement](https://github.com/petaurora/kink-profile/issues/118)
+- [#119 — Curate and consolidate kink catalog](https://github.com/petaurora/kink-profile/issues/119)
+- [#120 — Curate rewards/punishments action library](https://github.com/petaurora/kink-profile/issues/120)
+- [#121 — Align cross-system taxonomy and mappings](https://github.com/petaurora/kink-profile/issues/121)
+- [#122 — Stable IDs, archival, migration, and compatibility](https://github.com/petaurora/kink-profile/issues/122)
+- [#123 — Regression generators + representative-profile sanity review](https://github.com/petaurora/kink-profile/issues/123)
 
-This slice owns the mechanics needed to safely apply the curation decisions made earlier in M16.
-
----
-
-# M16.9 — Validation + regression review
-
-After curation:
-
-- run all generators
-- run schema validation
-- run mapping validation
-- run unit/integration tests
-- test import/export migration
-- inspect representative quiz results
-- inspect representative overall profiles
-- inspect radar shapes/labels
-- inspect catalog filtering/ranking
-- inspect reward/punishment sorting and proposals
-- verify no retired IDs leak into current UI
-- update counts/documentation that became stale
-
-Also perform a human-facing sanity review:
-
-> Does the app now describe the same person more coherently than before?
-
-Passing types/tests is necessary but not sufficient.
+When one of these areas changes durable behavior, distill the surviving rule into the relevant product/data/scoring contract and let the closed Issue/PR preserve implementation history.
 
 ---
 
-# Non-goals
+# M16 closeout invariant
 
-M16 is not primarily:
+M16 is complete when its GitHub-owned curation slices are complete and the result satisfies these durable expectations:
 
-- a new scoring architecture
-- a new UI redesign milestone
-- an effort to maximize the number of catalog/actions/questions
-- a broad new research sweep
-- an excuse to rewrite stable code that already models the desired semantics
-
-Implementation changes are expected where curation requires them, but the milestone is driven by **content/model quality**, not refactoring for its own sake.
-
----
-
-# Exit condition
-
-M16 is complete when:
-
-1. every major authored data surface has been deliberately reviewed
-2. obvious duplicates/noise have been removed or consolidated
-3. quiz questions and weights align with the signals they claim to measure
-4. radar/profile dimensions are useful, distinct, and accurately labeled
-5. catalog contents have been curated rather than merely accumulated
-6. rewards/punishments data has been curated rather than merely imported
-7. cross-system vocabularies are intentionally shared or intentionally separate
-8. migrations preserve existing user evidence when stable identities change
-9. tests/generators/import-export paths pass after the cleanup
+1. major authored data surfaces have been deliberately reviewed
+2. obvious duplicate/noisy concepts have been removed or consolidated
+3. quiz inputs align with the Signals they claim to measure
+4. Overall Facets, contextual modes, and roles/headspaces have intentional, non-competing meanings
+5. catalog and rewards/punishments libraries are intentionally curated rather than merely accumulated
+6. cross-system vocabularies are intentionally shared or intentionally separate
+7. migrations preserve existing evidence when stable identities change
+8. tests/generators/import-export paths pass after cleanup
+9. representative profiles remain coherent and explainable
 10. the resulting profile is easier to understand and trust
+
+Passing types/tests is necessary but not sufficient. The human-facing question remains:
+
+> **Does the app now describe the same person more coherently than before?**

@@ -18,6 +18,7 @@ These are the highest-value cross-cutting documents to keep versioned with the c
 - [Product Spec](product-spec.md) — current product boundaries and behavior
 - [Semantic Data Model](semantic-data-model.md) — core domain concepts and relationships
 - [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md) — keeps Dominant/Submissive authority, giving/receiving activity side, and roles/headspaces distinct
+- [Signal + Channel Model](m16-signal-channel-model.md) — canonical Signal identity, Overall/Receiving/Giving channel semantics, and downstream Signal references
 - [Scoring & Taxonomy Model](scoring-model.md) — reusable scoring architecture and taxonomy boundaries
 - [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) — evidence provenance, recomputation, source separation, and no-feedback-loop rules
 - [Overall Profile Aggregation](overall-profile-aggregation.md) — canonical aggregate-profile behavior
@@ -46,6 +47,14 @@ Some documents still carry milestone names because they began as implementation 
 - [M13 Scene Builder](m13-scene-builder.md)
 - [M14 Shared Profiles / Comparison](m14-shared-profiles.md) — implemented uploaded-profile comparison/shared-scene behavior remains useful; unresolved persistent ownership/linking decisions are tracked in GitHub Issues
 
+### Landed M16 migration history
+
+These files document completed migration/audit work and remain useful for compatibility context. They do **not** own current work status.
+
+- [M16 Signal Channel Audit](m16-signal-channel-audit.md)
+- [M16 Signal Channel Runtime Migration](m16-signal-channel-runtime-migration.md)
+- [M16 Workbench Signal + Channel Follow-up](m16-workbench-signal-channel-followup.md)
+
 These files may eventually be renamed into topic-based paths such as `product/scene-builder.md`. Do that when the document is materially revised, not as a giant rename-only cleanup.
 
 ## Active design / transition documents
@@ -56,10 +65,6 @@ The following files contain useful design constraints for work that is not fully
 - [M16 Data & Content Curation](m16-data-content-curation.md)
 - [M16 Profile Semantics Refinement](m16-profile-semantics-refinement.md)
 - [M16 Score Explainability](m16-score-explainability.md)
-- [M16 Signal Channel Audit](m16-signal-channel-audit.md)
-- [M16 Signal Channel Model](m16-signal-channel-model.md)
-- [M16 Signal Channel Runtime Migration](m16-signal-channel-runtime-migration.md)
-- [M16 Workbench Signal Follow-up](m16-workbench-signal-channel-followup.md)
 - [M17 Body Map](m17-body-map.md)
 - [M18 Application Architecture & Routing](m18-application-architecture-routing.md)
 

@@ -1,28 +1,21 @@
 # M16 Follow-up — Curation Workbench Signal + Channel Authoring
 
-The runtime Signal model has been migrated to canonical semantic concepts with optional Overall / Receiving / Giving channels, but the Curation Workbench still exposes legacy directional Signal IDs as independent authoring targets in several relationship editors.
+**Status:** complete — landed in PR #136 / Issue #116  
+**Canonical contract:** [M16 Signal + Channel Model](m16-signal-channel-model.md)
 
-## Problem
+This follow-up was created after the runtime Signal + channel migration exposed one remaining compatibility leak: the Curation Workbench was still presenting legacy directional Signal IDs as authoring targets.
 
-The Workbench currently sources relationship options from the legacy `signalDefinitions` vocabulary, so users can still select IDs such as:
+That leak is now closed.
 
-- `pursuit_giving`
-- `receiving_positioning`
-- `giving_positioning`
-- `receiving_discipline`
-- `giving_discipline`
+## Current Workbench behavior
 
-These are compatibility/source IDs and should not be presented as the canonical authoring model.
+Workbench relationship editing authors against:
 
-## Required behavior
+- one of the 37 canonical Signal concepts
+- an explicit Signal channel: `overall`, `receiving`, or `giving`
+- a continuous relationship weight from 0 through 1
 
-Workbench relationship editing should author against:
-
-- canonical Signal concept
-- optional Signal channel: `overall`, `receiving`, or `giving`
-- relationship weight
-
-Only channels supported by the selected canonical Signal should be offered. Overall-only Signals should not show a Receiving/Giving selector.
+Only channels supported by the selected canonical Signal are offered. Overall-only Signals do not expose fake Receiving/Giving choices.
 
 Example:
 
@@ -32,36 +25,49 @@ Channel: Receiving
 Weight: 0.75
 ```
 
-rather than selecting `receiving_discipline` as a separate Signal.
+Legacy IDs such as `receiving_discipline` remain compatibility/source vocabulary only and are not presented as canonical Signal entities or picker options.
 
 ## Compatibility boundary
 
-The Workbench should curate the canonical/future model immediately, while any remaining legacy source-file formats are handled by a translation/application boundary until M16.8 completes stable-ID/source migration.
+The Workbench curates the canonical/future model immediately while remaining legacy source-file formats are handled behind translation/compatibility boundaries until M16.8 completes broader stable-ID/source migration.
 
-Do not require curators to reason about legacy compatibility IDs.
+Curators should not need to reason about legacy compatibility IDs.
 
-## Scope
+Catalog source applicability is also kept separate from Signal channels: a catalog mapping's item/activity-side applicability is not itself a Receiving/Giving Signal channel.
 
-Audit and migrate every Workbench surface that authors Signal relationships, including at minimum:
+## Covered authoring surfaces
+
+The canonical Signal + channel model is used across Workbench relationship editing for:
 
 - quiz question weights
 - catalog item Signal mappings
 - catalog category Signal mappings
 - reward/punishment category Signal mappings
 - role/headspace Signal composition
-- any remaining Dynamic Mode compatibility editors while those definitions still exist internally
+- contextual/underlying mode composition while the internal compatibility layer remains
 - Overall Facet Signal references where channel-aware references are valid
 
-Also update inventory/display labels so legacy IDs do not leak into current authoring UI unless explicitly shown in a compatibility/debug context.
+The top-level Workbench Signal inventory also uses the 37 canonical concepts rather than the old 45 legacy IDs.
 
-## Validation
+## Proposal export
 
-Add regression coverage proving that:
+Workbench proposals preserve Signal + channel distinctly in workspace schema v2.
 
-- legacy directional IDs are not offered as canonical picker options
+Before export, the saved workspace is revalidated against the current canonical editor model. Invalid/stale proposals are blocked with actionable errors.
+
+The exported JSON is deterministic for identical workspace state and is intended to be handed back to the repository workflow for review/application. The browser does not authenticate to GitHub or mutate repository data directly.
+
+## Regression coverage
+
+Tests now cover that:
+
+- legacy directional IDs are not canonical picker options
 - canonical Signals expose only valid channels
 - Overall-only Signals cannot acquire Receiving/Giving channels
+- the same Signal may be authored in different valid channels without becoming a duplicate
 - saved curation proposals preserve Signal + channel distinctly
-- export/application tooling can translate proposals safely while legacy source formats remain
+- deprecated `direction` leakage is rejected during export validation
+- continuous 0–1 weights are accepted across the Workbench/source boundary
+- identical workspace state produces identical proposal JSON
 
-This is an M16 Workbench follow-up discovered after the runtime Signal + channel migration. It should be completed before substantial additional manual curation so the Workbench does not curate a deprecated vocabulary.
+Current implementation status belongs to GitHub Issues/PRs; this file remains only as compatibility and migration context.
