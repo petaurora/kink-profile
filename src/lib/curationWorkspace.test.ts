@@ -52,7 +52,7 @@ describe("curation workspace", () => {
     expect(next.changes[0]?.entityType).toBe("overall-facet");
   });
 
-  it("exports the same validated workspace deterministically", () => {
+  it("exports identical validated workspace state identically", () => {
     const workspace: CurationWorkspace = {
       schemaVersion: 2,
       changes: [
