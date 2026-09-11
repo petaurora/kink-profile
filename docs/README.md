@@ -1,36 +1,36 @@
 # Documentation
 
-This folder documents **how the product and its data model work**. It is not the project-management system.
+This folder documents **the current product and system**. It is not the project-management system and it is not the product-thinking workspace.
 
-For current work, priority, and sequencing, use [GitHub Issues](https://github.com/petaurora/kink-profile/issues) and the repository Project. Detailed checklists should live with the Issue that owns the change.
+Use three homes deliberately:
 
-## Using the app
+- **Repository docs** — implemented product behavior, architecture, data contracts, scoring rules, and other context a future developer needs beside the code.
+- **GitHub Issues / Project / PRs** — actionable changes, implementation checklists, sequencing, status, and implementation history.
+- **Kink Profile HQ in Notion** — strategy, research, unresolved product design, alternatives, future concepts, business/privacy planning, and decisions that do not need to ship beside the code.
 
-Start here for plain-language behavior:
+A milestone document may be split across all three rather than moved wholesale.
 
-- [Feature Guide](feature-guide.md) — what each current feature does, when to use it, and how the major evidence sources fit together
-- [FAQ](faq.md) — common questions about results, ranking, Rewards & Punishments, backup/sharing, and privacy
+## Start here
+
+- [Feature Guide](feature-guide.md) — plain-language current behavior
+- [FAQ](faq.md) — common product questions
+- [Product Spec](product-spec.md) — current product boundaries
 
 ## Durable system contracts
 
-These are the highest-value cross-cutting documents to keep versioned with the code:
+- [Semantic Data Model](semantic-data-model.md)
+- [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md)
+- [Signal + Channel Model](m16-signal-channel-model.md)
+- [Scoring & Taxonomy Model](scoring-model.md)
+- [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md)
+- [Overall Profile Aggregation](overall-profile-aggregation.md)
+- [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
 
-- [Product Spec](product-spec.md) — current product boundaries and behavior
-- [Semantic Data Model](semantic-data-model.md) — core domain concepts and relationships
-- [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md) — keeps Dominant/Submissive authority, giving/receiving activity side, and roles/headspaces distinct
-- [Signal + Channel Model](m16-signal-channel-model.md) — canonical Signal identity, Overall/Receiving/Giving channel semantics, and downstream Signal references
-- [Scoring & Taxonomy Model](scoring-model.md) — reusable scoring architecture and taxonomy boundaries
-- [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) — evidence provenance, recomputation, source separation, and no-feedback-loop rules
-- [Overall Profile Aggregation](overall-profile-aggregation.md) — canonical aggregate-profile behavior
-- [Kink This-or-That Ranking](kink-this-or-that-ranking.md) — pairwise ranking behavior and temporal reranking boundary
+If a change alters one of these cross-system contracts, update it in the same PR.
 
-If a change alters one of these cross-system contracts, update the relevant durable document in the same PR.
+## Feature contracts still carrying milestone names
 
-## Feature and historical implementation contracts
-
-Some documents still carry milestone names because they began as implementation specs. They are useful where they describe behavior that still exists; the milestone prefix is historical rather than a signal that the file owns current work status.
-
-### Core quizzes and catalog
+These remain useful because they describe behavior that currently exists. Their milestone prefix is historical; it does not own current work status.
 
 - [M2 Dominance & Submission](m2-ds-design.md)
 - [M3 Roles & Headspaces](m3-headspaces-direction.md)
@@ -38,65 +38,57 @@ Some documents still carry milestone names because they began as implementation 
 - [M5 Sadism & Masochism](m5-sm-design.md)
 - [M6 Catalog Integration](m6-catalog-integration.md)
 - [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)
-
-### Current feature contracts
-
 - [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md)
 - [M11 Rewards & Punishments](m11-rewards-punishments.md)
 - [M12 Ranking History & Movement](m12-ranking-history-movement.md)
 - [M13 Scene Builder](m13-scene-builder.md)
-- [M14 Shared Profiles / Comparison](m14-shared-profiles.md) — implemented uploaded-profile comparison/shared-scene behavior remains useful; unresolved persistent ownership/linking decisions are tracked in GitHub Issues
+- [M14 Shared Profiles / Comparison](m14-shared-profiles.md)
 
-### Landed M16 migration history
+When one of these files is materially revised, decide whether its surviving contract should move to a durable topic path such as `product/scene-builder.md` rather than preserving the milestone name automatically.
 
-These files document completed migration/audit work and remain useful for compatibility context. They do **not** own current work status.
+## Migration history and temporary transition docs
+
+Completed migration/audit files may remain temporarily when they still provide useful compatibility context:
 
 - [M16 Signal Channel Audit](m16-signal-channel-audit.md)
 - [M16 Signal Channel Runtime Migration](m16-signal-channel-runtime-migration.md)
 - [M16 Workbench Signal + Channel Follow-up](m16-workbench-signal-channel-followup.md)
 
-These files may eventually be renamed into topic-based paths such as `product/scene-builder.md`. Do that when the document is materially revised, not as a giant rename-only cleanup.
+The following still contain implementation-adjacent transition material and should be distilled when materially touched. Their checklists/status are **not** authoritative:
 
-## Active design / transition documents
-
-The following files contain useful design constraints for work that is not fully settled or implemented. **Their checklists/status are not authoritative. GitHub Issues are.**
-
-- [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md)
 - [M16 Data & Content Curation](m16-data-content-curation.md)
 - [M16 Profile Semantics Refinement](m16-profile-semantics-refinement.md)
 - [M16 Score Explainability](m16-score-explainability.md)
-- [M17 Body Map](m17-body-map.md)
 - [M18 Application Architecture & Routing](m18-application-architecture-routing.md)
 
-As these areas land, distill surviving rules into durable product/data/scoring/architecture documentation and let closed Issues/PRs preserve the implementation chronology.
+Planned product-design documents that do not describe implemented behavior should not live in `docs/` merely because they contain detailed specifications. Product/design reasoning belongs in Notion; actionable engineering scope belongs in the owning GitHub Issue. Once a feature lands, distill its surviving implemented rules back into durable repository documentation.
 
 ## Reference data
 
-- [Reference Data](../reference/README.md) — repo-native source data, generated/curated inputs, and intended use
+- [Reference Data](../reference/README.md) — source data and generated/curated inputs consumed by the application
 
-Reference datasets belong in the repo when the application consumes or generates them. Research notes and business/source exploration that do not need to ship with code belong in the private product workspace.
+Research notes that do not need to ship with code belong in Notion.
 
 ## Source of truth
 
 | Question | Source |
 | --- | --- |
-| What does the app do? | Code + [Feature Guide](feature-guide.md) |
-| Why did a current feature behave this way? | Relevant durable/feature contract + tests |
-| How do scoring/evidence/semantics work? | Durable system contracts above |
+| What does the app do? | Code + Feature Guide |
+| How do scoring/evidence/semantics work? | Durable repository contracts |
 | What are we working on? | GitHub Issues |
 | What should happen next? | Repository Project |
-| What are we still researching/considering privately? | Private product workspace |
+| What are we thinking/researching/deciding? | Kink Profile HQ in Notion |
 | What happened historically? | Closed Issues/PRs + git history |
 
 ## Documentation rule
 
-Before creating a new Markdown file, ask:
+Before creating or keeping a Markdown file here, ask:
 
-1. **Will a future developer need this beside the code to understand or safely change the system?** If yes, repo documentation is appropriate.
-2. **Is this describing a change we want to make?** Create a GitHub Issue instead.
-3. **Is this strategy, research, monetization, vendor/policy exploration, or a half-formed idea?** Put it in the private product workspace.
-4. **Is this merely recording that work happened?** Closed Issues/PRs and git history already do that.
+1. Will a future developer need it beside the code to understand or safely change the **current system**? Keep it in repo docs.
+2. Is it an actionable change, checklist, migration plan, or work status? Put it in GitHub.
+3. Is it strategy, research, unresolved product design, alternatives, future thinking, or business/privacy planning? Put it in Notion.
+4. Is it merely recording that work happened? Git history and closed Issues/PRs already preserve that chronology.
 
-Avoid duplicating detailed decisions across files. Prefer one canonical contract and link to it from related docs/tests/issues.
+Avoid duplicating detailed decisions across homes. Prefer one canonical source and link to it from related docs, tests, and Issues.
 
 The repository code remains authoritative for what is actually implemented.
