@@ -1,8 +1,9 @@
 import type { CurationPrimitiveType } from "../data/curationInventory";
+import type { SignalChannel } from "../data/canonicalSignals";
 
-export const CURATION_WORKSPACE_SCHEMA_VERSION = 1;
+export const CURATION_WORKSPACE_SCHEMA_VERSION = 2;
 export const CURATION_WORKSPACE_STORAGE_KEY =
-  "kink-profile:m16-curation-workspace:v1";
+  "kink-profile:m16-curation-workspace:v2";
 
 export type CurationReviewAction =
   | "keep"
@@ -14,6 +15,12 @@ export type CurationReviewAction =
 export type CurationWeightedRelation = {
   id: string;
   weight: number;
+  /** Canonical Signal channel used by the M16.2 Workbench authoring model. */
+  channel?: SignalChannel;
+  /**
+   * Legacy source applicability retained only while old editor/source adapters
+   * still compile. New Workbench Signal proposals must author `channel`.
+   */
   direction?: "receiving" | "giving";
   relationship?: "supports" | "opposes";
 };
