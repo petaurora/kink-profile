@@ -13,7 +13,6 @@ import {
   saveProfileSettings,
 } from "../lib/profileSettings";
 import { ProfileSettingsProvider } from "../lib/profileSettingsContext";
-import "../settings.css";
 
 function ReturnToTop() {
   const [visible, setVisible] = useState(false);
