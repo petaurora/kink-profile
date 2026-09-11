@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import "../pairwiseComparison.css";
+import "./pairwiseComparison.css";
 
 export type PairwiseComparisonItem = {
   id: string;
