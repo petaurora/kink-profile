@@ -1,4 +1,5 @@
 import type { Screen } from "../App";
+import type { QuizId } from "../data/quizzes";
 
 export type AppRouteId =
   | "hub"
@@ -19,14 +20,24 @@ export type LegacyScreenRoute = {
   screen: Screen;
 };
 
-export type ReservedRoute = {
-  id: AppRouteId;
-  path: string;
-  owner: "M18.3";
-};
-
 export const hubRoute = { id: "hub", path: "/" } as const;
 export const settingsRoute = { id: "settings", path: "/settings" } as const;
+export const quizRoute = {
+  id: "quiz",
+  path: "/quizzes/:quizId",
+} as const;
+export const quizResultsRoute = {
+  id: "quiz-results",
+  path: "/quizzes/:quizId/results",
+} as const;
+
+export function quizRoutePath(quizId: QuizId) {
+  return `/quizzes/${quizId}`;
+}
+
+export function quizResultsPath(quizId: QuizId) {
+  return `/quizzes/${quizId}/results`;
+}
 
 export const siteHeaderRoutePaths = {
   hub: "/",
@@ -49,20 +60,10 @@ export const legacyScreenRoutes: readonly LegacyScreenRoute[] = [
   { id: "curation", path: "/curation", screen: "curation-workbench" },
 ] as const;
 
-// Quiz paths are part of the locked route contract, but quiz selection and
-// progression still live inside the legacy App state machine until M18.3.
-export const reservedRoutes: readonly ReservedRoute[] = [
-  { id: "quiz", path: "/quizzes/:quizId", owner: "M18.3" },
-  {
-    id: "quiz-results",
-    path: "/quizzes/:quizId/results",
-    owner: "M18.3",
-  },
-] as const;
-
 export const appRoutePatterns = [
   hubRoute,
   settingsRoute,
+  quizRoute,
+  quizResultsRoute,
   ...legacyScreenRoutes.map(({ id, path }) => ({ id, path })),
-  ...reservedRoutes.map(({ id, path }) => ({ id, path })),
 ] as const;
