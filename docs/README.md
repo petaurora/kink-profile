@@ -59,9 +59,10 @@ The following still contain implementation-adjacent transition material and shou
 - [M16 Data & Content Curation](m16-data-content-curation.md)
 - [M16 Profile Semantics Refinement](m16-profile-semantics-refinement.md)
 - [M16 Score Explainability](m16-score-explainability.md)
-- [M18 Application Architecture & Routing](m18-application-architecture-routing.md)
 
 Planned product-design documents that do not describe implemented behavior should not live in `docs/` merely because they contain detailed specifications. Product/design reasoning belongs in Notion; actionable engineering scope belongs in the owning GitHub Issue. Once a feature lands, distill its surviving implemented rules back into durable repository documentation.
+
+Planned engineering architecture/refactor work follows the same current-system boundary: the owning GitHub Issue holds the implementation plan and locked technical decisions. Durable architecture documentation should describe the structure that actually landed, not a planned end state.
 
 ## Reference data
 
