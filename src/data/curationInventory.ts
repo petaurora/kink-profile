@@ -225,12 +225,10 @@ function signalFacetSummary(signalId: string) {
   return `${supports} supports · ${opposes} opposes · ${neutral} neutral`;
 }
 
-function signalChannelSummary(
-  channels: Readonly<{
-    receiving?: { label: string };
-    giving?: { label: string };
-  }>,
-) {
+function signalChannelSummary(channels: {
+  readonly receiving?: { readonly label: string };
+  readonly giving?: { readonly label: string };
+}) {
   const labels = [channels.receiving?.label, channels.giving?.label].filter(
     (label): label is string => Boolean(label),
   );
