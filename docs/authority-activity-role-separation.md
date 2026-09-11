@@ -5,11 +5,12 @@ This contract prevents several related concepts from being collapsed into one an
 ```text
 authority orientation      Signal/activity perspective      role / headspace
 ---------------------      ---------------------------      -----------------------
-submissive / dominant      overall / receiving / giving     Pet / Prey / Caregiver
-                                                           Trainer / Little / etc.
+submissive / dominant      overall / receiving / giving     Pet / Prey / Caregiver / etc.
 ```
 
 They can correlate for some people, but they are not the same semantic dimension.
+
+See [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md) for the current composed taxonomy.
 
 ## 1. Authority orientation
 
@@ -19,11 +20,11 @@ Authority orientation answers:
 
 The aggregate profile may describe patterns such as:
 
-- Submissive
-- Dominant
-- Dominant + submissive
-- Context-dependent
-- Still emerging
+- Submissive;
+- Dominant;
+- Dominant + submissive;
+- context-dependent;
+- still emerging.
 
 Authority must come from evidence that actually measures authority.
 
@@ -93,7 +94,20 @@ Roles/headspaces answer:
 
 > **What recognizable relational or internal role/state resonates with the available evidence?**
 
-Examples include Pet, Little, Middle, Brat, Prey, Predator, Caregiver, Trainer, Owner / Handler, Slave, Service Submissive, and Master / Mistress.
+Current peer roles/headspaces are:
+
+- Pet;
+- Slave;
+- Little;
+- Middle;
+- Brat;
+- Prey;
+- Object;
+- Owner / Handler;
+- Caregiver;
+- Brat Tamer;
+- Predator;
+- Master / Mistress.
 
 Role/headspace scores are independent overlapping compositions. They do not need to be mutually exclusive or sum to 100%.
 
@@ -108,13 +122,28 @@ Examples:
 - Caregiver may use Care · Giving without therefore meaning Dominant;
 - Pet may use Care · Receiving without therefore meaning submissive.
 
-Some **role names themselves** explicitly contain authority semantics, such as Service Submissive or Master / Mistress. In those cases, the authority meaning comes from the role definition/name, not from a generic Receiving/Giving channel.
+Some **role names themselves** explicitly contain authority semantics, such as Master / Mistress. In those cases, the authority meaning comes from the role definition/name, not from a generic Receiving/Giving channel.
 
-## 4. Contextual modes
+Historical labels such as Service Submissive, Devotional Submissive, and Trainer are not current peer role/headspace results. See the taxonomy contract for current replacements/boundaries.
 
-Contextual/dynamic modes are composed explanatory lenses such as patterns around care, service, ritual, primal energy, or power exchange.
+## 4. Dynamic Modes
+
+Dynamic Modes are composed explanatory lenses such as patterns around:
+
+- Devotion;
+- Protocol;
+- Service;
+- Structure;
+- Care;
+- Playful Challenge;
+- Objectification;
+- Primal / Feral;
+- Power Exchange;
+- Intensity.
 
 They are not authority orientation and are not another top-level evidence source.
+
+Dynamic Modes are direction-neutral peer outputs. Giving/Receiving nuance remains in the underlying Signal channels rather than creating separate Giving/Receiving modes.
 
 The hierarchy is:
 
@@ -123,7 +152,7 @@ independent evidence
       ↓
 canonical Signal + channel
       ↓
-roles/headspaces and contextual modes
+roles/headspaces and Dynamic Modes
 ```
 
 A composed mode may help explain *why* several roles or activities cluster together. It does not retroactively become direct evidence.
@@ -151,9 +180,27 @@ right chart = Dominant
 
 unless those categories are explicitly what the underlying model measures.
 
-Historical self-positioned / partner-positioned role groupings are presentation organization, not authority buckets.
+The current self-positioned / partner-positioned role groups are presentation organization, not authority buckets.
 
-## 7. Context-specific preference
+Likewise, a Receiving/Giving radar may visualize activity perspective without asserting authority identity.
+
+## 7. Catalog activity direction is not authority
+
+Catalog items may use activity direction:
+
+```text
+receiving
+giving
+both
+```
+
+and catalog mapping rules may use `Applies To` with the same activity-side vocabulary.
+
+That metadata answers how an activity is performed/experienced. It does not establish who holds negotiated authority.
+
+See [Kink Catalog](product/kink-catalog.md).
+
+## 8. Context-specific preference
 
 The current general profile can preserve authority and activity-side semantics without claiming to know every combination of them.
 
@@ -172,11 +219,13 @@ Do not infer motivation such as service, delegated responsibility, rule-setting,
 
 ## Invariants
 
-1. Authority orientation requires authority-relevant evidence.
-2. Receiving/Giving Signal channels describe concept perspective, not authority identity.
-3. Roles/headspaces are derived overlapping states, not aliases for channel direction.
-4. Contextual modes are derived explanatory lenses, not direct evidence.
-5. Overall Facets are broad themes and remain non-directional.
-6. A user can coherently be submissive + giving or Dominant + receiving.
-7. A role that carries explicit authority meaning gets that meaning from the role definition, not from generic activity direction.
-8. Unknown context remains unknown until measured; the system must not fill semantic gaps with stereotypes.
+1. **Authority orientation requires authority-relevant evidence.**
+2. **Receiving/Giving Signal channels describe concept perspective, not authority identity.**
+3. **Catalog activity direction is not authority identity.**
+4. **Roles/headspaces are derived overlapping states, not aliases for channel direction.**
+5. **Dynamic Modes are derived direction-neutral explanatory lenses, not direct evidence.**
+6. **Overall Facets are broad themes and remain non-directional.**
+7. **A user can coherently be submissive + giving or Dominant + receiving.**
+8. **A role that carries explicit authority meaning gets that meaning from the role definition, not from generic activity direction.**
+9. **Presentation grouping does not create taxonomy or authority semantics.**
+10. **Unknown context remains unknown until measured; the system must not fill semantic gaps with stereotypes.**
