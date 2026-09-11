@@ -14,6 +14,12 @@ What outcome are we trying to create?
 
 Why does this matter now?
 
+## Product context
+
+Notion context: <!-- Link only when this page is safe to expose in the public repository. Otherwise summarize the engineering-relevant requirements here and keep the private backlink in Notion. -->
+
+Related decisions / research:
+
 ## Scope
 
 - [ ]
