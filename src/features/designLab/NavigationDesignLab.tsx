@@ -143,25 +143,28 @@ export function NavigationDesignLab() {
   const toggleLauncher = (launcher: LauncherId) => {
     setOpenLauncher((current) => {
       const next = current === launcher ? null : launcher;
-      setLastAction(next ? `${launcher === "catalog" ? "Catalog" : "Tools"} launcher open` : "Launcher closed");
+      setLastAction(
+        next
+          ? `${launcher === "catalog" ? "Catalog" : "Tools"} launcher open`
+          : "Launcher closed",
+      );
       return next;
     });
   };
 
-  const chooseOption = (label: string) => {
-    setLastAction(`${label} selected`);
+  const selectDestination = (label: string) => {
     setOpenLauncher(null);
+    setLastAction(`${label} selected`);
+  };
+
+  const chooseOption = (label: string) => {
+    selectDestination(label);
   };
 
   return (
     <main className="design-lab-page">
       <section className="design-lab-stage" aria-label="Mobile navigation design lab">
         <div className="design-lab-phone">
-          <div className="design-lab-statusbar" aria-hidden="true">
-            <span>9:41</span>
-            <span>● ◔ ▰</span>
-          </div>
-
           <header className="design-lab-header">
             <div>
               <p className="design-lab-eyebrow">Navigation Design Lab</p>
@@ -194,7 +197,11 @@ export function NavigationDesignLab() {
           ) : null}
 
           <nav className="design-lab-bottom-nav" aria-label="Prototype navigation">
-            <button type="button" className="design-lab-nav-item" onClick={() => setLastAction("Quiz selected")}>
+            <button
+              type="button"
+              className="design-lab-nav-item"
+              onClick={() => selectDestination("Quiz")}
+            >
               <IconQuestionMark size={23} stroke={2} aria-hidden="true" />
               <span>Quiz</span>
             </button>
@@ -214,10 +221,7 @@ export function NavigationDesignLab() {
             <button
               type="button"
               className="design-lab-nav-item design-lab-nav-item--hub"
-              onClick={() => {
-                setOpenLauncher(null);
-                setLastAction("Hub selected");
-              }}
+              onClick={() => selectDestination("Hub")}
             >
               <span className="design-lab-hub-button">
                 <IconHome size={27} stroke={2} aria-hidden="true" />
@@ -225,7 +229,11 @@ export function NavigationDesignLab() {
               <span>Hub</span>
             </button>
 
-            <button type="button" className="design-lab-nav-item" onClick={() => setLastAction("Profile selected")}>
+            <button
+              type="button"
+              className="design-lab-nav-item"
+              onClick={() => selectDestination("Profile")}
+            >
               <IconUser size={23} stroke={2} aria-hidden="true" />
               <span>Profile</span>
             </button>
