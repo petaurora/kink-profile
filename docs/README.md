@@ -30,6 +30,7 @@ If a change alters one of these cross-system contracts, update the relevant docu
 
 ## Current product/feature contracts
 
+- [Profile Management](product/profile-management.md) — profile identity, selective reset, private backup/restore, and curated share exports
 - [Rewards & Punishments](product/rewards-punishments.md) — contextual suitability, inference, ranking, randomization, recipes, and lifecycle boundaries
 - [Scene Builder](product/scene-builder.md) — theme queries, session overrides, candidate eligibility, composition, randomization, and saved scenes
 - [Curation Workbench](product/curation-workbench.md) — proposal workspace, canonical semantic editing, validation, and deterministic export
@@ -43,7 +44,6 @@ The following feature contracts still carry milestone names because they describ
 - [M5 Sadism & Masochism](m5-sm-design.md)
 - [M6 Catalog Integration](m6-catalog-integration.md)
 - [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)
-- [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md)
 
 Their milestone prefix is historical; it does not own current work status. When one is materially revised, decide whether its surviving contract should move to a durable topic path rather than preserving the milestone name automatically.
 
