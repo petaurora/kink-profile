@@ -157,27 +157,56 @@ function curvePath(curve: CubicCurve) {
   return `M ${curve.start.x} ${curve.start.y} C ${curve.control1.x} ${curve.control1.y}, ${curve.control2.x} ${curve.control2.y}, ${curve.end.x} ${curve.end.y}`;
 }
 
+function frameAt(curve: CubicCurve, t: number) {
+  const point = cubicPoint(curve, t);
+  const tangent = cubicDerivative(curve, t);
+  const magnitude = Math.hypot(tangent.x, tangent.y) || 1;
+  const tx = tangent.x / magnitude;
+  const ty = tangent.y / magnitude;
+
+  return {
+    point,
+    tx,
+    ty,
+    nx: -ty,
+    ny: tx,
+  };
+}
+
 function RopeConnector({ curve }: { curve: CubicCurve }) {
-  const bands = useMemo(() => {
-    return Array.from({ length: 15 }, (_, index) => {
-      const t = 0.08 + index * 0.057;
-      const point = cubicPoint(curve, t);
-      const tangent = cubicDerivative(curve, t);
-      const magnitude = Math.hypot(tangent.x, tangent.y) || 1;
-      const tx = tangent.x / magnitude;
-      const ty = tangent.y / magnitude;
-      const nx = -ty;
-      const ny = tx;
-      const direction = index % 2 === 0 ? 1 : -1;
-      const halfWidth = 4.2;
-      const skew = 2.4 * direction;
+  const segments = useMemo(() => {
+    const count = 18;
+    const radius = 4.35;
+    const skew = 2.65;
+
+    return Array.from({ length: count }, (_, index) => {
+      const overlap = 0.006;
+      const t0 = Math.max(0, index / count - (index > 0 ? overlap : 0));
+      const t1 = Math.min(1, (index + 1) / count + (index < count - 1 ? overlap : 0));
+      const start = frameAt(curve, t0);
+      const end = frameAt(curve, t1);
+
+      const a = {
+        x: start.point.x + start.nx * radius + start.tx * skew,
+        y: start.point.y + start.ny * radius + start.ty * skew,
+      };
+      const b = {
+        x: start.point.x - start.nx * radius - start.tx * skew,
+        y: start.point.y - start.ny * radius - start.ty * skew,
+      };
+      const c = {
+        x: end.point.x - end.nx * radius - end.tx * skew,
+        y: end.point.y - end.ny * radius - end.ty * skew,
+      };
+      const d = {
+        x: end.point.x + end.nx * radius + end.tx * skew,
+        y: end.point.y + end.ny * radius + end.ty * skew,
+      };
 
       return {
-        x1: point.x - nx * halfWidth - tx * skew,
-        y1: point.y - ny * halfWidth - ty * skew,
-        x2: point.x + nx * halfWidth + tx * skew,
-        y2: point.y + ny * halfWidth + ty * skew,
         key: index,
+        variant: index % 3,
+        d: `M ${a.x} ${a.y} L ${b.x} ${b.y} L ${c.x} ${c.y} L ${d.x} ${d.y} Z`,
       };
     });
   }, [curve]);
@@ -187,15 +216,12 @@ function RopeConnector({ curve }: { curve: CubicCurve }) {
   return (
     <g>
       <path className="mobile-nav-rope-outline" d={d} />
-      <path className="mobile-nav-rope-core" d={d} />
-      {bands.map((band) => (
-        <line
-          key={band.key}
-          className="mobile-nav-rope-band"
-          x1={band.x1}
-          y1={band.y1}
-          x2={band.x2}
-          y2={band.y2}
+      <path className="mobile-nav-rope-underlay" d={d} />
+      {segments.map((segment) => (
+        <path
+          key={segment.key}
+          className={`mobile-nav-rope-segment mobile-nav-rope-segment--${segment.variant}`}
+          d={segment.d}
         />
       ))}
     </g>
@@ -243,7 +269,7 @@ function RadialLauncher({
           <span className="mobile-nav-radial-option-icon">
             <Icon size={25} stroke={1.9} aria-hidden="true" />
           </span>
-          <span>{label}</span>
+          <span className="mobile-nav-radial-option-label">{label}</span>
         </button>
       ))}
     </div>
@@ -312,8 +338,10 @@ export function MobilePrimaryNav() {
           aria-current={activeDestination === "quiz" ? "page" : undefined}
           onClick={() => go("/quizzes/bondage-discipline")}
         >
-          <IconQuestionMark size={23} stroke={2} aria-hidden="true" />
-          <span>Quiz</span>
+          <span className="mobile-primary-nav-icon-wrap">
+            <IconQuestionMark size={23} stroke={2} aria-hidden="true" />
+          </span>
+          <span className="mobile-primary-nav-label">Quiz</span>
         </button>
 
         <button
@@ -330,7 +358,7 @@ export function MobilePrimaryNav() {
           <span className="mobile-primary-nav-icon-wrap">
             <IconBook2 size={23} stroke={2} aria-hidden="true" />
           </span>
-          <span>Catalog</span>
+          <span className="mobile-primary-nav-label">Catalog</span>
         </button>
 
         <button
@@ -342,7 +370,7 @@ export function MobilePrimaryNav() {
           <span className="mobile-primary-nav-hub-button">
             <IconHome size={27} stroke={2} aria-hidden="true" />
           </span>
-          <span>Hub</span>
+          <span className="mobile-primary-nav-label">Hub</span>
         </button>
 
         <button
@@ -351,8 +379,10 @@ export function MobilePrimaryNav() {
           aria-current={activeDestination === "profile" ? "page" : undefined}
           onClick={() => go("/profile")}
         >
-          <IconUser size={23} stroke={2} aria-hidden="true" />
-          <span>Profile</span>
+          <span className="mobile-primary-nav-icon-wrap">
+            <IconUser size={23} stroke={2} aria-hidden="true" />
+          </span>
+          <span className="mobile-primary-nav-label">Profile</span>
         </button>
 
         <button
@@ -369,7 +399,7 @@ export function MobilePrimaryNav() {
           <span className="mobile-primary-nav-icon-wrap">
             <IconTool size={23} stroke={2} aria-hidden="true" />
           </span>
-          <span>Tools</span>
+          <span className="mobile-primary-nav-label">Tools</span>
         </button>
       </nav>
     </div>
