@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { KinkThisOrThat } from "../../KinkThisOrThat";
 import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
 import { loadProfile } from "../../lib/profileStorage";
+import { KinkThisOrThat } from "./KinkThisOrThat";
 
 export function RankingRoute() {
   const [quizProfile] = useState(() => loadProfile());
