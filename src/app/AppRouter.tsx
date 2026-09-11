@@ -2,6 +2,7 @@ import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { CatalogRoute } from "../features/catalog/CatalogRoute";
 import { CompareRoute } from "../features/comparison/CompareRoute";
 import { CurationRoute } from "../features/curation/CurationRoute";
+import { NavigationDesignLab } from "../features/designLab/NavigationDesignLab";
 import { HubPage } from "../features/hub/HubPage";
 import { ProfileRoute } from "../features/profile/ProfileRoute";
 import { QuizRoutePage } from "../features/quizzes/QuizRoutePage";
@@ -14,6 +15,7 @@ import {
   catalogRoute,
   compareRoute,
   curationRoute,
+  designLabNavigationRoute,
   hubRoute,
   profileRoute,
   quizResultsRoute,
@@ -37,6 +39,10 @@ export function RoutedApplication() {
         <Route path={compareRoute.path} element={<CompareRoute />} />
         <Route path={curationRoute.path} element={<CurationRoute />} />
         <Route path={settingsRoute.path} element={<SettingsRoute />} />
+        <Route
+          path={designLabNavigationRoute.path}
+          element={<NavigationDesignLab />}
+        />
         <Route
           path={quizRoute.path}
           element={<QuizRoutePage mode="quiz" />}
