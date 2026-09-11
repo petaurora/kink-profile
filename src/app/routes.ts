@@ -1,4 +1,3 @@
-import type { Screen } from "../App";
 import type { QuizId } from "../data/quizzes";
 
 export type AppRouteId =
@@ -14,16 +13,17 @@ export type AppRouteId =
   | "curation"
   | "settings";
 
-export type LegacyScreenRoute = {
-  id: AppRouteId;
-  path: string;
-  screen: Screen;
-};
-
 export const hubRoute = { id: "hub", path: "/" } as const;
 export const profileRoute = { id: "profile", path: "/profile" } as const;
 export const catalogRoute = { id: "catalog", path: "/catalog" } as const;
 export const rankingRoute = { id: "ranking", path: "/ranking" } as const;
+export const rewardsRoute = { id: "rewards", path: "/rewards" } as const;
+export const sceneBuilderRoute = {
+  id: "scene-builder",
+  path: "/scene-builder",
+} as const;
+export const compareRoute = { id: "compare", path: "/compare" } as const;
+export const curationRoute = { id: "curation", path: "/curation" } as const;
 export const settingsRoute = { id: "settings", path: "/settings" } as const;
 export const quizRoute = {
   id: "quiz",
@@ -43,30 +43,26 @@ export function quizResultsPath(quizId: QuizId) {
 }
 
 export const siteHeaderRoutePaths = {
-  hub: "/",
+  hub: hubRoute.path,
   profile: profileRoute.path,
   ranking: rankingRoute.path,
   catalog: catalogRoute.path,
-  "rewards-punishments": "/rewards",
-  "scene-builder": "/scene-builder",
-  "compare-profiles": "/compare",
-  "curation-workbench": "/curation",
+  "rewards-punishments": rewardsRoute.path,
+  "scene-builder": sceneBuilderRoute.path,
+  "compare-profiles": compareRoute.path,
+  "curation-workbench": curationRoute.path,
 } as const;
-
-export const legacyScreenRoutes: readonly LegacyScreenRoute[] = [
-  { id: "rewards", path: "/rewards", screen: "rewards-punishments" },
-  { id: "scene-builder", path: "/scene-builder", screen: "scene-builder" },
-  { id: "compare", path: "/compare", screen: "compare-profiles" },
-  { id: "curation", path: "/curation", screen: "curation-workbench" },
-] as const;
 
 export const appRoutePatterns = [
   hubRoute,
   profileRoute,
   catalogRoute,
   rankingRoute,
+  rewardsRoute,
+  sceneBuilderRoute,
+  compareRoute,
+  curationRoute,
   settingsRoute,
   quizRoute,
   quizResultsRoute,
-  ...legacyScreenRoutes.map(({ id, path }) => ({ id, path })),
 ] as const;
