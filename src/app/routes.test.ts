@@ -3,14 +3,17 @@ import { describe, expect, it } from "vitest";
 import {
   appRoutePatterns,
   catalogRoute,
+  compareRoute,
+  curationRoute,
   hubRoute,
-  legacyScreenRoutes,
   profileRoute,
   quizResultsPath,
   quizResultsRoute,
   quizRoute,
   quizRoutePath,
   rankingRoute,
+  rewardsRoute,
+  sceneBuilderRoute,
   settingsRoute,
   siteHeaderRoutePaths,
 } from "./routes";
@@ -45,11 +48,18 @@ describe("application route contract", () => {
     expect(matchedRouteId("/this-does-not-exist")).toBe("not-found");
   });
 
-  it("promotes migrated destinations to first-class routes", () => {
+  it("defines every top-level destination as a first-class route", () => {
     expect(hubRoute).toEqual({ id: "hub", path: "/" });
     expect(profileRoute).toEqual({ id: "profile", path: "/profile" });
     expect(catalogRoute).toEqual({ id: "catalog", path: "/catalog" });
     expect(rankingRoute).toEqual({ id: "ranking", path: "/ranking" });
+    expect(rewardsRoute).toEqual({ id: "rewards", path: "/rewards" });
+    expect(sceneBuilderRoute).toEqual({
+      id: "scene-builder",
+      path: "/scene-builder",
+    });
+    expect(compareRoute).toEqual({ id: "compare", path: "/compare" });
+    expect(curationRoute).toEqual({ id: "curation", path: "/curation" });
     expect(settingsRoute).toEqual({ id: "settings", path: "/settings" });
     expect(quizRoute).toEqual({ id: "quiz", path: "/quizzes/:quizId" });
     expect(quizResultsRoute).toEqual({
@@ -65,19 +75,6 @@ describe("application route contract", () => {
     expect(quizResultsPath("dominance-submission")).toBe(
       "/quizzes/dominance-submission/results",
     );
-  });
-
-  it("keeps only not-yet-migrated features behind legacy screen routes", () => {
-    expect(
-      Object.fromEntries(
-        legacyScreenRoutes.map(({ path, screen }) => [path, screen]),
-      ),
-    ).toEqual({
-      "/rewards": "rewards-punishments",
-      "/scene-builder": "scene-builder",
-      "/compare": "compare-profiles",
-      "/curation": "curation-workbench",
-    });
   });
 
   it("routes every header destination through browser navigation", () => {
