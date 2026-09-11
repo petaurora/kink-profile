@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RewardPunishmentProfiles } from "../../RewardPunishmentProfiles";
 import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
 import { loadCurrentProfileSnapshot } from "../../app/currentProfileSnapshot";
+import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
 
 type RewardsNavigationState = {
   from?: unknown;
