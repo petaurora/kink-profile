@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   IconArrowsLeftRight,
   IconChevronDown,
@@ -11,6 +12,7 @@ import {
   IconUser,
   IconUsers,
 } from "@tabler/icons-react";
+import { siteHeaderRoutePaths } from "./app/routes";
 
 export type SiteHeaderDestination =
   | "hub"
@@ -38,10 +40,12 @@ export function SiteHeader({
   settingsActive = false,
 }: SiteHeaderProps) {
   const [navOpen, setNavOpen] = useState(false);
+  const routeNavigate = useNavigate();
 
   const navigate = (destination: SiteHeaderDestination) => {
     setNavOpen(false);
     onNavigate(destination);
+    routeNavigate(siteHeaderRoutePaths[destination]);
   };
 
   return (
