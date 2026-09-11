@@ -8,8 +8,8 @@ import { QuizRoutePage } from "../features/quizzes/QuizRoutePage";
 import { RankingRoute } from "../features/ranking/RankingRoute";
 import { RewardsRoute } from "../features/rewards/RewardsRoute";
 import { SceneBuilderRoute } from "../features/scenes/SceneBuilderRoute";
+import { SettingsRoute } from "../features/settings/SettingsRoute";
 import { AppShell } from "./AppShell";
-import { SettingsRoute } from "./SettingsRoute";
 import {
   catalogRoute,
   compareRoute,
