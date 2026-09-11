@@ -1,20 +1,26 @@
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
-import ProfileAppRoot from "../ProfileAppRoot";
 import { CatalogRoute } from "../features/catalog/CatalogRoute";
+import { CompareRoute } from "../features/comparison/CompareRoute";
+import { CurationRoute } from "../features/curation/CurationRoute";
 import { HubPage } from "../features/hub/HubPage";
 import { ProfileRoute } from "../features/profile/ProfileRoute";
 import { QuizRoutePage } from "../features/quizzes/QuizRoutePage";
 import { RankingRoute } from "../features/ranking/RankingRoute";
+import { RewardsRoute } from "../features/rewards/RewardsRoute";
+import { SceneBuilderRoute } from "../features/scenes/SceneBuilderRoute";
 import { AppShell } from "./AppShell";
 import { SettingsRoute } from "./SettingsRoute";
 import {
   catalogRoute,
+  compareRoute,
+  curationRoute,
   hubRoute,
-  legacyScreenRoutes,
   profileRoute,
   quizResultsRoute,
   quizRoute,
   rankingRoute,
+  rewardsRoute,
+  sceneBuilderRoute,
   settingsRoute,
 } from "./routes";
 
@@ -26,6 +32,10 @@ export function RoutedApplication() {
         <Route path={profileRoute.path} element={<ProfileRoute />} />
         <Route path={catalogRoute.path} element={<CatalogRoute />} />
         <Route path={rankingRoute.path} element={<RankingRoute />} />
+        <Route path={rewardsRoute.path} element={<RewardsRoute />} />
+        <Route path={sceneBuilderRoute.path} element={<SceneBuilderRoute />} />
+        <Route path={compareRoute.path} element={<CompareRoute />} />
+        <Route path={curationRoute.path} element={<CurationRoute />} />
         <Route path={settingsRoute.path} element={<SettingsRoute />} />
         <Route
           path={quizRoute.path}
@@ -35,14 +45,6 @@ export function RoutedApplication() {
           path={quizResultsRoute.path}
           element={<QuizRoutePage mode="results" />}
         />
-
-        {legacyScreenRoutes.map((route) => (
-          <Route
-            key={route.id}
-            path={route.path}
-            element={<ProfileAppRoot initialScreen={route.screen} />}
-          />
-        ))}
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
