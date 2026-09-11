@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { CurationWorkbench } from "../../CurationWorkbench";
 import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
+import { CurationWorkbench } from "./CurationWorkbench";
 
 export function CurationRoute() {
   const navigate = useNavigate();
