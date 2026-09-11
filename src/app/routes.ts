@@ -11,7 +11,8 @@ export type AppRouteId =
   | "scene-builder"
   | "compare"
   | "curation"
-  | "settings";
+  | "settings"
+  | "design-lab-navigation";
 
 export const hubRoute = { id: "hub", path: "/" } as const;
 export const profileRoute = { id: "profile", path: "/profile" } as const;
@@ -25,6 +26,10 @@ export const sceneBuilderRoute = {
 export const compareRoute = { id: "compare", path: "/compare" } as const;
 export const curationRoute = { id: "curation", path: "/curation" } as const;
 export const settingsRoute = { id: "settings", path: "/settings" } as const;
+export const designLabNavigationRoute = {
+  id: "design-lab-navigation",
+  path: "/design-lab/navigation",
+} as const;
 export const quizRoute = {
   id: "quiz",
   path: "/quizzes/:quizId",
@@ -63,6 +68,7 @@ export const appRoutePatterns = [
   compareRoute,
   curationRoute,
   settingsRoute,
+  designLabNavigationRoute,
   quizRoute,
   quizResultsRoute,
 ] as const;
