@@ -153,7 +153,7 @@ const baseItems = catalogRows.map((row, index) => {
   const existingCategoryLabel = catalogCategoryLabelsById.get(categoryId);
   if (existingCategoryLabel && existingCategoryLabel !== categoryLabel) {
     throw new Error(
-      `${sourceName} record ${recordNumber}: ${field} "${id}" must use lowercase kebab-case.`,
+      `Catalog record ${recordNumber}: Category ID "${categoryId}" maps to both "${existingCategoryLabel}" and "${categoryLabel}".`,
     );
   }
   catalogCategoryLabelsById.set(categoryId, categoryLabel);
