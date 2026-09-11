@@ -184,9 +184,9 @@ function CurationWeightedRelationsEditor({
                   <input
                     aria-label={`${field.label} weight ${index + 1}`}
                     type="number"
-                    min="0.05"
+                    min="0"
                     max="1"
-                    step="0.05"
+                    step="any"
                     value={relation.weight}
                     onChange={(event) => {
                       const next = [...value];
@@ -426,9 +426,9 @@ function CurationFacetMatrixEditor({
                     <span>Weight</span>
                     <input
                       type="number"
-                      min="0.05"
+                      min="0"
                       max="1"
-                      step="0.05"
+                      step="any"
                       value={row.weight}
                       aria-label={`${option?.label ?? row.id} weight`}
                       onChange={(event) =>
