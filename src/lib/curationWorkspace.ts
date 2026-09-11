@@ -1,5 +1,9 @@
 import type { CurationPrimitiveType } from "../data/curationInventory";
 import type { SignalChannel } from "../data/canonicalSignals";
+import {
+  formatCurationExportErrors,
+  validateCurationWorkspaceForExport,
+} from "./curationExportValidation";
 
 export const CURATION_WORKSPACE_SCHEMA_VERSION = 2;
 export const CURATION_WORKSPACE_STORAGE_KEY =
@@ -160,6 +164,15 @@ export function saveCurationWorkspace(workspace: CurationWorkspace) {
 }
 
 export function exportCurationWorkspace(workspace: CurationWorkspace) {
+  const validation = validateCurationWorkspaceForExport(workspace);
+  if (validation.errors.length > 0) {
+    const message = formatCurationExportErrors(validation.errors);
+    if (typeof window !== "undefined" && typeof window.alert === "function") {
+      window.alert(message);
+    }
+    throw new Error(message);
+  }
+
   return JSON.stringify(
     {
       ...workspace,
