@@ -1,657 +1,416 @@
-# Pet Profile Product Spec
+# Kink Profile Product Spec
 
-## Status
+This document describes the **current product boundary**. It is intentionally not a roadmap, milestone ledger, or future-design workspace.
 
-Living product direction.
-
-**Implemented:** M0–M7, M9, M11–M13, plus M14 compare-once/comparison/shared-scene slices  
-**Optional/deferred:** M8 adaptive quiz depth and M10 cloud persistence  
-**Needs refinement:** M14 persistent profile ownership/linking model  
-**Planned/scoped:** M15–M16  
-**Current:** keep the working comparison/shared-scene behavior, pause persistent multi-profile architecture, and choose the next milestone intentionally
-
-The app is now structurally a collection of independently completable quizzes rather than one monolithic assessment.
-
----
+For implementation plans and active work, use GitHub Issues/Project. For unresolved product strategy, research, future concepts, business, privacy, and monetization decisions, use Kink Profile HQ in Notion.
 
 ## Product idea
 
-Pet Profile is a privacy-first adult preference exploration app.
+Kink Profile is a privacy-first adult preference exploration app that helps a user progressively describe, rank, interpret, and use their preferences without requiring one giant assessment.
 
-A user should be able to choose one focused area, complete it in a few minutes, receive useful results, and leave. Additional sections can be completed later, gradually building a richer overall profile.
+The product combines several independent kinds of input:
 
-The product should feel like a collection of interesting quizzes, not an exam.
+```text
+QUIZZES
+broad reusable preference evidence
+        │
+        ├──────────────┐
+        │              │
+EXPLICIT CATALOG       │
+PREFERENCES            │
+direct item-level      │
+answers                 │
+        │              │
+        ├──────────────┤
+        │              ▼
+THIS-OR-THAT      OVERALL PROFILE
+relative item          derived interpretation
+ranking                of current evidence
 
----
+REWARDS & PUNISHMENTS
+separate contextual suitability/ranking
+
+SCENE BUILDER
+uses existing profile state for current-session composition
+```
+
+These sources are related through stable identities and semantic mappings, but they are **not interchangeable evidence**.
 
 ## Product principles
 
 ### Modular, not monolithic
 
-Prefer short focused quizzes over one 100+ question assessment.
+The user can complete one quiz, classify a few catalog items, rank one category, or use one downstream feature without completing the whole product.
 
-Target roughly **15–30 questions per standard section**, with small exceptions when a broader taxonomy needs repeated evidence. Quick/deep modes and adaptive follow-ups are future options, not requirements for the initial sections.
+Partial evidence is valid. Missing evidence remains unknown rather than becoming a negative preference.
 
-### Measure underlying preferences, not trivia
+### Measure reusable meaning before inventory
 
-Avoid questions whose only purpose is to reproduce their own answer.
+Quizzes primarily measure underlying experiences and mechanisms such as control, care, restraint, service, intensity, ritual, pursuit, or autonomy.
 
-Bad:
+Specific activity preference belongs to the Kink Catalog.
 
-> Do you like collars?
+### Preserve source meaning
 
-Result:
+The product must keep these different questions distinct:
 
-> You like collars: 100%.
+- **Quiz:** what broad experiences or patterns appeal to me?
+- **Explicit catalog preference:** how do I directly feel about this item?
+- **This-or-That:** which eligible item rises higher relative to another?
+- **Reward/Punishment suitability:** does this item work in this specific context?
+- **Scene session choice:** is this item usable for this moment?
 
-Prefer prompts that measure reusable underlying signals such as symbolic ownership, restraint, ritual, service, authority, praise, intensity, or visibility.
+One interaction must not silently manufacture another kind of answer.
 
-Specific catalog interests can later be matched against those signals.
+### Separate activity side from authority
 
-### Separate activity from psychology
+Receiving/Giving describes the perspective of an activity or Signal when that distinction is meaningful.
 
-The profile should distinguish:
+Dominant/submissive describes authority context.
 
-- **activity interests** — what someone enjoys doing
-- **power dynamics** — how authority/control is experienced
-- **dynamic modes** — psychological patterns such as surrender, protocol, devotion, or claiming
-- **roles/headspaces** — recognizable relational modes or identities such as Pet, Slave, Little, Middle, Brat, Caregiver, or Owner
-- **intensity preferences** — pain, physical intensity, endurance, challenge, anticipation, and emotional charge
-- **specific interests** — catalog items explicitly selected or inferred from known signals
+They can correlate, but they are not synonyms. The product must not infer authority merely from which physical/activity side a user prefers.
 
-These layers may overlap but should not be flattened into one list.
+See [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md).
 
 ### Results are descriptive, not diagnostic
 
-Scores describe current questionnaire responses.
+Profile outputs describe current evidence. They are not diagnoses, immutable identities, or proof that a person must adopt a particular label.
 
-Do not present them as diagnoses, immutable identities, or proof that someone "is" a particular label.
+### Explicit boundaries outrank inference
 
-Prefer language such as:
+Hard Limits and other explicit exclusions are direct user-owned state.
 
-- strong signal
-- current affinity
-- worth exploring
-- low interest
-- not yet explored
+Derived affinity, ranking, or thematic strength must not override them.
 
-### Consent and adult context are foundational
+### Privacy-first and browser-local
 
-The app is intended for adults exploring consensual interests.
+The current product stores authoritative profile state in the browser. No account or cloud persistence is required for the current product.
 
-Taxonomy and wording should distinguish consensual power exchange and role-play from coercion or abuse.
+Private backup/restore and curated human-facing sharing are separate artifacts with different privacy boundaries.
 
-### Privacy-first by default
+## Current product surfaces
 
-The current app stores answers and quiz progress in browser `localStorage`.
+### Quizzes
 
-Do not require an account merely to take quizzes. Any future cloud persistence must be optional, explicit, and designed around a defined privacy model.
+The current app has four independently completable core quizzes:
 
----
+- Bondage & Discipline;
+- Dominance & Submission;
+- Sadism & Masochism;
+- Roles & Headspaces.
 
-# Information architecture
+They use weighted questions to produce section-local Signal evidence with affinity and coverage.
 
-## Quiz Hub
+The current Roles & Headspaces quiz also supports derived role/headspace and Dynamic Mode interpretation through the shared profile taxonomy.
 
-The Quiz Hub is the primary navigation model.
+The retired Starter Profile exists only as a compatibility storage ID; it is not a current available quiz.
 
-Current core sections:
+See [Quizzes](product/quizzes.md).
 
-| Section | Purpose |
-| --- | --- |
-| Bondage & Discipline | restraint, rules, protocol, discipline, ritual, structure |
-| Dominance & Submission | authority, autonomy, service, obedience, control, power exchange |
-| Sadism & Masochism | giving/receiving intensity, pain, challenge, endurance |
-| Roles & Headspaces | recognizable roles/headspaces plus the dynamic modes that explain why they resonate |
+### Kink Catalog
 
-The original prototype remains available as the **Starter Profile** sampler and does not contribute to the future core overall profile by default.
+The Kink Catalog is the detailed activity library and direct preference-management surface.
 
-Potential later sections include Sensation, Display & Social, and additional Erotic Interests when the core model is stable.
+It provides:
 
----
+- stable Catalog and Category identities;
+- searchable labels and aliases;
+- category/domain metadata;
+- explicit item preferences;
+- direct limits/exclusions;
+- read-only current ranking context;
+- derived profile-informed catalog affinity;
+- recommendation suppression when explicit exclusions exist.
 
-# Core BDSM sections
+Current explicit states are:
 
-## Bondage & Discipline
+- Love;
+- Like;
+- Curious;
+- Unsure;
+- Not Interested;
+- Hard Limit;
+- Not Applicable.
 
-The implemented M4 model is specified in [m4-bd-design.md](m4-bd-design.md).
+Unanswered is absence of explicit state, not a stored `unknown` value.
 
-M4 separates physical restraint from structural discipline and preserves direction where it matters.
+See [Kink Catalog](product/kink-catalog.md).
 
-Primary M4 signals include:
+### This-or-That ranking
 
-- receiving restraint
-- giving restraint
-- movement restriction
-- receiving positioning
-- giving positioning
-- receiving constraint control
-- giving constraint control
-- receiving discipline
-- giving discipline
-- accountability
-- anticipation
-- challenge / escape
+This-or-That is a comparative mini-game for relative item preference.
 
-M4 also reuses shared signals such as structure, ritual significance, obedience, receiving/giving control, guidance/shaping, responsibility holding, and playful resistance when the meaning genuinely matches.
+Users rank within categories first; evidenced category finalists then feed the Overall comparison pool.
 
-Two product boundaries are explicit:
+Raw pairwise comparisons remain authoritative ranking evidence. Starting a new ranking run archives the current run and begins a fresh comparative pulse without deleting previous history.
 
-1. **Discipline is not pain.** Pain Receiving/Pain Giving belong to M5.
-2. **The catalog is not the questionnaire.** M4 measures mechanisms such as restraint, positioning, and accountability rather than asking directly about rope, cuffs, or other items.
+Historical movement is presentation context only and does not become new profile evidence.
 
-Implemented results use a unified ranked list plus separate **Bondage / Physical Control** and **Discipline / Structural Control** radar views.
+See [Kink This-or-That Ranking](kink-this-or-that-ranking.md).
 
-## Dominance & Submission
+### Overall Profile
 
-Implemented M2 signals:
+The Overall Profile is a derived presentation of the evidence currently available across independent sources.
 
-- receiving control
-- giving control
-- responsibility transfer
-- service
-- obedience
-- structure
-- ownership symbolism
-- praise/approval
-- autonomy
+It can include:
 
-Role direction should be represented explicitly where useful rather than assuming every user occupies one side.
+- broad Overall Facets;
+- authority/orientation interpretation where supported;
+- roles/headspaces;
+- Dynamic Modes;
+- Top Overall interests;
+- Hard Limits;
+- Interest Areas;
+- evidence/coverage explanation;
+- Rewards & Punishments summaries where direct contextual data exists.
 
-For M2, these are **independent signals rather than opposite ends of a single axis**. A user may score highly on both Receiving Control and Giving Control, or on both Receiving Control and Autonomy. The profile should preserve those patterns rather than forcing a Dominant/submissive/switch label.
+The Overall Profile is not another authoritative source. It must be recomputable from underlying source data.
 
-The implemented M2 questionnaire, signal definitions, and weight matrix are specified in [m2-ds-design.md](m2-ds-design.md).
+See [Overall Profile Aggregation](overall-profile-aggregation.md), [Scoring & Taxonomy Model](scoring-model.md), and [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md).
 
-## Sadism & Masochism
+### Roles, Headspaces & Dynamic Modes
 
-The implemented M5 model is specified in [m5-sm-design.md](m5-sm-design.md).
+Current peer roles/headspaces are:
 
-M5 separates direction and mechanism rather than producing one generic S/M score.
+- Pet;
+- Slave;
+- Little;
+- Middle;
+- Brat;
+- Prey;
+- Object;
+- Owner / Handler;
+- Caregiver;
+- Brat Tamer;
+- Predator;
+- Master / Mistress.
 
-Implemented primary signals:
+Current Dynamic Modes are:
 
-- Pain Receiving
-- Pain Giving
-- Receiving Intensity
-- Giving Intensity
-- Receiving Endurance
-- Giving Endurance
-- Receiving Challenge
-- Giving Challenge
-- Emotional Intensity
-- shared Anticipation
+- Devotion;
+- Protocol;
+- Service;
+- Structure;
+- Care;
+- Playful Challenge;
+- Objectification;
+- Primal / Feral;
+- Power Exchange;
+- Intensity.
 
-Key boundaries:
+Roles/headspaces and Dynamic Modes are derived compositions of canonical Signal evidence. They can overlap and do not need to sum to 100%.
 
-1. **Pain is not general physical intensity.**
-2. **Endurance is not intensity.**
-3. **Challenge is not simply "more intensity."**
-4. **Emotional intensity is independent from physical intensity.**
-5. **Pain does not imply discipline, submission, or dominance.**
-6. **General sensation play is broader than S/M.**
+See [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md).
 
-M5 uses a unified ranked signal list plus separate **Receiving / Masochistic** and **Giving / Sadistic** radar views. The section does not assign a forced Sadist/Masochist identity label.
+### Rewards & Punishments
 
----
+Rewards & Punishments is a separate contextual layer over a normalized primitive library.
 
-# Roles & Headspaces
+For each primitive, Reward and Punishment suitability are independent. The current detailed state model supports:
 
-M3 uses a three-layer taxonomy:
+- Strong;
+- Works;
+- Depends;
+- No;
+- Never;
+- Unset.
+
+Random eligibility is a separate explicit opt-in and is more restrictive than general contextual suitability.
+
+The product also supports:
+
+- a coarse quick sorter;
+- separate Reward and Punishment rankings;
+- source-aware inferred proposals for unrated items;
+- a randomizer over explicitly eligible entries;
+- saved multi-part Reward/Punishment recipes.
+
+General kink dislike is not positive punishment evidence, and general kink preference does not automatically make an activity a valid Reward or Punishment.
+
+See [Rewards & Punishments](product/rewards-punishments.md).
+
+### Scene Builder
+
+Scene Builder converts existing profile state into a smaller, current-session play space.
+
+It supports:
+
+- one or more Scene themes;
+- effort and exploration modes;
+- intensity filtering;
+- temporary `Yes tonight` / `Maybe tonight` / `Not tonight` choices;
+- profile-backed candidate lanes and bridge candidates;
+- random single-item selection;
+- generated multi-phase scene compositions;
+- component-level editing/shuffling;
+- optional Rewards & Punishments integration;
+- saved local Scene templates.
+
+Scene themes and session choices do not become new profile evidence.
+
+Inference-only items remain distinct from automatic eligibility, and explicit exclusions remain authoritative.
+
+See [Scene Builder](product/scene-builder.md).
+
+### Profile Comparison
+
+The current comparison feature accepts another profile export as temporary input and derives comparison/shared views without importing or mutating either profile.
+
+Current comparison behavior can surface:
+
+- overlap;
+- differences;
+- explicit limits/boundaries;
+- directional complementarity where actual directional evidence exists;
+- participant-specific temporary intent;
+- shared Scene Builder candidates.
+
+Uploaded comparison data is temporary comparison input, not a second persisted local profile.
+
+Persistent profile ownership/linking is outside the current product contract.
+
+See [Profile Comparison](product/profile-comparison.md).
+
+### Profile Management
+
+Settings/profile management owns the local profile lifecycle:
+
+- display name;
+- source-aware selective reset;
+- private full-profile backup;
+- validated full-profile restore;
+- curated share-summary preview/export.
+
+Current private backup format is `kink-profile` v3. Restore supports v1, v2, and v3.
+
+Share summary and private backup are deliberately different products:
 
 ```text
-answers
-  ↓
-signals
-  ├─ dynamic modes
-  └─ roles / headspaces
+PRIVATE BACKUP
+complete + machine-readable + restore-capable
+
+SHARE SUMMARY
+curated + human-readable + presentation-only
 ```
 
-The implemented M3 v3 model is documented in [m3-headspaces-direction.md](m3-headspaces-direction.md).
+Share summary exports can be generated locally as PNG, standalone HTML, or PDF.
 
-## Roles / headspaces
+See [Profile Management](product/profile-management.md).
 
-Primary user-facing results include:
+### Curation Workbench
 
-### Receiving / submissive-leaning
+The Curation Workbench is a repository/data-maintenance tool for reviewing and editing canonical semantic content.
 
-- Pet
-- Slave
-- Little
-- Middle
-- Brat
-- Prey
-- Service Submissive
-- Devotional Submissive
-- Property / Object
+It supports proposal/workspace editing, validation, deterministic export, and canonical Signal/channel authoring while preserving distinctions between:
 
-### Giving / dominant-leaning
+- Signal channel;
+- Overall Facet support/oppose/neutral relationships;
+- catalog applicability;
+- authority semantics.
 
-- Owner / Handler
-- Caregiver
-- Brat Tamer
-- Predator
-- Trainer
-- Master / Mistress
+The Workbench is not a user preference source.
 
-These are **not mutually exclusive**. A user may score highly on several depending on context and the shape of their underlying signals.
+See [Curation Workbench](product/curation-workbench.md).
 
-## Dynamic modes
+## Canonical semantic model
 
-M3 also calculates explanatory dynamic modes:
-
-- Nurtured Play
-- Devotion
-- Service
-- Protocol
-- Surrender
-- Playful Resistance
-- Objectification
-- Caretaking
-- Authority
-- Claiming
-- Training / Shaping
-- Primal / Feral
-
-These modes explain *why* roles may resonate. They should not be presented as though they are interchangeable with role/headspace identities.
-
-For example:
+The overall semantic unit is:
 
 ```text
-Slave
-├─ surrender
-├─ obedience
-├─ service
-├─ ownership symbolism
-└─ structure
+Signal = reusable concept
+Channel = optional supported perspective on that concept
 ```
 
-and:
+Channels are:
+
+- Overall;
+- Receiving;
+- Giving.
+
+Not every Signal supports directional channels.
+
+Legacy quiz/catalog source definitions may still contain older directional Signal IDs for compatibility. They normalize into canonical Signal + channel before current profile aggregation.
+
+See [Signal + Channel Data Model](data-model/signal-channel-model.md) and [Semantic Data Model](semantic-data-model.md).
+
+## Evidence architecture
+
+The current canonical Signal profile combines independent evidence classes such as:
+
+- quiz evidence;
+- explicit catalog preference evidence;
+- current active-run catalog pairwise evidence.
+
+Derived catalog affinity is not an independent Signal source and must not feed back into the Signals that produced it.
+
+Likewise, derived roles, modes, facets, recommendations, profile summaries, and Scene queries do not become new source evidence merely because they are displayed or consumed downstream.
+
+The direction of information should remain acyclic:
 
 ```text
-Brat
-├─ playful resistance
-├─ playfulness
-├─ autonomy
-└─ receiving control
+independent source evidence
+        ↓
+canonical Signal + channel
+        ↓
+derived profile layers
+        ↓
+discovery / presentation / scene use
+
+not back into source evidence
 ```
 
-Little and Middle require explicit younger-role/headspace evidence and are not inferred from generic care or playfulness alone.
+## Persistence model
 
-Prey and Predator likewise use explicit primal embodiment plus direction-specific pursuit evidence. Liking Pet, Brat, receiving control, or giving control is not enough by itself to infer either primal role.
+Current authoritative durable state is browser-local and separated by domain.
 
-M3 remains independently completable. Reused signal IDs do not cause M2 answers to silently alter M3 results; cross-quiz aggregation belongs to M7.
+Durable profile data includes:
 
----
+- quiz progress/answers;
+- profile settings;
+- explicit catalog preferences;
+- pairwise comparisons and ranking-run history;
+- Rewards & Punishments authoritative state;
+- saved Scene templates.
 
-# Questionnaire behavior
+Session-only Scene Builder overrides/randomizer history are intentionally not durable profile state.
 
-The target scoring architecture is defined in [scoring-model.md](scoring-model.md).
+Derived scores/presentations are recomputable and should not become a second persistence authority.
 
-Key product requirements:
+## Current non-goals / boundaries
 
-- important signals should be measured by multiple prompts
-- a question may contribute evidence to multiple signals
-- wording should vary enough to reduce single-phrase bias
-- missing answers mean **unknown**, not zero
-- high-confidence labels should not come from one answer
-- direct self-identification questions should be used sparingly
+The current product does **not** provide:
 
-The current Starter Profile still uses the simpler M0 scoring model.
+- required user accounts;
+- cloud profile persistence or cross-device sync;
+- persistent linked-profile ownership/permissions;
+- assignment/completion tracking for Rewards or Punishments;
+- a reward economy, punishment debt, or task ledger;
+- consent inference from preference scores;
+- automatic authority inference from activity side;
+- automatic explicit catalog preference from quiz inference;
+- automatic randomization of inference-only Scene candidates;
+- diagnostic or immutable identity claims.
 
-## Response scale
+These boundaries describe the current system, not a declaration that such concepts can never be explored later.
 
-The existing five-point preference scale is a reasonable default:
+## Documentation ownership
 
-0. Not for me  
-1. Mildly interesting  
-2. Unsure / maybe  
-3. Strong interest  
-4. Core interest
+Use the repository contracts for current implementation semantics:
 
-Visible labels may vary by quiz, but internal semantics should remain stable unless intentionally versioned.
-
-## Adaptive questioning
-
-Adaptive follow-ups are optional future work.
-
-If added, branching should:
-
-- shorten irrelevant paths
-- deepen strong or ambiguous signals
-- improve coverage
-- preserve score comparability
-
-It should not manipulate outcomes or make the standard experience feel unpredictable.
-
----
-
-# Results
-
-## Section results
-
-Each completed quiz should provide its own ranked results and visualization.
-
-Example:
-
-- Structure — 91%
-- Ritual — 88%
-- Restraint — 82%
-- Discipline — 47%
-
-## Roles & headspaces results
-
-Role/headspace affinities are independent and do not need to sum to 100%.
-
-Example:
-
-- Pet — 94%
-- Slave — 88%
-- Brat — 76%
-- Little — 62%
-
-Dynamic modes such as Surrender, Protocol, or Primal / Feral are shown as explanatory context.
-
-For M3, radar visualization is intentionally separated into self-positioned roles, partner-positioned roles, and underlying dynamic modes so one crowded chart does not flatten distinct role groupings. These are presentation groupings, not Dominant/Submissive classifications.
-
-## Overall profile
-
-The overall profile aggregates the source-aware evidence currently available from core quizzes, direct catalog preferences, and meaningful This-or-That comparisons.
-
-Partial evidence can contribute where measured; missing evidence remains explicitly unknown rather than becoming 0%.
-
-M7 implements the full cross-section aggregation and presentation layer. Completion/progress context stays subordinate to the resulting profile.
-
-Authority orientation is not inferred from generic activity side. Giving/receiving pain, restraint, discipline, care, pursuit, or other activities remains separate from Dominant/Submissive authority, and role/headspace labels remain independently overlapping.
-
-## Visualizations
-
-Supported/current direction:
-
-- ranked percentage bars
-- radar/spider charts
-- completion/progress state
-
-The M7 presentation is a unified overall profile with drill-down, not four mandatory peer views. Section-local D/s / Headspaces / activity results remain available from their existing sections; future dedicated alternate views can be added only if they prove useful.
-
----
-
-# Catalog relationship
-
-The catalog is a **data + explicit-preference + ranking layer**, not the questionnaire itself.
-
-See:
-
-- [M6 Catalog Integration](m6-catalog-integration.md)
-- [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md)
+- [Documentation index](README.md)
+- [Quizzes](product/quizzes.md)
+- [Kink Catalog](product/kink-catalog.md)
 - [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
-- [Reference Data](../reference/README.md)
-
-M6 completed the catalog integration layer. The current app has:
-
-- a 551-item repo-native TSV runtime catalog source + build-time generated runtime data
-- durable Catalog/Category IDs, domains/display order, aliases, direction, and validated SignalId mappings
-- explicit seven-state catalog preferences in a shared local catalog-profile store
-- category + Overall This-or-That ranking with hardened meaningful-evidence/finalist/history semantics
-- source-aware quiz-derived affinity + provenance
-- catalog result views that keep explicit / pairwise / inferred evidence separate
-- recommendation eligibility/suppression that respects explicit exclusions without erasing explainability evidence
-- direct-evidence-only catalog → signal projection with no inferred feedback loop
-
-M7 consumes this completed M6 boundary rather than introducing another catalog model.
-
-## Four independent catalog truths
-
-Keep these concepts separate:
-
-1. **Catalog definition** — what the item is
-2. **Explicit preference** — what the user directly says
-3. **Pairwise ranking** — what the user prefers relative to other eligible items
-4. **Inferred affinity** — what canonical quiz signals suggest may be worth exploring
-
-A ranking win must not silently become `love`.
-
-A `hard_limit` must not be overridden by either ranking or inference.
-
-An inferred match must not be presented as though the user explicitly selected it.
-
-## Explicit states
-
-M6's canonical explicit states are:
-
-- love
-- like
-- curious
-- unsure
-- not interested
-- hard limit
-- not applicable
-
-Unanswered is absence of explicit state, not a stored "unknown" value.
-
-The storage schema should remain capable of future receiving/giving overrides because many catalog concepts are directional. C3 initially edits the general/overall state through a searchable/filterable catalog table/list while preserving directional fields in the storage contract.
-
-This-or-That remains a separate low-friction comparison mini-game. Pairwise choices do not create explicit state, and positive explicit state does not seed ranking.
-
-Once explicit state exists, `hard_limit`, `not_interested`, and `not_applicable` are excluded from new pair selection immediately. This minimum eligibility behavior belongs with C3 so explicit exclusions are actually authoritative; C4 implements source-aware evidence convergence, and C5 implements ranking-confidence/finalist/history hardening.
-
-## Pairwise ranking
-
-The current ranking flow is intentionally low-friction:
-
-```text
-category progress home
-        ↓
-rank a category
-        ↓
-current evidenced Top 5 from ranked categories
-        ↓
-Overall candidate pool
-(current finalists + eligible prior Overall participants)
-        ↓
-cross-category favorites
-```
-
-Untouched categories contribute no finalists. Zero-evidence items do not enter the finalist pool, and prior meaningful Overall participants remain available even if a category's current Top 5 later changes.
-
-Pairwise ranking remains relative evidence; it does not replace explicit interest semantics.
-
-## Inferred exploration
-
-Catalog items may map to multiple stable `SignalId` values.
-
-Conceptual example:
-
-```yaml
-id: collar
-signals:
-  ownership_symbolism: 1.0
-  ritual_significance: 0.75
-  receiving_restraint: 0.25
-  giving_restraint: 0.25
-```
-
-That supports derived catalog affinity/explainability without turning inferred affinity into an explicit preference.
-
-M6 defines/validates catalog mappings and the source-aware catalog affinity contract.
-
-M7 owns the canonical cross-quiz signal profile and aggregate profile presentation so M6 does not duplicate cross-quiz aggregation.
-
-
----
-
-# Persistence
-
-## Current
-
-Authoritative profile state is browser-local. M1 established versioned quiz/profile storage and M6 added the shared catalog-profile store for explicit preferences plus raw pairwise history.
-
-M9 completed the local lifecycle layer:
-
-- editable profile display name
-- selective reset by independent source domain
-- versioned full-profile JSON backup export
-- validated full-profile restore
-- curated share-summary preview
-- local PNG, standalone HTML, and PDF share exports
-
-Later milestones extend that same lifecycle contract:
-
-- M11 authoritative Rewards & Punishments state is included in backup/restore and selective reset
-- M13 saved scenes are included in backup/restore and have an independent reset scope
-- the current Full Profile Export is v3; v1/v2 remain supported for restore
-- Scene Builder Tonight/randomizer state remains session-only and is not backed up
-- M14 uploaded comparison profiles are temporary comparison input, not another persisted profile
-
-Derived profile views remain recomputable rather than becoming a second authoritative store.
-
-## Later
-
-M10 may add optional cloud persistence only if it solves a real product problem and a privacy/threat model is defined first. Accounts/cloud sync are not prerequisites for the local product.
-
----
-
-# UX direction
-
-The app should feel:
-
-- playful
-- polished
-- intimate without being cheesy
-- adult rather than clinical
-- exploratory rather than evaluative
-
-Prefer:
-
-> Explore D/s
-
-over:
-
-> Begin D/s Assessment
-
-Prefer:
-
-> Your strongest signals
-
-over:
-
-> Diagnostic results
-
----
-
-
-# Rewards & Punishments product area
-
-M11 is the implemented first-class Rewards & Punishments product area.
-
-It reuses the stable M6 catalog alongside a normalized action library derived from `reference/rewards-punishments/`.
-
-The product must preserve seven independent questions:
-
-```text
-GENERAL PREFERENCE
-Do I like this activity?
-
-REWARD SUITABILITY
-Does this work as a reward?
-
-PUNISHMENT SUITABILITY
-Does this work as a punishment/consequence?
-
-REWARD RANK
-Among confirmed rewards, which ones rise to the top?
-
-PUNISHMENT RANK
-Among confirmed punishments, which ones rise to the top?
-
-RANDOM ELIGIBILITY
-May the app pick this randomly?
-
-RECIPE MEMBERSHIP
-Is this part of a saved custom combination?
-```
-
-Reward and punishment are contextual uses, not opposite ends of one scale. An item may work as both, either, or neither. Dislike/aversion must never automatically make an item a punishment candidate.
-
-M11 follows the same source-aware philosophy as M6: direct contextual choices remain authoritative, while **inferred Reward/Punishment proposals** may be derived from canonical M7 signals, contextual category preferences, similar confirmed M11 items, and bounded M6 catalog context. Inference is visibly separate from explicit choice and may never feed itself back into category/profile evidence.
-
-Reward and Punishment also get independent **contextual category profiles**. Category affinity is derived from direct M11 choices, keeps evidence breadth separate from strength, and provides bounded weighting for proposal ordering and profile summaries.
-
-M11 includes a fast one-item-at-a-time **Reward / Punishment / Both** classification flow so the user does not have to build the profile through a giant table. The sorter may surface/prioritize inferred proposals, but the user's tap is what creates direct `works/no` evidence. Because the combined catalog/action universe is large, the sorter also uses persistent progress, randomized 1–7-item micro-feedback beats, and larger every-25 classification checkpoints so the experience changes rhythm without hiding real progress.
-
-Classification is the eligibility funnel for two later pairwise flows: **Reward This-or-That** and **Punishment This-or-That**. An item must have direct positive contextual evidence before entering that context's ranking pool, but the user does not need to finish sorting the entire universe before ranking. Reward rank, Punishment rank, and the existing M6 kink rank remain independent evidence channels even when they refer to the same catalog item.
-
-The in-app overall profile includes a distinct Rewards & Punishments section showing strongest contextual categories, Top Rewards / Top Punishments when sufficiently ranked, confirmed items, and clearly separate Suggested to explore items. These M11 values do not alter the M7 radar, orientation, roles, modes, Top Overall, or limits.
-
-M11 also includes lightweight random selection and reusable reward/punishment builders, but explicitly excludes assignment, earning, demerits, debt, task integration, completion tracking, and automatic escalation.
-
-See [M11 Rewards & Punishments](m11-rewards-punishments.md) for the detailed contract.
-
----
-
-# Completed and scoped product layers
-
-The detailed contracts remain authoritative; this section records only the product-level boundaries.
-
-## M12 — Ranking history & movement
-
-M12 is implemented and turns This-or-That into a repeatable preference pulse. Starting a new ranking run archives the previous run rather than deleting it or accumulating one lifetime Elo history. Only the active run contributes current pairwise evidence; previous comparable runs provide movement context.
-
-See [M12 Ranking History & Movement](m12-ranking-history-movement.md).
-
-## M13 — Scene Builder
-
-M13 is implemented. It uses the existing profile to reduce decision load for a specific moment. Theme selection, temporary Yes/Maybe/Not-tonight state, bounded candidate filtering, editable scene composition, randomization, M11 add-ons, and saved scenes are query/composition/lifecycle layers; they do not rewrite durable preference evidence.
-
-See [M13 Scene Builder](m13-scene-builder.md).
-
-## M14 — Shared Profiles / Comparison
-
-The implemented M14 boundary compares the current profile against a temporary uploaded Full Profile Export. It preserves each person's evidence separately, supports both mutual and complementary fit, allows temporary participant intent, and can feed the derived shared space into M13 without creating a synthetic merged relationship profile or compatibility percentage.
-
-The persistent ownership model is **not settled**. Do not assume that future M14 support means multiple fully editable local profiles or a global profile switcher. The product must first choose between temporary comparison, saved read-only linked profiles, fully editable local profiles, or account-owned linking later.
-
-See [M14 Shared Profiles](m14-shared-profiles.md).
-
-## M15 — Contextual Activity Profiles
-
-M15 makes authority context and activity side explicitly orthogonal. A directional activity can therefore have sparse independent context such as Dominant + Giving, Dominant + Receiving, submissive + Giving, submissive + Receiving, Non-D/s + Giving, or Non-D/s + Receiving without duplicating every catalog row or inferring authority from physical behavior.
-
-M15 is a reusable contextual layer for catalog refinement/ranking, M11 reward/punishment use, M12 ranking history, M13 scene filtering, and M14 complementary comparison.
-
-See [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md) and [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md).
-
-## M16 — Data & Content Curation
-
-M16 is the whole-app quality pass for authored data and model vocabulary. It owns the review workbench, quiz/signal/radar curation, kink-catalog pruning and consolidation, Rewards & Punishments data cleanup, cross-system taxonomy alignment, migration-safe identity changes, and regression validation. It may remove or merge existing data when those items no longer earn their complexity.
-
-See [M16 Data & Content Curation](m16-data-content-curation.md).
-
----
-
-# Not current scope
-
-Do not add during the core quiz milestones:
-
-- required user accounts
-- authentication just to take quizzes
-- backend database without a defined need
-- social network features
-- partner matching
-- compatibility scoring
-- AI-generated interpretation
-- giant full-catalog questionnaire
-
-These remain outside the scoped local product. In particular, M14 compares deliberately supplied profiles; it does not add partner discovery/matching or collapse two people into a compatibility score.
-
----
-
-# Open product questions
-
-These do not block the implemented core app or selection of the next planned milestone.
-
-Already decided in M6: **Hard Limit is a distinct explicit state from Not Interested / Not Applicable.** It controls eligibility/recommendation behavior without erasing historical or derived evidence used for explainability.
-
-1. Should every section eventually offer both Quick and Deep modes?
-2. For future recommendation ordering, how should explicit positive preference affect placement relative to inference-only suggestions?
-3. Should a user be able to exclude one quiz/evidence source from the aggregate profile?
-4. Does "Pet Profile" remain the final product name once the app covers broader BDSM interests?
+- [Profile Management](product/profile-management.md)
+- [Rewards & Punishments](product/rewards-punishments.md)
+- [Scene Builder](product/scene-builder.md)
+- [Profile Comparison](product/profile-comparison.md)
+- [Curation Workbench](product/curation-workbench.md)
+- [Signal + Channel Data Model](data-model/signal-channel-model.md)
+- [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md)
+- [Scoring & Taxonomy Model](scoring-model.md)
+- [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md)
+
+Do not add roadmap/status chronology to this document. Active work belongs in GitHub; unresolved product thinking belongs in Notion.
+
+The repository code and focused tests remain authoritative when implementation and documentation disagree.
