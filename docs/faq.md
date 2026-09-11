@@ -1,571 +1,498 @@
-# Pet Profile FAQ
+# Kink Profile FAQ
 
-This FAQ explains common product behaviors in plain language.
+This FAQ explains common **current product behavior** in plain language.
 
-For a feature-by-feature walkthrough, start with the [Feature Guide](feature-guide.md). For implementation details and scoring contracts, use the deeper product and milestone specifications.
+For a feature-by-feature walkthrough, start with the [Feature Guide](feature-guide.md). For implementation details and semantic rules, use the durable product and system contracts in the [documentation index](README.md).
 
----
+## General
 
-# General
-
-## Do I need to finish everything before my profile works?
+### Do I need to finish everything before my profile works?
 
 No.
 
 The app is intentionally modular. You can complete one quiz, set a handful of catalog preferences, rank one category, or use only the features that are useful to you.
 
-The Overall Profile should become richer as more meaningful evidence exists, but "unfinished" does not mean "invalid."
+The Overall Profile becomes richer as more meaningful evidence exists, but incomplete does not mean invalid.
 
-## Is this supposed to diagnose me or tell me what I am?
+### Is this supposed to diagnose me or tell me what I am?
 
 No.
 
-Results are descriptive. They summarize patterns in the answers and preferences you have provided. They are not a diagnosis, identity assignment, or replacement for communication and consent.
+Results are descriptive. They summarize patterns in the answers/preferences you have provided. They are not a diagnosis, immutable identity assignment, or replacement for communication and consent.
 
-## Why does the app use several different ways to answer similar questions?
+### Why does the app use several ways to answer similar questions?
 
 Because they are not actually the same question.
 
-- **Quizzes** ask about broad tendencies and patterns.
+- **Quizzes** ask about broad experiences and reusable preference patterns.
 - **Catalog preferences** ask how you directly feel about one specific item.
 - **This-or-That** asks which of two eligible items rises higher relative to the other.
-- **Rewards & Punishments** asks whether an item works in a specific contextual role.
+- **Rewards & Punishments** asks whether something works in a specific contextual role.
+- **Scene Builder** asks what fits the current moment without changing permanent preferences.
 
-Keeping those answers separate makes the combined profile more useful and prevents one interaction from pretending to mean more than it does.
+Keeping these answers separate prevents one interaction from pretending to mean more than it does.
 
----
+## Quizzes and the Overall Profile
 
-# Quizzes and the Overall Profile
+### Why don't my quiz results exactly match my Overall Profile?
 
-## Why don't my quiz results exactly match my Overall Profile?
+The Overall Profile is not a copy of one quiz result.
 
-Because the Overall Profile is not a copy of one quiz result.
+A section quiz contributes one source of evidence. The full profile can also consider other completed quizzes, direct catalog preferences, and current pairwise ranking evidence.
 
-A section quiz contributes one kind of evidence. The full profile can also consider direct catalog preferences, current pairwise ranking evidence, and other completed sections.
-
-The result is a combined picture, so it can legitimately differ from any one input.
-
-## Why can my Headspaces section differ from the headline at the top of the profile?
-
-They answer different presentation questions.
-
-The dedicated Headspaces section shows the Headspace layer itself. The profile headline summarizes the strongest broader profile patterns that are useful for a compact first impression.
-
-Neither should be treated as a replacement for the other.
-
-## Does giving an activity mean Dominant?
+### Is the old Starter Profile still a current quiz?
 
 No.
 
-Giving/receiving describes activity side. Dominant/submissive describes authority context.
+`starter-profile` remains only as a compatibility identifier for older stored data. The current available quiz set is Bondage & Discipline, Dominance & Submission, Sadism & Masochism, and Roles & Headspaces.
 
-A submissive person may give an activity. A Dominant person may receive one. The app deliberately avoids converting physical direction into authority identity.
+### Why can my Headspaces section differ from the profile headline?
+
+They answer different presentation questions.
+
+The dedicated Roles/Headspaces layer shows those composed results directly. The profile headline summarizes broader patterns useful for a compact first impression.
+
+### What is the difference between a Role/Headspace and a Dynamic Mode?
+
+A **Role/Headspace** is a recognizable relational or internal state such as Pet, Prey, Caregiver, or Owner / Handler.
+
+A **Dynamic Mode** is a cross-cutting pattern such as Care, Devotion, Structure, Power Exchange, or Intensity.
+
+Both are derived from underlying Signal evidence; neither is a new direct evidence source.
+
+See [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md).
+
+### Does giving an activity mean Dominant?
+
+No.
+
+Giving/Receiving describes an activity or Signal perspective. Dominant/submissive describes authority context.
+
+A submissive person may give an activity. A Dominant person may receive one.
 
 See [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md).
 
-## Does receiving an activity mean submissive?
+### Does receiving an activity mean submissive?
 
-No, for the same reason.
+No, for the same reason. Activity side and authority context are separate dimensions.
 
-Activity side and authority context are separate dimensions.
+### Why can a strong radar theme include an activity I do not want?
 
-## Why can a strong radar theme include an activity I do not want?
-
-A radar theme is broad.
-
-For example, a strong Intensity & Pain theme describes an overall pattern. It does not mean every activity associated with intensity or pain is automatically a positive preference.
+A radar/Overall Facet is broad thematic compression. It does not mean every activity associated with that theme is automatically wanted.
 
 Direct catalog boundaries still matter.
 
-## What does profile coverage mean?
+### What does coverage mean?
 
-Coverage is about how much meaningful evidence is available, not how strong a preference is.
+Coverage answers **how much meaningful evidence is available**, not how strong the known preference is.
 
-A very strong answer with little supporting evidence can still have limited coverage. The app keeps "strength" and "how much do we know?" separate.
+A strong affinity with partial coverage is valid. Missing evidence should remain unknown rather than turning into a 0% preference.
 
----
+## Catalog preferences
 
-# Catalog preferences
-
-## What is the difference between Love, Like, Curious, and Unsure?
+### What is the difference between Love, Like, Curious, and Unsure?
 
 They are direct preference states.
 
-- **Love** is a strong positive preference.
-- **Like** is positive.
-- **Curious** means you may want to explore it.
-- **Unsure** means you do not currently have a clear answer.
+- **Love** — strong positive preference.
+- **Like** — positive preference.
+- **Curious** — something you may want to explore.
+- **Unsure** — you explicitly do not have a clear answer yet.
 
-They are not automatically generated from ranking position.
+They are not generated from ranking position.
 
-## What is the difference between Not Interested and Hard Limit?
+### What is the difference between Unsure and Not set?
+
+**Unsure** is an explicit answer.
+
+**Not set** means no direct catalog answer exists for that item.
+
+The app may still have ranking or inferred context for a Not set item, but that does not manufacture an explicit state.
+
+### What is the difference between Not Interested and Hard Limit?
 
 **Not Interested** means you do not currently want the activity.
 
-**Hard Limit** is a firmer boundary and is treated as an explicit exclusion.
+**Hard Limit** is a firmer explicit boundary.
 
-A low rank, a skip, uncertainty, and Not Interested should not be interpreted as a Hard Limit.
+A low rank, a skip, uncertainty, or inferred low affinity should not be interpreted as a Hard Limit.
 
-## What does Not Applicable mean?
+### What does Not Applicable mean?
 
-The item does not meaningfully apply to your profile or situation.
+The item does not meaningfully apply to the user/profile context. It is distinct from simply disliking the item.
 
-It is different from disliking the item.
+### What does inferred/profile-informed context mean beside a catalog item?
 
-## What does Not set mean?
+It means broader profile evidence maps to that item's semantic definition strongly enough to make it potentially worth reviewing.
 
-You have not given a direct catalog answer for that item.
+It is a hint, not your answer. It does not overwrite explicit preference or pairwise ranking evidence.
 
-The app may still have quiz-derived context or ranking evidence about it, but those do not magically become an explicit preference.
-
-## What does "quiz-derived" or "inferred" mean beside a catalog item?
-
-It means the app found related broad profile evidence that may make the item worth looking at.
-
-It is a hint, not your answer.
-
-It does not overwrite a direct preference or pairwise rank.
-
-## Can inferred data silently turn something into Love, Like, or Curious?
+### Can inferred data silently turn something into Love, Like, Curious, or Hard Limit?
 
 No.
 
 Direct catalog states are explicit user-owned answers.
 
----
+### Why can a catalog item have different Overall, Receiving, and Giving states?
 
-# This-or-That ranking
+The persistence model supports directional overrides where the user's preference genuinely differs by activity side.
 
-## What is the difference between a catalog preference and a This-or-That rank?
+A Receiving/Giving override can fall back to Overall when no specific override exists, but directional values do not synthesize a replacement Overall answer.
 
-A catalog preference is an absolute-ish direct statement:
+### What happens to ranking history if I mark something as excluded?
+
+Hard Limit, Not Interested, and Not Applicable keep the item out of new ordinary ranking pairs, but existing historical comparisons are retained.
+
+Current eligibility and history are different concerns.
+
+See [Kink Catalog](product/kink-catalog.md).
+
+## This-or-That ranking
+
+### What is the difference between a catalog preference and a This-or-That rank?
+
+A catalog preference is a direct item-level statement:
 
 > I love this.
 
 A rank is relative:
 
-> Of these two things, this one rises higher for me.
+> Between these eligible items, this one rises higher.
 
-You can Love two activities and still rank one above the other. You can also have a meaningful rank for an item without ever assigning it Love.
+You can Love two activities and still rank one above the other.
 
-## Does ranking something highly automatically make it Love?
-
-No.
-
-Ranking does not rewrite the explicit preference state.
-
-## Does marking something Love automatically make it rank #1?
+### Does ranking something highly automatically make it Love?
 
 No.
 
-Love makes a strong direct statement about that item. This-or-That establishes comparative order through actual pairwise choices.
+Pairwise ranking never rewrites explicit catalog state.
 
-They are separate evidence channels.
+### Does marking something Love automatically make it rank #1?
 
-## Why do I rank within categories before Overall?
+No.
 
-Comparing the entire catalog against itself would create an enormous and noisy pair pool.
+Positive explicit preference does not seed or boost the pairwise ranking score.
 
-Category ranking creates meaningful local order first. Current finalists can then compete in the smaller cross-category Overall pool.
+### Why rank within categories before Overall?
 
-## What do Both / equal, Neither, and Skip / don't know do?
+Comparing the entire catalog against itself would create a huge noisy pair pool.
 
-**Both / equal** says the pair is effectively tied for this comparison.
+Category ranking establishes local order first. Current evidenced finalists can then participate in the smaller Overall pool.
 
-**Neither** says neither option should win this particular comparison.
+### What do Both/equal, Neither, and Skip/don't know do?
 
-**Skip / don't know** leaves the ordering unresolved.
+- **Both/equal** is meaningful tie/order evidence.
+- **Neither** records the interaction but does not award positive ordering evidence.
+- **Skip/don't know** records the interaction without resolving order.
 
-The app saves these interactions, but Skip and Neither do not raise ordering confidence the same way a meaningful left/right/equal ordering choice does.
+Neither and Skip do not manufacture explicit catalog states.
 
-## What are Quick, Standard, Deep Dive, and Gremlin Mode?
+### What are Quick, Standard, Deep Dive, and Gremlin Mode?
 
-They are session sizes, not different scoring systems.
+They are session-size conveniences, not different scoring systems.
 
-- **Quick** gives 10 comparisons.
-- **Standard** gives 25.
-- **Deep Dive** gives 50.
-- **Gremlin Mode** keeps going.
+Saved comparisons remain part of the active ranking run regardless of session size.
 
-Your saved comparisons remain part of the active run regardless of session size.
+### Why does a ranking have low confidence?
 
-## Why does the ranking say it has low confidence?
+There is not yet much meaningful ordering evidence in that scope.
 
-Usually because there is not yet enough meaningful ordering evidence in that scope.
+More comparisons refine the ranking; low confidence does not mean the existing answers are wrong.
 
-More comparisons refine the relative order.
+### What happens when I start a new ranking run?
 
-Low confidence does not mean your answers are wrong. It means the app has less pairwise evidence to work with.
+The current run is archived with historical snapshots and a fresh active run begins.
 
-## Why is an item missing from new ranking pairs?
+Quiz answers and explicit catalog preferences remain unchanged.
 
-Common reasons include:
+Only the active run contributes current pairwise evidence to the profile.
 
-- it is explicitly excluded
-- the current scope has fewer than two eligible candidates
-- there is no useful unresolved pair at the moment
-- you are in a category where that item does not belong
-
-Existing historical evidence can remain saved even when an item is no longer eligible for new pairs.
-
----
-
-# Ranking runs and movement
-
-## What happens when I start a new ranking run?
-
-The current ranking run is archived and a fresh active run begins.
-
-Your quizzes and explicit catalog preferences stay intact.
-
-Previous runs remain history, but only the active run supplies current pairwise ranking evidence to the profile.
-
-## Is starting a new ranking run the same as Reset This-or-That?
+### Is starting a new ranking run the same as resetting rankings?
 
 No.
 
 **Start a new ranking run** preserves the previous run as history.
 
-**Reset This-or-That & rankings** is a destructive Settings action that clears ranking data/history in the selected reset scope.
+**Reset This-or-That/ranking history** is a destructive Settings action that clears ranking data and starts fresh.
 
-## Does my old run still influence the current ranking?
-
-Not as current pairwise evidence.
-
-Archived runs are retained for history and movement comparison. They do not accumulate into one lifetime ranking score.
-
-## What does ↑ or ↓ mean?
-
-It shows movement relative to the previous comparable view.
-
-If you are looking at a category, movement compares that category's current visible ranking with the prior comparable category ranking.
-
-If you are looking at Overall, it compares Overall with prior Overall.
-
-## What does NEW mean?
-
-It means the item is meaningfully ranked in the current view but was not meaningfully ranked in the previous comparable view.
-
-It does not mean the item itself is newly added to the catalog.
-
-## Why does an item have no movement indicator?
-
-There may not be a previous comparable run, or the item may not have enough meaningful rank evidence in one of the two views.
-
-## Does movement affect my score?
+### Does an archived run still affect my current ranking/profile score?
 
 No.
 
-Movement is historical context. It does not add a bonus, penalty, or weighting signal to the current profile.
+Archived runs exist for history/movement context. They do not accumulate into a lifetime ranking score and do not contribute current pairwise Signal evidence.
 
----
+### What do ↑, ↓, —, and NEW mean?
 
-# Overall Profile
+They describe movement relative to the most recent comparable historical view.
 
-## Why doesn't Top Overall exactly match the Overall This-or-That results?
+- **↑** moved higher.
+- **↓** moved lower.
+- **—** stayed at the same visible rank.
+- **NEW** is meaningfully ranked now but was absent from the previous comparable view.
+
+Movement is view-relative so hidden/filtered-out rows do not create phantom movement.
+
+### Does movement affect profile scoring?
+
+No. It is historical presentation context only.
+
+See [Kink This-or-That Ranking](kink-this-or-that-ranking.md).
+
+## Overall Profile
+
+### Why doesn't Top Overall exactly match Overall This-or-That?
 
 The two views have different jobs.
 
-The This-or-That result is the direct output of the current pairwise ranking.
+Overall This-or-That is the current pairwise ranking output. Top Overall is a compact profile presentation that can consider multiple independent direct evidence sources while preserving provenance.
 
-Top Overall is a compact profile presentation that can consider multiple meaningful direct evidence sources while preserving where those signals came from.
+### Can a Hard Limit become a top interest because quiz inference likes the theme?
 
-So they can be related without being identical.
+No.
 
-## Why are only some categories shown under Interest Areas?
+Explicit boundaries are authoritative. Derived affinity must not override a Hard Limit.
 
-The main profile is intentionally compact.
+### Why can changing one catalog preference affect several profile summaries?
 
-Interest Areas surfaces a smaller number of the strongest or most relevant category-level themes. You can use the exploration links to inspect more categories and specific state filters.
+One direct item can map to multiple broader semantic concepts/themes. Several derived presentation areas can recompute from that one answer without duplicating the original evidence.
 
-## Can a Hard Limit appear as a top interest because a quiz liked the theme?
+## Rewards & Punishments
 
-It should not be treated as a positive top interest.
+### Why is this separate from general kink preference?
 
-Explicit boundaries are authoritative. Broad thematic affinity must not override a Hard Limit.
+Because:
 
-## Why does changing one catalog preference sometimes affect several profile summaries?
+```text
+I like this
+≠ this works as a Reward
+≠ this works as a Punishment
+```
 
-One direct activity can be relevant to more than one broader category or theme.
+Reward/Punishment suitability is its own contextual direct state.
 
-The app can recompute several derived presentation areas from the same explicit evidence without duplicating the original answer.
-
----
-
-# Rewards & Punishments
-
-## Why are Rewards & Punishments separate from my general kink preferences?
-
-Because "I like this" and "this works as a reward" are different statements.
-
-The same is true for punishments.
-
-M11 keeps those contextual uses separate so the app does not turn general preference into an assumption about consequences or incentives.
-
-## Can something be both a Reward and a Punishment?
+### Can something be both a Reward and a Punishment?
 
 Yes.
 
-Reward and Punishment are independent contextual axes, not opposite ends of one scale.
+The two contexts are independent rather than opposite ends of one scale.
 
-Something may work as both depending on context.
-
-## Does disliking something make it a punishment?
+### Does disliking something make it a punishment?
 
 No.
 
-The app explicitly avoids using dislike or aversion as positive punishment evidence.
+The system intentionally does not treat dislike/aversion as positive punishment evidence.
 
-A punishment candidate needs its own contextual answer.
+### What is the difference between the Quick sorter and detailed profiles?
 
-## What is the difference between the Quick sorter and Detailed profiles?
+The **Quick sorter** gives a fast coarse classification.
 
-The **Quick sorter** is intentionally coarse: Reward, Punishment, Both, Neither, or Skip.
+The **detailed profiles** preserve richer states such as Strong, Works, Depends, No, Never, notes, and random eligibility.
 
-The **Detailed profiles** let you express stronger nuance such as Strong, Works, Depends, No, Never, contextual notes, and random eligibility.
+The sorter warns when a coarse change could destroy richer existing detail.
 
-Use the sorter for speed and the detailed editor when the answer needs conditions or boundaries.
+### What does Suggested to explore mean?
 
-## Why does the sorter warn me before replacing an answer?
+It is an inferred possibility based on current profile/context evidence.
 
-Because a coarse sorter choice could erase richer information such as Strong, Depends, Never, a note, or a random-pool setting.
+It is not an automatic direct classification. Accepting/editing a suggestion is what creates direct state.
 
-The warning is there to protect nuanced direct data.
+### Why can't I rank Rewards or Punishments yet?
 
-## What does Suggested to explore mean?
+A contextual ranking needs at least two directly positive candidates. Strong, Works, and Depends are eligible for ranking.
 
-It is an inferred possibility based on existing profile/context evidence.
-
-It is not an automatic classification.
-
-Accepting a suggestion creates a conservative direct answer rather than pretending the inference was certainty.
-
-## Why can't I rank Rewards or Punishments yet?
-
-You need at least two directly positive candidates in that context.
-
-Strong, Works, and Depends are eligible. No, Never, and Unset are not.
-
-## Is Reward rank the same as my general kink rank?
+### Is Reward/Punishment rank the same as general kink rank?
 
 No.
 
-There are separate rankings for:
+General kink ranking, Reward ranking, and Punishment ranking are separate relative questions.
 
-- general kink preference
-- reward context
-- punishment context
+### Does Punishment rank mean severity?
 
-One item can occupy very different positions in each.
+No. It is relative contextual fit/order among confirmed candidates.
 
-## Does Punishment rank mean severity?
-
-No.
-
-It is relative contextual ordering among confirmed punishment candidates. Severity or intensity would need to be its own explicit dimension.
-
-## I marked something Works. Why isn't it in the Randomizer?
+### I marked something Works. Why isn't it in the Randomizer?
 
 Random eligibility is separate from contextual suitability.
 
-An item can work as a Reward or Punishment without being approved for random selection.
+Only explicitly random-eligible entries that satisfy the stricter randomizer rules enter the random pool.
 
-This is intentional so "valid in context" does not automatically mean "surprise me with this."
+### Does the Randomizer use ranking as probability weight?
 
-## Does the Randomizer use my rankings as probability weights?
+No. Current selection is uniform across the eligible pool.
 
-No.
-
-Current random selection treats eligible entries equally. Rank does not make an entry more likely to be picked.
-
-## Does the Randomizer assign the result to me or track whether I did it?
+### Does the Randomizer assign/track a Reward or Punishment?
 
 No.
 
-It is only a suggestion utility.
+It is a suggestion utility. The current product has no assignment queue, completion tracker, debt ledger, or reward economy.
 
-There is no assignment queue, completion tracking, debt, punishment ledger, or reward economy in the current feature.
+### Can saved recipes appear in the Randomizer?
 
-## Why does the Randomizer show "Already rolled"?
+Yes, when the recipe is valid, context-matched, and explicitly allowed for randomization.
 
-That is a temporary trail for the current Randomizer visit so you can see what has already appeared.
+### What does Needs review mean on a recipe?
 
-It is not persistent profile history and clears when the Randomizer is left/unmounted.
+A referenced component or direct contextual boundary changed enough that automatic reuse is no longer safe/valid under the current rules.
 
-## Can saved recipes appear in the Randomizer?
+The recipe is preserved so it can be repaired instead of silently deleted.
 
-Yes, if the recipe is valid and explicitly allowed in its matching random pool.
+See [Rewards & Punishments](product/rewards-punishments.md).
 
-A recipe marked Needs review is kept out until the issue is resolved.
+## Scene Builder
 
-## What does Needs review mean on a recipe?
-
-Something about the saved combination is no longer valid enough for automatic reuse—for example, a component may conflict with changed contextual boundaries.
-
-The recipe is preserved so you can repair it rather than silently deleting it.
-
----
-
-# Scene Builder
-
-## Does choosing a Scene Builder theme change my profile?
+### Does choosing a Scene theme change my profile?
 
 No.
 
-Themes are current-session queries. They narrow and organize existing profile evidence but do not write back into catalog preferences, quiz scores, headspaces, dynamic modes, or Overall Profile scores.
+Themes are query/composition metadata. They narrow existing evidence without writing back into preferences, Signals, roles, modes, or facets.
 
-## What does Yes / Maybe / Not tonight do?
+### What does Yes tonight / Maybe tonight / Not tonight do?
 
-Those are temporary session choices for Scene Builder.
+These are temporary session choices.
 
-**Not tonight** removes an item from automatic suggestions and randomization for the current session even if the permanent profile strongly likes it. **Yes** and **Maybe** can make a non-excluded item explicitly usable for the moment without changing the durable profile.
+`Not tonight` removes an item from automatic Scene use for the current session even if the permanent profile likes it. Yes/Maybe can establish current-session support without changing durable catalog state.
 
-## Can an inferred suggestion be randomly selected?
+### Can an inference-only suggestion be randomly selected?
 
 Not by default.
 
-Inference-only items can appear under **Suggested to explore**, but they do not enter automatic Pick something, Build something, or Shuffle pools unless the user explicitly establishes current-session support through the allowed flow.
+Inference-only items are separated from automatic eligibility. Explicit/current-session support is required before they enter the automatic pool through supported flows.
 
-## What is the difference between Pick something and Build something?
+### What is the difference between Pick something and Build something?
 
-**Pick something** returns one random eligible activity.
+**Pick something** returns one eligible activity.
 
-**Build something** creates an ordered multi-part scene using the selected themes, effort, filters, and current-session eligibility.
+**Build something** creates an ordered multi-part Scene from eligible candidates and current filters.
 
-Random selection is uniform inside the valid pool rather than secretly weighting the highest-ranked item to win most often.
-
-## Can I save a scene?
+### Can I save a Scene?
 
 Yes.
 
-Saved scenes are local reusable templates. You can load, edit, duplicate, or delete them. They keep stable references to catalog items and M11 reward/punishment items or recipes.
+Saved Scenes are local reusable templates with stable references to catalog and optional Reward/Punishment sources.
 
-## What does Needs review mean on a saved scene?
+### What does Needs review mean on a saved Scene?
 
-One or more referenced sources changed after the scene was saved.
+A referenced source is now stale, excluded, missing, or no longer valid for automatic reuse.
 
-For example, a catalog item may now be excluded or unavailable, or an M11 reward/punishment item or recipe may no longer be confirmed for that context. The app keeps the saved component visible so it can be repaired instead of silently deleting it.
+The component remains visible so the Scene can be repaired rather than silently rewritten.
 
-## Are saved scenes included in my share summary?
+### Are saved Scenes included in my share summary?
 
 No.
 
-They are private by default. Saved scenes are included in the full machine-readable backup and can be reset independently, but the default M9 share summary does not include them.
+Saved Scenes are private durable profile state. They are included in the full machine-readable backup and can be reset independently, but the curated share summary does not include them.
 
----
+See [Scene Builder](product/scene-builder.md).
 
-# Settings, backup, and sharing
+## Profile comparison
 
-## What is the difference between Export profile backup and Export share summary?
+### Does comparing an uploaded profile import it into my account/profile?
+
+No.
+
+The current comparison flow treats the upload as temporary comparison input. It does not replace the local profile or create persistent multi-profile ownership.
+
+### Can comparison infer complementarity just because one person ranks an activity highly?
+
+Not by pairwise rank alone.
+
+Directional complementarity requires actual compatible directional evidence. Relative ranking is not enough to invent a giving/receiving role assignment.
+
+### Do comparison results write back into either profile?
+
+No. Shared results and participant intent are derived/temporary comparison context.
+
+See [Profile Comparison](product/profile-comparison.md).
+
+## Settings, backup, and sharing
+
+### What is the difference between profile backup and share summary?
 
 They serve completely different purposes.
 
-**Profile backup** is the private machine-readable copy used to preserve or restore app state.
+**Private backup** is the complete machine-readable portability/restore artifact.
 
 **Share summary** is a curated human-readable presentation intended for another person.
 
-Do not treat the private backup as the normal sharing format.
+Do not use the private backup as the normal sharing format.
 
-## What is included in the private backup?
+### What is the current backup version?
 
-The goal of the backup is to preserve authoritative profile state, including current implemented domains such as quiz data, catalog preferences, ranking history, profile settings, authoritative Rewards & Punishments state, and saved Scene Builder scenes.
+New backups use format `kink-profile`, version `3`.
 
-Derived displays can be recalculated after restore.
+Restore supports versions 1, 2, and 3. Older supported backups restore later-added domains as empty rather than guessing data that was never present.
 
-## Does the share summary include all my raw data?
-
-No.
-
-The current share summary deliberately omits raw answers, comparison history, internal evidence IDs, storage metadata, and other implementation/provenance details.
-
-It is a summary, not a database dump.
-
-## What's the difference between PNG, HTML, and PDF share exports?
-
-They use the same underlying share-summary content.
-
-- **PNG** is optimized as a tall phone-friendly image.
-- **HTML** is responsive and self-contained.
-- **PDF** uses the same rendered summary in a paginated document format.
-
-## Does importing a backup merge with my current profile?
+### Does importing a backup merge with my current profile?
 
 No.
 
-The current import behavior is full-profile replacement.
+Current restore behavior is full-profile replacement after validation, with rollback attempted if a replacement write fails.
 
-The app validates and previews the backup before restoration.
-
-## Can I reset only one part of the profile?
+### Can I reset only one part of the profile?
 
 Yes.
 
-Settings supports selective reset for areas such as selected quizzes, explicit catalog preferences, ranking history, Rewards & Punishments, saved scenes, and profile identity/settings.
+Settings supports source-aware reset scopes including selected quizzes, explicit catalog preferences, ranking history, Rewards & Punishments, saved Scenes, and profile settings.
 
-The review screen shows what will reset and what will remain before deletion.
+The app reviews what will reset and what will remain before confirmation.
 
-## If I reset my rankings, will it delete my quiz answers?
+### If I reset rankings, will it delete my explicit catalog preferences?
 
-Not unless you select quiz data too.
+No, unless you select that scope too.
 
-The reset system is intentionally source-aware so unrelated profile domains can be preserved.
+Ranking history and explicit catalog preferences are independent source domains even though both use stable Catalog IDs.
 
----
+### What is included in the share summary?
 
-# Privacy and storage
+The current human-facing summary can include profile identity, summary/orientation, strongest broad themes, radar values, featured headspaces, Top Overall interests, Interest Areas, and explicit Hard Limits.
 
-## Is my profile stored in the cloud?
+It intentionally omits raw quiz answers, raw pairwise history, internal evidence IDs, browser storage details, and the private backup payload.
 
-Not currently.
+### What export formats exist for the share summary?
 
-There is no required account or backend. Authoritative profile data is currently stored in the browser's local storage.
+PNG, standalone HTML, and PDF. All use the same underlying share-summary model.
 
-## Can clearing browser data delete my profile?
+See [Profile Management](product/profile-management.md).
 
-Yes.
+## Privacy and storage
 
-Because the app is local-first, clearing site data or losing the browser/device storage can remove the local profile.
-
-Export a private backup if the profile matters to you.
-
-## Does exporting a share summary publish it automatically?
+### Is my current profile stored in the cloud?
 
 No.
 
-The app generates the file locally for deliberate sharing. It does not automatically publish the profile.
+The current authoritative profile is browser-local. Persistent cloud profiles/account-based sync are not part of the current product contract.
 
----
+### Are derived profile scores separately stored as another authority?
 
-# Profile comparison and future work
+They should not be.
 
-## Can I compare my profile with someone else's now?
+Derived profile layers are recomputable from authoritative source data.
 
-Yes.
+## Data and curation
 
-Use **Compare profiles** and upload the other person's Full Profile Export JSON. The app validates it locally and derives mutual, complementary, curious, excluded, and unexplored comparison states without replacing or merging your current profile.
-
-You can also select temporary current intent for each person and open **Build shared scene** to filter Scene Builder from the space supported by both profiles.
-
-## Does uploading someone else's profile save it in my app?
+### Is the catalog/taxonomy considered permanently final?
 
 No.
 
-The current M14 flow is **compare once**. The uploaded profile is temporary comparison input and is not imported or saved as another editable profile. Leaving/ending the comparison discards that temporary comparison state.
+The authored catalog, Signal mappings, role/mode compositions, questions, and other curated content can evolve when that improves the product.
 
-## Can I keep multiple full profiles or linked partner profiles permanently?
+Changes must preserve stable identities or provide explicit migration/compatibility handling when identities genuinely need to change. Current curation/refinement work is tracked in GitHub rather than encoded as milestone status in this FAQ.
 
-That part of M14 is intentionally **needs refinement**.
+### Where should I look for the current rules?
 
-The product is reconsidering whether persistence should mean saved read-only linked profiles, multiple editable local profiles, account-owned linked profiles later, or simply temporary comparison. A global profile switcher is not currently an approved direction.
+Use the [documentation index](README.md). In particular:
 
-## Can I say I like the same activity differently depending on Dominant/submissive context and giving/receiving side?
+- [Product Spec](product-spec.md)
+- [Quizzes](product/quizzes.md)
+- [Kink Catalog](product/kink-catalog.md)
+- [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
+- [Overall Profile Aggregation](overall-profile-aggregation.md)
+- [Rewards & Punishments](product/rewards-punishments.md)
+- [Scene Builder](product/scene-builder.md)
+- [Profile Comparison](product/profile-comparison.md)
+- [Profile Management](product/profile-management.md)
+- [Signal + Channel Data Model](data-model/signal-channel-model.md)
+- [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md)
+- [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md)
 
-That deeper contextual model is planned in M15.
-
-The current app already keeps authority and activity side semantically separate; M15 adds durable item-level contextual preference/ranking overlays.
-
-## Is the catalog/data considered final?
-
-No.
-
-M16 is explicitly planned as a curation milestone. It can prune, merge, rename, re-categorize, or rebalance authored data when doing so improves the product, while preserving user evidence through migrations when identity changes.
+The repository code and tests remain authoritative for what is actually implemented.
