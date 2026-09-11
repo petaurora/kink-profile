@@ -5,7 +5,9 @@ import type {
   CatalogPreferenceFilter,
 } from "../../lib/catalogDrilldown";
 
-const categoryIds = new Set(kinkCategories.map((category) => category.id));
+const categoryIds = new Set<string>(
+  kinkCategories.map((category) => category.id),
+);
 const preferenceFilters = new Set<CatalogPreferenceFilter>([
   "all",
   "unanswered",
