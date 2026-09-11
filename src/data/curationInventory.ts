@@ -114,19 +114,19 @@ export const curationSurfaces: readonly CurationSurface[] = [
   },
   {
     id: "roles-modes",
-    label: "Roles, headspaces + dynamic modes",
+    label: "Roles, headspaces + contextual modes",
     sourcePaths: ["src/data/headspacesQuiz.ts"],
     status: "available",
     notes:
-      "Role/headspace and dynamic-mode definitions are reviewable separately.",
+      "Roles/headspaces remain independently derived recognizable states. Contextual modes are reviewable underlying compositions for downstream context, not a competing top-level profile dimension system.",
   },
   {
     id: "overall-facets",
-    label: "Overall facets + radar dimensions",
+    label: "Overall facets + profile dimensions",
     sourcePaths: ["src/data/overallFacets.ts"],
     status: "available",
     notes:
-      "Facet labels, descriptions and canonical Signal + channel compositions are visible in the workbench.",
+      "Overall Facets are the canonical high-level profile dimensions; their labels, descriptions and canonical Signal + channel compositions are visible in the workbench.",
   },
   {
     id: "catalog",
@@ -435,7 +435,7 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
     entityId: mode.id,
     label: mode.label,
     summary: mode.description,
-    source: "M3 dynamic modes",
+    source: "M3 contextual / underlying modes",
     fields: [
       {
         key: "weights",
@@ -508,7 +508,7 @@ export const curationPrimitiveLabels: Record<CurationPrimitiveType, string> = {
   "quiz-question": "Quiz questions",
   "quiz-definition": "Quiz definitions",
   signal: "Signals",
-  "dynamic-mode": "Dynamic modes",
+  "dynamic-mode": "Contextual modes",
   "role-headspace": "Roles / headspaces",
   "overall-facet": "Overall facets",
 };
