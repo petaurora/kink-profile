@@ -1,6 +1,6 @@
 # M16 Signal + Channel Model
 
-**Status:** Step 1 semantic contract  
+**Status:** current semantic contract  
 **Parent:** M16.4 Profile Semantics Refinement  
 **Goal:** separate the meaning of a Signal from the activity-side perspective used to score it.
 
@@ -51,19 +51,19 @@ The canonical concept remains stable while evidence can differ by channel.
 
 ## Why this change
 
-The current Signal vocabulary mixes two different concerns:
+The legacy Signal vocabulary mixed two different concerns:
 
 1. **what the concept means**
 2. **which activity side the profile owner occupies**
 
-That creates duplicated Signal definitions and makes downstream consumers treat activity side as if it were part of the semantic identity.
+That created duplicated Signal definitions and made downstream consumers treat activity side as if it were part of the semantic identity.
 
-This also caused an evidence problem:
+It also created an evidence problem:
 
 ```text
 overall: love for "restraint"
         ↓
-can currently project into
+could project into
 receiving_restraint + giving_restraint
 ```
 
@@ -75,7 +75,7 @@ does not necessarily mean:
 
 > “I like receiving restraint and giving restraint equally.”
 
-The new model keeps broad evidence broad until directional evidence actually exists.
+The canonical model keeps broad evidence broad until directional evidence actually exists.
 
 ---
 
@@ -83,7 +83,7 @@ The new model keeps broad evidence broad until directional evidence actually exi
 
 ## Signal
 
-A reusable semantic concept that can appear across quizzes, catalog mappings, modes, headspaces, facets, recommendations, and explanations.
+A reusable semantic concept that can appear across quizzes, catalog mappings, contextual modes, headspaces, facets, recommendations, and explanations.
 
 Examples:
 
@@ -243,7 +243,7 @@ Likewise, the fact that “receiving X” and “giving X” can both be phrased
 
 # Channel applicability
 
-The schema makes all three columns available, but not every Signal must support all three semantically.
+The schema makes all three channels available, but not every Signal must support all three semantically.
 
 Every Signal has an Overall value.
 
@@ -270,7 +270,7 @@ Anticipation           ●         —        —
 Emotional Intensity    ●         —        —
 ```
 
-The Workbench should render non-applicable cells explicitly rather than treating them as empty scores.
+Workbench authoring renders unsupported Receiving/Giving channels as unavailable rather than treating them as empty scores.
 
 ---
 
@@ -351,7 +351,7 @@ specific → general   valid
 general  → specific  invalid without evidence
 ```
 
-This rule should hold across quizzes, catalog ratings, ranking projections, imports, and future contextual profiles.
+This rule holds across quizzes, catalog ratings, ranking projections, imports, and future contextual profiles.
 
 ---
 
@@ -376,7 +376,7 @@ The three UI columns may look parallel, but their semantics are intentionally as
 
 ## Aggregation constraints
 
-The exact scoring formula is deferred to the migration/scoring slice, but it must obey these rules:
+The scoring implementation may evolve, but it must obey these rules:
 
 - missing Receiving/Giving evidence is **unknown**, not zero
 - do not average an unknown side as 0
@@ -437,7 +437,7 @@ type CanonicalSignalResult = {
 };
 ```
 
-The exact implementation shape may change during migration, but the semantics above are normative.
+The exact implementation shape may evolve, but the semantics above are normative.
 
 ---
 
@@ -563,7 +563,7 @@ This preserves granular composition without duplicating canonical concepts.
 
 # Overall Facet interaction
 
-Overall Facets remain nine broad, non-directional themes.
+Overall Facets remain nine broad, non-directional themes and are the canonical high-level profile dimensions.
 
 They do not acquire “giving Power Exchange” or “receiving Care & Nurture” axes.
 
@@ -585,52 +585,37 @@ The **facet is still non-directional**. The directional nuance belongs to the Si
 
 ---
 
-# Workbench shape
+# Workbench authoring
 
-Signal review should make the channel model visible.
+The Curation Workbench authors the canonical model directly.
 
-Conceptually:
+A Signal relationship is represented as:
 
 ```text
-CARE
-
-Channel availability
-  Overall      enabled
-  Receiving    enabled
-  Giving       enabled
-
-Evidence
-               Affinity   Coverage
-  Overall        91%        82%
-  Receiving      96%        71%
-  Giving         68%        34%
-
-Overall Facet relationships
-
-                         OVERALL    RECEIVE    GIVE
-Care & Nurture           Supports      —         —
-Service & Devotion       Neutral       —      Supports
-...
+Signal concept
++ applicable channel
++ weight 0..1
++ relationship polarity where the surface supports it
 ```
-
-The exact UI can be refined later.
 
 Important distinctions:
 
 - channel applicability is not evidence state
 - channel evidence is not facet relationship
 - facet Neutral is not “unknown”
+- catalog item/activity-side applicability is not a Signal channel
 - absent Receiving/Giving evidence must remain visibly unknown
+- legacy directional Signal IDs are compatibility/source vocabulary, not authoring targets
+
+The Workbench top-level Signal inventory exposes the 37 canonical concepts. The same Signal may be authored more than once when the references use distinct valid channels.
 
 ---
 
-# Signals that should remain separate concepts
+# Signals that remain separate concepts
 
 Not every apparent viewpoint pair should be collapsed into one generic Signal.
 
 If the concepts are psychologically recognizable and semantically clear on their own, keep separate Signals.
-
-Initial decision:
 
 ## Exhibitionism
 
@@ -638,7 +623,7 @@ A distinct concept whose perspective is inherent:
 
 > Appeal in deliberately being seen, displayed, watched, or performing for consenting observers.
 
-General-only unless later evidence shows a useful channel split.
+Overall-only unless later evidence justifies a useful channel split.
 
 ## Voyeurism
 
@@ -646,22 +631,22 @@ A distinct concept whose perspective is inherent:
 
 > Appeal in deliberately watching or visually observing consenting others.
 
-General-only unless later evidence shows a useful channel split.
+Overall-only unless later evidence justifies a useful channel split.
 
 Do **not** rename these into an abstract “Observation / Giving / Receiving” Signal just to make the schema uniform.
 
 ---
 
-# New vocabulary already approved for later steps
+# Canonical vocabulary additions
 
-The following concepts are approved for semantic design after this channel model is finalized:
+The current 37-concept canonical vocabulary includes these additions from the original channel-normalization work:
 
 - Exhibitionism
 - Voyeurism
 - Arousal Control
 - Degradation / Humiliation
 
-Expected initial channel shape:
+Their channel shape is:
 
 ```text
 Exhibitionism
@@ -681,23 +666,21 @@ Degradation / Humiliation
   Giving
 ```
 
-Exact definitions, mappings, quizzes, facet relationships, and Dynamic Mode usage belong to later steps.
+Source mappings, quiz coverage, facet relationships, and contextual/underlying-mode usage remain ordinary M16 curation concerns; they do not change the canonical identity decision above.
 
 ---
 
-# Migration principles
+# Migration and compatibility principles
 
-Step 1 does not migrate runtime data yet.
+Runtime and Workbench migration have landed. The following remain compatibility requirements while legacy source/stored data still exists:
 
-When migration begins:
-
-1. pair existing directional Signal IDs into a shared base concept where semantics match
-2. preserve current evidence provenance
-3. map old directional IDs deterministically into new channels
+1. pair legacy directional Signal IDs into a shared base concept where semantics match
+2. preserve evidence provenance
+3. map old directional IDs deterministically into canonical channels
 4. do not infer a missing opposite channel
 5. preserve compatibility for imported older profiles
-6. update quiz/catalog/mode/headspace/facet references to use Signal + channel
-7. keep user-facing scores explainable during migration
+6. keep quiz/catalog/source translation behind compatibility boundaries rather than exposing legacy IDs in canonical authoring
+7. keep user-facing scores explainable during migration/compatibility handling
 8. avoid changing preference meaning merely because IDs changed
 
 Example:
@@ -710,13 +693,15 @@ old: giving_control
   → Control / giving
 ```
 
-The migration may additionally derive an Overall Control result from known directional evidence, but it must never derive Receiving from Giving or Giving from Receiving.
+Directional evidence may additionally inform Overall Control, but it must never derive Receiving from Giving or Giving from Receiving.
+
+See [M16 Signal Channel Runtime Migration](m16-signal-channel-runtime-migration.md) and [M16 Workbench Signal + Channel Follow-up](m16-workbench-signal-channel-followup.md) for landed migration context.
 
 ---
 
-# Step 2 audit questions
+# Historical audit checklist
 
-After this contract is accepted, classify every current Signal using:
+The original 45-ID audit used these questions to determine the current 37 canonical concepts and channel applicability. They remain useful when reviewing future vocabulary changes:
 
 1. What is the base semantic concept?
 2. Can its base description express a clear shared invariant without assuming a side?
@@ -728,11 +713,11 @@ After this contract is accepted, classify every current Signal using:
 8. Is either proposed channel merely grammatically possible rather than semantically useful?
 9. Should any current pair remain separate concepts instead of channels?
 10. Is the Signal redundant once channel normalization happens?
-11. Which downstream definitions currently reference the old ID?
+11. Which downstream definitions reference a legacy ID?
 12. Does the Signal need Overall-only evidence?
 13. Does migration require compatibility aliases?
 
-Expected output:
+Historical audit output shape:
 
 ```text
 old Signal ID
@@ -744,21 +729,21 @@ old Signal ID
 
 ---
 
-# Non-goals for Step 1
+# Historical scope boundary
 
-This step does not yet:
+The first semantic-contract step intentionally did not itself:
 
-- rename or delete current Signal IDs
+- rename or delete legacy Signal IDs
 - change quiz scoring
 - change catalog scoring
 - change persisted profile data
-- add the four approved new Signals to runtime
-- change Dynamic Mode scores
+- add the approved vocabulary to runtime
+- change contextual mode scores
 - change Headspace scores
 - change Overall Facet results
-- implement new Workbench controls
+- implement Workbench controls
 
-This document is the semantic contract those later changes must follow.
+Subsequent runtime and Workbench migrations have since landed. Legacy IDs remain only where source/stored-data compatibility still requires them.
 
 ---
 
