@@ -39,6 +39,8 @@ Do not recreate a roadmap/status ledger in Markdown. `ROADMAP.md` is intentional
    - Link or close the owning Issue (`Closes #123`).
    - Use `Related: #123` for context-only relationships.
    - Summarize what changed and explicitly list meaningful non-goals / intentionally unchanged behavior.
+   - Include a **Definition of Done** checklist that maps the PR back to the owning Issue's `Done when` / acceptance criteria and records validation/documentation requirements.
+   - A PR is not ready to merge merely because the code exists; the relevant Definition of Done items must be satisfied or explicitly marked not applicable.
    - If the change alters a durable current-system contract, update the owning repo doc in the same PR.
 7. **Do not merge unless the user explicitly asks.**
    - Present the PR for review and report CI/build status.
@@ -55,6 +57,21 @@ A build-ready work slice should make these understandable without reconstructing
 - **Product context** — link the relevant Notion idea/decision/research page when appropriate.
 
 Do not copy large Notion product-thinking documents into an Issue. Keep one canonical source and link to it.
+
+## Pull request requirements
+
+The PR is the verification/handoff layer between an Issue and merged code. It should make it obvious whether the proposed implementation is actually complete.
+
+Every non-trivial PR should include:
+
+- **Summary** — what changed and why.
+- **Scope** — the coherent slice implemented by this PR.
+- **Definition of Done** — checkboxes tied to the owning Issue's acceptance criteria plus relevant validation/documentation/linking checks.
+- **Verification** — automated commands, CI, and any manual/browser checks used.
+- **Intentionally unchanged / out of scope** — semantic or product boundaries deliberately preserved.
+- **Related work** — `Closes #...`, `Related: #...`, and safe product-context links where applicable.
+
+Do not invent a different Definition of Done in the PR. The Issue defines what completion means; the PR demonstrates that those conditions were met.
 
 ## Notion ↔ GitHub linking
 
