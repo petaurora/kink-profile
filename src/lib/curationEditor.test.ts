@@ -22,8 +22,9 @@ function entry(type: string, id?: string) {
 }
 
 describe("M16.2 structured curation editor", () => {
-  it("provides a shared structured editor model for every runtime primitive", () => {
+  it("provides the compatibility editor model for every non-Signal runtime primitive", () => {
     const missing = curationInventory
+      .filter((item) => item.entityType !== "signal")
       .filter((item) => buildCurationEditorModel(item) === null)
       .map((item) => `${item.entityType}:${item.entityId}`);
 

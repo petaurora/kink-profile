@@ -6,13 +6,17 @@ import {
 import { CurationEditorFieldControl } from "./CurationEditorField";
 import type { CurationInventoryEntry } from "./data/curationInventory";
 import {
-  buildCurationChangeSet,
   buildCurationEditorModel,
   createCurationDraft,
   getCurationConsequences,
-  validateCurationDraft,
   type CurationDraft,
 } from "./lib/curationEditor";
+import {
+  buildCanonicalCurationChangeSet,
+  canonicalizeCurationEditorModel,
+  validateCanonicalCurationDraft,
+} from "./lib/curationCanonicalEditorModel";
+import { buildCanonicalSignalEntityModel } from "./lib/curationCanonicalSignalEntity";
 import type {
   CurationChange,
   CurationChangeValue,
@@ -43,7 +47,15 @@ export function CurationStructuredEditor({
   change,
   onSave,
 }: CurationStructuredEditorProps) {
-  const model = useMemo(() => buildCurationEditorModel(entry), [entry]);
+  const sourceModel = useMemo(
+    () =>
+      buildCanonicalSignalEntityModel(entry) ?? buildCurationEditorModel(entry),
+    [entry],
+  );
+  const model = useMemo(
+    () => canonicalizeCurationEditorModel(entry, sourceModel),
+    [entry, sourceModel],
+  );
   const [draft, setDraft] = useState<CurationDraft>({});
   const [note, setNote] = useState("");
 
@@ -67,8 +79,8 @@ export function CurationStructuredEditor({
     );
   }
 
-  const validation = validateCurationDraft(model, draft);
-  const changes = buildCurationChangeSet(model, draft);
+  const validation = validateCanonicalCurationDraft(model, draft);
+  const changes = buildCanonicalCurationChangeSet(model, draft);
   const consequences = getCurationConsequences(entry, changes);
   const changedFieldCount = Object.keys(changes).length;
 

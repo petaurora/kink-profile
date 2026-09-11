@@ -1,8 +1,13 @@
 import type { CurationPrimitiveType } from "../data/curationInventory";
+import type { SignalChannel } from "../data/canonicalSignals";
+import {
+  formatCurationExportErrors,
+  validateCurationWorkspaceForExport,
+} from "./curationExportValidation";
 
-export const CURATION_WORKSPACE_SCHEMA_VERSION = 1;
+export const CURATION_WORKSPACE_SCHEMA_VERSION = 2;
 export const CURATION_WORKSPACE_STORAGE_KEY =
-  "kink-profile:m16-curation-workspace:v1";
+  "kink-profile:m16-curation-workspace:v2";
 
 export type CurationReviewAction =
   | "keep"
@@ -14,6 +19,18 @@ export type CurationReviewAction =
 export type CurationWeightedRelation = {
   id: string;
   weight: number;
+  /** Canonical Signal channel used by the M16.2 Workbench authoring model. */
+  channel?: SignalChannel;
+  /**
+   * Catalog source applicability is not a Signal channel. This preserves the
+   * old TSV `Applies To` condition independently so a curator can edit both
+   * concepts without conflating them.
+   */
+  catalogAppliesTo?: "any" | "receiving" | "giving";
+  /**
+   * Deprecated compatibility field used only by the legacy editor adapter.
+   * New Workbench proposals must not emit this field.
+   */
   direction?: "receiving" | "giving";
   relationship?: "supports" | "opposes";
 };
@@ -147,10 +164,31 @@ export function saveCurationWorkspace(workspace: CurationWorkspace) {
 }
 
 export function exportCurationWorkspace(workspace: CurationWorkspace) {
+  const validation = validateCurationWorkspaceForExport(workspace);
+  if (validation.errors.length > 0) {
+    const message = formatCurationExportErrors(validation.errors);
+    if (typeof window !== "undefined" && typeof window.alert === "function") {
+      window.alert(message);
+    }
+    throw new Error(message);
+  }
+
+  // Export content is intentionally derived only from workspace state. Do not
+  // add wall-clock metadata here: identical proposals should produce identical
+  // review artifacts.
+  const changes = [...workspace.changes].sort((left, right) =>
+    curationChangeKey(left.entityType, left.entityId).localeCompare(
+      curationChangeKey(right.entityType, right.entityId),
+    ),
+  );
+
   return JSON.stringify(
     {
-      ...workspace,
-      exportedAt: new Date().toISOString(),
+      schemaVersion: workspace.schemaVersion,
+      ...(workspace.sourceRevision
+        ? { sourceRevision: workspace.sourceRevision }
+        : {}),
+      changes,
     },
     null,
     2,

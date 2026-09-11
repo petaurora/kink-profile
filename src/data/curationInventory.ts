@@ -1,9 +1,9 @@
+import { canonicalSignalDefinitions } from "./canonicalSignals";
 import { dynamicModes, roleHeadspaces } from "./headspacesQuiz";
 import { kinkCatalog, kinkCategories } from "./kinkCatalog.generated";
 import { overallFacetDefinitions } from "./overallFacets";
 import { quizQuestions } from "./quizQuestions";
 import { quizzes } from "./quizzes";
-import { signalDefinitions } from "./signals";
 import {
   deriveRewardPunishmentContextSignalMappings,
   rewardPunishmentActions,
@@ -101,28 +101,32 @@ export const curationSurfaces: readonly CurationSurface[] = [
       "src/data/sadismMasochismQuiz.ts",
     ],
     status: "available",
-    notes: "Questions and their signal-weight relationships are editable as structured local proposals in the workbench.",
+    notes:
+      "Questions and their Signal + channel weight relationships are editable as structured local proposals in the workbench.",
   },
   {
     id: "signals",
-    label: "Shared SignalId vocabulary",
-    sourcePaths: ["src/data/signals.ts"],
+    label: "Canonical Signal vocabulary",
+    sourcePaths: ["src/data/canonicalSignals.ts", "src/data/signals.ts"],
     status: "available",
-    notes: "Signals are first-class workbench primitives.",
+    notes:
+      "Canonical Signal concepts are first-class workbench primitives. Legacy Signal IDs remain compatibility input only.",
   },
   {
     id: "roles-modes",
-    label: "Roles, headspaces + dynamic modes",
+    label: "Roles, headspaces + contextual modes",
     sourcePaths: ["src/data/headspacesQuiz.ts"],
     status: "available",
-    notes: "Role/headspace and dynamic-mode definitions are reviewable separately.",
+    notes:
+      "Roles/headspaces remain independently derived recognizable states. Contextual modes are reviewable underlying compositions for downstream context, not a competing top-level profile dimension system.",
   },
   {
     id: "overall-facets",
-    label: "Overall facets + radar dimensions",
+    label: "Overall facets + profile dimensions",
     sourcePaths: ["src/data/overallFacets.ts"],
     status: "available",
-    notes: "Facet labels, descriptions, directionality and signal compositions are visible in the workbench.",
+    notes:
+      "Overall Facets are the canonical high-level profile dimensions; their labels, descriptions and canonical Signal + channel compositions are visible in the workbench.",
   },
   {
     id: "catalog",
@@ -134,14 +138,16 @@ export const curationSurfaces: readonly CurationSurface[] = [
       "reference/catalog/catalog-signal-mappings.tsv",
     ],
     status: "available",
-    notes: "Generated runtime catalog rows and categories are reviewable; source-file edits remain proposal-only.",
+    notes:
+      "Generated runtime catalog rows and categories are reviewable; source-file edits remain proposal-only.",
   },
   {
     id: "catalog-pending-additions",
     label: "Pending catalog additions",
     sourcePaths: ["reference/catalog/source-additions-2026-09-08.tsv"],
     status: "source-only",
-    notes: "Tracked for M16.5. This source is intentionally not merged into the runtime catalog merely to make it editable.",
+    notes:
+      "Tracked for M16.5. This source is intentionally not merged into the runtime catalog merely to make it editable.",
   },
   {
     id: "reward-punishment-library",
@@ -154,7 +160,8 @@ export const curationSurfaces: readonly CurationSurface[] = [
       "src/lib/rewardPunishmentLibrary.ts",
     ],
     status: "available",
-    notes: "Normalized actions, contextual categories, category→Signal bridges, and weighted relationships are editable as structured local proposals; Overall Facet affinity is derived.",
+    notes:
+      "Normalized actions, contextual categories, category→Signal bridges, and weighted relationships are editable as structured local proposals; Overall Facet affinity is derived.",
   },
   {
     id: "profile-labels-thresholds",
@@ -166,21 +173,24 @@ export const curationSurfaces: readonly CurationSurface[] = [
       "src/lib/profileInterestAreas.ts",
     ],
     status: "later",
-    notes: "Tracked by M16.4. These are intentionally inventoried before adding dedicated editors.",
+    notes:
+      "Tracked by M16.4. These are intentionally inventoried before adding dedicated editors.",
   },
   {
     id: "scene-themes",
     label: "M13 scene themes + mappings",
     sourcePaths: ["src/data/sceneThemes.ts"],
     status: "later",
-    notes: "The workbench model is extensible to scene themes after the core M16 surfaces settle.",
+    notes:
+      "The workbench model is extensible to scene themes after the core M16 surfaces settle.",
   },
   {
     id: "shared-interactions",
     label: "M14 interaction/complement mappings",
     sourcePaths: ["src/data/sharedInteractionMappings.ts"],
     status: "later",
-    notes: "Retained as a future workbench primitive while M14 persistence semantics are paused.",
+    notes:
+      "Retained as a future workbench primitive while M14 persistence semantics are paused.",
   },
 ] as const;
 
@@ -199,8 +209,13 @@ function stringifyRecord(value: Partial<Record<string, number>> | undefined) {
 
 function signalFacetSummary(signalId: string) {
   const relationships = overallFacetDefinitions.map((facet) => {
-    const mapping = facet.signals.find((candidate) => candidate.signalId === signalId);
-    return mapping?.relationship ?? (mapping ? "supports" : "neutral");
+    const mappings = facet.signals.filter(
+      (candidate) => candidate.signalId === signalId,
+    );
+    if (mappings.length === 0) return "neutral";
+    return mappings.some((mapping) => mapping.relationship === "opposes")
+      ? "opposes"
+      : "supports";
   });
 
   const supports = relationships.filter((value) => value === "supports").length;
@@ -208,6 +223,16 @@ function signalFacetSummary(signalId: string) {
   const neutral = relationships.filter((value) => value === "neutral").length;
 
   return `${supports} supports · ${opposes} opposes · ${neutral} neutral`;
+}
+
+function signalChannelSummary(channels: {
+  readonly receiving?: { readonly label: string };
+  readonly giving?: { readonly label: string };
+}) {
+  const labels = [channels.receiving?.label, channels.giving?.label].filter(
+    (label): label is string => Boolean(label),
+  );
+  return labels.length > 0 ? `Overall · ${labels.join(" · ")}` : "Overall only";
 }
 
 function stringifyMappings(
@@ -219,11 +244,11 @@ function stringifyMappings(
 ) {
   return mappings
     .map((mapping) => {
-      const direction =
+      const applicability =
         mapping.appliesTo && mapping.appliesTo !== "any"
           ? ` (${mapping.appliesTo})`
           : "";
-      return `${mapping.signalId}: ${mapping.weight}${direction}`;
+      return `${mapping.signalId}: ${mapping.weight}${applicability}`;
     })
     .join(", ");
 }
@@ -245,10 +270,18 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
     fields: [
       { key: "category", label: "Category", value: item.categoryLabel },
       { key: "domain", label: "Domain", value: item.domain },
-      { key: "direction", label: "Direction", value: item.direction },
+      {
+        key: "direction",
+        label: "Typical role / activity side",
+        value: item.direction,
+      },
       { key: "intensity", label: "Intensity", value: item.intensity },
       { key: "riskLevel", label: "Risk level", value: item.riskLevel },
-      { key: "aliases", label: "Aliases", value: item.aliases.join(", ") || "—" },
+      {
+        key: "aliases",
+        label: "Aliases",
+        value: item.aliases.join(", ") || "—",
+      },
       {
         key: "signalMappings",
         label: "Signal mappings",
@@ -377,14 +410,19 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
       },
     ],
   })),
-  ...signalDefinitions.map((signal) => ({
+  ...canonicalSignalDefinitions.map((signal) => ({
     entityType: "signal" as const,
     entityId: signal.id,
     label: signal.label,
     summary: signal.description,
-    source: "Shared signal vocabulary",
+    source: "Canonical signal vocabulary",
     fields: [
       { key: "shortLabel", label: "Short label", value: signal.shortLabel },
+      {
+        key: "channels",
+        label: "Channels",
+        value: signalChannelSummary(signal.channels),
+      },
       {
         key: "facetSummary",
         label: "Overall Facets",
@@ -397,7 +435,7 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
     entityId: mode.id,
     label: mode.label,
     summary: mode.description,
-    source: "M3 dynamic modes",
+    source: "M3 contextual / underlying modes",
     fields: [
       {
         key: "weights",
@@ -431,10 +469,10 @@ export const curationInventory: readonly CurationInventoryEntry[] = [
         key: "signals",
         label: "Signal relationships",
         value: facet.signals
-          .map(
-            (signal) =>
-              `${signal.signalId}: ${signal.weight} (${signal.relationship ?? "supports"})`,
-          )
+          .map((signal) => {
+            const channel = signal.channel ? `/${signal.channel}` : "";
+            return `${signal.signalId}${channel}: ${signal.weight} (${signal.relationship ?? "supports"})`;
+          })
           .join(", "),
       },
     ],
@@ -470,7 +508,7 @@ export const curationPrimitiveLabels: Record<CurationPrimitiveType, string> = {
   "quiz-question": "Quiz questions",
   "quiz-definition": "Quiz definitions",
   signal: "Signals",
-  "dynamic-mode": "Dynamic modes",
+  "dynamic-mode": "Contextual modes",
   "role-headspace": "Roles / headspaces",
   "overall-facet": "Overall facets",
 };
