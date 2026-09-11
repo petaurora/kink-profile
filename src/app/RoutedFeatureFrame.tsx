@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   SiteHeader,
   type SiteHeaderDestination,
-} from "../SiteHeader";
+} from "./SiteHeader";
 import { useProfileSettings } from "../lib/profileSettingsContext";
 import { siteHeaderRoutePaths } from "./routes";
 
