@@ -173,10 +173,19 @@ export function exportCurationWorkspace(workspace: CurationWorkspace) {
     throw new Error(message);
   }
 
+  const changes = [...workspace.changes].sort((left, right) =>
+    curationChangeKey(left.entityType, left.entityId).localeCompare(
+      curationChangeKey(right.entityType, right.entityId),
+    ),
+  );
+
   return JSON.stringify(
     {
-      ...workspace,
-      exportedAt: new Date().toISOString(),
+      schemaVersion: workspace.schemaVersion,
+      ...(workspace.sourceRevision
+        ? { sourceRevision: workspace.sourceRevision }
+        : {}),
+      changes,
     },
     null,
     2,
