@@ -1,16 +1,16 @@
-# Pet Profile Feature Guide
+# Kink Profile Feature Guide
 
-This guide explains the app in plain language: what each feature is for, when to use it, and how the different parts work together.
+This guide explains the **current app** in plain language: what each feature is for, when to use it, and how the pieces work together.
 
-For implementation details, scoring rules, data contracts, and milestone acceptance criteria, use the linked product and milestone specifications. This guide is intentionally user-facing rather than technical.
+For implementation details and semantic rules, follow the durable contracts linked throughout this guide. Active work belongs in GitHub Issues; future product thinking belongs in Kink Profile HQ in Notion.
 
 ## The app in one minute
 
-Pet Profile builds a preference profile from several different kinds of input instead of treating one questionnaire as the whole answer.
+Kink Profile builds a preference profile from several different kinds of input instead of treating one questionnaire as the whole answer.
 
 ```text
 QUIZZES
-broad patterns, tendencies, headspaces, and dynamic signals
+broad patterns and reusable preference evidence
         │
         ├──────────────┐
         │              │
@@ -27,13 +27,15 @@ of specific items     of current evidence
         └──────────────┘
 
 REWARDS & PUNISHMENTS
-a separate contextual layer:
-"Would this work as a reward or punishment?"
+separate contextual suitability and ranking
+
+SCENE BUILDER
+uses the profile to narrow choices for right now
 ```
 
 These inputs are related, but they are not interchangeable.
 
-A quiz result is not the same thing as saying you explicitly love a catalog item. A high This-or-That rank is not the same thing as marking something a Hard Limit or a favorite. Something that works as a punishment is not automatically something you dislike.
+A quiz result is not the same as explicitly marking a catalog item Love. A high This-or-That rank is not the same as a Hard Limit or favorite. Something that works as a punishment is not automatically something you dislike. A Scene Builder choice for tonight does not rewrite your permanent profile.
 
 That separation is intentional.
 
@@ -41,70 +43,63 @@ That separation is intentional.
 
 You do not need to complete everything before the app becomes useful.
 
-1. **Take the core quizzes** to establish broad patterns.
-2. **Browse & set preferences** for specific activities you already know something about.
-3. **Play This-or-That** when you want to sort relative favorites without assigning numbers.
-4. **View your profile** to see the combined picture.
-5. **Use Rewards & Punishments** if you want to separately map what works in those contexts.
-6. **Use Scene Builder** when you want the profile turned into a smaller, usable play space for right now.
+1. **Take one or more core quizzes** to establish broad patterns.
+2. **Browse the Kink Catalog** and explicitly mark activities you already know something about.
+3. **Play This-or-That** when relative comparison feels easier than rating items independently.
+4. **View your Overall Profile** to see the combined picture.
+5. **Map Rewards & Punishments** if you want to distinguish general interest from contextual suitability.
+6. **Use Scene Builder** when you want the profile turned into a smaller, usable set of options for the current moment.
 7. **Export a private backup** once you have data you care about.
-8. **Use the share summary** when you want a curated version for another person.
-9. **Compare profiles** when someone has shared their Full Profile Export and you want to explore overlap, complementarity, or a shared scene without importing their profile.
+8. **Use the share summary** when you want a curated human-facing version.
+9. **Compare profiles temporarily** when someone has shared a compatible profile export and you want to explore overlap or shared Scene options without importing their profile.
 
-You can return to any area later and refine it. The profile is meant to grow over time.
+You can return to any area later and refine it. The profile is designed to grow with partial evidence.
 
 ---
 
-# Start broad: quizzes
+# Start broad: Quizzes
 
-## Starter Profile
+## Current core quizzes
 
-**What it is.** A short sampler that gives a quick first look at the product.
-
-**Use it when.** You are new to the app and want a lightweight introduction before using the deeper sections.
-
-**How to use it.** Answer the short set of questions and view the resulting shape.
-
-**What it changes.** It contributes a quick starter result.
-
-**What it does not do.** It is not the final or most detailed scoring model. The core sections are the stronger foundation for the full profile.
-
-## Core quizzes
-
-The app currently has four independently completable core sections:
+The app currently has four independently completable quiz sections:
 
 - **Bondage & Discipline**
 - **Dominance & Submission**
 - **Sadism & Masochism**
 - **Roles & Headspaces**
 
-**What they are.** Short focused questionnaires that measure broad patterns rather than asking you to rate hundreds of individual activities.
+**What they are.** Focused questionnaires that measure broad experiences and mechanisms instead of asking you to rate every specific activity.
 
-**Use them when.** You want to describe the kinds of dynamics, sensations, structures, roles, or headspaces that tend to fit you.
+**Use them when.** You want to describe patterns such as control, autonomy, restraint, care, service, ritual, intensity, pursuit, role immersion, or challenge.
 
-**How to use them.** Open any section from the hub, answer the questions, and view that section's results. You can complete the sections in any order.
+**How to use them.** Open any section, answer as much as you want, and return later if needed. The sections are independent and can be completed in any order.
 
-**What they change.** Quiz answers contribute broad signal evidence to the overall profile and can help the catalog show profile-informed context.
+**What they change.** Quiz answers contribute direct quiz evidence to the overall profile and can support derived catalog context.
 
-**What they do not do.** They do not directly set individual catalog items to Love, Like, Curious, or any other explicit state.
+**What they do not do.** They do not directly set individual catalog items to Love, Like, Curious, Hard Limit, or another explicit state.
 
-### Roles & Headspaces
+The old Starter Profile is retained only as a compatibility identifier for legacy stored data. It is not a current quiz destination.
 
-This section deserves one extra distinction.
+Technical reference: [Quizzes](product/quizzes.md)
 
-**Headspaces** describe recognizable mental or relational modes such as Pet, Prey, or other role-like states.
+## Roles & Headspaces
 
-**Dynamic modes** describe broader ways a dynamic can feel or operate underneath those headspaces.
+The Roles & Headspaces section has two useful derived layers:
 
-Neither is treated as a universal identity label. A result describes patterns present in the answers you gave.
+- **Roles / headspaces** — recognizable relational or internal states such as Pet, Prey, Caregiver, or Owner / Handler.
+- **Dynamic Modes** — cross-cutting patterns such as Care, Devotion, Structure, Power Exchange, or Intensity.
 
-### Giving, receiving, Dominant, and submissive
+These results can overlap. They are descriptions of current evidence, not universal identity assignments.
+
+Current taxonomy reference: [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md)
+
+## Giving, Receiving, Dominant, and submissive
 
 These are not synonyms.
 
-- **Dominant / submissive** describe authority or power context.
-- **Giving / receiving** describe which side of an activity someone is doing.
-- **Roles / headspaces** describe recognizable experiential modes.
+- **Dominant / submissive** describes authority or power context.
+- **Giving / Receiving** describes the perspective of an activity or Signal when that distinction is meaningful.
+- **Roles / headspaces** describes recognizable experiential or relational states.
 
 A submissive person can give an activity. A Dominant person can receive one. The app keeps these concepts separate on purpose.
 
@@ -112,122 +107,113 @@ Technical reference: [Authority, Activity Side & Role Semantics](authority-activ
 
 ---
 
-# Define specific interests: Browse & set preferences
+# Define specific interests: Kink Catalog
 
-## Kink catalog
+## Browse & set preferences
 
-**What it is.** The detailed activity library.
+**What it is.** The detailed activity library and direct preference-management surface.
 
-**Use it when.** You already know how you feel about a specific activity, want to mark a boundary, or want to browse beyond what the quizzes cover.
+**Use it when.** You already know how you feel about a specific activity, want to mark a boundary, or want to browse beyond the quiz topics.
 
-**How to use it.** Search or filter the catalog, then set a direct preference on any item you care about. You do not need to rate the entire catalog.
+**How to use it.** Search or filter the catalog, then set a direct preference on any item you care about. You do not need to classify the whole catalog.
 
-The current direct states are:
+Current direct states are:
 
 | State | Plain-language meaning |
 | --- | --- |
-| **Love** | A strong direct positive preference |
-| **Like** | A positive preference |
+| **Love** | Strong direct positive preference |
+| **Like** | Positive preference |
 | **Curious** | Something you may want to explore |
-| **Unsure** | You do not have a clear answer yet |
+| **Unsure** | You explicitly do not have a clear answer yet |
 | **Not Interested** | Not something you currently want |
-| **Hard Limit** | A firm boundary |
-| **Not Applicable** | The item does not meaningfully apply to you |
+| **Hard Limit** | Firm explicit boundary |
+| **Not Applicable** | The item does not meaningfully apply |
 | **Not set** | No direct answer has been given |
 
-**What it changes.** These are explicit answers owned by you. They can affect what appears in profile summaries, exclusions, exploration views, and future ranking eligibility.
+**What it changes.** These are explicit user-owned answers. Exclusion states can immediately affect new ranking/recommendation eligibility.
 
-**What it does not do.** A catalog preference does not automatically assign a This-or-That rank.
+**What it does not do.** A catalog preference does not automatically create or alter a This-or-That rank.
 
-## Quiz-derived context in the catalog
+## Profile-informed catalog context
 
-You may see profile-informed or quiz-derived information beside an item.
+You may see inferred/profile-informed information beside a catalog item.
 
-**What it is.** A derived hint based on broader evidence already present in the profile.
+**What it is.** A derived hint based on broader profile evidence and the item's semantic mappings.
 
-**Use it when.** You want help finding items worth looking at.
+**Use it when.** You want help finding items that may be worth reviewing.
 
-**Important.** It is not a direct answer. It does not overwrite an explicit preference or a pairwise rank.
+**Important.** It is not your direct answer. It does not overwrite an explicit preference, a boundary, or pairwise ranking evidence.
 
-Technical reference: [M6 Catalog Integration](m6-catalog-integration.md)
+Technical reference: [Kink Catalog](product/kink-catalog.md)
 
 ---
 
 # Refine relative favorites: This-or-That
 
-## Category This-or-That
+## Category ranking
 
-**What it is.** A pairwise comparison game for ranking items relative to one another inside a category.
+**What it is.** A pairwise comparison game for ranking eligible items relative to one another inside a category.
 
-**Use it when.** "I like both, but which one actually rises higher?" is easier to answer than assigning each item a number.
+**Use it when.** Comparing two things feels easier than assigning independent numeric ratings.
 
-**How to use it.** Choose between two items at a time. You can also choose:
+Each pair supports:
 
-- **Both / equal**
-- **Neither**
-- **Skip / don't know**
+- one item over the other;
+- **Both / equal**;
+- **Neither**;
+- **Skip / don't know**.
 
-The app uses meaningful ordering choices to gradually build the ranking.
+Meaningful ordering choices gradually refine the ranking.
 
-You can choose a session size:
+Session-size shortcuts such as Quick, Standard, Deep Dive, and Gremlin Mode change how long you play, not the scoring model.
 
-- **Quick** — 10 comparisons
-- **Standard** — 25 comparisons
-- **Deep Dive** — 50 comparisons
-- **Gremlin Mode** — keep going
+**What it changes.** It creates direct comparative evidence for the active ranking run.
 
-**What it changes.** It creates comparative ranking evidence for that category.
+**What it does not do.** It does not write explicit catalog states.
 
-**What it does not do.** It does not rewrite your explicit catalog preference.
+## Overall ranking
 
-## Overall This-or-That
+**What it is.** Cross-category comparison among candidates that emerged from evidenced category ranking.
 
-**What it is.** A cross-category ranking made from finalists that have already emerged from category-level comparison.
+**Use it when.** You want to answer which specific interests rise highest across different categories.
 
-**Use it when.** You want to answer, "Across all these different categories, what actually rises to the top?"
-
-**How to use it.** Rank within categories first. The strongest current finalists become eligible for the Overall comparison pool.
-
-**What it changes.** It creates a general cross-category relative ranking.
-
-**What it does not do.** It is not a replacement for direct preference states or quiz results.
+Untouched categories do not contribute arbitrary finalists merely because unrated items start tied.
 
 Technical reference: [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
 
 ---
 
-# Revisit preferences over time: ranking runs
+# Revisit preferences over time: Ranking runs
 
 ## Start a new ranking run
 
-**What it is.** A non-destructive way to answer This-or-That again from a fresh comparative starting point.
+**What it is.** A non-destructive way to rerank from a fresh comparative starting point.
 
-**Use it when.** Your preferences may have changed, you want a new snapshot, or you simply want to see whether your ordering moves.
+**Use it when.** You want a new preference pulse without deleting the previous one.
 
-**How to use it.** Choose **Start a new ranking run** from This-or-That. The current run is archived and a fresh active run begins.
+Starting a new run:
 
-The app keeps:
+- archives the current ranking run;
+- preserves its historical snapshots;
+- starts a fresh active run;
+- leaves quiz answers and explicit catalog preferences unchanged.
 
-- quiz results
-- explicit catalog preferences
-- previous ranking history
-
-Only the new active run supplies the current pairwise ranking evidence.
+Only the active run supplies current pairwise ranking evidence to the profile.
 
 ## Movement indicators
 
-After you have a previous comparable run, ranking results may show movement.
+Once a previous comparable run exists, ranked views may show:
 
-- **↑** moved higher in this view
-- **↓** moved lower in this view
-- **—** stayed in the same position
-- **NEW** is meaningfully ranked now but was not in the previous comparable view
+- **↑** moved higher;
+- **↓** moved lower;
+- **—** stayed in the same visible position;
+- **NEW** is meaningfully ranked now but was not in the previous comparable view.
 
-Movement is relative to the view you are looking at. A category ranking compares against the prior comparable category ranking; Overall compares against the prior comparable Overall view.
+Movement is calculated relative to the view you are looking at. Hidden or filtered-out items should not create phantom rank movement.
 
-**What movement does not mean.** It is not a new score and does not add bonus or penalty weight to the current profile. It is historical context.
+Movement is historical context only. It does not add score weight to the current profile.
 
-Technical reference: [M12 Ranking History & Movement](m12-ranking-history-movement.md)
+Technical reference: [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
 
 ---
 
@@ -235,380 +221,277 @@ Technical reference: [M12 Ranking History & Movement](m12-ranking-history-moveme
 
 ## Overall Profile
 
-**What it is.** The app's combined interpretation of the evidence you have provided so far.
-
-**Use it when.** You want the "what does all of this add up to?" view.
+**What it is.** The app's combined interpretation of the evidence available so far.
 
 It can include:
 
-- an overall profile headline
-- the broad profile radar
-- strongest Headspaces
-- Dynamic Modes
-- Top Overall interests
-- Hard Limits
-- Interest Areas
-- explanations for why themes appear
-- exploration/coverage context
-- Rewards & Punishments summaries when enough M11 evidence exists
+- overall profile summary/headline;
+- broad Overall Facets;
+- roles/headspaces;
+- Dynamic Modes;
+- Top Overall interests;
+- Hard Limits;
+- Interest Areas;
+- explanation and evidence-coverage context;
+- Rewards & Punishments summaries when enough direct contextual data exists.
 
-**What it changes.** Nothing directly. This screen is primarily a presentation and interpretation layer.
+**What it changes.** Nothing directly. The Overall Profile is a derived interpretation/presentation layer, not another source of answers.
 
-**Why it may not exactly match one quiz.** The Overall Profile can consider multiple sources. A section quiz is one source; explicit activity preferences and current pairwise ranking evidence can add additional information.
+**Why it may differ from one quiz.** The overall profile can combine several independent sources. One section quiz is only one part of that picture.
 
-## Overall radar
+## Overall Facets
 
-**What it is.** A broad thematic view of the profile across dimensions such as Power Exchange, Ownership & Belonging, Service & Devotion, Primal & Instinctive, Restraint & Physical Control, Intensity & Pain, and other profile facets.
+The broad radar summarizes themes such as Power Exchange, Service & Devotion, Restraint & Physical Control, Care & Nurture, Intensity & Pain, and other current facets.
 
-**Use it when.** You want to see the shape of your profile rather than focus on a single result.
-
-**What it is not.** It is not a diagnostic chart and it does not mean every activity inside a strong theme is automatically something you want.
+A strong facet does **not** mean every activity associated with that theme is wanted.
 
 ## Top Overall
 
-**What it is.** A compact list of specific interests that currently rise to the top of the combined profile presentation.
+Top Overall is a compact profile presentation of specific interests supported by meaningful direct evidence.
 
-**Important.** Top Overall is not necessarily identical to the raw Overall This-or-That list. The profile presentation can consider multiple kinds of direct evidence while keeping those sources distinct.
+It is related to, but not required to exactly equal, the raw Overall This-or-That ordering because the profile presentation can consider multiple independent direct sources while preserving provenance.
 
 ## Hard Limits
 
-**What it is.** A dedicated profile view of activities explicitly marked as Hard Limits.
-
-**Important.** A Hard Limit is treated differently from a low rank, uncertainty, or simple lack of interest.
+Hard Limits are explicit boundaries. They are not low ranks, uncertainty, or inferred low affinity.
 
 ## Interest Areas
 
-**What it is.** A compact category-level way to see where meaningful profile evidence is clustering.
+Interest Areas compress meaningful category-level clusters so the main profile does not need to display every catalog category at once.
 
-**Use it when.** You want to explore a theme without putting every catalog category on the main profile screen.
-
-Technical reference: [Overall Profile Aggregation](overall-profile-aggregation.md)
+Technical references: [Overall Profile Aggregation](overall-profile-aggregation.md) and [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md)
 
 ---
 
 # Map contextual use: Rewards & Punishments
 
-Rewards & Punishments is deliberately separate from general kink preference.
+Rewards & Punishments asks a different question from general interest:
 
-The question is not only:
+```text
+Do I like this activity?
+        ≠
+Would this work as a Reward?
+        ≠
+Would this work as a Punishment?
+```
 
-> Do I like this?
-
-It is also:
-
-> Could this specifically work as a reward?
-
-and:
-
-> Could this specifically work as a punishment or consequence?
-
-The same activity can have different answers to all three questions.
+Reward and Punishment are independent contexts.
 
 ## Quick sorter
 
-**What it is.** A fast one-card-at-a-time way to classify items into coarse contextual buckets.
+**What it is.** A fast coarse classification flow.
 
-Choices:
+Choices include Reward, Punishment, Both, Neither, and Skip for now.
 
-- **Reward**
-- **Punishment**
-- **Both**
-- **Neither**
-- **Skip for now**
+**Use it when.** You want to move quickly through many ideas.
 
-**Use it when.** You want to map a large number of ideas quickly without opening the detailed editor for every item.
+A coarse sorter action should not silently destroy richer detailed data without warning.
 
-**What it changes.** It creates coarse direct contextual answers.
+## Detailed contextual profiles
 
-**What it does not do.** It does not automatically add an item to the randomizer. It also avoids silently destroying nuanced Strong / Depends / Never data; the UI warns before a coarse answer would replace richer detail.
+The detailed Reward and Punishment profiles support:
 
-## Detailed Reward and Punishment profiles
+- Strong;
+- Works;
+- Depends;
+- No / not a fit;
+- Never;
+- Unset;
+- optional notes;
+- separate random-pool eligibility where allowed.
 
-**What they are.** Separate detailed editors for reward suitability and punishment suitability.
-
-A contextual answer can express ideas such as:
-
-- **Strong**
-- **Works**
-- **Depends**
-- **No / not a fit**
-- **Never**
-- **Not rated**
-
-You can also keep contextual notes and separate random-pool eligibility.
-
-**Use them when.** The quick sorter is too coarse or the answer depends on boundaries, conditions, or explanation.
-
-**Important.** Reward and Punishment are independent. Something may be Strong in both, Strong in one and Never in the other, or any other meaningful combination.
+Something can be strong in both contexts, valid in one and Never in the other, or any other independently stated combination.
 
 ## Suggested to explore
 
-**What it is.** A profile-informed proposal for an unrated reward or punishment possibility.
+Profile-informed proposals can suggest unrated possibilities.
 
-**Use it when.** You want help finding what may be worth reviewing next.
+They remain inferred suggestions until the user explicitly accepts/edits them. Punishment inference is intentionally conservative and does not treat general catalog liking as sufficient punishment evidence.
 
-**What it does not do.** A suggestion is not treated as your answer. Accepting one creates a conservative explicit state; the app does not silently turn inferred proposals into direct evidence.
+## Reward and Punishment ranking
 
-## Reward This-or-That and Punishment This-or-That
+Reward and Punishment have separate pairwise rankings over directly positive candidates.
 
-**What they are.** Two separate pairwise rankings.
-
-**Use them when.** You already have multiple confirmed rewards or punishments and want to decide which ones rise above others in that specific context.
-
-Only directly positive candidates are eligible. The current positive states are Strong, Works, and Depends.
-
-**Important.**
-
-- Reward rank is separate from Punishment rank.
-- Both are separate from general kink rank.
-- A contextual rank answers relative fit within that context, not severity.
+These rankings are also separate from general kink ranking.
 
 ## Randomizer
 
-**What it is.** A lightweight "just pick one" utility.
+The randomizer picks from explicitly random-eligible items/recipes for the chosen context.
 
-**Use it when.** You already have an approved pool and want the app to remove the decision step.
+It does not assign work, track completion, create debt, or weight random probability by contextual rank.
 
-The current randomizer:
+It avoids an immediate repeat when possible.
 
-- uses only explicitly eligible entries
-- treats entries equally rather than weighting by rank
-- avoids immediately repeating the last pick when possible
-- lets you tap the result card to reroll
-- keeps a temporary "Already rolled" trail for the current visit
-- does not assign, track completion, or create a punishment/reward debt
+## Recipes
 
-Leaving the Randomizer clears that temporary roll history.
+Saved Reward/Punishment recipes combine multiple primitives and/or custom recipe-only components.
 
-## Build a Reward / Build a Punishment
+Recipes can be saved, edited, duplicated, reordered, and deleted. When referenced data later becomes stale or conflicts with direct contextual boundaries, a recipe can require review and stay out of automatic randomization until repaired.
 
-**What it is.** A recipe builder for reusable multi-part combinations.
-
-A recipe can contain:
-
-- catalog activities
-- action-library items
-- custom recipe-only text
-- an ordered sequence
-- a name
-- notes
-- tags
-- optional random-pool eligibility
-
-**Use it when.** A useful reward or punishment is a combination rather than one primitive item.
-
-You can save, edit, duplicate, reorder, and delete recipes.
-
-If a component later conflicts with changed boundaries or eligibility, the recipe can be marked **Needs review** and kept out of random selection until it is fixed.
-
-Technical reference: [M11 Rewards & Punishments](m11-rewards-punishments.md)
+Technical reference: [Rewards & Punishments](product/rewards-punishments.md)
 
 ---
 
 # Compose the moment: Scene Builder
 
-Scene Builder turns the existing profile into a smaller, current-session play space. It does not create new preference evidence or infer consent.
+Scene Builder uses existing profile evidence to reduce decision load for a specific session. It does not infer consent or create new permanent preferences.
 
-## Pick the space
+## Choose the space
 
-Choose one or more themes such as Pain, Restraint, Service, Pet, Surrender, Soft, Structured, or Playful. Themes are temporary queries over the existing profile.
+Select one or more Scene themes and optionally tune:
 
-Optional tuning can narrow by:
+- effort: Quick / Normal / Elaborate;
+- exploration: Familiar / Mixed / Explore;
+- intensity preference.
 
-- effort: Quick / Normal / Elaborate
-- exploration: Familiar / Mix / Explore
-- catalog intensity
+Themes are query/composition metadata, not new profile evidence.
 
-## Tonight-only changes
+## Tonight-only choices
 
-Each candidate can be marked **Yes**, **Maybe**, or **Not tonight** for the current session. These choices override scene suggestions for the moment without changing permanent catalog preferences.
+Candidates can be marked:
 
-## Pick or build for me
+- **Yes tonight**;
+- **Maybe tonight**;
+- **Not tonight**.
 
-**Pick something** chooses randomly from the currently valid pool. **Build something** creates an ordered scene arc. Recent random picks are temporarily remembered to reduce immediate repeats.
+These are session-only overrides. `Not tonight` removes an item from the current automatic Scene pool without changing its permanent catalog preference.
 
-Inference-only suggestions stay under **Suggested to explore** and are never silently randomized.
+## Suggestions and automatic eligibility
 
-## Edit the scene arc
+Inference-only candidates stay under **Suggested to explore** and are not automatically randomized merely because the profile predicts affinity.
 
-A generated scene can be edited component by component:
+Explicit exclusions and current-session exclusions remain authoritative.
 
-- add or remove an item
-- move it up or down
-- change its phase
-- replace or shuffle one part
-- add scene-local notes
-- optionally include an M11-backed Reward or Punishment
+## Pick or build
 
-## Save scenes
+**Pick something** selects one eligible candidate.
 
-Named scenes can be saved locally, loaded, edited, duplicated, and deleted. If an underlying catalog item or M11 reference later becomes stale or excluded, the saved scene is marked **Needs review** rather than silently rewritten.
+**Build something** creates an ordered multi-phase scene composition using the current filters/theme space.
 
-Saved scenes are included in the private full-profile backup and have their own selective-reset scope. They are not included in the default share summary.
+The session keeps short anti-repeat history for random picks so rerolling does not immediately produce the same item when alternatives exist.
 
-See [M13 Scene Builder](m13-scene-builder.md).
+## Edit and save
+
+A scene composition can be adjusted component by component, including phase assignment, removal/replacement/shuffle, local notes, and an optional Reward/Punishment phase using that system's own eligibility rules.
+
+Named Scene templates can be saved locally. If referenced catalog or Reward/Punishment data later becomes stale or invalid, the saved Scene can require review rather than silently changing history.
+
+Technical reference: [Scene Builder](product/scene-builder.md)
+
+---
+
+# Compare profiles temporarily
+
+## Profile Comparison
+
+**What it is.** A temporary comparison workspace for the local profile plus a compatible uploaded profile.
+
+**Use it when.** You want to explore overlap, differences, directional complementarity, boundaries, or shared Scene options without importing the other person's profile.
+
+The uploaded profile is comparison input only. It is not installed as a second persistent local profile and neither profile is rewritten by comparison.
+
+Pairwise ranking alone is not treated as proof of absolute shared interest. Directional complementarity requires actual directional evidence rather than stereotype-based inference.
+
+## Shared Scene Builder
+
+The comparison workspace can derive candidates that fit both profiles and temporary participant intent.
+
+Participant intent is session context, not a permanent edit to either profile.
+
+Technical reference: [Profile Comparison](product/profile-comparison.md)
 
 ---
 
 # Manage your profile: Settings
 
-## Profile name
+## Display name
 
-**What it is.** The display identity used throughout your local profile and share presentation.
-
-**Use it when.** You want the app to refer to the profile by a chosen name.
+The local profile has an editable display name used in presentation/export surfaces.
 
 ## Selective reset
 
-**What it is.** A controlled way to clear one kind of profile data without wiping everything else.
+Settings can reset independent authoritative domains without automatically deleting unrelated data.
 
-You can independently reset areas such as:
+Current reset scopes include:
 
-- all quizzes or selected quizzes
-- explicit catalog preferences
-- This-or-That and ranking history
-- Rewards & Punishments contextual data, rankings, and recipes
-- saved Scene Builder scenes
-- profile name and settings
-- everything
+- selected quiz sections;
+- explicit catalog preferences;
+- This-or-That comparisons/ranking history;
+- Rewards & Punishments;
+- saved Scenes;
+- profile settings/identity.
 
-The app shows a review step before deletion so you can see what will reset and what will remain.
+Reset flows through a review step before destructive confirmation.
 
-## Export profile backup
+## Private backup
 
-**What it is.** A complete private machine-readable backup of the profile.
+The private backup is the machine-readable artifact used to preserve/restore supported durable local profile state.
 
-**Use it when.** You want to preserve your data, move it, or protect against browser/device data loss.
+Current export format is `kink-profile` version 3, with restore compatibility for versions 1, 2, and 3.
 
-**Treat it as private.** The backup is intended to preserve authoritative app state, not to be a friendly document for another person to read.
-
-## Import profile backup
-
-**What it is.** A restore flow for a complete profile backup.
-
-**Current behavior.** Import is a full-profile replacement, not a merge. The app validates and previews the backup before restoring it.
+Backup import replaces the local profile after validation; it is not a silent merge.
 
 ## Share summary
 
-**What it is.** A curated, human-readable version of the profile designed for deliberate sharing.
+The share summary is a curated human-facing view rather than a complete data dump.
 
-**Use it when.** You want another person to understand the useful profile summary without receiving your private application backup.
+It can be exported locally as:
 
-The share summary deliberately omits internal/raw data such as:
+- PNG;
+- standalone HTML;
+- PDF.
 
-- raw questionnaire answers
-- comparison history
-- internal evidence IDs
-- storage metadata
-- internal provenance
+Raw quiz answers, raw comparison history, internal evidence IDs, and the private backup payload are not included simply because the app possesses them.
 
-Current export formats:
-
-- **PNG** — tall, phone-friendly image
-- **HTML** — responsive self-contained page
-- **PDF** — printable/shareable document based on the same summary
-
-The share summary and private backup are intentionally different products.
-
-Technical reference: [M9 Settings, Profile Management & Sharing](m9-settings-profile-management.md)
+Technical reference: [Profile Management](product/profile-management.md)
 
 ---
 
-# Privacy and persistence
+# How the pieces stay separate
 
-## Where data lives
+A few rules explain most of the product:
 
-The app currently has no required account and no backend.
+```text
+quiz evidence
+≠ explicit catalog preference
+≠ pairwise rank
+≠ inferred catalog affinity
+≠ reward/punishment suitability
+≠ tonight-only Scene choice
+```
 
-Authoritative profile data is stored locally in the browser using `localStorage`.
+Likewise:
 
-That supports the app's privacy-first design, but it also means browser storage can be lost if site data is cleared, the browser/device is reset, or the data is otherwise removed.
+```text
+Receiving / Giving
+≠
+submissive / Dominant
+```
 
-If you care about preserving a profile, periodically export a private backup.
+And:
 
-## What sharing does
+```text
+Hard Limit
+≠ low rank
+≠ uncertainty
+≠ inferred low affinity
+```
 
-The app does not automatically publish the profile.
+Those distinctions are what let the app combine information without pretending every signal means the same thing.
 
-A share summary is generated deliberately by the user. Exporting a private backup is also a deliberate local action.
+## Where to go deeper
 
-Uploaded profile comparison is also local and deliberate. The uploaded Full Profile Export is validated in the browser, reduced to the data needed for the active comparison, and is not imported, merged into your profile, or saved as another editable profile.
+- [Product Spec](product-spec.md) — current product boundaries
+- [Quizzes](product/quizzes.md)
+- [Kink Catalog](product/kink-catalog.md)
+- [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
+- [Overall Profile Aggregation](overall-profile-aggregation.md)
+- [Rewards & Punishments](product/rewards-punishments.md)
+- [Scene Builder](product/scene-builder.md)
+- [Profile Comparison](product/profile-comparison.md)
+- [Profile Management](product/profile-management.md)
+- [Signal + Channel Data Model](data-model/signal-channel-model.md)
+- [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md)
+- [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md)
 
----
-
-# Compare with another profile
-
-The app can compare your current profile with someone else's **Full Profile Export** without replacing either person's evidence.
-
-## Upload and compare
-
-From **Compare profiles**, upload the other person's profile JSON.
-
-The comparison derives useful relationship states such as:
-
-- **We both love** — both profiles have direct positive interest
-- **We fit together here** — explicit giving/receiving or validated role/headspace/dynamic-mode complements
-- **Maybe explore** — shared curiosity or positive + curious
-- **Different flavors** — related positive interests with different directional/contextual patterns
-- **Not for shared suggestions** — either person's explicit exclusion wins
-- **Still unexplored** — there is not enough direct evidence yet
-
-There is no synthetic compatibility percentage, and the comparison does not feed results back into either profile.
-
-## What do you each want tonight?
-
-Both people can temporarily select current headspace, dynamic mode, or activity-side intent. Those choices can surface validated pairings and seed Shared Scene Builder themes.
-
-They are session/query context only. They do not change quiz results, catalog preferences, or permanent profile evidence.
-
-## Build a shared scene
-
-**Build shared scene** reuses the normal Scene Builder but filters from the space supported by both profiles.
-
-Either person's explicit exclusion or **Not tonight** removes an item from automatic shared suggestions. Complementary giving/receiving interests can fit even when the two people do not have identical overall ratings.
-
-Shared Rewards & Punishments add-ons are currently disabled because the app does not yet intersect M11 suitability from both profiles.
-
-## Is the uploaded profile saved?
-
-No. The current implementation is **compare once**.
-
-The uploaded profile is temporary comparison input, not another editable identity in the app. Persistent partner/profile linking is intentionally under product-model refinement.
-
-See [M14 Shared Profiles](m14-shared-profiles.md).
-
----
-
-# Planned / refinement work
-
-## M14 — Persistent profile/linking model
-
-The comparison and shared-scene parts of M14 are implemented. What remains undecided is whether persistent support should mean temporary comparison only, saved read-only linked profiles, multiple fully editable local profiles, or account-owned profiles linked later.
-
-Do not assume a profile switcher is the intended end state.
-
-See [M14 Shared Profiles](m14-shared-profiles.md).
-
-## M15 — Contextual Activity Profiles
-
-More detailed context for cases where the same activity means something different depending on authority context and activity side.
-
-See [M15 Contextual Activity Profiles](m15-contextual-activity-profiles.md).
-
-## M16 — Data & Content Curation
-
-A whole-app quality pass for quizzes, signals, radars, catalog items, mappings, Rewards & Punishments data, and the curation workbench used to review them.
-
-See [M16 Data & Content Curation](m16-data-content-curation.md).
-
----
-
-# Need a behavioral explanation?
-
-See the [FAQ](faq.md) for questions such as:
-
-- Why do quiz results and the Overall Profile differ?
-- Why does a high rank not automatically mean Love?
-- What does NEW / ↑ / ↓ mean?
-- Why can something be both a Reward and a Punishment?
-- Why is a private backup different from the share summary?
+The repository code and tests remain authoritative for what is actually implemented.
