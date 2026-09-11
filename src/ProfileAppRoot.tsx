@@ -1,52 +1,22 @@
-import { useEffect, useState } from "react";
-import { IconArrowUp } from "@tabler/icons-react";
+import { useState } from "react";
 import App, { type Screen } from "./App";
 import { ProfileSettingsPage } from "./ProfileSettingsPage";
-import { ProfileNameBridge } from "./ProfileNameBridge";
 import {
   SiteHeader,
   type SiteHeaderDestination,
 } from "./SiteHeader";
-import {
-  loadProfileSettings,
-  saveProfileSettings,
-} from "./lib/profileSettings";
-import { ProfileSettingsProvider } from "./lib/profileSettingsContext";
-import "./settings.css";
+import { useProfileSettings } from "./lib/profileSettingsContext";
 
-function ReturnToTop() {
-  const [visible, setVisible] = useState(false);
+type ProfileAppRootProps = {
+  initialScreen?: Screen;
+};
 
-  useEffect(() => {
-    const updateVisibility = () => setVisible(window.scrollY > 600);
-    updateVisibility();
-    window.addEventListener("scroll", updateVisibility, { passive: true });
-    return () => window.removeEventListener("scroll", updateVisibility);
-  }, []);
-
-  if (!visible) return null;
-
-  return (
-    <button
-      type="button"
-      className="return-to-top"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      aria-label="Return to top"
-    >
-      <IconArrowUp size={17} stroke={2} aria-hidden="true" />
-      <span>Return to top</span>
-    </button>
-  );
-}
-
-export default function ProfileAppRoot() {
-  const [settings, setSettings] = useState(() => loadProfileSettings());
+export default function ProfileAppRoot({
+  initialScreen = "hub",
+}: ProfileAppRootProps) {
+  const { settings, setSettings } = useProfileSettings();
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [resumeScreen, setResumeScreen] = useState<Screen>("hub");
-
-  useEffect(() => {
-    saveProfileSettings(settings);
-  }, [settings]);
+  const [resumeScreen, setResumeScreen] = useState<Screen>(initialScreen);
 
   const openSettings = (returnScreen: Screen) => {
     setResumeScreen(returnScreen);
@@ -58,35 +28,27 @@ export default function ProfileAppRoot() {
     setSettingsOpen(false);
   };
 
-  return (
-    <ProfileSettingsProvider value={{ settings, setSettings }}>
-      <ProfileNameBridge settings={settings} />
-
-      {settingsOpen ? (
-        <>
-          <SiteHeader
-            displayName={settings.displayName}
-            settingsActive
-            onNavigate={leaveSettingsFor}
-            onOpenSettings={() => setSettingsOpen(false)}
-          />
-          <main className="app-shell">
-            <ProfileSettingsPage
-              settings={settings}
-              onChange={setSettings}
-              onClose={() => leaveSettingsFor("hub")}
-            />
-          </main>
-        </>
-      ) : (
-        <App
-          initialScreen={resumeScreen}
-          displayName={settings.displayName}
-          onOpenSettings={openSettings}
+  return settingsOpen ? (
+    <>
+      <SiteHeader
+        displayName={settings.displayName}
+        settingsActive
+        onNavigate={leaveSettingsFor}
+        onOpenSettings={() => setSettingsOpen(false)}
+      />
+      <main className="app-shell">
+        <ProfileSettingsPage
+          settings={settings}
+          onChange={setSettings}
+          onClose={() => leaveSettingsFor("hub")}
         />
-      )}
-
-      <ReturnToTop />
-    </ProfileSettingsProvider>
+      </main>
+    </>
+  ) : (
+    <App
+      initialScreen={resumeScreen}
+      displayName={settings.displayName}
+      onOpenSettings={openSettings}
+    />
   );
 }
