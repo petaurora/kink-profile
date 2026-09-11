@@ -1,10 +1,17 @@
-import { signalDefinitions } from "./data/signals";
+import { canonicalSignalDefinitions } from "./data/canonicalSignals";
+import { overallFacetDefinitions } from "./data/overallFacets";
 import type { CurationInventoryEntry } from "./data/curationInventory";
 import { rewardPunishmentCategories } from "./lib/rewardPunishmentLibrary";
 import { getCurationPrimitiveFacetAffinities } from "./lib/curationSemanticProjection";
+import {
+  canonicalizeCurationSignalRef,
+  getCurationSignalChannelOptions,
+  isCanonicalSignalId,
+  isLegacySignalId,
+} from "./lib/curationCanonicalSignals";
 
 const relationshipLabels = new Map<string, string>([
-  ...signalDefinitions.map((signal) => [signal.id, signal.label] as const),
+  ...canonicalSignalDefinitions.map((signal) => [signal.id, signal.label] as const),
   ...rewardPunishmentCategories.map(
     (category) => [category.id, category.label] as const,
   ),
@@ -14,7 +21,9 @@ type ParsedRelationship = {
   id: string;
   label: string;
   weight: string;
-  direction?: string;
+  channel?: string;
+  relationship?: string;
+  sourceScope?: string;
 };
 
 function isEmptyValue(value: string) {
@@ -24,6 +33,25 @@ function isEmptyValue(value: string) {
 
 function isRelationshipField(key: string) {
   return /signalMappings|contextCategories|weights|signals/i.test(key);
+}
+
+function isSignalRelationshipField(entry: CurationInventoryEntry, key: string) {
+  switch (entry.entityType) {
+    case "catalog-item":
+    case "catalog-category":
+    case "reward-punishment-category":
+      return key === "signalMappings";
+    case "reward-punishment-action":
+      return key === "derivedSignalMappings";
+    case "quiz-question":
+    case "dynamic-mode":
+    case "role-headspace":
+      return key === "weights";
+    case "overall-facet":
+      return key === "signals";
+    default:
+      return false;
+  }
 }
 
 function isExpandableField(key: string, value: string) {
@@ -62,26 +90,96 @@ function parseRelationships(value: string): ParsedRelationship[] | null {
     );
     if (!match) return null;
 
-    const [, id, weight, direction] = match;
+    const [, id, weight, qualifier] = match;
     parsed.push({
       id,
       label: relationshipLabels.get(id) ?? humanizeId(id),
       weight,
-      direction: direction || undefined,
+      sourceScope: qualifier || undefined,
     });
   }
 
   return parsed;
 }
 
+function channelLabel(signalId: string, channel: string) {
+  if (!isCanonicalSignalId(signalId)) return humanizeId(channel);
+  return (
+    getCurationSignalChannelOptions(signalId).find(
+      (option) => option.value === channel,
+    )?.label ?? humanizeId(channel)
+  );
+}
+
+function canonicalizeParsedRelationships(
+  entry: CurationInventoryEntry,
+  fieldKey: string,
+  relationships: readonly ParsedRelationship[],
+): ParsedRelationship[] {
+  if (!isSignalRelationshipField(entry, fieldKey)) return [...relationships];
+
+  if (entry.entityType === "overall-facet") {
+    const facet = overallFacetDefinitions.find(
+      (candidate) => candidate.id === entry.entityId,
+    );
+    if (!facet) return [...relationships];
+
+    return facet.signals.map((signal) => ({
+      id: signal.signalId,
+      label: relationshipLabels.get(signal.signalId) ?? humanizeId(signal.signalId),
+      weight: String(signal.weight),
+      channel: signal.channel ?? "overall",
+      relationship: signal.relationship ?? "supports",
+    }));
+  }
+
+  return relationships.map((relationship) => {
+    if (
+      !isLegacySignalId(relationship.id) &&
+      !isCanonicalSignalId(relationship.id)
+    ) {
+      return relationship;
+    }
+
+    const canonical = canonicalizeCurationSignalRef(
+      relationship.id,
+      Number(relationship.weight),
+      {
+        quizQuestionId:
+          entry.entityType === "quiz-question" ? entry.entityId : undefined,
+      },
+    );
+
+    return {
+      id: canonical.signalId,
+      label:
+        relationshipLabels.get(canonical.signalId) ??
+        humanizeId(canonical.signalId),
+      weight: relationship.weight,
+      channel: canonical.channel,
+      sourceScope:
+        entry.entityType === "catalog-category"
+          ? relationship.sourceScope
+          : undefined,
+    };
+  });
+}
+
 function CurationRelationshipDetails({
+  entry,
+  fieldKey,
   label,
   value,
 }: {
+  entry: CurationInventoryEntry;
+  fieldKey: string;
   label: string;
   value: string;
 }) {
-  const relationships = parseRelationships(value);
+  const parsed = parseRelationships(value);
+  const relationships = parsed
+    ? canonicalizeParsedRelationships(entry, fieldKey, parsed)
+    : null;
 
   return (
     <details className="curation-current-details curation-current-relationships">
@@ -95,20 +193,31 @@ function CurationRelationshipDetails({
 
       {relationships ? (
         <div className="curation-current-mapping-list">
-          {relationships.map((relationship) => (
+          {relationships.map((relationship, index) => (
             <div
               className="curation-current-mapping-row"
-              key={`${relationship.id}-${relationship.direction ?? "any"}`}
+              key={`${relationship.id}-${relationship.channel ?? "overall"}-${index}`}
             >
               <div>
                 <strong>{relationship.label}</strong>
                 <code>{relationship.id}</code>
               </div>
-              {relationship.direction && (
+              {relationship.channel && (
                 <small className="curation-current-mapping-direction">
-                  {relationship.direction}
+                  {channelLabel(relationship.id, relationship.channel)}
                 </small>
               )}
+              {relationship.relationship && (
+                <small className="curation-current-mapping-direction">
+                  {humanizeId(relationship.relationship)}
+                </small>
+              )}
+              {relationship.sourceScope &&
+                entry.entityType === "catalog-category" && (
+                  <small className="curation-current-mapping-direction">
+                    Catalog scope: {humanizeId(relationship.sourceScope)}
+                  </small>
+                )}
               <span className="curation-current-mapping-weight">
                 {relationship.weight}
               </span>
@@ -156,6 +265,8 @@ export function CurationCurrentValuePanel({
             isRelationshipField(field.key) ? (
               <CurationRelationshipDetails
                 key={field.key}
+                entry={entry}
+                fieldKey={field.key}
                 label={field.label}
                 value={field.value}
               />
