@@ -31,6 +31,7 @@ If a change alters one of these cross-system contracts, update the relevant docu
 ## Current product/feature contracts
 
 - [Curation Workbench](product/curation-workbench.md) — proposal workspace, canonical semantic editing, validation, and deterministic export
+- [Profile Comparison](product/profile-comparison.md) — temporary uploaded-profile comparison, shared semantics, participant intent, and Shared Scene Builder boundaries
 
 The following feature contracts still carry milestone names because they describe implemented behavior that has not yet needed a durable topic-path rewrite:
 
@@ -44,13 +45,14 @@ The following feature contracts still carry milestone names because they describ
 - [M11 Rewards & Punishments](m11-rewards-punishments.md)
 - [M12 Ranking History & Movement](m12-ranking-history-movement.md)
 - [M13 Scene Builder](m13-scene-builder.md)
-- [M14 Shared Profiles / Comparison](m14-shared-profiles.md)
 
 Their milestone prefix is historical; it does not own current work status. When one is materially revised, decide whether its surviving contract should move to a durable topic path such as `product/scene-builder.md` rather than preserving the milestone name automatically.
 
 ## Active work is not documentation
 
 Current M16 curation/refinement work is tracked by GitHub Issue #124 and its sub-issues. The completed Signal/channel migration and Workbench implementation history live in their closed Issues/PRs and git history rather than separate `m16-*` status documents.
+
+Persistent profile ownership/linking refinement is tracked in GitHub Issue #112, with unresolved product-model context in the private Notion workspace. The temporary comparison behavior that currently exists is documented separately above.
 
 Planned product-design documents that do not describe implemented behavior should not live in `docs/` merely because they contain detailed specifications. Product/design reasoning belongs in Notion; actionable engineering scope belongs in the owning GitHub Issue. Once a feature lands, distill its surviving implemented rules back into durable repository documentation.
 
