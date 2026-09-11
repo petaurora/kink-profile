@@ -18,6 +18,10 @@ What should have happened?
 
 Steps, screenshots, profile fixture, browser/device details, or anything else that makes the problem concrete.
 
+## Product context
+
+Notion context: <!-- Optional. Link only when the page is safe to expose in the public repository. Otherwise keep the private backlink in Notion and summarize the relevant expected behavior above. -->
+
 ## Done when
 
 - [ ] The intended behavior is restored.
