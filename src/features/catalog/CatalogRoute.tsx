@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { KinkCatalogPreferences } from "../../KinkCatalogPreferences";
 import { loadProfile } from "../../lib/profileStorage";
 import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
+import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
 import { parseCatalogRouteFocus } from "./catalogRouteState";
 
 type CatalogNavigationState = {
