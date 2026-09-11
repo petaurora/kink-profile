@@ -1,710 +1,428 @@
 # Kink This-or-That Ranking
 
-## Status
+This document defines the current catalog pairwise-ranking contract, including category/Overall ranking, temporal reranking, historical snapshots, and movement.
 
-**Implemented and hardened through M6, with M12 temporal reranking integrated.**
+## Product boundary
 
-Current imported runtime behavior includes:
+This-or-That answers a **relative** question:
 
-- category-first pairwise ranking
-- category progress-map home
-- continue-where-you-left-off and next-category navigation
-- untouched categories contribute no Overall finalists
-- current Top 5 from each ranked category feed the Overall pool
-- Overall is a destination from the category home rather than a stage tab
-- Quick / Standard / Deep Dive / Gremlin sessions
-- browser-local raw comparison persistence
-- category and Overall ranking views
+> Between the eligible things I am willing to compare, which pulls me more strongly?
 
-See [M6 Catalog Integration](m6-catalog-integration.md) for the parent catalog contract and [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md) for the direct preference-management surface.
+It does not replace explicit catalog preference.
 
-Temporal reranking is implemented separately in [M12 This-or-That Ranking History & Movement](m12-ranking-history-movement.md). M12 preserves each ranking run as history instead of treating a fresh rerank as destructive deletion or as lifetime score accumulation.
-
----
-
-## Purpose
-
-Provide a low-friction way to turn the giant kink catalog into a meaningful ranked preference list without asking the user to independently score every catalog item.
-
-The interaction is deliberately simple:
-
-> Which are you more interested in?
-
-The ranking happens in two stages:
-
-1. rank items **within their own category**
-2. take the strongest items from each category and rank those **across categories**
-
-This preserves useful category-level results while also producing a manageable overall favorites list.
-
----
-
-## Product principle
-
-The experience should feel like:
-
-> "Oh this is fun, which one do I like more?"
-
-not:
-
-> "Please complete a 500-question assessment."
-
-The ranking engine may be statistically sophisticated underneath. The interaction should remain stupidly simple.
-
----
-
-## Core flow
-
-```text
-MASTER KINK CATALOG
-        │
-        ├── Category A ────────> category ranking ──> finalists
-        ├── Category B ────────> category ranking ──> finalists
-        ├── Category C ────────> category ranking ──> finalists
-        └── ...
-                                      │
-                                      ▼
-                               FINALIST POOL
-                                      │
-                                      ▼
-                              CROSS-CATEGORY
-                               THIS / THAT
-                                      │
-                                      ▼
-                               OVERALL RANKING
-```
-
-The overall ranking does **not** replace category ranking. Both results remain useful.
-
-Example:
+A user can coherently have:
 
 ```text
 Rope Bondage
-
-Bondage rank: #1
-Overall rank: #7
+Explicit preference: Love
+Category rank: #1
+Overall rank: #4
 ```
 
----
+and later rerank it without changing the explicit `Love` state.
 
-# Stage 1 — Rank within a category
-
-Each category is ranked independently.
-
-Example:
+The ranking system therefore keeps these concepts separate:
 
 ```text
-Bondage & Discipline
-
-Rope Bondage
-     OR
-Cuffs
+explicit catalog preference
+        ≠
+current pairwise ranking
+        ≠
+historical ranking snapshots
 ```
 
-The user works through enough pairwise comparisons to establish a useful ordering for that category.
+## Stable identity
 
-The system should not require every possible pair.
+All ranking evidence uses stable Catalog IDs and Category IDs.
 
-For a category with `n` eligible items, exhaustive comparison would require:
+Labels, source row positions, and current file order are not identity.
 
-```text
-n × (n - 1) / 2
+When catalog IDs are replaced through the repository replacement map, persisted comparisons and historical snapshot items are canonicalized through the same replacement chain.
+
+## Eligibility
+
+Current explicit catalog state controls whether an item is eligible for ordinary ranking.
+
+Items with Overall state:
+
+- `hard_limit`
+- `not_interested`
+- `not_applicable`
+
+are excluded from the active ranking pool.
+
+Historical snapshots remain historical even if an item becomes ineligible later. Current eligibility controls what can happen now; history records what happened then.
+
+## Ranking scopes
+
+Ranking has two scope types:
+
+```ts
+type RankingScope =
+  | { type: "category"; categoryId: string }
+  | { type: "overall" };
 ```
 
-The question selector should instead prioritize comparisons that provide useful ranking information.
+Category ranking and Overall ranking are separate comparative contexts.
 
-### Stage 1 output
+A comparison in one category does not directly update another category or the Overall Elo calculation.
 
-Each category should retain its own ordered results.
+## Category-first flow
 
-Example:
+The ranking experience starts within catalog categories.
 
-```text
-Bondage & Discipline
+The user can incrementally rank a category without exhausting every possible pair.
 
-1. Rope Bondage
-2. Shibari
-3. Cuffs
-4. Spreader Bars
-5. Restraint Furniture
-...
+Once a category has meaningful ordering evidence, its strongest currently ranked items can become Overall finalists.
+
+The current finalist selector takes up to the top five meaningfully ranked items from each category.
+
+Untouched categories contribute no finalists. Items tied only because they have never been compared do not become arbitrary Overall candidates.
+
+## Overall candidate pool
+
+Overall ranking uses:
+
+- current category finalists; plus
+- items already involved in meaningful Overall comparisons.
+
+This preserves existing Overall history when category finalists evolve while avoiding the entire catalog becoming an Overall comparison pool.
+
+## Comparison results
+
+Current raw comparison results are:
+
+```ts
+type ComparisonResult =
+  | "left"
+  | "right"
+  | "equal"
+  | "neither"
+  | "skip";
 ```
 
----
-
-# Category finalists
-
-Once a category has ranking evidence, its highest-ranked items can advance to the cross-category stage. Untouched categories must not contribute arbitrary finalists simply because all unrated items begin tied.
-
-Initial product default:
-
-```text
-Top 5 per category
-```
-
-This is a **selection threshold**, not a permanent product rule.
-
-Finalist count should effectively behave like:
-
-```text
-min(configuredFinalistCount, eligibleItems)
-```
-
-If a category has five or fewer eligible items, all eligible items can advance. If it has six, the current Top 5 advance.
-
-Future tuning may use different finalist counts for very large or very small categories.
-
-The goal is not to guarantee exactly five finalists from every category. The goal is to retain enough of each ranked category's strongest candidates to build a useful overall list. Categories with no ranking comparisons contribute no finalists.
-
----
-
-# Current navigation model
-
-The ranking experience is organized as navigation through a collection rather than a two-tab wizard.
-
-```text
-CATEGORIES HOME
-├─ Continue where you left off
-├─ In progress categories
-├─ Not started categories
-├─ Pretty confident categories
-└─ Overall ranking destination
-```
-
-Entering a category or Overall opens that ranking context.
-
-Inside a ranking context, `← Categories` returns to the category home. Category sessions also expose a next-category action.
-
-The conceptual ranking model still has a category phase and an Overall phase, but the UI should not present them as rigid numbered stage buttons.
-
----
-
-# Stage 2 — Cross-category ranking
-
-Category finalists enter a second this-or-that flow.
-
-Example:
-
-```text
-Rope Bondage
-     OR
-Praise
-```
-
-or:
-
-```text
-Pet Play
-     OR
-Impact Play
-```
-
-The purpose of this stage is to answer:
-
-> "Out of the things I most like in each area, what are my actual overall favorites?"
-
-The system should progressively establish the top of the overall list rather than requiring exhaustive ranking of the entire finalist pool.
-
-Initial target:
-
-- confidently determine approximately the overall Top 25–50
-- allow the user to continue refining beyond that if desired
-- preserve category ranking for items that never need a precise overall position
-
----
-
-# Interaction choices
-
-Each comparison should support:
-
-- left item
-- right item
-- both / equal
-- neither
-- skip / don't know
+Only `left`, `right`, and `equal` are **ordering results**.
 
 ### Left / right
 
-The selected item receives evidence that it ranks above the other item.
+The selected side receives pairwise evidence that it ranks above the other item.
 
-### Both / equal
+### Equal
 
-The two items are treated as approximately equivalent for this comparison.
+Both items receive an equal-result update.
 
 ### Neither
 
-No positive ordering preference should be awarded to either item.
+The interaction is retained, but it does not update Elo, increment ordering-comparison counts, or increase ranking confidence.
 
-The raw interaction may be retained to avoid immediately repeating an unhelpful pair.
+### Skip
 
-**Current implementation:** Neither is retained as a raw interaction for repetition avoidance/history, but it does not change Elo, increment item ordering counts, or increase scope confidence.
+The interaction is retained, but it also provides no ordering evidence.
 
-Direct explicit preference editing belongs in the catalog table/list. Ranking behavior must not silently overwrite explicit profile state.
+Retaining Neither/Skip allows the pair selector and history to know that the interaction occurred without pretending the user expressed a relative preference.
 
-### Skip / don't know
+## Current Elo model
 
-Skip should provide no ranking evidence.
-
-The raw interaction may be retained so the selector can avoid immediate repetition.
-
-**Current implementation:** Skip is retained as a raw interaction for repetition avoidance/history, but it does not change Elo, increment item ordering counts, or increase scope confidence.
-
-Useful when:
-
-- the user does not understand one of the terms
-- the user has not explored either item enough to compare them
-- the comparison feels meaningless
-
----
-
-# Relationship to explicit preference state
-
-C3 implementation details are recorded in [M6 C3 Explicit Preference + Catalog Table](m6-c3-explicit-preference.md). C4 source-aware evidence convergence and C5 ranking-confidence/finalist hardening are both complete.
-
-This-or-That is intentionally a mini-game for comparative discovery/ranking. Direct preference assignment belongs in the separate catalog table/list.
-
-Relative ranking and explicit interest are different dimensions.
-
-Example:
+The active ranking calculation currently uses an Elo-style model:
 
 ```text
-Rope Bondage
-Interest: LOVE
-Category rank: #1
-Overall rank: #3
-
-Cuffs
-Interest: LIKE
-Category rank: #4
-Overall rank: #28
-
-Blood Play
-Interest: HARD LIMIT
-Ranking: excluded
+starting rating = 1500
+K factor        = 32
 ```
 
-The catalog's explicit states remain authoritative for safety and interest semantics.
+Ordering comparisons are replayed chronologically for the requested scope.
 
-Canonical M6 explicit states:
+Items are then ordered by:
 
-- love
-- like
-- curious
-- unsure
-- not interested
-- hard limit
-- not applicable
+1. rating descending;
+2. comparison count descending;
+3. label as deterministic tie-breaker.
 
-Items marked `hard limit`, `not interested`, or `not applicable` should normally be excluded from ranking comparisons unless a future product mode explicitly says otherwise.
+The calculated rating is derived data. Raw comparison records remain the persisted evidence source.
 
-Ranking is primarily intended to distinguish relative preference among eligible items.
+The algorithm version is stored on each ranking run so future ranking changes can be handled deliberately.
 
----
+## Item and scope confidence
 
-# Ranking model
-
-Do not persist only a final score.
-
-Raw pairwise decisions should remain the source of truth so rankings can be recalculated later if the algorithm changes.
-
-Example comparison record:
-
-```json
-{
-  "leftKinkId": "rope-bondage",
-  "rightKinkId": "spanking",
-  "scope": {
-    "type": "category",
-    "categoryId": "bondage-discipline"
-  },
-  "result": "left",
-  "timestamp": "..."
-}
-```
-
-Cross-category comparison:
-
-```json
-{
-  "leftKinkId": "rope-bondage",
-  "rightKinkId": "praise",
-  "scope": {
-    "type": "overall"
-  },
-  "result": "right",
-  "timestamp": "..."
-}
-```
-
-An Elo-style model is a reasonable first implementation because it is simple, incremental, and easy to test.
-
-The storage model should not make Elo permanent. Future algorithms could include:
-
-- Bradley-Terry
-- TrueSkill
-- Bayesian preference models
-
-Calculated rankings are derived from raw comparison history, while C3 explicit preference state filters eligibility before pair selection/ranking.
-
----
-
-# Question selection
-
-The selector should avoid brute-force pair generation.
-
-## Within-category selection
-
-Early comparisons should establish rough placement quickly.
-
-Later comparisons should increasingly prioritize:
-
-- items with similar estimated rankings
-- items with low comparison counts
-- items with low ranking confidence
-- unresolved ties
-- newly added catalog items
-
-## Cross-category selection
-
-The finalist stage should prioritize comparisons that help determine the top of the overall list.
-
-This means it does **not** need to precisely sort every finalist.
-
-Priority should generally favor:
-
-- likely Top 25–50 candidates
-- close competitors
-- finalists with low confidence
-- finalists from different categories that have not yet been meaningfully compared
-
----
-
-# Avoiding comparison fatigue
-
-The system should avoid:
-
-- repeating the exact same comparison unnecessarily
-- repeatedly showing one item
-- predictable left/right placement
-- comparing explicitly excluded items once M6 explicit-state eligibility exists
-- forcing users to finish an entire category in one sitting
-- forcing users to rank the entire finalist pool
-
-Left/right placement should be randomized to reduce position bias.
-
-Progress should persist automatically.
-
----
-
-# Sessions and progress
-
-Ranking can be completed incrementally.
-
-Suggested session options:
+Each ranked item exposes comparison-based confidence:
 
 ```text
-Quick
-10 comparisons
-
-Standard
-25 comparisons
-
-Deep Dive
-50 comparisons
-
-Gremlin Mode
-keep going until I stop
+item confidence = min(1, meaningful comparisons / 8)
 ```
 
-These are UX conveniences, not ranking semantics.
-
-There does not need to be one absolute "complete" state.
-
-Instead, results can expose confidence/refinement.
-
-Example:
+Scope confidence is based on meaningful ordering comparisons relative to the current eligible pool:
 
 ```text
-Bondage ranking
-Pretty confident
-
-Overall favorites
-Rough ranking
+target comparisons ≈ eligible item count × 4
+scope confidence    = min(1, ordering comparisons / target)
 ```
 
-Possible confidence labels:
+Current presentation labels are:
 
-- Just Started
-- Rough Ranking
-- Pretty Confident
-- Highly Refined
+- Just started
+- Rough ranking
+- Pretty confident
+- Highly refined
 
----
+Confidence describes refinement/evidence breadth. It does not rewrite explicit preference.
 
-# Results
+## Pair selection
 
-## Category results
+The selector does not brute-force every possible pair.
 
-Every ranked category should remain independently viewable.
+It prioritizes comparisons that are useful for refinement by considering:
+
+- how often the pair has already appeared;
+- rating distance;
+- existing comparison counts;
+- current rank distance.
+
+Repeated pairs receive a strong penalty, while close/low-evidence pairs are favored.
+
+This allows ranking to remain incremental rather than requiring `n × (n - 1) / 2` comparisons.
+
+## Persistence model
+
+Catalog profile state stores raw comparisons together with temporal ranking-run metadata.
+
+Conceptually:
+
+```ts
+type RankingRun = {
+  id: string;
+  startedAt: string;
+  archivedAt?: string;
+  status: "active" | "archived";
+  algorithmVersion: number;
+  snapshots?: RankingRunSnapshots;
+};
+
+type KinkRankingHistory = {
+  activeRunId: string;
+  runs: Record<string, RankingRun>;
+};
+
+type KinkComparison = {
+  id: string;
+  runId?: string;
+  leftKinkId: string;
+  rightKinkId: string;
+  scope: RankingScope;
+  result: ComparisonResult;
+  timestamp: string;
+};
+```
+
+`runId` remains optional at the TypeScript boundary only for legacy compatibility. Persisted/normalized current comparisons are assigned to a known run.
+
+## Temporal model
+
+This-or-That is intentionally treated as a repeatable comparative **preference pulse**, not one lifetime score that accumulates forever.
+
+There is one active run and zero or more archived runs.
+
+### Active run
+
+The active run is the only writable run.
+
+Only active-run comparisons contribute to:
+
+- current category ranking;
+- current Overall ranking;
+- current pairwise Signal evidence;
+- current profile Top Overall/ranking-derived presentation.
+
+### Archived run
+
+Archived runs retain historical raw comparisons and captured snapshots.
+
+Archived comparisons do **not** strengthen the current pairwise evidence channel or initialize a new run's Elo ratings.
+
+This prevents an old comparative state from masquerading as current preference.
+
+## Starting a new run
+
+Starting a new ranking run is a non-destructive temporal operation.
+
+The runtime:
+
+1. identifies the current active run;
+2. captures meaningful category snapshots for scopes with ordering evidence;
+3. captures an Overall snapshot when meaningful Overall evidence exists;
+4. archives the old run with `archivedAt` and snapshots;
+5. creates a new empty active run with the current algorithm version.
+
+The new run starts from fresh pairwise evidence.
+
+It does **not** delete or modify:
+
+- explicit catalog preferences;
+- quiz answers/results;
+- the archived run's raw comparisons;
+- the archived run's historical snapshots.
+
+This is intentionally different from a destructive Settings reset.
+
+## Historical snapshots
+
+Each archived run can preserve snapshots for category scopes and Overall.
+
+A snapshot records:
+
+```ts
+type RankingScopeSnapshot = {
+  capturedAt: string;
+  confidence: number;
+  items: Array<{
+    catalogId: string;
+    rank: number;
+    comparisons: number;
+    confidence: number;
+  }>;
+};
+```
+
+Only items with meaningful ordering evidence are captured.
+
+Snapshots provide a stable historical presentation anchor so later catalog growth, eligibility changes, or ranking-algorithm changes do not silently redefine what “previously #4” meant.
+
+Raw archived comparisons remain historical evidence within the run; snapshots preserve the displayed ordering at archival time.
+
+## Previous comparable snapshot
+
+Movement uses the most recent archived run that contains a snapshot for the **same scope**.
+
+Therefore:
+
+- category movement compares against the previous comparable snapshot for that category;
+- Overall movement compares against the previous comparable Overall snapshot;
+- a category is never compared against Overall;
+- if no previous comparable snapshot exists, no movement indicator is shown.
+
+## View-relative movement
+
+Movement is calculated against the exact item set visible in the current presentation.
+
+This is critical.
+
+Before computing movement, the previous snapshot is projected onto the current view's stable Catalog IDs, preserving previous order, then re-indexed from `1..N`.
+
+For an item at current visible rank `r`:
 
 ```text
-BONDAGE & DISCIPLINE
-
-1. Rope Bondage
-2. Cuffs
-3. Shibari
-4. Spreader Bars
-...
+delta = previous visible rank - current visible rank
 ```
 
-## Overall favorites
+Therefore:
 
-The cross-category stage produces the primary favorites list.
+- positive delta → moved up;
+- negative delta → moved down;
+- zero → unchanged;
+- absent from the previous comparable projected view → New this run.
 
-```text
-YOUR OVERALL FAVORITES
+This prevents hidden/filtered-out items from creating impossible-looking movement such as a current `#3` row claiming a five-place drop when only a small visible list is being shown.
 
-1. Pet Play
-2. Rope Bondage
-3. Praise
-4. Ownership
-5. Impact Play
-...
-```
+> **The rank printed on the row is the rank the movement badge compares.**
 
-The product may present:
+## Meaningful-evidence requirement
 
-- Top 10
-- Top 25
-- Top 50
-- extended ranking where enough evidence exists
+Movement is not generated for current items with zero meaningful comparisons.
 
-## Tier view
+Likewise, archived snapshots omit items with no ordering evidence.
 
-An optional presentation can derive human-friendly tiers from ranked results.
+This prevents fresh runs from showing fake changes caused by default 1500 ratings or deterministic label tie-breaks.
 
-```text
-S — FAVORITES
-Pet Play
-Rope Bondage
-Praise
+`New this run` means the item was not meaningfully ranked in the immediately previous comparable snapshot. It does not mean the catalog item itself is newly created.
 
-A — VERY INTO
-Ownership
-Impact Play
-Collaring
-```
+## Migration and backward compatibility
 
-Tiers are presentation. They should not replace the underlying ranking evidence.
+Older catalog profiles may contain comparisons without ranking history or without `runId`.
 
----
+Normalization creates an initial active run and assigns legacy comparisons to it without duplicating evidence.
 
-# Catalog evolution
+The initial run start time uses the earliest comparison timestamp when available.
 
-The master kink catalog will continue changing.
+No fake previous run is created, so users do not receive movement badges until a real archived comparable snapshot exists.
 
-C1 replaced label-derived runtime identity with explicit stable Catalog IDs / Category IDs while preserving the IDs used by existing comparison history.
+Persistence parsing validates:
 
-New items should:
+- comparison identity/result/scope/timestamp;
+- run IDs and active-run consistency;
+- algorithm version;
+- archived timestamps;
+- category/Overall snapshots;
+- snapshot rank/comparison/confidence values;
+- current Catalog ID replacements.
 
-- receive explicit stable IDs through catalog normalization
-- begin with no comparison history
-- enter their category ranking as low-confidence items
-- be prioritized enough to establish approximate placement
-- become eligible for finalist selection once sufficiently ranked
+Malformed ranking history is not partially trusted as canonical history.
 
-Adding catalog rows should not require existing users to restart their rankings.
+## Catalog evolution
 
----
+New catalog items enter with no pairwise evidence.
 
-# Explainability and editing
+They can become eligible under current explicit preference rules and gradually establish placement through comparisons.
 
-Because raw comparisons are retained, future UI can explain results.
+Catalog ID replacement mappings are applied to both raw comparison references and snapshot item references so historical continuity can survive intentional ID migrations.
 
-Example:
+## Relationship to canonical profile evidence
 
-```text
-Rope Bondage — Overall #3
+Pairwise ranking is one independent evidence source for the canonical Signal profile.
 
-You selected it over:
-- Cuffs
-- Spanking
-- Blindfolds
-- Shibari
+Only the **active run** is current pairwise evidence.
 
-You selected:
-- Pet Play over Rope Bondage
-- Praise over Rope Bondage
-```
+Archived runs are history, not additional current confidence.
 
-Future controls may support:
+Pairwise evidence remains relative and must not:
 
-- undo last comparison
-- comparison history
-- change a previous answer
-- reset one category
-- reset overall ranking
-- reset one kink's comparison history
+- overwrite explicit catalog preference;
+- turn an inferred catalog suggestion into direct evidence;
+- re-enter the profile through derived outputs;
+- accumulate archived runs into a stronger current preference merely because history exists.
 
-M12 adds a separate temporal concept: **Start a new ranking run**. That action archives the current run and begins fresh comparative scoring while preserving history. It must not be conflated with destructive reset controls.
+See [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) and [Scoring & Taxonomy Model](scoring-model.md).
 
----
+## Reset semantics
 
-# Profile integration
+Starting a new run and deleting ranking data are different operations.
 
-A kink can expose both explicit state and derived ranking information.
+### Start a new ranking run
 
-Example:
+- archives current run;
+- preserves history;
+- creates a fresh active pulse;
+- preserves other profile evidence.
 
-```json
-{
-  "id": "rope-bondage",
-  "preference": "love",
-  "ranking": {
-    "categoryRank": 1,
-    "overallRank": 3,
-    "categoryConfidence": 0.91,
-    "overallConfidence": 0.78
-  }
-}
-```
+### Delete This-or-That history
 
-Exact rank values do not need to be persisted if they can be recalculated.
+- destructive Settings lifecycle action;
+- removes active and archived ranking evidence according to the selected reset scope;
+- is not another name for reranking.
 
----
+UI copy should keep those consequences unambiguous.
 
-# M14 shared-profile integration
+## Implementation anchors
 
-Partner/profile comparison is now explicitly scoped in [M14 Shared Profiles, Comparison & Partner Integration](m14-shared-profiles.md).
+Current behavior is primarily implemented in:
 
-Rank evidence can contribute useful context such as:
+- `src/lib/kinkRanking.ts` — scopes, comparison semantics, Elo ranking, confidence, pair selection, finalist/Overall candidate selection;
+- `src/lib/catalogProfile.ts` — catalog preference/ranking state, run normalization, active-run filtering;
+- `src/lib/kinkRankingHistory.ts` — archival snapshots and new-run creation;
+- `src/lib/kinkRankingMovement.ts` — previous comparable snapshot selection and view-relative movement;
+- `src/lib/catalogProfileStorage.ts` — persistence validation, legacy migration, Catalog ID canonicalization;
+- `src/KinkThisOrThat.tsx` and `src/RankingMovementIndicator.tsx` — current ranking interaction/presentation.
 
-```text
-Shared favorites
+## Invariants
 
-Pet Play       You #1      Partner #3
-Rope Bondage   You #2      Partner #2
-Praise         You #3      Partner #7
-```
-
-M14 goes beyond "both said yes": it distinguishes mutual positive fit, complementary activity-side fit, curiosity, exclusions, and unknown while keeping each profile's ranking evidence independent. It does **not** turn rank overlap into one compatibility percentage.
-
----
-
-# Implementation slices
-
-The initial feature is already playable. These statuses describe the current implementation rather than the original plan.
-
-## R1 — Pairwise comparison model ✅
-
-Implemented:
-
-- [x] raw comparison record
-- [x] category vs Overall scope
-- [x] left / right / equal / neither / skip
-- [x] deterministic Elo-style recalculation
-
-M6 hardening:
-
-- [x] focused tests
-- [x] Skip does not increase ranking confidence
-- [x] Neither does not increase ordering confidence
-
-## R2 — Category ranking engine ✅
-
-Implemented:
-
-- [x] pair selection
-- [x] duplicate/repetition penalty
-- [x] low-evidence/close-ranking prioritization
-- [x] coarse confidence estimate
-- [x] category ranking results
-
-M6 hardening:
-
-- [x] C3 explicit-preference eligibility/exclusions
-- [x] C5 confidence semantics based only on meaningful ordering evidence
-
-## R3 — Finalist selection ✅
-
-Implemented:
-
-- [x] configurable finalist count
-- [x] current default Top 5
-- [x] untouched categories contribute zero finalists
-- [x] categories with fewer than five items naturally contribute fewer finalists
-
-C5 hardening (complete):
-
-- [x] require at least one meaningful ordering comparison for each promoted item; one comparison can promote only the items involved
-- [x] preserve eligible prior meaningful Overall participants when current category Top 5 changes
-
-## R4 — Cross-category ranking ✅ / selection tuning remains
-
-Implemented:
-
-- [x] build current finalist pool
-- [x] Overall pair selection
-- [x] Overall ranking
-- [x] Overall confidence
-- [x] existing raw Overall comparisons remain stored as the pool grows
-
-Implemented hardening:
-
-- [x] derive the active candidate pool from current eligible finalists + eligible prior meaningful Overall participants; no separate persistence needed
-
-Optional tuning:
-
-- [ ] determine whether selection should prioritize resolving the top of the list more aggressively
-
-## R5 — This-or-that UI ✅
-
-Implemented:
-
-- [x] two item cards
-- [x] answer controls
-- [x] randomized side placement
-- [x] autosave
-- [x] session-size controls
-- [x] resume
-- [x] category progress-map home
-- [x] continue-where-you-left-off
-- [x] next-category navigation
-- [x] separate Overall destination
-- [x] no prototype stage tabs/dropdown navigation
-
-## R6 — Results/profile integration ✅
-
-Implemented:
-
-- [x] category ranking views
-- [x] Overall favorites
-- [x] confidence labels
-
-C6 integration:
-
-- [x] explicit preference state beside ranking results
-- [x] exclusion/hard-limit summaries separate from favorites
-- [x] inferred affinity shown as a separate derived channel, never as rank
-- [x] source-aware catalog detail/explainability
-- [x] M7 consumes direct explicit + Overall pairwise evidence into the broader profile Top Overall presentation without changing the underlying ranking source
-
-Optional future presentation:
-
-- [ ] tiers, if they prove useful
-
-See [Overall Profile Aggregation](overall-profile-aggregation.md) for the completed M7 Top Overall aggregation contract.
-
----
-
-# Open tuning questions
-
-These should be decided using real catalog sizes and hands-on testing rather than guessed now:
-
-- Is Top 5 the right default finalist count?
-- Should finalist count scale with category size?
-- How aggressively should the system resolve the Top 25 vs the rest of the finalist pool?
-- Should `curious` and `unsure` always participate, or be an optional ranking mode?
-- Should ranking begin before a user has explicitly classified all items in a category?
-
-The architecture should keep these as tuning decisions rather than hard-coded assumptions.
+1. Pairwise ranking is relative evidence, not explicit preference.
+2. Explicit exclusions control current ranking eligibility.
+3. Raw comparisons remain the persisted evidence source.
+4. Neither/Skip interactions do not become ordering evidence.
+5. Untouched categories do not create arbitrary Overall finalists.
+6. Only the active run contributes current pairwise evidence.
+7. Starting a new run archives rather than destructively resets history.
+8. Archived snapshots remain stable historical presentation anchors.
+9. Movement compares like-for-like scopes and the exact visible item set.
+10. Zero-evidence items do not generate movement.
+11. Legacy comparisons migrate into one initial run without fabricated history.
+12. Catalog ID migrations apply consistently to comparisons and snapshots.
+13. Ranking history never feeds back as duplicate current evidence.
