@@ -66,6 +66,16 @@ describe("M16.2 canonical curation Signal adapter", () => {
     });
   });
 
+  it("preserves explicit canonical channels for IDs shared with the legacy vocabulary", () => {
+    expect(
+      canonicalizeCurationSignalRef("service", 0.8, { channel: "receiving" }),
+    ).toEqual({
+      signalId: "service",
+      channel: "receiving",
+      weight: 0.8,
+    });
+  });
+
   it("treats channel as part of Signal relationship identity", () => {
     expect(
       curationSignalRefKey({ signalId: "care", channel: "receiving" }),
