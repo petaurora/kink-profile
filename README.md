@@ -35,22 +35,36 @@ The repository code is authoritative for what is implemented.
 
 Start with:
 
-- [Feature Guide](docs/feature-guide.md) — plain-language product behavior and how the major features fit together
-- [FAQ](docs/faq.md) — common questions about results, ranking, Rewards & Punishments, backup/sharing, and privacy
-- [Documentation index](docs/README.md) — durable product/data/scoring contracts plus the remaining milestone-era implementation documents
+- [Feature Guide](docs/feature-guide.md) — plain-language current product behavior and how the major features fit together
+- [FAQ](docs/faq.md) — common questions about current product behavior
+- [Product Spec](docs/product-spec.md) — current product boundaries and non-goals
+- [Documentation index](docs/README.md) — canonical product, data-model, scoring, and feature contracts
 
-Key system contracts:
+Key product contracts:
 
-- [Product specification](docs/product-spec.md)
-- [Semantic data model](docs/semantic-data-model.md)
-- [Authority, activity side & role semantics](docs/authority-activity-role-separation.md)
-- [Scoring & taxonomy model](docs/scoring-model.md)
-- [Source-aware profile evidence architecture](docs/profile-evidence-architecture.md)
-- [Overall profile aggregation](docs/overall-profile-aggregation.md)
-- [Kink This-or-That ranking](docs/kink-this-or-that-ranking.md)
-- [Reference data](reference/README.md)
+- [Quizzes](docs/product/quizzes.md)
+- [Kink Catalog](docs/product/kink-catalog.md)
+- [Kink This-or-That Ranking](docs/kink-this-or-that-ranking.md)
+- [Profile Management](docs/product/profile-management.md)
+- [Rewards & Punishments](docs/product/rewards-punishments.md)
+- [Scene Builder](docs/product/scene-builder.md)
+- [Profile Comparison](docs/product/profile-comparison.md)
+- [Curation Workbench](docs/product/curation-workbench.md)
 
-Documentation should describe **how the product/system works**. Work status, priorities, and acceptance checklists belong in Issues/Projects. Milestone-named docs are being gradually distilled into durable topic-based contracts as they are materially touched; we are intentionally avoiding a giant rename-only churn pass.
+Key semantic/system contracts:
+
+- [Semantic Data Model](docs/semantic-data-model.md)
+- [Signal + Channel Data Model](docs/data-model/signal-channel-model.md)
+- [Roles, Headspaces & Dynamic Modes](docs/data-model/roles-headspaces-modes.md)
+- [Authority, Activity Side & Role Semantics](docs/authority-activity-role-separation.md)
+- [Scoring & Taxonomy Model](docs/scoring-model.md)
+- [Source-Aware Profile Evidence Architecture](docs/profile-evidence-architecture.md)
+- [Overall Profile Aggregation](docs/overall-profile-aggregation.md)
+- [Reference Data](reference/README.md)
+
+Documentation describes **how the current product/system works**. Work status, priorities, implementation plans, and acceptance checklists belong in GitHub. Product strategy, research, unresolved design, and business/privacy planning belong in the private product workspace.
+
+Milestone-named files that remain under `docs/` are compatibility pointers for old links, not current sources of truth.
 
 ## Tech
 
