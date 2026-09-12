@@ -45,13 +45,15 @@ Route path builders such as `quizRoutePath`, `quizResultsPath`, and feature-spec
 
 React Router is the sole page-navigation authority.
 
-`src/app/MobilePrimaryNav.tsx` owns the only persistent mobile product navigation chrome. At phone widths the legacy `SiteHeader` is not rendered visually; page content scrolls normally above the fixed bottom navigation. Quiz targets the canonical `/quizzes` home route. Catalog launches directly into the Kinks and Rewards & Punishments workspaces. Tools launches directly into Scenes, R/P Tools, and Compare. Canonical `/catalog/...` children resolve to Catalog, while Scene Builder, Compare, and `/tools/rewards/...` children resolve to Tools through `src/app/mobilePrimaryNavigation.ts`.
+`src/app/MobilePrimaryNav.tsx` owns persistent mobile product navigation. Quiz targets the canonical `/quizzes` home route. Catalog launches directly into the Kinks and Rewards & Punishments workspaces. Tools launches directly into Scenes, R/P Tools, and Compare. Canonical `/catalog/...` children resolve to Catalog, while Scene Builder, Compare, and `/tools/rewards/...` children resolve to Tools through `src/app/mobilePrimaryNavigation.ts`.
 
-`src/app/SiteHeader.tsx` remains a temporary desktop-only compatibility surface until the M19 desktop rail replaces it. It reports requested destinations through callbacks but does not push browser history itself. Ranking and Rewards & Punishments are no longer presented there as separate primary product areas, and internal/admin surfaces such as Curation Workbench are not offered in ordinary product navigation.
+`src/app/DesktopNavigationRail.tsx` owns persistent desktop product navigation. It uses the same primary hierarchy as mobile: Hub, Quiz, Catalog, Profile, and Tools, with Settings pinned separately at the bottom. The rail header is product branding only; profile identity is not duplicated there, so Profile remains the single explicit profile destination. Catalog reveals Kinks and Rewards & Punishments as child workspaces while active; Tools reveals Scenes, R/P Tools, and Compare while active. The paw control collapses the rail to a narrow handle rather than opening a second navigation menu. `src/app/desktopNavigation.ts` derives desktop active-state and child-workspace state from the same routed location contract rather than introducing a second navigation model.
+
+Settings remains Profile-owned for primary active-state semantics while also receiving its own active state in the desktop rail. Internal/admin surfaces such as Curation Workbench are excluded from both ordinary mobile and desktop navigation.
 
 Within a workspace, peer views use the shared `SegmentedControl` component and route navigation rather than an additional app-level state machine. Current examples are Kinks `Browse | Rank`, Rewards & Punishments `Browse | Rank`, and R/P Tools `Randomizer | Recipes`.
 
-`src/app/RoutedFeatureFrame.tsx` adapts shared desktop-header destinations to route paths with `useNavigate`, supplies the current profile display name, and preserves the current path when opening Settings so Settings can return to the invoking route. On mobile its `SiteHeader` output is suppressed by the shell breakpoint, leaving the bottom navigation as the persistent product chrome.
+`src/app/RoutedFeatureFrame.tsx` is now content-only shell composition: it supplies the shared `app-shell` content wrapper and Profile-owned actions where appropriate, but it does not render or own application navigation. Settings similarly owns only its local back/title header; global navigation is supplied by `AppShell`.
 
 Feature routes may use `useNavigate` directly for feature-specific transitions such as quiz → results, profile → focused catalog, Browse → Rank, or Randomizer → Recipes.
 
@@ -65,10 +67,11 @@ Browser Back/Forward therefore reflects route navigation rather than a parallel 
 - the legacy profile-name bridge required by remaining compatibility surfaces
 - the route render error boundary
 - the global Return to Top control
+- the desktop navigation rail and its expanded/collapsed shell offset
 - the mobile primary navigation
 - the React Router `Outlet`
 
-The mobile navigation may intentionally be hidden for internal or immersive routes such as Curation, but ordinary product pages must not add a second persistent top navigation surface.
+Ordinary product pages expose one persistent navigation system appropriate to the viewport: the desktop rail above the mobile breakpoint or the fixed mobile bottom navigation at phone widths. Internal or immersive routes such as Curation may intentionally suppress ordinary global navigation entirely.
 
 Page-specific UI does not belong in `AppShell`.
 
@@ -182,7 +185,10 @@ Architecture changes should preserve these behaviors unless a follow-up explicit
 - refresh-style initialization reconstructs route state from URL + persistence
 - browser Back/Forward reflects navigation history, including route-backed peer views such as R/P Tools Randomizer/Recipes
 - mobile product pages expose only the fixed bottom primary navigation as persistent navigation chrome
-- the temporary desktop shared header produces one browser navigation per destination selection and does not advertise internal/admin routes
+- desktop product pages expose the collapsible left rail using the same Hub / Quiz / Catalog / Profile / Tools hierarchy as mobile, with Settings pinned separately at the bottom
+- the desktop rail header carries product branding rather than duplicate profile identity
+- Catalog and Tools child workspaces resolve consistently across mobile and desktop navigation
+- internal/admin routes such as Curation remain outside ordinary product navigation
 - unknown routes fall back safely
 - catalog query state parses and serializes safely
 - legacy Catalog/Ranking links resolve into the canonical Catalog workspace without losing supported query state
