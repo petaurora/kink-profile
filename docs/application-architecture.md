@@ -19,13 +19,21 @@ The canonical route contract lives in `src/app/routes.ts`:
 | `/quizzes` | Quiz Home |
 | `/quizzes/:quizId` | Quiz flow |
 | `/quizzes/:quizId/results` | Quiz results |
-| `/catalog` | Kink Catalog |
-| `/ranking` | This or That ranking |
-| `/rewards` | Rewards & Punishments |
+| `/catalog/kinks` | Catalog · Kinks · Browse |
+| `/catalog/kinks/rank` | Catalog · Kinks · Rank |
+| `/catalog/rewards` | Catalog · Rewards & Punishments · Browse |
+| `/catalog/rewards/rank` | Catalog · Rewards & Punishments · Rank |
 | `/scene-builder` | Scene Builder |
 | `/compare` | Profile Comparison |
 | `/curation` | Curation Workbench |
 | `/settings` | Settings |
+
+Compatibility routes remain explicit while M19 reorganizes information architecture:
+
+- `/catalog` redirects to `/catalog/kinks` and preserves supported query state;
+- `/ranking` redirects to `/catalog/kinks/rank`;
+- `/rewards` redirects to `/catalog/rewards` unless `?workspace=tools` is present;
+- `/rewards?workspace=tools` remains a temporary compatibility surface until the R/P Tools work moves into Tools.
 
 Unknown routes redirect to the canonical hub fallback defined by the same route contract.
 
@@ -35,13 +43,15 @@ Route path builders such as `quizRoutePath`, `quizResultsPath`, and feature-spec
 
 React Router is the sole page-navigation authority.
 
-`src/app/SiteHeader.tsx` is presentation plus interaction state: it reports a requested destination through callbacks but does not push browser history itself.
+`src/app/SiteHeader.tsx` is presentation plus interaction state: it reports a requested destination through callbacks but does not push browser history itself. Ranking and Rewards & Punishments are no longer presented there as separate primary product areas; Catalog owns those workflows.
 
-`src/app/MobilePrimaryNav.tsx` owns the persistent mobile destination controls. Quiz targets the canonical `/quizzes` home route, while quiz execution and result routes remain classified as the same primary Quiz destination by `src/app/mobilePrimaryNavigation.ts`.
+`src/app/MobilePrimaryNav.tsx` owns the persistent mobile destination controls. Quiz targets the canonical `/quizzes` home route. Catalog launch choices resolve into the Kinks and Rewards & Punishments workspaces, and every canonical `/catalog/...` child is classified as the same primary Catalog destination by `src/app/mobilePrimaryNavigation.ts`.
+
+Within a workspace, peer views use the shared `SegmentedControl` component and route navigation rather than an additional app-level state machine. Current examples are Kinks `Browse | Rank` and Rewards & Punishments `Browse | Rank`.
 
 `src/app/RoutedFeatureFrame.tsx` adapts shared header destinations to route paths with `useNavigate`, supplies the current profile display name, and preserves the current path when opening Settings so Settings can return to the invoking route.
 
-Feature routes may use `useNavigate` directly for feature-specific transitions such as quiz → results, profile → focused catalog, or Rewards → profile.
+Feature routes may use `useNavigate` directly for feature-specific transitions such as quiz → results, profile → focused catalog, or Browse → Rank.
 
 Browser Back/Forward therefore reflects route navigation rather than a parallel in-memory screen state machine.
 
@@ -83,7 +93,8 @@ A feature route should do only the route-level work its feature needs: read rout
 
 Examples:
 
-- Catalog parses URL query state with `parseCatalogRouteFocus` and serializes supported drill-down state with `catalogRoutePath`.
+- Catalog is one primary product area with Kinks and Rewards & Punishments as sibling workspaces. Each workspace exposes route-backed `Browse | Rank` views. `CatalogRoute` owns Kinks Browse/Rank composition, while `RewardsCatalogRoute` owns Rewards & Punishments Browse/Rank composition.
+- Kink Catalog focused query state is parsed with `parseCatalogRouteFocus` and serialized with `catalogRoutePath`; the canonical base is `/catalog/kinks`.
 - Quiz Home hydrates persisted quiz progress and owns detailed guided-quiz discovery. It opens incomplete quizzes at their quiz route and completed quizzes at their results route. Hub may link to Quiz Home as an overview destination but does not own the detailed quiz catalog.
 - Quiz routes resolve only currently available quiz definitions. Unknown, retired, unavailable, or empty quiz definitions fall back to the hub. Direct results access is valid only when all current quiz questions have answers.
 - Compare, Rewards, and Scene Builder hydrate current profile/catalog state through `loadCurrentProfileSnapshot()` rather than relying on state left alive by another page.
@@ -95,6 +106,8 @@ Direct route entry and refresh must therefore reconstruct the page from URL stat
 Routing does **not** own profile data.
 
 Authoritative browser persistence remains in the existing storage modules under `src/lib`, including quiz progress, catalog preferences/ranking history, profile settings, Rewards & Punishments state, and saved scenes.
+
+The Catalog workspace migration does not rename or migrate those storage schemas. Kink ranking history, catalog preferences, R/P contextual profile data, and R/P ranking history remain in their existing persistence modules; only their route ownership changes.
 
 The private profile backup format remains the compatibility boundary for export/import. Route extraction must not silently rename storage keys, change stored schemas, or convert derived output into authoritative stored data.
 
@@ -121,6 +134,8 @@ Retired quiz IDs remain supported by persistence/import compatibility where requ
 URL query state is treated as untrusted input.
 
 Catalog query parsing accepts only known category IDs and supported preference filters. Invalid or unrelated values normalize to the default unfocused catalog state. Path serialization applies the same validation so application code does not create dead query links.
+
+Legacy `/catalog?...` direct links preserve their search string when redirecting into the canonical `/catalog/kinks?...` route.
 
 When a feature adds durable URL state, parsing and serialization should live near the owning feature and be covered as a round-trip contract.
 
@@ -163,6 +178,7 @@ Architecture changes should preserve these behaviors unless a follow-up explicit
 - the shared header produces one browser navigation per destination selection
 - unknown routes fall back safely
 - catalog query state parses and serializes safely
+- legacy Catalog/Ranking links resolve into the canonical Catalog workspace without losing supported query state
 - quiz IDs and results eligibility are resolved from current definitions and stored answers
 - private backup/import/export remains compatible
 - restored stored profiles hydrate correctly on fresh routes

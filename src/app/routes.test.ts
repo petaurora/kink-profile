@@ -2,10 +2,14 @@ import { createMemoryRouter, matchRoutes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import {
   appRoutePatterns,
+  catalogRewardsRankingRoute,
+  catalogRewardsRoute,
   catalogRoute,
   compareRoute,
   curationRoute,
   hubRoute,
+  legacyCatalogRoute,
+  legacyRankingRoute,
   profileRoute,
   quizHomeRoute,
   quizResultsPath,
@@ -38,8 +42,12 @@ describe("application route contract", () => {
     ["/", "hub"],
     ["/profile", "profile"],
     ["/quizzes", "quiz-home"],
-    ["/catalog", "catalog"],
-    ["/ranking", "ranking"],
+    ["/catalog/kinks", "catalog"],
+    ["/catalog/kinks/rank", "ranking"],
+    ["/catalog/rewards", "catalog-rewards"],
+    ["/catalog/rewards/rank", "catalog-rewards-ranking"],
+    ["/catalog", "catalog-legacy"],
+    ["/ranking", "ranking-legacy"],
     ["/rewards", "rewards"],
     ["/scene-builder", "scene-builder"],
     ["/compare", "compare"],
@@ -52,9 +60,9 @@ describe("application route contract", () => {
   });
 
   it("recreates a direct route from URL state as refresh would", () => {
-    const router = createRouteTestRouter("/catalog?category=impact");
+    const router = createRouteTestRouter("/catalog/kinks?category=impact");
 
-    expect(router.state.location.pathname).toBe("/catalog");
+    expect(router.state.location.pathname).toBe("/catalog/kinks");
     expect(router.state.location.search).toBe("?category=impact");
 
     router.dispose();
@@ -73,8 +81,8 @@ describe("application route contract", () => {
     const router = createRouteTestRouter("/");
 
     await router.navigate("/profile");
-    await router.navigate("/ranking");
-    expect(router.state.location.pathname).toBe("/ranking");
+    await router.navigate("/catalog/kinks/rank");
+    expect(router.state.location.pathname).toBe("/catalog/kinks/rank");
 
     await router.navigate(-1);
     expect(router.state.location.pathname).toBe("/profile");
@@ -86,7 +94,26 @@ describe("application route contract", () => {
     expect(router.state.location.pathname).toBe("/profile");
 
     await router.navigate(1);
-    expect(router.state.location.pathname).toBe("/ranking");
+    expect(router.state.location.pathname).toBe("/catalog/kinks/rank");
+
+    router.dispose();
+  });
+
+  it("preserves Catalog workspace history between Browse and Rank", async () => {
+    const router = createRouteTestRouter("/catalog/kinks");
+
+    await router.navigate("/catalog/kinks/rank");
+    expect(router.state.location.pathname).toBe("/catalog/kinks/rank");
+
+    await router.navigate(-1);
+    expect(router.state.location.pathname).toBe("/catalog/kinks");
+
+    await router.navigate("/catalog/rewards");
+    await router.navigate("/catalog/rewards/rank");
+    expect(router.state.location.pathname).toBe("/catalog/rewards/rank");
+
+    await router.navigate(-1);
+    expect(router.state.location.pathname).toBe("/catalog/rewards");
 
     router.dispose();
   });
@@ -111,13 +138,35 @@ describe("application route contract", () => {
     expect(unknownRouteFallbackPath).toBe("/");
   });
 
-  it("defines every top-level destination as a first-class route", () => {
+  it("defines Catalog workspaces and compatibility routes explicitly", () => {
+    expect(catalogRoute).toEqual({ id: "catalog", path: "/catalog/kinks" });
+    expect(rankingRoute).toEqual({
+      id: "ranking",
+      path: "/catalog/kinks/rank",
+    });
+    expect(catalogRewardsRoute).toEqual({
+      id: "catalog-rewards",
+      path: "/catalog/rewards",
+    });
+    expect(catalogRewardsRankingRoute).toEqual({
+      id: "catalog-rewards-ranking",
+      path: "/catalog/rewards/rank",
+    });
+    expect(legacyCatalogRoute).toEqual({
+      id: "catalog-legacy",
+      path: "/catalog",
+    });
+    expect(legacyRankingRoute).toEqual({
+      id: "ranking-legacy",
+      path: "/ranking",
+    });
+    expect(rewardsRoute).toEqual({ id: "rewards", path: "/rewards" });
+  });
+
+  it("defines the remaining top-level destinations as first-class routes", () => {
     expect(hubRoute).toEqual({ id: "hub", path: "/" });
     expect(profileRoute).toEqual({ id: "profile", path: "/profile" });
     expect(quizHomeRoute).toEqual({ id: "quiz-home", path: "/quizzes" });
-    expect(catalogRoute).toEqual({ id: "catalog", path: "/catalog" });
-    expect(rankingRoute).toEqual({ id: "ranking", path: "/ranking" });
-    expect(rewardsRoute).toEqual({ id: "rewards", path: "/rewards" });
     expect(sceneBuilderRoute).toEqual({
       id: "scene-builder",
       path: "/scene-builder",
@@ -141,13 +190,13 @@ describe("application route contract", () => {
     );
   });
 
-  it("routes every header destination through browser navigation", () => {
+  it("routes legacy header destinations into Catalog workspaces", () => {
     expect(siteHeaderRoutePaths).toEqual({
       hub: "/",
       profile: "/profile",
-      ranking: "/ranking",
-      catalog: "/catalog",
-      "rewards-punishments": "/rewards",
+      ranking: "/catalog/kinks/rank",
+      catalog: "/catalog/kinks",
+      "rewards-punishments": "/catalog/rewards",
       "scene-builder": "/scene-builder",
       "compare-profiles": "/compare",
       "curation-workbench": "/curation",

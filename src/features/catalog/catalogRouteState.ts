@@ -4,6 +4,7 @@ import type {
   CatalogDrilldownFocus,
   CatalogPreferenceFilter,
 } from "../../lib/catalogDrilldown";
+import { catalogRoute } from "../../app/routes";
 
 const categoryIds = new Set<string>(
   kinkCategories.map((category) => category.id),
@@ -43,5 +44,5 @@ export function catalogRoutePath(focus: CatalogDrilldownFocus = {}) {
   }
 
   const query = params.toString();
-  return query ? `/catalog?${query}` : "/catalog";
+  return query ? `${catalogRoute.path}?${query}` : catalogRoute.path;
 }

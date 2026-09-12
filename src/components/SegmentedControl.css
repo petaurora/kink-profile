@@ -1,0 +1,56 @@
+.segmented-control {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: var(--bg-surface-emphasis);
+}
+
+.segmented-control-option {
+  min-width: 96px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.62rem 1rem;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-weight: 800;
+  line-height: 1;
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.segmented-control-option:hover {
+  color: var(--text-primary);
+  background: var(--bg-control-hover);
+}
+
+.segmented-control-option.is-active {
+  color: var(--text-primary);
+  background: var(--bg-page);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--bg-page) 70%, transparent);
+}
+
+@media (max-width: 640px) {
+  .segmented-control {
+    width: 100%;
+  }
+
+  .segmented-control-option {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segmented-control-option {
+    transition: none;
+  }
+}

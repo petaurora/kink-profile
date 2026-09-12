@@ -5,30 +5,31 @@ import type { CatalogPreferenceFilter } from "../../lib/catalogDrilldown";
 import { catalogRoutePath, parseCatalogRouteFocus } from "./catalogRouteState";
 
 const categoryId = kinkCategories[0]?.id;
+const catalogBase = "/catalog/kinks";
 
 describe("catalog route state", () => {
-  it("serializes useful drill-down state into the URL", () => {
+  it("serializes useful drill-down state into the Kinks workspace URL", () => {
     expect(categoryId).toBeTruthy();
     expect(catalogRoutePath({ categoryId })).toBe(
-      `/catalog?category=${encodeURIComponent(categoryId!)}`,
+      `${catalogBase}?category=${encodeURIComponent(categoryId!)}`,
     );
     expect(catalogRoutePath({ preferenceFilter: "hard_limit" })).toBe(
-      "/catalog?preference=hard_limit",
+      `${catalogBase}?preference=hard_limit`,
     );
     expect(
       catalogRoutePath({ categoryId, preferenceFilter: "curious" }),
     ).toBe(
-      `/catalog?category=${encodeURIComponent(categoryId!)}&preference=curious`,
+      `${catalogBase}?category=${encodeURIComponent(categoryId!)}&preference=curious`,
     );
   });
 
   it("omits invalid route state instead of creating dead links", () => {
-    expect(catalogRoutePath({ categoryId: "not-a-category" })).toBe("/catalog");
+    expect(catalogRoutePath({ categoryId: "not-a-category" })).toBe(catalogBase);
     expect(
       catalogRoutePath({
         preferenceFilter: "definitely-nope" as CatalogPreferenceFilter,
       }),
-    ).toBe("/catalog");
+    ).toBe(catalogBase);
   });
 
   it("round-trips every supported preference filter through URL state", () => {

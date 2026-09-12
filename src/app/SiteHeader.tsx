@@ -1,8 +1,6 @@
 import { useState } from "react";
 import {
-  IconArrowsLeftRight,
   IconChevronDown,
-  IconGift,
   IconHome,
   IconList,
   IconPaw,
@@ -89,29 +87,11 @@ export function SiteHeader({
               </button>
               <button
                 type="button"
-                aria-current={activeDestination === "ranking" ? "page" : undefined}
-                onClick={() => navigate("ranking")}
-              >
-                <IconArrowsLeftRight size={17} stroke={1.9} aria-hidden="true" />
-                <span>This or That</span>
-              </button>
-              <button
-                type="button"
                 aria-current={activeDestination === "catalog" ? "page" : undefined}
                 onClick={() => navigate("catalog")}
               >
                 <IconList size={17} stroke={1.9} aria-hidden="true" />
                 <span>Catalog</span>
-              </button>
-              <button
-                type="button"
-                aria-current={
-                  activeDestination === "rewards-punishments" ? "page" : undefined
-                }
-                onClick={() => navigate("rewards-punishments")}
-              >
-                <IconGift size={17} stroke={1.9} aria-hidden="true" />
-                <span>Rewards / Punishments</span>
               </button>
               <button
                 type="button"
