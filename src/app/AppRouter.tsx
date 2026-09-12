@@ -4,6 +4,7 @@ import { CompareRoute } from "../features/comparison/CompareRoute";
 import { CurationRoute } from "../features/curation/CurationRoute";
 import { HubPage } from "../features/hub/HubPage";
 import { ProfileRoute } from "../features/profile/ProfileRoute";
+import { QuizHomePage } from "../features/quizzes/QuizHomePage";
 import { QuizRoutePage } from "../features/quizzes/QuizRoutePage";
 import { RankingRoute } from "../features/ranking/RankingRoute";
 import { RewardsRoute } from "../features/rewards/RewardsRoute";
@@ -16,6 +17,7 @@ import {
   curationRoute,
   hubRoute,
   profileRoute,
+  quizHomeRoute,
   quizResultsRoute,
   quizRoute,
   rankingRoute,
@@ -31,6 +33,7 @@ export function RoutedApplication() {
       <Route element={<AppShell />}>
         <Route path={hubRoute.path} element={<HubPage />} />
         <Route path={profileRoute.path} element={<ProfileRoute />} />
+        <Route path={quizHomeRoute.path} element={<QuizHomePage />} />
         <Route path={catalogRoute.path} element={<CatalogRoute />} />
         <Route path={rankingRoute.path} element={<RankingRoute />} />
         <Route path={rewardsRoute.path} element={<RewardsRoute />} />

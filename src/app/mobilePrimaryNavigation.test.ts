@@ -16,6 +16,7 @@ describe("mobile primary navigation", () => {
     ["/rewards", "?workspace=tools", "tools"],
     ["/scene-builder", "", "tools"],
     ["/compare", "", "tools"],
+    ["/quizzes", "", "quiz"],
     ["/quizzes/dominance-submission", "", "quiz"],
     ["/quizzes/dominance-submission/results", "", "quiz"],
   ])("maps %s%s to %s", (pathname, search, expected) => {

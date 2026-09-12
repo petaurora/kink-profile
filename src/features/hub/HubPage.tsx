@@ -3,23 +3,13 @@ import {
   SiteHeader,
   type SiteHeaderDestination,
 } from "../../SiteHeader";
-import { quizzes, type QuizDefinition } from "../../data/quizzes";
-import { loadProfile } from "../../lib/profileStorage";
 import { useProfileSettings } from "../../lib/profileSettingsContext";
-import {
-  quizResultsPath,
-  quizRoutePath,
-  siteHeaderRoutePaths,
-} from "../../app/routes";
-import { QuizCard } from "../quizzes/QuizCard";
-import { getQuizState } from "../quizzes/quizRuntime";
+import { quizHomeRoute, siteHeaderRoutePaths } from "../../app/routes";
 
 export function HubPage() {
-  const profile = loadProfile();
   const { settings } = useProfileSettings();
   const location = useLocation();
   const navigate = useNavigate();
-  const coreQuizzes = quizzes.filter((quiz) => quiz.contributesToOverall);
 
   const navigateFromHeader = (destination: SiteHeaderDestination) => {
     navigate(siteHeaderRoutePaths[destination]);
@@ -29,16 +19,6 @@ export function HubPage() {
     navigate("/settings", {
       state: { from: `${location.pathname}${location.search}` },
     });
-  };
-
-  const openQuiz = (quiz: QuizDefinition) => {
-    if (quiz.availability !== "available") return;
-
-    navigate(
-      getQuizState(quiz, profile) === "complete"
-        ? quizResultsPath(quiz.id)
-        : quizRoutePath(quiz.id),
-    );
   };
 
   return (
@@ -74,21 +54,29 @@ export function HubPage() {
               <h2>Start broad.</h2>
             </div>
             <p>
-              Short, focused quizzes help surface the kinds of dynamics and
-              experiences that resonate with you. Do one, do them all, or come
-              back later.
+              Short, focused quizzes surface broad patterns without turning Hub
+              into the quiz catalog. Your quiz progress and results now live together
+              in Quiz Home.
             </p>
           </div>
 
-          <div className="quiz-card-grid">
-            {coreQuizzes.map((quiz) => (
-              <QuizCard
-                key={quiz.id}
-                quiz={quiz}
-                profile={profile}
-                onOpen={openQuiz}
-              />
-            ))}
+          <div className="catalog-hub-grid catalog-hub-grid-single">
+            <article className="catalog-hub-card panel">
+              <div>
+                <span className="catalog-kicker">Quiz Home</span>
+                <h3>Explore your guided quizzes</h3>
+                <p>
+                  Start a new section, continue one in progress, or revisit completed
+                  results from one dedicated quiz workspace.
+                </p>
+              </div>
+              <button
+                className="primary"
+                onClick={() => navigate(quizHomeRoute.path)}
+              >
+                Open quizzes
+              </button>
+            </article>
           </div>
 
           <div className="hub-section-heading catalog-hub-heading">

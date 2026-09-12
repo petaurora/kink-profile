@@ -16,6 +16,7 @@ import {
   shouldShowMobilePrimaryNavigation,
   type PrimaryNavigationDestination,
 } from "./mobilePrimaryNavigation";
+import { quizHomeRoute } from "./routes";
 import "./MobilePrimaryNav.css";
 
 type LauncherId = "catalog" | "tools";
@@ -347,7 +348,7 @@ export function MobilePrimaryNav() {
           type="button"
           className={navItemClass("quiz", activeDestination)}
           aria-current={activeDestination === "quiz" ? "page" : undefined}
-          onClick={() => go("/quizzes/bondage-discipline")}
+          onClick={() => go(quizHomeRoute.path)}
         >
           <span className="mobile-primary-nav-icon-wrap">
             <IconQuestionMark size={23} stroke={2} aria-hidden="true" />

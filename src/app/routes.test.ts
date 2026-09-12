@@ -7,6 +7,7 @@ import {
   curationRoute,
   hubRoute,
   profileRoute,
+  quizHomeRoute,
   quizResultsPath,
   quizResultsRoute,
   quizRoute,
@@ -36,6 +37,7 @@ describe("application route contract", () => {
   it.each([
     ["/", "hub"],
     ["/profile", "profile"],
+    ["/quizzes", "quiz-home"],
     ["/catalog", "catalog"],
     ["/ranking", "ranking"],
     ["/rewards", "rewards"],
@@ -54,6 +56,15 @@ describe("application route contract", () => {
 
     expect(router.state.location.pathname).toBe("/catalog");
     expect(router.state.location.search).toBe("?category=impact");
+
+    router.dispose();
+  });
+
+  it("recreates Quiz Home from direct route state", () => {
+    const router = createRouteTestRouter("/quizzes");
+
+    expect(router.state.location.pathname).toBe("/quizzes");
+    expect(router.state.location.search).toBe("");
 
     router.dispose();
   });
@@ -80,6 +91,21 @@ describe("application route contract", () => {
     router.dispose();
   });
 
+  it("preserves Quiz Home in history before an individual quiz", async () => {
+    const router = createRouteTestRouter("/");
+
+    await router.navigate("/quizzes");
+    await router.navigate("/quizzes/dominance-submission");
+    expect(router.state.location.pathname).toBe(
+      "/quizzes/dominance-submission",
+    );
+
+    await router.navigate(-1);
+    expect(router.state.location.pathname).toBe("/quizzes");
+
+    router.dispose();
+  });
+
   it("falls through unknown routes to the canonical hub fallback", () => {
     expect(matchedRouteId("/this-does-not-exist")).toBe("not-found");
     expect(unknownRouteFallbackPath).toBe("/");
@@ -88,6 +114,7 @@ describe("application route contract", () => {
   it("defines every top-level destination as a first-class route", () => {
     expect(hubRoute).toEqual({ id: "hub", path: "/" });
     expect(profileRoute).toEqual({ id: "profile", path: "/profile" });
+    expect(quizHomeRoute).toEqual({ id: "quiz-home", path: "/quizzes" });
     expect(catalogRoute).toEqual({ id: "catalog", path: "/catalog" });
     expect(rankingRoute).toEqual({ id: "ranking", path: "/ranking" });
     expect(rewardsRoute).toEqual({ id: "rewards", path: "/rewards" });

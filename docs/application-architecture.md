@@ -16,6 +16,7 @@ The canonical route contract lives in `src/app/routes.ts`:
 | --- | --- |
 | `/` | Explore / hub |
 | `/profile` | Profile |
+| `/quizzes` | Quiz Home |
 | `/quizzes/:quizId` | Quiz flow |
 | `/quizzes/:quizId/results` | Quiz results |
 | `/catalog` | Kink Catalog |
@@ -35,6 +36,8 @@ Route path builders such as `quizRoutePath`, `quizResultsPath`, and feature-spec
 React Router is the sole page-navigation authority.
 
 `src/app/SiteHeader.tsx` is presentation plus interaction state: it reports a requested destination through callbacks but does not push browser history itself.
+
+`src/app/MobilePrimaryNav.tsx` owns the persistent mobile destination controls. Quiz targets the canonical `/quizzes` home route, while quiz execution and result routes remain classified as the same primary Quiz destination by `src/app/mobilePrimaryNavigation.ts`.
 
 `src/app/RoutedFeatureFrame.tsx` adapts shared header destinations to route paths with `useNavigate`, supplies the current profile display name, and preserves the current path when opening Settings so Settings can return to the invoking route.
 
@@ -81,6 +84,7 @@ A feature route should do only the route-level work its feature needs: read rout
 Examples:
 
 - Catalog parses URL query state with `parseCatalogRouteFocus` and serializes supported drill-down state with `catalogRoutePath`.
+- Quiz Home hydrates persisted quiz progress and owns detailed guided-quiz discovery. It opens incomplete quizzes at their quiz route and completed quizzes at their results route. Hub may link to Quiz Home as an overview destination but does not own the detailed quiz catalog.
 - Quiz routes resolve only currently available quiz definitions. Unknown, retired, unavailable, or empty quiz definitions fall back to the hub. Direct results access is valid only when all current quiz questions have answers.
 - Compare, Rewards, and Scene Builder hydrate current profile/catalog state through `loadCurrentProfileSnapshot()` rather than relying on state left alive by another page.
 
@@ -99,6 +103,8 @@ The private profile backup format remains the compatibility boundary for export/
 Missing evidence remains unknown rather than becoming a stored zero merely because a route was reloaded.
 
 ## Quiz route behavior
+
+`src/features/quizzes/QuizHomePage.tsx` is the top-level discovery surface for the current available quiz set. It reuses stored quiz progress to distinguish untouched, in-progress, and completed sections without creating a second quiz-state model.
 
 `src/features/quizzes/quizRuntime.ts` owns pure quiz runtime rules used to interpret stored progress:
 
