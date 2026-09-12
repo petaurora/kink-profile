@@ -220,20 +220,17 @@
   }
 
   .mobile-nav-rope-segment {
-    stroke: rgba(42, 16, 31, .34);
-    stroke-width: .45;
+    stroke: rgba(42, 16, 31, .42);
+    stroke-width: .5;
   }
 
-  .mobile-nav-rope-segment--0 {
-    fill: #6f2f50;
+  .mobile-nav-rope-segment-main {
+    fill: #9a4b72;
   }
 
-  .mobile-nav-rope-segment--1 {
-    fill: #98466d;
-  }
-
-  .mobile-nav-rope-segment--2 {
-    fill: #b45d82;
+  .mobile-nav-rope-segment-shade {
+    fill: #57243f;
+    stroke: none;
   }
 
   .mobile-nav-radial-option {
