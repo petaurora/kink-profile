@@ -29,6 +29,18 @@ export function getAnsweredCount(
   ).length;
 }
 
+export function canViewQuizResults(
+  quiz: QuizDefinition,
+  profile: StoredProfile,
+) {
+  if (quiz.availability !== "available" || quiz.questionIds.length === 0) {
+    return false;
+  }
+
+  const answers = profile.quizzes[quiz.id]?.answers ?? {};
+  return getAnsweredCount(quiz, answers) >= quiz.questionIds.length;
+}
+
 export function getQuizState(
   quiz: QuizDefinition,
   profile: StoredProfile,

@@ -18,6 +18,7 @@ A milestone document may be split across all three rather than moved wholesale.
 
 ## Durable system contracts
 
+- [Application Architecture](application-architecture.md) — routing, shell/navigation ownership, feature organization, persistence hydration, style ownership, and GitHub Pages hosting
 - [Semantic Data Model](semantic-data-model.md) — how evidence and semantic layers relate
 - [Signal + Channel Data Model](data-model/signal-channel-model.md) — canonical Signal identity, Overall/Receiving/Giving channels, compatibility boundaries, and aggregation semantics
 - [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md) — current composed taxonomy and canonical Signal/channel composition rules
