@@ -1,48 +1,57 @@
 :root {
-  /* Brand palette — edit these five values to reskin the app. */
+  color-scheme: light;
+
+  /* Brand anchors — shared DNA with the existing dark theme. */
   --palette-midnight: #101240;
   --palette-plum: #520E25;
   --palette-lavender: #F0D3E7;
   --palette-orchid: #C949AC;
   --palette-amethyst: #582673;
 
+  /*
+   * Light-mode prototype: paper / blush / daylight.
+   * This branch intentionally applies the palette globally so the PR preview
+   * can be used to review color behavior across the existing app before a
+   * final theme-toggle architecture is introduced.
+   */
+
   /* Surfaces */
-  --bg-page: var(--palette-midnight);
-  --bg-surface: #191944;
-  --bg-surface-raised: #211B4D;
-  --bg-surface-emphasis: var(--palette-plum);
-  --bg-control: #24204F;
-  --bg-control-hover: #30245E;
-  --bg-track: rgba(240, 211, 231, .10);
-  --bg-accent-soft: rgba(201, 73, 172, .14);
-  --bg-muted: rgba(240, 211, 231, .07);
-  --ambient-glow: rgba(201, 73, 172, .16);
+  --bg-page: #FBF6F8;
+  --bg-surface: #FFFDFE;
+  --bg-surface-raised: #F8EDF3;
+  --bg-surface-emphasis: #F3DCE7;
+  --bg-control: #F1E4EB;
+  --bg-control-hover: #E8D4DF;
+  --bg-track: rgba(82, 14, 37, .10);
+  --bg-accent-soft: rgba(201, 73, 172, .12);
+  --bg-muted: rgba(82, 14, 37, .05);
+  --ambient-glow: rgba(201, 73, 172, .12);
 
   /* Text */
-  --text-primary: var(--palette-lavender);
-  --text-secondary: rgba(240, 211, 231, .74);
-  --text-muted: rgba(240, 211, 231, .54);
-  --text-on-accent: var(--palette-midnight);
+  --text-primary: #2A2035;
+  --text-secondary: #5C4B62;
+  --text-muted: #77677A;
+  --text-on-accent: #FFF9FC;
 
   /* Interaction */
-  --accent-primary: var(--palette-orchid);
+  --accent-primary: #8F2B72;
   --accent-secondary: var(--palette-amethyst);
-  --accent-border: rgba(201, 73, 172, .58);
-  --focus-ring: rgba(201, 73, 172, .42);
+  --accent-border: rgba(143, 43, 114, .44);
+  --focus-ring: rgba(143, 43, 114, .46);
 
   /* Structure */
-  --border-subtle: rgba(240, 211, 231, .12);
-  --border-strong: rgba(240, 211, 231, .20);
-  --shadow-panel: rgba(4, 3, 26, .34);
+  --border-subtle: rgba(82, 14, 37, .12);
+  --border-strong: rgba(82, 14, 37, .22);
+  --shadow-panel: rgba(82, 14, 37, .10);
 
   /* Status */
-  --status-muted-bg: rgba(240, 211, 231, .08);
-  --status-muted-text: rgba(240, 211, 231, .62);
-  --status-progress-bg: rgba(88, 38, 115, .48);
-  --status-progress-text: var(--palette-lavender);
-  --status-complete-bg: rgba(201, 73, 172, .16);
-  --status-complete-text: var(--palette-lavender);
-  --status-muted-dot: rgba(240, 211, 231, .34);
+  --status-muted-bg: rgba(16, 18, 64, .06);
+  --status-muted-text: #66596A;
+  --status-progress-bg: rgba(88, 38, 115, .12);
+  --status-progress-text: var(--palette-amethyst);
+  --status-complete-bg: rgba(143, 43, 114, .12);
+  --status-complete-text: #6E234F;
+  --status-muted-dot: rgba(42, 32, 53, .36);
   --status-progress-dot: var(--palette-amethyst);
-  --status-complete-dot: var(--palette-orchid);
+  --status-complete-dot: #8F2B72;
 }
