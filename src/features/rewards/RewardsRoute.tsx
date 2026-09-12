@@ -1,38 +1,24 @@
-import { useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
-import { catalogRewardsRoute } from "../../app/routes";
-import { loadCurrentProfileSnapshot } from "../../app/currentProfileSnapshot";
-import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
+import { Navigate, useLocation } from "react-router-dom";
+import {
+  catalogRewardsRoute,
+  rewardsToolsRandomizerRoute,
+} from "../../app/routes";
 
-type RewardsNavigationState = {
-  from?: unknown;
-};
-
-export function resolveRewardsReturnPath(state: unknown) {
-  const from = (state as RewardsNavigationState | null)?.from;
-  return from === "/profile" ? "/profile" : "/";
+export function legacyRewardsDestination(search: string) {
+  const workspace = new URLSearchParams(search).get("workspace");
+  return workspace === "tools"
+    ? rewardsToolsRandomizerRoute.path
+    : catalogRewardsRoute.path;
 }
 
 export function RewardsRoute() {
-  const [snapshot] = useState(() => loadCurrentProfileSnapshot());
   const location = useLocation();
-  const navigate = useNavigate();
-  const returnPath = resolveRewardsReturnPath(location.state);
-  const workspace = new URLSearchParams(location.search).get("workspace");
-
-  if (workspace !== "tools") {
-    return <Navigate to={catalogRewardsRoute.path} replace />;
-  }
 
   return (
-    <RoutedFeatureFrame activeDestination="rewards-punishments">
-      <RewardPunishmentProfiles
-        catalogProfile={snapshot.catalogProfile}
-        catalogResultView={snapshot.catalogResultView}
-        canonicalSignals={snapshot.canonicalSignals}
-        onClose={() => navigate(returnPath)}
-      />
-    </RoutedFeatureFrame>
+    <Navigate
+      to={legacyRewardsDestination(location.search)}
+      replace
+      state={location.state}
+    />
   );
 }

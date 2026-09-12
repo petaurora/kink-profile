@@ -28,7 +28,11 @@ export function primaryDestinationForLocation(
     return workspace === "tools" ? "tools" : "catalog";
   }
 
-  if (pathname === "/scene-builder" || pathname === "/compare") {
+  if (
+    pathname === "/scene-builder" ||
+    pathname === "/compare" ||
+    pathname.startsWith("/tools/rewards/")
+  ) {
     return "tools";
   }
 

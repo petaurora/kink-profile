@@ -16,7 +16,14 @@ import {
   shouldShowMobilePrimaryNavigation,
   type PrimaryNavigationDestination,
 } from "./mobilePrimaryNavigation";
-import { quizHomeRoute } from "./routes";
+import {
+  catalogRewardsRoute,
+  catalogRoute,
+  compareRoute,
+  quizHomeRoute,
+  rewardsToolsRandomizerRoute,
+  sceneBuilderRoute,
+} from "./routes";
 import "./MobilePrimaryNav.css";
 
 type LauncherId = "catalog" | "tools";
@@ -45,7 +52,7 @@ const catalogOptions: LauncherOption[] = [
     Icon: IconHeart,
     left: "18%",
     top: "18px",
-    target: "/catalog",
+    target: catalogRoute.path,
   },
   {
     id: "rewards-punishments",
@@ -53,7 +60,7 @@ const catalogOptions: LauncherOption[] = [
     Icon: IconGift,
     left: "43%",
     top: "48px",
-    target: "/rewards?workspace=catalog",
+    target: catalogRewardsRoute.path,
   },
 ];
 
@@ -64,7 +71,7 @@ const toolsOptions: LauncherOption[] = [
     Icon: IconSparkles,
     left: "54%",
     top: "60px",
-    target: "/scene-builder",
+    target: sceneBuilderRoute.path,
   },
   {
     id: "rp-tools",
@@ -72,7 +79,7 @@ const toolsOptions: LauncherOption[] = [
     Icon: IconGift,
     left: "73%",
     top: "20px",
-    target: "/rewards?workspace=tools",
+    target: rewardsToolsRandomizerRoute.path,
   },
   {
     id: "compare",
@@ -80,7 +87,7 @@ const toolsOptions: LauncherOption[] = [
     Icon: IconUsers,
     left: "88%",
     top: "72px",
-    target: "/compare",
+    target: compareRoute.path,
   },
 ];
 

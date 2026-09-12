@@ -23,8 +23,10 @@ The canonical route contract lives in `src/app/routes.ts`:
 | `/catalog/kinks/rank` | Catalog · Kinks · Rank |
 | `/catalog/rewards` | Catalog · Rewards & Punishments · Browse |
 | `/catalog/rewards/rank` | Catalog · Rewards & Punishments · Rank |
-| `/scene-builder` | Scene Builder |
-| `/compare` | Profile Comparison |
+| `/tools/rewards/randomizer` | Tools · R/P Tools · Randomizer |
+| `/tools/rewards/recipes` | Tools · R/P Tools · Recipes |
+| `/scene-builder` | Tools · Scenes |
+| `/compare` | Tools · Compare |
 | `/curation` | Curation Workbench |
 | `/settings` | Settings |
 
@@ -32,8 +34,8 @@ Compatibility routes remain explicit while M19 reorganizes information architect
 
 - `/catalog` redirects to `/catalog/kinks` and preserves supported query state;
 - `/ranking` redirects to `/catalog/kinks/rank`;
-- `/rewards` redirects to `/catalog/rewards` unless `?workspace=tools` is present;
-- `/rewards?workspace=tools` remains a temporary compatibility surface until the R/P Tools work moves into Tools.
+- `/rewards` and `/rewards?workspace=catalog` redirect to `/catalog/rewards`;
+- `/rewards?workspace=tools` redirects with replacement history semantics to `/tools/rewards/randomizer`.
 
 Unknown routes redirect to the canonical hub fallback defined by the same route contract.
 
@@ -43,15 +45,15 @@ Route path builders such as `quizRoutePath`, `quizResultsPath`, and feature-spec
 
 React Router is the sole page-navigation authority.
 
-`src/app/MobilePrimaryNav.tsx` owns the only persistent mobile product navigation chrome. At phone widths the legacy `SiteHeader` is not rendered visually; page content scrolls normally above the fixed bottom navigation. Quiz targets the canonical `/quizzes` home route. Catalog launch choices resolve into the Kinks and Rewards & Punishments workspaces, and every canonical `/catalog/...` child is classified as the same primary Catalog destination by `src/app/mobilePrimaryNavigation.ts`.
+`src/app/MobilePrimaryNav.tsx` owns the only persistent mobile product navigation chrome. At phone widths the legacy `SiteHeader` is not rendered visually; page content scrolls normally above the fixed bottom navigation. Quiz targets the canonical `/quizzes` home route. Catalog launches directly into the Kinks and Rewards & Punishments workspaces. Tools launches directly into Scenes, R/P Tools, and Compare. Canonical `/catalog/...` children resolve to Catalog, while Scene Builder, Compare, and `/tools/rewards/...` children resolve to Tools through `src/app/mobilePrimaryNavigation.ts`.
 
 `src/app/SiteHeader.tsx` remains a temporary desktop-only compatibility surface until the M19 desktop rail replaces it. It reports requested destinations through callbacks but does not push browser history itself. Ranking and Rewards & Punishments are no longer presented there as separate primary product areas, and internal/admin surfaces such as Curation Workbench are not offered in ordinary product navigation.
 
-Within a workspace, peer views use the shared `SegmentedControl` component and route navigation rather than an additional app-level state machine. Current examples are Kinks `Browse | Rank` and Rewards & Punishments `Browse | Rank`.
+Within a workspace, peer views use the shared `SegmentedControl` component and route navigation rather than an additional app-level state machine. Current examples are Kinks `Browse | Rank`, Rewards & Punishments `Browse | Rank`, and R/P Tools `Randomizer | Recipes`.
 
 `src/app/RoutedFeatureFrame.tsx` adapts shared desktop-header destinations to route paths with `useNavigate`, supplies the current profile display name, and preserves the current path when opening Settings so Settings can return to the invoking route. On mobile its `SiteHeader` output is suppressed by the shell breakpoint, leaving the bottom navigation as the persistent product chrome.
 
-Feature routes may use `useNavigate` directly for feature-specific transitions such as quiz → results, profile → focused catalog, or Browse → Rank.
+Feature routes may use `useNavigate` directly for feature-specific transitions such as quiz → results, profile → focused catalog, Browse → Rank, or Randomizer → Recipes.
 
 Browser Back/Forward therefore reflects route navigation rather than a parallel in-memory screen state machine.
 
@@ -97,10 +99,11 @@ A feature route should do only the route-level work its feature needs: read rout
 Examples:
 
 - Catalog is one primary product area with Kinks and Rewards & Punishments as sibling workspaces. Each workspace exposes route-backed `Browse | Rank` views. `CatalogRoute` owns Kinks Browse/Rank composition, while `RewardsCatalogRoute` owns Rewards & Punishments Browse/Rank composition.
+- R/P Tools is a Tools-owned workspace with route-backed `Randomizer | Recipes` views. `RewardsToolsRoute` composes the existing randomizer and recipe-builder behavior without creating new persistence models. Empty-pool setup hands off to Catalog · Rewards & Punishments, where contextual eligibility is defined.
 - Kink Catalog focused query state is parsed with `parseCatalogRouteFocus` and serialized with `catalogRoutePath`; the canonical base is `/catalog/kinks`.
 - Quiz Home hydrates persisted quiz progress and owns detailed guided-quiz discovery. It opens incomplete quizzes at their quiz route and completed quizzes at their results route. Hub may link to Quiz Home as an overview destination but does not own the detailed quiz catalog.
 - Quiz routes resolve only currently available quiz definitions. Unknown, retired, unavailable, or empty quiz definitions fall back to the hub. Direct results access is valid only when all current quiz questions have answers.
-- Compare, Rewards, and Scene Builder hydrate current profile/catalog state through `loadCurrentProfileSnapshot()` rather than relying on state left alive by another page.
+- Compare, Rewards/Catalog, R/P Tools, and Scene Builder hydrate current profile/catalog state from persisted inputs rather than relying on state left alive by another page.
 
 Direct route entry and refresh must therefore reconstruct the page from URL state plus persisted profile data.
 
@@ -108,9 +111,9 @@ Direct route entry and refresh must therefore reconstruct the page from URL stat
 
 Routing does **not** own profile data.
 
-Authoritative browser persistence remains in the existing storage modules under `src/lib`, including quiz progress, catalog preferences/ranking history, profile settings, Rewards & Punishments state, and saved scenes.
+Authoritative browser persistence remains in the existing storage modules under `src/lib`, including quiz progress, catalog preferences/ranking history, profile settings, Rewards & Punishments state, recipes, randomizer eligibility, and saved scenes.
 
-The Catalog workspace migration does not rename or migrate those storage schemas. Kink ranking history, catalog preferences, R/P contextual profile data, and R/P ranking history remain in their existing persistence modules; only their route ownership changes.
+The Catalog and Tools workspace migrations do not rename or migrate those storage schemas. Kink ranking history, catalog preferences, R/P contextual profile data, R/P ranking history, and saved recipes remain in their existing persistence modules; only their route ownership changes. Randomizer session history remains intentionally ephemeral and clears when the Randomizer view is left.
 
 The private profile backup format remains the compatibility boundary for export/import. Route extraction must not silently rename storage keys, change stored schemas, or convert derived output into authoritative stored data.
 
@@ -138,7 +141,7 @@ URL query state is treated as untrusted input.
 
 Catalog query parsing accepts only known category IDs and supported preference filters. Invalid or unrelated values normalize to the default unfocused catalog state. Path serialization applies the same validation so application code does not create dead query links.
 
-Legacy `/catalog?...` direct links preserve their search string when redirecting into the canonical `/catalog/kinks?...` route.
+Legacy `/catalog?...` direct links preserve their search string when redirecting into the canonical `/catalog/kinks?...` route. Legacy `/rewards?workspace=tools` remains accepted but resolves immediately to the canonical R/P Tools Randomizer route with replacement history semantics.
 
 When a feature adds durable URL state, parsing and serialization should live near the owning feature and be covered as a round-trip contract.
 
@@ -177,12 +180,13 @@ Architecture changes should preserve these behaviors unless a follow-up explicit
 
 - every canonical route can be entered directly
 - refresh-style initialization reconstructs route state from URL + persistence
-- browser Back/Forward reflects navigation history
+- browser Back/Forward reflects navigation history, including route-backed peer views such as R/P Tools Randomizer/Recipes
 - mobile product pages expose only the fixed bottom primary navigation as persistent navigation chrome
 - the temporary desktop shared header produces one browser navigation per destination selection and does not advertise internal/admin routes
 - unknown routes fall back safely
 - catalog query state parses and serializes safely
 - legacy Catalog/Ranking links resolve into the canonical Catalog workspace without losing supported query state
+- legacy Rewards links resolve into Catalog or canonical R/P Tools without creating a duplicate history step
 - quiz IDs and results eligibility are resolved from current definitions and stored answers
 - private backup/import/export remains compatible
 - restored stored profiles hydrate correctly on fresh routes

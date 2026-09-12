@@ -18,6 +18,8 @@ describe("mobile primary navigation", () => {
     ["/rewards", "", "catalog"],
     ["/rewards", "?workspace=catalog", "catalog"],
     ["/rewards", "?workspace=tools", "tools"],
+    ["/tools/rewards/randomizer", "", "tools"],
+    ["/tools/rewards/recipes", "", "tools"],
     ["/scene-builder", "", "tools"],
     ["/compare", "", "tools"],
     ["/quizzes", "", "quiz"],

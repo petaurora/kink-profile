@@ -13,6 +13,8 @@ export type AppRouteId =
   | "catalog-legacy"
   | "ranking-legacy"
   | "rewards"
+  | "rewards-tools-randomizer"
+  | "rewards-tools-recipes"
   | "scene-builder"
   | "compare"
   | "curation"
@@ -45,10 +47,18 @@ export const legacyRankingRoute = {
   path: "/ranking",
 } as const;
 
-// Temporary compatibility surface for the pre-M19 Rewards route. Catalog-oriented
-// entry points redirect into /catalog/rewards; ?workspace=tools remains available
-// until M19.4 moves Randomizer / Recipes into their dedicated Tools workspace.
+// Compatibility surface for the pre-M19 Rewards route. Catalog-oriented entry
+// points redirect into Catalog; ?workspace=tools redirects into R/P Tools.
 export const rewardsRoute = { id: "rewards", path: "/rewards" } as const;
+
+export const rewardsToolsRandomizerRoute = {
+  id: "rewards-tools-randomizer",
+  path: "/tools/rewards/randomizer",
+} as const;
+export const rewardsToolsRecipesRoute = {
+  id: "rewards-tools-recipes",
+  path: "/tools/rewards/recipes",
+} as const;
 
 export const sceneBuilderRoute = {
   id: "scene-builder",
@@ -97,6 +107,8 @@ export const appRoutePatterns = [
   legacyCatalogRoute,
   legacyRankingRoute,
   rewardsRoute,
+  rewardsToolsRandomizerRoute,
+  rewardsToolsRecipesRoute,
   sceneBuilderRoute,
   compareRoute,
   curationRoute,
