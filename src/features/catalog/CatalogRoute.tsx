@@ -71,7 +71,7 @@ export function CatalogRoute({
         ) : (
           <KinkThisOrThat
             quizProfile={quizProfile}
-            onClose={() => navigate(catalogRoute.path)}
+            onClose={() => navigate("/")}
           />
         )}
       </section>
