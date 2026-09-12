@@ -7,6 +7,7 @@ import {
   curationRoute,
   hubRoute,
   profileRoute,
+  quizHomeRoute,
   quizResultsPath,
   quizResultsRoute,
   quizRoute,
@@ -31,6 +32,7 @@ describe("application route contract", () => {
   it.each([
     ["/", "hub"],
     ["/profile", "profile"],
+    ["/quizzes", "quiz-home"],
     ["/catalog", "catalog"],
     ["/ranking", "ranking"],
     ["/rewards", "rewards"],
@@ -51,6 +53,7 @@ describe("application route contract", () => {
   it("defines every top-level destination as a first-class route", () => {
     expect(hubRoute).toEqual({ id: "hub", path: "/" });
     expect(profileRoute).toEqual({ id: "profile", path: "/profile" });
+    expect(quizHomeRoute).toEqual({ id: "quiz-home", path: "/quizzes" });
     expect(catalogRoute).toEqual({ id: "catalog", path: "/catalog" });
     expect(rankingRoute).toEqual({ id: "ranking", path: "/ranking" });
     expect(rewardsRoute).toEqual({ id: "rewards", path: "/rewards" });
