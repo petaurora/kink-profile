@@ -17,11 +17,6 @@
   }
 
   .site-header {
-    position: static;
-    top: auto;
-  }
-
-  .site-nav-trigger {
     display: none;
   }
 
