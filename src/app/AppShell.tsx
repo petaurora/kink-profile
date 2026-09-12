@@ -13,6 +13,7 @@ import {
   saveProfileSettings,
 } from "../lib/profileSettings";
 import { ProfileSettingsProvider } from "../lib/profileSettingsContext";
+import { MobilePrimaryNav } from "./MobilePrimaryNav";
 
 function ReturnToTop() {
   const [visible, setVisible] = useState(false);
@@ -91,6 +92,7 @@ export function AppShell() {
         <Outlet />
       </ShellErrorBoundary>
       <ReturnToTop />
+      <MobilePrimaryNav />
     </ProfileSettingsProvider>
   );
 }
