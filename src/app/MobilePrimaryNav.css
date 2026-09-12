@@ -41,6 +41,17 @@
     pointer-events: none;
   }
 
+  .mobile-nav-radial-dismiss {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   .mobile-primary-nav {
     position: fixed;
     left: 0;
@@ -340,10 +351,6 @@
 }
 
 @media (hover: hover) and (pointer: fine) and (max-width: 760px) {
-  .mobile-primary-nav-item:hover {
-    color: var(--accent-primary);
-  }
-
   .mobile-nav-radial-option:hover .mobile-nav-radial-option-icon {
     transform: translateY(-2px) scale(1.04);
     border-color: var(--accent-primary);
