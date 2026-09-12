@@ -1,14 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { resolveRewardsReturnPath } from "./RewardsRoute";
+import { legacyRewardsDestination } from "./RewardsRoute";
 
-describe("RewardsRoute return navigation", () => {
-  it("returns profile-origin toolbox visits to the profile", () => {
-    expect(resolveRewardsReturnPath({ from: "/profile" })).toBe("/profile");
+describe("legacy Rewards route", () => {
+  it("redirects catalog-oriented entry points into Catalog", () => {
+    expect(legacyRewardsDestination("")).toBe("/catalog/rewards");
+    expect(legacyRewardsDestination("?workspace=catalog")).toBe(
+      "/catalog/rewards",
+    );
   });
 
-  it("falls back to Explore for direct entry or unrelated state", () => {
-    expect(resolveRewardsReturnPath(undefined)).toBe("/");
-    expect(resolveRewardsReturnPath({ from: "/settings" })).toBe("/");
-    expect(resolveRewardsReturnPath({ from: "https://example.com" })).toBe("/");
+  it("redirects the legacy tools workspace into canonical R/P Tools", () => {
+    expect(legacyRewardsDestination("?workspace=tools")).toBe(
+      "/tools/rewards/randomizer",
+    );
   });
 });
