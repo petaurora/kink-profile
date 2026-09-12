@@ -22,6 +22,7 @@ import {
   rewardsRoute,
   sceneBuilderRoute,
   settingsRoute,
+  unknownRouteFallbackPath,
 } from "./routes";
 
 export function RoutedApplication() {
@@ -46,7 +47,10 @@ export function RoutedApplication() {
           element={<QuizRoutePage mode="results" />}
         />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route
+          path="*"
+          element={<Navigate to={unknownRouteFallbackPath} replace />}
+        />
       </Route>
     </Routes>
   );

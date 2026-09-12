@@ -1,0 +1,177 @@
+# Application Architecture
+
+This document describes the **current implemented application structure**: how browser routing, feature ownership, shared UI, persistence, styling, and GitHub Pages hosting fit together.
+
+It is a durable system contract, not a milestone log. Historical implementation sequencing belongs in Issues, PRs, and git history.
+
+## Entry point and routing
+
+`src/main.tsx` mounts `AppRouter` and the root stylesheet.
+
+`src/app/AppRouter.tsx` owns browser-level page routing with React Router's `HashRouter`. Hash routing is intentional because the app is deployed as a static GitHub Pages site and must support direct entry and refresh without requiring server-side rewrite rules.
+
+The canonical route contract lives in `src/app/routes.ts`:
+
+| Route | Owner |
+| --- | --- |
+| `/` | Explore / hub |
+| `/profile` | Profile |
+| `/quizzes/:quizId` | Quiz flow |
+| `/quizzes/:quizId/results` | Quiz results |
+| `/catalog` | Kink Catalog |
+| `/ranking` | This or That ranking |
+| `/rewards` | Rewards & Punishments |
+| `/scene-builder` | Scene Builder |
+| `/compare` | Profile Comparison |
+| `/curation` | Curation Workbench |
+| `/settings` | Settings |
+
+Unknown routes redirect to the canonical hub fallback defined by the same route contract.
+
+Route path builders such as `quizRoutePath`, `quizResultsPath`, and feature-specific helpers such as `catalogRoutePath` should be used instead of duplicating path strings when navigation carries application meaning or query state.
+
+## Navigation ownership
+
+React Router is the sole page-navigation authority.
+
+`src/app/SiteHeader.tsx` is presentation plus interaction state: it reports a requested destination through callbacks but does not push browser history itself.
+
+`src/app/RoutedFeatureFrame.tsx` adapts shared header destinations to route paths with `useNavigate`, supplies the current profile display name, and preserves the current path when opening Settings so Settings can return to the invoking route.
+
+Feature routes may use `useNavigate` directly for feature-specific transitions such as quiz → results, profile → focused catalog, or Rewards → profile.
+
+Browser Back/Forward therefore reflects route navigation rather than a parallel in-memory screen state machine.
+
+## Application shell
+
+`src/app/AppShell.tsx` wraps every route and owns application-wide concerns that must survive route transitions:
+
+- `ProfileSettingsProvider` and persistence of profile settings
+- the legacy profile-name bridge required by remaining compatibility surfaces
+- the route render error boundary
+- the global Return to Top control
+- the React Router `Outlet`
+
+Page-specific UI does not belong in `AppShell`.
+
+## Source ownership
+
+The target ownership model is:
+
+```text
+src/
+  app/          browser routing and app-wide shell/navigation
+  components/   genuinely shared UI components
+  features/     route- or feature-owned UI and route adapters
+  lib/          domain behavior, persistence, scoring, transformations
+  data/         canonical/generated product data and quiz definitions
+  styles/       global theme and legacy compatibility styles
+```
+
+Feature directories currently include catalog, comparison, curation, hub, profile, quizzes, ranking, rewards, scenes, and settings.
+
+Large feature UI should be split by responsibility inside its owning feature rather than moved merely to create more folders. Domain behavior that does not require React belongs in testable `lib` modules.
+
+Some root-level React files remain intentionally as compatibility exports or as leaf components that have not gained clearer feature ownership. A root compatibility export is not a second implementation; the canonical implementation lives under `app`, `components`, or `features`.
+
+## Feature route pattern
+
+A feature route should do only the route-level work its feature needs: read route params/query/location state, hydrate persisted input, translate route navigation, and render the feature-owned UI.
+
+Examples:
+
+- Catalog parses URL query state with `parseCatalogRouteFocus` and serializes supported drill-down state with `catalogRoutePath`.
+- Quiz routes resolve only currently available quiz definitions. Unknown, retired, unavailable, or empty quiz definitions fall back to the hub. Direct results access is valid only when all current quiz questions have answers.
+- Compare, Rewards, and Scene Builder hydrate current profile/catalog state through `loadCurrentProfileSnapshot()` rather than relying on state left alive by another page.
+
+Direct route entry and refresh must therefore reconstruct the page from URL state plus persisted profile data.
+
+## Persistence and derived state
+
+Routing does **not** own profile data.
+
+Authoritative browser persistence remains in the existing storage modules under `src/lib`, including quiz progress, catalog preferences/ranking history, profile settings, Rewards & Punishments state, and saved scenes.
+
+The private profile backup format remains the compatibility boundary for export/import. Route extraction must not silently rename storage keys, change stored schemas, or convert derived output into authoritative stored data.
+
+`src/app/currentProfileSnapshot.ts` is a convenience hydration boundary for routes that need the current quiz/catalog sources plus recomputed catalog and canonical-signal views. Derived views are rebuilt from authoritative persisted inputs on fresh route entry.
+
+Missing evidence remains unknown rather than becoming a stored zero merely because a route was reloaded.
+
+## Quiz route behavior
+
+`src/features/quizzes/quizRuntime.ts` owns pure quiz runtime rules used to interpret stored progress:
+
+- only available quizzes resolve as routable quiz definitions
+- a new quiz begins at its first question
+- an in-progress quiz resumes at its first unanswered question
+- completion is based on answers to the current quiz question set, not solely on a stale `completedAt` timestamp
+- results eligibility requires an available, non-empty quiz with all current questions answered
+
+Retired quiz IDs remain supported by persistence/import compatibility where required, but they are not active browser destinations.
+
+## Query-state behavior
+
+URL query state is treated as untrusted input.
+
+Catalog query parsing accepts only known category IDs and supported preference filters. Invalid or unrelated values normalize to the default unfocused catalog state. Path serialization applies the same validation so application code does not create dead query links.
+
+When a feature adds durable URL state, parsing and serialization should live near the owning feature and be covered as a round-trip contract.
+
+## Style ownership
+
+`src/main.tsx` imports `src/styles.css`, which currently forwards to `src/styles/legacy.css`. The legacy bundle remains a compatibility layer for styles that still span older surfaces; it should not be mistaken for the desired ownership model.
+
+Newer style ownership follows code ownership where practical:
+
+- global theme tokens live under `src/styles`
+- shared-component styles live with shared components
+- feature-specific styles live with their owning feature
+- root CSS forwarding files may remain temporarily when moving the import would create unrelated large-file churn
+
+Style cleanup must preserve current responsive and visual behavior unless a UI redesign is explicitly in scope.
+
+## GitHub Pages and build bases
+
+Vite's default production base is `/kink-profile/`.
+
+`VITE_BASE_PATH` can override that base for preview builds. Pull-request previews use a PR-scoped path, while CI also builds with a synthetic preview base to catch assumptions that accidentally depend on the production path.
+
+`.github/workflows/ci.yml` runs:
+
+1. tests
+2. a production-base build
+3. a non-production preview-base build
+
+The PR preview workflow separately builds and deploys the branch under its preview path and comments the resulting URL on the PR.
+
+Because application navigation is hash-based, the asset base path and the in-app route are separate concerns: Vite controls where built assets are served, while React Router owns the route after `#`.
+
+## Regression contract
+
+Architecture changes should preserve these behaviors unless a follow-up explicitly changes the product contract:
+
+- every canonical route can be entered directly
+- refresh-style initialization reconstructs route state from URL + persistence
+- browser Back/Forward reflects navigation history
+- the shared header produces one browser navigation per destination selection
+- unknown routes fall back safely
+- catalog query state parses and serializes safely
+- quiz IDs and results eligibility are resolved from current definitions and stored answers
+- private backup/import/export remains compatible
+- restored stored profiles hydrate correctly on fresh routes
+- both production and preview-base builds remain green
+
+Prefer focused pure-function tests for route/query/domain contracts and router-memory tests for browser-history behavior. Do not introduce a second navigation state system to make tests easier.
+
+## Change rules
+
+When changing application architecture:
+
+1. Keep page navigation in React Router.
+2. Keep route definitions/path helpers centralized or feature-owned rather than scattering string literals.
+3. Keep domain behavior outside React when it can be expressed as pure/testable logic.
+4. Keep persisted authoritative data separate from recomputable derived views.
+5. Preserve storage and import/export compatibility unless a deliberate migration is part of the same change.
+6. Move ownership when it becomes clearer; do not perform folder churn solely for visual neatness.
+7. Update this document when the implemented architecture contract changes materially.

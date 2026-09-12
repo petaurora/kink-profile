@@ -34,7 +34,11 @@ export function catalogRoutePath(focus: CatalogDrilldownFocus = {}) {
   if (focus.categoryId && categoryIds.has(focus.categoryId)) {
     params.set("category", focus.categoryId);
   }
-  if (focus.preferenceFilter && focus.preferenceFilter !== "all") {
+  if (
+    focus.preferenceFilter &&
+    focus.preferenceFilter !== "all" &&
+    preferenceFilters.has(focus.preferenceFilter)
+  ) {
     params.set("preference", focus.preferenceFilter);
   }
 
