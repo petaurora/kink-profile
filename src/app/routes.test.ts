@@ -18,6 +18,8 @@ import {
   quizRoutePath,
   rankingRoute,
   rewardsRoute,
+  rewardsToolsRandomizerRoute,
+  rewardsToolsRecipesRoute,
   sceneBuilderRoute,
   settingsRoute,
   siteHeaderRoutePaths,
@@ -49,6 +51,8 @@ describe("application route contract", () => {
     ["/catalog", "catalog-legacy"],
     ["/ranking", "ranking-legacy"],
     ["/rewards", "rewards"],
+    ["/tools/rewards/randomizer", "rewards-tools-randomizer"],
+    ["/tools/rewards/recipes", "rewards-tools-recipes"],
     ["/scene-builder", "scene-builder"],
     ["/compare", "compare"],
     ["/curation", "curation"],
@@ -118,6 +122,21 @@ describe("application route contract", () => {
     router.dispose();
   });
 
+  it("preserves R/P Tools workspace history between Randomizer and Recipes", async () => {
+    const router = createRouteTestRouter("/tools/rewards/randomizer");
+
+    await router.navigate("/tools/rewards/recipes");
+    expect(router.state.location.pathname).toBe("/tools/rewards/recipes");
+
+    await router.navigate(-1);
+    expect(router.state.location.pathname).toBe("/tools/rewards/randomizer");
+
+    await router.navigate(1);
+    expect(router.state.location.pathname).toBe("/tools/rewards/recipes");
+
+    router.dispose();
+  });
+
   it("preserves Quiz Home in history before an individual quiz", async () => {
     const router = createRouteTestRouter("/");
 
@@ -163,6 +182,17 @@ describe("application route contract", () => {
     expect(rewardsRoute).toEqual({ id: "rewards", path: "/rewards" });
   });
 
+  it("defines R/P Tools as canonical route-backed peer views", () => {
+    expect(rewardsToolsRandomizerRoute).toEqual({
+      id: "rewards-tools-randomizer",
+      path: "/tools/rewards/randomizer",
+    });
+    expect(rewardsToolsRecipesRoute).toEqual({
+      id: "rewards-tools-recipes",
+      path: "/tools/rewards/recipes",
+    });
+  });
+
   it("defines the remaining top-level destinations as first-class routes", () => {
     expect(hubRoute).toEqual({ id: "hub", path: "/" });
     expect(profileRoute).toEqual({ id: "profile", path: "/profile" });
@@ -190,7 +220,7 @@ describe("application route contract", () => {
     );
   });
 
-  it("routes legacy header destinations into Catalog workspaces", () => {
+  it("routes legacy header destinations into their current workspaces", () => {
     expect(siteHeaderRoutePaths).toEqual({
       hub: "/",
       profile: "/profile",
