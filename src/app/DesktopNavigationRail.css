@@ -9,6 +9,10 @@
 @media (min-width: 761px) {
   :root {
     --desktop-navigation-rail-width: 246px;
+    --desktop-nav-surface: color-mix(in srgb, var(--bg-page) 84%, var(--bg-surface-raised));
+    --desktop-nav-surface-deep: color-mix(in srgb, var(--bg-page) 94%, var(--bg-surface));
+    --desktop-nav-active-bg: color-mix(in srgb, var(--accent-primary) 12%, var(--bg-control));
+    --desktop-nav-hover-bg: color-mix(in srgb, var(--accent-secondary) 14%, var(--bg-control));
   }
 
   .desktop-navigation-rail {
@@ -17,10 +21,11 @@
     z-index: 70;
     width: var(--desktop-navigation-rail-width);
     display: block;
-    border-right: 1px solid var(--border-subtle);
+    border-right: 1px solid color-mix(in srgb, var(--accent-primary) 16%, var(--border-subtle));
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--bg-surface-emphasis) 94%, transparent), color-mix(in srgb, var(--bg-page) 96%, transparent));
+      linear-gradient(180deg, var(--desktop-nav-surface), var(--desktop-nav-surface-deep));
     backdrop-filter: blur(18px);
+    box-shadow: 12px 0 34px color-mix(in srgb, var(--shadow-panel) 34%, transparent);
   }
 
   .desktop-navigation-rail-inner {
@@ -38,7 +43,7 @@
     grid-template-columns: 34px minmax(0, 1fr);
     gap: 10px;
     align-items: center;
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 1px solid color-mix(in srgb, var(--accent-primary) 12%, var(--border-subtle));
   }
 
   .desktop-nav-brand-mark {
@@ -46,11 +51,11 @@
     height: 34px;
     display: grid;
     place-items: center;
-    border: 1px solid color-mix(in srgb, var(--accent-primary) 66%, var(--border-subtle));
+    border: 1px solid color-mix(in srgb, var(--accent-primary) 58%, var(--border-subtle));
     border-radius: 12px;
-    background: color-mix(in srgb, var(--accent-primary) 12%, var(--bg-control));
+    background: color-mix(in srgb, var(--accent-primary) 10%, var(--bg-control));
     color: var(--accent-primary);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--shadow-panel) 70%, transparent);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--shadow-panel) 55%, transparent);
     font-size: .8rem;
   }
 
@@ -117,29 +122,29 @@
   .desktop-nav-item--hub {
     min-height: 50px;
     margin-bottom: 6px;
-    border: 1px solid color-mix(in srgb, var(--accent-primary) 32%, var(--border-subtle));
-    background: color-mix(in srgb, var(--accent-primary) 7%, var(--bg-control));
+    border: 1px solid color-mix(in srgb, var(--accent-primary) 24%, var(--border-subtle));
+    background: color-mix(in srgb, var(--accent-primary) 5%, var(--desktop-nav-surface));
     color: var(--text-primary);
   }
 
   .desktop-nav-item:hover,
-  .desktop-nav-item.is-active,
-  .desktop-nav-item.is-parent-active,
-  .desktop-nav-children button:hover,
-  .desktop-nav-children button.is-active {
-    background: var(--bg-control-hover);
+  .desktop-nav-children button:hover {
+    background: var(--desktop-nav-hover-bg);
     color: var(--text-primary);
   }
 
   .desktop-nav-item.is-active,
   .desktop-nav-item.is-parent-active,
   .desktop-nav-children button.is-active {
+    background: var(--desktop-nav-active-bg);
     color: var(--accent-primary);
   }
 
   .desktop-nav-item.is-active,
   .desktop-nav-item.is-parent-active {
-    box-shadow: inset 3px 0 0 var(--accent-primary);
+    box-shadow:
+      inset 3px 0 0 var(--accent-primary),
+      0 8px 24px color-mix(in srgb, var(--shadow-panel) 28%, transparent);
   }
 
   .desktop-nav-item:active,
@@ -158,7 +163,7 @@
     padding: 2px 0 2px 12px;
     display: grid;
     gap: 2px;
-    border-left: 1px solid var(--border-subtle);
+    border-left: 1px solid color-mix(in srgb, var(--accent-primary) 14%, var(--border-subtle));
   }
 
   .desktop-nav-children button {
@@ -173,7 +178,7 @@
 
   .desktop-nav-footer {
     padding-top: 12px;
-    border-top: 1px solid var(--border-subtle);
+    border-top: 1px solid color-mix(in srgb, var(--accent-primary) 12%, var(--border-subtle));
   }
 
   .desktop-shell-content.has-desktop-navigation {
