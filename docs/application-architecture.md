@@ -134,7 +134,7 @@ Missing evidence remains unknown rather than becoming a stored zero merely becau
 - only available quizzes resolve as routable quiz definitions
 - a new quiz begins at its first question
 - an in-progress quiz resumes at its first unanswered question
-- completion is based on answers to the current quiz question set, not solely on a stale `completedAt` timestamp`
+- completion is based on answers to the current quiz question set, not solely on a stale `completedAt` timestamp
 - results eligibility requires an available, non-empty quiz with all current quiz questions answered
 
 Retired quiz IDs remain supported by persistence/import compatibility where required, but they are not active browser destinations.
