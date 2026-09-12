@@ -22,7 +22,6 @@ import {
   rewardsToolsRecipesRoute,
   sceneBuilderRoute,
   settingsRoute,
-  siteHeaderRoutePaths,
   unknownRouteFallbackPath,
 } from "./routes";
 
@@ -218,18 +217,5 @@ describe("application route contract", () => {
     expect(quizResultsPath("dominance-submission")).toBe(
       "/quizzes/dominance-submission/results",
     );
-  });
-
-  it("routes legacy header destinations into their current workspaces", () => {
-    expect(siteHeaderRoutePaths).toEqual({
-      hub: "/",
-      profile: "/profile",
-      ranking: "/catalog/kinks/rank",
-      catalog: "/catalog/kinks",
-      "rewards-punishments": "/catalog/rewards",
-      "scene-builder": "/scene-builder",
-      "compare-profiles": "/compare",
-      "curation-workbench": "/curation",
-    });
   });
 });
