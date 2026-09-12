@@ -6,13 +6,15 @@ import {
   useState,
 } from "react";
 import { IconArrowUp } from "@tabler/icons-react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { ProfileNameBridge } from "../ProfileNameBridge";
 import {
   loadProfileSettings,
   saveProfileSettings,
 } from "../lib/profileSettings";
 import { ProfileSettingsProvider } from "../lib/profileSettingsContext";
+import { DesktopNavigationRail } from "./DesktopNavigationRail";
+import { desktopNavigationStateForLocation } from "./desktopNavigation";
 import { MobilePrimaryNav } from "./MobilePrimaryNav";
 
 function ReturnToTop() {
@@ -80,6 +82,11 @@ class ShellErrorBoundary extends Component<
 
 export function AppShell() {
   const [settings, setSettings] = useState(() => loadProfileSettings());
+  const location = useLocation();
+  const desktopNavigation = desktopNavigationStateForLocation(
+    location.pathname,
+    location.search,
+  );
 
   useEffect(() => {
     saveProfileSettings(settings);
@@ -88,9 +95,17 @@ export function AppShell() {
   return (
     <ProfileSettingsProvider value={{ settings, setSettings }}>
       <ProfileNameBridge settings={settings} />
-      <ShellErrorBoundary>
-        <Outlet />
-      </ShellErrorBoundary>
+      <DesktopNavigationRail />
+      <div
+        className={
+          "desktop-shell-content" +
+          (desktopNavigation.visible ? " has-desktop-navigation" : "")
+        }
+      >
+        <ShellErrorBoundary>
+          <Outlet />
+        </ShellErrorBoundary>
+      </div>
       <ReturnToTop />
       <MobilePrimaryNav />
     </ProfileSettingsProvider>
