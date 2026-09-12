@@ -1,14 +1,5 @@
 import { useMemo, useState } from "react";
-import {
-  Navigate,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
-import {
-  SiteHeader,
-  type SiteHeaderDestination,
-} from "../../SiteHeader";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { answerOptions } from "../../data/quizScale";
 import { dsSignals } from "../../data/dsQuiz";
 import {
@@ -35,17 +26,12 @@ import {
   saveProfile,
   type StoredProfile,
 } from "../../lib/profileStorage";
-import { useProfileSettings } from "../../lib/profileSettingsContext";
 import {
   scoreDsSignals,
   scoreHeadspaces,
   scoreSignals,
 } from "../../lib/scoring";
-import {
-  quizResultsPath,
-  quizRoutePath,
-  siteHeaderRoutePaths,
-} from "../../app/routes";
+import { quizResultsPath, quizRoutePath } from "../../app/routes";
 import {
   getAnsweredCount,
   getQuestionsForQuiz,
@@ -384,8 +370,6 @@ function ResolvedQuizRoute({
   quiz: QuizDefinition;
   mode: QuizRouteMode;
 }) {
-  const { settings } = useProfileSettings();
-  const location = useLocation();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
   const [questionIndex, setQuestionIndex] = useState(() =>
@@ -439,16 +423,6 @@ function ResolvedQuizRoute({
     return [];
   }, [activeQuestions, answers, quiz.id]);
 
-  const navigateFromHeader = (destination: SiteHeaderDestination) => {
-    navigate(siteHeaderRoutePaths[destination]);
-  };
-
-  const openSettings = () => {
-    navigate("/settings", {
-      state: { from: `${location.pathname}${location.search}` },
-    });
-  };
-
   const saveNextProfile = (next: StoredProfile) => {
     saveProfile(next);
     setProfile(next);
@@ -500,111 +474,103 @@ function ResolvedQuizRoute({
   }
 
   return (
-    <>
-      <SiteHeader
-        displayName={settings.displayName}
-        onNavigate={navigateFromHeader}
-        onOpenSettings={openSettings}
-      />
+    <main className="app-shell">
+      {mode === "quiz" && currentQuestion ? (
+        <section className="quiz-layout">
+          <aside className="progress-card panel">
+            <button className="back-to-hub" onClick={() => navigate("/")}>
+              ← Quiz hub
+            </button>
+            <p className="eyebrow">{quiz.shortTitle}</p>
+            <strong>
+              {Math.round((answeredCount / activeQuestions.length) * 100)}%
+            </strong>
+            <div className="progress-track">
+              <span
+                style={{
+                  width: `${(answeredCount / activeQuestions.length) * 100}%`,
+                }}
+              />
+            </div>
+            <p>
+              {answeredCount} of {activeQuestions.length} answered
+            </p>
+          </aside>
 
-      <main className="app-shell">
-        {mode === "quiz" && currentQuestion ? (
-          <section className="quiz-layout">
-            <aside className="progress-card panel">
-              <button className="back-to-hub" onClick={() => navigate("/")}>
-                ← Quiz hub
-              </button>
-              <p className="eyebrow">{quiz.shortTitle}</p>
-              <strong>
-                {Math.round((answeredCount / activeQuestions.length) * 100)}%
-              </strong>
-              <div className="progress-track">
-                <span
-                  style={{
-                    width: `${(answeredCount / activeQuestions.length) * 100}%`,
-                  }}
-                />
-              </div>
-              <p>
-                {answeredCount} of {activeQuestions.length} answered
-              </p>
-            </aside>
+          <article className="question-card panel">
+            <div className="question-meta">
+              <span>{questionContext(quiz)}</span>
+              <span>
+                {questionIndex + 1} / {activeQuestions.length}
+              </span>
+            </div>
 
-            <article className="question-card panel">
-              <div className="question-meta">
-                <span>{questionContext(quiz)}</span>
-                <span>
-                  {questionIndex + 1} / {activeQuestions.length}
-                </span>
-              </div>
+            <h1>{currentQuestion.prompt}</h1>
 
-              <h1>{currentQuestion.prompt}</h1>
-
-              <div className="answers">
-                {answerOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    className={
-                      currentAnswer === option.value
-                        ? "answer selected"
-                        : "answer"
-                    }
-                    onClick={() => answerQuestion(option.value)}
-                  >
-                    <span className="answer-value">{option.value}</span>
-                    <span>{option.label}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="quiz-nav">
+            <div className="answers">
+              {answerOptions.map((option) => (
                 <button
-                  className="text-button"
-                  onClick={() =>
-                    setQuestionIndex((index) => Math.max(0, index - 1))
+                  key={option.value}
+                  className={
+                    currentAnswer === option.value
+                      ? "answer selected"
+                      : "answer"
                   }
-                  disabled={questionIndex === 0}
+                  onClick={() => answerQuestion(option.value)}
                 >
-                  ← Back
+                  <span className="answer-value">{option.value}</span>
+                  <span>{option.label}</span>
                 </button>
-                <button className="text-button" onClick={() => navigate("/")}>
-                  Save & exit
-                </button>
-              </div>
-            </article>
-          </section>
-        ) : (
-          <section className="results-stack">
-            <div className="results-heading panel">
-              <div>
-                <p className="eyebrow">{quiz.title}</p>
-                <h1>The shape matters more than any single score.</h1>
-                <p>{resultsDescription(quiz)}</p>
-              </div>
-              <div className="results-heading-actions">
-                <button
-                  className="secondary"
-                  onClick={() => navigate(quizRoutePath(quiz.id))}
-                >
-                  Edit answers
-                </button>
-                <button className="primary" onClick={() => navigate("/")}>
-                  Back to hub
-                </button>
-              </div>
+              ))}
             </div>
 
-            <ResultsBody quiz={quiz} scores={scores} />
-
-            <div className="results-actions">
-              <button className="secondary" onClick={resetQuiz}>
-                Reset this quiz
+            <div className="quiz-nav">
+              <button
+                className="text-button"
+                onClick={() =>
+                  setQuestionIndex((index) => Math.max(0, index - 1))
+                }
+                disabled={questionIndex === 0}
+              >
+                ← Back
+              </button>
+              <button className="text-button" onClick={() => navigate("/")}>
+                Save & exit
               </button>
             </div>
-          </section>
-        )}
-      </main>
-    </>
+          </article>
+        </section>
+      ) : (
+        <section className="results-stack">
+          <div className="results-heading panel">
+            <div>
+              <p className="eyebrow">{quiz.title}</p>
+              <h1>The shape matters more than any single score.</h1>
+              <p>{resultsDescription(quiz)}</p>
+            </div>
+            <div className="results-heading-actions">
+              <button
+                className="secondary"
+                onClick={() => navigate(quizRoutePath(quiz.id))}
+              >
+                Edit answers
+              </button>
+              <button className="primary" onClick={() => navigate("/")}>
+                Back to hub
+              </button>
+            </div>
+          </div>
+
+          <ResultsBody quiz={quiz} scores={scores} />
+
+          <div className="results-actions">
+            <button className="secondary" onClick={resetQuiz}>
+              Reset this quiz
+            </button>
+          </div>
+        </section>
+      )}
+    </main>
   );
 }
 
