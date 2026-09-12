@@ -14,6 +14,7 @@ import { QuizHomePage } from "../features/quizzes/QuizHomePage";
 import { QuizRoutePage } from "../features/quizzes/QuizRoutePage";
 import { RewardsCatalogRoute } from "../features/rewards/RewardsCatalogRoute";
 import { RewardsRoute } from "../features/rewards/RewardsRoute";
+import { RewardsToolsRoute } from "../features/rewards/RewardsToolsRoute";
 import { SceneBuilderRoute } from "../features/scenes/SceneBuilderRoute";
 import { SettingsRoute } from "../features/settings/SettingsRoute";
 import { AppShell } from "./AppShell";
@@ -32,6 +33,8 @@ import {
   quizRoute,
   rankingRoute,
   rewardsRoute,
+  rewardsToolsRandomizerRoute,
+  rewardsToolsRecipesRoute,
   sceneBuilderRoute,
   settingsRoute,
   unknownRouteFallbackPath,
@@ -68,6 +71,14 @@ export function RoutedApplication() {
         />
         <Route path={rewardsRoute.path} element={<RewardsRoute />} />
 
+        <Route
+          path={rewardsToolsRandomizerRoute.path}
+          element={<RewardsToolsRoute view="randomizer" />}
+        />
+        <Route
+          path={rewardsToolsRecipesRoute.path}
+          element={<RewardsToolsRoute view="recipes" />}
+        />
         <Route path={sceneBuilderRoute.path} element={<SceneBuilderRoute />} />
         <Route path={compareRoute.path} element={<CompareRoute />} />
         <Route path={curationRoute.path} element={<CurationRoute />} />
