@@ -12,7 +12,6 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useProfileSettings } from "../lib/profileSettingsContext";
 import { desktopNavigationStateForLocation } from "./desktopNavigation";
 import {
   catalogRewardsRoute,
@@ -44,7 +43,6 @@ export function DesktopNavigationRail({
   expanded: boolean;
   onToggle: () => void;
 }) {
-  const { settings } = useProfileSettings();
   const location = useLocation();
   const navigate = useNavigate();
   const state = desktopNavigationStateForLocation(
@@ -82,10 +80,7 @@ export function DesktopNavigationRail({
       {expanded ? (
         <div className="desktop-navigation-rail-inner">
           <div className="desktop-nav-brand">
-            <div>
-              <span>Profile</span>
-              <strong>{settings.displayName}</strong>
-            </div>
+            <strong>Kink Profile</strong>
           </div>
 
           <nav className="desktop-nav-primary" aria-label="Primary navigation">
