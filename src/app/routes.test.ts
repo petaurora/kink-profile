@@ -1,4 +1,4 @@
-import { matchRoutes } from "react-router-dom";
+import { createMemoryRouter, matchRoutes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import {
   appRoutePatterns,
@@ -17,6 +17,7 @@ import {
   sceneBuilderRoute,
   settingsRoute,
   siteHeaderRoutePaths,
+  unknownRouteFallbackPath,
 } from "./routes";
 
 const routeTable = [
@@ -26,6 +27,10 @@ const routeTable = [
 
 function matchedRouteId(pathname: string) {
   return matchRoutes(routeTable, pathname)?.at(-1)?.route.id;
+}
+
+function createRouteTestRouter(initialEntry: string) {
+  return createMemoryRouter(routeTable, { initialEntries: [initialEntry] });
 }
 
 describe("application route contract", () => {
@@ -46,8 +51,44 @@ describe("application route contract", () => {
     expect(matchedRouteId(pathname)).toBe(expectedId);
   });
 
-  it("falls through unknown routes safely", () => {
+  it("recreates a direct route from URL state as refresh would", () => {
+    const router = createRouteTestRouter("/quizzes");
+
+    expect(router.state.location.pathname).toBe("/quizzes");
+    expect(router.state.location.search).toBe("");
+
+    router.dispose();
+  });
+
+  it("preserves Back and Forward history across routed navigation", async () => {
+    const router = createRouteTestRouter("/");
+
+    await router.navigate("/quizzes");
+    await router.navigate("/quizzes/dominance-submission");
+    expect(router.state.location.pathname).toBe(
+      "/quizzes/dominance-submission",
+    );
+
+    await router.navigate(-1);
+    expect(router.state.location.pathname).toBe("/quizzes");
+
+    await router.navigate(-1);
+    expect(router.state.location.pathname).toBe("/");
+
+    await router.navigate(1);
+    expect(router.state.location.pathname).toBe("/quizzes");
+
+    await router.navigate(1);
+    expect(router.state.location.pathname).toBe(
+      "/quizzes/dominance-submission",
+    );
+
+    router.dispose();
+  });
+
+  it("falls through unknown routes to the canonical hub fallback", () => {
     expect(matchedRouteId("/this-does-not-exist")).toBe("not-found");
+    expect(unknownRouteFallbackPath).toBe("/");
   });
 
   it("defines every top-level destination as a first-class route", () => {
