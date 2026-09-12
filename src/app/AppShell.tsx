@@ -82,6 +82,7 @@ class ShellErrorBoundary extends Component<
 
 export function AppShell() {
   const [settings, setSettings] = useState(() => loadProfileSettings());
+  const [desktopNavigationExpanded, setDesktopNavigationExpanded] = useState(true);
   const location = useLocation();
   const desktopNavigation = desktopNavigationStateForLocation(
     location.pathname,
@@ -95,12 +96,20 @@ export function AppShell() {
   return (
     <ProfileSettingsProvider value={{ settings, setSettings }}>
       <ProfileNameBridge settings={settings} />
-      <DesktopNavigationRail />
+      <DesktopNavigationRail
+        expanded={desktopNavigationExpanded}
+        onToggle={() => setDesktopNavigationExpanded((expanded) => !expanded)}
+      />
       <div
-        className={
-          "desktop-shell-content" +
-          (desktopNavigation.visible ? " has-desktop-navigation" : "")
-        }
+        className={[
+          "desktop-shell-content",
+          desktopNavigation.visible ? "has-desktop-navigation" : "",
+          desktopNavigation.visible && !desktopNavigationExpanded
+            ? "is-desktop-navigation-collapsed"
+            : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
       >
         <ShellErrorBoundary>
           <Outlet />
