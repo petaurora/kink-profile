@@ -47,7 +47,7 @@ React Router is the sole page-navigation authority.
 
 `src/app/MobilePrimaryNav.tsx` owns persistent mobile product navigation. Quiz targets the canonical `/quizzes` home route. Catalog launches directly into the Kinks and Rewards & Punishments workspaces. Tools launches directly into Scenes, R/P Tools, and Compare. Canonical `/catalog/...` children resolve to Catalog, while Scene Builder, Compare, and `/tools/rewards/...` children resolve to Tools through `src/app/mobilePrimaryNavigation.ts`.
 
-`src/app/DesktopNavigationRail.tsx` owns persistent desktop product navigation. It uses the same primary hierarchy as mobile: Hub, Quiz, Catalog, Profile, and Tools, with Settings separated at the bottom. Catalog reveals Kinks and Rewards & Punishments as child workspaces while active; Tools reveals Scenes, R/P Tools, and Compare while active. `src/app/desktopNavigation.ts` derives desktop active-state and child-workspace state from the same routed location contract rather than introducing a second navigation model.
+`src/app/DesktopNavigationRail.tsx` owns persistent desktop product navigation. It uses the same primary hierarchy as mobile: Hub, Quiz, Catalog, Profile, and Tools, with Settings separated at the bottom. Catalog reveals Kinks and Rewards & Punishments as child workspaces while active; Tools reveals Scenes, R/P Tools, and Compare while active. The paw control collapses the rail to a narrow handle and expands it again; it does not open the legacy header menu. `src/app/desktopNavigation.ts` derives desktop active-state and child-workspace state from the same routed location contract rather than introducing a second navigation model.
 
 Settings remains Profile-owned for primary active-state semantics while also receiving its own active state in the desktop rail. Internal/admin surfaces such as Curation Workbench are excluded from both ordinary mobile and desktop navigation.
 
@@ -67,9 +67,8 @@ Browser Back/Forward therefore reflects route navigation rather than a parallel 
 - the legacy profile-name bridge required by remaining compatibility surfaces
 - the route render error boundary
 - the global Return to Top control
-- the desktop navigation rail
+- the collapsible desktop navigation rail and its content offset
 - the mobile primary navigation
-- responsive content offset for the desktop rail
 - the React Router `Outlet`
 
 Ordinary product pages expose one persistent navigation system appropriate to the viewport: the desktop rail above the mobile breakpoint or the fixed mobile bottom navigation at phone widths. Internal or immersive routes such as Curation may intentionally suppress ordinary global navigation entirely.
@@ -186,7 +185,8 @@ Architecture changes should preserve these behaviors unless a follow-up explicit
 - refresh-style initialization reconstructs route state from URL + persistence
 - browser Back/Forward reflects navigation history, including route-backed peer views such as R/P Tools Randomizer/Recipes
 - mobile product pages expose only the fixed bottom primary navigation as persistent navigation chrome
-- desktop product pages expose the left rail using the same Hub / Quiz / Catalog / Profile / Tools hierarchy as mobile, with Settings separated at the bottom
+- desktop product pages expose the collapsible left rail using the same Hub / Quiz / Catalog / Profile / Tools hierarchy as mobile, with Settings separated at the bottom
+- the desktop paw control toggles the rail rather than exposing legacy header navigation
 - Catalog and Tools child workspaces resolve consistently across mobile and desktop navigation
 - internal/admin routes such as Curation remain outside ordinary product navigation
 - unknown routes fall back safely
