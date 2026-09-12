@@ -6,6 +6,7 @@ import { loadDeveloperToolsEnabled, saveDeveloperToolsEnabled } from "../../lib/
 import { useProfileSettings } from "../../lib/profileSettingsContext";
 import { ProfileSettingsPage } from "./ProfileSettingsPage";
 import "./settings.css";
+import "./SettingsOwnership.css";
 
 type SettingsNavigationState = {
   from?: unknown;
