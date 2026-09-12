@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ProfilePageActions } from "../features/profile/ProfilePageActions";
+import { useProfileSettings } from "../lib/profileSettingsContext";
 import {
   SiteHeader,
   type SiteHeaderDestination,
 } from "./SiteHeader";
-import { useProfileSettings } from "../lib/profileSettingsContext";
 import { siteHeaderRoutePaths } from "./routes";
 
 export function RoutedFeatureFrame({
@@ -28,6 +29,9 @@ export function RoutedFeatureFrame({
     });
   };
 
+  const showProfileActions =
+    activeDestination === "profile" && location.pathname === "/profile";
+
   return (
     <>
       <SiteHeader
@@ -36,7 +40,10 @@ export function RoutedFeatureFrame({
         onNavigate={navigateFromHeader}
         onOpenSettings={openSettings}
       />
-      <main className="app-shell">{children}</main>
+      <main className="app-shell">
+        {showProfileActions ? <ProfilePageActions /> : null}
+        {children}
+      </main>
     </>
   );
 }
