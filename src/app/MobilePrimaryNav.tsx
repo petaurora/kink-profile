@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  type KeyboardEvent as ReactKeyboardEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   IconBook2,
   IconGift,
@@ -242,13 +248,61 @@ function RopeConnector({ curve }: { curve: CubicCurve }) {
 function RadialLauncher({
   launcher,
   onSelect,
+  onClose,
 }: {
   launcher: LauncherId;
   onSelect: (target: string) => void;
+  onClose: () => void;
 }) {
   const isCatalog = launcher === "catalog";
   const options = isCatalog ? catalogOptions : toolsOptions;
   const curves = isCatalog ? catalogCurves : toolsCurves;
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [focusedIndex, setFocusedIndex] = useState(0);
+
+  useEffect(() => {
+    setFocusedIndex(0);
+    requestAnimationFrame(() => optionRefs.current[0]?.focus());
+  }, [launcher]);
+
+  const moveFocus = (index: number) => {
+    const nextIndex = (index + options.length) % options.length;
+    setFocusedIndex(nextIndex);
+    optionRefs.current[nextIndex]?.focus();
+  };
+
+  const handleOptionKeyDown = (
+    event: ReactKeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    switch (event.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        event.preventDefault();
+        moveFocus(index + 1);
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        event.preventDefault();
+        moveFocus(index - 1);
+        break;
+      case "Home":
+        event.preventDefault();
+        moveFocus(0);
+        break;
+      case "End":
+        event.preventDefault();
+        moveFocus(options.length - 1);
+        break;
+      case "Escape":
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <div
@@ -268,13 +322,19 @@ function RadialLauncher({
         ))}
       </svg>
 
-      {options.map(({ id, label, Icon, left, top, target }) => (
+      {options.map(({ id, label, Icon, left, top, target }, index) => (
         <button
           key={id}
+          ref={(node) => {
+            optionRefs.current[index] = node;
+          }}
           type="button"
           role="menuitem"
+          tabIndex={focusedIndex === index ? 0 : -1}
           className="mobile-nav-radial-option"
           style={{ left, top }}
+          onFocus={() => setFocusedIndex(index)}
+          onKeyDown={(event) => handleOptionKeyDown(event, index)}
           onClick={() => onSelect(target)}
         >
           <span className="mobile-nav-radial-option-icon">
@@ -305,10 +365,20 @@ export function MobilePrimaryNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const [openLauncher, setOpenLauncher] = useState<LauncherId | null>(null);
+  const catalogTriggerRef = useRef<HTMLButtonElement>(null);
+  const toolsTriggerRef = useRef<HTMLButtonElement>(null);
   const activeDestination = primaryDestinationForLocation(
     location.pathname,
     location.search,
   );
+
+  const restoreLauncherFocus = (launcher: LauncherId) => {
+    requestAnimationFrame(() => {
+      const trigger =
+        launcher === "catalog" ? catalogTriggerRef.current : toolsTriggerRef.current;
+      trigger?.focus();
+    });
+  };
 
   useEffect(() => {
     setOpenLauncher(null);
@@ -317,8 +387,12 @@ export function MobilePrimaryNav() {
   useEffect(() => {
     if (!openLauncher) return;
 
+    const launcher = openLauncher;
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpenLauncher(null);
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setOpenLauncher(null);
+      restoreLauncherFocus(launcher);
     };
 
     window.addEventListener("keydown", closeOnEscape);
@@ -332,6 +406,11 @@ export function MobilePrimaryNav() {
     navigate(target);
   };
 
+  const closeLauncher = (launcher: LauncherId) => {
+    setOpenLauncher(null);
+    restoreLauncherFocus(launcher);
+  };
+
   const toggleLauncher = (launcher: LauncherId) => {
     setOpenLauncher((current) => (current === launcher ? null : launcher));
   };
@@ -342,11 +421,16 @@ export function MobilePrimaryNav() {
         <>
           <button
             type="button"
+            tabIndex={-1}
             className="mobile-nav-radial-dismiss"
             aria-label={`Close ${openLauncher === "catalog" ? "Catalog" : "Tools"} launcher`}
             onClick={() => setOpenLauncher(null)}
           />
-          <RadialLauncher launcher={openLauncher} onSelect={go} />
+          <RadialLauncher
+            launcher={openLauncher}
+            onSelect={go}
+            onClose={() => closeLauncher(openLauncher)}
+          />
         </>
       ) : null}
 
@@ -364,12 +448,15 @@ export function MobilePrimaryNav() {
         </button>
 
         <button
+          ref={catalogTriggerRef}
           type="button"
           className={navItemClass(
             "catalog",
             activeDestination,
             openLauncher === "catalog",
           )}
+          aria-current={activeDestination === "catalog" ? "page" : undefined}
+          aria-haspopup="menu"
           aria-expanded={openLauncher === "catalog"}
           aria-controls="mobile-catalog-launcher"
           onClick={(event) => {
@@ -408,12 +495,15 @@ export function MobilePrimaryNav() {
         </button>
 
         <button
+          ref={toolsTriggerRef}
           type="button"
           className={navItemClass(
             "tools",
             activeDestination,
             openLauncher === "tools",
           )}
+          aria-current={activeDestination === "tools" ? "page" : undefined}
+          aria-haspopup="menu"
           aria-expanded={openLauncher === "tools"}
           aria-controls="mobile-tools-launcher"
           onClick={(event) => {

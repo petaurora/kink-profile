@@ -16,11 +16,6 @@
     --desktop-nav-hover-bg: color-mix(in srgb, var(--accent-secondary) 14%, var(--bg-control));
   }
 
-  /* The old paw/header menu is no longer part of desktop navigation. */
-  .site-header {
-    display: none !important;
-  }
-
   .desktop-navigation-rail {
     position: fixed;
     inset: 0 auto 0 0;

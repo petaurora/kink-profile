@@ -85,17 +85,6 @@ export function quizResultsPath(quizId: QuizId) {
   return `/quizzes/${quizId}/results`;
 }
 
-export const siteHeaderRoutePaths = {
-  hub: hubRoute.path,
-  profile: profileRoute.path,
-  ranking: rankingRoute.path,
-  catalog: catalogRoute.path,
-  "rewards-punishments": catalogRewardsRoute.path,
-  "scene-builder": sceneBuilderRoute.path,
-  "compare-profiles": compareRoute.path,
-  "curation-workbench": curationRoute.path,
-} as const;
-
 export const appRoutePatterns = [
   hubRoute,
   profileRoute,

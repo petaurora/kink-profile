@@ -32,6 +32,11 @@
   background: var(--bg-control-hover);
 }
 
+.segmented-control-option:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 .segmented-control-option.is-active {
   color: var(--text-primary);
   background: var(--bg-page);
