@@ -9,10 +9,16 @@
 @media (min-width: 761px) {
   :root {
     --desktop-navigation-rail-width: 246px;
+    --desktop-navigation-collapsed-width: 58px;
     --desktop-nav-surface: color-mix(in srgb, var(--bg-page) 84%, var(--bg-surface-raised));
     --desktop-nav-surface-deep: color-mix(in srgb, var(--bg-page) 94%, var(--bg-surface));
     --desktop-nav-active-bg: color-mix(in srgb, var(--accent-primary) 12%, var(--bg-control));
     --desktop-nav-hover-bg: color-mix(in srgb, var(--accent-secondary) 14%, var(--bg-control));
+  }
+
+  /* The old paw/header menu is no longer part of desktop navigation. */
+  .site-header {
+    display: none !important;
   }
 
   .desktop-navigation-rail {
@@ -21,16 +27,57 @@
     z-index: 70;
     width: var(--desktop-navigation-rail-width);
     display: block;
+    overflow: hidden;
     border-right: 1px solid color-mix(in srgb, var(--accent-primary) 16%, var(--border-subtle));
     background:
       linear-gradient(180deg, var(--desktop-nav-surface), var(--desktop-nav-surface-deep));
     backdrop-filter: blur(18px);
     box-shadow: 12px 0 34px color-mix(in srgb, var(--shadow-panel) 34%, transparent);
+    transition: width 180ms ease;
+  }
+
+  .desktop-navigation-rail.is-collapsed {
+    width: var(--desktop-navigation-collapsed-width);
+  }
+
+  .desktop-navigation-toggle {
+    position: absolute;
+    top: 18px;
+    left: 10px;
+    z-index: 2;
+    width: 38px;
+    height: 38px;
+    border: 1px solid color-mix(in srgb, var(--accent-primary) 58%, var(--border-subtle));
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--accent-primary) 9%, var(--bg-control));
+    color: var(--accent-primary);
+    cursor: pointer;
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--shadow-panel) 42%, transparent);
+    transition:
+      background 150ms ease,
+      border-color 150ms ease,
+      transform 150ms ease;
+  }
+
+  .desktop-navigation-toggle:hover {
+    background: var(--desktop-nav-active-bg);
+    border-color: var(--accent-primary);
+  }
+
+  .desktop-navigation-toggle:active {
+    transform: translateY(1px);
+  }
+
+  .desktop-navigation-toggle:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
   }
 
   .desktop-navigation-rail-inner {
     height: 100%;
-    padding: 18px 14px;
+    padding: 18px 0 18px 14px;
     display: grid;
     grid-template-rows: auto 1fr auto;
     gap: 20px;
@@ -38,25 +85,12 @@
 
   .desktop-nav-brand {
     min-width: 0;
-    padding: 10px 10px 14px;
-    display: grid;
-    grid-template-columns: 34px minmax(0, 1fr);
-    gap: 10px;
+    min-height: 50px;
+    margin-right: 14px;
+    padding: 8px 8px 14px 48px;
+    display: flex;
     align-items: center;
     border-bottom: 1px solid color-mix(in srgb, var(--accent-primary) 12%, var(--border-subtle));
-  }
-
-  .desktop-nav-brand-mark {
-    width: 34px;
-    height: 34px;
-    display: grid;
-    place-items: center;
-    border: 1px solid color-mix(in srgb, var(--accent-primary) 58%, var(--border-subtle));
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--accent-primary) 10%, var(--bg-control));
-    color: var(--accent-primary);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--shadow-panel) 55%, transparent);
-    font-size: .8rem;
   }
 
   .desktop-nav-brand > div {
@@ -65,7 +99,7 @@
     gap: 2px;
   }
 
-  .desktop-nav-brand span:not(.desktop-nav-brand-mark) {
+  .desktop-nav-brand span {
     color: var(--text-muted);
     font-size: .68rem;
     font-weight: 800;
@@ -95,7 +129,7 @@
 
   .desktop-nav-item,
   .desktop-nav-children button {
-    width: 100%;
+    width: calc(100% - 14px);
     border: 0;
     display: grid;
     align-items: center;
@@ -104,6 +138,7 @@
     cursor: pointer;
     text-align: left;
     transition:
+      width 150ms ease,
       background 150ms ease,
       color 150ms ease,
       transform 150ms ease;
@@ -122,9 +157,6 @@
   .desktop-nav-item--hub {
     min-height: 50px;
     margin-bottom: 6px;
-    border: 1px solid color-mix(in srgb, var(--accent-primary) 24%, var(--border-subtle));
-    background: color-mix(in srgb, var(--accent-primary) 5%, var(--desktop-nav-surface));
-    color: var(--text-primary);
   }
 
   .desktop-nav-item:hover,
@@ -136,12 +168,10 @@
   .desktop-nav-item.is-active,
   .desktop-nav-item.is-parent-active,
   .desktop-nav-children button.is-active {
+    width: 100%;
+    border-radius: 14px 0 0 14px;
     background: var(--desktop-nav-active-bg);
     color: var(--accent-primary);
-  }
-
-  .desktop-nav-item.is-active,
-  .desktop-nav-item.is-parent-active {
     box-shadow:
       inset 3px 0 0 var(--accent-primary),
       0 8px 24px color-mix(in srgb, var(--shadow-panel) 28%, transparent);
@@ -177,6 +207,7 @@
   }
 
   .desktop-nav-footer {
+    margin-right: 0;
     padding-top: 12px;
     border-top: 1px solid color-mix(in srgb, var(--accent-primary) 12%, var(--border-subtle));
   }
@@ -184,6 +215,11 @@
   .desktop-shell-content.has-desktop-navigation {
     min-height: 100vh;
     margin-left: var(--desktop-navigation-rail-width);
+    transition: margin-left 180ms ease;
+  }
+
+  .desktop-shell-content.has-desktop-navigation.is-desktop-navigation-collapsed {
+    margin-left: var(--desktop-navigation-collapsed-width);
   }
 
   .desktop-shell-content.has-desktop-navigation .app-shell {
@@ -197,21 +233,30 @@
   }
 
   .desktop-navigation-rail-inner {
-    padding-inline: 10px;
+    padding-left: 10px;
   }
 
   .desktop-nav-brand {
-    grid-template-columns: 30px minmax(0, 1fr);
-    padding-inline: 8px;
+    margin-right: 10px;
+    padding-left: 46px;
   }
 
-  .desktop-nav-brand-mark {
-    width: 30px;
-    height: 30px;
+  .desktop-nav-item,
+  .desktop-nav-children button {
+    width: calc(100% - 10px);
+  }
+
+  .desktop-nav-item.is-active,
+  .desktop-nav-item.is-parent-active,
+  .desktop-nav-children button.is-active {
+    width: 100%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .desktop-navigation-rail,
+  .desktop-navigation-toggle,
+  .desktop-shell-content.has-desktop-navigation,
   .desktop-nav-item,
   .desktop-nav-children button {
     transition: none !important;
