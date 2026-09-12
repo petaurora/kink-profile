@@ -52,6 +52,15 @@ describe("application route contract", () => {
   });
 
   it("recreates a direct route from URL state as refresh would", () => {
+    const router = createRouteTestRouter("/catalog?category=impact");
+
+    expect(router.state.location.pathname).toBe("/catalog");
+    expect(router.state.location.search).toBe("?category=impact");
+
+    router.dispose();
+  });
+
+  it("recreates Quiz Home from direct route state", () => {
     const router = createRouteTestRouter("/quizzes");
 
     expect(router.state.location.pathname).toBe("/quizzes");
@@ -63,6 +72,28 @@ describe("application route contract", () => {
   it("preserves Back and Forward history across routed navigation", async () => {
     const router = createRouteTestRouter("/");
 
+    await router.navigate("/profile");
+    await router.navigate("/ranking");
+    expect(router.state.location.pathname).toBe("/ranking");
+
+    await router.navigate(-1);
+    expect(router.state.location.pathname).toBe("/profile");
+
+    await router.navigate(-1);
+    expect(router.state.location.pathname).toBe("/");
+
+    await router.navigate(1);
+    expect(router.state.location.pathname).toBe("/profile");
+
+    await router.navigate(1);
+    expect(router.state.location.pathname).toBe("/ranking");
+
+    router.dispose();
+  });
+
+  it("preserves Quiz Home in history before an individual quiz", async () => {
+    const router = createRouteTestRouter("/");
+
     await router.navigate("/quizzes");
     await router.navigate("/quizzes/dominance-submission");
     expect(router.state.location.pathname).toBe(
@@ -71,17 +102,6 @@ describe("application route contract", () => {
 
     await router.navigate(-1);
     expect(router.state.location.pathname).toBe("/quizzes");
-
-    await router.navigate(-1);
-    expect(router.state.location.pathname).toBe("/");
-
-    await router.navigate(1);
-    expect(router.state.location.pathname).toBe("/quizzes");
-
-    await router.navigate(1);
-    expect(router.state.location.pathname).toBe(
-      "/quizzes/dominance-submission",
-    );
 
     router.dispose();
   });
