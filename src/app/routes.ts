@@ -3,6 +3,7 @@ import type { QuizId } from "../data/quizzes";
 export type AppRouteId =
   | "hub"
   | "profile"
+  | "quiz-home"
   | "quiz"
   | "quiz-results"
   | "catalog"
@@ -15,6 +16,7 @@ export type AppRouteId =
 
 export const hubRoute = { id: "hub", path: "/" } as const;
 export const profileRoute = { id: "profile", path: "/profile" } as const;
+export const quizHomeRoute = { id: "quiz-home", path: "/quizzes" } as const;
 export const catalogRoute = { id: "catalog", path: "/catalog" } as const;
 export const rankingRoute = { id: "ranking", path: "/ranking" } as const;
 export const rewardsRoute = { id: "rewards", path: "/rewards" } as const;
@@ -56,6 +58,7 @@ export const siteHeaderRoutePaths = {
 export const appRoutePatterns = [
   hubRoute,
   profileRoute,
+  quizHomeRoute,
   catalogRoute,
   rankingRoute,
   rewardsRoute,
