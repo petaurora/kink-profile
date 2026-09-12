@@ -1,10 +1,14 @@
 :root {
-  /* Brand palette — edit these five values to reskin the app. */
+  color-scheme: dark;
+
+  /* Brand anchors — shared across both supported themes. */
   --palette-midnight: #101240;
   --palette-plum: #520E25;
   --palette-lavender: #F0D3E7;
   --palette-orchid: #C949AC;
   --palette-amethyst: #582673;
+
+  /* Dark mode: midnight / velvet / intimacy. */
 
   /* Surfaces */
   --bg-page: var(--palette-midnight);
@@ -45,4 +49,56 @@
   --status-muted-dot: rgba(240, 211, 231, .34);
   --status-progress-dot: var(--palette-amethyst);
   --status-complete-dot: var(--palette-orchid);
+}
+
+/*
+ * Light mode is supported through the user's OS/browser preference.
+ * There is intentionally no in-app theme toggle yet.
+ */
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+
+    /* Light mode: paper / blush / daylight. */
+
+    /* Surfaces */
+    --bg-page: #FBF6F8;
+    --bg-surface: #FFFDFE;
+    --bg-surface-raised: #F8EDF3;
+    --bg-surface-emphasis: #F3DCE7;
+    --bg-control: #F1E4EB;
+    --bg-control-hover: #E8D4DF;
+    --bg-track: rgba(82, 14, 37, .10);
+    --bg-accent-soft: rgba(201, 73, 172, .12);
+    --bg-muted: rgba(82, 14, 37, .05);
+    --ambient-glow: rgba(201, 73, 172, .12);
+
+    /* Text */
+    --text-primary: #2A2035;
+    --text-secondary: #5C4B62;
+    --text-muted: #77677A;
+    --text-on-accent: #FFF9FC;
+
+    /* Interaction */
+    --accent-primary: #8F2B72;
+    --accent-secondary: var(--palette-amethyst);
+    --accent-border: rgba(143, 43, 114, .44);
+    --focus-ring: rgba(143, 43, 114, .46);
+
+    /* Structure */
+    --border-subtle: rgba(82, 14, 37, .12);
+    --border-strong: rgba(82, 14, 37, .22);
+    --shadow-panel: rgba(82, 14, 37, .10);
+
+    /* Status */
+    --status-muted-bg: rgba(16, 18, 64, .06);
+    --status-muted-text: #66596A;
+    --status-progress-bg: rgba(88, 38, 115, .12);
+    --status-progress-text: var(--palette-amethyst);
+    --status-complete-bg: rgba(143, 43, 114, .12);
+    --status-complete-text: #6E234F;
+    --status-muted-dot: rgba(42, 32, 53, .36);
+    --status-progress-dot: var(--palette-amethyst);
+    --status-complete-dot: #8F2B72;
+  }
 }
