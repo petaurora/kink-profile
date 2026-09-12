@@ -153,10 +153,6 @@ function cubicDerivative(curve: CubicCurve, t: number): Point {
   };
 }
 
-function curvePath(curve: CubicCurve) {
-  return `M ${curve.start.x} ${curve.start.y} C ${curve.control1.x} ${curve.control1.y}, ${curve.control2.x} ${curve.control2.y}, ${curve.end.x} ${curve.end.y}`;
-}
-
 function frameAt(curve: CubicCurve, t: number) {
   const point = cubicPoint(curve, t);
   const tangent = cubicDerivative(curve, t);
@@ -173,24 +169,20 @@ function frameAt(curve: CubicCurve, t: number) {
   };
 }
 
-function lerpPoint(from: Point, to: Point, amount: number): Point {
-  return {
-    x: from.x + (to.x - from.x) * amount,
-    y: from.y + (to.y - from.y) * amount,
-  };
-}
-
 function RopeConnector({ curve }: { curve: CubicCurve }) {
   const segments = useMemo(() => {
-    const count = 13;
-    const radius = 4.45;
+    const count = 16;
+    const radius = 4.35;
     const skew = 2.1;
-    const shadeDepth = 0.32;
+    const gapRatio = 0.25;
+    const capDepth = 1.7;
 
     return Array.from({ length: count }, (_, index) => {
-      const overlap = 0.008;
-      const t0 = Math.max(0, index / count - (index > 0 ? overlap : 0));
-      const t1 = Math.min(1, (index + 1) / count + (index < count - 1 ? overlap : 0));
+      const slotStart = index / count;
+      const slotEnd = (index + 1) / count;
+      const slotSize = slotEnd - slotStart;
+      const t0 = slotStart + slotSize * (gapRatio / 2);
+      const t1 = slotEnd - slotSize * (gapRatio / 2);
       const start = frameAt(curve, t0);
       const end = frameAt(curve, t1);
 
@@ -210,35 +202,30 @@ function RopeConnector({ curve }: { curve: CubicCurve }) {
         x: end.point.x + end.nx * radius + end.tx * skew,
         y: end.point.y + end.ny * radius + end.ty * skew,
       };
-
-      const shadeA = lerpPoint(a, d, shadeDepth);
-      const shadeB = lerpPoint(b, c, shadeDepth);
+      const startCap = {
+        x: start.point.x - start.tx * capDepth,
+        y: start.point.y - start.ty * capDepth,
+      };
+      const endCap = {
+        x: end.point.x + end.tx * capDepth,
+        y: end.point.y + end.ty * capDepth,
+      };
 
       return {
         key: index,
-        mainPath: `M ${a.x} ${a.y} L ${b.x} ${b.y} L ${c.x} ${c.y} L ${d.x} ${d.y} Z`,
-        shadePath: `M ${a.x} ${a.y} L ${b.x} ${b.y} L ${shadeB.x} ${shadeB.y} L ${shadeA.x} ${shadeA.y} Z`,
+        d: `M ${a.x} ${a.y} L ${d.x} ${d.y} Q ${endCap.x} ${endCap.y} ${c.x} ${c.y} L ${b.x} ${b.y} Q ${startCap.x} ${startCap.y} ${a.x} ${a.y} Z`,
       };
     });
   }, [curve]);
 
-  const d = curvePath(curve);
-
   return (
     <g>
-      <path className="mobile-nav-rope-outline" d={d} />
-      <path className="mobile-nav-rope-underlay" d={d} />
       {segments.map((segment) => (
-        <g key={segment.key}>
-          <path
-            className="mobile-nav-rope-segment mobile-nav-rope-segment-main"
-            d={segment.mainPath}
-          />
-          <path
-            className="mobile-nav-rope-segment mobile-nav-rope-segment-shade"
-            d={segment.shadePath}
-          />
-        </g>
+        <path
+          key={segment.key}
+          className="mobile-nav-rope-segment mobile-nav-rope-segment-main"
+          d={segment.d}
+        />
       ))}
     </g>
   );
