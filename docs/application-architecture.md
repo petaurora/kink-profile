@@ -43,13 +43,13 @@ Route path builders such as `quizRoutePath`, `quizResultsPath`, and feature-spec
 
 React Router is the sole page-navigation authority.
 
-`src/app/SiteHeader.tsx` is presentation plus interaction state: it reports a requested destination through callbacks but does not push browser history itself. Ranking and Rewards & Punishments are no longer presented there as separate primary product areas; Catalog owns those workflows.
+`src/app/MobilePrimaryNav.tsx` owns the only persistent mobile product navigation chrome. At phone widths the legacy `SiteHeader` is not rendered visually; page content scrolls normally above the fixed bottom navigation. Quiz targets the canonical `/quizzes` home route. Catalog launch choices resolve into the Kinks and Rewards & Punishments workspaces, and every canonical `/catalog/...` child is classified as the same primary Catalog destination by `src/app/mobilePrimaryNavigation.ts`.
 
-`src/app/MobilePrimaryNav.tsx` owns the persistent mobile destination controls. Quiz targets the canonical `/quizzes` home route. Catalog launch choices resolve into the Kinks and Rewards & Punishments workspaces, and every canonical `/catalog/...` child is classified as the same primary Catalog destination by `src/app/mobilePrimaryNavigation.ts`.
+`src/app/SiteHeader.tsx` remains a temporary desktop-only compatibility surface until the M19 desktop rail replaces it. It reports requested destinations through callbacks but does not push browser history itself. Ranking and Rewards & Punishments are no longer presented there as separate primary product areas, and internal/admin surfaces such as Curation Workbench are not offered in ordinary product navigation.
 
 Within a workspace, peer views use the shared `SegmentedControl` component and route navigation rather than an additional app-level state machine. Current examples are Kinks `Browse | Rank` and Rewards & Punishments `Browse | Rank`.
 
-`src/app/RoutedFeatureFrame.tsx` adapts shared header destinations to route paths with `useNavigate`, supplies the current profile display name, and preserves the current path when opening Settings so Settings can return to the invoking route.
+`src/app/RoutedFeatureFrame.tsx` adapts shared desktop-header destinations to route paths with `useNavigate`, supplies the current profile display name, and preserves the current path when opening Settings so Settings can return to the invoking route. On mobile its `SiteHeader` output is suppressed by the shell breakpoint, leaving the bottom navigation as the persistent product chrome.
 
 Feature routes may use `useNavigate` directly for feature-specific transitions such as quiz → results, profile → focused catalog, or Browse → Rank.
 
@@ -63,7 +63,10 @@ Browser Back/Forward therefore reflects route navigation rather than a parallel 
 - the legacy profile-name bridge required by remaining compatibility surfaces
 - the route render error boundary
 - the global Return to Top control
+- the mobile primary navigation
 - the React Router `Outlet`
+
+The mobile navigation may intentionally be hidden for internal or immersive routes such as Curation, but ordinary product pages must not add a second persistent top navigation surface.
 
 Page-specific UI does not belong in `AppShell`.
 
@@ -125,7 +128,7 @@ Missing evidence remains unknown rather than becoming a stored zero merely becau
 - a new quiz begins at its first question
 - an in-progress quiz resumes at its first unanswered question
 - completion is based on answers to the current quiz question set, not solely on a stale `completedAt` timestamp
-- results eligibility requires an available, non-empty quiz with all current questions answered
+- results eligibility requires an available, non-empty quiz with all current quiz questions answered
 
 Retired quiz IDs remain supported by persistence/import compatibility where required, but they are not active browser destinations.
 
@@ -175,7 +178,8 @@ Architecture changes should preserve these behaviors unless a follow-up explicit
 - every canonical route can be entered directly
 - refresh-style initialization reconstructs route state from URL + persistence
 - browser Back/Forward reflects navigation history
-- the shared header produces one browser navigation per destination selection
+- mobile product pages expose only the fixed bottom primary navigation as persistent navigation chrome
+- the temporary desktop shared header produces one browser navigation per destination selection and does not advertise internal/admin routes
 - unknown routes fall back safely
 - catalog query state parses and serializes safely
 - legacy Catalog/Ranking links resolve into the canonical Catalog workspace without losing supported query state
