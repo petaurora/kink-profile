@@ -8,6 +8,10 @@ export type AppRouteId =
   | "quiz-results"
   | "catalog"
   | "ranking"
+  | "catalog-rewards"
+  | "catalog-rewards-ranking"
+  | "catalog-legacy"
+  | "ranking-legacy"
   | "rewards"
   | "scene-builder"
   | "compare"
@@ -17,9 +21,35 @@ export type AppRouteId =
 export const hubRoute = { id: "hub", path: "/" } as const;
 export const profileRoute = { id: "profile", path: "/profile" } as const;
 export const quizHomeRoute = { id: "quiz-home", path: "/quizzes" } as const;
-export const catalogRoute = { id: "catalog", path: "/catalog" } as const;
-export const rankingRoute = { id: "ranking", path: "/ranking" } as const;
+
+export const catalogRoute = { id: "catalog", path: "/catalog/kinks" } as const;
+export const rankingRoute = {
+  id: "ranking",
+  path: "/catalog/kinks/rank",
+} as const;
+export const catalogRewardsRoute = {
+  id: "catalog-rewards",
+  path: "/catalog/rewards",
+} as const;
+export const catalogRewardsRankingRoute = {
+  id: "catalog-rewards-ranking",
+  path: "/catalog/rewards/rank",
+} as const;
+
+export const legacyCatalogRoute = {
+  id: "catalog-legacy",
+  path: "/catalog",
+} as const;
+export const legacyRankingRoute = {
+  id: "ranking-legacy",
+  path: "/ranking",
+} as const;
+
+// Temporary compatibility surface for the pre-M19 Rewards route. Catalog-oriented
+// entry points redirect into /catalog/rewards; ?workspace=tools remains available
+// until M19.4 moves Randomizer / Recipes into their dedicated Tools workspace.
 export const rewardsRoute = { id: "rewards", path: "/rewards" } as const;
+
 export const sceneBuilderRoute = {
   id: "scene-builder",
   path: "/scene-builder",
@@ -50,7 +80,7 @@ export const siteHeaderRoutePaths = {
   profile: profileRoute.path,
   ranking: rankingRoute.path,
   catalog: catalogRoute.path,
-  "rewards-punishments": rewardsRoute.path,
+  "rewards-punishments": catalogRewardsRoute.path,
   "scene-builder": sceneBuilderRoute.path,
   "compare-profiles": compareRoute.path,
   "curation-workbench": curationRoute.path,
@@ -62,6 +92,10 @@ export const appRoutePatterns = [
   quizHomeRoute,
   catalogRoute,
   rankingRoute,
+  catalogRewardsRoute,
+  catalogRewardsRankingRoute,
+  legacyCatalogRoute,
+  legacyRankingRoute,
   rewardsRoute,
   sceneBuilderRoute,
   compareRoute,
