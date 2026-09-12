@@ -1,0 +1,7 @@
+@media (max-width: 760px) {
+  .mobile-primary-nav-item,
+  .mobile-nav-radial-option {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
