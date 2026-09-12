@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { SiteHeader } from "../../app/SiteHeader";
+import {
+  SiteHeader,
+  type SiteHeaderDestination,
+} from "../../app/SiteHeader";
+import { siteHeaderRoutePaths } from "../../app/routes";
 import { loadDeveloperToolsEnabled, saveDeveloperToolsEnabled } from "../../lib/developerSettings";
 import { useProfileSettings } from "../../lib/profileSettingsContext";
 import { ProfileSettingsPage } from "./ProfileSettingsPage";
@@ -34,6 +38,7 @@ export function SettingsRoute() {
   const location = useLocation();
   const navigate = useNavigate();
   const returnPath = resolveSettingsReturnPath(location.state);
+  const backLabel = returnPath === "/profile" ? "Profile" : "Back";
   const initialSection = new URLSearchParams(location.search).get("section");
 
   const closeSettings = () => {
@@ -45,20 +50,24 @@ export function SettingsRoute() {
     setDeveloperToolsEnabled(enabled);
   };
 
+  const navigateFromHeader = (destination: SiteHeaderDestination) => {
+    navigate(siteHeaderRoutePaths[destination]);
+  };
+
   return (
     <>
       <SiteHeader
         displayName={settings.displayName}
         activeDestination="profile"
         settingsActive
-        onNavigate={() => undefined}
+        onNavigate={navigateFromHeader}
         onOpenSettings={closeSettings}
       />
       <main className="app-shell settings-route-shell">
         <header className="settings-local-header" aria-label="Settings navigation">
           <button type="button" className="settings-back-button" onClick={closeSettings}>
             <IconArrowLeft size={19} stroke={2} aria-hidden="true" />
-            <span>Profile</span>
+            <span>{backLabel}</span>
           </button>
           <strong>Settings</strong>
         </header>
