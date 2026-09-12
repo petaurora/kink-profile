@@ -13,22 +13,39 @@ type ProfileSettingsPageProps = {
   settings: ProfileSettings;
   onChange: (settings: ProfileSettings) => void;
   onClose: () => void;
+  initialSection?: "sharing";
+  developerToolsEnabled: boolean;
+  onDeveloperToolsChange: (enabled: boolean) => void;
+  onOpenCuration: () => void;
 };
 
 export function ProfileSettingsPage({
   settings,
   onChange,
   onClose,
+  initialSection,
+  developerToolsEnabled,
+  onDeveloperToolsChange,
+  onOpenCuration,
 }: ProfileSettingsPageProps) {
   const [draftName, setDraftName] = useState(settings.displayName);
   const [resetOpen, setResetOpen] = useState(false);
   const [backupOpen, setBackupOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
-  const [sharePreviewOpen, setSharePreviewOpen] = useState(false);
+  const [sharePreviewOpen, setSharePreviewOpen] = useState(
+    initialSection === "sharing",
+  );
 
   useEffect(() => {
     setDraftName(settings.displayName);
   }, [settings.displayName]);
+
+  useEffect(() => {
+    if (initialSection !== "sharing") return;
+    document.getElementById("settings-sharing")?.scrollIntoView({
+      block: "start",
+    });
+  }, [initialSection]);
 
   const normalizedName = useMemo(
     () => normalizeProfileDisplayName(draftName),
@@ -47,19 +64,24 @@ export function ProfileSettingsPage({
     });
   };
 
+  const closeOtherPanels = () => {
+    setResetOpen(false);
+    setBackupOpen(false);
+    setImportOpen(false);
+    setSharePreviewOpen(false);
+  };
+
   return (
     <section className="settings-stack">
       <div className="settings-heading panel">
         <div>
-          <p className="eyebrow">Settings</p>
+          <p className="eyebrow">Profile settings</p>
           <h1>Make the profile yours.</h1>
           <p>
-            Manage profile identity, local data, backup/restore, and deliberate sharing here.
+            Manage profile identity, local data, backup/restore, deliberate sharing,
+            and advanced local tools here.
           </p>
         </div>
-        <button className="secondary" onClick={onClose}>
-          Back to hub
-        </button>
       </div>
 
       <section className="settings-section" aria-labelledby="settings-profile-heading">
@@ -135,10 +157,9 @@ export function ProfileSettingsPage({
             <button
               className="secondary compact"
               onClick={() => {
-                setResetOpen((open) => !open);
-                setBackupOpen(false);
-                setImportOpen(false);
-                setSharePreviewOpen(false);
+                const next = !resetOpen;
+                closeOtherPanels();
+                setResetOpen(next);
               }}
             >
               {resetOpen ? "Close reset" : "Choose data"}
@@ -154,10 +175,9 @@ export function ProfileSettingsPage({
             <button
               className="secondary compact"
               onClick={() => {
-                setBackupOpen((open) => !open);
-                setResetOpen(false);
-                setImportOpen(false);
-                setSharePreviewOpen(false);
+                const next = !backupOpen;
+                closeOtherPanels();
+                setBackupOpen(next);
               }}
             >
               {backupOpen ? "Close backup" : "Download backup"}
@@ -173,10 +193,9 @@ export function ProfileSettingsPage({
             <button
               className="secondary compact"
               onClick={() => {
-                setImportOpen((open) => !open);
-                setResetOpen(false);
-                setBackupOpen(false);
-                setSharePreviewOpen(false);
+                const next = !importOpen;
+                closeOtherPanels();
+                setImportOpen(next);
               }}
             >
               {importOpen ? "Close restore" : "Choose backup"}
@@ -202,7 +221,11 @@ export function ProfileSettingsPage({
         )}
       </section>
 
-      <section className="settings-section" aria-labelledby="settings-sharing-heading">
+      <section
+        id="settings-sharing"
+        className="settings-section"
+        aria-labelledby="settings-sharing-heading"
+      >
         <div className="settings-section-heading">
           <div>
             <p className="eyebrow">Sharing</p>
@@ -224,10 +247,9 @@ export function ProfileSettingsPage({
             <button
               className="secondary compact"
               onClick={() => {
-                setSharePreviewOpen((open) => !open);
-                setResetOpen(false);
-                setBackupOpen(false);
-                setImportOpen(false);
+                const next = !sharePreviewOpen;
+                closeOtherPanels();
+                setSharePreviewOpen(next);
               }}
             >
               {sharePreviewOpen ? "Close preview" : "Preview"}
@@ -243,10 +265,8 @@ export function ProfileSettingsPage({
             <button
               className="secondary compact"
               onClick={() => {
+                closeOtherPanels();
                 setSharePreviewOpen(true);
-                setResetOpen(false);
-                setBackupOpen(false);
-                setImportOpen(false);
               }}
             >
               Open exports
@@ -255,6 +275,53 @@ export function ProfileSettingsPage({
         </div>
 
         {sharePreviewOpen && <ProfileSharePanel settings={settings} />}
+      </section>
+
+      <section className="settings-section" aria-labelledby="settings-advanced-heading">
+        <div className="settings-section-heading">
+          <div>
+            <p className="eyebrow">Advanced</p>
+            <h2 id="settings-advanced-heading">Developer / Admin Tools</h2>
+          </div>
+          <p>
+            Local discoverability for internal tooling. This is not authentication or a security boundary.
+          </p>
+        </div>
+
+        <div className="settings-action-list panel" aria-label="Advanced settings">
+          <article className="settings-action-row">
+            <div>
+              <strong>Developer tools</strong>
+              <p>
+                Reveal internal data and curation tools on this device. This preference is not part of profile backup/export.
+              </p>
+            </div>
+            <button
+              type="button"
+              className={developerToolsEnabled ? "settings-switch is-on" : "settings-switch"}
+              role="switch"
+              aria-checked={developerToolsEnabled}
+              onClick={() => onDeveloperToolsChange(!developerToolsEnabled)}
+            >
+              <span aria-hidden="true" />
+              {developerToolsEnabled ? "On" : "Off"}
+            </button>
+          </article>
+
+          {developerToolsEnabled && (
+            <article className="settings-action-row">
+              <div>
+                <strong>Curation Workbench</strong>
+                <p>
+                  Inspect and refine catalog, signals, questions, rewards, punishments, and other internal product data.
+                </p>
+              </div>
+              <button type="button" className="secondary compact" onClick={onOpenCuration}>
+                Open workbench
+              </button>
+            </article>
+          )}
+        </div>
       </section>
     </section>
   );
