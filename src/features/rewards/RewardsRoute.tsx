@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
+import { catalogRewardsRoute } from "../../app/routes";
 import { loadCurrentProfileSnapshot } from "../../app/currentProfileSnapshot";
 import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
 
@@ -18,6 +19,11 @@ export function RewardsRoute() {
   const location = useLocation();
   const navigate = useNavigate();
   const returnPath = resolveRewardsReturnPath(location.state);
+  const workspace = new URLSearchParams(location.search).get("workspace");
+
+  if (workspace !== "tools") {
+    return <Navigate to={catalogRewardsRoute.path} replace />;
+  }
 
   return (
     <RoutedFeatureFrame activeDestination="rewards-punishments">
