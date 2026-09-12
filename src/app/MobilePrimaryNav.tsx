@@ -173,14 +173,22 @@ function frameAt(curve: CubicCurve, t: number) {
   };
 }
 
+function lerpPoint(from: Point, to: Point, amount: number): Point {
+  return {
+    x: from.x + (to.x - from.x) * amount,
+    y: from.y + (to.y - from.y) * amount,
+  };
+}
+
 function RopeConnector({ curve }: { curve: CubicCurve }) {
   const segments = useMemo(() => {
-    const count = 18;
-    const radius = 4.35;
-    const skew = 2.65;
+    const count = 13;
+    const radius = 4.45;
+    const skew = 2.1;
+    const shadeDepth = 0.32;
 
     return Array.from({ length: count }, (_, index) => {
-      const overlap = 0.006;
+      const overlap = 0.008;
       const t0 = Math.max(0, index / count - (index > 0 ? overlap : 0));
       const t1 = Math.min(1, (index + 1) / count + (index < count - 1 ? overlap : 0));
       const start = frameAt(curve, t0);
@@ -203,10 +211,13 @@ function RopeConnector({ curve }: { curve: CubicCurve }) {
         y: end.point.y + end.ny * radius + end.ty * skew,
       };
 
+      const shadeA = lerpPoint(a, d, shadeDepth);
+      const shadeB = lerpPoint(b, c, shadeDepth);
+
       return {
         key: index,
-        variant: index % 3,
-        d: `M ${a.x} ${a.y} L ${b.x} ${b.y} L ${c.x} ${c.y} L ${d.x} ${d.y} Z`,
+        mainPath: `M ${a.x} ${a.y} L ${b.x} ${b.y} L ${c.x} ${c.y} L ${d.x} ${d.y} Z`,
+        shadePath: `M ${a.x} ${a.y} L ${b.x} ${b.y} L ${shadeB.x} ${shadeB.y} L ${shadeA.x} ${shadeA.y} Z`,
       };
     });
   }, [curve]);
@@ -218,11 +229,16 @@ function RopeConnector({ curve }: { curve: CubicCurve }) {
       <path className="mobile-nav-rope-outline" d={d} />
       <path className="mobile-nav-rope-underlay" d={d} />
       {segments.map((segment) => (
-        <path
-          key={segment.key}
-          className={`mobile-nav-rope-segment mobile-nav-rope-segment--${segment.variant}`}
-          d={segment.d}
-        />
+        <g key={segment.key}>
+          <path
+            className="mobile-nav-rope-segment mobile-nav-rope-segment-main"
+            d={segment.mainPath}
+          />
+          <path
+            className="mobile-nav-rope-segment mobile-nav-rope-segment-shade"
+            d={segment.shadePath}
+          />
+        </g>
       ))}
     </g>
   );
