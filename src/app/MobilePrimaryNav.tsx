@@ -331,7 +331,15 @@ export function MobilePrimaryNav() {
   return (
     <div className="mobile-primary-nav-shell">
       {openLauncher ? (
-        <RadialLauncher launcher={openLauncher} onSelect={go} />
+        <>
+          <button
+            type="button"
+            className="mobile-nav-radial-dismiss"
+            aria-label={`Close ${openLauncher === "catalog" ? "Catalog" : "Tools"} launcher`}
+            onClick={() => setOpenLauncher(null)}
+          />
+          <RadialLauncher launcher={openLauncher} onSelect={go} />
+        </>
       ) : null}
 
       <nav className="mobile-primary-nav" aria-label="Primary navigation">
@@ -356,7 +364,10 @@ export function MobilePrimaryNav() {
           )}
           aria-expanded={openLauncher === "catalog"}
           aria-controls="mobile-catalog-launcher"
-          onClick={() => toggleLauncher("catalog")}
+          onClick={(event) => {
+            toggleLauncher("catalog");
+            if (event.detail > 0) event.currentTarget.blur();
+          }}
         >
           <span className="mobile-primary-nav-icon-wrap">
             <IconBook2 size={23} stroke={2} aria-hidden="true" />
@@ -397,7 +408,10 @@ export function MobilePrimaryNav() {
           )}
           aria-expanded={openLauncher === "tools"}
           aria-controls="mobile-tools-launcher"
-          onClick={() => toggleLauncher("tools")}
+          onClick={(event) => {
+            toggleLauncher("tools");
+            if (event.detail > 0) event.currentTarget.blur();
+          }}
         >
           <span className="mobile-primary-nav-icon-wrap">
             <IconTool size={23} stroke={2} aria-hidden="true" />
