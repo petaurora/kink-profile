@@ -1,0 +1,42 @@
+.profile-page-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .65rem;
+  margin: 0 0 .85rem;
+}
+
+.profile-page-action {
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: .68rem .9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  background: var(--bg-surface-raised);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.profile-page-action:hover {
+  border-color: var(--accent-border);
+  background: var(--bg-control-hover);
+}
+
+.profile-page-action:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .profile-page-actions {
+    padding-top: .1rem;
+  }
+
+  .profile-page-action {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+}
