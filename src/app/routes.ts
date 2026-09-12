@@ -35,6 +35,7 @@ export const quizResultsRoute = {
   id: "quiz-results",
   path: "/quizzes/:quizId/results",
 } as const;
+export const unknownRouteFallbackPath = hubRoute.path;
 
 export function quizRoutePath(quizId: QuizId) {
   return `/quizzes/${quizId}`;
