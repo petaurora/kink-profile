@@ -9,11 +9,15 @@ describe("Settings route return navigation", () => {
     );
   });
 
-  it("uses Explore for direct entry or unsafe return paths", () => {
-    expect(resolveSettingsReturnPath(null)).toBe("/");
-    expect(resolveSettingsReturnPath({})).toBe("/");
-    expect(resolveSettingsReturnPath({ from: "https://example.com" })).toBe("/");
-    expect(resolveSettingsReturnPath({ from: "//example.com" })).toBe("/");
-    expect(resolveSettingsReturnPath({ from: "/settings" })).toBe("/");
+  it("uses Profile for direct entry or unsafe return paths", () => {
+    expect(resolveSettingsReturnPath(null)).toBe("/profile");
+    expect(resolveSettingsReturnPath({})).toBe("/profile");
+    expect(resolveSettingsReturnPath({ from: "https://example.com" })).toBe(
+      "/profile",
+    );
+    expect(resolveSettingsReturnPath({ from: "//example.com" })).toBe(
+      "/profile",
+    );
+    expect(resolveSettingsReturnPath({ from: "/settings" })).toBe("/profile");
   });
 });
