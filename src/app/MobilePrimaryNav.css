@@ -80,7 +80,6 @@
       transform 150ms ease;
   }
 
-  .mobile-primary-nav-item:hover,
   .mobile-primary-nav-item.is-active,
   .mobile-primary-nav-item.is-launcher-open {
     color: var(--accent-primary);
@@ -320,7 +319,6 @@
     box-shadow: 0 2px 10px rgba(4, 3, 26, .28);
   }
 
-  .mobile-nav-radial-option:hover .mobile-nav-radial-option-icon,
   .mobile-nav-radial-option:focus-visible .mobile-nav-radial-option-icon {
     transform: translateY(-2px) scale(1.04);
     border-color: var(--accent-primary);
@@ -338,6 +336,20 @@
       opacity: 1;
       transform: translateX(-50%) translateY(0) scale(1);
     }
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (max-width: 760px) {
+  .mobile-primary-nav-item:hover {
+    color: var(--accent-primary);
+  }
+
+  .mobile-nav-radial-option:hover .mobile-nav-radial-option-icon {
+    transform: translateY(-2px) scale(1.04);
+    border-color: var(--accent-primary);
+    box-shadow:
+      0 12px 28px rgba(4, 3, 26, .42),
+      0 0 24px rgba(201, 73, 172, .22);
   }
 }
 
