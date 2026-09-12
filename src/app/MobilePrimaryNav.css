@@ -130,6 +130,7 @@
 
   .mobile-primary-nav-item--hub .mobile-primary-nav-label {
     grid-row: 2;
+    transform: translateY(5px);
   }
 
   .mobile-primary-nav-hub-button {
@@ -207,32 +208,32 @@
 
   .mobile-nav-rope-outline {
     fill: none;
-    stroke: rgba(9, 6, 26, .96);
-    stroke-width: 11;
+    stroke: rgba(24, 10, 24, .94);
+    stroke-width: 10.5;
   }
 
   .mobile-nav-rope-underlay {
     fill: none;
-    stroke: #5d173d;
+    stroke: #4b1f37;
     stroke-width: 8.7;
     filter: drop-shadow(0 3px 6px rgba(4, 3, 26, .4));
   }
 
   .mobile-nav-rope-segment {
-    stroke: rgba(18, 8, 29, .68);
-    stroke-width: .75;
+    stroke: rgba(42, 16, 31, .34);
+    stroke-width: .45;
   }
 
   .mobile-nav-rope-segment--0 {
-    fill: #7a204f;
+    fill: #6f2f50;
   }
 
   .mobile-nav-rope-segment--1 {
-    fill: #c949ac;
+    fill: #98466d;
   }
 
   .mobile-nav-rope-segment--2 {
-    fill: #ef8fc7;
+    fill: #b45d82;
   }
 
   .mobile-nav-radial-option {
