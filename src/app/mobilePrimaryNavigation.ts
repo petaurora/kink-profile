@@ -15,7 +15,11 @@ export function primaryDestinationForLocation(
     return "profile";
   }
 
-  if (pathname === "/catalog" || pathname === "/ranking") {
+  if (
+    pathname === "/catalog" ||
+    pathname === "/ranking" ||
+    pathname.startsWith("/catalog/")
+  ) {
     return "catalog";
   }
 
