@@ -1,0 +1,35 @@
+.catalog-workspace-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.catalog-workspace-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 2px 0;
+}
+
+.catalog-workspace-navigation > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.catalog-workspace-navigation .eyebrow {
+  margin: 0;
+}
+
+.catalog-workspace-navigation strong {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .catalog-workspace-navigation {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 2px;
+  }
+}
