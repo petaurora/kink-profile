@@ -186,7 +186,35 @@
       rgba(8, 8, 29, .72) 62%,
       rgba(8, 8, 29, 0) 100%
     );
-    backdrop-filter: blur(2px);
+    pointer-events: none;
+  }
+
+  .mobile-nav-radial::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -72px;
+    bottom: 0;
+    z-index: 0;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    -webkit-mask-image: linear-gradient(
+      to top,
+      #000 0%,
+      #000 42%,
+      rgba(0, 0, 0, .82) 58%,
+      rgba(0, 0, 0, .42) 76%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to top,
+      #000 0%,
+      #000 42%,
+      rgba(0, 0, 0, .82) 58%,
+      rgba(0, 0, 0, .42) 76%,
+      transparent 100%
+    );
     pointer-events: none;
   }
 
