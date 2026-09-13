@@ -296,30 +296,36 @@ function PrototypeC({ navigate }: { navigate: (route: string) => void }) {
         </div>
       </header>
 
-      <section className="hub-profile-highlights" aria-label="Top profile highlights">
-        <div className="hub-profile-highlight-groups">
-          <div className="hub-profile-highlight-group">
-            <h2>Top themes</h2>
-            <div className="hub-profile-signal-tiles">
-              <article className="hub-profile-signal-tile">
+      <section className="hub-profile-glance-card" aria-label="Profile at a glance">
+        <header className="hub-profile-glance-header">
+          <p className="hub-mini-label">At a glance</p>
+          <h2>What’s rising to the top.</h2>
+          <p>A quick look at the themes and headspaces shaping your profile right now.</p>
+        </header>
+
+        <div className="hub-profile-glance-groups">
+          <div className="hub-profile-glance-group">
+            <h3>Top themes</h3>
+            <div className="hub-profile-glance-items">
+              <article className="hub-profile-glance-item">
                 <span className="hub-profile-signal-icon"><IconCrown size={22} stroke={1.8} /></span>
                 <strong>Power Exchange</strong>
               </article>
-              <article className="hub-profile-signal-tile">
+              <article className="hub-profile-glance-item">
                 <span className="hub-profile-signal-icon"><IconKey size={22} stroke={1.8} /></span>
                 <strong>Ownership &amp; Belonging</strong>
               </article>
             </div>
           </div>
 
-          <div className="hub-profile-highlight-group">
-            <h2>Top headspaces</h2>
-            <div className="hub-profile-signal-tiles">
-              <article className="hub-profile-signal-tile">
+          <div className="hub-profile-glance-group">
+            <h3>Top headspaces</h3>
+            <div className="hub-profile-glance-items">
+              <article className="hub-profile-glance-item">
                 <span className="hub-profile-signal-icon"><IconPaw size={22} stroke={1.8} /></span>
                 <strong>Pet</strong>
               </article>
-              <article className="hub-profile-signal-tile">
+              <article className="hub-profile-glance-item">
                 <span className="hub-profile-signal-icon"><IconTargetArrow size={22} stroke={1.8} /></span>
                 <strong>Prey</strong>
               </article>
@@ -327,8 +333,8 @@ function PrototypeC({ navigate }: { navigate: (route: string) => void }) {
           </div>
         </div>
 
-        <button className="hub-profile-highlights-link" onClick={() => navigate("/profile")}>
-          View your full profile <IconArrowRight size={17} />
+        <button className="hub-profile-glance-link" onClick={() => navigate("/profile")}>
+          View full profile <IconArrowRight size={17} />
         </button>
       </section>
 
