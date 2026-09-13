@@ -27,7 +27,7 @@ describe("Hub metrics", () => {
           },
         },
       },
-    } as Parameters<typeof buildHubMetrics>[0];
+    } as unknown as Parameters<typeof buildHubMetrics>[0];
 
     expect(buildHubMetrics(snapshot)).toEqual({
       catalogRatedCount: 2,
