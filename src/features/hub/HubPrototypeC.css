@@ -185,13 +185,13 @@
   color: var(--accent-primary);
 }
 
-/* Desire Constellation — coverage as an exploration map instead of equal-metric progress bars. */
+/* Desire Constellation — coverage as a small, readable star path rather than progress bars. */
 .hub-dashboard-c .hub-c-split > .hub-module:first-child {
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(circle at 24% 32%, color-mix(in srgb, var(--accent-primary) 11%, transparent), transparent 30%),
-    radial-gradient(circle at 82% 68%, color-mix(in srgb, var(--accent-secondary) 9%, transparent), transparent 34%),
+    radial-gradient(circle at 22% 30%, color-mix(in srgb, var(--accent-primary) 9%, transparent), transparent 28%),
+    radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--accent-secondary) 8%, transparent), transparent 32%),
     var(--bg-surface);
 }
 
@@ -199,57 +199,65 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 42px 24px;
-  min-height: 250px;
+  grid-template-rows: repeat(2, minmax(88px, auto));
+  gap: 28px 34px;
+  min-height: 238px;
   margin-top: 18px;
-  padding: 18px 2px 8px;
+  padding: 16px 6px 8px;
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::before,
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::after {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 0;
-  width: 72%;
-  height: 1px;
-  content: "";
-  transform-origin: center;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent-primary) 40%, var(--border-subtle)), color-mix(in srgb, var(--text-secondary) 22%, transparent), transparent);
-  opacity: .65;
-}
-
-.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::before {
-  transform: translate(-50%, -50%) rotate(27deg);
-}
-
-.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::after {
-  transform: translate(-50%, -50%) rotate(-31deg);
+  display: none;
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row {
   position: relative;
   z-index: 1;
   display: flex;
-  gap: 11px;
-  align-items: center;
+  gap: 10px;
+  align-items: flex-start;
   min-width: 0;
+  overflow: visible;
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row::before {
-  width: 16px;
-  height: 16px;
+  position: relative;
+  z-index: 2;
+  width: 9px;
+  height: 9px;
   flex: 0 0 auto;
+  margin-top: 4px;
   content: "";
-  border: 2px solid color-mix(in srgb, var(--accent-primary) 76%, var(--border-strong));
+  border: 0;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--accent-primary) 28%, var(--bg-surface-raised));
-  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-primary) 10%, transparent), 0 0 18px color-mix(in srgb, var(--accent-primary) 26%, transparent);
+  background: var(--accent-primary);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent-primary) 16%, transparent),
+    0 0 16px color-mix(in srgb, var(--accent-primary) 40%, transparent);
 }
 
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row::after {
+  position: absolute;
+  z-index: 0;
+  height: 1px;
+  content: "";
+  transform-origin: left center;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent-primary) 34%, transparent), color-mix(in srgb, var(--text-secondary) 18%, transparent));
+  pointer-events: none;
+}
+
+/* Follow one readable path: Quizzes → Kink Catalog → Profile depth → R/P. */
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(1) {
   align-self: start;
   transform: translateY(4px);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(1)::after {
+  top: 8px;
+  left: 7px;
+  width: 118%;
+  transform: rotate(13deg);
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2) {
@@ -257,22 +265,42 @@
   transform: translateY(30px);
 }
 
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::after {
+  top: 8px;
+  left: 7px;
+  width: 78%;
+  transform: rotate(79deg);
+}
+
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3) {
   align-self: end;
-  transform: translate(18px, -4px);
+  transform: translate(14px, -2px);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3)::after {
+  display: none;
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4) {
   align-self: end;
-  transform: translateY(-22px);
+  transform: translate(-4px, -18px);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4)::after {
+  top: 8px;
+  left: 7px;
+  width: 112%;
+  transform: rotate(169deg);
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::before,
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4)::before {
-  width: 20px;
-  height: 20px;
-  background: color-mix(in srgb, var(--accent-primary) 46%, var(--bg-surface-raised));
-  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent-primary) 13%, transparent), 0 0 24px color-mix(in srgb, var(--accent-primary) 36%, transparent);
+  width: 11px;
+  height: 11px;
+  margin-top: 3px;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent-primary) 18%, transparent),
+    0 0 22px color-mix(in srgb, var(--accent-primary) 48%, transparent);
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row > div:first-child {
@@ -283,13 +311,13 @@
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row strong {
   color: var(--text-primary);
-  font-size: .94rem;
+  font-size: .92rem;
   line-height: 1.15;
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row span {
   color: var(--text-secondary);
-  font-size: .76rem;
+  font-size: .74rem;
   line-height: 1.25;
 }
 
@@ -304,8 +332,8 @@
   }
 
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list {
-    min-height: 230px;
-    gap: 34px 18px;
+    min-height: 224px;
+    gap: 26px 24px;
   }
 }
 
@@ -397,35 +425,57 @@
   }
 
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list {
-    min-height: 210px;
-    gap: 28px 12px;
-    padding-top: 12px;
+    grid-template-rows: repeat(2, minmax(78px, auto));
+    min-height: 204px;
+    gap: 24px 16px;
+    padding: 12px 2px 4px;
   }
 
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row {
-    gap: 8px;
+    gap: 7px;
   }
 
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row::before {
-    width: 13px;
-    height: 13px;
+    width: 8px;
+    height: 8px;
+    margin-top: 3px;
   }
 
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::before,
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4)::before {
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
+    margin-top: 2px;
   }
 
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row strong {
-    font-size: .82rem;
+    font-size: .8rem;
   }
 
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row span {
-    font-size: .68rem;
+    font-size: .66rem;
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(1)::after {
+    width: 112%;
+    transform: rotate(14deg);
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::after {
+    width: 72%;
+    transform: rotate(80deg);
   }
 
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3) {
-    transform: translate(8px, -2px);
+    transform: translate(6px, -1px);
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4) {
+    transform: translate(-2px, -12px);
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4)::after {
+    width: 106%;
+    transform: rotate(168deg);
   }
 }
