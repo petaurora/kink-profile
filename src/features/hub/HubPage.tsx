@@ -296,24 +296,41 @@ function PrototypeC({ navigate }: { navigate: (route: string) => void }) {
         </div>
       </header>
 
-      <div className="hub-profile-signal-tiles" aria-label="Profile highlights">
-        <article className="hub-profile-signal-tile">
-          <span className="hub-profile-signal-icon"><IconCrown size={22} stroke={1.8} /></span>
-          <div><small>Theme</small><strong>Power Exchange</strong></div>
-        </article>
-        <article className="hub-profile-signal-tile">
-          <span className="hub-profile-signal-icon"><IconKey size={22} stroke={1.8} /></span>
-          <div><small>Theme</small><strong>Ownership &amp; Belonging</strong></div>
-        </article>
-        <article className="hub-profile-signal-tile">
-          <span className="hub-profile-signal-icon"><IconPaw size={22} stroke={1.8} /></span>
-          <div><small>Headspace</small><strong>Pet</strong></div>
-        </article>
-        <article className="hub-profile-signal-tile">
-          <span className="hub-profile-signal-icon"><IconTargetArrow size={22} stroke={1.8} /></span>
-          <div><small>Headspace</small><strong>Prey</strong></div>
-        </article>
-      </div>
+      <section className="hub-profile-highlights" aria-label="Top profile highlights">
+        <div className="hub-profile-highlight-groups">
+          <div className="hub-profile-highlight-group">
+            <h2>Top themes</h2>
+            <div className="hub-profile-signal-tiles">
+              <article className="hub-profile-signal-tile">
+                <span className="hub-profile-signal-icon"><IconCrown size={22} stroke={1.8} /></span>
+                <strong>Power Exchange</strong>
+              </article>
+              <article className="hub-profile-signal-tile">
+                <span className="hub-profile-signal-icon"><IconKey size={22} stroke={1.8} /></span>
+                <strong>Ownership &amp; Belonging</strong>
+              </article>
+            </div>
+          </div>
+
+          <div className="hub-profile-highlight-group">
+            <h2>Top headspaces</h2>
+            <div className="hub-profile-signal-tiles">
+              <article className="hub-profile-signal-tile">
+                <span className="hub-profile-signal-icon"><IconPaw size={22} stroke={1.8} /></span>
+                <strong>Pet</strong>
+              </article>
+              <article className="hub-profile-signal-tile">
+                <span className="hub-profile-signal-icon"><IconTargetArrow size={22} stroke={1.8} /></span>
+                <strong>Prey</strong>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <button className="hub-profile-highlights-link" onClick={() => navigate("/profile")}>
+          View your full profile <IconArrowRight size={17} />
+        </button>
+      </section>
 
       <section className="hub-c-thread">
         <div className="hub-c-thread-line" />
