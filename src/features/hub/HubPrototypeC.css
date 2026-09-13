@@ -23,10 +23,11 @@
 .hub-profile-glance-card {
   display: grid;
   gap: 22px;
-  margin: 6px 0 30px;
+  margin: 6px 0 0;
   padding: clamp(18px, 3vw, 26px);
   border: 1px solid var(--border-subtle);
-  border-radius: 24px;
+  border-bottom: 0;
+  border-radius: 24px 24px 0 0;
   background:
     radial-gradient(circle at 100% 0%, var(--ambient-glow), transparent 38%),
     var(--bg-surface);
@@ -107,36 +108,21 @@
   line-height: 1.18;
 }
 
-.hub-profile-glance-link {
-  display: inline-flex;
-  align-items: center;
-  justify-self: end;
-  gap: 7px;
-  margin-top: -2px;
-  padding: 5px 0;
-  border: 0;
-  background: transparent;
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: .86rem;
-  font-weight: 780;
-  cursor: pointer;
+/* C keeps Profile itself in the primary nav; this card is only the snapshot + resume story. */
+.hub-dashboard-c .hub-profile-glance-link {
+  display: none;
 }
 
-.hub-profile-glance-link:hover {
-  color: var(--accent-primary);
-}
-
-.hub-profile-glance-link:focus-visible {
-  border-radius: 6px;
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 3px;
-}
-
-/* Continue is an action strip in C, not another feature/dashboard card. */
+/* Continue is the final section inside the same visual card, not another card. */
 .hub-dashboard-c .hub-c-thread {
   display: block;
-  margin: 22px 0 30px;
+  margin: 0 0 30px;
+  padding: 0 clamp(18px, 3vw, 26px) clamp(18px, 3vw, 26px);
+  border: 1px solid var(--border-subtle);
+  border-top: 0;
+  border-radius: 0 0 24px 24px;
+  background: var(--bg-surface);
+  box-shadow: 0 16px 36px var(--shadow-panel);
 }
 
 .hub-dashboard-c .hub-c-thread-line,
@@ -144,13 +130,18 @@
   display: none;
 }
 
+.hub-dashboard-c .hub-c-thread-content {
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+
 .hub-dashboard-c .hub-continue-card {
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 14px;
-  padding: 14px 16px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--bg-surface) 84%, transparent);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   box-shadow: none;
 }
 
@@ -219,9 +210,8 @@
   .hub-profile-glance-card {
     gap: 18px;
     margin-top: 8px;
-    margin-bottom: 26px;
     padding: 17px;
-    border-radius: 21px;
+    border-radius: 21px 21px 0 0;
   }
 
   .hub-profile-glance-header h2 {
@@ -255,19 +245,19 @@
     font-size: .86rem;
   }
 
-  .hub-profile-glance-link {
-    font-size: .82rem;
+  .hub-dashboard-c .hub-c-thread {
+    margin: 0 0 26px;
+    padding: 0 17px 17px;
+    border-radius: 0 0 21px 21px;
   }
 
-  .hub-dashboard-c .hub-c-thread {
-    margin: 18px 0 26px;
+  .hub-dashboard-c .hub-c-thread-content {
+    padding-top: 17px;
   }
 
   .hub-dashboard-c .hub-continue-card {
     grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 10px;
-    padding: 12px;
-    border-radius: 16px;
   }
 
   .hub-dashboard-c .hub-card-icon-large {
