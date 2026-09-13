@@ -1,0 +1,285 @@
+/*
+ * M19.8 selected visual direction.
+ *
+ * Keep the prototype classes in HubPage temporarily so review history remains easy to
+ * compare, but force the shipped Hub surface to use Threaded and hide the playground
+ * switcher. This file can be folded back into HubPage.css when the prototype CSS is
+ * cleaned up.
+ */
+
+.hub-home .hub-style-switcher {
+  display: none;
+}
+
+.hub-home.hub-home .hub-home-stack {
+  gap: 1.55rem;
+}
+
+.hub-home.hub-home .hub-home-intro {
+  padding: .25rem 0 .2rem;
+}
+
+.hub-home.hub-home .hub-home-intro h1 {
+  margin: .1rem 0 .25rem;
+  font-size: clamp(1.75rem, 4.2vw, 2.65rem);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+}
+
+.hub-home.hub-home .hub-home-question {
+  font-size: clamp(.94rem, 2vw, 1.06rem);
+}
+
+.hub-home.hub-home .hub-home-spark {
+  width: 3.8rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bg-accent-soft);
+  transform: rotate(8deg);
+}
+
+.hub-home.hub-home .hub-home-reflection {
+  gap: 1.15rem;
+  padding: clamp(1.25rem, 3.5vw, 1.9rem);
+  border-color: var(--border-subtle);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(circle at 18% 22%, color-mix(in srgb, var(--accent-primary) 8%, transparent), transparent 30%),
+    radial-gradient(circle at 82% 72%, color-mix(in srgb, var(--accent-secondary) 9%, transparent), transparent 34%),
+    var(--bg-surface);
+  box-shadow: 0 14px 34px var(--shadow-panel);
+}
+
+.hub-home.hub-home .hub-home-reflection h2 {
+  font-size: clamp(1.3rem, 2.7vw, 1.75rem);
+}
+
+.hub-home.hub-home .hub-home-signal-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .5rem;
+}
+
+.hub-home.hub-home .hub-home-signal {
+  min-height: 3.4rem;
+  border-color: var(--border-subtle);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--bg-surface-raised) 70%, transparent);
+}
+
+.hub-home.hub-home .hub-home-evidence {
+  position: relative;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(5.6rem, auto));
+  gap: 1.8rem 2.2rem;
+  min-height: 14.25rem;
+  padding: 1rem .4rem .5rem;
+  overflow: hidden;
+}
+
+.hub-home.hub-home .hub-home-evidence::before,
+.hub-home.hub-home .hub-home-evidence::after {
+  position: absolute;
+  inset: .4rem .2rem 0;
+  z-index: 0;
+  content: "";
+  pointer-events: none;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'%3E%3Cpath d='M22 43 C82 18 130 73 190 69 C246 65 302 34 333 68 C363 101 338 139 304 151 C280 160 263 151 270 137 C278 121 300 124 300 142 C300 164 260 174 216 165 C164 154 124 142 83 162 C54 176 34 181 20 175' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'%3E%3Cpath d='M22 43 C82 18 130 73 190 69 C246 65 302 34 333 68 C363 101 338 139 304 151 C280 160 263 151 270 137 C278 121 300 124 300 142 C300 164 260 174 216 165 C164 154 124 142 83 162 C54 176 34 181 20 175' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
+.hub-home.hub-home .hub-home-evidence::before {
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent-primary) 72%, var(--text-primary)) 0 3px,
+    color-mix(in srgb, var(--accent-secondary) 74%, var(--accent-primary)) 3px 6px
+  );
+  opacity: .32;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent-primary) 20%, transparent));
+}
+
+.hub-home.hub-home .hub-home-evidence::after {
+  background: color-mix(in srgb, var(--text-primary) 48%, transparent);
+  opacity: .1;
+}
+
+.hub-home.hub-home .hub-home-evidence-item {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: .65rem;
+  align-items: flex-start;
+  align-self: start;
+  max-width: 12rem;
+  padding: .35rem;
+  border: 0;
+  background: transparent;
+}
+
+.hub-home.hub-home .hub-home-evidence-item::before {
+  width: .55rem;
+  height: .55rem;
+  flex: 0 0 auto;
+  margin-top: .35rem;
+  content: "";
+  border: 2px solid color-mix(in srgb, var(--accent-primary) 82%, var(--text-primary));
+  border-radius: 50%;
+  background: var(--bg-surface-raised);
+  box-shadow:
+    0 0 0 .18rem color-mix(in srgb, var(--accent-primary) 18%, transparent),
+    0 0 .75rem color-mix(in srgb, var(--accent-primary) 28%, transparent);
+}
+
+.hub-home.hub-home .hub-home-evidence-item:nth-child(1) {
+  transform: translate(.1rem, .1rem);
+}
+
+.hub-home.hub-home .hub-home-evidence-item:nth-child(2) {
+  justify-self: end;
+  transform: translate(-.4rem, 1.15rem);
+}
+
+.hub-home.hub-home .hub-home-evidence-item:nth-child(3) {
+  align-self: end;
+  transform: translate(1.2rem, -.25rem);
+}
+
+.hub-home.hub-home .hub-home-evidence-item:nth-child(4) {
+  align-self: end;
+  justify-self: end;
+  transform: translate(-.8rem, -1rem);
+}
+
+.hub-home.hub-home .hub-home-evidence-item strong {
+  font-size: 1rem;
+}
+
+.hub-home.hub-home .hub-home-now-grid-primary {
+  gap: .65rem;
+}
+
+.hub-home.hub-home .hub-home-now-grid-primary .hub-home-now {
+  min-height: 11.5rem;
+  border-radius: 1.35rem;
+  background: var(--bg-surface);
+}
+
+.hub-home.hub-home .hub-home-door-section {
+  padding-top: .4rem;
+}
+
+.hub-home.hub-home .hub-home-doors {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+}
+
+.hub-home.hub-home .hub-home-door {
+  min-height: 9.5rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: 1fr;
+  align-items: center;
+  border-radius: 1.4rem;
+}
+
+.hub-home.hub-home .hub-home-door:nth-child(1),
+.hub-home.hub-home .hub-home-door:nth-child(4) {
+  background:
+    radial-gradient(circle at 100% 0%, var(--ambient-glow), transparent 52%),
+    var(--bg-surface-raised);
+}
+
+.hub-home.hub-home .hub-home-door-arrow {
+  align-self: center;
+}
+
+.hub-home.hub-home .hub-home-playground {
+  position: relative;
+  border-style: solid;
+  border-color: var(--border-subtle);
+  border-radius: 1.5rem;
+  background: var(--bg-surface-emphasis);
+  overflow: hidden;
+}
+
+.hub-home.hub-home .hub-home-playground::after {
+  position: absolute;
+  right: -3.5rem;
+  bottom: -4.5rem;
+  width: 10rem;
+  height: 10rem;
+  content: "";
+  border: 1px solid var(--accent-border);
+  border-radius: 50%;
+  opacity: .3;
+}
+
+.hub-home.hub-home .hub-home-now-grid-secondary .hub-home-now {
+  min-height: 11.5rem;
+  border-radius: 1.35rem;
+}
+
+@media (max-width: 620px) {
+  .hub-home.hub-home .hub-home-stack {
+    gap: 1.2rem;
+  }
+
+  .hub-home.hub-home .hub-home-signal-list {
+    grid-template-columns: 1fr;
+  }
+
+  .hub-home.hub-home .hub-home-signal {
+    min-height: 3rem;
+  }
+
+  .hub-home.hub-home .hub-home-evidence {
+    min-height: 13rem;
+    gap: 1rem 1.2rem;
+  }
+
+  .hub-home.hub-home .hub-home-evidence-item {
+    max-width: 9rem;
+  }
+
+  .hub-home.hub-home .hub-home-evidence-item:nth-child(2) {
+    transform: translate(-.1rem, 1rem);
+  }
+
+  .hub-home.hub-home .hub-home-evidence-item:nth-child(3) {
+    transform: translate(.4rem, -.1rem);
+  }
+
+  .hub-home.hub-home .hub-home-evidence-item:nth-child(4) {
+    transform: translate(-.2rem, -.75rem);
+  }
+
+  .hub-home.hub-home .hub-home-doors {
+    grid-template-columns: 1fr;
+  }
+
+  .hub-home.hub-home .hub-home-door {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 380px) {
+  .hub-home.hub-home .hub-home-evidence {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    min-height: 0;
+    gap: .4rem;
+    padding: .2rem 0;
+  }
+
+  .hub-home.hub-home .hub-home-evidence::before,
+  .hub-home.hub-home .hub-home-evidence::after {
+    display: none;
+  }
+
+  .hub-home.hub-home .hub-home-evidence-item,
+  .hub-home.hub-home .hub-home-evidence-item:nth-child(n) {
+    justify-self: stretch;
+    max-width: none;
+    transform: none;
+  }
+}
