@@ -185,7 +185,7 @@
   color: var(--accent-primary);
 }
 
-/* Desire Constellation — coverage as a small, readable star path rather than progress bars. */
+/* Desire Constellation — the explored areas are literally tied together. */
 .hub-dashboard-c .hub-c-split > .hub-module:first-child {
   position: relative;
   overflow: hidden;
@@ -206,9 +206,34 @@
   padding: 16px 6px 8px;
 }
 
-.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::before,
+/* One loose rope winds through Quizzes → Catalog → Profile → R/P. */
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::before {
+  position: absolute;
+  inset: 4px 0 0;
+  z-index: 0;
+  content: "";
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent-primary) 72%, var(--text-primary)) 0 3px,
+    color-mix(in srgb, var(--accent-secondary) 74%, var(--accent-primary)) 3px 6px
+  );
+  opacity: .56;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent-primary) 24%, transparent));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'%3E%3Cpath d='M22 43 C82 18 130 73 190 69 C246 65 302 34 333 68 C363 101 338 139 304 151 C280 160 263 151 270 137 C278 121 300 124 300 142 C300 164 260 174 216 165 C164 154 124 142 83 162 C54 176 34 181 20 175' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'%3E%3Cpath d='M22 43 C82 18 130 73 190 69 C246 65 302 34 333 68 C363 101 338 139 304 151 C280 160 263 151 270 137 C278 121 300 124 300 142 C300 164 260 174 216 165 C164 154 124 142 83 162 C54 176 34 181 20 175' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::after {
-  display: none;
+  position: absolute;
+  inset: 4px 0 0;
+  z-index: 0;
+  content: "";
+  background: color-mix(in srgb, var(--text-primary) 50%, transparent);
+  opacity: .2;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'%3E%3Cpath d='M22 43 C82 18 130 73 190 69 C246 65 302 34 333 68 C363 101 338 139 304 151 C280 160 263 151 270 137 C278 121 300 124 300 142 C300 164 260 174 216 165 C164 154 124 142 83 162 C54 176 34 181 20 175' fill='none' stroke='white' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 220'%3E%3Cpath d='M22 43 C82 18 130 73 190 69 C246 65 302 34 333 68 C363 101 338 139 304 151 C280 160 263 151 270 137 C278 121 300 124 300 142 C300 164 260 174 216 165 C164 154 124 142 83 162 C54 176 34 181 20 175' fill='none' stroke='white' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  pointer-events: none;
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row {
@@ -221,6 +246,7 @@
   overflow: visible;
 }
 
+/* The node itself reads like a small knot sitting on the rope. */
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row::before {
   position: relative;
   z-index: 2;
@@ -229,35 +255,21 @@
   flex: 0 0 auto;
   margin-top: 4px;
   content: "";
-  border: 0;
+  border: 2px solid color-mix(in srgb, var(--accent-primary) 80%, var(--text-primary));
   border-radius: 50%;
-  background: var(--accent-primary);
+  background: var(--bg-surface-raised);
   box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--accent-primary) 16%, transparent),
-    0 0 16px color-mix(in srgb, var(--accent-primary) 40%, transparent);
+    0 0 0 2px color-mix(in srgb, var(--accent-primary) 26%, transparent),
+    0 0 13px color-mix(in srgb, var(--accent-primary) 34%, transparent);
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row::after {
-  position: absolute;
-  z-index: 0;
-  height: 1px;
-  content: "";
-  transform-origin: left center;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--accent-primary) 34%, transparent), color-mix(in srgb, var(--text-secondary) 18%, transparent));
-  pointer-events: none;
+  display: none;
 }
 
-/* Follow one readable path: Quizzes → Kink Catalog → Profile depth → R/P. */
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(1) {
   align-self: start;
   transform: translateY(4px);
-}
-
-.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(1)::after {
-  top: 8px;
-  left: 7px;
-  width: 118%;
-  transform: rotate(13deg);
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2) {
@@ -265,32 +277,14 @@
   transform: translateY(30px);
 }
 
-.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::after {
-  top: 8px;
-  left: 7px;
-  width: 78%;
-  transform: rotate(79deg);
-}
-
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3) {
   align-self: end;
   transform: translate(14px, -2px);
 }
 
-.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3)::after {
-  display: none;
-}
-
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4) {
   align-self: end;
   transform: translate(-4px, -18px);
-}
-
-.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4)::after {
-  top: 8px;
-  left: 7px;
-  width: 112%;
-  transform: rotate(169deg);
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::before,
@@ -299,8 +293,8 @@
   height: 11px;
   margin-top: 3px;
   box-shadow:
-    0 0 0 4px color-mix(in srgb, var(--accent-primary) 18%, transparent),
-    0 0 22px color-mix(in srgb, var(--accent-primary) 48%, transparent);
+    0 0 0 3px color-mix(in srgb, var(--accent-primary) 24%, transparent),
+    0 0 18px color-mix(in srgb, var(--accent-primary) 40%, transparent);
 }
 
 .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row > div:first-child {
@@ -456,26 +450,11 @@
     font-size: .66rem;
   }
 
-  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(1)::after {
-    width: 112%;
-    transform: rotate(14deg);
-  }
-
-  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::after {
-    width: 72%;
-    transform: rotate(80deg);
-  }
-
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3) {
     transform: translate(6px, -1px);
   }
 
   .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4) {
     transform: translate(-2px, -12px);
-  }
-
-  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4)::after {
-    width: 106%;
-    transform: rotate(168deg);
   }
 }
