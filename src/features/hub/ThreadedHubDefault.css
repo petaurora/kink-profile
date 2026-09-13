@@ -116,8 +116,7 @@
   gap: 0;
   min-height: 0;
   padding: 0;
-  border-top: 1px solid var(--border-subtle);
-  border-bottom: 1px solid var(--border-subtle);
+  border: 0;
   overflow: visible;
 }
 
@@ -133,9 +132,12 @@
   justify-self: stretch;
   align-self: stretch;
   max-width: none;
-  padding: .85rem .75rem;
+  min-height: 4.8rem;
+  padding: .82rem 1rem;
   border: 0;
+  border-radius: 0;
   background: transparent;
+  box-shadow: none;
   transform: none;
 }
 
@@ -143,7 +145,12 @@
   display: none;
 }
 
+.hub-home .hub-home-evidence-item:nth-child(odd) {
+  padding-left: 0;
+}
+
 .hub-home .hub-home-evidence-item:nth-child(even) {
+  padding-right: 0;
   border-left: 1px solid var(--border-subtle);
 }
 
@@ -248,7 +255,18 @@
 
   .hub-home .hub-home-evidence-item,
   .hub-home .hub-home-evidence-item:nth-child(n) {
-    padding: .8rem .6rem;
+    padding-top: .76rem;
+    padding-bottom: .76rem;
+  }
+
+  .hub-home .hub-home-evidence-item:nth-child(odd) {
+    padding-left: 0;
+    padding-right: .7rem;
+  }
+
+  .hub-home .hub-home-evidence-item:nth-child(even) {
+    padding-left: .7rem;
+    padding-right: 0;
   }
 
   .hub-home .hub-home-doors {
