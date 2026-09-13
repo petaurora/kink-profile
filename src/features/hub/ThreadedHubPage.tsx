@@ -1,8 +1,16 @@
 import {
   IconArrowRight,
+  IconArrowsExchange,
   IconBook2,
+  IconChecklist,
   IconDice5,
+  IconFlame,
+  IconHeart,
   IconHeartHandshake,
+  IconKey,
+  IconLock,
+  IconMoodSmile,
+  IconPaw,
   IconRefresh,
   IconSparkles,
   IconUsers,
@@ -20,7 +28,10 @@ import {
   rewardsToolsRandomizerRoute,
   sceneBuilderRoute,
 } from "../../app/routes";
-import { overallFacetDefinitions } from "../../data/overallFacets";
+import {
+  overallFacetDefinitions,
+  type OverallFacetId,
+} from "../../data/overallFacets";
 import { quizzes } from "../../data/quizzes";
 import {
   getCatalogPreference,
@@ -37,6 +48,18 @@ import "./HubPage.css";
 const facetDefinitionById = new Map(
   overallFacetDefinitions.map((definition) => [definition.id, definition]),
 );
+
+const facetIconById: Record<OverallFacetId, typeof IconSparkles> = {
+  power_exchange: IconArrowsExchange,
+  structure_protocol: IconChecklist,
+  ownership_belonging: IconKey,
+  service_devotion: IconHeartHandshake,
+  care_nurture: IconHeart,
+  play_resistance: IconMoodSmile,
+  primal_instinctive: IconPaw,
+  restraint_physical_control: IconLock,
+  intensity_pain: IconFlame,
+};
 
 type LatestPreference = {
   label: string;
@@ -161,11 +184,20 @@ export function ThreadedHubPage() {
 
               {strongestThemes.length > 0 && (
                 <div className="hub-home-signal-list" aria-label="Current profile themes">
-                  {strongestThemes.map((theme) => (
-                    <span className="hub-home-signal" key={theme.id}>
-                      {theme.label}
-                    </span>
-                  ))}
+                  {strongestThemes.map((theme) => {
+                    const ThemeIcon = facetIconById[theme.id];
+                    return (
+                      <span className="hub-home-signal" key={theme.id}>
+                        <ThemeIcon
+                          className="hub-home-signal-icon"
+                          size={30}
+                          stroke={1.6}
+                          aria-hidden="true"
+                        />
+                        <strong>{theme.label}</strong>
+                      </span>
+                    );
+                  })}
                 </div>
               )}
 
