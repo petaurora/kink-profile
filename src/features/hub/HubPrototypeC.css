@@ -108,12 +108,10 @@
   line-height: 1.18;
 }
 
-/* C keeps Profile itself in the primary nav; this card is only the snapshot + resume story. */
 .hub-dashboard-c .hub-profile-glance-link {
   display: none;
 }
 
-/* Continue is the final section inside the same visual card, not another card. */
 .hub-dashboard-c .hub-c-thread {
   display: block;
   margin: 0 0 30px;
@@ -187,10 +185,127 @@
   color: var(--accent-primary);
 }
 
+/* Desire Constellation — coverage as an exploration map instead of equal-metric progress bars. */
+.hub-dashboard-c .hub-c-split > .hub-module:first-child {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 24% 32%, color-mix(in srgb, var(--accent-primary) 11%, transparent), transparent 30%),
+    radial-gradient(circle at 82% 68%, color-mix(in srgb, var(--accent-secondary) 9%, transparent), transparent 34%),
+    var(--bg-surface);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 42px 24px;
+  min-height: 250px;
+  margin-top: 18px;
+  padding: 18px 2px 8px;
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::before,
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: 72%;
+  height: 1px;
+  content: "";
+  transform-origin: center;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent-primary) 40%, var(--border-subtle)), color-mix(in srgb, var(--text-secondary) 22%, transparent), transparent);
+  opacity: .65;
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::before {
+  transform: translate(-50%, -50%) rotate(27deg);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::after {
+  transform: translate(-50%, -50%) rotate(-31deg);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  min-width: 0;
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row::before {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  content: "";
+  border: 2px solid color-mix(in srgb, var(--accent-primary) 76%, var(--border-strong));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-primary) 28%, var(--bg-surface-raised));
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-primary) 10%, transparent), 0 0 18px color-mix(in srgb, var(--accent-primary) 26%, transparent);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(1) {
+  align-self: start;
+  transform: translateY(4px);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2) {
+  align-self: start;
+  transform: translateY(30px);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3) {
+  align-self: end;
+  transform: translate(18px, -4px);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4) {
+  align-self: end;
+  transform: translateY(-22px);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::before,
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4)::before {
+  width: 20px;
+  height: 20px;
+  background: color-mix(in srgb, var(--accent-primary) 46%, var(--bg-surface-raised));
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent-primary) 13%, transparent), 0 0 24px color-mix(in srgb, var(--accent-primary) 36%, transparent);
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row > div:first-child {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row strong {
+  color: var(--text-primary);
+  font-size: .94rem;
+  line-height: 1.15;
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row span {
+  color: var(--text-secondary);
+  font-size: .76rem;
+  line-height: 1.25;
+}
+
+.hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-track {
+  display: none;
+}
+
 @media (max-width: 820px) {
   .hub-profile-glance-groups {
     grid-template-columns: 1fr;
     gap: 18px;
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list {
+    min-height: 230px;
+    gap: 34px 18px;
   }
 }
 
@@ -279,5 +394,38 @@
     width: 34px;
     height: 34px;
     border-radius: 10px;
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list {
+    min-height: 210px;
+    gap: 28px 12px;
+    padding-top: 12px;
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row {
+    gap: 8px;
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row::before {
+    width: 13px;
+    height: 13px;
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::before,
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4)::before {
+    width: 16px;
+    height: 16px;
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row strong {
+    font-size: .82rem;
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row span {
+    font-size: .68rem;
+  }
+
+  .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3) {
+    transform: translate(8px, -2px);
   }
 }
