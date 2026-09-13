@@ -179,7 +179,6 @@ export function ThreadedHubPage() {
                       : "You have started leaving breadcrumbs. Keep exploring and this space will start reflecting patterns back to you."}
                   </p>
                 </div>
-                <IconHeartHandshake size={34} stroke={1.45} aria-hidden="true" />
               </div>
 
               {strongestThemes.length > 0 && (
@@ -201,29 +200,24 @@ export function ThreadedHubPage() {
                 </div>
               )}
 
-              <div className="hub-home-evidence" aria-label="Profile depth">
-                <div className="hub-home-evidence-item">
-                  <div>
+              <div className="hub-home-evidence-block">
+                <p className="hub-home-evidence-label">Profile depth</p>
+                <div className="hub-home-evidence" aria-label="Profile depth">
+                  <div className="hub-home-evidence-item">
                     <strong>{completedQuizCount}/{quizSummaries.length}</strong>
-                    <span>guided quizzes complete</span>
+                    <span>quizzes complete</span>
                   </div>
-                </div>
-                <div className="hub-home-evidence-item">
-                  <div>
+                  <div className="hub-home-evidence-item">
                     <strong>{metrics.catalogRatedCount}</strong>
-                    <span>preferences explicitly rated</span>
+                    <span>preferences rated</span>
                   </div>
-                </div>
-                <div className="hub-home-evidence-item">
-                  <div>
+                  <div className="hub-home-evidence-item">
                     <strong>{metrics.rankingChoiceCount}</strong>
-                    <span>ranking choices made</span>
+                    <span>ranking choices</span>
                   </div>
-                </div>
-                <div className="hub-home-evidence-item">
-                  <div>
+                  <div className="hub-home-evidence-item">
                     <strong>{metrics.contextPreferenceCount}</strong>
-                    <span>context choices shaped</span>
+                    <span>reward/punishment choices</span>
                   </div>
                 </div>
               </div>
