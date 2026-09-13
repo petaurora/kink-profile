@@ -20,20 +20,22 @@ import {
   rewardsToolsRandomizerRoute,
   sceneBuilderRoute,
 } from "../../app/routes";
-import { canonicalSignalDefinitions } from "../../data/canonicalSignals";
+import { overallFacetDefinitions } from "../../data/overallFacets";
 import { quizzes } from "../../data/quizzes";
 import {
   getCatalogPreference,
   type CatalogPreferenceState,
 } from "../../lib/catalogProfile";
 import { catalogPreferenceLabels } from "../../lib/catalogResults";
+import { scoreOverallFacets } from "../../lib/overallProfileFacets";
+import { buildProfileHeaderModel } from "../../lib/profileHeader";
 import { loadProfileSettings } from "../../lib/profileSettings";
 import { getAnsweredCount, getQuizState } from "../quizzes/quizRuntime";
 import { buildHubMetrics } from "./hubMetrics";
 import "./HubPage.css";
 
-const signalDefinitionById = new Map(
-  canonicalSignalDefinitions.map((definition) => [definition.id, definition]),
+const facetDefinitionById = new Map(
+  overallFacetDefinitions.map((definition) => [definition.id, definition]),
 );
 
 type LatestPreference = {
@@ -73,6 +75,22 @@ export function ThreadedHubPage() {
     () => latestAmbientPreference(snapshot),
     [snapshot],
   );
+  const overallFacets = useMemo(
+    () => scoreOverallFacets(snapshot.canonicalSignals),
+    [snapshot.canonicalSignals],
+  );
+  const profileHeader = useMemo(
+    () => buildProfileHeaderModel(snapshot.canonicalSignals, overallFacets),
+    [overallFacets, snapshot.canonicalSignals],
+  );
+  const strongestThemes = useMemo(
+    () =>
+      profileHeader.strongestFacetIds.flatMap((facetId) => {
+        const facet = facetDefinitionById.get(facetId);
+        return facet ? [facet] : [];
+      }),
+    [profileHeader.strongestFacetIds],
+  );
 
   const quizSummaries = useMemo(
     () =>
@@ -102,17 +120,6 @@ export function ThreadedHubPage() {
     inProgressQuiz ??
     quizSummaries.find((summary) => summary.state === "not-started") ??
     quizSummaries[0];
-
-  const signalsWithEvidence = snapshot.canonicalSignals.filter(
-    (signal) => signal.overall.affinity !== null && signal.overall.coverage > 0,
-  );
-  const topSignals = [...signalsWithEvidence]
-    .sort(
-      (left, right) =>
-        right.overall.coverage - left.overall.coverage ||
-        (right.overall.affinity ?? 0) - (left.overall.affinity ?? 0),
-    )
-    .slice(0, 3);
 
   const hasProfileActivity =
     startedQuizCount > 0 ||
@@ -144,20 +151,19 @@ export function ThreadedHubPage() {
                   <p className="eyebrow">You, lately</p>
                   <h2>Your profile is a snapshot, not a finish line.</h2>
                   <p className="hub-home-reflection-copy">
-                    {topSignals.length > 0
-                      ? "These are the clearest themes in the evidence you have built so far. Come back when something shifts, surprises you, or feels worth looking at again."
+                    {strongestThemes.length > 0
+                      ? "These are the same strongest overall themes reflected on your Profile, balancing affinity with how much evidence supports them. Come back when something shifts, surprises you, or feels worth looking at again."
                       : "You have started leaving breadcrumbs. Keep exploring and this space will start reflecting patterns back to you."}
                   </p>
                 </div>
                 <IconHeartHandshake size={34} stroke={1.45} aria-hidden="true" />
               </div>
 
-              {topSignals.length > 0 && (
+              {strongestThemes.length > 0 && (
                 <div className="hub-home-signal-list" aria-label="Current profile themes">
-                  {topSignals.map((signal) => (
-                    <span className="hub-home-signal" key={signal.signalId}>
-                      {signalDefinitionById.get(signal.signalId)?.shortLabel ??
-                        signal.signalId.replaceAll("_", " ")}
+                  {strongestThemes.map((theme) => (
+                    <span className="hub-home-signal" key={theme.id}>
+                      {theme.label}
                     </span>
                   ))}
                 </div>
