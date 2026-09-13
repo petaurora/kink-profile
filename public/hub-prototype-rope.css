@@ -1,0 +1,73 @@
+/* Temporary M19.8 rope tuning.
+   Extra .hub-prototype-shell specificity is intentional: this file loads before bundled CSS. */
+.hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::before {
+  inset: 10px 4px 2px;
+  opacity: .28;
+  transform: translate(3%, 4%) scale(.82, .76);
+  transform-origin: center;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent-primary) 16%, transparent));
+}
+
+.hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::after {
+  inset: 10px 4px 2px;
+  opacity: .09;
+  transform: translate(3%, 4%) scale(.82, .76);
+  transform-origin: center;
+}
+
+/* Pull the labels away from the rope and make the knot-points quieter. */
+.hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(1) {
+  transform: translate(0, -2px);
+}
+
+.hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2) {
+  transform: translate(10px, 14px);
+}
+
+.hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3) {
+  transform: translate(12px, 2px);
+}
+
+.hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4) {
+  transform: translate(8px, -6px);
+}
+
+.hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row::before {
+  width: 7px;
+  height: 7px;
+  margin-top: 4px;
+  border-width: 1.5px;
+  background: color-mix(in srgb, var(--bg-surface-raised) 82%, var(--accent-primary));
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent-primary) 18%, transparent),
+    0 0 9px color-mix(in srgb, var(--accent-primary) 24%, transparent);
+}
+
+.hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2)::before,
+.hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4)::before {
+  width: 8px;
+  height: 8px;
+  margin-top: 3px;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent-primary) 20%, transparent),
+    0 0 11px color-mix(in srgb, var(--accent-primary) 28%, transparent);
+}
+
+@media (max-width: 520px) {
+  .hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::before,
+  .hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-list::after {
+    transform: translate(5%, 5%) scale(.76, .7);
+  }
+
+  .hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(2) {
+    transform: translate(7px, 12px);
+  }
+
+  .hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(3) {
+    transform: translate(7px, 2px);
+  }
+
+  .hub-prototype-shell .hub-dashboard-c .hub-c-split > .hub-module:first-child .hub-progress-row:nth-child(4) {
+    transform: translate(5px, -5px);
+  }
+}
