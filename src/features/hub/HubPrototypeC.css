@@ -20,11 +20,33 @@
   line-height: 1.4;
 }
 
+.hub-profile-highlights {
+  margin: 4px 0 28px;
+}
+
+.hub-profile-highlight-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.hub-profile-highlight-group {
+  min-width: 0;
+}
+
+.hub-profile-highlight-group h2 {
+  margin: 0 0 9px;
+  color: var(--accent-primary);
+  font-size: .78rem;
+  font-weight: 850;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
 .hub-profile-signal-tiles {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin: 0 0 28px;
 }
 
 .hub-profile-signal-tile {
@@ -50,31 +72,42 @@
   color: var(--accent-primary);
 }
 
-.hub-profile-signal-tile > div {
-  display: grid;
-  min-width: 0;
-  gap: 2px;
-}
-
-.hub-profile-signal-tile small {
-  color: var(--text-muted);
-  font-size: .67rem;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
 .hub-profile-signal-tile strong {
+  min-width: 0;
   color: var(--text-primary);
   font-size: .94rem;
   line-height: 1.18;
 }
 
+.hub-profile-highlights-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 11px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: .86rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.hub-profile-highlights-link:hover {
+  color: var(--accent-primary);
+}
+
+.hub-profile-highlights-link:focus-visible {
+  border-radius: 6px;
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
 @media (max-width: 820px) {
-  .hub-profile-signal-tiles {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 9px;
-    margin-bottom: 24px;
+  .hub-profile-highlight-groups {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 }
 
@@ -89,6 +122,19 @@
 
   .hub-dashboard-c .hub-profile-hero > div > p:last-child {
     font-size: .84rem;
+  }
+
+  .hub-profile-highlights {
+    margin-top: 8px;
+    margin-bottom: 24px;
+  }
+
+  .hub-profile-highlight-group h2 {
+    margin-bottom: 8px;
+  }
+
+  .hub-profile-signal-tiles {
+    gap: 9px;
   }
 
   .hub-profile-signal-tile {
