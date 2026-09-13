@@ -298,9 +298,9 @@ function PrototypeC({ navigate }: { navigate: (route: string) => void }) {
 
       <section className="hub-profile-glance-card" aria-label="Profile at a glance">
         <header className="hub-profile-glance-header">
-          <p className="hub-mini-label">At a glance</p>
-          <h2>What’s rising to the top.</h2>
-          <p>A quick look at the themes and headspaces shaping your profile right now.</p>
+          <p className="hub-mini-label">Coming into focus</p>
+          <h2>This is starting to look like you.</h2>
+          <p>The themes and headspaces that keep finding their way to the top.</p>
         </header>
 
         <div className="hub-profile-glance-groups">
