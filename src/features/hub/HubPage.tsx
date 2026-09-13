@@ -5,10 +5,13 @@ import {
   IconChartDots3,
   IconCheck,
   IconChevronRight,
+  IconCrown,
   IconFlame,
   IconGift,
   IconHeart,
   IconHomeHeart,
+  IconKey,
+  IconPaw,
   IconPlayerPlay,
   IconRosetteDiscountCheck,
   IconSparkles,
@@ -17,6 +20,7 @@ import {
 } from "@tabler/icons-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "./HubPrototypes.css";
+import "./HubPrototypeC.css";
 
 type HubPrototype = "a" | "b" | "c";
 
@@ -290,15 +294,25 @@ function PrototypeC({ navigate }: { navigate: (route: string) => void }) {
           <h1>Desire has dimensions.</h1>
           <p>You’re building a map of what pulls you in, what context changes, and what actually wins.</p>
         </div>
-        <button onClick={() => navigate("/profile")} className="hub-profile-hero-action">
-          View profile <IconArrowRight size={18} />
-        </button>
       </header>
 
-      <div className="hub-profile-signals">
-        <div><span>01</span><small>Strongest theme</small><strong>Power Exchange</strong><em>92</em></div>
-        <div><span>02</span><small>Strongest headspace</small><strong>Pet</strong><em>94%</em></div>
-        <div><span>03</span><small>Close behind</small><strong>Ownership</strong><em>88</em></div>
+      <div className="hub-profile-signal-tiles" aria-label="Profile highlights">
+        <article className="hub-profile-signal-tile">
+          <span className="hub-profile-signal-icon"><IconCrown size={22} stroke={1.8} /></span>
+          <div><small>Theme</small><strong>Power Exchange</strong></div>
+        </article>
+        <article className="hub-profile-signal-tile">
+          <span className="hub-profile-signal-icon"><IconKey size={22} stroke={1.8} /></span>
+          <div><small>Theme</small><strong>Ownership &amp; Belonging</strong></div>
+        </article>
+        <article className="hub-profile-signal-tile">
+          <span className="hub-profile-signal-icon"><IconPaw size={22} stroke={1.8} /></span>
+          <div><small>Headspace</small><strong>Pet</strong></div>
+        </article>
+        <article className="hub-profile-signal-tile">
+          <span className="hub-profile-signal-icon"><IconTargetArrow size={22} stroke={1.8} /></span>
+          <div><small>Headspace</small><strong>Prey</strong></div>
+        </article>
       </div>
 
       <section className="hub-c-thread">
