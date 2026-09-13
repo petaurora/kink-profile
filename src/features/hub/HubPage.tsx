@@ -90,7 +90,9 @@ function latestPreferenceFromSnapshot(
   return Object.entries(snapshot.catalogProfile.preferences).reduce<LatestPreference | null>(
     (latest, [catalogId, preference]) => {
       const state = getCatalogPreference(preference, "overall");
-      if (!state) return latest;
+      // Hard limits are safety metadata, not ambient content. They still protect
+      // downstream experiences, but the Hub must never casually name them.
+      if (!state || state === "hard_limit") return latest;
 
       const candidate = {
         label:
