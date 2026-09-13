@@ -8,7 +8,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { loadCurrentProfileSnapshot } from "../../app/currentProfileSnapshot";
 import {
   catalogRoute,
@@ -40,6 +40,50 @@ type LatestPreference = {
   updatedAt: string;
 };
 
+type HubStylePrototype = "living" | "velvet" | "threaded";
+
+const hubStyleOptions: readonly {
+  id: HubStylePrototype;
+  label: string;
+  note: string;
+}[] = [
+  { id: "living", label: "Living", note: "PR 194 baseline" },
+  { id: "velvet", label: "Velvet", note: "Prototype C blend" },
+  { id: "threaded", label: "Threaded", note: "C + rope / constellation" },
+];
+
+function resolveHubStyle(value: string | null): HubStylePrototype {
+  return hubStyleOptions.some((option) => option.id === value)
+    ? (value as HubStylePrototype)
+    : "living";
+}
+
+function HubStyleSwitcher({
+  value,
+  onChange,
+}: {
+  value: HubStylePrototype;
+  onChange: (value: HubStylePrototype) => void;
+}) {
+  return (
+    <div className="hub-style-switcher" aria-label="Hub style prototype">
+      <span className="hub-style-switcher-label">Style</span>
+      {hubStyleOptions.map((option) => (
+        <button
+          key={option.id}
+          type="button"
+          className={value === option.id ? "is-active" : ""}
+          aria-pressed={value === option.id}
+          title={option.note}
+          onClick={() => onChange(option.id)}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function latestPreferenceFromSnapshot(
   snapshot: ReturnType<typeof loadCurrentProfileSnapshot>,
 ): LatestPreference | null {
@@ -65,8 +109,17 @@ function latestPreferenceFromSnapshot(
 
 export function HubPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const hubStyle = resolveHubStyle(searchParams.get("hubStyle"));
   const snapshot = useMemo(() => loadCurrentProfileSnapshot(), []);
   const settings = useMemo(() => loadProfileSettings(), []);
+
+  const setHubStyle = (next: HubStylePrototype) => {
+    const updated = new URLSearchParams(searchParams);
+    if (next === "living") updated.delete("hubStyle");
+    else updated.set("hubStyle", next);
+    setSearchParams(updated, { replace: true });
+  };
 
   const quizSummaries = useMemo(
     () =>
@@ -121,8 +174,10 @@ export function HubPage() {
     startedQuizCount > 0 || preferenceCount > 0 || comparisonCount > 0;
 
   return (
-    <main className="app-shell hub-home">
+    <main className={`app-shell hub-home hub-style-${hubStyle}`}>
       <section className="hub-home-stack">
+        <HubStyleSwitcher value={hubStyle} onChange={setHubStyle} />
+
         <header className="hub-home-intro">
           <div className="hub-home-intro-copy">
             <p className="eyebrow">Your home</p>
@@ -198,7 +253,7 @@ export function HubPage() {
               </button>
             </article>
 
-            <div className="hub-home-now-grid">
+            <div className="hub-home-now-grid hub-home-now-grid-primary">
               <article className="hub-home-now">
                 <span className="hub-home-now-icon" aria-hidden="true">
                   <IconRefresh size={23} stroke={1.65} />
@@ -352,7 +407,7 @@ export function HubPage() {
               </div>
             </aside>
 
-            <div className="hub-home-now-grid">
+            <div className="hub-home-now-grid hub-home-now-grid-secondary">
               <article className="hub-home-now">
                 <span className="hub-home-now-icon" aria-hidden="true">
                   <IconDice5 size={23} stroke={1.65} />
