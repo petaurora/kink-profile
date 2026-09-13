@@ -1,10 +1,9 @@
 /*
  * M19.8 selected Hub treatment.
  *
- * The visual exploration originally lived behind hub-style-* prototype classes.
- * Threaded is now the chosen Hub direction, so this layer applies that treatment
- * directly to the Hub surface while the older exploratory CSS is retained for
- * later cleanup.
+ * Threaded is the chosen Hub direction. The older exploratory selectors remain
+ * in HubPage.css for now, but this layer makes the selected treatment the
+ * production-facing surface until that prototype CSS is consolidated.
  */
 
 .hub-style-switcher {
