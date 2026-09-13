@@ -9,6 +9,7 @@ import { CatalogRoute } from "../features/catalog/CatalogRoute";
 import { CompareRoute } from "../features/comparison/CompareRoute";
 import { CurationRoute } from "../features/curation/CurationRoute";
 import { HubPage } from "../features/hub/HubPage";
+import "../features/hub/ThreadedHubDefault.css";
 import { ProfileRoute } from "../features/profile/ProfileRoute";
 import { QuizHomePage } from "../features/quizzes/QuizHomePage";
 import { QuizRoutePage } from "../features/quizzes/QuizRoutePage";
