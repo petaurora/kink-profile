@@ -34,9 +34,9 @@ const emergingIntentDoors: readonly HubIntentDoorId[] = [
 
 const establishedIntentDoors: readonly HubIntentDoorId[] = [
   "profile",
-  "catalog",
   "compare",
   "scene-builder",
+  "catalog",
 ];
 
 /**
