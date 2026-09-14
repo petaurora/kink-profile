@@ -121,34 +121,30 @@ export function ProfileCoxcombChart<TId extends string>({
           const middle = -Math.PI / 2 + index * sectorAngle;
           const [labelX, labelY] = polar(labelRadius, middle);
           const unknown = axis.state === "unknown";
-          const valueRadius =
-            axis.affinity === null
-              ? 0
-              : maxRadius * Math.sqrt(Math.max(0, axis.affinity) / 100);
+          const unresolved = axis.affinity === null;
+          const valueRadius = unresolved
+            ? 0
+            : maxRadius * Math.sqrt(Math.max(0, axis.affinity) / 100);
+          const semanticLabel = unknown
+            ? "not explored yet"
+            : unresolved
+              ? `evidence is developing, ${axis.coverage}% evidence, affinity not resolved yet`
+              : `${axis.affinity}% affinity, ${axis.coverage}% evidence`;
 
           return (
             <g
               key={axis.facetId}
               role="button"
               tabIndex={0}
-              aria-label={`${axis.label}: ${
-                axis.affinity === null
-                  ? "not explored yet"
-                  : `${axis.affinity}% affinity, ${axis.coverage}% evidence`
-              }. Open explanation.`}
+              aria-label={`${axis.label}: ${semanticLabel}. Open explanation.`}
               onClick={() => onSelectFacet(axis.facetId)}
               onKeyDown={(event) => selectFromKeyboard(event, axis.facetId)}
               style={{ cursor: "pointer" }}
             >
-              <title>
-                {axis.affinity === null
-                  ? `${axis.label}: not explored yet`
-                  : `${axis.label}: ${axis.affinity}% affinity · ${axis.coverage}% evidence`}
-              </title>
+              <title>{`${axis.label}: ${semanticLabel}`}</title>
 
               {Array.from({ length: bandCount }, (_, bandIndex) => {
-                const bandInner =
-                  maxRadius * Math.sqrt(bandIndex / bandCount);
+                const bandInner = maxRadius * Math.sqrt(bandIndex / bandCount);
                 const bandOuter =
                   maxRadius * Math.sqrt((bandIndex + 1) / bandCount);
 
@@ -157,15 +153,15 @@ export function ProfileCoxcombChart<TId extends string>({
                     key={`ghost-${axis.facetId}-${bandIndex}`}
                     d={annularWedgePath(index, bandInner, bandOuter)}
                     fill={bandColors[bandIndex] ?? defaultBandColors[0]}
-                    opacity={unknown ? 0.06 : 0.035}
+                    opacity={unknown ? 0.06 : unresolved ? 0.05 : 0.035}
                   />
                 );
               })}
 
               {!unknown &&
+                !unresolved &&
                 Array.from({ length: bandCount }, (_, bandIndex) => {
-                  const bandInner =
-                    maxRadius * Math.sqrt(bandIndex / bandCount);
+                  const bandInner = maxRadius * Math.sqrt(bandIndex / bandCount);
                   const bandOuter =
                     maxRadius * Math.sqrt((bandIndex + 1) / bandCount);
 
@@ -189,11 +185,11 @@ export function ProfileCoxcombChart<TId extends string>({
                 fill="none"
                 stroke="var(--border-subtle)"
                 strokeWidth="1"
-                strokeDasharray={unknown ? "4 5" : undefined}
-                opacity={unknown ? 0.34 : 0.22}
+                strokeDasharray={unknown || unresolved ? "4 5" : undefined}
+                opacity={unknown ? 0.34 : unresolved ? 0.42 : 0.22}
               />
 
-              {!unknown && (
+              {!unknown && !unresolved && (
                 <path
                   d={fullWedgePath(index, valueRadius)}
                   fill="none"
