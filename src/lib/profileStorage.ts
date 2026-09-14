@@ -4,10 +4,22 @@ export type AnswerMap = Record<string, number>;
 
 export const PROFILE_SCHEMA_VERSION = 2 as const;
 
+export type QuizRetakeProgress = {
+  quizVersion: number;
+  answers: AnswerMap;
+  startedAt: string;
+};
+
 export type QuizProgress = {
   quizVersion: number;
   answers: AnswerMap;
   completedAt?: string;
+  /**
+   * A retake is a draft of the same quiz evidence source. The established
+   * answers remain authoritative until the draft is complete, at which point
+   * the draft replaces them.
+   */
+  retake?: QuizRetakeProgress;
 };
 
 export type StoredProfile = {
