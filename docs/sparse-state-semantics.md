@@ -2,9 +2,9 @@
 
 ## Status
 
-**Implemented shared contract for #200 / #202, with quiz lifecycle integration in #203.**
+**Implemented shared contract for #200 / #202, with quiz lifecycle integration in #203 and Profile maturity/dimension integration in #204.**
 
-Runtime vocabulary and resolution live in `src/lib/sparseState.ts`. Quiz-specific mapping lives in `src/features/quizzes/quizRuntime.ts`.
+Runtime vocabulary and resolution live in `src/lib/sparseState.ts`. Quiz-specific mapping lives in `src/features/quizzes/quizRuntime.ts`; Profile-specific maturity and dimension mapping lives in `src/lib/profileMaturity.ts`.
 
 This contract is intentionally presentation-oriented. It sits above the source-aware evidence architecture and does not replace scoring, persistence, or provenance. Feature surfaces map their evidence/result conditions into this shared vocabulary instead of inventing independent `items.length === 0` behavior.
 
@@ -152,6 +152,35 @@ This preserves the distinction between **no answer/evidence** and **an answered 
 
 ---
 
+# Profile maturity and dimension mapping
+
+The Profile uses canonical Signal evidence plus derived Overall Facets to expose a **posture**, not a completion score:
+
+- **Unformed** — there is no canonical profile evidence yet.
+- **Emerging** — canonical evidence exists, but the profile does not yet have enough established dimensions for a stable broad landscape.
+- **Established** — a meaningful breadth of Overall Facets has established evidence. This does **not** require every facet to be explored and does not mean the profile is "100% complete."
+
+No overall profile completion percentage is calculated or shown. Finite workflows such as individual quizzes may still show ordinary `x / N` progress.
+
+Profile dimensions map separately from maturity:
+
+- **unknown** → no evidence/coverage; shared state `unexplored`; affinity remains `null`
+- **provisional** → evidence exists but coverage is limited or the affinity is not resolved yet; shared state `developing`
+- **established** → sufficient coverage plus a measured affinity; shared state `available`
+
+A measured established `0` remains a real low result. It is never converted back into unknown merely because the numeric affinity is low.
+
+The passive profile landscape intentionally has a lower evidence threshold than personal headline claims. A facet can therefore appear provisionally or as an established background dimension before it is eligible for `strongest themes`, orientation, or role/headspace headline copy. Headline claims currently require at least 40% evidence coverage; passive facet establishment begins at 25% coverage.
+
+The coxcomb preserves these distinctions visually:
+
+- unexplored facets remain outlined and have no affinity value
+- provisional facets may show their measured shape with limited-evidence treatment
+- provisional facets whose evidence exists but affinity is not yet resolvable remain visually distinct from unexplored facets
+- established low-affinity facets remain real plotted results
+
+---
+
 # Feature integration boundary
 
 Quizzes, Profile, and Hub should consume this shared vocabulary while owning their own mapping logic and UX:
@@ -169,11 +198,12 @@ Catalog-specific and tool-specific empty/readiness semantics remain separate wor
 This layer does not:
 
 - calculate affinity
-- change scoring thresholds
+- change scoring formulas
 - persist new profile truth
 - merge or replace evidence sources
 - convert inferred evidence into direct evidence
-- decide feature-specific copy
+- represent an overall completion percentage
+- decide feature-specific copy beyond the semantic posture/state contract
 - represent loading/error/recovery failures
 
 Its only job is to make the semantic condition behind sparse/empty presentation explicit and reusable.
