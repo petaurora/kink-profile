@@ -25,6 +25,7 @@ A milestone document may be split across all three rather than moved wholesale.
 - [Authority, Activity Side & Role Semantics](authority-activity-role-separation.md) — keeps authority, activity direction, and roles/headspaces distinct
 - [Scoring & Taxonomy Model](scoring-model.md) — weighted scoring, source aggregation, affinity vs coverage, and taxonomy boundaries
 - [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md) — evidence provenance, recomputation, source separation, and no-feedback-loop rules
+- [Sparse-State Semantics](sparse-state-semantics.md) — canonical unexplored/developing/valid-empty/available/unavailable/excluded vocabulary, evidence provenance, and unknown-vs-zero presentation rules
 - [Overall Profile Aggregation](overall-profile-aggregation.md) — aggregate profile behavior
 - [Kink This-or-That Ranking](kink-this-or-that-ranking.md) — category/Overall pairwise ranking, temporal reranking, historical snapshots, and view-relative movement
 
@@ -32,6 +33,7 @@ If a change alters one of these cross-system contracts, update the relevant docu
 
 ## Current product/feature contracts
 
+- [Hub](product/hub.md) — maturity-aware compositional home behavior, resumable work, module eligibility, and finite-progress boundaries
 - [Quizzes](product/quizzes.md) — current quiz sections, response/progress storage, weighted section-local scoring, and cross-profile evidence boundaries
 - [Kink Catalog](product/kink-catalog.md) — stable catalog identity/metadata, explicit preference state, browse/edit behavior, result views, and inference/exclusion boundaries
 - [Profile Management](product/profile-management.md) — profile identity, selective reset, private backup/restore, and curated share exports

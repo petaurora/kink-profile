@@ -32,6 +32,18 @@ Because they are not actually the same question.
 
 Keeping these answers separate prevents one interaction from pretending to mean more than it does.
 
+### Why does my Hub show different cards at different times?
+
+Because the Hub is compositional rather than a fixed feature directory.
+
+An Unformed profile gets a small set of useful starting actions. Emerging and Established profiles get richer reflection/direction, but optional modules only appear when they have truthful content right now.
+
+A missing optional card does not mean your data disappeared. It usually means that module has nothing useful/eligible to show at the moment.
+
+`Continue` is reserved for genuinely resumable quiz work. Finite facts such as `2/4 quizzes with established results` are allowed, but the app does not turn them into an overall profile-completion percentage.
+
+See [Hub](product/hub.md).
+
 ## Quizzes and the Overall Profile
 
 ### Why don't my quiz results exactly match my Overall Profile?
@@ -39,6 +51,12 @@ Keeping these answers separate prevents one interaction from pretending to mean 
 The Overall Profile is not a copy of one quiz result.
 
 A section quiz contributes one source of evidence. The full profile can also consider other completed quizzes, direct catalog preferences, and current pairwise ranking evidence.
+
+### What happens if I start retaking a completed quiz but stop halfway?
+
+Your previous completed result stays active.
+
+The unfinished retake is a draft of the same quiz evidence source. It can be resumed later, but it does not erase or partially replace the established result. Once the retake is complete, the new answer set replaces the previous one atomically.
 
 ### Is the old Starter Profile still a current quiz?
 
@@ -51,6 +69,28 @@ No.
 They answer different presentation questions.
 
 The dedicated Roles/Headspaces layer shows those composed results directly. The profile headline summarizes broader patterns useful for a compact first impression.
+
+Headline claims also require stronger evidence than passive/background profile visualization, so something can begin appearing in the landscape before it is strong enough to become a headline claim.
+
+### What is Unformed / Emerging / Established?
+
+It is the Profile's **evidence maturity posture**, not a completion score.
+
+- **Unformed** — there is not yet enough meaningful canonical evidence for a broad profile shape.
+- **Emerging** — useful evidence exists, but the landscape is still developing.
+- **Established** — enough dimensions are established to support a stable broad picture.
+
+Established does not mean “100% complete.” You can still have unexplored dimensions.
+
+### What is the difference between unknown and 0%?
+
+They are different states.
+
+**Unknown** means the app does not have meaningful evidence for that result, so the value should remain absent/unknown.
+
+A measured **0%** means enough evidence exists and the measured affinity is genuinely zero/low. That is a real result, not missing data.
+
+See [Sparse-State Semantics](sparse-state-semantics.md).
 
 ### What is the difference between a Role/Headspace and a Dynamic Mode?
 
@@ -244,13 +284,23 @@ See [Kink This-or-That Ranking](kink-this-or-that-ranking.md).
 
 The two views have different jobs.
 
-Overall This-or-That is the current pairwise ranking output. Top Overall is a compact profile presentation that can consider multiple independent direct evidence sources while preserving provenance.
+Overall This-or-That is the current pairwise ranking output. Top Overall is a compact profile presentation that can consider multiple independent **direct** evidence sources while preserving provenance.
+
+Profile/quiz inference can support discovery or modestly refine ordering after an item already has direct eligibility, but inferred-only evidence cannot manufacture a Top Overall favorite.
 
 ### Can a Hard Limit become a top interest because quiz inference likes the theme?
 
 No.
 
 Explicit boundaries are authoritative. Derived affinity must not override a Hard Limit.
+
+### Why doesn't an empty Hard Limits list automatically say I have no Hard Limits?
+
+Because “nothing recorded” and “I affirmatively have none” are different claims.
+
+If there are no recorded Hard Limits and you have not directly said you currently have none, the boundary summary remains unknown/unreviewed. The explicit-none state only exists after an affirmative user action.
+
+If an actual Hard Limit is recorded, that concrete boundary remains authoritative over a stale none assertion.
 
 ### Why can changing one catalog preference affect several profile summaries?
 
@@ -410,7 +460,7 @@ See [Profile Comparison](product/profile-comparison.md).
 
 They serve completely different purposes.
 
-**Private backup** is the complete machine-readable portability/restore artifact.
+**Private backup** is the machine-readable portability/restore artifact for the supported backup domains.
 
 **Share summary** is a curated human-readable presentation intended for another person.
 
@@ -421,6 +471,8 @@ Do not use the private backup as the normal sharing format.
 New backups use format `kink-profile`, version `3`.
 
 Restore supports versions 1, 2, and 3. Older supported backups restore later-added domains as empty rather than guessing data that was never present.
+
+An unfinished quiz retake is preserved by current backup parsing, including the previous authoritative completed result and the developing retake draft.
 
 ### Does importing a backup merge with my current profile?
 
@@ -483,10 +535,12 @@ Changes must preserve stable identities or provide explicit migration/compatibil
 Use the [documentation index](README.md). In particular:
 
 - [Product Spec](product-spec.md)
+- [Hub](product/hub.md)
 - [Quizzes](product/quizzes.md)
 - [Kink Catalog](product/kink-catalog.md)
 - [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
 - [Overall Profile Aggregation](overall-profile-aggregation.md)
+- [Sparse-State Semantics](sparse-state-semantics.md)
 - [Rewards & Punishments](product/rewards-punishments.md)
 - [Scene Builder](product/scene-builder.md)
 - [Profile Comparison](product/profile-comparison.md)

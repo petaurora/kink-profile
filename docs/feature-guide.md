@@ -26,6 +26,9 @@ of specific items     of current evidence
         │
         └──────────────┘
 
+HUB
+shows what is useful now from current profile/lifecycle state
+
 REWARDS & PUNISHMENTS
 separate contextual suitability and ranking
 
@@ -35,7 +38,7 @@ uses the profile to narrow choices for right now
 
 These inputs are related, but they are not interchangeable.
 
-A quiz result is not the same as explicitly marking a catalog item Love. A high This-or-That rank is not the same as a Hard Limit or favorite. Something that works as a punishment is not automatically something you dislike. A Scene Builder choice for tonight does not rewrite your permanent profile.
+A quiz result is not the same as explicitly marking a catalog item Love. A high This-or-That rank is not the same as a Hard Limit or favorite. Something that works as a punishment is not automatically something you dislike. A Scene Builder choice for tonight does not rewrite your permanent profile. The Hub reflects existing state; it does not create new evidence merely by showing it.
 
 That separation is intentional.
 
@@ -47,13 +50,34 @@ You do not need to complete everything before the app becomes useful.
 2. **Browse the Kink Catalog** and explicitly mark activities you already know something about.
 3. **Play This-or-That** when relative comparison feels easier than rating items independently.
 4. **View your Overall Profile** to see the combined picture.
-5. **Map Rewards & Punishments** if you want to distinguish general interest from contextual suitability.
-6. **Use Scene Builder** when you want the profile turned into a smaller, usable set of options for the current moment.
-7. **Export a private backup** once you have data you care about.
-8. **Use the share summary** when you want a curated human-facing version.
-9. **Compare profiles temporarily** when someone has shared a compatible profile export and you want to explore overlap or shared Scene options without importing their profile.
+5. **Use the Hub** as the profile grows; it changes from onboarding into a living home that shows only useful/eligible modules.
+6. **Map Rewards & Punishments** if you want to distinguish general interest from contextual suitability.
+7. **Use Scene Builder** when you want the profile turned into a smaller, usable set of options for the current moment.
+8. **Export a private backup** once you have data you care about.
+9. **Use the share summary** when you want a curated human-facing version.
+10. **Compare profiles temporarily** when someone has shared a compatible profile export and you want to explore overlap or shared Scene options without importing their profile.
 
 You can return to any area later and refine it. The profile is designed to grow with partial evidence.
+
+---
+
+# Come home: Hub
+
+The Hub is a **living home**, not a fixed feature directory and not a profile-completion dashboard.
+
+Its broad shape follows the current profile posture:
+
+- **Unformed** — a deliberately small blank-canvas experience with useful starting actions.
+- **Emerging** — reflection plus durable Profile/Catalog directions, with optional modules only when they have truthful content.
+- **Established** — a richer living dashboard with Profile, Compare, Scene Builder, and Catalog directions; optional modules still appear only when currently eligible.
+
+A card disappearing does not mean data was deleted. Optional modules are intentionally omitted when there is nothing useful to show rather than turning the Hub into a wall of empty/setup boxes.
+
+**Continue** means real resumable work exists. A never-started or already-complete quiz is not presented as something to continue. An unfinished retake can be resumed while its previous completed result remains active.
+
+Finite facts such as `2/4 quizzes with established results` are ordinary workflow progress. The app does not combine those facts into an overall “profile completion” percentage.
+
+Technical reference: [Hub](product/hub.md)
 
 ---
 
@@ -78,9 +102,17 @@ The app currently has four independently completable quiz sections:
 
 **What they do not do.** They do not directly set individual catalog items to Love, Like, Curious, Hard Limit, or another explicit state.
 
+## Retakes and unfinished work
+
+A completed quiz result stays authoritative while an explicit retake is still in progress.
+
+The retake is a draft of the **same quiz evidence source**, not a second independent result. You can resume that draft later; the old completed answers/result remain active until every retake question is complete, then the finished retake replaces them atomically.
+
+Never-started, first-attempt-in-progress, complete, retake-in-progress, coming-soon, and broken-data states are intentionally distinct. Unmeasured dimensions remain unknown rather than being displayed as `0%`; partial dimensions may be shown as developing; a genuinely measured zero remains a real result when the evidence is sufficient.
+
 The old Starter Profile is retained only as a compatibility identifier for legacy stored data. It is not a current quiz destination.
 
-Technical reference: [Quizzes](product/quizzes.md)
+Technical references: [Quizzes](product/quizzes.md) and [Sparse-State Semantics](sparse-state-semantics.md)
 
 ## Roles & Headspaces
 
@@ -223,6 +255,14 @@ Technical reference: [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
 
 **What it is.** The app's combined interpretation of the evidence available so far.
 
+The Profile has a whole-profile posture:
+
+- **Unformed** — there is not yet enough meaningful canonical evidence for a broad profile shape.
+- **Emerging** — useful evidence exists, but the landscape is still developing.
+- **Established** — enough dimensions are established to support a stable broad picture.
+
+This is a description of evidence maturity, **not a completion percentage**. An Established profile can still have unexplored areas.
+
 It can include:
 
 - overall profile summary/headline;
@@ -239,6 +279,16 @@ It can include:
 
 **Why it may differ from one quiz.** The overall profile can combine several independent sources. One section quiz is only one part of that picture.
 
+## Unknown, developing, and established dimensions
+
+Profile strength and evidence coverage are separate.
+
+- **Unknown** means the app does not have meaningful evidence for that dimension. It does not secretly mean `0`.
+- **Developing / provisional** means evidence exists, but coverage or result resolution is not yet established enough for ordinary presentation.
+- **Established** means sufficient evidence supports the measured result. A genuinely measured `0` can therefore be an established low result.
+
+Headline claims require stronger evidence than passive/background landscape visualization. That is why a theme can start appearing in the profile before it becomes a strongest-theme/headline claim.
+
 ## Overall Facets
 
 The broad radar summarizes themes such as Power Exchange, Service & Devotion, Restraint & Physical Control, Care & Nurture, Intensity & Pain, and other current facets.
@@ -247,19 +297,23 @@ A strong facet does **not** mean every activity associated with that theme is wa
 
 ## Top Overall
 
-Top Overall is a compact profile presentation of specific interests supported by meaningful direct evidence.
+Top Overall is a compact profile presentation of specific interests supported by meaningful **direct** evidence.
 
 It is related to, but not required to exactly equal, the raw Overall This-or-That ordering because the profile presentation can consider multiple independent direct sources while preserving provenance.
+
+Profile/quiz inference may help discovery or modestly refine ordering after direct eligibility exists. Inferred-only evidence cannot put an item into Top Overall and cannot manufacture a favorite.
 
 ## Hard Limits
 
 Hard Limits are explicit boundaries. They are not low ranks, uncertainty, or inferred low affinity.
 
+An empty Hard Limits list does **not** mean “I have no Hard Limits.” With no affirmative statement, the summary remains unknown/unreviewed. The profile can represent “I currently have no Hard Limits” only when the user records that directly. If an actual Hard Limit exists, the concrete boundary wins.
+
 ## Interest Areas
 
 Interest Areas compress meaningful category-level clusters so the main profile does not need to display every catalog category at once.
 
-Technical references: [Overall Profile Aggregation](overall-profile-aggregation.md) and [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md)
+Technical references: [Overall Profile Aggregation](overall-profile-aggregation.md), [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md), and [Sparse-State Semantics](sparse-state-semantics.md)
 
 ---
 
@@ -429,7 +483,7 @@ The private backup is the machine-readable artifact used to preserve/restore sup
 
 Current export format is `kink-profile` version 3, with restore compatibility for versions 1, 2, and 3.
 
-Backup import replaces the local profile after validation; it is not a silent merge.
+Backup import replaces the local profile after validation; it is not a silent merge. Supported quiz state includes an unfinished retake draft, so export → parse → restore does not silently discard resumable retake work or the previous authoritative completed result.
 
 ## Share summary
 
@@ -477,15 +531,27 @@ Hard Limit
 ≠ inferred low affinity
 ```
 
+Also:
+
+```text
+unknown / missing evidence
+≠ measured zero
+
+empty boundary list
+≠ affirmative "none"
+```
+
 Those distinctions are what let the app combine information without pretending every signal means the same thing.
 
 ## Where to go deeper
 
 - [Product Spec](product-spec.md) — current product boundaries
+- [Hub](product/hub.md)
 - [Quizzes](product/quizzes.md)
 - [Kink Catalog](product/kink-catalog.md)
 - [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
 - [Overall Profile Aggregation](overall-profile-aggregation.md)
+- [Sparse-State Semantics](sparse-state-semantics.md)
 - [Rewards & Punishments](product/rewards-punishments.md)
 - [Scene Builder](product/scene-builder.md)
 - [Profile Comparison](product/profile-comparison.md)
