@@ -1,0 +1,114 @@
+name: Reconcile PR Previews
+
+on:
+  pull_request:
+    types:
+      - closed
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+# Keep every gh-pages mutation serialized with production and preview deploys.
+# Cleanup is state-based rather than event-based, so if GitHub replaces a
+# pending close run the next reconciliation still removes every stale preview.
+concurrency:
+  group: pages-publish
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Prune previews for closed PRs
+        id: prune
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          declare -A open_prs=()
+          while read -r number; do
+            [[ -n "$number" ]] && open_prs["$number"]=1
+          done < <(
+            gh api --paginate \
+              "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" \
+              --jq '.[].number'
+          )
+
+          removed=()
+          shopt -s nullglob
+          for path in pr-*; do
+            [[ -d "$path" ]] || continue
+            [[ "$path" =~ ^pr-([0-9]+)$ ]] || continue
+            number="${BASH_REMATCH[1]}"
+
+            if [[ -z "${open_prs[$number]:-}" ]]; then
+              echo "Removing stale preview: $path"
+              rm -rf -- "$path"
+              removed+=("$number")
+            fi
+          done
+
+          if (( ${#removed[@]} == 0 )); then
+            echo "No stale PR previews found."
+            echo 'removed=[]' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Prune closed PR previews"
+          git push origin HEAD:gh-pages
+
+          removed_json="$({ printf '%s\n' "${removed[@]}"; } | jq -Rsc 'split("\n") | map(select(length > 0) | tonumber)')"
+          echo "removed=$removed_json" >> "$GITHUB_OUTPUT"
+
+      - name: Mark removed previews in PR comments
+        if: steps.prune.outputs.removed != '[]'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REMOVED_PRS: ${{ steps.prune.outputs.removed }}
+        run: |
+          set -euo pipefail
+
+          marker='<!-- gh-pages-preview -->'
+          while read -r number; do
+            [[ -n "$number" ]] || continue
+
+            comment_id="$({
+              gh api --paginate \
+                "repos/${GITHUB_REPOSITORY}/issues/${number}/comments?per_page=100" \
+                --jq '.[] | select(.user.type == "Bot" and (.body | contains("<!-- gh-pages-preview -->"))) | .id'
+            } | head -n 1)"
+
+            if [[ -z "$comment_id" ]]; then
+              echo "PR #${number}: no preview comment to update."
+              continue
+            fi
+
+            body="${marker}
+## 🌐 Preview removed
+
+The GitHub Pages preview for **PR #${number}** has been cleaned up because the PR is closed. ✅"
+
+            jq -n --arg body "$body" '{body: $body}' | \
+              gh api --method PATCH \
+                "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}" \
+                --input - >/dev/null
+
+            echo "PR #${number}: preview comment marked removed."
+          done < <(jq -r '.[]' <<< "$REMOVED_PRS")
