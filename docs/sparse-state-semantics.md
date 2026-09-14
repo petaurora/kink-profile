@@ -2,9 +2,9 @@
 
 ## Status
 
-**Implemented shared contract for #200 / #202.**
+**Implemented shared contract for #200 / #202, with quiz lifecycle integration in #203.**
 
-Runtime vocabulary and resolution live in `src/lib/sparseState.ts`.
+Runtime vocabulary and resolution live in `src/lib/sparseState.ts`. Quiz-specific mapping lives in `src/features/quizzes/quizRuntime.ts`.
 
 This contract is intentionally presentation-oriented. It sits above the source-aware evidence architecture and does not replace scoring, persistence, or provenance. Feature surfaces map their evidence/result conditions into this shared vocabulary instead of inventing independent `items.length === 0` behavior.
 
@@ -124,6 +124,31 @@ When `excludedByUser` is true, the resolver returns:
 - unchanged evidence provenance
 
 Removing the exclusion therefore reveals the same measured semantic result; it does not need to reconstruct evidence that was overwritten.
+
+---
+
+# Quiz lifecycle mapping
+
+Quizzes consume the shared resolver through a quiz-owned lifecycle adapter rather than teaching the generic resolver about quiz concepts.
+
+The current mapping is:
+
+- **never started** → `unexplored`; invitation/start UX, no result visualization
+- **first attempt in progress** → `developing`; progress/Continue UX, no completed result yet
+- **complete** → `available`; balanced, diffuse, low, and zero-affinity measured outcomes remain valid results
+- **retake in progress** → the established result remains `available` while the retake attempt is tracked separately as unfinished/developing work
+- **coming soon** → `unavailable`; this is a normal product condition, not an error
+- **missing/broken question data** → error/recovery UI outside the sparse-state resolver
+
+A retake is a draft of the **same Quiz ID evidence source**, not a second source. The last completed answer set remains authoritative for profile evidence and result presentation until every question in the retake is answered. Completing the retake atomically promotes the draft to the authoritative answer set.
+
+Per-dimension quiz results use coverage rather than affinity to determine presentation state:
+
+- no coverage → `unexplored`; render unknown rather than `0%`
+- partial coverage → `developing`; the measured affinity may be shown provisionally without being reduced
+- sufficient coverage → `available`; a genuine measured `0%` is still a real low-affinity result
+
+This preserves the distinction between **no answer/evidence** and **an answered negative preference** throughout quiz result presentation.
 
 ---
 
