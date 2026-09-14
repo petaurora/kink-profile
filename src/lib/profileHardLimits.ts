@@ -45,12 +45,12 @@ export function buildProfileHardLimits(
   const hasLimits = all.length > 0;
   const hasExplicitNone = !hasLimits && assertion?.kind === "none";
 
-  const state = resolveSparseState({
+  const state = resolveSparseState<never>({
     evidence: hasLimits || hasExplicitNone
       ? { level: "sufficient", direct: true, inferred: false }
       : { level: "none", direct: false, inferred: false },
     result: hasLimits ? "value" : hasExplicitNone ? "valid_empty" : "missing",
-    ...(hasExplicitNone ? { reason: "explicit_none" as const } : {}),
+    reason: hasExplicitNone ? "explicit_none" : undefined,
   });
 
   return {
