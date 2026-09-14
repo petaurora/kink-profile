@@ -9,9 +9,11 @@ on:
 permissions:
   contents: write
 
+# A newer main build supersedes an older production build, but production no
+# longer shares a lossy concurrency queue with preview deploys or cleanup.
 concurrency:
-  group: pages-publish
-  cancel-in-progress: false
+  group: production-pages
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -33,14 +35,10 @@ jobs:
         env:
           VITE_BASE_PATH: /kink-profile/
 
-      - name: Deploy production site
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: dist
-          clean: true
-          clean-exclude: |
-            pr-*
-            pr-*/**
-          force: false
-          commit-message: Deploy production site from ${{ github.sha }}
+      - name: Publish production site
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_DIR: ${{ github.workspace }}/dist
+          PUBLISH_COMMIT_MESSAGE: Deploy production site from ${{ github.sha }}
+        run: bash .github/scripts/publish-pages.sh production
