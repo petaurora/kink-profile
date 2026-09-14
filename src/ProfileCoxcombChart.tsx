@@ -121,15 +121,16 @@ export function ProfileCoxcombChart<TId extends string>({
           const middle = -Math.PI / 2 + index * sectorAngle;
           const [labelX, labelY] = polar(labelRadius, middle);
           const unknown = axis.state === "unknown";
-          const unresolved = axis.affinity === null;
+          const affinity = axis.affinity;
+          const unresolved = affinity === null;
           const valueRadius = unresolved
             ? 0
-            : maxRadius * Math.sqrt(Math.max(0, axis.affinity) / 100);
+            : maxRadius * Math.sqrt(Math.max(0, affinity) / 100);
           const semanticLabel = unknown
             ? "not explored yet"
             : unresolved
               ? `evidence is developing, ${axis.coverage}% evidence, affinity not resolved yet`
-              : `${axis.affinity}% affinity, ${axis.coverage}% evidence`;
+              : `${affinity}% affinity, ${axis.coverage}% evidence`;
 
           return (
             <g
