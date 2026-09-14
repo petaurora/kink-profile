@@ -33,10 +33,18 @@ import {
 } from "../../lib/scoring";
 import { quizResultsPath, quizRoutePath } from "../../app/routes";
 import {
+  answerQuizQuestion,
+  canViewQuizResults,
   getAnsweredCount,
   getQuestionsForQuiz,
+  getQuizAttemptAnswers,
+  getQuizDataIssue,
   initialQuestionIndex,
   resolveAvailableQuiz,
+  resolveQuizDimensionState,
+  resolveQuizLifecycle,
+  startQuizRetake,
+  type QuizDataIssue,
 } from "./quizRuntime";
 
 type QuizRouteMode = "quiz" | "results";
@@ -47,7 +55,7 @@ type Score = {
   shortLabel: string;
   description: string;
   percentage: number;
-  coverage?: number;
+  coverage: number;
 };
 
 function scoreLabel(score: number, weighted = false) {
@@ -65,12 +73,29 @@ function RadarChart({
   scores: Score[];
   ariaLabel?: string;
 }) {
+  const measuredScores = scores.filter(
+    (score) => resolveQuizDimensionState(score.coverage).state !== "unexplored",
+  );
+  const unmeasuredCount = scores.length - measuredScores.length;
+
+  if (measuredScores.length < 3) {
+    return (
+      <div className="radar-wrap">
+        <p>
+          Not enough information is available to draw this radar yet. Unmeasured
+          dimensions are left unknown rather than plotted as zero.
+        </p>
+      </div>
+    );
+  }
+
   const size = 360;
   const center = size / 2;
   const radius = 118;
 
   const pointFor = (index: number, scale = 1) => {
-    const angle = -Math.PI / 2 + (index * Math.PI * 2) / scores.length;
+    const angle =
+      -Math.PI / 2 + (index * Math.PI * 2) / measuredScores.length;
     return [
       center + Math.cos(angle) * radius * scale,
       center + Math.sin(angle) * radius * scale,
@@ -78,9 +103,11 @@ function RadarChart({
   };
 
   const polygon = (scale: number) =>
-    scores.map((_, index) => pointFor(index, scale).join(",")).join(" ");
+    measuredScores
+      .map((_, index) => pointFor(index, scale).join(","))
+      .join(" ");
 
-  const scorePolygon = scores
+  const scorePolygon = measuredScores
     .map((score, index) =>
       pointFor(index, score.percentage / 100).join(","),
     )
@@ -98,7 +125,7 @@ function RadarChart({
           <polygon key={ring} points={polygon(ring)} className="radar-ring" />
         ))}
 
-        {scores.map((score, index) => {
+        {measuredScores.map((score, index) => {
           const [x, y] = pointFor(index, 1);
           const [labelX, labelY] = pointFor(index, 1.28);
 
@@ -131,7 +158,7 @@ function RadarChart({
         })}
 
         <polygon points={scorePolygon} className="radar-score" />
-        {scores.map((score, index) => {
+        {measuredScores.map((score, index) => {
           const [x, y] = pointFor(index, score.percentage / 100);
           return (
             <circle
@@ -144,33 +171,61 @@ function RadarChart({
           );
         })}
       </svg>
+      {unmeasuredCount > 0 && (
+        <p>
+          {unmeasuredCount} dimension{unmeasuredCount === 1 ? " is" : "s are"}
+          {" "}still unmeasured and omitted from the shape rather than shown as 0%.
+        </p>
+      )}
     </div>
   );
 }
 
 function RankedResults({ scores }: { scores: Score[] }) {
+  const orderedScores = [...scores].sort((left, right) => {
+    const leftState = resolveQuizDimensionState(left.coverage).state;
+    const rightState = resolveQuizDimensionState(right.coverage).state;
+    if (leftState === "unexplored" && rightState !== "unexplored") return 1;
+    if (rightState === "unexplored" && leftState !== "unexplored") return -1;
+    return right.percentage - left.percentage;
+  });
+
   return (
     <div className="ranked-list">
-      {scores.map((score, index) => (
-        <div className="result-row" key={score.id}>
-          <div className="result-rank">
-            {String(index + 1).padStart(2, "0")}
+      {orderedScores.map((score, index) => {
+        const dimensionState = resolveQuizDimensionState(score.coverage);
+        const isUnmeasured = dimensionState.state === "unexplored";
+        const isDeveloping = dimensionState.state === "developing";
+
+        return (
+          <div className="result-row" key={score.id}>
+            <div className="result-rank">
+              {String(index + 1).padStart(2, "0")}
+            </div>
+            <div className="result-main">
+              <div className="result-title">
+                <strong>{score.label}</strong>
+                <span>{isUnmeasured ? "—" : `${score.percentage}%`}</span>
+              </div>
+              {!isUnmeasured && (
+                <div className="score-track">
+                  <span style={{ width: `${score.percentage}%` }} />
+                </div>
+              )}
+              <div className="result-caption">
+                <span>
+                  {isUnmeasured
+                    ? "Not enough information"
+                    : isDeveloping
+                      ? "Developing"
+                      : scoreLabel(score.percentage, true)}
+                </span>
+                <p>{score.description}</p>
+              </div>
+            </div>
           </div>
-          <div className="result-main">
-            <div className="result-title">
-              <strong>{score.label}</strong>
-              <span>{score.percentage}%</span>
-            </div>
-            <div className="score-track">
-              <span style={{ width: `${score.percentage}%` }} />
-            </div>
-            <div className="result-caption">
-              <span>{scoreLabel(score.percentage, true)}</span>
-              <p>{score.description}</p>
-            </div>
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -363,6 +418,46 @@ function questionContext(quiz: QuizDefinition) {
   return "Power exchange";
 }
 
+function QuizDataErrorPanel({
+  quiz,
+  issue,
+}: {
+  quiz: QuizDefinition;
+  issue: QuizDataIssue;
+}) {
+  const navigate = useNavigate();
+  const detail =
+    issue.kind === "missing-questions"
+      ? "Some question definitions could not be loaded."
+      : "This quiz does not currently have a usable question bank.";
+
+  return (
+    <main className="app-shell">
+      <section className="results-stack">
+        <article className="panel results-heading">
+          <div>
+            <p className="eyebrow">{quiz.title} · Recovery needed</p>
+            <h1>This quiz is unavailable right now.</h1>
+            <p>
+              {detail} This is a data error, not an empty quiz result, so the
+              app has not interpreted missing questions as zero interest or
+              changed any existing profile evidence.
+            </p>
+          </div>
+          <div className="results-heading-actions">
+            <button className="primary" onClick={() => navigate("/")}>
+              Back to quiz hub
+            </button>
+            <button className="secondary" onClick={() => window.location.reload()}>
+              Try again
+            </button>
+          </div>
+        </article>
+      </section>
+    </main>
+  );
+}
+
 function ResolvedQuizRoute({
   quiz,
   mode,
@@ -377,18 +472,21 @@ function ResolvedQuizRoute({
   );
 
   const activeQuestions = useMemo(() => getQuestionsForQuiz(quiz), [quiz]);
-  const answers = profile.quizzes[quiz.id]?.answers ?? {};
-  const answeredCount = getAnsweredCount(quiz, answers);
+  const lifecycle = resolveQuizLifecycle(quiz, profile);
+  const attemptAnswers = getQuizAttemptAnswers(quiz, profile);
+  const establishedAnswers = profile.quizzes[quiz.id]?.answers ?? {};
+  const answeredCount = getAnsweredCount(quiz, attemptAnswers);
   const currentQuestion = activeQuestions[questionIndex];
-  const currentAnswer = currentQuestion ? answers[currentQuestion.id] : undefined;
-  const canViewResults =
-    activeQuestions.length > 0 && answeredCount >= activeQuestions.length;
+  const currentAnswer = currentQuestion
+    ? attemptAnswers[currentQuestion.id]
+    : undefined;
+  const canViewResults = canViewQuizResults(quiz, profile);
 
   const scores = useMemo<Score[]>(() => {
     if (quiz.id === "roles-headspaces") {
       const signalScores = scoreSignals(
         activeQuestions.filter(isWeightedQuestion),
-        answers,
+        establishedAnswers,
         getSignals(headspaceSignalIds),
       );
       return scoreHeadspaces(signalScores, roleHeadspaces).sort(
@@ -399,7 +497,7 @@ function ResolvedQuizRoute({
     if (quiz.id === "bondage-discipline") {
       return scoreSignals(
         activeQuestions.filter(isWeightedQuestion),
-        answers,
+        establishedAnswers,
         getSignals(bondageDisciplineSignalIds),
       ).sort((a, b) => b.percentage - a.percentage);
     }
@@ -407,7 +505,7 @@ function ResolvedQuizRoute({
     if (quiz.id === "sadism-masochism") {
       return scoreSignals(
         activeQuestions.filter(isWeightedQuestion),
-        answers,
+        establishedAnswers,
         getSignals(sadismMasochismSignalIds),
       ).sort((a, b) => b.percentage - a.percentage);
     }
@@ -415,13 +513,13 @@ function ResolvedQuizRoute({
     if (quiz.id === "dominance-submission") {
       return scoreDsSignals(
         activeQuestions.filter(isWeightedQuestion),
-        answers,
+        establishedAnswers,
         dsSignals,
       ).sort((a, b) => b.percentage - a.percentage);
     }
 
     return [];
-  }, [activeQuestions, answers, quiz.id]);
+  }, [activeQuestions, establishedAnswers, quiz.id]);
 
   const saveNextProfile = (next: StoredProfile) => {
     saveProfile(next);
@@ -431,31 +529,29 @@ function ResolvedQuizRoute({
   const answerQuestion = (value: number) => {
     if (!currentQuestion) return;
 
-    const nextAnswers = { ...answers, [currentQuestion.id]: value };
-    const isComplete =
-      quiz.questionIds.length > 0 &&
-      getAnsweredCount(quiz, nextAnswers) >= quiz.questionIds.length;
-    const nextProfile: StoredProfile = {
-      ...profile,
-      quizzes: {
-        ...profile.quizzes,
-        [quiz.id]: {
-          quizVersion: quiz.version,
-          answers: nextAnswers,
-          completedAt: isComplete
-            ? profile.quizzes[quiz.id]?.completedAt ?? new Date().toISOString()
-            : undefined,
-        },
-      },
-    };
-
+    const nextProfile = answerQuizQuestion(
+      quiz,
+      profile,
+      currentQuestion.id,
+      value,
+    );
     saveNextProfile(nextProfile);
 
     if (questionIndex < activeQuestions.length - 1) {
       setQuestionIndex((index) => index + 1);
-    } else {
+      return;
+    }
+
+    if (canViewQuizResults(quiz, nextProfile)) {
       navigate(quizResultsPath(quiz.id));
     }
+  };
+
+  const beginRetake = () => {
+    const nextProfile = startQuizRetake(quiz, profile);
+    saveNextProfile(nextProfile);
+    setQuestionIndex(initialQuestionIndex(quiz, nextProfile));
+    navigate(quizRoutePath(quiz.id));
   };
 
   const resetQuiz = () => {
@@ -467,6 +563,10 @@ function ResolvedQuizRoute({
 
   if (mode === "results" && !canViewResults) {
     return <Navigate to={quizRoutePath(quiz.id)} replace />;
+  }
+
+  if (mode === "quiz" && lifecycle.state === "complete") {
+    return <Navigate to={quizResultsPath(quiz.id)} replace />;
   }
 
   if (mode === "quiz" && !currentQuestion) {
@@ -481,7 +581,11 @@ function ResolvedQuizRoute({
             <button className="back-to-hub" onClick={() => navigate("/")}>
               ← Quiz hub
             </button>
-            <p className="eyebrow">{quiz.shortTitle}</p>
+            <p className="eyebrow">
+              {lifecycle.state === "retake-in-progress"
+                ? `${quiz.shortTitle} · Retake`
+                : quiz.shortTitle}
+            </p>
             <strong>
               {Math.round((answeredCount / activeQuestions.length) * 100)}%
             </strong>
@@ -495,6 +599,9 @@ function ResolvedQuizRoute({
             <p>
               {answeredCount} of {activeQuestions.length} answered
             </p>
+            {lifecycle.state === "retake-in-progress" && (
+              <p>Your previous completed result stays active until this retake is finished.</p>
+            )}
           </aside>
 
           <article className="question-card panel">
@@ -547,13 +654,25 @@ function ResolvedQuizRoute({
               <p className="eyebrow">{quiz.title}</p>
               <h1>The shape matters more than any single score.</h1>
               <p>{resultsDescription(quiz)}</p>
+              {lifecycle.state === "retake-in-progress" && (
+                <p>
+                  A retake is in progress. These remain your last completed
+                  results until the new attempt is complete.
+                </p>
+              )}
             </div>
             <div className="results-heading-actions">
               <button
                 className="secondary"
-                onClick={() => navigate(quizRoutePath(quiz.id))}
+                onClick={
+                  lifecycle.state === "retake-in-progress"
+                    ? () => navigate(quizRoutePath(quiz.id))
+                    : beginRetake
+                }
               >
-                Edit answers
+                {lifecycle.state === "retake-in-progress"
+                  ? "Continue retake"
+                  : "Retake quiz"}
               </button>
               <button className="primary" onClick={() => navigate("/")}>
                 Back to hub
@@ -578,8 +697,13 @@ export function QuizRoutePage({ mode }: { mode: QuizRouteMode }) {
   const { quizId } = useParams();
   const quiz = resolveAvailableQuiz(quizId);
 
-  if (!quiz || quiz.questionIds.length === 0) {
+  if (!quiz) {
     return <Navigate to="/" replace />;
+  }
+
+  const dataIssue = getQuizDataIssue(quiz);
+  if (dataIssue) {
+    return <QuizDataErrorPanel quiz={quiz} issue={dataIssue} />;
   }
 
   return <ResolvedQuizRoute key={`${quiz.id}:${mode}`} quiz={quiz} mode={mode} />;
