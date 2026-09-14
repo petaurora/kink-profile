@@ -27,6 +27,9 @@ THIS-OR-THAT      OVERALL PROFILE
 relative item          derived interpretation
 ranking                of current evidence
 
+HUB
+maturity-aware home composed from truthful available state
+
 REWARDS & PUNISHMENTS
 separate contextual suitability/ranking
 
@@ -34,7 +37,7 @@ SCENE BUILDER
 uses existing profile state for current-session composition
 ```
 
-These sources are related through stable identities and semantic mappings, but they are **not interchangeable evidence**.
+These sources are related through stable identities and semantic mappings, but they are **not interchangeable evidence**. The Hub is a presentation/composition surface over existing state, not another evidence source.
 
 ## Product principles
 
@@ -43,6 +46,14 @@ These sources are related through stable identities and semantic mappings, but t
 The user can complete one quiz, classify a few catalog items, rank one category, or use one downstream feature without completing the whole product.
 
 Partial evidence is valid. Missing evidence remains unknown rather than becoming a negative preference.
+
+### Unknown is not low
+
+Evidence coverage and measured result strength are separate concerns.
+
+Missing evidence must not become a meaningful `0`. A genuinely measured low or zero result remains a real result when the evidence supporting it is sufficient. Partial evidence may be shown provisionally without weakening the measured direction merely because coverage is incomplete.
+
+See [Sparse-State Semantics](sparse-state-semantics.md).
 
 ### Measure reusable meaning before inventory
 
@@ -82,6 +93,8 @@ Hard Limits and other explicit exclusions are direct user-owned state.
 
 Derived affinity, ranking, or thematic strength must not override them.
 
+An empty/missing boundary collection is not affirmative evidence that the user has no boundaries. A valid explicit-none summary requires the user to affirm that statement directly.
+
 ### Privacy-first and browser-local
 
 The current product stores authoritative profile state in the browser. No account or cloud persistence is required for the current product.
@@ -89,6 +102,22 @@ The current product stores authoritative profile state in the browser. No accoun
 Private backup/restore and curated human-facing sharing are separate artifacts with different privacy boundaries.
 
 ## Current product surfaces
+
+### Hub
+
+The Hub is the maturity-aware home surface for the current profile. It is compositional rather than a fixed feature directory.
+
+Its broad posture follows the same whole-profile maturity used by Profile:
+
+- **Unformed** — show a deliberately small onboarding canvas with useful starting actions;
+- **Emerging** — show reflection and durable exploration doors plus only optional modules that currently have truthful content;
+- **Established** — show the richer living dashboard, while optional modules still appear only when eligible.
+
+`Continue` is reserved for genuinely resumable quiz work, including an unfinished first attempt or retake. Optional modules such as latest preference or randomizer content disappear when their content is not eligible instead of rendering empty/setup placeholders.
+
+Finite workflows may show ordinary facts such as `2/4 quizzes with established results`. The Hub does not convert profile depth into an overall completion percentage.
+
+See [Hub](product/hub.md) and [Sparse-State Semantics](sparse-state-semantics.md).
 
 ### Quizzes
 
@@ -101,11 +130,15 @@ The current app has four independently completable core quizzes:
 
 They use weighted questions to produce section-local Signal evidence with affinity and coverage.
 
+Never-started, first-attempt-in-progress, completed, retake-in-progress, unavailable, and data-error conditions are distinct lifecycle states. An incomplete retake is a draft of the same quiz evidence source: the previous completed answer set/result remains authoritative until the retake is complete, then the draft replaces it atomically.
+
+Under-evidenced quiz dimensions remain unknown/developing rather than becoming artificial zero results. A completed balanced, diffuse, low, or genuinely zero-affinity result remains valid when supported by sufficient evidence.
+
 The current Roles & Headspaces quiz also supports derived role/headspace and Dynamic Mode interpretation through the shared profile taxonomy.
 
 The retired Starter Profile exists only as a compatibility storage ID; it is not a current available quiz.
 
-See [Quizzes](product/quizzes.md).
+See [Quizzes](product/quizzes.md) and [Sparse-State Semantics](sparse-state-semantics.md).
 
 ### Kink Catalog
 
@@ -152,6 +185,20 @@ See [Kink This-or-That Ranking](kink-this-or-that-ranking.md).
 
 The Overall Profile is a derived presentation of the evidence currently available across independent sources.
 
+The whole profile exposes a descriptive posture rather than a completion score:
+
+- **Unformed** — no meaningful canonical profile shape exists yet;
+- **Emerging** — meaningful evidence exists but the broad landscape is still developing;
+- **Established** — enough dimensions have established evidence for a stable broad profile shape.
+
+This posture is not a percentage and does not require every dimension to be explored.
+
+Individual dimensions remain distinct:
+
+- **unknown** — no meaningful evidence; affinity remains absent rather than becoming `0`;
+- **provisional/developing** — evidence exists but coverage/result resolution is not established enough for ordinary presentation;
+- **established** — sufficient evidence supports a measured result, including a genuine measured `0`.
+
 It can include:
 
 - broad Overall Facets;
@@ -161,12 +208,18 @@ It can include:
 - Top Overall interests;
 - Hard Limits;
 - Interest Areas;
-- evidence/coverage explanation;
+- explanation and evidence-coverage context;
 - Rewards & Punishments summaries where direct contextual data exists.
+
+Headline claims use stronger evidence requirements than passive/background profile visualization. Identity-adjacent presentation distinguishes unknown, low match, balanced/no clear leader, calculated match, explicit none, and direct self-identification without rewriting the underlying calculated result.
+
+Top Overall requires meaningful direct evidence before an item is eligible for an authoritative personal favorite/top claim. Inferred profile fit can support discovery or bounded ordering only after direct eligibility exists; inferred-only evidence cannot manufacture a favorite.
+
+Hard Limits distinguish missing/unknown boundary data from an affirmative direct statement that the user currently has none. Recorded Hard Limits remain authoritative over a stale none assertion.
 
 The Overall Profile is not another authoritative source. It must be recomputable from underlying source data.
 
-See [Overall Profile Aggregation](overall-profile-aggregation.md), [Scoring & Taxonomy Model](scoring-model.md), and [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md).
+See [Overall Profile Aggregation](overall-profile-aggregation.md), [Scoring & Taxonomy Model](scoring-model.md), [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md), and [Sparse-State Semantics](sparse-state-semantics.md).
 
 ### Roles, Headspaces & Dynamic Modes
 
@@ -345,6 +398,8 @@ Derived catalog affinity is not an independent Signal source and must not feed b
 
 Likewise, derived roles, modes, facets, recommendations, profile summaries, and Scene queries do not become new source evidence merely because they are displayed or consumed downstream.
 
+Sparse-state resolution sits above this evidence architecture as presentation semantics. It classifies evidence/result conditions such as unexplored, developing, valid empty, available, unavailable, or user-excluded without changing affinity, source provenance, or persisted evidence. Loading/system failures remain error/recovery states outside that taxonomy.
+
 The direction of information should remain acyclic:
 
 ```text
@@ -359,18 +414,22 @@ discovery / presentation / scene use
 not back into source evidence
 ```
 
+See [Sparse-State Semantics](sparse-state-semantics.md).
+
 ## Persistence model
 
 Current authoritative durable state is browser-local and separated by domain.
 
 Durable profile data includes:
 
-- quiz progress/answers;
+- quiz progress/answers, including an in-progress retake draft when one exists;
 - profile settings;
 - explicit catalog preferences;
 - pairwise comparisons and ranking-run history;
 - Rewards & Punishments authoritative state;
 - saved Scene templates.
+
+A quiz retake is not a second evidence source. The completed answer set remains authoritative while the draft is incomplete; backup parsing preserves the retake draft alongside that established result.
 
 Session-only Scene Builder overrides/randomizer history are intentionally not durable profile state.
 
@@ -398,6 +457,7 @@ These boundaries describe the current system, not a declaration that such concep
 Use the repository contracts for current implementation semantics:
 
 - [Documentation index](README.md)
+- [Hub](product/hub.md)
 - [Quizzes](product/quizzes.md)
 - [Kink Catalog](product/kink-catalog.md)
 - [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
@@ -410,6 +470,7 @@ Use the repository contracts for current implementation semantics:
 - [Roles, Headspaces & Dynamic Modes](data-model/roles-headspaces-modes.md)
 - [Scoring & Taxonomy Model](scoring-model.md)
 - [Source-Aware Profile Evidence Architecture](profile-evidence-architecture.md)
+- [Sparse-State Semantics](sparse-state-semantics.md)
 
 Do not add roadmap/status chronology to this document. Active work belongs in GitHub; unresolved product thinking belongs in Notion.
 
