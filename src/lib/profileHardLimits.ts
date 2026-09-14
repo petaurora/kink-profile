@@ -1,4 +1,4 @@
-import type { HardLimitsAssertion } from "./catalogProfile";
+import type { BoundarySummaryAssertion } from "./profileBoundaryState";
 import type { CatalogResultItem, CatalogResultView } from "./catalogResults";
 import {
   resolveSparseState,
@@ -30,7 +30,7 @@ const featuredLimitCount = 6;
  */
 export function buildProfileHardLimits(
   resultView: CatalogResultView,
-  assertion?: HardLimitsAssertion,
+  assertion?: BoundarySummaryAssertion,
 ): ProfileHardLimitsModel {
   const all = resultView.exclusions.hardLimits
     .map(
