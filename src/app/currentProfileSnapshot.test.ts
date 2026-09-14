@@ -71,8 +71,12 @@ describe("current profile snapshot hydration", () => {
 
     expect(directEntry.profile).toEqual(backup.profile.quizzes);
     expect(directEntry.catalogProfile).toEqual(backup.profile.catalog);
+    expect(directEntry.rewardPunishmentProfile.schemaVersion).toBe(1);
     expect(refreshedEntry.profile).toEqual(directEntry.profile);
     expect(refreshedEntry.catalogProfile).toEqual(directEntry.catalogProfile);
+    expect(refreshedEntry.rewardPunishmentProfile).toEqual(
+      directEntry.rewardPunishmentProfile,
+    );
     expect(refreshedEntry.catalogResultView).toEqual(
       directEntry.catalogResultView,
     );

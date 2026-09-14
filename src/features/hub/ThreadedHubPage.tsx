@@ -1,16 +1,25 @@
 import {
   IconArrowRight,
+  IconArrowsExchange,
   IconBook2,
+  IconChecklist,
   IconDice5,
+  IconFlame,
+  IconHeart,
   IconHeartHandshake,
+  IconKey,
+  IconLock,
+  IconMoodSmile,
+  IconPaw,
   IconRefresh,
   IconSparkles,
   IconUsers,
 } from "@tabler/icons-react";
 import { useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { loadCurrentProfileSnapshot } from "../../app/currentProfileSnapshot";
 import {
+  catalogRewardsRoute,
   catalogRoute,
   compareRoute,
   profileRoute,
@@ -19,20 +28,38 @@ import {
   rewardsToolsRandomizerRoute,
   sceneBuilderRoute,
 } from "../../app/routes";
-import { canonicalSignalDefinitions } from "../../data/canonicalSignals";
+import {
+  overallFacetDefinitions,
+  type OverallFacetId,
+} from "../../data/overallFacets";
 import { quizzes } from "../../data/quizzes";
 import {
   getCatalogPreference,
   type CatalogPreferenceState,
 } from "../../lib/catalogProfile";
 import { catalogPreferenceLabels } from "../../lib/catalogResults";
+import { scoreOverallFacets } from "../../lib/overallProfileFacets";
+import { buildProfileHeaderModel } from "../../lib/profileHeader";
 import { loadProfileSettings } from "../../lib/profileSettings";
 import { getAnsweredCount, getQuizState } from "../quizzes/quizRuntime";
+import { buildHubMetrics } from "./hubMetrics";
 import "./HubPage.css";
 
-const signalDefinitionById = new Map(
-  canonicalSignalDefinitions.map((definition) => [definition.id, definition]),
+const facetDefinitionById = new Map(
+  overallFacetDefinitions.map((definition) => [definition.id, definition]),
 );
+
+const facetIconById: Record<OverallFacetId, typeof IconSparkles> = {
+  power_exchange: IconArrowsExchange,
+  structure_protocol: IconChecklist,
+  ownership_belonging: IconKey,
+  service_devotion: IconHeartHandshake,
+  care_nurture: IconHeart,
+  play_resistance: IconMoodSmile,
+  primal_instinctive: IconPaw,
+  restraint_physical_control: IconLock,
+  intensity_pain: IconFlame,
+};
 
 type LatestPreference = {
   label: string;
@@ -40,58 +67,12 @@ type LatestPreference = {
   updatedAt: string;
 };
 
-type HubStylePrototype = "living" | "velvet" | "threaded";
-
-const hubStyleOptions: readonly {
-  id: HubStylePrototype;
-  label: string;
-  note: string;
-}[] = [
-  { id: "living", label: "Living", note: "PR 194 baseline" },
-  { id: "velvet", label: "Velvet", note: "Prototype C blend" },
-  { id: "threaded", label: "Threaded", note: "C + rope / constellation" },
-];
-
-function resolveHubStyle(value: string | null): HubStylePrototype {
-  return hubStyleOptions.some((option) => option.id === value)
-    ? (value as HubStylePrototype)
-    : "living";
-}
-
-function HubStyleSwitcher({
-  value,
-  onChange,
-}: {
-  value: HubStylePrototype;
-  onChange: (value: HubStylePrototype) => void;
-}) {
-  return (
-    <div className="hub-style-switcher" aria-label="Hub style prototype">
-      <span className="hub-style-switcher-label">Style</span>
-      {hubStyleOptions.map((option) => (
-        <button
-          key={option.id}
-          type="button"
-          className={value === option.id ? "is-active" : ""}
-          aria-pressed={value === option.id}
-          title={option.note}
-          onClick={() => onChange(option.id)}
-        >
-          {option.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function latestPreferenceFromSnapshot(
+function latestAmbientPreference(
   snapshot: ReturnType<typeof loadCurrentProfileSnapshot>,
 ): LatestPreference | null {
   return Object.entries(snapshot.catalogProfile.preferences).reduce<LatestPreference | null>(
     (latest, [catalogId, preference]) => {
       const state = getCatalogPreference(preference, "overall");
-      // Hard limits are safety metadata, not ambient content. They still protect
-      // downstream experiences, but the Hub must never casually name them.
       if (!state || state === "hard_limit") return latest;
 
       const candidate = {
@@ -102,26 +83,37 @@ function latestPreferenceFromSnapshot(
         updatedAt: preference.updatedAt,
       } satisfies LatestPreference;
 
-      if (!latest || candidate.updatedAt > latest.updatedAt) return candidate;
-      return latest;
+      return !latest || candidate.updatedAt > latest.updatedAt ? candidate : latest;
     },
     null,
   );
 }
 
-export function HubPage() {
+export function ThreadedHubPage() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const hubStyle = resolveHubStyle(searchParams.get("hubStyle"));
   const snapshot = useMemo(() => loadCurrentProfileSnapshot(), []);
   const settings = useMemo(() => loadProfileSettings(), []);
-
-  const setHubStyle = (next: HubStylePrototype) => {
-    const updated = new URLSearchParams(searchParams);
-    if (next === "living") updated.delete("hubStyle");
-    else updated.set("hubStyle", next);
-    setSearchParams(updated, { replace: true });
-  };
+  const metrics = useMemo(() => buildHubMetrics(snapshot), [snapshot]);
+  const latestPreference = useMemo(
+    () => latestAmbientPreference(snapshot),
+    [snapshot],
+  );
+  const overallFacets = useMemo(
+    () => scoreOverallFacets(snapshot.canonicalSignals),
+    [snapshot.canonicalSignals],
+  );
+  const profileHeader = useMemo(
+    () => buildProfileHeaderModel(snapshot.canonicalSignals, overallFacets),
+    [overallFacets, snapshot.canonicalSignals],
+  );
+  const strongestThemes = useMemo(
+    () =>
+      profileHeader.strongestFacetIds.flatMap((facetId) => {
+        const facet = facetDefinitionById.get(facetId);
+        return facet ? [facet] : [];
+      }),
+    [profileHeader.strongestFacetIds],
+  );
 
   const quizSummaries = useMemo(
     () =>
@@ -152,41 +144,22 @@ export function HubPage() {
     quizSummaries.find((summary) => summary.state === "not-started") ??
     quizSummaries[0];
 
-  const preferenceCount = Object.values(snapshot.catalogProfile.preferences).filter(
-    (preference) => getCatalogPreference(preference, "overall") !== undefined,
-  ).length;
-  const comparisonCount = snapshot.catalogProfile.comparisons.length;
-  const latestPreference = useMemo(
-    () => latestPreferenceFromSnapshot(snapshot),
-    [snapshot],
-  );
-
-  const signalsWithEvidence = snapshot.canonicalSignals.filter(
-    (signal) => signal.overall.affinity !== null && signal.overall.coverage > 0,
-  );
-  const topSignals = [...signalsWithEvidence]
-    .sort(
-      (left, right) =>
-        right.overall.coverage - left.overall.coverage ||
-        (right.overall.affinity ?? 0) - (left.overall.affinity ?? 0),
-    )
-    .slice(0, 3);
-
   const hasProfileActivity =
-    startedQuizCount > 0 || preferenceCount > 0 || comparisonCount > 0;
+    startedQuizCount > 0 ||
+    metrics.catalogRatedCount > 0 ||
+    metrics.rankingChoiceCount > 0 ||
+    metrics.contextPreferenceCount > 0;
+
+  const randomizerReady = metrics.readyChoiceCount > 0;
 
   return (
-    <main className={`app-shell hub-home hub-style-${hubStyle}`}>
+    <main className="app-shell hub-home hub-style-threaded">
       <section className="hub-home-stack">
-        <HubStyleSwitcher value={hubStyle} onChange={setHubStyle} />
-
         <header className="hub-home-intro">
           <div className="hub-home-intro-copy">
             <p className="eyebrow">Your home</p>
             <h1>Hey, {settings.displayName}.</h1>
-            <p className="hub-home-question">
-              What are you curious about today?
-            </p>
+            <p className="hub-home-question">What are you curious about today?</p>
           </div>
           <div className="hub-home-spark" aria-hidden="true">
             <IconSparkles size={38} stroke={1.5} />
@@ -201,47 +174,51 @@ export function HubPage() {
                   <p className="eyebrow">You, lately</p>
                   <h2>Your profile is a snapshot, not a finish line.</h2>
                   <p className="hub-home-reflection-copy">
-                    {topSignals.length > 0
-                      ? "These are the clearest themes in the evidence you have built so far. Come back when something shifts, surprises you, or just feels worth looking at again."
+                    {strongestThemes.length > 0
+                      ? "These are the same strongest overall themes reflected on your Profile, balancing affinity with how much evidence supports them. Come back when something shifts, surprises you, or feels worth looking at again."
                       : "You have started leaving breadcrumbs. Keep exploring and this space will start reflecting patterns back to you."}
                   </p>
                 </div>
-                <IconHeartHandshake
-                  size={34}
-                  stroke={1.45}
-                  aria-hidden="true"
-                />
               </div>
 
-              {topSignals.length > 0 && (
+              {strongestThemes.length > 0 && (
                 <div className="hub-home-signal-list" aria-label="Current profile themes">
-                  {topSignals.map((signal) => (
-                    <span className="hub-home-signal" key={signal.signalId}>
-                      {signalDefinitionById.get(signal.signalId)?.shortLabel ??
-                        signal.signalId.replaceAll("_", " ")}
-                    </span>
-                  ))}
+                  {strongestThemes.map((theme) => {
+                    const ThemeIcon = facetIconById[theme.id];
+                    return (
+                      <span className="hub-home-signal" key={theme.id}>
+                        <ThemeIcon
+                          className="hub-home-signal-icon"
+                          size={30}
+                          stroke={1.6}
+                          aria-hidden="true"
+                        />
+                        <strong>{theme.label}</strong>
+                      </span>
+                    );
+                  })}
                 </div>
               )}
 
-              <div className="hub-home-evidence" aria-label="Profile depth">
-                <div className="hub-home-evidence-item">
-                  <strong>
-                    {completedQuizCount}/{quizSummaries.length}
-                  </strong>
-                  <span>guided quizzes complete</span>
-                </div>
-                <div className="hub-home-evidence-item">
-                  <strong>{preferenceCount}</strong>
-                  <span>kinks explicitly rated</span>
-                </div>
-                <div className="hub-home-evidence-item">
-                  <strong>{comparisonCount}</strong>
-                  <span>ranking choices made</span>
-                </div>
-                <div className="hub-home-evidence-item">
-                  <strong>{signalsWithEvidence.length}</strong>
-                  <span>themes with evidence</span>
+              <div className="hub-home-evidence-block">
+                <p className="hub-home-evidence-label">Profile depth</p>
+                <div className="hub-home-evidence" aria-label="Profile depth">
+                  <div className="hub-home-evidence-item">
+                    <strong>{completedQuizCount}/{quizSummaries.length}</strong>
+                    <span>quizzes complete</span>
+                  </div>
+                  <div className="hub-home-evidence-item">
+                    <strong>{metrics.catalogRatedCount}</strong>
+                    <span>preferences rated</span>
+                  </div>
+                  <div className="hub-home-evidence-item">
+                    <strong>{metrics.rankingChoiceCount}</strong>
+                    <span>ranking choices</span>
+                  </div>
+                  <div className="hub-home-evidence-item">
+                    <strong>{metrics.contextPreferenceCount}</strong>
+                    <span>reward/punishment choices</span>
+                  </div>
                 </div>
               </div>
 
@@ -306,7 +283,7 @@ export function HubPage() {
                   </h2>
                   <p className="hub-home-now-copy">
                     {latestPreference
-                      ? "That is the most recently touched direct preference in your profile. If experience changed the answer, update it instead of preserving old-you forever."
+                      ? "That is the most recently touched ambient-safe preference in your profile. If experience changed the answer, update it."
                       : "Rate something when you learn something. The point is an honest current snapshot, not permanent answers."}
                   </p>
                 </div>
@@ -327,62 +304,28 @@ export function HubPage() {
                   <p className="eyebrow">Why did you open the app?</p>
                   <h2 id="hub-home-door-title">What kind of night is it?</h2>
                 </div>
-                <p>
-                  You do not need a task list. Pick the direction that matches the
-                  thought already in your head.
-                </p>
+                <p>Pick the direction that matches the thought already in your head.</p>
               </div>
 
               <div className="hub-home-doors">
-                <button
-                  className="hub-home-door"
-                  type="button"
-                  onClick={() => navigate(profileRoute.path)}
-                >
+                <button className="hub-home-door" type="button" onClick={() => navigate(profileRoute.path)}>
                   <IconSparkles className="hub-home-door-icon" size={26} stroke={1.55} aria-hidden="true" />
-                  <span>
-                    <strong>Notice me</strong>
-                    See the patterns your current profile is reflecting back.
-                  </span>
+                  <span><strong>Notice me</strong>See the patterns your current profile is reflecting back.</span>
                   <IconArrowRight className="hub-home-door-arrow" size={18} aria-hidden="true" />
                 </button>
-
-                <button
-                  className="hub-home-door"
-                  type="button"
-                  onClick={() => navigate(compareRoute.path)}
-                >
+                <button className="hub-home-door" type="button" onClick={() => navigate(compareRoute.path)}>
                   <IconUsers className="hub-home-door-icon" size={26} stroke={1.55} aria-hidden="true" />
-                  <span>
-                    <strong>Look at us</strong>
-                    Put two profiles beside each other without erasing either person.
-                  </span>
+                  <span><strong>Look at us</strong>Put two profiles beside each other without erasing either person.</span>
                   <IconArrowRight className="hub-home-door-arrow" size={18} aria-hidden="true" />
                 </button>
-
-                <button
-                  className="hub-home-door"
-                  type="button"
-                  onClick={() => navigate(sceneBuilderRoute.path)}
-                >
+                <button className="hub-home-door" type="button" onClick={() => navigate(sceneBuilderRoute.path)}>
                   <IconDice5 className="hub-home-door-icon" size={26} stroke={1.55} aria-hidden="true" />
-                  <span>
-                    <strong>Give me something to do</strong>
-                    Turn what you already know into something playful right now.
-                  </span>
+                  <span><strong>Give me something to do</strong>Turn what you already know into something playful right now.</span>
                   <IconArrowRight className="hub-home-door-arrow" size={18} aria-hidden="true" />
                 </button>
-
-                <button
-                  className="hub-home-door"
-                  type="button"
-                  onClick={() => navigate(catalogRoute.path)}
-                >
+                <button className="hub-home-door" type="button" onClick={() => navigate(catalogRoute.path)}>
                   <IconRefresh className="hub-home-door-icon" size={26} stroke={1.55} aria-hidden="true" />
-                  <span>
-                    <strong>I learned something</strong>
-                    Update a preference instead of treating your profile like a completed test.
-                  </span>
+                  <span><strong>I learned something</strong>Update a preference instead of treating your profile like a completed test.</span>
                   <IconArrowRight className="hub-home-door-arrow" size={18} aria-hidden="true" />
                 </button>
               </div>
@@ -393,15 +336,13 @@ export function HubPage() {
                 <IconDice5 size={24} stroke={1.6} />
               </span>
               <div className="hub-home-playground-copy">
-                <p className="eyebrow">Future playful layer · prototype</p>
+                <p className="eyebrow">Future playful layer</p>
                 <h2>Feeling nosy?</h2>
                 <p>
-                  This is where the profile stops only describing you and starts
-                  becoming a toybox: tiny games that use your real curiosities,
-                  preferences, and shared context as the material.
+                  Small profile-aware moments can live here without turning the Hub into a feature directory.
                 </p>
-                <div className="hub-home-playground-games" aria-label="Example future mini games">
-                  <span>Mystery Kink</span>
+                <div className="hub-home-playground-games" aria-label="Future playful ideas">
+                  <span>Mystery pick</span>
                   <span>Vibe Check</span>
                   <span>Hear Me Out</span>
                   <span>Wheel of Maybe</span>
@@ -416,18 +357,31 @@ export function HubPage() {
                 </span>
                 <div>
                   <p className="eyebrow">Want something immediate?</p>
-                  <h2>Use what you already know.</h2>
+                  <h2>
+                    {randomizerReady
+                      ? `${metrics.readyChoiceCount} choices are ready to draw.`
+                      : metrics.contextPreferenceCount > 0
+                        ? `${metrics.contextPreferenceCount} context choices are taking shape.`
+                        : "Teach the randomizer what works for you."}
+                  </h2>
                   <p className="hub-home-now-copy">
-                    Build a scene from your profile, or pull from the reward and
-                    punishment tools without doing more self-analysis first.
+                    {randomizerReady
+                      ? "You already have enough intentionally eligible choices to use the randomizer without doing more setup first."
+                      : "Shape a few contextual preferences first, then the randomizer can use only the choices you explicitly made eligible."}
                   </p>
                 </div>
                 <button
                   className="hub-home-inline-action"
                   type="button"
-                  onClick={() => navigate(rewardsToolsRandomizerRoute.path)}
+                  onClick={() =>
+                    navigate(
+                      randomizerReady
+                        ? rewardsToolsRandomizerRoute.path
+                        : catalogRewardsRoute.path,
+                    )
+                  }
                 >
-                  Open the randomizer
+                  {randomizerReady ? "Open the randomizer" : "Shape choices"}
                   <IconArrowRight size={18} stroke={1.8} aria-hidden="true" />
                 </button>
               </article>
@@ -440,16 +394,10 @@ export function HubPage() {
                   <p className="eyebrow">Together</p>
                   <h2>Your profile does not have to live alone.</h2>
                   <p className="hub-home-now-copy">
-                    Compare independently-built profiles to surface overlap,
-                    differences, and useful conversation without turning either
-                    person into the other person's settings.
+                    Compare independently-built profiles to surface overlap and differences without turning either person into the other person's settings.
                   </p>
                 </div>
-                <button
-                  className="hub-home-inline-action"
-                  type="button"
-                  onClick={() => navigate(compareRoute.path)}
-                >
+                <button className="hub-home-inline-action" type="button" onClick={() => navigate(compareRoute.path)}>
                   Compare profiles
                   <IconArrowRight size={18} stroke={1.8} aria-hidden="true" />
                 </button>
@@ -462,27 +410,16 @@ export function HubPage() {
               <p className="eyebrow">Blank canvas</p>
               <h2>There is nothing to “complete” here.</h2>
               <p>
-                Start wherever feels interesting. Guided quizzes are good for
-                broad patterns; the catalog is good when you already know what
-                you want to react to. Either path gives this home something real
-                to reflect back later.
+                Start wherever feels interesting. Guided quizzes are good for broad patterns; the catalog is good when you already know what you want to react to.
               </p>
             </div>
             <div className="hub-home-empty-actions">
-              <button
-                className="hub-home-empty-action"
-                type="button"
-                onClick={() => navigate(quizHomeRoute.path)}
-              >
+              <button className="hub-home-empty-action" type="button" onClick={() => navigate(quizHomeRoute.path)}>
                 <IconSparkles size={24} stroke={1.6} aria-hidden="true" />
                 <strong>Start broad</strong>
                 <span>Use guided quizzes to surface patterns.</span>
               </button>
-              <button
-                className="hub-home-empty-action"
-                type="button"
-                onClick={() => navigate(catalogRoute.path)}
-              >
+              <button className="hub-home-empty-action" type="button" onClick={() => navigate(catalogRoute.path)}>
                 <IconBook2 size={24} stroke={1.6} aria-hidden="true" />
                 <strong>Start specific</strong>
                 <span>Browse the catalog and react to whatever catches you.</span>
