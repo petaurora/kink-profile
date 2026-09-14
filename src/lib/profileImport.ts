@@ -26,6 +26,13 @@ import {
   type ProfileBackupV3,
 } from "./profileBackup";
 import {
+  clearLimitsAssertion,
+  createEmptyProfileBoundaryState,
+  loadProfileBoundaryState,
+  parseProfileBoundaryState,
+  saveProfileBoundaryState,
+} from "./profileBoundaryState";
+import {
   MAX_PROFILE_DISPLAY_NAME_LENGTH,
   PROFILE_SETTINGS_SCHEMA_VERSION,
   loadProfileSettings,
@@ -347,6 +354,14 @@ function parseCatalogProfile(
   });
 }
 
+function catalogProfileHasHardLimit(profile: CatalogProfileState) {
+  return Object.values(profile.preferences).some((preference) =>
+    [preference.overall, preference.receiving, preference.giving].includes(
+      "hard_limit",
+    ),
+  );
+}
+
 export function validateProfileBackup(
   value: unknown,
 ): ProfileBackupParseResult {
@@ -475,6 +490,22 @@ export function validateProfileBackup(
     };
   }
 
+  const boundaries =
+    value.profile.boundaries === undefined
+      ? createEmptyProfileBoundaryState()
+      : parseProfileBoundaryState(value.profile.boundaries);
+  if (!boundaries) {
+    return {
+      ok: false,
+      error:
+        "The profile boundary summary data is invalid or unsupported.",
+    };
+  }
+
+  const normalizedBoundaries = catalogProfileHasHardLimit(catalogProfile)
+    ? clearLimitsAssertion(boundaries)
+    : boundaries;
+
   const backup: ProfileBackupV3 = {
     format: PROFILE_BACKUP_FORMAT,
     version: PROFILE_BACKUP_VERSION,
@@ -485,6 +516,7 @@ export function validateProfileBackup(
       catalog: catalogProfile,
       rewardsPunishments,
       scenes,
+      boundaries: normalizedBoundaries,
     },
   };
 
@@ -519,6 +551,7 @@ export function restoreProfileBackup(
     rewardsPunishments:
       loadRewardPunishmentAuthoritativeState(storage),
     scenes: loadSceneLibraryState(storage),
+    boundaries: loadProfileBoundaryState(storage),
   };
 
   const nextRewardsPunishments =
@@ -528,6 +561,13 @@ export function restoreProfileBackup(
   const nextScenes = isProfileBackupV3(backup)
     ? backup.profile.scenes
     : createEmptySceneLibraryState();
+  const restoredBoundaries =
+    isProfileBackupV3(backup)
+      ? backup.profile.boundaries ?? createEmptyProfileBoundaryState()
+      : createEmptyProfileBoundaryState();
+  const nextBoundaries = catalogProfileHasHardLimit(backup.profile.catalog)
+    ? clearLimitsAssertion(restoredBoundaries)
+    : restoredBoundaries;
 
   try {
     saveProfile(backup.profile.quizzes, storage);
@@ -537,6 +577,7 @@ export function restoreProfileBackup(
       storage,
     );
     saveSceneLibraryState(nextScenes, storage);
+    saveProfileBoundaryState(nextBoundaries, storage);
     saveProfileSettings(backup.profile.settings, storage);
   } catch (error) {
     try {
@@ -547,6 +588,7 @@ export function restoreProfileBackup(
         storage,
       );
       saveSceneLibraryState(previous.scenes, storage);
+      saveProfileBoundaryState(previous.boundaries, storage);
       saveProfileSettings(previous.settings, storage);
     } catch {
       throw new Error(
