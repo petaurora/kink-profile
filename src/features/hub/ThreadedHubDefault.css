@@ -230,9 +230,17 @@
   opacity: .3;
 }
 
+.hub-home .hub-home-now-grid-secondary {
+  grid-template-columns: 1fr;
+}
+
 .hub-home .hub-home-now-grid-secondary .hub-home-now {
   min-height: 11.5rem;
   border-radius: 1.35rem;
+}
+
+.hub-home .hub-home-now-grid-secondary .hub-home-now + .hub-home-now {
+  display: none;
 }
 
 @media (max-width: 620px) {
