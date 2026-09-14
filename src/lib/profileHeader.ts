@@ -12,6 +12,8 @@ import {
 import {
   isProfileHeadlineEligible,
   PROFILE_HEADLINE_COVERAGE,
+  resolveProfileMaturity,
+  type ProfileMaturity,
 } from "./profileMaturity";
 import {
   buildProfileRoleDetails,
@@ -43,6 +45,7 @@ export type ProfileHeadlineTrait = {
 
 export type ProfileHeaderModel = {
   summary: string;
+  maturity: ProfileMaturity;
   orientation: ProfileOrientation;
   strongestFacetIds: readonly OverallFacetId[];
   headspaces: readonly ProfileHeadlineTrait[];
@@ -334,12 +337,14 @@ export function buildProfileHeaderModel(
   canonicalSignals: readonly CanonicalSignalResult[],
   facets: readonly OverallFacetResult[],
 ): ProfileHeaderModel {
+  const maturity = resolveProfileMaturity(canonicalSignals, facets);
   const orientation = deriveProfileOrientation(canonicalSignals);
   const strongestFacets = selectHeadlineFacets(facets);
   const roleDetails = buildProfileRoleDetails(canonicalSignals);
 
   return {
     summary: buildSummary(orientation, strongestFacets),
+    maturity,
     orientation,
     strongestFacetIds: strongestFacets.map((facet) => facet.facetId),
     headspaces: selectHeadlineTraits(roleDetails.headspaces),
