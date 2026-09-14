@@ -7,7 +7,7 @@ import {
 } from "@tabler/icons-react";
 import type { QuizDefinition } from "../../data/quizzes";
 import type { StoredProfile } from "../../lib/profileStorage";
-import { getAnsweredCount, getQuizState, stateLabel } from "./quizRuntime";
+import { resolveQuizLifecycle, stateLabel } from "./quizRuntime";
 
 export function QuizGlyph({
   name,
@@ -41,12 +41,11 @@ export function QuizCard({
   profile: StoredProfile;
   onOpen: (quiz: QuizDefinition) => void;
 }) {
-  const state = getQuizState(quiz, profile);
-  const answers = profile.quizzes[quiz.id]?.answers ?? {};
-  const answeredCount = getAnsweredCount(quiz, answers);
+  const lifecycle = resolveQuizLifecycle(quiz, profile);
+  const state = lifecycle.state;
   const progress =
-    quiz.questionIds.length > 0
-      ? Math.round((answeredCount / quiz.questionIds.length) * 100)
+    lifecycle.totalQuestions > 0
+      ? Math.round((lifecycle.answeredCount / lifecycle.totalQuestions) * 100)
       : 0;
 
   if (state === "complete") {
@@ -88,7 +87,13 @@ export function QuizCard({
           <p className="eyebrow">{quiz.eyebrow}</p>
         )}
         <h2>{quiz.title}</h2>
-        <p>{quiz.description}</p>
+        <p>
+          {state === "error"
+            ? "This quiz cannot load its question data right now. Your existing profile data has not been changed."
+            : state === "retake-in-progress"
+              ? "Your previous result is still saved while this retake is in progress."
+              : quiz.description}
+        </p>
       </div>
 
       <div className="quiz-card-footer">
@@ -96,18 +101,30 @@ export function QuizCard({
           <strong>
             {quiz.questionIds.length > 0
               ? `${quiz.questionIds.length} questions`
-              : "Question bank next"}
+              : state === "error"
+                ? "Question data unavailable"
+                : "Question bank next"}
           </strong>
           <span>
-            {quiz.availability === "available"
-              ? `~${quiz.estimatedMinutes} min`
-              : "Planned section"}
+            {state === "error"
+              ? "Try again later"
+              : quiz.availability === "available"
+                ? `~${quiz.estimatedMinutes} min`
+                : "Planned section"}
           </span>
         </div>
 
-        {quiz.availability === "available" ? (
+        {state === "error" ? (
+          <button className="secondary compact" disabled>
+            Unavailable
+          </button>
+        ) : quiz.availability === "available" ? (
           <button className="primary compact" onClick={() => onOpen(quiz)}>
-            {state === "in-progress" ? "Continue" : "Explore"}
+            {state === "retake-in-progress"
+              ? "Continue retake"
+              : state === "in-progress"
+                ? "Continue"
+                : "Explore"}
           </button>
         ) : (
           <button className="secondary compact" disabled>
@@ -116,7 +133,7 @@ export function QuizCard({
         )}
       </div>
 
-      {state === "in-progress" && (
+      {(state === "in-progress" || state === "retake-in-progress") && (
         <div className="card-progress" aria-label={`${progress}% complete`}>
           <span style={{ width: `${progress}%` }} />
         </div>

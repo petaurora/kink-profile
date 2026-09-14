@@ -134,15 +134,22 @@ I have not supplied evidence here yet
 
 See [Scoring & Taxonomy Model](../scoring-model.md) for the broader scoring contract.
 
-## Partial progress and completion
+## Partial progress, completion, and retakes
 
 Quiz progress is persisted independently per Quiz ID:
 
 ```ts
+type QuizRetakeProgress = {
+  quizVersion: number;
+  answers: Record<string, number>;
+  startedAt: string;
+};
+
 type QuizProgress = {
   quizVersion: number;
   answers: Record<string, number>;
   completedAt?: string;
+  retake?: QuizRetakeProgress;
 };
 
 type StoredProfile = {
@@ -157,11 +164,44 @@ Storage key:
 pet-profile-v2
 ```
 
-A quiz can therefore have partial saved answers without being marked complete.
+A first attempt can therefore have partial saved `answers` without being marked complete.
+
+Once a quiz has a valid completed answer set, those top-level `answers` remain the authoritative answer set for that Quiz ID. Starting a retake does **not** erase or partially overwrite them. Instead, the unfinished attempt is stored as `retake.answers` inside the same Quiz ID progress record.
+
+```text
+completed answers ─────────────► authoritative quiz evidence/result
+        │
+        └── retake draft ──────► progress only while incomplete
+                                      │
+                                      └── complete ─► atomically replaces authoritative answers
+```
+
+This allows an unfinished retake to resume normally without making a previously valid profile/result disappear. During that retake:
+
+- result pages continue to use the last completed top-level `answers`;
+- broader profile evidence continues to use the last completed top-level `answers`;
+- quiz progress uses `retake.answers`;
+- the retake is not a second independent evidence source;
+- completing the retake promotes its answers into the top-level authoritative fields and removes the draft.
 
 Only one current progress record exists per Quiz ID. A retake/update changes that quiz source rather than creating multiple independent copies of the same quiz evidence in the overall profile.
 
-The profile's source-aware aggregation treats the current quiz state as that quiz's evidence contribution.
+The profile's source-aware aggregation treats the current authoritative quiz answer set as that quiz's evidence contribution.
+
+## Quiz lifecycle and sparse-state semantics
+
+Quiz lifecycle consumes the shared sparse-state vocabulary defined in [Shared Sparse-State Semantics](../sparse-state-semantics.md).
+
+The current UI/runtime distinction is:
+
+- never started → invitation/start state; no fake result visualization;
+- first attempt in progress → progress + Continue; no completed result yet;
+- retake in progress → Continue Retake while the previous completed result remains available;
+- complete → normal result presentation, including balanced/diffuse or genuinely low outcomes;
+- under-evidenced result dimension → developing/unmeasured treatment based on coverage;
+- missing/broken question data → error/recovery state, not an empty-state interpretation.
+
+A dimension with zero coverage is unknown, not `0%` affinity. A fully measured dimension may legitimately have `0%` affinity and remains a real result.
 
 ## Legacy Signal authoring vs canonical profile Signals
 
@@ -331,7 +371,7 @@ not a cycle.
 
 ## Versioning and compatibility
 
-Each quiz definition has a version stored with its progress.
+Each quiz definition has a version stored with its authoritative progress and with an in-progress retake draft.
 
 Version changes should be deliberate when a modification changes the interpretation of persisted answers, such as:
 
@@ -340,7 +380,7 @@ Version changes should be deliberate when a modification changes the interpretat
 - materially changing the source Signal-weight interpretation;
 - changing the composed taxonomy in a way that makes previously derived results non-equivalent.
 
-Derived results can be recalculated from stored answers against current supported definitions where compatibility is intentional.
+Derived results can be recalculated from stored authoritative answers against current supported definitions where compatibility is intentional.
 
 The current Roles & Headspaces quiz is version 5 because its derived taxonomy/composition changed while retaining compatible stored answer identity.
 
@@ -349,9 +389,11 @@ The current Roles & Headspaces quiz is version 5 because its derived taxonomy/co
 Quiz progress is an authoritative profile source and participates in profile management:
 
 - individual quiz sections can be selectively reset;
-- private profile backup includes all stored quiz progress;
+- private profile backup includes stored quiz progress;
 - profile restore validates known Quiz IDs and stored quiz versions/answers before replacement;
 - resetting/importing quiz state causes derived profile views to recompute.
+
+An in-progress retake is draft progress rather than a second evidence source. Resetting the quiz removes both the established answer set and any retake draft.
 
 See [Profile Management](profile-management.md).
 
@@ -371,6 +413,8 @@ Future changes should preserve these boundaries unless the product deliberately 
 10. **Specific-item preference belongs to the catalog rather than being duplicated as quiz inventory.**
 11. **Quiz-derived catalog affinity never becomes explicit catalog preference.**
 12. **Current question banks live in code rather than duplicated prose documents.**
+13. **An incomplete retake never replaces the last established quiz result/evidence contribution.**
+14. **Unknown/unmeasured result dimensions never render as zero affinity merely because coverage is absent.**
 
 ## Primary implementation references
 
@@ -380,6 +424,7 @@ Future changes should preserve these boundaries unless the product deliberately 
 - `src/data/headspacesQuiz.ts`
 - `src/data/bondageDisciplineQuiz.ts`
 - `src/data/sadismMasochismQuiz.ts`
+- `src/features/quizzes/quizRuntime.ts`
 - `src/lib/scoring.ts`
 - `src/lib/profileStorage.ts`
 - `src/lib/normalizedProfileSignals.ts`

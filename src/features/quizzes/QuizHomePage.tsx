@@ -13,8 +13,11 @@ export function QuizHomePage() {
   const openQuiz = (quiz: QuizDefinition) => {
     if (quiz.availability !== "available") return;
 
+    const state = getQuizState(quiz, profile);
+    if (state === "error") return;
+
     navigate(
-      getQuizState(quiz, profile) === "complete"
+      state === "complete"
         ? quizResultsPath(quiz.id)
         : quizRoutePath(quiz.id),
     );
@@ -41,8 +44,9 @@ export function QuizHomePage() {
             <h2>Explore at your own pace.</h2>
           </div>
           <p>
-            Completed quizzes open their results. In-progress quizzes pick up
-            where you left off, and untouched sections are ready whenever you are.
+            Completed quizzes open their results. In-progress quizzes and
+            retakes pick up where you left off, and an unfinished retake keeps
+            the previous completed result intact.
           </p>
         </div>
 
