@@ -1,4 +1,5 @@
 import type { ProfileMaturityKind } from "../../lib/profileMaturity";
+import type { QuizState } from "../quizzes/quizRuntime";
 
 export type HubModuleId =
   | "onboarding"
@@ -38,6 +39,10 @@ const establishedIntentDoors: readonly HubIntentDoorId[] = [
   "scene-builder",
   "catalog",
 ];
+
+export function isHubQuizResumable(state: QuizState) {
+  return state === "in-progress" || state === "retake-in-progress";
+}
 
 /**
  * Resolve the Hub from truthful semantic state rather than a generic
