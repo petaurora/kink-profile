@@ -40,6 +40,7 @@ jobs:
         run: npm run build
         env:
           VITE_BASE_PATH: /kink-profile/pr-${{ github.event.number }}/
+          VITE_PREVIEW_PR: ${{ github.event.number }}
 
       - name: Deploy preview
         if: github.event.action != 'closed'
@@ -71,6 +72,8 @@ jobs:
             | --- | --- |
             | **Status** | ✅ Deployed |
             | **Preview path** | \`/kink-profile/pr-${context.issue.number}/\` |
+            | **Installed name** | \`Kink Profile · PR ${context.issue.number}\` |
+            | **Storage namespace** | \`pr-${context.issue.number}\` |
             | **Commit** | \`${shortSha}\` |
 
             _This same preview URL updates automatically whenever new commits are pushed to the PR._`;
