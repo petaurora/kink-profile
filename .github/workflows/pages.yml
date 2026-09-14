@@ -34,6 +34,7 @@ jobs:
         run: npm run build
         env:
           VITE_BASE_PATH: /kink-profile/
+          VITE_BUILD_COMMIT: ${{ github.sha }}
 
       - name: Publish production site
         shell: bash

@@ -3,6 +3,7 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loadDeveloperToolsEnabled, saveDeveloperToolsEnabled } from "../../lib/developerSettings";
 import { useProfileSettings } from "../../lib/profileSettingsContext";
+import { BuildDiagnostics } from "./BuildDiagnostics";
 import { ProfileSettingsPage } from "./ProfileSettingsPage";
 import "./settings.css";
 import "./SettingsOwnership.css";
@@ -66,6 +67,8 @@ export function SettingsRoute() {
           navigate("/curation", { state: { from: "/settings" } })
         }
       />
+
+      <BuildDiagnostics />
     </main>
   );
 }
