@@ -14,7 +14,7 @@ The canonical route contract lives in `src/app/routes.ts`:
 
 | Route | Owner |
 | --- | --- |
-| `/` | Explore / hub |
+| `/` | Hub |
 | `/profile` | Profile |
 | `/quizzes` | Quiz Home |
 | `/quizzes/:quizId` | Quiz flow |
@@ -30,7 +30,7 @@ The canonical route contract lives in `src/app/routes.ts`:
 | `/curation` | Curation Workbench |
 | `/settings` | Settings |
 
-Compatibility routes remain explicit while M19 reorganizes information architecture:
+Compatibility routes remain explicit to preserve links, bookmarks, and history created before M19's canonical workspace structure:
 
 - `/catalog` redirects to `/catalog/kinks` and preserves supported query state;
 - `/ranking` redirects to `/catalog/kinks/rank`;
