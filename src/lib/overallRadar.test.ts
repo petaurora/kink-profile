@@ -82,6 +82,18 @@ describe("M7.4 overall radar model", () => {
     expect(model.knownAxisCount).toBe(1);
   });
 
+  it("keeps evidenced-but-unresolved facets provisional instead of calling them unexplored", () => {
+    const model = buildOverallRadarModel(
+      [facet("structure_protocol", null, 70)],
+      [],
+    );
+
+    expect(model.axes[0]).toEqual(
+      expect.objectContaining({ affinity: null, coverage: 70, state: "limited" }),
+    );
+    expect(model.knownAxisCount).toBe(1);
+  });
+
   it("allows a genuinely known zero-affinity facet to stay plotted", () => {
     const model = buildOverallRadarModel(
       [facet("intensity_pain", 0, 80)],

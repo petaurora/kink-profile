@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type {
-  CanonicalSignalFixture,
-} from "./testCanonicalSignalFixtures";
+import type { CanonicalSignalFixture } from "./testCanonicalSignalFixtures";
 import { buildCanonicalSignalFixtures } from "./testCanonicalSignalFixtures";
 import { scoreOverallFacets } from "./overallProfileFacets";
 import {
@@ -51,6 +49,14 @@ describe("M7.3 profile orientation", () => {
     expect(
       deriveProfileOrientation(
         signals([ds("receiving_control", 100, 10)]),
+      ).key,
+    ).toBe("insufficient");
+  });
+
+  it("requires headline-level coverage before assigning orientation", () => {
+    expect(
+      deriveProfileOrientation(
+        signals([ds("receiving_control", 100, 30)]),
       ).key,
     ).toBe("insufficient");
   });
@@ -149,8 +155,9 @@ describe("M7.3 profile header model", () => {
     const model = buildProfileHeaderModel([], scoreOverallFacets([]));
 
     expect(model.summary).toBe(
-      "There is not enough evidence yet to describe the overall shape of this profile.",
+      "Unformed — There is not enough evidence yet to describe the overall shape of this profile.",
     );
+    expect(model.maturity.kind).toBe("unformed");
     expect(model.orientation.label).toBe("Still emerging");
     expect(model.headspaces).toEqual([]);
     expect(model.dynamicModes).toEqual([]);
@@ -198,7 +205,7 @@ describe("M7.3 profile header model", () => {
     expect(model.headspaces.length).toBeLessThanOrEqual(3);
   });
 
-  it("keeps header headspace and dynamic-mode chips aligned with the detailed role section", () => {
+  it("keeps limited role evidence in details without promoting it to headline chips", () => {
     const canonical = signals([
       hs("younger_headspace", 95, 30),
       hs("care_receiving", 95, 30),
@@ -220,11 +227,18 @@ describe("M7.3 profile header model", () => {
     const details = buildProfileRoleDetails(canonical);
 
     expect(details.headspaces[0]?.id).toBe("little");
+    expect(details.headspaces[0]?.state).toBe("limited");
     expect(model.headspaces.map((trait) => trait.id)).toEqual(
-      details.headspaces.slice(0, 3).map((trait) => trait.id),
+      details.headspaces
+        .filter((trait) => trait.state === "known")
+        .slice(0, 3)
+        .map((trait) => trait.id),
     );
     expect(model.dynamicModes.map((trait) => trait.id)).toEqual(
-      details.dynamicModes.slice(0, 3).map((trait) => trait.id),
+      details.dynamicModes
+        .filter((trait) => trait.state === "known")
+        .slice(0, 3)
+        .map((trait) => trait.id),
     );
   });
 
@@ -282,7 +296,7 @@ describe("M7.3 profile header model", () => {
 
     expect(model.orientation.key).toBe("submissive");
     expect(model.orientation.label).toBe("Submissive");
-    expect(model.summary).toMatch(/^The profile leans submissive/);
+    expect(model.summary).toMatch(/The profile leans submissive/);
     expect(model.summary).toContain("strongest themes");
     expect(model.summary).not.toMatch(/giving|receiving/i);
   });
@@ -308,7 +322,7 @@ describe("M7.3 profile header model", () => {
     );
 
     expect(model.orientation.label).toBe("Submissive");
-    expect(model.summary).toMatch(/^The profile leans submissive/);
+    expect(model.summary).toMatch(/The profile leans submissive/);
     expect(model.summary).not.toMatch(/giving|receiving/i);
   });
 });

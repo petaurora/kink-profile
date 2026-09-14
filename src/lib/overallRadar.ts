@@ -1,5 +1,6 @@
 import type { OverallFacetId } from "../data/overallFacets";
 import type { OverallFacetResult } from "./overallProfileFacets";
+import { resolveProfileDimension } from "./profileMaturity";
 
 export type OverallRadarAxisState = "known" | "limited" | "unknown";
 
@@ -24,26 +25,25 @@ export type OverallRadarModel = {
   hasCompleteShape: boolean;
 };
 
-const limitedEvidenceThreshold = 25;
-
 export function buildOverallRadarModel(
   facets: readonly OverallFacetResult[],
   strongestFacetIds: readonly OverallFacetId[],
 ): OverallRadarModel {
   const axes = facets.map((facet): OverallRadarAxis => {
-    const unknown = facet.affinity === null || facet.coverage <= 0;
-    const state: OverallRadarAxisState = unknown
-      ? "unknown"
-      : facet.coverage < limitedEvidenceThreshold
-        ? "limited"
-        : "known";
+    const dimension = resolveProfileDimension(facet);
+    const state: OverallRadarAxisState =
+      dimension.state === "unknown"
+        ? "unknown"
+        : dimension.state === "provisional"
+          ? "limited"
+          : "known";
 
     return {
       facetId: facet.facetId,
       label: facet.label,
       shortLabel: facet.shortLabel,
-      affinity: unknown ? null : facet.affinity,
-      coverage: facet.coverage,
+      affinity: dimension.affinity,
+      coverage: dimension.coverage,
       state,
     };
   });

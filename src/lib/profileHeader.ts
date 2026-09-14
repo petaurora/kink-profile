@@ -10,6 +10,12 @@ import {
   type CanonicalSignalResult,
 } from "./normalizedProfileSignals";
 import {
+  isProfileHeadlineEligible,
+  PROFILE_HEADLINE_COVERAGE,
+  resolveProfileMaturity,
+  type ProfileMaturity,
+} from "./profileMaturity";
+import {
   buildProfileRoleDetails,
   type ProfileRoleScore,
 } from "./profileRoleDetails";
@@ -39,16 +45,16 @@ export type ProfileHeadlineTrait = {
 
 export type ProfileHeaderModel = {
   summary: string;
+  maturity: ProfileMaturity;
   orientation: ProfileOrientation;
   strongestFacetIds: readonly OverallFacetId[];
   headspaces: readonly ProfileHeadlineTrait[];
   dynamicModes: readonly ProfileHeadlineTrait[];
 };
 
-const authorityCoverageFloor = 12;
+const authorityCoverageFloor = PROFILE_HEADLINE_COVERAGE;
 const orientationLeanThreshold = 15;
 const bidirectionalAffinityFloor = 60;
-const headlineFacetCoverageFloor = 12;
 const headlineFacetAffinityFloor = 45;
 const authorityAffinityFloor = 55;
 
@@ -161,21 +167,15 @@ function scoreAuthoritySide(
     const signal = authorityQuizSignal(canonicalSignals, definition);
     if (signal.affinity === null || signal.coverage <= 0) continue;
 
-    const coveredWeight =
-      definition.weight * clamp01(signal.coverage / 100);
+    const coveredWeight = definition.weight * clamp01(signal.coverage / 100);
     evidenceWeight += coveredWeight;
     weightedAffinity += signal.affinity * coveredWeight;
   }
 
   return {
-    affinity:
-      evidenceWeight > 0
-        ? round1(weightedAffinity / evidenceWeight)
-        : null,
+    affinity: evidenceWeight > 0 ? round1(weightedAffinity / evidenceWeight) : null,
     coverage:
-      totalWeight > 0
-        ? round1((evidenceWeight / totalWeight) * 100)
-        : 0,
+      totalWeight > 0 ? round1((evidenceWeight / totalWeight) * 100) : 0,
   };
 }
 
@@ -194,8 +194,7 @@ export function deriveProfileOrientation(
     submissive.affinity !== null &&
     submissive.coverage >= authorityCoverageFloor;
   const dominantKnown =
-    dominant.affinity !== null &&
-    dominant.coverage >= authorityCoverageFloor;
+    dominant.affinity !== null && dominant.coverage >= authorityCoverageFloor;
 
   let key: ProfileOrientationKey = "insufficient";
 
@@ -257,12 +256,15 @@ export function deriveProfileOrientation(
 function selectHeadlineTraits(
   traits: readonly ProfileRoleScore[],
 ): ProfileHeadlineTrait[] {
-  return traits.slice(0, 3).map(({ id, label, affinity, coverage }) => ({
-    id,
-    label,
-    affinity,
-    coverage,
-  }));
+  return traits
+    .filter((trait) => trait.coverage >= PROFILE_HEADLINE_COVERAGE)
+    .slice(0, 3)
+    .map(({ id, label, affinity, coverage }) => ({
+      id,
+      label,
+      affinity,
+      coverage,
+    }));
 }
 
 function selectHeadlineFacets(facets: readonly OverallFacetResult[]) {
@@ -274,7 +276,7 @@ function selectHeadlineFacets(facets: readonly OverallFacetResult[]) {
         affinity: number;
       } =>
         facet.affinity !== null &&
-        facet.coverage >= headlineFacetCoverageFloor &&
+        isProfileHeadlineEligible(facet) &&
         facet.affinity >= headlineFacetAffinityFloor,
     )
     .slice()
@@ -335,12 +337,15 @@ export function buildProfileHeaderModel(
   canonicalSignals: readonly CanonicalSignalResult[],
   facets: readonly OverallFacetResult[],
 ): ProfileHeaderModel {
+  const maturity = resolveProfileMaturity(canonicalSignals, facets);
   const orientation = deriveProfileOrientation(canonicalSignals);
   const strongestFacets = selectHeadlineFacets(facets);
   const roleDetails = buildProfileRoleDetails(canonicalSignals);
+  const summary = buildSummary(orientation, strongestFacets);
 
   return {
-    summary: buildSummary(orientation, strongestFacets),
+    summary: `${maturity.label} — ${summary}`,
+    maturity,
     orientation,
     strongestFacetIds: strongestFacets.map((facet) => facet.facetId),
     headspaces: selectHeadlineTraits(roleDetails.headspaces),
