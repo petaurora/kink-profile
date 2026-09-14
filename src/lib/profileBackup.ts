@@ -1,6 +1,10 @@
 import type { CatalogProfileState } from "./catalogProfile";
 import { loadCatalogProfile } from "./catalogProfileStorage";
 import {
+  loadProfileBoundaryState,
+  type ProfileBoundaryState,
+} from "./profileBoundaryState";
+import {
   loadProfileSettings,
   type ProfileSettings,
 } from "./profileSettings";
@@ -54,6 +58,11 @@ export type ProfileBackupV3 = {
     catalog: CatalogProfileState;
     rewardsPunishments: RewardPunishmentAuthoritativeState;
     scenes: SceneLibraryState;
+    /**
+     * Added as a backward-compatible optional field within v3. Older v3
+     * backups without it normalize to an empty/unknown boundary summary.
+     */
+    boundaries?: ProfileBoundaryState;
   };
 };
 
@@ -111,6 +120,7 @@ export function createProfileBackup(
       rewardsPunishments:
         loadRewardPunishmentAuthoritativeState(storage),
       scenes: loadSceneLibraryState(storage),
+      boundaries: loadProfileBoundaryState(storage),
     },
   };
 }

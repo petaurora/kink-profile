@@ -4,6 +4,12 @@ import {
   saveCatalogProfile,
 } from "./catalogProfileStorage";
 import {
+  createEmptyProfileBoundaryState,
+  loadProfileBoundaryState,
+  saveProfileBoundaryState,
+  type ProfileBoundaryState,
+} from "./profileBoundaryState";
+import {
   createDefaultProfileSettings,
   loadProfileSettings,
   saveProfileSettings,
@@ -46,6 +52,7 @@ export type ProfileResetSelection = {
 export type ProfileResetResult = {
   profile: StoredProfile;
   catalogProfile: CatalogProfileState;
+  boundaryState: ProfileBoundaryState;
   rewardsPunishments: RewardPunishmentAuthoritativeState;
   scenes: SceneLibraryState;
   settings: ProfileSettings;
@@ -170,6 +177,7 @@ export function resetProfileData(
 ): ProfileResetResult {
   const currentProfile = loadProfile(storage);
   const currentCatalogProfile = loadCatalogProfile(storage);
+  const currentBoundaryState = loadProfileBoundaryState(storage);
   const currentRewardsPunishments =
     loadRewardPunishmentAuthoritativeState(storage);
   const currentScenes = loadSceneLibraryState(storage);
@@ -198,6 +206,10 @@ export function resetProfileData(
       : currentCatalogProfile.rankingHistory,
   };
 
+  const nextBoundaryState = selection.catalogPreferences
+    ? createEmptyProfileBoundaryState()
+    : currentBoundaryState;
+
   const nextRewardsPunishments =
     selection.rewardsPunishments
       ? createEmptyRewardPunishmentAuthoritativeState()
@@ -222,6 +234,10 @@ export function resetProfileData(
     saveCatalogProfile(nextCatalogProfile, storage);
   }
 
+  if (selection.catalogPreferences) {
+    saveProfileBoundaryState(nextBoundaryState, storage);
+  }
+
   if (selection.rewardsPunishments) {
     saveRewardPunishmentAuthoritativeState(
       nextRewardsPunishments,
@@ -240,6 +256,7 @@ export function resetProfileData(
   return {
     profile: nextProfile,
     catalogProfile: nextCatalogProfile,
+    boundaryState: nextBoundaryState,
     rewardsPunishments: nextRewardsPunishments,
     scenes: nextScenes,
     settings: nextSettings,
