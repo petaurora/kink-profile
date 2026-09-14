@@ -24,6 +24,11 @@ export type CatalogItemPreference = {
   updatedAt: string;
 };
 
+export type HardLimitsAssertion = {
+  kind: "none";
+  updatedAt: string;
+};
+
 export const INITIAL_KINK_RANKING_RUN_ID = "ranking-run-initial";
 
 export type KinkRankingHistory = {
@@ -35,6 +40,13 @@ export type CatalogProfileState = {
   schemaVersion: 1;
   preferences: Record<string, CatalogItemPreference>;
   comparisons: KinkComparison[];
+  /**
+   * Direct affirmative evidence that the user currently reports no overall
+   * Hard Limits. Absence of this assertion is unknown/unreviewed, not "none".
+   *
+   * Kept optional so existing v1 catalog profiles remain compatible.
+   */
+  hardLimitsAssertion?: HardLimitsAssertion;
   /**
    * Added by M12.1 without changing the outer catalog schema so old profile
    * backups remain importable. loadCatalogProfile() always normalizes this.
@@ -98,10 +110,7 @@ export function normalizeCatalogRankingHistory(
 }
 
 export function getActiveKinkRankingRunId(profile: CatalogProfileState) {
-  return (
-    profile.rankingHistory?.activeRunId ??
-    INITIAL_KINK_RANKING_RUN_ID
-  );
+  return profile.rankingHistory?.activeRunId ?? INITIAL_KINK_RANKING_RUN_ID;
 }
 
 export function getActiveKinkRankingComparisons(
@@ -110,8 +119,7 @@ export function getActiveKinkRankingComparisons(
   const activeRunId = getActiveKinkRankingRunId(profile);
 
   return profile.comparisons.filter(
-    (comparison) =>
-      (comparison.runId ?? activeRunId) === activeRunId,
+    (comparison) => (comparison.runId ?? activeRunId) === activeRunId,
   );
 }
 
@@ -171,6 +179,28 @@ export function filterEligibleCatalogItems<T extends { id: string }>(
   return catalog.filter((item) => isCatalogItemEligible(preferences, item.id));
 }
 
+export function affirmNoHardLimits(
+  profile: CatalogProfileState,
+  updatedAt = new Date().toISOString(),
+): CatalogProfileState {
+  return {
+    ...profile,
+    hardLimitsAssertion: {
+      kind: "none",
+      updatedAt,
+    },
+  };
+}
+
+export function clearHardLimitsAssertion(
+  profile: CatalogProfileState,
+): CatalogProfileState {
+  if (!profile.hardLimitsAssertion) return profile;
+
+  const { hardLimitsAssertion: _hardLimitsAssertion, ...rest } = profile;
+  return rest;
+}
+
 export function setCatalogPreference(
   profile: CatalogProfileState,
   catalogId: string,
@@ -185,13 +215,21 @@ export function setCatalogPreference(
     updatedAt,
   };
 
-  return {
+  const nextProfile: CatalogProfileState = {
     ...profile,
     preferences: {
       ...profile.preferences,
       [catalogId]: nextPreference,
     },
   };
+
+  // A concrete overall Hard Limit contradicts a prior affirmative "none"
+  // assertion. Clear only the assertion; never rewrite the newly recorded limit.
+  if (context === "overall" && state === "hard_limit") {
+    return clearHardLimitsAssertion(nextProfile);
+  }
+
+  return nextProfile;
 }
 
 export function clearCatalogPreference(
