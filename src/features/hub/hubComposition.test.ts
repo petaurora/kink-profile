@@ -60,9 +60,9 @@ describe("Hub composition semantics", () => {
     expect(composition.modules).toEqual(["reflection", "intent-doors"]);
     expect(composition.intentDoors).toEqual([
       "profile",
-      "catalog",
       "compare",
       "scene-builder",
+      "catalog",
     ]);
   });
 
