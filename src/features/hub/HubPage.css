@@ -115,6 +115,7 @@
   color: var(--text-primary);
   text-align: center;
   line-height: 1.2;
+  font-weight: 700;
 }
 
 .hub-home-signal-icon {
@@ -144,8 +145,10 @@
 }
 
 .hub-home-evidence {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(5.6rem, auto));
   gap: 0;
   min-height: 0;
   padding: 0;
@@ -154,8 +157,11 @@
 }
 
 .hub-home-evidence-item {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: .2rem;
+  align-items: flex-start;
   justify-self: stretch;
   align-self: stretch;
   min-width: 0;
@@ -192,6 +198,7 @@
 
 .hub-home-evidence-item span {
   display: block;
+  margin-top: .15rem;
   color: var(--text-muted);
   font-size: .76rem;
   line-height: 1.3;
@@ -492,6 +499,7 @@
     padding-right: 0;
   }
 
+  .hub-home-now-grid,
   .hub-home-empty-actions {
     grid-template-columns: 1fr;
   }
@@ -518,6 +526,10 @@
 
   .hub-home-signal strong {
     font-size: .72rem;
+  }
+
+  .hub-home-evidence {
+    grid-template-rows: none;
   }
 
   .hub-home-evidence-item span {
