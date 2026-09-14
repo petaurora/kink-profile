@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { buildHubComposition } from "./hubComposition";
+import {
+  buildHubComposition,
+  isHubQuizResumable,
+} from "./hubComposition";
 
 describe("Hub composition semantics", () => {
   it("keeps an unformed profile intentionally small even when optional flags are present", () => {
@@ -82,6 +85,15 @@ describe("Hub composition semantics", () => {
 
     expect(withoutResume.modules).not.toContain("quiz-resume");
     expect(withResume.modules).toContain("quiz-resume");
+  });
+
+  it("treats only first attempts and retakes in progress as resumable", () => {
+    expect(isHubQuizResumable("in-progress")).toBe(true);
+    expect(isHubQuizResumable("retake-in-progress")).toBe(true);
+    expect(isHubQuizResumable("not-started")).toBe(false);
+    expect(isHubQuizResumable("complete")).toBe(false);
+    expect(isHubQuizResumable("coming-soon")).toBe(false);
+    expect(isHubQuizResumable("error")).toBe(false);
   });
 
   it("lets established dashboards vary as eligible content changes", () => {
