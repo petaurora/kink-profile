@@ -10,6 +10,12 @@ import {
   type CanonicalSignalResult,
 } from "./normalizedProfileSignals";
 import {
+  resolveProfileIdentityClaim,
+  type CalculatedIdentityClaimState,
+  type ProfileIdentityClaim,
+  type ProfileIdentityClaimOverride,
+} from "./profileIdentityClaim";
+import {
   isProfileHeadlineEligible,
   PROFILE_HEADLINE_COVERAGE,
   resolveProfileMaturity,
@@ -24,12 +30,16 @@ export type ProfileOrientationKey =
   | "submissive"
   | "dominant"
   | "bidirectional"
-  | "mixed"
+  | "balanced"
+  | "low_match"
   | "insufficient";
 
 export type ProfileOrientation = {
+  /** Calculated orientation state. Direct identity presentation never rewrites it. */
   key: ProfileOrientationKey;
+  /** Presentation label after any direct self-identification/explicit-none wrapper. */
   label: string;
+  claim: ProfileIdentityClaim;
   submissiveAffinity: number | null;
   submissiveCoverage: number;
   dominantAffinity: number | null;
@@ -179,8 +189,18 @@ function scoreAuthoritySide(
   };
 }
 
+function orientationCalculatedClaimState(
+  key: ProfileOrientationKey,
+): CalculatedIdentityClaimState {
+  if (key === "insufficient") return "unknown";
+  if (key === "low_match") return "low_match";
+  if (key === "balanced") return "balanced";
+  return "calculated_match";
+}
+
 export function deriveProfileOrientation(
   canonicalSignals: readonly CanonicalSignalResult[],
+  override?: ProfileIdentityClaimOverride,
 ): ProfileOrientation {
   const submissive = scoreAuthoritySide(
     canonicalSignals,
@@ -203,12 +223,12 @@ export function deriveProfileOrientation(
       key =
         (submissive.affinity ?? 0) >= authorityAffinityFloor
           ? "submissive"
-          : "mixed";
+          : "low_match";
     } else if (!submissiveKnown && dominantKnown) {
       key =
         (dominant.affinity ?? 0) >= authorityAffinityFloor
           ? "dominant"
-          : "mixed";
+          : "low_match";
     } else {
       const submissiveAffinity = submissive.affinity ?? 0;
       const dominantAffinity = dominant.affinity ?? 0;
@@ -229,8 +249,13 @@ export function deriveProfileOrientation(
         dominantAffinity >= bidirectionalAffinityFloor
       ) {
         key = "bidirectional";
+      } else if (
+        submissiveAffinity < authorityAffinityFloor &&
+        dominantAffinity < authorityAffinityFloor
+      ) {
+        key = "low_match";
       } else {
-        key = "mixed";
+        key = "balanced";
       }
     }
   }
@@ -239,13 +264,22 @@ export function deriveProfileOrientation(
     submissive: "Submissive",
     dominant: "Dominant",
     bidirectional: "Dominant + submissive",
-    mixed: "Context-dependent",
+    balanced: "Balanced / no clear lean",
+    low_match: "No strong D/s match",
     insufficient: "Still emerging",
   };
 
+  const calculatedLabel = labels[key];
+  const claim = resolveProfileIdentityClaim(
+    orientationCalculatedClaimState(key),
+    calculatedLabel,
+    override,
+  );
+
   return {
     key,
-    label: labels[key],
+    label: claim.label,
+    claim,
     submissiveAffinity: submissive.affinity,
     submissiveCoverage: submissive.coverage,
     dominantAffinity: dominant.affinity,
@@ -307,16 +341,20 @@ function buildSummary(
   );
   const themes = joinNatural(phrases);
 
-  const orientationIntro: Partial<Record<ProfileOrientationKey, string>> = {
-    submissive: "The profile leans submissive",
-    dominant: "The profile leans dominant",
-    bidirectional:
-      "The profile shows strong dominant and submissive tendencies",
-    mixed:
-      "The profile is context-dependent rather than strongly dominant or submissive",
-  };
-
-  const intro = orientationIntro[orientation.key];
+  let intro: string | undefined;
+  if (orientation.claim.state === "self_identified") {
+    intro = `You identify as ${orientation.claim.label}`;
+  } else if (orientation.claim.state !== "explicit_none") {
+    const orientationIntro: Partial<Record<ProfileOrientationKey, string>> = {
+      submissive: "The profile leans submissive",
+      dominant: "The profile leans dominant",
+      bidirectional:
+        "The profile shows strong dominant and submissive tendencies",
+      balanced: "The profile does not show one clear D/s direction",
+      low_match: "No strong D/s orientation is established",
+    };
+    intro = orientationIntro[orientation.key];
+  }
 
   if (intro && phrases.length > 0) {
     return `${intro}, with the strongest themes around ${themes}.`;
@@ -336,9 +374,10 @@ function buildSummary(
 export function buildProfileHeaderModel(
   canonicalSignals: readonly CanonicalSignalResult[],
   facets: readonly OverallFacetResult[],
+  orientationOverride?: ProfileIdentityClaimOverride,
 ): ProfileHeaderModel {
   const maturity = resolveProfileMaturity(canonicalSignals, facets);
-  const orientation = deriveProfileOrientation(canonicalSignals);
+  const orientation = deriveProfileOrientation(canonicalSignals, orientationOverride);
   const strongestFacets = selectHeadlineFacets(facets);
   const roleDetails = buildProfileRoleDetails(canonicalSignals);
   const summary = buildSummary(orientation, strongestFacets);

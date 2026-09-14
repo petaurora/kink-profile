@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProfileCoxcombChart } from "../../ProfileCoxcombChart";
 import { RankingMovementIndicator } from "../../RankingMovementIndicator";
@@ -26,6 +26,12 @@ import {
   buildProfileExplainability,
   type ProfileExplainabilityAction,
 } from "../../lib/profileExplainability";
+import {
+  affirmNoLimits,
+  clearLimitsAssertion,
+  loadProfileBoundaryState,
+  saveProfileBoundaryState,
+} from "../../lib/profileBoundaryState";
 import { buildProfileHardLimits } from "../../lib/profileHardLimits";
 import { buildProfileHeaderModel } from "../../lib/profileHeader";
 import { buildProfileInterestAreas } from "../../lib/profileInterestAreas";
@@ -44,6 +50,9 @@ export function ProfileRoute() {
   const navigate = useNavigate();
   const [profile] = useState(() => loadProfile());
   const [catalogProfile] = useState(() => loadCatalogProfile());
+  const [boundaryState, setBoundaryState] = useState(() =>
+    loadProfileBoundaryState(),
+  );
   const [showAllHeadspaces, setShowAllHeadspaces] = useState(false);
   const [showAllHardLimits, setShowAllHardLimits] = useState(false);
   const [openProfileMovementId, setOpenProfileMovementId] =
@@ -92,13 +101,21 @@ export function ProfileRoute() {
     [catalogProfile],
   );
   const profileHardLimits = useMemo(
-    () => buildProfileHardLimits(catalogResultView),
-    [catalogResultView],
+    () => buildProfileHardLimits(catalogResultView, boundaryState.limits),
+    [boundaryState.limits, catalogResultView],
   );
   const profileInterestAreas = useMemo(
     () => buildProfileInterestAreas(catalogResultView, kinkCategories),
     [catalogResultView],
   );
+
+  useEffect(() => {
+    if (profileHardLimits.all.length === 0 || !boundaryState.limits) return;
+
+    const next = clearLimitsAssertion(boundaryState);
+    saveProfileBoundaryState(next);
+    setBoundaryState(next);
+  }, [boundaryState, profileHardLimits.all.length]);
 
   const visibleHeadspaces = showAllHeadspaces
     ? profileRoleDetails.headspaces
@@ -109,6 +126,18 @@ export function ProfileRoute() {
 
   const openCatalog = (focus: CatalogDrilldownFocus) => {
     navigate(catalogRoutePath(focus), { state: { from: "/profile" } });
+  };
+
+  const affirmNoHardLimits = () => {
+    const next = affirmNoLimits(boundaryState);
+    saveProfileBoundaryState(next);
+    setBoundaryState(next);
+  };
+
+  const clearNoHardLimits = () => {
+    const next = clearLimitsAssertion(boundaryState);
+    saveProfileBoundaryState(next);
+    setBoundaryState(next);
   };
 
   const openQuiz = (quizId: Parameters<typeof getQuiz>[0]) => {
@@ -400,8 +429,33 @@ export function ProfileRoute() {
                 </div>
               ))}
             </div>
+          ) : profileHardLimits.state.semanticState === "valid_empty" ? (
+            <div>
+              <p className="profile-limits-empty">
+                You explicitly recorded that you currently have no Hard Limits.
+              </p>
+              <button
+                type="button"
+                className="text-button profile-limits-toggle"
+                onClick={clearNoHardLimits}
+              >
+                Clear this statement
+              </button>
+            </div>
           ) : (
-            <p className="profile-limits-empty">No hard limits marked.</p>
+            <div>
+              <p className="profile-limits-empty">
+                No Hard Limits are recorded yet. This is still unknown until you
+                mark limits or explicitly record that you currently have none.
+              </p>
+              <button
+                type="button"
+                className="secondary compact"
+                onClick={affirmNoHardLimits}
+              >
+                I currently have no Hard Limits
+              </button>
+            </div>
           )}
 
           {profileHardLimits.hiddenCount > 0 && (

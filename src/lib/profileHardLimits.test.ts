@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { CatalogPreferenceState } from "./catalogProfile";
 import type { CatalogResultItem, CatalogResultView } from "./catalogResults";
+import type { BoundarySummaryAssertion } from "./profileBoundaryState";
 import { buildProfileHardLimits } from "./profileHardLimits";
 
 function item(
@@ -35,6 +36,11 @@ function view(items: CatalogResultItem[]): CatalogResultView {
   };
 }
 
+const explicitNone: BoundarySummaryAssertion = {
+  kind: "none",
+  updatedAt: "2026-09-14T18:00:00.000Z",
+};
+
 describe("M7.7 hard-limit summary", () => {
   it("includes only explicit Hard Limit items", () => {
     const model = buildProfileHardLimits(
@@ -48,9 +54,11 @@ describe("M7.7 hard-limit summary", () => {
     );
 
     expect(model.all).toEqual([{ catalogId: "hard", label: "Hard" }]);
+    expect(model.state.semanticState).toBe("available");
+    expect(model.state.evidence.provenance).toBe("direct");
   });
 
-  it("does not infer a limit from low or missing preference evidence", () => {
+  it("treats an empty collection as unknown instead of affirmative none", () => {
     const model = buildProfileHardLimits(
       view([
         item("unknown", "Unknown"),
@@ -60,6 +68,27 @@ describe("M7.7 hard-limit summary", () => {
     );
 
     expect(model.all).toEqual([]);
+    expect(model.state.semanticState).toBe("unexplored");
+    expect(model.state.reason).toBe("no_evidence");
+  });
+
+  it("accepts affirmative direct none as a valid empty result", () => {
+    const model = buildProfileHardLimits(view([]), explicitNone);
+
+    expect(model.all).toEqual([]);
+    expect(model.state.semanticState).toBe("valid_empty");
+    expect(model.state.reason).toBe("explicit_none");
+    expect(model.state.evidence.provenance).toBe("direct");
+  });
+
+  it("never lets a none assertion hide an actual recorded hard limit", () => {
+    const model = buildProfileHardLimits(
+      view([item("hard", "Hard", "hard_limit")]),
+      explicitNone,
+    );
+
+    expect(model.all).toEqual([{ catalogId: "hard", label: "Hard" }]);
+    expect(model.state.semanticState).toBe("available");
   });
 
   it("sorts limits deterministically by label rather than rank or insertion order", () => {
