@@ -341,9 +341,10 @@ export function buildProfileHeaderModel(
   const orientation = deriveProfileOrientation(canonicalSignals);
   const strongestFacets = selectHeadlineFacets(facets);
   const roleDetails = buildProfileRoleDetails(canonicalSignals);
+  const summary = buildSummary(orientation, strongestFacets);
 
   return {
-    summary: buildSummary(orientation, strongestFacets),
+    summary: `${maturity.label} — ${summary}`,
     maturity,
     orientation,
     strongestFacetIds: strongestFacets.map((facet) => facet.facetId),
