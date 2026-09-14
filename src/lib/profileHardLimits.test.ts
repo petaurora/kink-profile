@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest";
-import type {
-  CatalogPreferenceState,
-  HardLimitsAssertion,
-} from "./catalogProfile";
+import type { CatalogPreferenceState } from "./catalogProfile";
 import type { CatalogResultItem, CatalogResultView } from "./catalogResults";
+import type { BoundarySummaryAssertion } from "./profileBoundaryState";
 import { buildProfileHardLimits } from "./profileHardLimits";
 
 function item(
@@ -38,7 +36,7 @@ function view(items: CatalogResultItem[]): CatalogResultView {
   };
 }
 
-const explicitNone: HardLimitsAssertion = {
+const explicitNone: BoundarySummaryAssertion = {
   kind: "none",
   updatedAt: "2026-09-14T18:00:00.000Z",
 };
