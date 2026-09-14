@@ -20,6 +20,30 @@ function browserStorage(): BoundaryStateStorageLike | undefined {
   return typeof localStorage === "undefined" ? undefined : localStorage;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export function parseProfileBoundaryState(value: unknown): ProfileBoundaryState | null {
+  if (!isRecord(value) || value.schemaVersion !== 1) return null;
+
+  if (value.limits === undefined) {
+    return createEmptyProfileBoundaryState();
+  }
+
+  if (!isRecord(value.limits)) return null;
+  if (value.limits.kind !== "none") return null;
+  if (typeof value.limits.updatedAt !== "string") return null;
+
+  return {
+    schemaVersion: 1,
+    limits: {
+      kind: "none",
+      updatedAt: value.limits.updatedAt,
+    },
+  };
+}
+
 export function loadProfileBoundaryState(
   storage: BoundaryStateStorageLike | undefined = browserStorage(),
 ): ProfileBoundaryState {
@@ -29,17 +53,10 @@ export function loadProfileBoundaryState(
     const raw = storage.getItem(PROFILE_BOUNDARY_STATE_STORAGE_KEY);
     if (!raw) return createEmptyProfileBoundaryState();
 
-    const parsed = JSON.parse(raw) as Partial<ProfileBoundaryState> & {
-      limits?: Partial<BoundarySummaryAssertion>;
-    };
-    if (parsed.schemaVersion !== 1) return createEmptyProfileBoundaryState();
-
-    const limits =
-      parsed.limits?.kind === "none" && typeof parsed.limits.updatedAt === "string"
-        ? { kind: "none" as const, updatedAt: parsed.limits.updatedAt }
-        : undefined;
-
-    return { schemaVersion: 1, ...(limits ? { limits } : {}) };
+    return (
+      parseProfileBoundaryState(JSON.parse(raw)) ??
+      createEmptyProfileBoundaryState()
+    );
   } catch {
     return createEmptyProfileBoundaryState();
   }
