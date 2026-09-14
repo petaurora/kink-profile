@@ -37,6 +37,7 @@ import {
   loadProfile,
   saveProfile,
   type QuizProgress,
+  type QuizRetakeProgress,
   type StorageLike,
   type StoredProfile,
 } from "./profileStorage";
@@ -111,21 +112,11 @@ function parseSettings(value: unknown): ProfileSettings | null {
   };
 }
 
-function parseQuizProgress(value: unknown): QuizProgress | null {
+function parseAnswerMap(value: unknown): Record<string, number> | null {
   if (!isRecord(value)) return null;
-  if (
-    typeof value.quizVersion !== "number" ||
-    !Number.isInteger(value.quizVersion) ||
-    value.quizVersion < 1
-  ) {
-    return null;
-  }
-  if (!isRecord(value.answers)) return null;
 
   const answers: Record<string, number> = {};
-  for (const [questionId, answer] of Object.entries(
-    value.answers,
-  )) {
+  for (const [questionId, answer] of Object.entries(value)) {
     if (
       typeof answer !== "number" ||
       !Number.isFinite(answer)
@@ -135,6 +126,42 @@ function parseQuizProgress(value: unknown): QuizProgress | null {
     answers[questionId] = answer;
   }
 
+  return answers;
+}
+
+function parseQuizRetakeProgress(value: unknown): QuizRetakeProgress | null {
+  if (!isRecord(value)) return null;
+  if (
+    typeof value.quizVersion !== "number" ||
+    !Number.isInteger(value.quizVersion) ||
+    value.quizVersion < 1
+  ) {
+    return null;
+  }
+
+  const answers = parseAnswerMap(value.answers);
+  if (!answers || !isValidDateString(value.startedAt)) return null;
+
+  return {
+    quizVersion: value.quizVersion,
+    answers,
+    startedAt: value.startedAt,
+  };
+}
+
+function parseQuizProgress(value: unknown): QuizProgress | null {
+  if (!isRecord(value)) return null;
+  if (
+    typeof value.quizVersion !== "number" ||
+    !Number.isInteger(value.quizVersion) ||
+    value.quizVersion < 1
+  ) {
+    return null;
+  }
+
+  const answers = parseAnswerMap(value.answers);
+  if (!answers) return null;
+
   if (
     value.completedAt !== undefined &&
     !isValidDateString(value.completedAt)
@@ -142,12 +169,19 @@ function parseQuizProgress(value: unknown): QuizProgress | null {
     return null;
   }
 
+  const retake =
+    value.retake === undefined
+      ? undefined
+      : parseQuizRetakeProgress(value.retake);
+  if (value.retake !== undefined && !retake) return null;
+
   return {
     quizVersion: value.quizVersion,
     answers,
     ...(typeof value.completedAt === "string"
       ? { completedAt: value.completedAt }
       : {}),
+    ...(retake ? { retake } : {}),
   };
 }
 
