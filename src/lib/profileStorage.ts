@@ -2,6 +2,8 @@ import type { QuizId } from "../data/quizzes";
 
 export type AnswerMap = Record<string, number>;
 
+export const PROFILE_SCHEMA_VERSION = 2 as const;
+
 export type QuizProgress = {
   quizVersion: number;
   answers: AnswerMap;
@@ -9,18 +11,18 @@ export type QuizProgress = {
 };
 
 export type StoredProfile = {
-  schemaVersion: 2;
+  schemaVersion: typeof PROFILE_SCHEMA_VERSION;
   quizzes: Partial<Record<QuizId, QuizProgress>>;
 };
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem">;
 
-export const PROFILE_STORAGE_KEY = "pet-profile-v2";
+export const PROFILE_STORAGE_KEY = `pet-profile-v${PROFILE_SCHEMA_VERSION}`;
 const LEGACY_STORAGE_KEY = "pet-profile-quiz-v1";
 
 export function createEmptyProfile(): StoredProfile {
   return {
-    schemaVersion: 2,
+    schemaVersion: PROFILE_SCHEMA_VERSION,
     quizzes: {},
   };
 }
@@ -37,7 +39,7 @@ export function loadProfile(
 
     if (raw) {
       const parsed = JSON.parse(raw) as StoredProfile;
-      if (parsed.schemaVersion === 2 && parsed.quizzes) {
+      if (parsed.schemaVersion === PROFILE_SCHEMA_VERSION && parsed.quizzes) {
         return parsed;
       }
     }
@@ -49,7 +51,7 @@ export function loadProfile(
 
       if (Object.keys(answers).length > 0) {
         return {
-          schemaVersion: 2,
+          schemaVersion: PROFILE_SCHEMA_VERSION,
           quizzes: {
             "starter-profile": {
               quizVersion: 1,

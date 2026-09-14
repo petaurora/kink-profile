@@ -39,6 +39,7 @@ jobs:
         env:
           VITE_BASE_PATH: /kink-profile/pr-${{ github.event.number }}/
           VITE_PREVIEW_PR: ${{ github.event.number }}
+          VITE_BUILD_COMMIT: ${{ github.sha }}
 
       - name: Publish preview
         id: publish
