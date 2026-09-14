@@ -8,8 +8,7 @@ import {
 import { CatalogRoute } from "../features/catalog/CatalogRoute";
 import { CompareRoute } from "../features/comparison/CompareRoute";
 import { CurationRoute } from "../features/curation/CurationRoute";
-import { ThreadedHubPage } from "../features/hub/ThreadedHubPage";
-import "../features/hub/ThreadedHubDefault.css";
+import { HubPage } from "../features/hub/HubPage";
 import { ProfileRoute } from "../features/profile/ProfileRoute";
 import { QuizHomePage } from "../features/quizzes/QuizHomePage";
 import { QuizRoutePage } from "../features/quizzes/QuizRoutePage";
@@ -50,7 +49,7 @@ export function RoutedApplication() {
   return (
     <Routes>
       <Route element={<AppShell />}>
-        <Route path={hubRoute.path} element={<ThreadedHubPage />} />
+        <Route path={hubRoute.path} element={<HubPage />} />
         <Route path={profileRoute.path} element={<ProfileRoute />} />
         <Route path={quizHomeRoute.path} element={<QuizHomePage />} />
 

@@ -69,7 +69,7 @@ class ShellErrorBoundary extends Component<
             <h1>That page could not be loaded.</h1>
             <p>Your saved profile data has not been changed.</p>
             <a className="primary compact" href="#/">
-              Back to Explore
+              Back to Hub
             </a>
           </section>
         </main>
