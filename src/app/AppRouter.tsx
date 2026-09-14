@@ -6,6 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { CatalogRoute } from "../features/catalog/CatalogRoute";
+import { shouldOpenCatalogBrowse } from "../features/catalog/catalogRouteState";
 import { CompareRoute } from "../features/comparison/CompareRoute";
 import { CurationRoute } from "../features/curation/CurationRoute";
 import { HubPage } from "../features/hub/HubPage";
@@ -45,6 +46,16 @@ function LegacyCatalogRedirect() {
   return <Navigate to={`${catalogRoute.path}${location.search}`} replace />;
 }
 
+function KinkCatalogEntryRoute() {
+  const location = useLocation();
+
+  if (shouldOpenCatalogBrowse(location.search)) {
+    return <CatalogRoute view="browse" />;
+  }
+
+  return <Navigate to={rankingRoute.path} replace />;
+}
+
 export function RoutedApplication() {
   return (
     <Routes>
@@ -53,7 +64,7 @@ export function RoutedApplication() {
         <Route path={profileRoute.path} element={<ProfileRoute />} />
         <Route path={quizHomeRoute.path} element={<QuizHomePage />} />
 
-        <Route path={catalogRoute.path} element={<CatalogRoute view="browse" />} />
+        <Route path={catalogRoute.path} element={<KinkCatalogEntryRoute />} />
         <Route path={rankingRoute.path} element={<CatalogRoute view="rank" />} />
         <Route
           path={catalogRewardsRoute.path}
