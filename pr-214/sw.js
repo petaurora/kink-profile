@@ -2,7 +2,7 @@ const CACHE_PREFIX = "kink-profile-pr-214";
 const CACHE_NAME = `kink-profile-pr-214-static-v1`;
 const SCOPE_PATH = "/kink-profile/pr-214/";
 const APP_SHELL = "/kink-profile/pr-214/index.html";
-const PRECACHE_URLS = ["/kink-profile/pr-214/","/kink-profile/pr-214/index.html","/kink-profile/pr-214/manifest.webmanifest","/kink-profile/pr-214/icons/pwa-192.png","/kink-profile/pr-214/icons/pwa-512.png","/kink-profile/pr-214/icons/pwa-maskable-512.png","/kink-profile/pr-214/icons/apple-touch-icon.png","/kink-profile/pr-214/assets/index-Dvab1MXG.css","/kink-profile/pr-214/assets/index-CQg3dwGd.js"];
+const PRECACHE_URLS = ["/kink-profile/pr-214/","/kink-profile/pr-214/index.html","/kink-profile/pr-214/manifest.webmanifest","/kink-profile/pr-214/icons/pwa-192.png","/kink-profile/pr-214/icons/pwa-512.png","/kink-profile/pr-214/icons/pwa-maskable-512.png","/kink-profile/pr-214/icons/apple-touch-icon.png","/kink-profile/pr-214/assets/index-Dvab1MXG.css","/kink-profile/pr-214/assets/index-GHP_pUAS.js"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
