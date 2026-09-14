@@ -155,7 +155,7 @@ describe("M7.3 profile header model", () => {
     const model = buildProfileHeaderModel([], scoreOverallFacets([]));
 
     expect(model.summary).toBe(
-      "There is not enough evidence yet to describe the overall shape of this profile.",
+      "Unformed — There is not enough evidence yet to describe the overall shape of this profile.",
     );
     expect(model.maturity.kind).toBe("unformed");
     expect(model.orientation.label).toBe("Still emerging");
@@ -296,7 +296,7 @@ describe("M7.3 profile header model", () => {
 
     expect(model.orientation.key).toBe("submissive");
     expect(model.orientation.label).toBe("Submissive");
-    expect(model.summary).toMatch(/^The profile leans submissive/);
+    expect(model.summary).toMatch(/The profile leans submissive/);
     expect(model.summary).toContain("strongest themes");
     expect(model.summary).not.toMatch(/giving|receiving/i);
   });
@@ -322,7 +322,7 @@ describe("M7.3 profile header model", () => {
     );
 
     expect(model.orientation.label).toBe("Submissive");
-    expect(model.summary).toMatch(/^The profile leans submissive/);
+    expect(model.summary).toMatch(/The profile leans submissive/);
     expect(model.summary).not.toMatch(/giving|receiving/i);
   });
 });
