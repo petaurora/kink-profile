@@ -1,0 +1,91 @@
+name: Reconcile PR Previews
+
+on:
+  pull_request:
+    types:
+      - closed
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout cleanup tooling
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Prune previews for closed PRs
+        id: prune
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISH_COMMIT_MESSAGE: Prune closed PR previews
+        run: bash .github/scripts/publish-pages.sh cleanup
+
+      - name: Mark removed previews in PR comments
+        if: steps.prune.outputs.removed != '[]' || github.event_name == 'pull_request'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REMOVED_PRS: ${{ steps.prune.outputs.removed }}
+          CLOSED_PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          marker='<!-- gh-pages-preview -->'
+          targets="$(
+            jq -nc \
+              --argjson removed "$REMOVED_PRS" \
+              --arg closed "$CLOSED_PR_NUMBER" \
+              '$removed + (if $closed == "" then [] else [($closed | tonumber)] end) | unique'
+          )"
+
+          while read -r number; do
+            [[ -n "$number" ]] || continue
+
+            mapfile -t comment_ids < <(
+              gh api --paginate \
+                "repos/${GITHUB_REPOSITORY}/issues/${number}/comments?per_page=100" \
+                --jq '.[] | select(.user.type == "Bot" and (.body | contains("<!-- gh-pages-preview -->"))) | .id'
+            )
+            comment_id="${comment_ids[0]:-}"
+
+            if [[ -z "$comment_id" ]]; then
+              echo "PR #${number}: no preview comment to update."
+              continue
+            fi
+
+            body="${marker}
+## 🌐 Preview removed
+
+The GitHub Pages preview for **PR #${number}** has been cleaned up because the PR is closed. ✅"
+
+            updated=false
+            for attempt in 1 2 3; do
+              if jq -n --arg body "$body" '{body: $body}' | \
+                gh api --method PATCH \
+                  "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}" \
+                  --input - >/dev/null; then
+                updated=true
+                break
+              fi
+
+              echo "PR #${number}: comment update attempt ${attempt} failed; retrying..."
+              sleep $((attempt * 2))
+            done
+
+            if [[ "$updated" != true ]]; then
+              echo "PR #${number}: failed to mark preview comment removed." >&2
+              exit 1
+            fi
+
+            echo "PR #${number}: preview comment marked removed."
+          done < <(jq -r '.[]' <<< "$targets")
