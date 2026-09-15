@@ -38,6 +38,13 @@ export const disciplineRadarSignalIds: SignalId[] = [
   "anticipation",
 ];
 
+/**
+ * Active B&D v2 question bank.
+ *
+ * Removed v1 questions remain in `legacyBondageDisciplineQuestions` so stored
+ * answer maps and exports can still be read, but they are not presented in a
+ * new attempt or retake.
+ */
 export const bondageDisciplineQuestions: WeightedQuestion[] = [
   {
     id: "bd-001",
@@ -81,7 +88,7 @@ export const bondageDisciplineQuestions: WeightedQuestion[] = [
   {
     id: "bd-005",
     prompt:
-      "Part of the appeal of restraint can be knowing that someone else is deciding how much physical freedom I have.",
+      "Part of the appeal of restraint can be surrendering control of my movement to someone I trust.",
     weights: {
       receiving_constraint_control: 1,
       receiving_restraint: 0.6,
@@ -91,21 +98,10 @@ export const bondageDisciplineQuestions: WeightedQuestion[] = [
   {
     id: "bd-006",
     prompt:
-      "Pulling against or testing agreed restraint can add something enjoyable to the experience for me.",
+      "Testing or struggling against agreed restraint—including trying to get free—can make the experience more exciting for me.",
     weights: {
       challenge_escape: 1,
       receiving_restraint: 0.4,
-      playful_resistance: 0.3,
-    },
-  },
-  {
-    id: "bd-007",
-    prompt:
-      "The possibility of trying to get free, even when I may not succeed, can make restraint more exciting.",
-    weights: {
-      challenge_escape: 0.9,
-      anticipation: 0.6,
-      receiving_restraint: 0.3,
     },
   },
   {
@@ -150,7 +146,6 @@ export const bondageDisciplineQuestions: WeightedQuestion[] = [
     prompt: "Carefully arranging another person's posture or placement can be satisfying in its own right.",
     weights: {
       giving_positioning: 1,
-      guidance_shaping: 0.3,
     },
   },
   {
@@ -205,16 +200,6 @@ export const bondageDisciplineQuestions: WeightedQuestion[] = [
     },
   },
   {
-    id: "bd-018",
-    prompt:
-      "A non-painful corrective task or consequence can still feel strongly like discipline to me.",
-    weights: {
-      receiving_discipline: 1,
-      accountability: 0.5,
-      structure: 0.3,
-    },
-  },
-  {
     id: "bd-019",
     prompt:
       "Administering an agreed consequence can be appealing because it gives an expectation real follow-through.",
@@ -227,11 +212,10 @@ export const bondageDisciplineQuestions: WeightedQuestion[] = [
   {
     id: "bd-020",
     prompt:
-      "Correcting a willing partner toward a shared expectation can feel meaningful even when pain is not involved.",
+      "Helping a willing partner correct their behavior toward an agreed expectation can feel meaningful even when no consequence is needed.",
     weights: {
-      giving_discipline: 0.9,
-      guidance_shaping: 0.6,
-      accountability: 0.5,
+      guidance_shaping: 1,
+      accountability: 0.4,
     },
   },
   {
@@ -265,11 +249,10 @@ export const bondageDisciplineQuestions: WeightedQuestion[] = [
   {
     id: "bd-024",
     prompt:
-      "Knowing in advance that restraint, correction, or a formal ritual is coming can be part of the appeal.",
+      "Knowing in advance that a consequence or correction is coming can build appealing anticipation.",
     weights: {
       anticipation: 1,
-      ritual_significance: 0.3,
-      accountability: 0.2,
+      receiving_discipline: 0.4,
     },
   },
   {
@@ -293,8 +276,68 @@ export const bondageDisciplineQuestions: WeightedQuestion[] = [
       responsibility_holding: 0.2,
     },
   },
+  {
+    id: "bd-027",
+    prompt:
+      "Being trusted with the responsibility for a restrained partner's safety and physical freedom can make restraint especially meaningful to me.",
+    weights: {
+      responsibility_holding: 1,
+      giving_restraint: 0.4,
+      giving_constraint_control: 0.2,
+    },
+  },
+  {
+    id: "bd-028",
+    prompt:
+      "Having a trusted partner deliberately limit what I can see, hear, or say can make the sense of control more immersive.",
+    weights: {
+      receiving_constraint_control: 1,
+      receiving_control: 0.4,
+    },
+  },
+  {
+    id: "bd-029",
+    prompt:
+      "The visual form and composition of bondage can make it appealing to me even when restriction itself is not the main point.",
+    weights: {
+      ritual_significance: 1,
+      receiving_positioning: 0.6,
+      receiving_restraint: 0.2,
+    },
+  },
+];
+
+/**
+ * Questions removed from the active bank but retained as compatibility input
+ * for profiles/exports that still contain their answer IDs.
+ */
+export const legacyBondageDisciplineQuestions: WeightedQuestion[] = [
+  {
+    id: "bd-007",
+    prompt:
+      "The possibility of trying to get free, even when I may not succeed, can make restraint more exciting.",
+    weights: {
+      challenge_escape: 0.9,
+      anticipation: 0.6,
+      receiving_restraint: 0.3,
+    },
+  },
+  {
+    id: "bd-018",
+    prompt:
+      "A non-painful corrective task or consequence can still feel strongly like discipline to me.",
+    weights: {
+      receiving_discipline: 1,
+      accountability: 0.5,
+      structure: 0.3,
+    },
+  },
 ];
 
 export const bondageDisciplineQuestionIds = bondageDisciplineQuestions.map(
+  (question) => question.id,
+);
+
+export const legacyBondageDisciplineQuestionIds = legacyBondageDisciplineQuestions.map(
   (question) => question.id,
 );

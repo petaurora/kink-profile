@@ -1,6 +1,9 @@
 import { dsQuestions } from "./dsQuiz";
 import { headspaceQuestions } from "./headspacesQuiz";
-import { bondageDisciplineQuestions } from "./bondageDisciplineQuiz";
+import {
+  bondageDisciplineQuestions,
+  legacyBondageDisciplineQuestions,
+} from "./bondageDisciplineQuiz";
 import { sadismMasochismQuestions } from "./sadismMasochismQuiz";
 import type { WeightedQuestion } from "./signals";
 
@@ -11,6 +14,10 @@ export const quizQuestions: QuizQuestion[] = [
   ...dsQuestions.map((question) => ({ ...question, kind: "weighted" as const })),
   ...headspaceQuestions.map((question) => ({ ...question, kind: "weighted" as const })),
   ...bondageDisciplineQuestions.map((question) => ({
+    ...question,
+    kind: "weighted" as const,
+  })),
+  ...legacyBondageDisciplineQuestions.map((question) => ({
     ...question,
     kind: "weighted" as const,
   })),

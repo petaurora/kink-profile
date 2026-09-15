@@ -38,7 +38,7 @@ export const quizzes: QuizDefinition[] = [
       "Explore receiving and giving restraint, positioning, physical constraint, discipline, accountability, ritual, structure, anticipation, and challenge — without treating discipline as pain.",
     icon: "adjustments-heart",
     estimatedMinutes: 9,
-    version: 1,
+    version: 2,
     availability: "available",
     questionIds: bondageDisciplineQuestionIds,
     contributesToOverall: true,
