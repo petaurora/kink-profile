@@ -26,6 +26,7 @@ import type {
   CatalogDrilldownFocus,
   CatalogPreferenceFilter,
 } from "../../lib/catalogDrilldown";
+import "./KinkCatalogPreferences.compact.css";
 
 function preferenceClass(state: CatalogPreferenceState | undefined) {
   return state ? `preference-${state.replaceAll("_", "-")}` : "preference-unanswered";
@@ -64,6 +65,7 @@ export function KinkCatalogPreferences({
     useState<CatalogPreferenceFilter>(
       initialFocus.preferenceFilter ?? "all",
     );
+  const [openItemId, setOpenItemId] = useState<string | null>(null);
   const resultView = useMemo(
     () => buildCatalogResultView(quizProfile, profile),
     [quizProfile, profile],
@@ -327,80 +329,72 @@ export function KinkCatalogPreferences({
           const categoryRank = result?.categoryRank;
           const overallRank = result?.overallRank;
           const inferred = result?.inferred;
-          const hasEvidence =
-            Boolean(categoryRank) ||
-            Boolean(overallRank) ||
-            Boolean(inferred) ||
-            (result?.meaningfulPairwiseComparisons ?? 0) > 0 ||
-            Boolean(result?.excludedFromNewRanking);
+          const comparisonCount = result?.meaningfulPairwiseComparisons ?? 0;
+          const compactEvidence = [
+            categoryRank ? `Category #${categoryRank.rank}` : null,
+            overallRank ? `Overall #${overallRank.rank}` : null,
+            comparisonCount > 0 ? `${comparisonCount} comps` : null,
+            result?.excludedFromNewRanking ? "Excluded from new pairs" : null,
+          ]
+            .filter(Boolean)
+            .join(" · ");
+          const isOpen = openItemId === item.id;
 
           return (
             <article
-              className={`catalog-row ${preferenceClass(preference)}`}
+              className={`catalog-row catalog-row-compact ${preferenceClass(preference)}${isOpen ? " is-open" : ""}`}
               key={item.id}
             >
-              <div className="catalog-row-main">
-                <strong>{item.label}</strong>
-                {item.aliases.length > 0 && (
-                  <span className="catalog-row-alias">
-                    aka {item.aliases.slice(0, 2).join(" · ")}
-                  </span>
-                )}
-              </div>
-
-              <label className="catalog-preference-editor">
-                <span className="sr-only">Preference for {item.label}</span>
-                <select
-                  value={preference ?? ""}
-                  onChange={(event) =>
-                    updatePreference(
-                      item.id,
-                      event.target.value
-                        ? (event.target.value as CatalogPreferenceState)
-                        : undefined,
-                    )
+              <div className="catalog-row-summary">
+                <button
+                  type="button"
+                  className="catalog-row-open"
+                  aria-expanded={isOpen}
+                  aria-controls={`catalog-details-${item.id}`}
+                  aria-label={`${isOpen ? "Close" : "Open"} details for ${item.label}`}
+                  onClick={() =>
+                    setOpenItemId((current) => (current === item.id ? null : item.id))
                   }
                 >
-                  <option value="">Not set</option>
-                  {catalogPreferenceStates.map((state) => (
-                    <option key={state} value={state}>
-                      {catalogPreferenceLabels[state]}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                  <span className="catalog-row-copy">
+                    <strong className="catalog-row-title">{item.label}</strong>
+                    <span className="catalog-row-meta">
+                      {compactEvidence ||
+                        (inferred
+                          ? `Quiz-derived ${Math.round(inferred.affinity)}%`
+                          : "No direct ranking evidence yet")}
+                    </span>
+                  </span>
+                  <span className="catalog-row-open-chevron" aria-hidden="true">
+                    ›
+                  </span>
+                </button>
 
-              <div className="catalog-ranking-context">
-                {categoryRank && (
-                  <span className="catalog-evidence-chip direct">
-                    Category #{categoryRank.rank}
-                  </span>
-                )}
-                {overallRank && (
-                  <span className="catalog-evidence-chip direct">
-                    Overall #{overallRank.rank}
-                  </span>
-                )}
-                {inferred && (
-                  <span className="catalog-evidence-chip inferred">
-                    Quiz-derived {Math.round(inferred.affinity)}%
-                  </span>
-                )}
-                {result?.excludedFromNewRanking && (
-                  <span className="catalog-evidence-chip excluded">
-                    Excluded from new pairs
-                  </span>
-                )}
-                {!hasEvidence && (
-                  <span className="catalog-not-ranked">
-                    No ranking or quiz inference yet
-                  </span>
-                )}
+                <label className="catalog-preference-editor">
+                  <span className="sr-only">Preference for {item.label}</span>
+                  <select
+                    value={preference ?? ""}
+                    onChange={(event) =>
+                      updatePreference(
+                        item.id,
+                        event.target.value
+                          ? (event.target.value as CatalogPreferenceState)
+                          : undefined,
+                      )
+                    }
+                  >
+                    <option value="">Not set</option>
+                    {catalogPreferenceStates.map((state) => (
+                      <option key={state} value={state}>
+                        {catalogPreferenceLabels[state]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
               </div>
 
-              <details className="catalog-row-details">
-                <summary>Details</summary>
-                <div>
+              {isOpen && (
+                <div className="catalog-row-details" id={`catalog-details-${item.id}`}>
                   {item.description && <p>{item.description}</p>}
 
                   <div className="catalog-evidence-details">
@@ -419,14 +413,11 @@ export function KinkCatalogPreferences({
                           ? ` · Overall #${overallRank.rank} · ${overallRank.comparisons} ordering comps`
                           : ""}
                       </p>
-                      {(result?.meaningfulPairwiseComparisons ?? 0) > 0 &&
-                        !categoryRank &&
-                        !overallRank && (
-                          <p>
-                            {result?.meaningfulPairwiseComparisons} historical ordering
-                            comparisons remain stored.
-                          </p>
-                        )}
+                      {comparisonCount > 0 && !categoryRank && !overallRank && (
+                        <p>
+                          {comparisonCount} historical ordering comparisons remain stored.
+                        </p>
+                      )}
                     </section>
 
                     <section>
@@ -493,7 +484,7 @@ export function KinkCatalogPreferences({
                     )}
                   </dl>
                 </div>
-              </details>
+              )}
             </article>
           );
         }}

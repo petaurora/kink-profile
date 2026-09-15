@@ -1,0 +1,219 @@
+.catalog-preferences-stack .catalog-table-head {
+  display: none;
+}
+
+.catalog-preferences-stack .catalog-table {
+  overflow: hidden;
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-heading {
+  width: 100%;
+  min-height: 92px;
+  border: 0;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-heading:hover,
+.catalog-preferences-stack .catalog-table .grouped-list-heading:focus-visible {
+  background: var(--bg-control-hover);
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-heading > div {
+  min-width: 0;
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-heading .eyebrow {
+  margin: 0 0 5px;
+  font-size: .66rem;
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-heading h2 {
+  margin: 0;
+  font-size: clamp(1rem, 2.8vw, 1.28rem);
+  line-height: 1.15;
+  letter-spacing: -.025em;
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-meta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: .74rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-chevron {
+  width: 18px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0;
+  line-height: 1;
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-chevron::after {
+  content: "›";
+  font-size: 1.2rem;
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-group.expanded .grouped-list-chevron::after {
+  content: "⌄";
+}
+
+.catalog-preferences-stack .catalog-table .grouped-list-rows {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.catalog-preferences-stack .catalog-row.catalog-row-compact {
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0;
+  display: block;
+  background: color-mix(in srgb, var(--bg-surface) 86%, var(--bg-muted));
+}
+
+.catalog-preferences-stack .catalog-row.catalog-row-compact:last-child {
+  border-bottom: 0;
+}
+
+.catalog-row-summary {
+  min-height: 66px;
+  padding: 9px 12px 9px 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.catalog-row-open {
+  min-width: 0;
+  border: 0;
+  padding: 4px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.catalog-row-open:hover .catalog-row-title,
+.catalog-row-open:focus-visible .catalog-row-title {
+  color: var(--accent-primary);
+}
+
+.catalog-row-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.catalog-row-title {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: .92rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  transition: color 120ms ease;
+}
+
+.catalog-row-meta {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: .68rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.catalog-row-open-chevron {
+  color: var(--text-muted);
+  font-size: 1rem;
+  transition: transform 140ms ease;
+}
+
+.catalog-row.is-open .catalog-row-open-chevron {
+  transform: rotate(90deg);
+}
+
+.catalog-row-summary .catalog-preference-editor {
+  min-width: 0;
+  margin: 0;
+}
+
+.catalog-row-summary .catalog-preference-editor select {
+  width: auto;
+  max-width: 138px;
+  min-height: 36px;
+  border-radius: 999px;
+  padding: 7px 28px 7px 11px;
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.catalog-row.preference-like .catalog-preference-editor select,
+.catalog-row.preference-interested .catalog-preference-editor select {
+  border-color: var(--accent-border);
+  background: var(--bg-accent-soft);
+}
+
+.catalog-row.preference-hard-limit .catalog-preference-editor select,
+.catalog-row.preference-not-interested .catalog-preference-editor select {
+  border-color: var(--border-strong);
+}
+
+.catalog-row-compact .catalog-row-details {
+  border-top: 1px solid var(--border-subtle);
+  padding: 16px;
+  background: var(--bg-muted);
+}
+
+.catalog-row-compact .catalog-row-details > p:first-child {
+  margin-top: 0;
+}
+
+@media (max-width: 560px) {
+  .catalog-preferences-stack .catalog-table .grouped-list-heading {
+    min-height: 78px;
+    padding: 14px 14px 14px 16px;
+  }
+
+  .catalog-preferences-stack .catalog-table .grouped-list-meta {
+    gap: 7px;
+    font-size: .68rem;
+  }
+
+  .catalog-row-summary {
+    min-height: 62px;
+    padding: 8px 10px 8px 14px;
+    gap: 8px;
+  }
+
+  .catalog-row-title {
+    font-size: .88rem;
+  }
+
+  .catalog-row-summary .catalog-preference-editor select {
+    max-width: 116px;
+    min-height: 34px;
+    padding: 6px 24px 6px 9px;
+    font-size: .68rem;
+  }
+
+  .catalog-row-compact .catalog-row-details {
+    padding: 14px;
+  }
+}
