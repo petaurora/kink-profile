@@ -237,7 +237,7 @@ export const canonicalSignalDefinitions: readonly CanonicalSignalDefinition[] = 
     label: "Movement Restriction",
     shortLabel: "Movement",
     description: "Reduced range or freedom of movement can itself be an appealing physical feature.",
-    channels: {},
+    channels: directional("Having movement restricted", "Restricting another person's movement"),
   },
   {
     id: "positioning",
@@ -439,11 +439,13 @@ const quizChannelOverrides: Readonly<Record<string, Partial<Record<LegacySignalI
   "hs-027": { playful_resistance: "giving" },
   "hs-030": { playful_resistance: "giving" },
 
-  "bd-003": { obedience: "giving" },
-  "bd-006": { challenge_escape: "receiving", playful_resistance: "giving" },
+  "bd-001": { movement_restriction: "receiving" },
+  "bd-002": { movement_restriction: "receiving" },
+  "bd-003": { movement_restriction: "receiving", obedience: "giving" },
+  "bd-006": { challenge_escape: "receiving" },
   "bd-007": { challenge_escape: "receiving" },
+  "bd-010": { movement_restriction: "giving" },
   "bd-011": { structure: "giving" },
-  "bd-012": { guidance_shaping: "giving" },
   "bd-014": { challenge_escape: "giving", playful_resistance: "receiving" },
   "bd-016": { accountability: "receiving" },
   "bd-017": { accountability: "receiving", obedience: "giving" },
@@ -454,6 +456,7 @@ const quizChannelOverrides: Readonly<Record<string, Partial<Record<LegacySignalI
   "bd-022": { structure: "receiving" },
   "bd-025": { structure: "receiving", obedience: "giving" },
   "bd-026": { structure: "giving" },
+  "bd-029": { receiving_positioning: "overall", receiving_restraint: "overall" },
 };
 
 export function canonicalQuizSignalRef(
