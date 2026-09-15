@@ -3,7 +3,6 @@ import { ExpandableGroupedList } from "../../components/ExpandableGroupedList";
 import {
   kinkCatalog,
   kinkCategories,
-  type KinkCatalogItem,
 } from "../../data/kinkCatalog.generated";
 import {
   catalogPreferenceStates,
@@ -26,22 +25,19 @@ import type {
   CatalogDrilldownFocus,
   CatalogPreferenceFilter,
 } from "../../lib/catalogDrilldown";
+import {
+  activeSecondaryExploreFilterCount,
+  hasActiveExploreFilters,
+  matchesExploreSearch,
+} from "./catalogExploreFilters";
 import "./KinkCatalogPreferences.compact.css";
 import "./KinkCatalogPreferences.disclosure.css";
+import "./KinkCatalogPreferences.filters.css";
 
 function preferenceClass(state: CatalogPreferenceState | undefined) {
   return state
     ? `preference-${state.replaceAll("_", "-")}`
     : "preference-unanswered";
-}
-
-function matchesSearch(item: KinkCatalogItem, query: string) {
-  const normalized = query.trim().toLocaleLowerCase();
-  if (!normalized) return true;
-
-  return [item.label, ...item.aliases].some((value) =>
-    value.toLocaleLowerCase().includes(normalized),
-  );
 }
 
 export function KinkCatalogPreferences({
@@ -68,8 +64,24 @@ export function KinkCatalogPreferences({
     useState<CatalogPreferenceFilter>(
       initialFocus.preferenceFilter ?? "all",
     );
+  const [showFilters, setShowFilters] = useState(false);
   const [openItemId, setOpenItemId] = useState<string | null>(null);
   const [showBoundaries, setShowBoundaries] = useState(false);
+
+  const filterState = { query, categoryFilter, preferenceFilter };
+  const hasActiveFilters = hasActiveExploreFilters(filterState);
+  const secondaryFilterCount = activeSecondaryExploreFilterCount(filterState);
+  const activeCategoryLabel =
+    categoryFilter === "all"
+      ? null
+      : kinkCategories.find((category) => category.id === categoryFilter)
+          ?.label ?? categoryFilter;
+  const activePreferenceLabel =
+    preferenceFilter === "all"
+      ? null
+      : preferenceFilter === "unanswered"
+        ? "Not set"
+        : catalogPreferenceLabels[preferenceFilter];
 
   const resultView = useMemo(
     () => buildCatalogResultView(quizProfile, profile),
@@ -83,7 +95,9 @@ export function KinkCatalogPreferences({
           return false;
         }
 
-        if (!matchesSearch(item, query)) return false;
+        if (!matchesExploreSearch([item.label, ...item.aliases], query)) {
+          return false;
+        }
 
         const preference = getCatalogPreference(
           profile.preferences[item.id],
@@ -188,12 +202,14 @@ export function KinkCatalogPreferences({
     setQuery("");
     setCategoryFilter("all");
     setPreferenceFilter("all");
+    setShowFilters(false);
   };
 
   const applyBoundaryFilter = (state: CatalogPreferenceState) => {
     setQuery("");
     setCategoryFilter("all");
     setPreferenceFilter(state);
+    setShowFilters(false);
     setShowBoundaries(false);
     setOpenItemId(null);
   };
@@ -220,86 +236,105 @@ export function KinkCatalogPreferences({
         </div>
       </div>
 
-      {(categoryFilter !== "all" || preferenceFilter !== "all") && (
-        <div className="catalog-focus-bar panel">
-          <div>
-            <span className="eyebrow">Focused catalog view</span>
-            <div className="catalog-focus-chips">
-              {categoryFilter !== "all" && (
-                <span>
-                  {kinkCategories.find(
-                    (category) => category.id === categoryFilter,
-                  )?.label ?? categoryFilter}
-                </span>
-              )}
-              {preferenceFilter !== "all" && (
-                <span>
-                  {preferenceFilter === "unanswered"
-                    ? "Not set"
-                    : catalogPreferenceLabels[preferenceFilter]}
-                </span>
-              )}
-            </div>
-          </div>
-          <button className="text-button" onClick={resetFilters}>
-            Explore full catalog
+      <section className="catalog-filter-shell panel">
+        <div className="catalog-filter-primary-row">
+          <label className="catalog-search catalog-search-compact">
+            <span className="sr-only">Search kinks or aliases</span>
+            <input
+              type="search"
+              value={query}
+              placeholder="Search kinks or aliases…"
+              onChange={(event) => setQuery(event.target.value)}
+            />
+          </label>
+          <button
+            type="button"
+            className={`secondary compact catalog-filter-toggle${showFilters ? " is-open" : ""}`}
+            aria-expanded={showFilters}
+            aria-controls="catalog-filter-panel"
+            onClick={() => setShowFilters((current) => !current)}
+          >
+            Filters
+            {secondaryFilterCount > 0 && (
+              <span className="catalog-filter-count">{secondaryFilterCount}</span>
+            )}
           </button>
         </div>
-      )}
 
-      <div className="catalog-toolbar panel">
-        <label className="catalog-search">
-          <span>Search kinks or aliases</span>
-          <input
-            type="search"
-            value={query}
-            placeholder="rope, praise, pet play…"
-            onChange={(event) => setQuery(event.target.value)}
-          />
-        </label>
+        {showFilters && (
+          <div className="catalog-filter-panel" id="catalog-filter-panel">
+            <label>
+              <span>Category</span>
+              <select
+                value={categoryFilter}
+                onChange={(event) => setCategoryFilter(event.target.value)}
+              >
+                <option value="all">All categories</option>
+                {kinkCategories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.label}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-        <label>
-          <span>Category</span>
-          <select
-            value={categoryFilter}
-            onChange={(event) => setCategoryFilter(event.target.value)}
-          >
-            <option value="all">All categories</option>
-            {kinkCategories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.label}
-              </option>
-            ))}
-          </select>
-        </label>
+            <label>
+              <span>Preference</span>
+              <select
+                value={preferenceFilter}
+                onChange={(event) =>
+                  setPreferenceFilter(
+                    event.target.value as CatalogPreferenceFilter,
+                  )
+                }
+              >
+                <option value="all">All states</option>
+                <option value="unanswered">Not set</option>
+                {catalogPreferenceStates.map((state) => (
+                  <option key={state} value={state}>
+                    {catalogPreferenceLabels[state]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
 
-        <label>
-          <span>Preference</span>
-          <select
-            value={preferenceFilter}
-            onChange={(event) =>
-              setPreferenceFilter(
-                event.target.value as CatalogPreferenceFilter,
-              )
-            }
-          >
-            <option value="all">All states</option>
-            <option value="unanswered">Not set</option>
-            {catalogPreferenceStates.map((state) => (
-              <option key={state} value={state}>
-                {catalogPreferenceLabels[state]}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <button
-          className="text-button catalog-clear-filters"
-          onClick={resetFilters}
-        >
-          Clear filters
-        </button>
-      </div>
+        {hasActiveFilters && (
+          <div className="catalog-active-filters" aria-label="Active filters">
+            <div className="catalog-active-filter-chips">
+              {query.trim() && (
+                <button type="button" onClick={() => setQuery("")}>
+                  Search: {query.trim()} <span aria-hidden="true">×</span>
+                </button>
+              )}
+              {activeCategoryLabel && (
+                <button
+                  type="button"
+                  onClick={() => setCategoryFilter("all")}
+                >
+                  {activeCategoryLabel} <span aria-hidden="true">×</span>
+                </button>
+              )}
+              {activePreferenceLabel && (
+                <button
+                  type="button"
+                  onClick={() => setPreferenceFilter("all")}
+                >
+                  {activePreferenceLabel} <span aria-hidden="true">×</span>
+                </button>
+              )}
+            </div>
+            <button
+              type="button"
+              className="text-button catalog-clear-active-filters"
+              onClick={resetFilters}
+            >
+              Clear all
+            </button>
+          </div>
+        )}
+      </section>
 
       <section className="catalog-boundaries-disclosure">
         <button
@@ -384,6 +419,7 @@ export function KinkCatalogPreferences({
         listClassName="catalog-table"
         focusGroupId={categoryFilter === "all" ? undefined : categoryFilter}
         expansionKey={categoryFilter}
+        showBulkActions={false}
         summary={
           <>
             <strong>{visibleItems.length}</strong>
@@ -394,7 +430,7 @@ export function KinkCatalogPreferences({
           </>
         }
         emptyTitle="No matches."
-        emptyCopy="Try clearing a filter or searching another term."
+        emptyCopy="Try clearing the active filters or searching another term."
         onClearFilters={resetFilters}
         renderItem={(item) => {
           const result = resultView.byCatalogId.get(item.id);

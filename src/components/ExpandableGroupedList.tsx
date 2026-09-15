@@ -24,6 +24,7 @@ export function ExpandableGroupedList<T>({
   headClassName,
   listClassName,
   getGroupMeta,
+  showBulkActions = true,
 }: {
   groups: readonly ExpandableListGroup<T>[];
   columnHeadings: readonly string[];
@@ -37,6 +38,7 @@ export function ExpandableGroupedList<T>({
   headClassName: string;
   listClassName?: string;
   getGroupMeta?: (group: ExpandableListGroup<T>) => string;
+  showBulkActions?: boolean;
 }) {
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
     () => (focusGroupId ? new Set([focusGroupId]) : new Set()),
@@ -69,14 +71,16 @@ export function ExpandableGroupedList<T>({
     <>
       <div className="grouped-list-summary">
         <div className="grouped-list-summary-copy">{summary}</div>
-        <div className="grouped-list-actions">
-          <button className="text-button" onClick={expandAll}>
-            Expand all
-          </button>
-          <button className="text-button" onClick={collapseAll}>
-            Collapse all
-          </button>
-        </div>
+        {showBulkActions && (
+          <div className="grouped-list-actions">
+            <button className="text-button" onClick={expandAll}>
+              Expand all
+            </button>
+            <button className="text-button" onClick={collapseAll}>
+              Collapse all
+            </button>
+          </div>
+        )}
       </div>
 
       <div
