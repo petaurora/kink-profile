@@ -72,7 +72,9 @@ Net effect of the new restraint recommendations: **+2 questions overall**, not +
   - bd-012 should drop `guidance_shaping`; arranging someone’s body is not inherently teaching, coaching, correcting, or behaviorally shaping them. Keep it clean as essentially `positioning · Giving` unless later evidence supports a small `control · Giving` secondary weight.
 
 - **bd-014** — “I can enjoy a willing partner testing or struggling against agreed restraint because it makes containment more interactive.”
-  - `challenge_escape` currently mixes the experience of struggling/escaping with the experience of containing someone who struggles. Confirm whether this should remain nondirectional.
+  - **Decision:** keep the question.
+  - Preserve `escape_containment · Giving`; this measures enjoying the containment side of an agreed struggle, distinct from enjoying escape/testing as the restrained person.
+  - Migrate authored scoring away from legacy `challenge_escape` + per-question channel overrides so the modern Signal + channel relationship is explicit in the quiz mapping.
 
 - **bd-025** — “Following an agreed sequence or protocol exactly can be satisfying because the form itself matters.”
 - **bd-026** — “Creating a specific procedure or protocol for a willing partner can make structure feel more deliberate and meaningful.”
