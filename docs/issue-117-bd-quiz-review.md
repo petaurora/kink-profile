@@ -54,12 +54,15 @@ Net effect of the new restraint recommendations: **+2 questions overall**, not +
 
 - **bd-003** — “Being required to stay in a specific position until I am released can be appealing.”
 - **bd-004** — “Being deliberately arranged into a posture by a trusted partner can make the sense of control more tangible.”
-  - **Decision:** keep both. They measure distinct experiences under the shared `receiving_positioning` umbrella: maintaining a required position vs being physically arranged/posed.
-  - Keep `receiving_positioning` as the primary signal for both rather than introducing new canonical signals.
-  - Differentiate through secondary weights: bd-003 should lean toward `obedience` / `structure`; bd-004 should lean toward `receiving_constraint_control` / `receiving_control`.
+  - **Decision:** keep both. They measure distinct experiences under the shared `positioning` concept: maintaining a required position vs being physically arranged/posed.
+  - Keep `positioning` as the primary canonical signal for both rather than introducing new directional signal IDs.
+  - Differentiate with the **Receiving** channel plus secondary weights: bd-003 should lean toward `obedience` / `structure`; bd-004 should lean toward `constraint_control` / `control`.
 
 - **bd-010** — “Securing a willing partner so they cannot freely reposition can make restraint feel more complete.”
-  - Review whether nondirectional `movement_restriction` should be scored from both receiving- and giving-oriented questions.
+  - **Decision:** keep the question.
+  - `movement_restriction` is currently canonical but nondirectional (`channels: {}`). Add **Receiving/Giving channel support** rather than creating `receiving_movement_restriction` / `giving_movement_restriction` signal IDs.
+  - bd-002 should project to `movement_restriction · Receiving`; bd-010 should project to `movement_restriction · Giving`.
+  - Preserve this distinction because activity-side preference can differ substantially and directional channels can be used intentionally by derived roles/headspaces without implying Dominant/submissive authority.
 
 - **bd-011** — “Placing a willing partner in a specific position and expecting them to maintain it can be appealing.”
 - **bd-012** — “Carefully arranging another person's posture or placement can be satisfying in its own right.”
