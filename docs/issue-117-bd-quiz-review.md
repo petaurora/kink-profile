@@ -19,6 +19,15 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
 - **bd-022** — “Standing rules that shape behavior beyond a single scene can deepen a dynamic for me.”
 - **bd-023** — “Formal procedures or rituals around permission, beginning, ending, or transitions can make a dynamic feel more intentional.”
 
+## Add
+
+- **Receiving — vulnerability / surrender:** “Being unable to move freely can create an appealing sense of vulnerability or surrender when I trust the person restraining me.”
+- **Receiving — release of control:** “Part of the appeal of restraint can be relaxing into the fact that I no longer need to control my own movement.”
+- **Giving — trust / safety responsibility:** “Being trusted with a restrained partner's safety and physical freedom can make restraint feel especially meaningful.”
+- **Giving — responsibility / control:** “The responsibility of carefully controlling another person's movement can be part of the appeal of restraining them.”
+
+These should be mapped carefully so they measure the psychological experience around restraint rather than simply duplicating `receiving_restraint` / `giving_restraint`.
+
 ## Merge / remove
 
 - **bd-006** — “Pulling against or testing agreed restraint can add something enjoyable to the experience for me.”
@@ -58,9 +67,9 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
 
 ## Possible gaps surfaced by references
 
-- **Vulnerability / psychological release from restraint** — references distinguish physical restriction from the mental appeal of vulnerability, helplessness, or letting go. Consider only if this should intentionally contribute to `receiving_constraint_control` / `responsibility_transfer` rather than D/s alone.
-- **Responsibility while restraining** — references emphasize the restraining partner's responsibility for the restrained person's comfort and safety. Consider a dedicated question only if B&D should contribute more directly to `responsibility_holding`.
-- **Aesthetic bondage, sensory deprivation, tasking, praise/reward** — real B&D-adjacent dimensions, but likely catalog/cross-quiz material unless canonical signals are added or deliberately reused.
+- **Vulnerability / psychological release from restraint** — now represented by the proposed receiving questions above; review whether they belong in existing control/responsibility signals or expose a missing canonical concept.
+- **Responsibility while restraining** — now represented by the proposed giving questions above; review whether `responsibility_holding` is sufficient or whether restraint-specific responsibility needs different modeling.
+- **Aesthetic bondage, sensory deprivation, tasking, praise/reward** — real B&D-adjacent dimensions. Review whether these belong in quiz signals, another quiz, or catalog/modifier data rather than assuming they are out of scope.
 - **Fantasy vs practice vs lifestyle intensity** — the systematic review supports a dimensional spectrum of engagement, but this is different from preference strength and should not be added to the quiz without a separate product decision.
 
 ## References consulted
