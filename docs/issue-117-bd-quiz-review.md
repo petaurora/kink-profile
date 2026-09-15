@@ -1,118 +1,148 @@
 # Issue #117 — Bondage & Discipline quiz review
 
-Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommendations for discussion, not yet scoring changes.
+Decision record for the Bondage & Discipline slice of Issue #117. The decisions below are implemented by PR #237 in B&D quiz version 2.
 
-## Keep
+## Resulting bank
 
-- **bd-001** — “Being physically restrained by someone I trust can feel appealing even when pain is not part of the experience.”
-- **bd-002** — “Having several parts of my movement restricted at once can make restraint feel more immersive.”
-- **bd-008** — “Waiting while I know restraint is about to happen can build appealing suspense.”
-- **bd-009** — “Physically restricting a willing partner's movement can be appealing to me.”
-- **bd-013** — “Part of the appeal of restraining someone can be deciding how much physical freedom they have within agreed limits.”
-- **bd-014** — “I can enjoy a willing partner testing or struggling against agreed restraint because it makes containment more interactive.”
-- **bd-015** — “A rule feels more meaningful to me when everyone involved knows what happens if it is not followed.”
-- **bd-016** — “Being held to an agreed consequence can feel grounding or meaningful even when the consequence is not painful.”
-- **bd-017** — “Clear correction from a trusted partner can feel satisfying when it restores an agreed expectation.”
-- **bd-019** — “Administering an agreed consequence can be appealing because it gives an expectation real follow-through.”
-- **bd-021** — “Choosing a consequence that fits the broken expectation can be more satisfying than simply making it harsh.”
-- **bd-022** — “Standing rules that shape behavior beyond a single scene can deepen a dynamic for me.”
-- **bd-023** — “Formal procedures or rituals around permission, beginning, ending, or transitions can make a dynamic feel more intentional.”
+The active B&D bank contains **27 questions**.
 
-## Replace / merge
+Two v1 questions are intentionally hidden from new attempts while remaining registered as compatibility input for old stored/exported answer maps:
 
-- **bd-005** — “Part of the appeal of restraint can be knowing that someone else is deciding how much physical freedom I have.”
-  - Replace with: **“Part of the appeal of restraint can be surrendering control of my movement to someone I trust.”**
-  - This folds the proposed vulnerability / surrender and release-of-control questions into one stronger item instead of adding both.
+- **bd-007** — merged into bd-006.
+- **bd-018** — removed as redundant.
 
-- **New giving responsibility question**
-  - Use one merged item instead of two: **“Being trusted with the responsibility for a restrained partner’s safety and physical freedom can make restraint especially meaningful to me.”**
-  - Keep separate from bd-013: bd-013 measures the appeal of deciding freedom; this measures trust / responsibility while holding that control.
-  - **Decision:** use the existing general Responsibility signal rather than creating a restraint-specific responsibility concept.
-  - Project primarily to `responsibility · Receiving` because the person is taking / holding responsibility, even though they are on the Giving side of restraint.
-  - Add smaller secondary contributions from `restraint · Giving` and, if useful in final weighting review, `constraint_control · Giving`.
-  - Preserve the distinction between activity side and Signal channel: giving restraint does not imply that every related Signal should use the Giving channel.
+Completing a v2 retake replaces the old B&D answer map atomically, so hidden legacy answer IDs naturally disappear after the user retakes the quiz.
 
-- **bd-006** — “Pulling against or testing agreed restraint can add something enjoyable to the experience for me.”
-- **bd-007** — “The possibility of trying to get free, even when I may not succeed, can make restraint more exciting.”
-  - **Decision:** merge into one receiving-side escape / containment item: **“Testing or struggling against agreed restraint—including trying to get free—can make the experience more exciting for me.”**
-  - Project primarily to `escape_containment · Receiving`.
-  - Drop the `playful_resistance` secondary weight unless future wording explicitly introduces relational teasing / pushback; physical struggling against restraint is not inherently playful resistance.
+## Question decisions
+
+### Kept
+
+- **bd-001** — physical restraint independent of pain.
+- **bd-002** — immersive movement restriction.
+- **bd-003** — maintaining a required position.
+- **bd-004** — being deliberately arranged / posed.
+- **bd-008** — restraint anticipation.
+- **bd-009** — giving physical restraint.
+- **bd-010** — giving movement restriction.
+- **bd-011** — positioning another person and requiring them to maintain it.
+- **bd-012** — arranging another person's posture; `guidance_shaping` removed because arranging a body is not inherently coaching/correction.
+- **bd-013** — deciding how much physical freedom a restrained partner has.
+- **bd-014** — enjoying the containment side of agreed escape/struggle.
+- **bd-015** — known follow-through for rules.
+- **bd-016** — receiving an agreed consequence independent of pain.
+- **bd-017** — receiving correction that restores an expectation.
+- **bd-019** — giving an agreed consequence.
+- **bd-021** — choosing a fitting consequence.
+- **bd-022** — standing rules beyond one scene.
+- **bd-023** — formal procedures / rituals.
+- **bd-025** — following protocol because the form matters.
+- **bd-026** — creating deliberate procedure / protocol.
+
+### Rewritten / merged
+
+- **bd-005** — **“Part of the appeal of restraint can be surrendering control of my movement to someone I trust.”**
+  - Folds vulnerability / release-of-control into the existing restraint-control construct rather than adding another overlapping question.
+
+- **bd-006** — **“Testing or struggling against agreed restraint—including trying to get free—can make the experience more exciting for me.”**
+  - Merges old bd-006 + bd-007.
+  - Primary semantic target: `escape_containment · Receiving`.
+  - Removes `playful_resistance`; physical struggling against restraint is not automatically relational teasing/pushback.
+
+- **bd-020** — **“Helping a willing partner correct their behavior toward an agreed expectation can feel meaningful even when no consequence is needed.”**
+  - Primary semantic target: `guidance_shaping · Giving`.
+  - Smaller `accountability · Giving` contribution.
+  - Removes `discipline · Giving` so the question cleanly measures correction/shaping without requiring a consequence.
+  - This keeps a useful progression of expectation → correction → consequence.
+
+- **bd-024** — **“Knowing in advance that a consequence or correction is coming can build appealing anticipation.”**
+  - Primary semantic target: `anticipation · Overall`.
+  - Smaller `discipline · Receiving` contribution.
+  - Removes ritual/accountability leakage; restraint anticipation is already measured by bd-008 and ritual significance elsewhere in the bank.
+
+### Removed from active attempts
 
 - **bd-018** — “A non-painful corrective task or consequence can still feel strongly like discipline to me.”
-  - **Decision:** remove with no replacement. It overlaps bd-016/017 and repeats the non-pain distinction without adding a separate construct.
+  - Removed with no replacement because bd-016/017 already establish that discipline/correction need not be painful.
 
-- **bd-020** — “Correcting a willing partner toward a shared expectation can feel meaningful even when pain is not involved.”
-  - **Decision:** rewrite rather than remove, because correction / shaping is meaningfully different from administering a consequence.
-  - Replace with: **“Helping a willing partner correct their behavior toward an agreed expectation can feel meaningful even when no consequence is needed.”**
-  - Make `guidance_shaping · Giving` the primary semantic target, with a smaller `accountability · Giving` contribution.
-  - Remove or greatly reduce `discipline · Giving`; the rewritten item intentionally isolates correction / shaping without requiring a consequence.
-  - This creates a cleaner discipline progression across the bank: **expectation → correction → consequence**.
+## Added questions
 
-## Add
+### bd-027 — responsibility while restraining
 
-- **Receiving — sensory / communication restriction:** **“Having a trusted partner deliberately limit what I can see, hear, or say can make the sense of control more immersive.”**
-  - **Decision:** do not add a new canonical sensory/communication signal. This is better modeled as an expression of existing control / constraint constructs, while specific implementations remain catalog/modifier data.
-  - Project primarily to `constraint_control · Receiving`, with a smaller `control · Receiving` contribution and optionally a light `anticipation · Overall` contribution if justified by final weighting review.
-  - Do not map it to `movement_restriction`; perception/communication can be limited without restricting movement.
-  - Concrete implementations such as blindfolds, hoods, gags, hearing restriction, and darkness belong in catalog/modifier data rather than becoming separate canonical profile dimensions.
+**“Being trusted with the responsibility for a restrained partner's safety and physical freedom can make restraint especially meaningful to me.”**
 
-- **Aesthetic bondage / visual composition:** **“The visual form and composition of bondage can make it appealing to me even when restriction itself is not the main point.”**
-  - **Decision:** do not add a new aesthetic-specific canonical Signal for this B&D use case.
-  - Treat this primarily as `ritual_significance · Overall`: the form / arrangement itself carries value beyond the practical function of restraint.
-  - Add a secondary `positioning · Overall` contribution because deliberate body arrangement / composition is part of the appeal being measured.
-  - Keep restraint / constraint context light. Prefer a small `restraint · Overall` contribution rather than making `constraint_control` central, because visual appeal should not imply that the user primarily enjoys the psychological experience of being controlled.
-  - Specific styles such as shibari, decorative rope, body framing, materials, patterns, and presentation remain catalog/modifier data.
+- Uses the existing Responsibility concept rather than a restraint-specific Signal.
+- Primary semantic target: `responsibility · Receiving` because the person is taking / holding responsibility.
+- Smaller restraint/control context comes from `restraint · Giving` and `constraint_control · Giving`.
+- This intentionally demonstrates that activity side and Signal channel are separate concepts.
 
-Net effect of the new restraint recommendations: **+2 questions overall**, not +5 — one merged replacement for bd-005, one new giving responsibility item, and one new sensory / communication restriction item. Aesthetic bondage is an additional newly surfaced question candidate and should be included in the final whole-bank count/balance pass.
+### bd-028 — sensory / communication restriction
 
-## Rewrite
+**“Having a trusted partner deliberately limit what I can see, hear, or say can make the sense of control more immersive.”**
 
-- **bd-024** — “Knowing in advance that restraint, correction, or a formal ritual is coming can be part of the appeal.”
-  - **Decision:** rewrite to isolate discipline anticipation: **“Knowing in advance that a consequence or correction is coming can build appealing anticipation.”**
-  - Project primarily to `anticipation · Overall`, with a smaller `discipline · Receiving` contribution.
-  - Drop the ritual contribution; ritual significance is already measured by bd-023/025/026, while restraint anticipation is already measured by bd-008.
+- No new sensory-specific canonical Signal.
+- Primary target: `constraint_control · Receiving`.
+- Smaller `control · Receiving` contribution.
+- Not `movement_restriction`; perception/communication can be restricted while movement remains free.
+- Blindfolds, hoods, gags, hearing restriction, darkness, and similar implementations remain catalog/modifier data.
 
-## Keep, but review model / weights
+### bd-029 — aesthetic bondage / visual composition
 
-- **bd-003** — “Being required to stay in a specific position until I am released can be appealing.”
-- **bd-004** — “Being deliberately arranged into a posture by a trusted partner can make the sense of control more tangible.”
-  - **Decision:** keep both. They measure distinct experiences under the shared `positioning` concept: maintaining a required position vs being physically arranged/posed.
-  - Keep `positioning` as the primary canonical signal for both rather than introducing new directional signal IDs.
-  - Differentiate with the **Receiving** channel plus secondary weights: bd-003 should lean toward `obedience` / `structure`; bd-004 should lean toward `constraint_control` / `control`.
+**“The visual form and composition of bondage can make it appealing to me even when restriction itself is not the main point.”**
 
-- **bd-010** — “Securing a willing partner so they cannot freely reposition can make restraint feel more complete.”
-  - **Decision:** keep the question.
-  - `movement_restriction` is currently canonical but nondirectional (`channels: {}`). Add **Receiving/Giving channel support** rather than creating `receiving_movement_restriction` / `giving_movement_restriction` signal IDs.
-  - bd-002 should project to `movement_restriction · Receiving`; bd-010 should project to `movement_restriction · Giving`.
-  - Preserve this distinction because activity-side preference can differ substantially and directional channels can be used intentionally by derived roles/headspaces without implying Dominant/submissive authority.
+- No new aesthetic-specific canonical Signal.
+- Primary target: `ritual_significance · Overall` — the form itself carries value beyond practical function.
+- Secondary `positioning · Overall` contribution for deliberate body composition.
+- Light broad restraint context without treating visual appeal as a preference for being controlled.
+- Shibari/decorative styles, body framing, materials, patterns, and presentation remain catalog/modifier detail.
 
-- **bd-011** — “Placing a willing partner in a specific position and expecting them to maintain it can be appealing.”
-- **bd-012** — “Carefully arranging another person's posture or placement can be satisfying in its own right.”
-  - **Decision:** keep both. They mirror the same maintain-vs-arrange distinction as bd-003/004 on the Giving side.
-  - Both should primarily project to `positioning · Giving`.
-  - bd-011 should retain secondary `constraint_control · Giving` plus a smaller `structure` contribution because it includes requiring the partner to maintain the position.
-  - bd-012 should drop `guidance_shaping`; arranging someone’s body is not inherently teaching, coaching, correcting, or behaviorally shaping them. Keep it clean as essentially `positioning · Giving` unless later evidence supports a small `control · Giving` secondary weight.
+## Canonical model decisions
 
-- **bd-014** — “I can enjoy a willing partner testing or struggling against agreed restraint because it makes containment more interactive.”
-  - **Decision:** keep the question.
-  - Preserve `escape_containment · Giving`; this measures enjoying the containment side of an agreed struggle, distinct from enjoying escape/testing as the restrained person.
-  - Migrate authored scoring away from legacy `challenge_escape` + per-question channel overrides so the modern Signal + channel relationship is explicit in the quiz mapping.
+### Movement Restriction is directional
 
-- **bd-025** — “Following an agreed sequence or protocol exactly can be satisfying because the form itself matters.”
-- **bd-026** — “Creating a specific procedure or protocol for a willing partner can make structure feel more deliberate and meaningful.”
-  - **Decision:** keep both unchanged.
-  - Keep `ritual_significance · Overall` nondirectional; both questions measure meaning in the form / ritual itself.
-  - Preserve `structure · Receiving` for bd-025 and `structure · Giving` for bd-026 rather than making ritual directional too.
-  - bd-025 may retain its smaller obedience contribution because following an exact agreed protocol genuinely includes following direction.
+`movement_restriction` remains one canonical Signal, but now supports Receiving and Giving channels.
 
-## Possible gaps surfaced by references
+- bd-001 / bd-002 / bd-003 movement-restriction evidence → Receiving.
+- bd-010 movement-restriction evidence → Giving.
 
-- **Vulnerability / psychological release from restraint** — folded into the proposed bd-005 replacement rather than added as separate overlapping questions.
-- **Responsibility while restraining** — resolved through the existing general Responsibility signal: the new question primarily targets `responsibility · Receiving`, with restraint/control as secondary context rather than creating a restraint-specific responsibility dimension.
-- **Sensory / communication restriction** — resolved as an existing-construct expression rather than a new canonical dimension: use `constraint_control · Receiving` / `control · Receiving` for the quiz meaning, with concrete sensory/communication implementations kept in catalog/modifier data.
-- **Aesthetic bondage / visual artistry** — resolved without a new canonical aesthetic Signal: use `ritual_significance · Overall` as the primary “form itself matters” construct, `positioning · Overall` secondarily for body composition, and only a light restraint-context contribution. Shibari/decorative styles remain catalog/modifier detail.
-- **Tasking, praise/reward** — **Decision:** intentionally do not add these to the B&D quiz. Ordinary tasking is already represented in the D/s bank through obedience, service, and structure; praise/approval has its own canonical Signal and is also directly measured in D/s. Rewards are mechanisms or concrete implementations rather than a single canonical B&D construct and should remain in the Rewards system / catalog / other relevant preference models. Treat these as covered elsewhere, not as missing B&D content.
-- **Fantasy vs practice vs lifestyle intensity** — **Decision:** explicitly out of scope for B&D quiz scoring. Fantasy interest, real-world practice/experience, and lifestyle integration are separate engagement dimensions rather than levels of B&D preference strength. If modeled later, they should live in a cross-cutting profile/context layer that can apply across kink categories rather than adding B&D-specific scoring inputs.
+Do not create separate `receiving_movement_restriction` / `giving_movement_restriction` canonical IDs. Receiving/Giving here describes activity-side perspective and does not imply Dominant/submissive authority.
+
+### Positioning maintains the arrange-vs-maintain distinction
+
+- bd-003 = maintaining a required position, Receiving side.
+- bd-004 = being physically arranged / posed, Receiving side.
+- bd-011 = positioning another person and expecting them to maintain it, Giving side.
+- bd-012 = arranging another person's posture for its own sake, Giving side.
+
+These remain one `positioning` concept with channels rather than proliferating more Signal IDs.
+
+### Escape / Containment remains one directional concept
+
+- merged bd-006 → `escape_containment · Receiving`.
+- bd-014 → `escape_containment · Giving`.
+
+### Ritual significance remains nondirectional
+
+bd-025 and bd-026 keep `ritual_significance · Overall`. Their directional difference is already represented by Structure (`Receiving` for bd-025, `Giving` for bd-026), so ritual itself does not need artificial channels.
+
+## Backward compatibility
+
+B&D quiz version is now **2**.
+
+Migration contract:
+
+1. v1 stored/exported answer maps remain loadable.
+2. Removed bd-007 and bd-018 definitions remain registered but are not active v2 question IDs.
+3. A profile with a genuinely completed older quiz version remains an established result even when the current bank has new questions.
+4. The user can explicitly start a v2 retake from that historical result.
+5. The established v1 answers remain authoritative while the v2 retake is incomplete.
+6. Completing the v2 retake replaces the stable answer map with only v2 answers, removing obsolete hidden IDs.
+7. `completedAt` does not bypass completeness validation for the current quiz version; the compatibility exception applies only to older completed versions.
+
+## Intentionally covered elsewhere
+
+- **Tasking** — already represented by D/s through Obedience, Service, and Structure.
+- **Praise / reward** — Praise / Approval is a canonical Signal and is directly measured in D/s; concrete rewards belong to the Rewards system/catalog rather than becoming one B&D Signal.
+- **Fantasy vs practice vs lifestyle intensity** — explicitly out of scope for B&D scoring. These are cross-cutting engagement dimensions, not levels of B&D preference strength.
 
 ## References consulted
 
