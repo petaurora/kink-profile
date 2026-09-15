@@ -56,7 +56,14 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
   - Do not map it to `movement_restriction`; perception/communication can be limited without restricting movement.
   - Concrete implementations such as blindfolds, hoods, gags, hearing restriction, and darkness belong in catalog/modifier data rather than becoming separate canonical profile dimensions.
 
-Net effect of the new restraint recommendations: **+2 questions overall**, not +5 — one merged replacement for bd-005, one new giving responsibility item, and one new sensory / communication restriction item.
+- **Aesthetic bondage / visual composition:** **“The visual form and composition of bondage can make it appealing to me even when restriction itself is not the main point.”**
+  - **Decision:** do not add a new aesthetic-specific canonical Signal for this B&D use case.
+  - Treat this primarily as `ritual_significance · Overall`: the form / arrangement itself carries value beyond the practical function of restraint.
+  - Add a secondary `positioning · Overall` contribution because deliberate body arrangement / composition is part of the appeal being measured.
+  - Keep restraint / constraint context light. Prefer a small `restraint · Overall` contribution rather than making `constraint_control` central, because visual appeal should not imply that the user primarily enjoys the psychological experience of being controlled.
+  - Specific styles such as shibari, decorative rope, body framing, materials, patterns, and presentation remain catalog/modifier data.
+
+Net effect of the new restraint recommendations: **+2 questions overall**, not +5 — one merged replacement for bd-005, one new giving responsibility item, and one new sensory / communication restriction item. Aesthetic bondage is an additional newly surfaced question candidate and should be included in the final whole-bank count/balance pass.
 
 ## Rewrite
 
@@ -103,7 +110,8 @@ Net effect of the new restraint recommendations: **+2 questions overall**, not +
 - **Vulnerability / psychological release from restraint** — folded into the proposed bd-005 replacement rather than added as separate overlapping questions.
 - **Responsibility while restraining** — resolved through the existing general Responsibility signal: the new question primarily targets `responsibility · Receiving`, with restraint/control as secondary context rather than creating a restraint-specific responsibility dimension.
 - **Sensory / communication restriction** — resolved as an existing-construct expression rather than a new canonical dimension: use `constraint_control · Receiving` / `control · Receiving` for the quiz meaning, with concrete sensory/communication implementations kept in catalog/modifier data.
-- **Aesthetic bondage, tasking, praise/reward** — real B&D-adjacent dimensions. Review whether these belong in quiz signals, another quiz, or catalog/modifier data rather than assuming they are out of scope.
+- **Aesthetic bondage / visual artistry** — resolved without a new canonical aesthetic Signal: use `ritual_significance · Overall` as the primary “form itself matters” construct, `positioning · Overall` secondarily for body composition, and only a light restraint-context contribution. Shibari/decorative styles remain catalog/modifier detail.
+- **Tasking, praise/reward** — real B&D-adjacent dimensions. Review whether these belong in this quiz, another quiz, or catalog/modifier data rather than assuming they are out of scope.
 - **Fantasy vs practice vs lifestyle intensity** — the systematic review supports a dimensional spectrum of engagement, but this is different from preference strength and should not be added to the quiz without a separate product decision.
 
 ## References consulted
