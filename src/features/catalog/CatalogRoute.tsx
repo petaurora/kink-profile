@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loadProfile } from "../../lib/profileStorage";
 import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
-import { SegmentedControl } from "../../components/SegmentedControl";
 import { rankingRoute } from "../../app/routes";
 import { KinkThisOrThat } from "../ranking/KinkThisOrThat";
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
@@ -52,16 +51,24 @@ export function CatalogRoute({
     <RoutedFeatureFrame activeDestination="catalog">
       <section className="catalog-workspace-shell">
         <div className="catalog-workspace-navigation">
-          <div>
-            <p className="eyebrow">Catalog · Kinks</p>
-            <strong>Define it directly or compare what wins.</strong>
-          </div>
-          <SegmentedControl
-            value={view}
-            options={kinkCatalogWorkspaceOptions}
-            onChange={changeView}
-            ariaLabel="Kink catalog view"
-          />
+          <strong className="catalog-workspace-title">Kinks</strong>
+          <nav className="catalog-workspace-tabs" aria-label="Kink catalog view">
+            {kinkCatalogWorkspaceOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                className={
+                  view === option.value
+                    ? "catalog-workspace-tab is-active"
+                    : "catalog-workspace-tab"
+                }
+                aria-current={view === option.value ? "page" : undefined}
+                onClick={() => changeView(option.value)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </nav>
         </div>
 
         {view === "browse" ? (
