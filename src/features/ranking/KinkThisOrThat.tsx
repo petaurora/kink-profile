@@ -39,7 +39,7 @@ import {
 import type { StoredProfile } from "../../lib/profileStorage";
 import "./KinkThisOrThat.activity.css";
 
-type RankingMode = "category" | "overall";
+export type RankingMode = "category" | "overall";
 
 type CategoryRankingSummary = {
   id: string;
@@ -129,22 +129,28 @@ export function suggestedRankingCategoryId(
 
 export function KinkThisOrThat({
   quizProfile,
+  initialMode = "category",
+  onModeChange,
 }: {
   quizProfile: StoredProfile;
   onClose: () => void;
+  initialMode?: RankingMode;
+  onModeChange?: (mode: RankingMode) => void;
 }) {
   const [profile, setProfile] = useState(() => loadCatalogProfile());
   const initialComparisons = getActiveKinkRankingComparisons(profile);
   const initialCategoryId =
     mostRecentRankedCategoryId(initialComparisons) ?? kinkCategories[0]?.id ?? "";
 
-  const [mode, setMode] = useState<RankingMode>("category");
+  const [mode, setMode] = useState<RankingMode>(initialMode);
   const [categoryId, setCategoryId] = useState<string>(initialCategoryId);
   const [checkpointStartCount, setCheckpointStartCount] = useState(() =>
-    comparisonCountForScope(initialComparisons, {
-      type: "category",
-      categoryId: initialCategoryId,
-    }),
+    comparisonCountForScope(
+      initialComparisons,
+      initialMode === "overall"
+        ? { type: "overall" }
+        : { type: "category", categoryId: initialCategoryId },
+    ),
   );
   const [showResults, setShowResults] = useState(false);
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
@@ -274,6 +280,28 @@ export function KinkThisOrThat({
     [eligibleCatalog, activeComparisons],
   );
 
+  useEffect(() => {
+    if (initialMode === mode) return;
+
+    setMode(initialMode);
+    setShowCategoryPicker(false);
+    setShowResults(false);
+    setPairNonce((value) => value + 1);
+    setCheckpointStartCount(
+      comparisonCountForScope(
+        activeComparisons,
+        initialMode === "overall"
+          ? { type: "overall" }
+          : { type: "category", categoryId },
+      ),
+    );
+  }, [initialMode]);
+
+  const changeRankingMode = (nextMode: RankingMode) => {
+    setMode(nextMode);
+    onModeChange?.(nextMode);
+  };
+
   const lastRankedCategoryId = mostRecentRankedCategoryId(activeComparisons);
 
   const continueCheckpoint = () => {
@@ -303,7 +331,7 @@ export function KinkThisOrThat({
   };
 
   const changeCategory = (nextCategoryId: string) => {
-    setMode("category");
+    changeRankingMode("category");
     setCategoryId(nextCategoryId);
     setShowCategoryPicker(false);
     setShowResults(false);
@@ -322,7 +350,7 @@ export function KinkThisOrThat({
   };
 
   const openCategoryPicker = () => {
-    setMode("category");
+    changeRankingMode("category");
     setShowResults(false);
     setShowCategoryPicker(true);
     setCheckpointStartCount(
@@ -336,7 +364,7 @@ export function KinkThisOrThat({
   const switchToCategoryRanking = () => {
     if (mode === "category") return;
 
-    setMode("category");
+    changeRankingMode("category");
     setShowCategoryPicker(false);
     setShowResults(false);
     setPairNonce((value) => value + 1);
@@ -345,18 +373,6 @@ export function KinkThisOrThat({
         type: "category",
         categoryId,
       }),
-    );
-  };
-
-  const openOverallRanking = () => {
-    if (mode === "overall" || overallCandidates.length < 2) return;
-
-    setMode("overall");
-    setShowCategoryPicker(false);
-    setShowResults(false);
-    setPairNonce((value) => value + 1);
-    setCheckpointStartCount(
-      comparisonCountForScope(activeComparisons, { type: "overall" }),
     );
   };
 
@@ -371,7 +387,7 @@ export function KinkThisOrThat({
         startedAt,
       ),
     );
-    setMode("category");
+    changeRankingMode("category");
     setShowCategoryPicker(false);
     setShowResults(false);
     setCheckpointStartCount(0);
@@ -388,7 +404,7 @@ export function KinkThisOrThat({
         : "Ranking";
 
   const openNextCategoryChoice = () => {
-    setMode("category");
+    changeRankingMode("category");
     setShowResults(false);
     setShowCategoryPicker(true);
     setCheckpointStartCount(
@@ -401,34 +417,6 @@ export function KinkThisOrThat({
 
   return (
     <section className="ranking-stack ranking-activity-stack">
-      <nav className="ranking-scope-tabs" aria-label="Ranking scope">
-        <button
-          type="button"
-          className={
-            mode === "category"
-              ? "ranking-scope-tab is-active"
-              : "ranking-scope-tab"
-          }
-          aria-pressed={mode === "category"}
-          onClick={switchToCategoryRanking}
-        >
-          Category
-        </button>
-        <button
-          type="button"
-          className={
-            mode === "overall"
-              ? "ranking-scope-tab is-active"
-              : "ranking-scope-tab"
-          }
-          aria-pressed={mode === "overall"}
-          disabled={overallCandidates.length < 2}
-          onClick={openOverallRanking}
-        >
-          Overall
-        </button>
-      </nav>
-
       <section className="ranking-category-strip">
         <div>
           <p className="eyebrow">{contextLabel}</p>
