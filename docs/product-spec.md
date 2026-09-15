@@ -142,15 +142,28 @@ See [Quizzes](product/quizzes.md) and [Sparse-State Semantics](sparse-state-sema
 
 ### Kink Catalog
 
-The Kink Catalog is the detailed activity library and direct preference-management surface.
+Kinks is the detailed activity library plus category and cross-category comparison workflows.
 
-It provides:
+Its current local task navigation is:
+
+```text
+Compare    Overall    Explore
+```
+
+- **Compare** is the default/front-door category This-or-That activity.
+- **Overall** is the cross-category comparison/synthesis activity.
+- **Explore** is the direct catalog browsing/preference-management surface.
+
+Explore provides:
 
 - stable Catalog and Category identities;
-- searchable labels and aliases;
-- category/domain metadata;
-- explicit item preferences;
-- direct limits/exclusions;
+- searchable labels and aliases with search kept immediately available;
+- compact Category/Preference filtering behind one Filters control;
+- contextual active-filter chips/reset behavior;
+- expandable category groups with compact item rows;
+- inline explicit item-preference editing;
+- contained row-detail disclosure for description and evidence context;
+- compact progressive Boundaries disclosure for explicit exclusions;
 - read-only current ranking context;
 - derived profile-informed catalog affinity;
 - recommendation suppression when explicit exclusions exist.
@@ -171,13 +184,17 @@ See [Kink Catalog](product/kink-catalog.md).
 
 ### This-or-That ranking
 
-This-or-That is a comparative mini-game for relative item preference.
+This-or-That is a comparative activity for relative item preference.
 
-Users rank within categories first; evidenced category finalists then feed the Overall comparison pool.
+**Compare** ranks within categories first; evidenced category finalists then feed the **Overall** comparison pool.
+
+Compare is activity-first rather than dashboard-first. It protects the initial pair with a Tap-to-start gate, keeps category switching/Pick for me close to the active pair, and uses an invisible 25-comparison checkpoint for pacing instead of visible session-size modes. That checkpoint does not create a new scoring model, scope, or persisted ranking run.
 
 Raw pairwise comparisons remain authoritative ranking evidence. Starting a new ranking run archives the current run and begins a fresh comparative pulse without deleting previous history.
 
 Historical movement is presentation context only and does not become new profile evidence.
+
+Overall is directly reachable in the local task navigation but remains most meaningful after category evidence exists; the current UI does not impose a separate persisted readiness state.
 
 See [Kink This-or-That Ranking](kink-this-or-that-ranking.md).
 
