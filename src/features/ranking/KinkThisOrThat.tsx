@@ -153,7 +153,6 @@ export function KinkThisOrThat({
   const [pairNonce, setPairNonce] = useState(0);
   const [openMovementId, setOpenMovementId] = useState<string | null>(null);
   const [hasStartedRanking, setHasStartedRanking] = useState(false);
-  const [categoryFabOpen, setCategoryFabOpen] = useState(false);
 
   useEffect(() => {
     saveCatalogProfile(profile);
@@ -307,7 +306,6 @@ export function KinkThisOrThat({
     setMode("category");
     setCategoryId(nextCategoryId);
     setShowCategoryPicker(false);
-    setCategoryFabOpen(false);
     setShowResults(false);
     setPairNonce((value) => value + 1);
     setCheckpointStartCount(
@@ -326,7 +324,6 @@ export function KinkThisOrThat({
   const openCategoryPicker = () => {
     setMode("category");
     setShowResults(false);
-    setCategoryFabOpen(false);
     setShowCategoryPicker(true);
     setCheckpointStartCount(
       comparisonCountForScope(activeComparisons, {
@@ -336,12 +333,26 @@ export function KinkThisOrThat({
     );
   };
 
+  const switchToCategoryRanking = () => {
+    if (mode === "category") return;
+
+    setMode("category");
+    setShowCategoryPicker(false);
+    setShowResults(false);
+    setPairNonce((value) => value + 1);
+    setCheckpointStartCount(
+      comparisonCountForScope(activeComparisons, {
+        type: "category",
+        categoryId,
+      }),
+    );
+  };
+
   const openOverallRanking = () => {
-    if (overallCandidates.length < 2) return;
+    if (mode === "overall" || overallCandidates.length < 2) return;
 
     setMode("overall");
     setShowCategoryPicker(false);
-    setCategoryFabOpen(false);
     setShowResults(false);
     setPairNonce((value) => value + 1);
     setCheckpointStartCount(
@@ -362,7 +373,6 @@ export function KinkThisOrThat({
     );
     setMode("category");
     setShowCategoryPicker(false);
-    setCategoryFabOpen(false);
     setShowResults(false);
     setCheckpointStartCount(0);
     setPairNonce((value) => value + 1);
@@ -381,11 +391,44 @@ export function KinkThisOrThat({
     setMode("category");
     setShowResults(false);
     setShowCategoryPicker(true);
-    setCategoryFabOpen(false);
+    setCheckpointStartCount(
+      comparisonCountForScope(activeComparisons, {
+        type: "category",
+        categoryId,
+      }),
+    );
   };
 
   return (
     <section className="ranking-stack ranking-activity-stack">
+      <nav className="ranking-scope-tabs" aria-label="Ranking scope">
+        <button
+          type="button"
+          className={
+            mode === "category"
+              ? "ranking-scope-tab is-active"
+              : "ranking-scope-tab"
+          }
+          aria-pressed={mode === "category"}
+          onClick={switchToCategoryRanking}
+        >
+          Category
+        </button>
+        <button
+          type="button"
+          className={
+            mode === "overall"
+              ? "ranking-scope-tab is-active"
+              : "ranking-scope-tab"
+          }
+          aria-pressed={mode === "overall"}
+          disabled={overallCandidates.length < 2}
+          onClick={openOverallRanking}
+        >
+          Overall
+        </button>
+      </nav>
+
       <section className="ranking-category-strip">
         <div>
           <p className="eyebrow">{contextLabel}</p>
@@ -393,11 +436,24 @@ export function KinkThisOrThat({
             {mode === "overall" ? "Across everything" : activeCategory?.label}
           </h1>
         </div>
-        <p className="ranking-category-strip-meta">
-          {mode === "overall"
-            ? `${overallCandidates.length} candidates · ${orderingInScope} comparisons`
-            : `${orderingInScope} comparisons · ${confidenceLabel(snapshot.confidence)}`}
-        </p>
+        <div className="ranking-category-strip-footer">
+          <p className="ranking-category-strip-meta">
+            {mode === "overall"
+              ? `${overallCandidates.length} candidates · ${orderingInScope} comparisons`
+              : `${orderingInScope} comparisons · ${confidenceLabel(snapshot.confidence)}`}
+          </p>
+          {mode === "category" && (
+            <div className="ranking-category-inline-actions" aria-label="Category actions">
+              <button type="button" className="text-button" onClick={openCategoryPicker}>
+                Switch
+              </button>
+              <span aria-hidden="true">·</span>
+              <button type="button" className="text-button" onClick={pickCategoryForMe}>
+                Pick for me
+              </button>
+            </div>
+          )}
+        </div>
       </section>
 
       {newRunNotice && (
@@ -503,7 +559,6 @@ export function KinkThisOrThat({
               aria-label="Tap to start ranking"
             >
               <span>Tap to start</span>
-              <small>Your first tap only unlocks the choices.</small>
             </button>
           )}
         </div>
@@ -520,9 +575,15 @@ export function KinkThisOrThat({
             still saved, and excluded items stay out of new pairs.
           </p>
           <div className="ranking-empty-actions">
-            <button className="primary" onClick={openCategoryPicker}>
-              Choose another category
-            </button>
+            {mode === "overall" ? (
+              <button className="primary" onClick={switchToCategoryRanking}>
+                Back to category ranking
+              </button>
+            ) : (
+              <button className="primary" onClick={openCategoryPicker}>
+                Choose another category
+              </button>
+            )}
           </div>
         </article>
       )}
@@ -531,9 +592,13 @@ export function KinkThisOrThat({
         <article className="ranking-checkpoint panel">
           <div>
             <p className="eyebrow">25 choices saved</p>
-            <h2>Keep going or switch it up?</h2>
+            <h2>
+              {mode === "overall" ? "Keep going or switch back?" : "Keep going or switch it up?"}
+            </h2>
             <p>
-              Your ranking is saved. Continue for another 25, or choose a new category.
+              {mode === "overall"
+                ? "Your ranking is saved. Continue for another 25, or return to category ranking."
+                : "Your ranking is saved. Continue for another 25, or choose a new category."}
             </p>
           </div>
           <div className="ranking-checkpoint-actions">
@@ -542,9 +607,15 @@ export function KinkThisOrThat({
                 Keep going
               </button>
             )}
-            <button className="secondary" onClick={openNextCategoryChoice}>
-              New category
-            </button>
+            {mode === "overall" ? (
+              <button className="secondary" onClick={switchToCategoryRanking}>
+                Category ranking
+              </button>
+            ) : (
+              <button className="secondary" onClick={openNextCategoryChoice}>
+                New category
+              </button>
+            )}
           </div>
         </article>
       )}
@@ -568,9 +639,15 @@ export function KinkThisOrThat({
               <button className="primary" onClick={() => setShowResults(false)}>
                 Back to ranking
               </button>
-              <button className="secondary" onClick={openNextCategoryChoice}>
-                New category
-              </button>
+              {mode === "overall" ? (
+                <button className="secondary" onClick={switchToCategoryRanking}>
+                  Category ranking
+                </button>
+              ) : (
+                <button className="secondary" onClick={openNextCategoryChoice}>
+                  New category
+                </button>
+              )}
             </div>
           </div>
 
@@ -654,13 +731,6 @@ export function KinkThisOrThat({
                 View current ranking
               </button>
             )}
-            <button
-              className="secondary compact"
-              onClick={openOverallRanking}
-              disabled={overallCandidates.length < 2}
-            >
-              Open overall ranking
-            </button>
           </div>
 
           {hasMeaningfulRank &&
@@ -695,46 +765,6 @@ export function KinkThisOrThat({
             ))}
         </div>
       </details>
-
-      {mode === "category" && (
-        <div
-          className={
-            categoryFabOpen
-              ? "ranking-category-fab is-open"
-              : "ranking-category-fab"
-          }
-        >
-          <div className="ranking-category-fab-menu" aria-hidden={!categoryFabOpen}>
-            <button
-              type="button"
-              className="ranking-category-fab-action"
-              onClick={pickCategoryForMe}
-              tabIndex={categoryFabOpen ? 0 : -1}
-            >
-              <span aria-hidden="true">↻</span>
-              Pick for me
-            </button>
-            <button
-              type="button"
-              className="ranking-category-fab-action"
-              onClick={openCategoryPicker}
-              tabIndex={categoryFabOpen ? 0 : -1}
-            >
-              <span aria-hidden="true">≡</span>
-              Choose category
-            </button>
-          </div>
-          <button
-            type="button"
-            className="ranking-category-fab-trigger"
-            aria-label="Category actions"
-            aria-expanded={categoryFabOpen}
-            onClick={() => setCategoryFabOpen((open) => !open)}
-          >
-            <span aria-hidden="true">{categoryFabOpen ? "×" : "+"}</span>
-          </button>
-        </div>
-      )}
     </section>
   );
 }
