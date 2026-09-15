@@ -1,13 +1,11 @@
 .catalog-workspace-shell {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .catalog-workspace-navigation {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 20px;
+  display: grid;
+  gap: 10px;
   padding: 4px 2px 0;
 }
 
@@ -23,18 +21,18 @@
 .catalog-workspace-tabs {
   display: flex;
   align-items: end;
-  gap: 24px;
+  gap: clamp(24px, 7vw, 52px);
 }
 
 .catalog-workspace-tab {
   position: relative;
   border: 0;
-  padding: 3px 0 8px;
+  padding: 4px 0 9px;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
   font: inherit;
-  font-size: .88rem;
+  font-size: .86rem;
   font-weight: 800;
 }
 
@@ -74,11 +72,11 @@
 
 @media (max-width: 640px) {
   .catalog-workspace-navigation {
-    gap: 16px;
+    gap: 9px;
     padding-top: 2px;
   }
 
   .catalog-workspace-tabs {
-    gap: 22px;
+    gap: 28px;
   }
 }
