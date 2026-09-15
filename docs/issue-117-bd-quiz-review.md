@@ -54,7 +54,9 @@ Net effect of the new restraint recommendations: **+2 questions overall**, not +
 
 - **bd-003** — “Being required to stay in a specific position until I am released can be appealing.”
 - **bd-004** — “Being deliberately arranged into a posture by a trusted partner can make the sense of control more tangible.”
-  - Useful distinction: maintaining a required position vs having the body physically arranged. Current model collapses both into `receiving_positioning`.
+  - **Decision:** keep both. They measure distinct experiences under the shared `receiving_positioning` umbrella: maintaining a required position vs being physically arranged/posed.
+  - Keep `receiving_positioning` as the primary signal for both rather than introducing new canonical signals.
+  - Differentiate through secondary weights: bd-003 should lean toward `obedience` / `structure`; bd-004 should lean toward `receiving_constraint_control` / `receiving_control`.
 
 - **bd-010** — “Securing a willing partner so they cannot freely reposition can make restraint feel more complete.”
   - Review whether nondirectional `movement_restriction` should be scored from both receiving- and giving-oriented questions.
