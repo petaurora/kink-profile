@@ -57,12 +57,28 @@ The current D/s bank is strongly asymmetric. It contains substantial evidence fo
 
 These should be considered as possible new questions only where they represent a distinct psychological preference rather than adding questions for artificial symmetry.
 
+## Findings from supplied D/s references
+
+The additional practitioner/therapy-oriented references strengthen several model observations:
+
+- **Power exchange is reciprocal but not symmetrical.** Sources describe one partner handing over defined control/responsibility while the other accepts the responsibility of leading, structuring, monitoring, or containing the dynamic. This supports measuring `responsibility · Receiving` directly rather than treating Dominance as control alone.
+- **Being obeyed is distinct from exercising control.** Following direction is repeatedly described as active participation by the submissive, while the Dominant's experience includes having agreed direction followed. This supports direct `obedience · Receiving` evidence where wording genuinely targets the appeal of being followed.
+- **Praise / gratitude can flow toward the Dominant.** Shelby Devlin explicitly emphasizes affirmation, gratitude, and praise from submissive to Dominant as part of reciprocity and recognition of the Dominant's effort. This makes `praise_approval · Giving` a genuine D/s construct rather than an artificial mirror of receiving praise.
+- **Ritual is not interchangeable with Structure or Ownership.** Rules, protocols, tasks, and rituals are described as related but distinct scaffolding. This reinforces adding `ritual_significance` to ds-007 or rewriting it to isolate what it intends to measure.
+- **Scope / lifestyle integration is separate from preference strength.** Sources distinguish scene-based, role-specific, casual, online, 24/7, and other forms of D/s. This reinforces the concern that ds-018 may be measuring how broadly D/s applies across a relationship rather than a canonical D/s preference Signal.
+- **Service is a recognizable submissive orientation, but receiving service is not automatically equivalent to Dominance.** Add `service · Receiving` only if the question measures genuine appeal in being served, not merely leadership/control.
+- **Trust, care, feedback, and communication are foundational relationship conditions.** They should not automatically become quiz Signals unless the question targets a distinct kink preference rather than healthy-practice requirements.
+
 ## External sanity check
 
-The literature consistently treats D/s as consensual power exchange and distinguishes roles/perspectives rather than assuming every practitioner uses the same role in every context. It also describes rituals, orders/structure, and varying degrees of lifestyle integration as related but separable features.
+The literature and supplied practitioner references consistently treat D/s as consensual power exchange and distinguish roles/perspectives rather than assuming every practitioner uses the same role in every context. They also describe rituals, orders/structure, responsibility, reciprocity, and varying degrees of lifestyle integration as related but separable features.
 
 References consulted:
 
 - De Neef et al. (2019), *Bondage-Discipline, Dominance-Submission and Sadomasochism (BDSM) From an Integrative Biopsychosocial Perspective: A Systematic Review* — https://pmc.ncbi.nlm.nih.gov/articles/PMC6525106/
 - Crane & Ireland (2023), *Dominants, Submissives, and Bottom-up Text Analysis: Exploring BDSM Roles Through Romantic and Erotic Narratives* — https://www.tandfonline.com/doi/full/10.1080/00224499.2022.2111400
 - Turley et al. (2022), *A certain evolution: a phenomenological study of 24/7 BDSM and negotiating consent* — https://www.tandfonline.com/doi/full/10.1080/19419899.2021.1901771
+- SubTasks, *D/s Dynamic Explained: A Beginner's Glossary and Guide* — https://subtasksapp.com/blog/ds-dynamic-explained/
+- Progressive Therapeutic Collective, *Beyond Stereotypes: Diving into the World of D/s Dynamics* — https://www.progressivetherapeutic.com.au/ptc-media-releases/ds-dynamics
+- Shelby Devlin, *How Gratitude Strengthens D/s Dynamics* — https://www.shelbydevlin.com/blog/how-gratitude-strengthens-ds-dynamics
+- House of Dasein, *An Introductory Guide to Building a D/s Dynamic* — https://houseofdasein.com.au/blogs/starting-out-in-kink/an-introductory-guide-to-building-a-d-s-dynamic
