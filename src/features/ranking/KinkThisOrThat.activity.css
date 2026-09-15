@@ -1,18 +1,58 @@
 .ranking-activity-stack {
   align-items: start;
-  padding-bottom: 96px;
+  padding-bottom: 20px;
+}
+
+.ranking-scope-tabs {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: clamp(28px, 10vw, 72px);
+  padding: 0 0 4px;
+}
+
+.ranking-scope-tab {
   position: relative;
+  border: 0;
+  padding: 8px 4px 10px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 800;
+}
+
+.ranking-scope-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.ranking-scope-tab.is-active {
+  color: var(--text-primary);
+}
+
+.ranking-scope-tab.is-active::after {
+  background: var(--accent-primary);
+}
+
+.ranking-scope-tab:disabled {
+  opacity: .38;
+  cursor: default;
 }
 
 .ranking-category-strip {
   width: 100%;
-  padding: 4px 2px 10px;
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 14px;
+  padding: 6px 2px 10px;
+  display: grid;
+  gap: 5px;
   border-bottom: 1px solid var(--border-subtle);
-  position: relative;
 }
 
 .ranking-category-strip .eyebrow {
@@ -27,12 +67,40 @@
   letter-spacing: -.025em;
 }
 
+.ranking-category-strip-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
 .ranking-category-strip-meta {
-  margin: 0 0 1px;
+  margin: 0;
   color: var(--text-muted);
   font-size: .72rem;
-  text-align: right;
+  line-height: 1.2;
+}
+
+.ranking-category-inline-actions {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
   white-space: nowrap;
+}
+
+.ranking-category-inline-actions .text-button {
+  min-height: 0;
+  padding: 2px 0;
+  color: var(--text-secondary);
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.ranking-category-inline-actions .text-button:hover {
+  color: var(--accent-primary);
 }
 
 .ranking-activity-notice {
@@ -137,7 +205,6 @@
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 7px;
   background: color-mix(in srgb, var(--bg-page) 38%, transparent);
   color: var(--text-primary);
   cursor: pointer;
@@ -155,14 +222,6 @@
   font-size: .95rem;
   font-weight: 900;
   letter-spacing: -.01em;
-}
-
-.ranking-start-gate small {
-  max-width: 230px;
-  color: var(--text-secondary);
-  font-size: .7rem;
-  font-weight: 700;
-  text-align: center;
 }
 
 .ranking-checkpoint {
@@ -287,89 +346,13 @@
   justify-self: start;
 }
 
-/* Prototype: reuse the FAB actions as lightweight inline category controls. */
-.ranking-category-fab {
-  position: absolute;
-  right: 2px;
-  top: 41px;
-  z-index: 3;
-  display: block;
-  pointer-events: auto;
-}
-
-.ranking-category-fab-trigger {
-  display: none;
-}
-
-.ranking-category-fab-menu,
-.ranking-category-fab.is-open .ranking-category-fab-menu {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  gap: 0;
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-}
-
-.ranking-category-fab-action {
-  min-height: auto;
-  border: 0;
-  border-radius: 0;
-  padding: 2px 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-  background: transparent;
-  color: var(--text-muted);
-  box-shadow: none;
-  cursor: pointer;
-  font-size: .7rem;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.ranking-category-fab-action:hover {
-  color: var(--accent-primary);
-}
-
-.ranking-category-fab-action span {
-  display: none;
-}
-
-.ranking-category-fab-action:first-child::before {
-  content: " · ";
-  padding: 0 6px;
-  color: var(--text-muted);
-  font-weight: 700;
-}
-
-.ranking-category-fab-action:nth-child(2) {
-  font-size: 0;
-}
-
-.ranking-category-fab-action:nth-child(2)::after {
-  content: "Switch";
-  font-size: .7rem;
-}
-
 @media (max-width: 700px) {
-  .ranking-category-strip {
-    align-items: start;
-    flex-direction: column;
+  .ranking-category-strip-footer {
+    gap: 8px;
+  }
+
+  .ranking-category-inline-actions {
     gap: 4px;
-    padding-inline: 2px;
-    padding-bottom: 12px;
-  }
-
-  .ranking-category-strip-meta {
-    max-width: calc(100% - 126px);
-    text-align: left;
-  }
-
-  .ranking-category-fab {
-    top: auto;
-    bottom: 11px;
   }
 
   .ranking-checkpoint {
@@ -393,6 +376,10 @@
 }
 
 @media (max-width: 520px) {
+  .ranking-scope-tabs {
+    gap: 42px;
+  }
+
   .ranking-start-gate {
     border-radius: 22px;
   }
@@ -407,5 +394,14 @@
 
   .ranking-checkpoint {
     padding: 14px;
+  }
+
+  .ranking-category-strip-footer {
+    align-items: baseline;
+  }
+
+  .ranking-category-strip-meta,
+  .ranking-category-inline-actions .text-button {
+    font-size: .68rem;
   }
 }
