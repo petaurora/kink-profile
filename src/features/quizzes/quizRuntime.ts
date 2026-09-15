@@ -121,10 +121,22 @@ export function hasEstablishedQuizResult(
     return false;
   }
 
-  const answers = profile.quizzes[quiz.id]?.answers ?? {};
-  return (
+  const progress = profile.quizzes[quiz.id];
+  const answers = progress?.answers ?? {};
+  const currentBankComplete =
     quiz.questionIds.length > 0 &&
-    getAnsweredCount(quiz, answers) >= quiz.questionIds.length
+    getAnsweredCount(quiz, answers) >= quiz.questionIds.length;
+
+  if (currentBankComplete) return true;
+
+  // A completed result from an older quiz version remains an established
+  // historical result after the active question bank changes. The user can
+  // explicitly retake the new version; once that retake completes, its fresh
+  // answer map replaces the old one and obsolete question answers disappear.
+  return Boolean(
+    progress?.completedAt &&
+      progress.quizVersion < quiz.version &&
+      Object.keys(answers).length > 0,
   );
 }
 
@@ -172,8 +184,7 @@ export function resolveQuizLifecycle(
     };
   }
 
-  const hasEstablishedResult =
-    totalQuestions > 0 && stableAnsweredCount >= totalQuestions;
+  const hasEstablishedResult = hasEstablishedQuizResult(quiz, profile);
 
   if (progress?.retake && hasEstablishedResult) {
     const attemptAnswers = progress.retake.answers;
@@ -196,21 +207,6 @@ export function resolveQuizLifecycle(
     };
   }
 
-  if (stableAnsweredCount === 0) {
-    return {
-      kind: "resolved",
-      state: "not-started",
-      resultState: resolveSparseState<QuizSparseReason>({
-        evidence: { level: "none", direct: false, inferred: false },
-        result: "missing",
-        reason: "quiz_not_started",
-      }),
-      answeredCount: 0,
-      totalQuestions,
-      hasEstablishedResult: false,
-    };
-  }
-
   if (hasEstablishedResult) {
     return {
       kind: "resolved",
@@ -223,6 +219,21 @@ export function resolveQuizLifecycle(
       answeredCount: stableAnsweredCount,
       totalQuestions,
       hasEstablishedResult: true,
+    };
+  }
+
+  if (stableAnsweredCount === 0) {
+    return {
+      kind: "resolved",
+      state: "not-started",
+      resultState: resolveSparseState<QuizSparseReason>({
+        evidence: { level: "none", direct: false, inferred: false },
+        result: "missing",
+        reason: "quiz_not_started",
+      }),
+      answeredCount: 0,
+      totalQuestions,
+      hasEstablishedResult: false,
     };
   }
 
