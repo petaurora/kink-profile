@@ -78,7 +78,10 @@ Net effect of the new restraint recommendations: **+2 questions overall**, not +
 
 - **bd-025** — “Following an agreed sequence or protocol exactly can be satisfying because the form itself matters.”
 - **bd-026** — “Creating a specific procedure or protocol for a willing partner can make structure feel more deliberate and meaningful.”
-  - Good directional questions, but both currently collapse into nondirectional `ritual_significance` / `structure`. Decide whether that loss of directionality is intentional.
+  - **Decision:** keep both unchanged.
+  - Keep `ritual_significance · Overall` nondirectional; both questions measure meaning in the form / ritual itself.
+  - Preserve `structure · Receiving` for bd-025 and `structure · Giving` for bd-026 rather than making ritual directional too.
+  - bd-025 may retain its smaller obedience contribution because following an exact agreed protocol genuinely includes following direction.
 
 ## Possible gaps surfaced by references
 
