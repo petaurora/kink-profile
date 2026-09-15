@@ -35,7 +35,7 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
   - Drop the `playful_resistance` secondary weight unless future wording explicitly introduces relational teasing / pushback; physical struggling against restraint is not inherently playful resistance.
 
 - **bd-018** — “A non-painful corrective task or consequence can still feel strongly like discipline to me.”
-  - Remove; overlaps bd-016/017 and repeats the non-pain distinction.
+  - **Decision:** remove with no replacement. It overlaps bd-016/017 and repeats the non-pain distinction without adding a separate construct.
 
 - **bd-020** — “Correcting a willing partner toward a shared expectation can feel meaningful even when pain is not involved.”
   - Remove or substantially rewrite; overlaps bd-019 and its `guidance_shaping` weight is stronger than the wording supports.
