@@ -1,6 +1,6 @@
 # Kink This-or-That Ranking
 
-This document defines the current catalog pairwise-ranking contract, including category/Overall ranking, temporal reranking, historical snapshots, and movement.
+This document defines the current catalog pairwise-ranking contract, including category/Overall ranking, temporal reranking, historical snapshots, movement, and the current Compare/Overall interaction flow.
 
 ## Product boundary
 
@@ -66,6 +66,38 @@ type RankingScope =
 Category ranking and Overall ranking are separate comparative contexts.
 
 A comparison in one category does not directly update another category or the Overall Elo calculation.
+
+## Current Kinks ranking UX
+
+Kinks uses one local task navigation layer:
+
+```text
+Compare    Overall    Explore
+```
+
+- **Compare** is the default/front-door ranking activity and operates in a category scope.
+- **Overall** opens the cross-category ranking activity.
+- **Explore** is the sibling direct-preference workspace and is not a ranking scope.
+
+### Compare
+
+Compare is deliberately activity-first rather than dashboard-first.
+
+When useful prior category work exists, the UI resumes a meaningful recent category and keeps compact category context near the pair. The user can **Switch** categories or use **Pick for me** to select another useful category without leaving the ranking activity.
+
+The first pair is initially protected by a **Tap to start** gate so entering the default Catalog activity cannot accidentally record a comparison. The unlock tap itself is not a ranking answer.
+
+The UI does not ask the user to choose a visible session size. Instead, it uses an invisible pacing checkpoint every **25 answered comparisons**. At a checkpoint the current evidence is already saved, and the user can continue for another block or move to another category.
+
+That 25-comparison checkpoint is a **presentation/pacing rule**, not a scoring primitive, ranking scope, persisted session type, or alternate algorithm. Comparisons continue to belong to the active ranking run and their actual category/Overall scope.
+
+Current ranking/history results remain available as secondary context rather than replacing the active pairwise task after a checkpoint.
+
+### Overall
+
+Overall remains directly reachable as the cross-category synthesis activity. Its current eligibility/candidate rules are defined below and have not been changed by the navigation cleanup.
+
+Conceptually, Overall becomes more useful after meaningful category evidence exists. The current flat task navigation does not itself enforce or visually model a strict progression state; future readiness/progression treatment can evolve separately from the persisted ranking contract.
 
 ## Category-first flow
 
@@ -409,7 +441,9 @@ Current behavior is primarily implemented in:
 - `src/lib/kinkRankingHistory.ts` — archival snapshots and new-run creation;
 - `src/lib/kinkRankingMovement.ts` — previous comparable snapshot selection and view-relative movement;
 - `src/lib/catalogProfileStorage.ts` — persistence validation, legacy migration, Catalog ID canonicalization;
-- `src/KinkThisOrThat.tsx` and `src/RankingMovementIndicator.tsx` — current ranking interaction/presentation.
+- `src/features/ranking/KinkThisOrThat.tsx` — current Compare/Overall interaction and presentation;
+- `src/features/ranking/KinkThisOrThat.activity.css` — activity-first ranking presentation;
+- `src/features/catalog/CatalogRoute.tsx` — Kinks local Compare / Overall / Explore navigation.
 
 ## Invariants
 
@@ -426,3 +460,4 @@ Current behavior is primarily implemented in:
 11. Legacy comparisons migrate into one initial run without fabricated history.
 12. Catalog ID migrations apply consistently to comparisons and snapshots.
 13. Ranking history never feeds back as duplicate current evidence.
+14. The 25-comparison checkpoint is UI pacing only; it does not create a new ranking scope, scoring model, or persistence boundary.
