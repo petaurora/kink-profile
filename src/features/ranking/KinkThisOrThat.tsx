@@ -240,11 +240,8 @@ export function KinkThisOrThat({
   const sessionComplete = sessionAnswered >= sessionLimit;
 
   const resultView = useMemo(
-    () =>
-      showResults || sessionComplete
-        ? buildCatalogResultView(quizProfile, profile)
-        : null,
-    [quizProfile, profile, showResults, sessionComplete],
+    () => (showResults ? buildCatalogResultView(quizProfile, profile) : null),
+    [quizProfile, profile, showResults],
   );
 
   const activeCategory = kinkCategories.find(
@@ -569,6 +566,37 @@ export function KinkThisOrThat({
         </article>
       )}
 
+      {sessionComplete && !showResults && (
+        <article className="ranking-session-complete panel">
+          <div>
+            <p className="eyebrow">Session complete</p>
+            <h2>{sessionAnswered} choices saved.</h2>
+            <p>
+              {mode === "category"
+                ? `${activeCategory?.label ?? "This category"} is ${confidenceLabel(snapshot.confidence).toLowerCase()} right now.`
+                : `Your overall ranking is ${confidenceLabel(snapshot.confidence).toLowerCase()} right now.`}
+            </p>
+          </div>
+          <div className="ranking-session-complete-actions">
+            {activeCatalog.length >= 2 && (
+              <button className="primary" onClick={() => startSession(sessionSize)}>
+                Keep ranking
+              </button>
+            )}
+            {mode === "category" && nextCategory && nextCategory.id !== categoryId && (
+              <button className="secondary" onClick={() => changeCategory(nextCategory.id)}>
+                Next category →
+              </button>
+            )}
+            {snapshot.items.length > 0 && (
+              <button className="text-button" onClick={() => setShowResults(true)}>
+                View current ranking
+              </button>
+            )}
+          </div>
+        </article>
+      )}
+
       <div className="ranking-session-strip panel">
         <div>
           <p className="eyebrow">Session</p>
@@ -592,7 +620,7 @@ export function KinkThisOrThat({
         </div>
       </div>
 
-      {(sessionComplete || showResults) && (
+      {showResults && (
         <article className="ranking-results panel">
           <div className="ranking-results-heading">
             <div>
