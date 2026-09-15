@@ -40,7 +40,6 @@ import type { StoredProfile } from "../../lib/profileStorage";
 import "./KinkThisOrThat.activity.css";
 
 type RankingMode = "category" | "overall";
-type SessionSize = 10 | 25 | 50 | "gremlin";
 
 type CategoryRankingSummary = {
   id: string;
@@ -48,12 +47,7 @@ type CategoryRankingSummary = {
   confidence: number;
 };
 
-const sessionOptions: Array<{ value: SessionSize; label: string; detail: string }> = [
-  { value: 10, label: "Quick", detail: "10" },
-  { value: 25, label: "Standard", detail: "25" },
-  { value: 50, label: "Deep Dive", detail: "50" },
-  { value: "gremlin", label: "Gremlin", detail: "∞" },
-];
+const CHECKPOINT_SIZE = 25;
 
 function randomId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -146,8 +140,7 @@ export function KinkThisOrThat({
 
   const [mode, setMode] = useState<RankingMode>("category");
   const [categoryId, setCategoryId] = useState<string>(initialCategoryId);
-  const [sessionSize, setSessionSize] = useState<SessionSize>(25);
-  const [sessionStartCount, setSessionStartCount] = useState(() =>
+  const [checkpointStartCount, setCheckpointStartCount] = useState(() =>
     comparisonCountForScope(initialComparisons, {
       type: "category",
       categoryId: initialCategoryId,
@@ -159,6 +152,8 @@ export function KinkThisOrThat({
   const [newRunNotice, setNewRunNotice] = useState(false);
   const [pairNonce, setPairNonce] = useState(0);
   const [openMovementId, setOpenMovementId] = useState<string | null>(null);
+  const [hasStartedRanking, setHasStartedRanking] = useState(false);
+  const [categoryFabOpen, setCategoryFabOpen] = useState(false);
 
   useEffect(() => {
     saveCatalogProfile(profile);
@@ -235,9 +230,8 @@ export function KinkThisOrThat({
     activeComparisons,
     scope,
   );
-  const sessionAnswered = Math.max(0, totalInScope - sessionStartCount);
-  const sessionLimit = sessionSize === "gremlin" ? Infinity : sessionSize;
-  const sessionComplete = sessionAnswered >= sessionLimit;
+  const checkpointAnswered = Math.max(0, totalInScope - checkpointStartCount);
+  const checkpointComplete = checkpointAnswered >= CHECKPOINT_SIZE;
 
   const resultView = useMemo(
     () => (showResults ? buildCatalogResultView(quizProfile, profile) : null),
@@ -282,41 +276,15 @@ export function KinkThisOrThat({
   );
 
   const lastRankedCategoryId = mostRecentRankedCategoryId(activeComparisons);
-  const nextCategory = useMemo(() => {
-    if (!activeCategory) return undefined;
-    const currentIndex = kinkCategories.findIndex(
-      (category) => category.id === activeCategory.id,
-    );
-    if (currentIndex === -1) return undefined;
 
-    const laterUnstarted = kinkCategories
-      .slice(currentIndex + 1)
-      .find(
-        (category) =>
-          categorySummaries.find((summary) => summary.id === category.id)
-            ?.comparisons === 0,
-      );
-    if (laterUnstarted) return laterUnstarted;
-
-    const anyUnstarted = kinkCategories.find(
-      (category) =>
-        categorySummaries.find((summary) => summary.id === category.id)
-          ?.comparisons === 0,
-    );
-    if (anyUnstarted && anyUnstarted.id !== activeCategory.id) return anyUnstarted;
-
-    return kinkCategories[(currentIndex + 1) % kinkCategories.length];
-  }, [activeCategory, categorySummaries]);
-
-  const startSession = (nextSize: SessionSize) => {
-    setSessionSize(nextSize);
-    setSessionStartCount(totalInScope);
+  const continueCheckpoint = () => {
+    setCheckpointStartCount(totalInScope);
     setShowResults(false);
     setPairNonce((value) => value + 1);
   };
 
   const answer = (result: ComparisonResult) => {
-    if (!pair || sessionComplete) return;
+    if (!hasStartedRanking || !pair || checkpointComplete) return;
 
     const comparison: KinkComparison = {
       id: randomId(),
@@ -339,9 +307,10 @@ export function KinkThisOrThat({
     setMode("category");
     setCategoryId(nextCategoryId);
     setShowCategoryPicker(false);
+    setCategoryFabOpen(false);
     setShowResults(false);
     setPairNonce((value) => value + 1);
-    setSessionStartCount(
+    setCheckpointStartCount(
       comparisonCountForScope(activeComparisons, {
         type: "category",
         categoryId: nextCategoryId,
@@ -354,14 +323,28 @@ export function KinkThisOrThat({
     if (suggested) changeCategory(suggested);
   };
 
+  const openCategoryPicker = () => {
+    setMode("category");
+    setShowResults(false);
+    setCategoryFabOpen(false);
+    setShowCategoryPicker(true);
+    setCheckpointStartCount(
+      comparisonCountForScope(activeComparisons, {
+        type: "category",
+        categoryId,
+      }),
+    );
+  };
+
   const openOverallRanking = () => {
     if (overallCandidates.length < 2) return;
 
     setMode("overall");
     setShowCategoryPicker(false);
+    setCategoryFabOpen(false);
     setShowResults(false);
     setPairNonce((value) => value + 1);
-    setSessionStartCount(
+    setCheckpointStartCount(
       comparisonCountForScope(activeComparisons, { type: "overall" }),
     );
   };
@@ -379,8 +362,9 @@ export function KinkThisOrThat({
     );
     setMode("category");
     setShowCategoryPicker(false);
+    setCategoryFabOpen(false);
     setShowResults(false);
-    setSessionStartCount(0);
+    setCheckpointStartCount(0);
     setPairNonce((value) => value + 1);
     setShowNewRunConfirm(false);
     setNewRunNotice(true);
@@ -391,63 +375,29 @@ export function KinkThisOrThat({
       ? "Overall ranking"
       : lastRankedCategoryId === categoryId && orderingInScope > 0
         ? "Continue ranking"
-        : "Current category";
+        : "Ranking";
+
+  const openNextCategoryChoice = () => {
+    setMode("category");
+    setShowResults(false);
+    setShowCategoryPicker(true);
+    setCategoryFabOpen(false);
+  };
 
   return (
     <section className="ranking-stack ranking-activity-stack">
-      <section className="ranking-activity-context panel">
-        <div className="ranking-activity-copy">
+      <section className="ranking-category-strip">
+        <div>
           <p className="eyebrow">{contextLabel}</p>
           <h1>
             {mode === "overall" ? "Across everything" : activeCategory?.label}
           </h1>
-          <p>
-            {mode === "overall"
-              ? `${overallCandidates.length} candidates · ${orderingInScope} ordering comparisons`
-              : `${orderingInScope} comparisons · ${confidenceLabel(snapshot.confidence)}`}
-          </p>
         </div>
-
-        <div className="ranking-activity-actions" aria-label="Ranking options">
-          {mode === "overall" ? (
-            <button
-              className="secondary compact"
-              onClick={() => {
-                setMode("category");
-                setShowCategoryPicker(true);
-                setShowResults(false);
-                setSessionStartCount(
-                  comparisonCountForScope(activeComparisons, {
-                    type: "category",
-                    categoryId,
-                  }),
-                );
-              }}
-            >
-              Choose category
-            </button>
-          ) : (
-            <>
-              <button
-                className="secondary compact"
-                onClick={() => setShowCategoryPicker((open) => !open)}
-                aria-expanded={showCategoryPicker}
-              >
-                Choose category
-              </button>
-              <button className="secondary compact" onClick={pickCategoryForMe}>
-                Pick for me
-              </button>
-              <button
-                className="secondary compact"
-                onClick={openOverallRanking}
-                disabled={overallCandidates.length < 2}
-              >
-                Overall ranking
-              </button>
-            </>
-          )}
-        </div>
+        <p className="ranking-category-strip-meta">
+          {mode === "overall"
+            ? `${overallCandidates.length} candidates · ${orderingInScope} comparisons`
+            : `${orderingInScope} comparisons · ${confidenceLabel(snapshot.confidence)}`}
+        </p>
       </section>
 
       {newRunNotice && (
@@ -501,47 +451,65 @@ export function KinkThisOrThat({
         </section>
       )}
 
-      {!showResults && !sessionComplete && pair && (
-        <PairwiseComparisonPanel
-          ariaLabel="Kink comparison"
-          metaStart={
-            mode === "category" ? activeCategory?.label : "Cross-category finalists"
+      {!showResults && !checkpointComplete && pair && (
+        <div
+          className={
+            hasStartedRanking
+              ? "ranking-pair-stage"
+              : "ranking-pair-stage is-gated"
           }
-          metaEnd={
-            sessionSize === "gremlin"
-              ? `${sessionAnswered} this session`
-              : `${sessionAnswered} / ${sessionSize}`
-          }
-          left={{
-            id: pair[0].id,
-            eyebrow: pair[0].categoryLabel,
-            label: pair[0].label,
-            description: pair[0].description,
-          }}
-          right={{
-            id: pair[1].id,
-            eyebrow: pair[1].categoryLabel,
-            label: pair[1].label,
-            description: pair[1].description,
-          }}
-          onPick={(side) => answer(side)}
-          actions={
-            <>
-              <button className="secondary compact" onClick={() => answer("equal")}>
-                Both / equal
-              </button>
-              <button className="secondary compact" onClick={() => answer("neither")}>
-                Neither
-              </button>
-              <button className="text-button" onClick={() => answer("skip")}>
-                Skip / don't know
-              </button>
-            </>
-          }
-        />
+        >
+          <PairwiseComparisonPanel
+            ariaLabel="Kink comparison"
+            metaStart={
+              mode === "category"
+                ? activeCategory?.label
+                : "Cross-category finalists"
+            }
+            metaEnd={`${checkpointAnswered} / ${CHECKPOINT_SIZE}`}
+            left={{
+              id: pair[0].id,
+              eyebrow: pair[0].categoryLabel,
+              label: pair[0].label,
+              description: pair[0].description,
+            }}
+            right={{
+              id: pair[1].id,
+              eyebrow: pair[1].categoryLabel,
+              label: pair[1].label,
+              description: pair[1].description,
+            }}
+            onPick={(side) => answer(side)}
+            actions={
+              <>
+                <button className="secondary compact" onClick={() => answer("equal")}>
+                  Both / equal
+                </button>
+                <button className="secondary compact" onClick={() => answer("neither")}>
+                  Neither
+                </button>
+                <button className="text-button" onClick={() => answer("skip")}>
+                  Skip / don't know
+                </button>
+              </>
+            }
+          />
+
+          {!hasStartedRanking && (
+            <button
+              type="button"
+              className="ranking-start-gate"
+              onClick={() => setHasStartedRanking(true)}
+              aria-label="Tap to start ranking"
+            >
+              <span>Tap to start</span>
+              <small>Your first tap only unlocks the choices.</small>
+            </button>
+          )}
+        </div>
       )}
 
-      {!showResults && !sessionComplete && !pair && (
+      {!showResults && !checkpointComplete && !pair && (
         <article className="ranking-empty panel">
           <p className="eyebrow">
             {mode === "overall" ? "Overall ranking" : activeCategory?.label}
@@ -552,73 +520,34 @@ export function KinkThisOrThat({
             still saved, and excluded items stay out of new pairs.
           </p>
           <div className="ranking-empty-actions">
-            {snapshot.items.length > 0 && (
-              <button className="secondary" onClick={() => setShowResults(true)}>
-                View current ranking
-              </button>
-            )}
-            {mode === "category" && nextCategory && nextCategory.id !== categoryId && (
-              <button className="primary" onClick={() => changeCategory(nextCategory.id)}>
-                Next category →
-              </button>
-            )}
+            <button className="primary" onClick={openCategoryPicker}>
+              Choose another category
+            </button>
           </div>
         </article>
       )}
 
-      {sessionComplete && !showResults && (
-        <article className="ranking-session-complete panel">
+      {checkpointComplete && !showResults && (
+        <article className="ranking-checkpoint panel">
           <div>
-            <p className="eyebrow">Session complete</p>
-            <h2>{sessionAnswered} choices saved.</h2>
+            <p className="eyebrow">25 choices saved</p>
+            <h2>Keep going or switch it up?</h2>
             <p>
-              {mode === "category"
-                ? `${activeCategory?.label ?? "This category"} is ${confidenceLabel(snapshot.confidence).toLowerCase()} right now.`
-                : `Your overall ranking is ${confidenceLabel(snapshot.confidence).toLowerCase()} right now.`}
+              Your ranking is saved. Continue for another 25, or choose a new category.
             </p>
           </div>
-          <div className="ranking-session-complete-actions">
+          <div className="ranking-checkpoint-actions">
             {activeCatalog.length >= 2 && (
-              <button className="primary" onClick={() => startSession(sessionSize)}>
-                Keep ranking
+              <button className="primary" onClick={continueCheckpoint}>
+                Keep going
               </button>
             )}
-            {mode === "category" && nextCategory && nextCategory.id !== categoryId && (
-              <button className="secondary" onClick={() => changeCategory(nextCategory.id)}>
-                Next category →
-              </button>
-            )}
-            {snapshot.items.length > 0 && (
-              <button className="text-button" onClick={() => setShowResults(true)}>
-                View current ranking
-              </button>
-            )}
+            <button className="secondary" onClick={openNextCategoryChoice}>
+              New category
+            </button>
           </div>
         </article>
       )}
-
-      <div className="ranking-session-strip panel">
-        <div>
-          <p className="eyebrow">Session</p>
-          <strong>How feral are we feeling?</strong>
-        </div>
-        <div className="ranking-session-options">
-          {sessionOptions.map((option) => (
-            <button
-              key={String(option.value)}
-              className={
-                sessionSize === option.value
-                  ? "ranking-session-option is-active"
-                  : "ranking-session-option"
-              }
-              onClick={() => startSession(option.value)}
-            >
-              <span>{option.label}</span>
-              <small>{option.detail}</small>
-            </button>
-          ))}
-        </div>
-      </div>
 
       {showResults && (
         <article className="ranking-results panel">
@@ -636,16 +565,12 @@ export function KinkThisOrThat({
               </p>
             </div>
             <div className="ranking-results-actions">
-              {activeCatalog.length >= 2 && (
-                <button className="primary" onClick={() => startSession(sessionSize)}>
-                  Keep ranking
-                </button>
-              )}
-              {mode === "category" && nextCategory && nextCategory.id !== categoryId && (
-                <button className="secondary" onClick={() => changeCategory(nextCategory.id)}>
-                  Next category →
-                </button>
-              )}
+              <button className="primary" onClick={() => setShowResults(false)}>
+                Back to ranking
+              </button>
+              <button className="secondary" onClick={openNextCategoryChoice}>
+                New category
+              </button>
             </div>
           </div>
 
@@ -695,27 +620,11 @@ export function KinkThisOrThat({
         </article>
       )}
 
-      {!sessionComplete && !showResults && pair && (
-        <div className="ranking-footer-actions">
-          <button className="ranking-results-link" onClick={() => setShowResults(true)}>
-            View current ranking
-          </button>
-          {mode === "category" && nextCategory && nextCategory.id !== categoryId && (
-            <button
-              className="ranking-results-link"
-              onClick={() => changeCategory(nextCategory.id)}
-            >
-              Next category →
-            </button>
-          )}
-        </div>
-      )}
-
       <details className="ranking-secondary panel">
         <summary>
           <span>
             <strong>Progress & history</strong>
-            <small>Category confidence, overall pool, and ranking runs</small>
+            <small>Ranking details and saved runs</small>
           </span>
           <span aria-hidden="true">⌄</span>
         </summary>
@@ -737,12 +646,14 @@ export function KinkThisOrThat({
           </div>
 
           <div className="ranking-secondary-actions">
-            <button
-              className="secondary compact"
-              onClick={() => setShowCategoryPicker(true)}
-            >
-              Review category progress
-            </button>
+            {snapshot.items.length > 0 && (
+              <button
+                className="secondary compact"
+                onClick={() => setShowResults(true)}
+              >
+                View current ranking
+              </button>
+            )}
             <button
               className="secondary compact"
               onClick={openOverallRanking}
@@ -784,6 +695,46 @@ export function KinkThisOrThat({
             ))}
         </div>
       </details>
+
+      {mode === "category" && (
+        <div
+          className={
+            categoryFabOpen
+              ? "ranking-category-fab is-open"
+              : "ranking-category-fab"
+          }
+        >
+          <div className="ranking-category-fab-menu" aria-hidden={!categoryFabOpen}>
+            <button
+              type="button"
+              className="ranking-category-fab-action"
+              onClick={pickCategoryForMe}
+              tabIndex={categoryFabOpen ? 0 : -1}
+            >
+              <span aria-hidden="true">↻</span>
+              Pick for me
+            </button>
+            <button
+              type="button"
+              className="ranking-category-fab-action"
+              onClick={openCategoryPicker}
+              tabIndex={categoryFabOpen ? 0 : -1}
+            >
+              <span aria-hidden="true">≡</span>
+              Choose category
+            </button>
+          </div>
+          <button
+            type="button"
+            className="ranking-category-fab-trigger"
+            aria-label="Category actions"
+            aria-expanded={categoryFabOpen}
+            onClick={() => setCategoryFabOpen((open) => !open)}
+          >
+            <span aria-hidden="true">{categoryFabOpen ? "×" : "+"}</span>
+          </button>
+        </div>
+      )}
     </section>
   );
 }
