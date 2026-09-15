@@ -27,6 +27,10 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
 - **New giving responsibility question**
   - Use one merged item instead of two: **“Being trusted with the responsibility for a restrained partner’s safety and physical freedom can make restraint especially meaningful to me.”**
   - Keep separate from bd-013: bd-013 measures the appeal of deciding freedom; this measures trust / responsibility while holding that control.
+  - **Decision:** use the existing general Responsibility signal rather than creating a restraint-specific responsibility concept.
+  - Project primarily to `responsibility · Receiving` because the person is taking / holding responsibility, even though they are on the Giving side of restraint.
+  - Add smaller secondary contributions from `restraint · Giving` and, if useful in final weighting review, `constraint_control · Giving`.
+  - Preserve the distinction between activity side and Signal channel: giving restraint does not imply that every related Signal should use the Giving channel.
 
 - **bd-006** — “Pulling against or testing agreed restraint can add something enjoyable to the experience for me.”
 - **bd-007** — “The possibility of trying to get free, even when I may not succeed, can make restraint more exciting.”
@@ -97,7 +101,7 @@ Net effect of the new restraint recommendations: **+2 questions overall**, not +
 ## Possible gaps surfaced by references
 
 - **Vulnerability / psychological release from restraint** — folded into the proposed bd-005 replacement rather than added as separate overlapping questions.
-- **Responsibility while restraining** — represented by the proposed merged giving-responsibility question; review whether `responsibility_holding` is sufficient or whether restraint-specific responsibility needs different modeling.
+- **Responsibility while restraining** — resolved through the existing general Responsibility signal: the new question primarily targets `responsibility · Receiving`, with restraint/control as secondary context rather than creating a restraint-specific responsibility dimension.
 - **Sensory / communication restriction** — resolved as an existing-construct expression rather than a new canonical dimension: use `constraint_control · Receiving` / `control · Receiving` for the quiz meaning, with concrete sensory/communication implementations kept in catalog/modifier data.
 - **Aesthetic bondage, tasking, praise/reward** — real B&D-adjacent dimensions. Review whether these belong in quiz signals, another quiz, or catalog/modifier data rather than assuming they are out of scope.
 - **Fantasy vs practice vs lifestyle intensity** — the systematic review supports a dimensional spectrum of engagement, but this is different from preference strength and should not be added to the quiz without a separate product decision.
