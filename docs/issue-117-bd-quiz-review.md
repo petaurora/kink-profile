@@ -38,7 +38,11 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
   - **Decision:** remove with no replacement. It overlaps bd-016/017 and repeats the non-pain distinction without adding a separate construct.
 
 - **bd-020** — “Correcting a willing partner toward a shared expectation can feel meaningful even when pain is not involved.”
-  - Remove or substantially rewrite; overlaps bd-019 and its `guidance_shaping` weight is stronger than the wording supports.
+  - **Decision:** rewrite rather than remove, because correction / shaping is meaningfully different from administering a consequence.
+  - Replace with: **“Helping a willing partner correct their behavior toward an agreed expectation can feel meaningful even when no consequence is needed.”**
+  - Make `guidance_shaping · Giving` the primary semantic target, with a smaller `accountability · Giving` contribution.
+  - Remove or greatly reduce `discipline · Giving`; the rewritten item intentionally isolates correction / shaping without requiring a consequence.
+  - This creates a cleaner discipline progression across the bank: **expectation → correction → consequence**.
 
 ## Add
 
