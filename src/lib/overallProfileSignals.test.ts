@@ -124,10 +124,13 @@ describe("M16.4 Signal + channel migration contract", () => {
     });
   });
 
-  it("keeps Movement Restriction Overall-only", () => {
+  it("preserves meaningful Movement Restriction activity side", () => {
     expect(
       canonicalQuizSignalRef("bd-002", "movement_restriction"),
-    ).toEqual({ signalId: "movement_restriction", channel: "overall" });
+    ).toEqual({ signalId: "movement_restriction", channel: "receiving" });
+    expect(
+      canonicalQuizSignalRef("bd-010", "movement_restriction"),
+    ).toEqual({ signalId: "movement_restriction", channel: "giving" });
   });
 
   it("does not manufacture Overall pairwise evidence when only activity side differs", () => {
