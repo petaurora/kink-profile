@@ -3,10 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { loadProfile } from "../../lib/profileStorage";
 import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
 import { SegmentedControl } from "../../components/SegmentedControl";
-import { catalogRoute, rankingRoute } from "../../app/routes";
+import { rankingRoute } from "../../app/routes";
 import { KinkThisOrThat } from "../ranking/KinkThisOrThat";
 import { KinkCatalogPreferences } from "./KinkCatalogPreferences";
-import { parseCatalogRouteFocus } from "./catalogRouteState";
+import {
+  catalogRoutePath,
+  parseCatalogRouteFocus,
+} from "./catalogRouteState";
 import "./CatalogWorkspaceRoute.css";
 
 type CatalogNavigationState = {
@@ -15,9 +18,11 @@ type CatalogNavigationState = {
 
 export type KinkCatalogWorkspaceView = "browse" | "rank";
 
-const workspaceOptions = [
-  { value: "browse", label: "Browse" },
+export const defaultKinkCatalogWorkspaceView: KinkCatalogWorkspaceView = "rank";
+
+export const kinkCatalogWorkspaceOptions = [
   { value: "rank", label: "Rank" },
+  { value: "browse", label: "Browse" },
 ] as const;
 
 export function resolveCatalogReturnPath(state: unknown) {
@@ -26,7 +31,7 @@ export function resolveCatalogReturnPath(state: unknown) {
 }
 
 export function CatalogRoute({
-  view = "browse",
+  view = defaultKinkCatalogWorkspaceView,
 }: {
   view?: KinkCatalogWorkspaceView;
 }) {
@@ -40,7 +45,7 @@ export function CatalogRoute({
   const returnPath = resolveCatalogReturnPath(location.state);
 
   const changeView = (nextView: KinkCatalogWorkspaceView) => {
-    navigate(nextView === "browse" ? catalogRoute.path : rankingRoute.path);
+    navigate(nextView === "browse" ? catalogRoutePath() : rankingRoute.path);
   };
 
   return (
@@ -53,7 +58,7 @@ export function CatalogRoute({
           </div>
           <SegmentedControl
             value={view}
-            options={workspaceOptions}
+            options={kinkCatalogWorkspaceOptions}
             onChange={changeView}
             ariaLabel="Kink catalog view"
           />

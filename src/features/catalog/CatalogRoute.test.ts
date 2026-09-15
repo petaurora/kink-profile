@@ -1,5 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { resolveCatalogReturnPath } from "./CatalogRoute";
+import {
+  defaultKinkCatalogWorkspaceView,
+  kinkCatalogWorkspaceOptions,
+  resolveCatalogReturnPath,
+} from "./CatalogRoute";
+
+describe("CatalogRoute workspace defaults", () => {
+  it("uses Rank as the primary/default Kinks workspace view", () => {
+    expect(defaultKinkCatalogWorkspaceView).toBe("rank");
+    expect(kinkCatalogWorkspaceOptions.map((option) => option.value)).toEqual([
+      "rank",
+      "browse",
+    ]);
+  });
+});
 
 describe("CatalogRoute return navigation", () => {
   it("returns profile drill-downs to the profile", () => {

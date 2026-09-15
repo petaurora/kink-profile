@@ -29,8 +29,20 @@ export function parseCatalogRouteFocus(search: string): CatalogDrilldownFocus {
   };
 }
 
+export function shouldOpenCatalogBrowse(search: string) {
+  const params = new URLSearchParams(search);
+  if (params.get("view") === "browse") return true;
+
+  const focus = parseCatalogRouteFocus(search);
+  return Boolean(
+    focus.categoryId ||
+      (focus.preferenceFilter && focus.preferenceFilter !== "all"),
+  );
+}
+
 export function catalogRoutePath(focus: CatalogDrilldownFocus = {}) {
   const params = new URLSearchParams();
+  params.set("view", "browse");
 
   if (focus.categoryId && categoryIds.has(focus.categoryId)) {
     params.set("category", focus.categoryId);
@@ -43,6 +55,5 @@ export function catalogRoutePath(focus: CatalogDrilldownFocus = {}) {
     params.set("preference", focus.preferenceFilter);
   }
 
-  const query = params.toString();
-  return query ? `${catalogRoute.path}?${query}` : catalogRoute.path;
+  return `${catalogRoute.path}?${params.toString()}`;
 }

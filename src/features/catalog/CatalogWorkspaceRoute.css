@@ -25,6 +25,11 @@
   color: var(--text-secondary);
 }
 
+.catalog-workspace-shell .catalog-preferences-heading,
+.catalog-workspace-shell .ranking-heading {
+  display: none;
+}
+
 @media (max-width: 640px) {
   .catalog-workspace-navigation {
     align-items: stretch;
