@@ -6,7 +6,6 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
 
 - **bd-001** — “Being physically restrained by someone I trust can feel appealing even when pain is not part of the experience.”
 - **bd-002** — “Having several parts of my movement restricted at once can make restraint feel more immersive.”
-- **bd-005** — “Part of the appeal of restraint can be knowing that someone else is deciding how much physical freedom I have.”
 - **bd-008** — “Waiting while I know restraint is about to happen can build appealing suspense.”
 - **bd-009** — “Physically restricting a willing partner's movement can be appealing to me.”
 - **bd-013** — “Part of the appeal of restraining someone can be deciding how much physical freedom they have within agreed limits.”
@@ -19,17 +18,15 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
 - **bd-022** — “Standing rules that shape behavior beyond a single scene can deepen a dynamic for me.”
 - **bd-023** — “Formal procedures or rituals around permission, beginning, ending, or transitions can make a dynamic feel more intentional.”
 
-## Add
+## Replace / merge
 
-- **Receiving — vulnerability / surrender:** “Being unable to move freely can create an appealing sense of vulnerability or surrender when I trust the person restraining me.”
-- **Receiving — release of control:** “Part of the appeal of restraint can be relaxing into the fact that I no longer need to control my own movement.”
-- **Giving — trust / safety responsibility:** “Being trusted with a restrained partner's safety and physical freedom can make restraint feel especially meaningful.”
-- **Giving — responsibility / control:** “The responsibility of carefully controlling another person's movement can be part of the appeal of restraining them.”
-- **Receiving — sensory / communication restriction:** “Having some of my sensory awareness deliberately limited—such as not being able to see, hear, or speak clearly—can make an experience more appealing.”
+- **bd-005** — “Part of the appeal of restraint can be knowing that someone else is deciding how much physical freedom I have.”
+  - Replace with: **“Part of the appeal of restraint can be surrendering control of my movement to someone I trust.”**
+  - This folds the proposed vulnerability / surrender and release-of-control questions into one stronger item instead of adding both.
 
-These should be mapped carefully so they measure the psychological experience around restraint rather than simply duplicating `receiving_restraint` / `giving_restraint`.
-
-## Merge / remove
+- **New giving responsibility question**
+  - Use one merged item instead of two: **“Being trusted with the responsibility for a restrained partner’s safety and physical freedom can make restraint especially meaningful to me.”**
+  - Keep separate from bd-013: bd-013 measures the appeal of deciding freedom; this measures trust / responsibility while holding that control.
 
 - **bd-006** — “Pulling against or testing agreed restraint can add something enjoyable to the experience for me.”
 - **bd-007** — “The possibility of trying to get free, even when I may not succeed, can make restraint more exciting.”
@@ -40,6 +37,13 @@ These should be mapped carefully so they measure the psychological experience ar
 
 - **bd-020** — “Correcting a willing partner toward a shared expectation can feel meaningful even when pain is not involved.”
   - Remove or substantially rewrite; overlaps bd-019 and its `guidance_shaping` weight is stronger than the wording supports.
+
+## Add
+
+- **Receiving — sensory / communication restriction:** “Having some of my sensory awareness deliberately limited—such as not being able to see, hear, or speak clearly—can make an experience more appealing.”
+  - This captures a distinct form of restriction not covered by movement restraint.
+
+Net effect of the new restraint recommendations: **+2 questions overall**, not +5 — one merged replacement for bd-005, one new giving responsibility item, and one new sensory / communication restriction item.
 
 ## Rewrite
 
@@ -68,9 +72,9 @@ These should be mapped carefully so they measure the psychological experience ar
 
 ## Possible gaps surfaced by references
 
-- **Vulnerability / psychological release from restraint** — now represented by the proposed receiving questions above; review whether they belong in existing control/responsibility signals or expose a missing canonical concept.
-- **Responsibility while restraining** — now represented by the proposed giving questions above; review whether `responsibility_holding` is sufficient or whether restraint-specific responsibility needs different modeling.
-- **Sensory / communication restriction** — now represented by the proposed see/hear/speak question above. This is still a modeling question: determine whether it belongs under physical restriction, a broader sensory-control concept, or a new canonical signal.
+- **Vulnerability / psychological release from restraint** — folded into the proposed bd-005 replacement rather than added as separate overlapping questions.
+- **Responsibility while restraining** — represented by the proposed merged giving-responsibility question; review whether `responsibility_holding` is sufficient or whether restraint-specific responsibility needs different modeling.
+- **Sensory / communication restriction** — represented by the proposed see/hear/speak question above. Determine whether it belongs under physical restriction, a broader sensory-control concept, or a new canonical signal.
 - **Aesthetic bondage, tasking, praise/reward** — real B&D-adjacent dimensions. Review whether these belong in quiz signals, another quiz, or catalog/modifier data rather than assuming they are out of scope.
 - **Fantasy vs practice vs lifestyle intensity** — the systematic review supports a dimensional spectrum of engagement, but this is different from preference strength and should not be added to the quiz without a separate product decision.
 
