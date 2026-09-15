@@ -25,6 +25,7 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
 - **Receiving — release of control:** “Part of the appeal of restraint can be relaxing into the fact that I no longer need to control my own movement.”
 - **Giving — trust / safety responsibility:** “Being trusted with a restrained partner's safety and physical freedom can make restraint feel especially meaningful.”
 - **Giving — responsibility / control:** “The responsibility of carefully controlling another person's movement can be part of the appeal of restraining them.”
+- **Receiving — sensory / communication restriction:** “Having some of my sensory awareness deliberately limited—such as not being able to see, hear, or speak clearly—can make an experience more appealing.”
 
 These should be mapped carefully so they measure the psychological experience around restraint rather than simply duplicating `receiving_restraint` / `giving_restraint`.
 
@@ -69,7 +70,8 @@ These should be mapped carefully so they measure the psychological experience ar
 
 - **Vulnerability / psychological release from restraint** — now represented by the proposed receiving questions above; review whether they belong in existing control/responsibility signals or expose a missing canonical concept.
 - **Responsibility while restraining** — now represented by the proposed giving questions above; review whether `responsibility_holding` is sufficient or whether restraint-specific responsibility needs different modeling.
-- **Aesthetic bondage, sensory deprivation, tasking, praise/reward** — real B&D-adjacent dimensions. Review whether these belong in quiz signals, another quiz, or catalog/modifier data rather than assuming they are out of scope.
+- **Sensory / communication restriction** — now represented by the proposed see/hear/speak question above. This is still a modeling question: determine whether it belongs under physical restriction, a broader sensory-control concept, or a new canonical signal.
+- **Aesthetic bondage, tasking, praise/reward** — real B&D-adjacent dimensions. Review whether these belong in quiz signals, another quiz, or catalog/modifier data rather than assuming they are out of scope.
 - **Fantasy vs practice vs lifestyle intensity** — the systematic review supports a dimensional spectrum of engagement, but this is different from preference strength and should not be added to the quiz without a separate product decision.
 
 ## References consulted
