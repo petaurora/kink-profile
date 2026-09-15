@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ExpandableGroupedList } from "../../components/ExpandableGroupedList";
 import {
   kinkCatalog,
@@ -27,9 +27,12 @@ import type {
   CatalogPreferenceFilter,
 } from "../../lib/catalogDrilldown";
 import "./KinkCatalogPreferences.compact.css";
+import "./KinkCatalogPreferences.disclosure.css";
 
 function preferenceClass(state: CatalogPreferenceState | undefined) {
-  return state ? `preference-${state.replaceAll("_", "-")}` : "preference-unanswered";
+  return state
+    ? `preference-${state.replaceAll("_", "-")}`
+    : "preference-unanswered";
 }
 
 function matchesSearch(item: KinkCatalogItem, query: string) {
@@ -66,6 +69,8 @@ export function KinkCatalogPreferences({
       initialFocus.preferenceFilter ?? "all",
     );
   const [openItemId, setOpenItemId] = useState<string | null>(null);
+  const [showBoundaries, setShowBoundaries] = useState(false);
+
   const resultView = useMemo(
     () => buildCatalogResultView(quizProfile, profile),
     [quizProfile, profile],
@@ -110,6 +115,60 @@ export function KinkCatalogPreferences({
     (preference) => getCatalogPreference(preference, "overall") !== undefined,
   ).length;
 
+  const openItem = openItemId
+    ? kinkCatalog.find((item) => item.id === openItemId) ?? null
+    : null;
+  const openResult = openItem
+    ? resultView.byCatalogId.get(openItem.id)
+    : undefined;
+  const openPreference = openItem
+    ? openResult?.explicitState ??
+      getCatalogPreference(profile.preferences[openItem.id], "overall")
+    : undefined;
+  const openCategoryRank = openResult?.categoryRank;
+  const openOverallRank = openResult?.overallRank;
+  const openInferred = openResult?.inferred;
+  const openComparisonCount =
+    openResult?.meaningfulPairwiseComparisons ?? 0;
+
+  const boundaryGroups = [
+    {
+      state: "hard_limit" as const,
+      label: "Hard limits",
+      count: resultView.exclusions.hardLimits.length,
+      items: resultView.exclusions.hardLimits,
+    },
+    {
+      state: "not_interested" as const,
+      label: "Not interested",
+      count: resultView.exclusions.notInterested.length,
+      items: resultView.exclusions.notInterested,
+    },
+    {
+      state: "not_applicable" as const,
+      label: "Not applicable",
+      count: resultView.exclusions.notApplicable.length,
+      items: resultView.exclusions.notApplicable,
+    },
+  ];
+
+  useEffect(() => {
+    if (!openItemId || typeof document === "undefined") return;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenItemId(null);
+    };
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [openItemId]);
+
   const updatePreference = (
     catalogId: string,
     state: CatalogPreferenceState | undefined,
@@ -131,6 +190,14 @@ export function KinkCatalogPreferences({
     setPreferenceFilter("all");
   };
 
+  const applyBoundaryFilter = (state: CatalogPreferenceState) => {
+    setQuery("");
+    setCategoryFilter("all");
+    setPreferenceFilter(state);
+    setShowBoundaries(false);
+    setOpenItemId(null);
+  };
+
   return (
     <section className="catalog-preferences-stack">
       <div className="catalog-preferences-heading panel">
@@ -138,9 +205,9 @@ export function KinkCatalogPreferences({
           <p className="eyebrow">Kink catalog · Direct preferences</p>
           <h1>Browse the list without making it homework.</h1>
           <p>
-            Search, filter, and explicitly mark anything you want. This is separate from
-            This-or-That: manual states do not create ranking wins, and ranking choices do
-            not manufacture manual states.
+            Search, filter, and explicitly mark anything you want. This is
+            separate from This-or-That: manual states do not create ranking wins,
+            and ranking choices do not manufacture manual states.
           </p>
         </div>
         <div className="catalog-heading-actions">
@@ -160,8 +227,9 @@ export function KinkCatalogPreferences({
             <div className="catalog-focus-chips">
               {categoryFilter !== "all" && (
                 <span>
-                  {kinkCategories.find((category) => category.id === categoryFilter)
-                    ?.label ?? categoryFilter}
+                  {kinkCategories.find(
+                    (category) => category.id === categoryFilter,
+                  )?.label ?? categoryFilter}
                 </span>
               )}
               {preferenceFilter !== "all" && (
@@ -210,7 +278,9 @@ export function KinkCatalogPreferences({
           <select
             value={preferenceFilter}
             onChange={(event) =>
-              setPreferenceFilter(event.target.value as CatalogPreferenceFilter)
+              setPreferenceFilter(
+                event.target.value as CatalogPreferenceFilter,
+              )
             }
           >
             <option value="all">All states</option>
@@ -223,78 +293,83 @@ export function KinkCatalogPreferences({
           </select>
         </label>
 
-        <button className="text-button catalog-clear-filters" onClick={resetFilters}>
+        <button
+          className="text-button catalog-clear-filters"
+          onClick={resetFilters}
+        >
           Clear filters
         </button>
       </div>
 
-      <section className="catalog-exclusion-summary panel">
-        <div className="catalog-exclusion-heading">
-          <div>
-            <p className="eyebrow">Direct explicit boundaries</p>
-            <h2>Limits & exclusions</h2>
-          </div>
-          <p>
-            These are explicit states, not low rankings. Quiz-derived affinity never
-            overrides them.
-          </p>
-        </div>
+      <section className="catalog-boundaries-disclosure">
+        <button
+          type="button"
+          className="catalog-boundaries-toggle panel"
+          aria-expanded={showBoundaries}
+          aria-controls="catalog-boundaries-panel"
+          onClick={() => setShowBoundaries((current) => !current)}
+        >
+          <span>
+            <span className="eyebrow">Direct boundaries</span>
+            <strong>Boundaries</strong>
+          </span>
+          <span className="catalog-boundaries-summary">
+            {resultView.exclusions.hardLimits.length} hard ·{" "}
+            {resultView.exclusions.notInterested.length} not interested ·{" "}
+            {resultView.exclusions.notApplicable.length} N/A
+            <span className="catalog-boundaries-chevron" aria-hidden="true">
+              ›
+            </span>
+          </span>
+        </button>
 
-        <div className="catalog-exclusion-grid">
-          <div className="catalog-exclusion-card hard-limit">
-            <div>
-              <span>Hard Limits</span>
-              <strong>{resultView.exclusions.hardLimits.length}</strong>
+        {showBoundaries && (
+          <div
+            className="catalog-boundaries-panel panel"
+            id="catalog-boundaries-panel"
+          >
+            <div className="catalog-boundaries-heading">
+              <div>
+                <p className="eyebrow">Intentional boundary view</p>
+                <h2>Limits & exclusions</h2>
+              </div>
+              <p>
+                These are explicit states, not low rankings. Choose a group to
+                filter Explore to those items.
+              </p>
             </div>
-            <p>
-              {resultView.exclusions.hardLimits.length > 0
-                ? resultView.exclusions.hardLimits
-                    .slice(0, 5)
-                    .map((result) => result.item.label)
-                    .join(" · ")
-                : "None marked"}
-              {resultView.exclusions.hardLimits.length > 5
-                ? ` · +${resultView.exclusions.hardLimits.length - 5} more`
-                : ""}
-            </p>
-          </div>
 
-          <div className="catalog-exclusion-card">
-            <div>
-              <span>Not Interested</span>
-              <strong>{resultView.exclusions.notInterested.length}</strong>
+            <div className="catalog-boundary-grid">
+              {boundaryGroups.map((group) => (
+                <button
+                  type="button"
+                  className={`catalog-boundary-card boundary-${group.state.replaceAll("_", "-")}`}
+                  key={group.state}
+                  onClick={() => applyBoundaryFilter(group.state)}
+                >
+                  <span className="catalog-boundary-card-heading">
+                    <strong>{group.label}</strong>
+                    <span>{group.count}</span>
+                  </span>
+                  <span className="catalog-boundary-card-items">
+                    {group.items.length > 0
+                      ? group.items
+                          .slice(0, 4)
+                          .map((result) => result.item.label)
+                          .join(" · ")
+                      : "No explicit items recorded"}
+                    {group.items.length > 4
+                      ? ` · +${group.items.length - 4} more`
+                      : ""}
+                  </span>
+                  <span className="catalog-boundary-card-action">
+                    Show in Explore ›
+                  </span>
+                </button>
+              ))}
             </div>
-            <p>
-              {resultView.exclusions.notInterested.length > 0
-                ? resultView.exclusions.notInterested
-                    .slice(0, 5)
-                    .map((result) => result.item.label)
-                    .join(" · ")
-                : "None marked"}
-              {resultView.exclusions.notInterested.length > 5
-                ? ` · +${resultView.exclusions.notInterested.length - 5} more`
-                : ""}
-            </p>
           </div>
-
-          <div className="catalog-exclusion-card">
-            <div>
-              <span>Not Applicable</span>
-              <strong>{resultView.exclusions.notApplicable.length}</strong>
-            </div>
-            <p>
-              {resultView.exclusions.notApplicable.length > 0
-                ? resultView.exclusions.notApplicable
-                    .slice(0, 5)
-                    .map((result) => result.item.label)
-                    .join(" · ")
-                : "None marked"}
-              {resultView.exclusions.notApplicable.length > 5
-                ? ` · +${resultView.exclusions.notApplicable.length - 5} more`
-                : ""}
-            </p>
-          </div>
-        </div>
+        )}
       </section>
 
       <ExpandableGroupedList
@@ -329,12 +404,15 @@ export function KinkCatalogPreferences({
           const categoryRank = result?.categoryRank;
           const overallRank = result?.overallRank;
           const inferred = result?.inferred;
-          const comparisonCount = result?.meaningfulPairwiseComparisons ?? 0;
+          const comparisonCount =
+            result?.meaningfulPairwiseComparisons ?? 0;
           const compactEvidence = [
             categoryRank ? `Category #${categoryRank.rank}` : null,
             overallRank ? `Overall #${overallRank.rank}` : null,
             comparisonCount > 0 ? `${comparisonCount} comps` : null,
-            result?.excludedFromNewRanking ? "Excluded from new pairs" : null,
+            result?.excludedFromNewRanking
+              ? "Excluded from new pairs"
+              : null,
           ]
             .filter(Boolean)
             .join(" · ");
@@ -350,11 +428,11 @@ export function KinkCatalogPreferences({
                   type="button"
                   className="catalog-row-open"
                   aria-expanded={isOpen}
-                  aria-controls={`catalog-details-${item.id}`}
-                  aria-label={`${isOpen ? "Close" : "Open"} details for ${item.label}`}
-                  onClick={() =>
-                    setOpenItemId((current) => (current === item.id ? null : item.id))
+                  aria-controls={
+                    isOpen ? "catalog-item-detail-sheet" : undefined
                   }
+                  aria-label={`Open details for ${item.label}`}
+                  onClick={() => setOpenItemId(item.id)}
                 >
                   <span className="catalog-row-copy">
                     <strong className="catalog-row-title">{item.label}</strong>
@@ -365,13 +443,18 @@ export function KinkCatalogPreferences({
                           : "No direct ranking evidence yet")}
                     </span>
                   </span>
-                  <span className="catalog-row-open-chevron" aria-hidden="true">
+                  <span
+                    className="catalog-row-open-chevron"
+                    aria-hidden="true"
+                  >
                     ›
                   </span>
                 </button>
 
                 <label className="catalog-preference-editor">
-                  <span className="sr-only">Preference for {item.label}</span>
+                  <span className="sr-only">
+                    Preference for {item.label}
+                  </span>
                   <select
                     value={preference ?? ""}
                     onChange={(event) =>
@@ -392,103 +475,184 @@ export function KinkCatalogPreferences({
                   </select>
                 </label>
               </div>
-
-              {isOpen && (
-                <div className="catalog-row-details" id={`catalog-details-${item.id}`}>
-                  {item.description && <p>{item.description}</p>}
-
-                  <div className="catalog-evidence-details">
-                    <section>
-                      <span className="eyebrow">Direct evidence</span>
-                      <strong>
-                        {preference
-                          ? `Explicit: ${catalogPreferenceLabels[preference]}`
-                          : "No explicit preference set"}
-                      </strong>
-                      <p>
-                        {categoryRank
-                          ? `Category #${categoryRank.rank} · ${categoryRank.comparisons} ordering comps`
-                          : "No active category rank"}
-                        {overallRank
-                          ? ` · Overall #${overallRank.rank} · ${overallRank.comparisons} ordering comps`
-                          : ""}
-                      </p>
-                      {comparisonCount > 0 && !categoryRank && !overallRank && (
-                        <p>
-                          {comparisonCount} historical ordering comparisons remain stored.
-                        </p>
-                      )}
-                    </section>
-
-                    <section>
-                      <span className="eyebrow">Quiz-derived evidence</span>
-                      {inferred ? (
-                        <>
-                          <strong>
-                            {Math.round(inferred.affinity)}% affinity · {inferred.coverage}%
-                            coverage
-                          </strong>
-                          <p>
-                            Derived from quiz signals only. This does not create or
-                            override an explicit preference or pairwise rank.
-                          </p>
-                          <ul className="catalog-evidence-sources">
-                            {inferred.matchedSignals.map((signal) => (
-                              <li key={signal.signalId}>
-                                <strong>{signal.signalLabel}</strong>
-                                <span>
-                                  {Math.round(signal.signalAffinity)}% signal
-                                  {signal.sourceQuizLabels.length > 0
-                                    ? ` · via ${signal.sourceQuizLabels.join(", ")}`
-                                    : ""}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        </>
-                      ) : (
-                        <p>No mapped quiz evidence for this item yet.</p>
-                      )}
-                    </section>
-                  </div>
-
-                  {inferred && result?.excludedFromNewRanking && (
-                    <p className="catalog-evidence-conflict-note">
-                      The quiz-derived affinity is shown for explainability only. Your
-                      explicit exclusion remains authoritative.
-                    </p>
-                  )}
-
-                  <dl>
-                    <div>
-                      <dt>Direction</dt>
-                      <dd>{item.direction}</dd>
-                    </div>
-                    {item.intensity && (
-                      <div>
-                        <dt>Intensity</dt>
-                        <dd>{item.intensity}</dd>
-                      </div>
-                    )}
-                    {item.riskLevel && (
-                      <div>
-                        <dt>Risk</dt>
-                        <dd>{item.riskLevel}</dd>
-                      </div>
-                    )}
-                    {item.aliases.length > 0 && (
-                      <div>
-                        <dt>Aliases</dt>
-                        <dd>{item.aliases.join(", ")}</dd>
-                      </div>
-                    )}
-                  </dl>
-                </div>
-              )}
             </article>
           );
         }}
       />
+
+      {openItem && (
+        <div
+          className="catalog-detail-layer"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setOpenItemId(null);
+          }}
+        >
+          <section
+            className="catalog-detail-sheet panel"
+            id="catalog-item-detail-sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="catalog-detail-title"
+          >
+            <div className="catalog-detail-handle" aria-hidden="true" />
+            <header className="catalog-detail-header">
+              <div>
+                <p className="eyebrow">Kink details</p>
+                <h2 id="catalog-detail-title">{openItem.label}</h2>
+              </div>
+              <button
+                type="button"
+                className="secondary compact"
+                onClick={() => setOpenItemId(null)}
+                autoFocus
+              >
+                Close
+              </button>
+            </header>
+
+            <div className="catalog-detail-scroll">
+              {openItem.description && (
+                <p className="catalog-detail-description">
+                  {openItem.description}
+                </p>
+              )}
+
+              <section className="catalog-detail-section">
+                <div className="catalog-detail-section-heading">
+                  <div>
+                    <span className="eyebrow">Direct preference</span>
+                    <strong>
+                      {openPreference
+                        ? catalogPreferenceLabels[openPreference]
+                        : "Not set"}
+                    </strong>
+                  </div>
+                  <label className="catalog-preference-editor catalog-detail-preference">
+                    <span className="sr-only">
+                      Preference for {openItem.label}
+                    </span>
+                    <select
+                      value={openPreference ?? ""}
+                      onChange={(event) =>
+                        updatePreference(
+                          openItem.id,
+                          event.target.value
+                            ? (event.target.value as CatalogPreferenceState)
+                            : undefined,
+                        )
+                      }
+                    >
+                      <option value="">Not set</option>
+                      {catalogPreferenceStates.map((state) => (
+                        <option key={state} value={state}>
+                          {catalogPreferenceLabels[state]}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                <div className="catalog-detail-facts">
+                  <div>
+                    <span>Category rank</span>
+                    <strong>
+                      {openCategoryRank
+                        ? `#${openCategoryRank.rank}`
+                        : "Not ranked"}
+                    </strong>
+                    <small>
+                      {openCategoryRank
+                        ? `${openCategoryRank.comparisons} ordering comps`
+                        : openComparisonCount > 0
+                          ? `${openComparisonCount} stored comparisons`
+                          : "No direct comparison evidence"}
+                    </small>
+                  </div>
+                  <div>
+                    <span>Overall rank</span>
+                    <strong>
+                      {openOverallRank
+                        ? `#${openOverallRank.rank}`
+                        : "Not ranked"}
+                    </strong>
+                    <small>
+                      {openOverallRank
+                        ? `${openOverallRank.comparisons} ordering comps`
+                        : "No overall ordering yet"}
+                    </small>
+                  </div>
+                </div>
+              </section>
+
+              <section className="catalog-detail-section">
+                <span className="eyebrow">Quiz-derived evidence</span>
+                {openInferred ? (
+                  <>
+                    <strong className="catalog-detail-evidence-title">
+                      {Math.round(openInferred.affinity)}% affinity ·{" "}
+                      {openInferred.coverage}% coverage
+                    </strong>
+                    <p>
+                      Derived from quiz signals only. This does not create or
+                      override an explicit preference or pairwise rank.
+                    </p>
+                    <ul className="catalog-evidence-sources catalog-detail-sources">
+                      {openInferred.matchedSignals.map((signal) => (
+                        <li key={signal.signalId}>
+                          <strong>{signal.signalLabel}</strong>
+                          <span>
+                            {Math.round(signal.signalAffinity)}% signal
+                            {signal.sourceQuizLabels.length > 0
+                              ? ` · via ${signal.sourceQuizLabels.join(", ")}`
+                              : ""}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <p>No mapped quiz evidence for this item yet.</p>
+                )}
+              </section>
+
+              {openInferred && openResult?.excludedFromNewRanking && (
+                <p className="catalog-evidence-conflict-note">
+                  Quiz-derived affinity is shown for explainability only. Your
+                  explicit exclusion remains authoritative.
+                </p>
+              )}
+
+              <section className="catalog-detail-section">
+                <span className="eyebrow">Item context</span>
+                <dl className="catalog-detail-metadata">
+                  <div>
+                    <dt>Direction</dt>
+                    <dd>{openItem.direction}</dd>
+                  </div>
+                  {openItem.intensity && (
+                    <div>
+                      <dt>Intensity</dt>
+                      <dd>{openItem.intensity}</dd>
+                    </div>
+                  )}
+                  {openItem.riskLevel && (
+                    <div>
+                      <dt>Risk</dt>
+                      <dd>{openItem.riskLevel}</dd>
+                    </div>
+                  )}
+                  {openItem.aliases.length > 0 && (
+                    <div>
+                      <dt>Aliases</dt>
+                      <dd>{openItem.aliases.join(", ")}</dd>
+                    </div>
+                  )}
+                </dl>
+              </section>
+            </div>
+          </section>
+        </div>
+      )}
     </section>
   );
 }
