@@ -46,8 +46,11 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
 
 ## Add
 
-- **Receiving — sensory / communication restriction:** “Having some of my sensory awareness deliberately limited—such as not being able to see, hear, or speak clearly—can make an experience more appealing.”
-  - This captures a distinct form of restriction not covered by movement restraint.
+- **Receiving — sensory / communication restriction:** **“Having a trusted partner deliberately limit what I can see, hear, or say can make the sense of control more immersive.”**
+  - **Decision:** do not add a new canonical sensory/communication signal. This is better modeled as an expression of existing control / constraint constructs, while specific implementations remain catalog/modifier data.
+  - Project primarily to `constraint_control · Receiving`, with a smaller `control · Receiving` contribution and optionally a light `anticipation · Overall` contribution if justified by final weighting review.
+  - Do not map it to `movement_restriction`; perception/communication can be limited without restricting movement.
+  - Concrete implementations such as blindfolds, hoods, gags, hearing restriction, and darkness belong in catalog/modifier data rather than becoming separate canonical profile dimensions.
 
 Net effect of the new restraint recommendations: **+2 questions overall**, not +5 — one merged replacement for bd-005, one new giving responsibility item, and one new sensory / communication restriction item.
 
@@ -95,7 +98,7 @@ Net effect of the new restraint recommendations: **+2 questions overall**, not +
 
 - **Vulnerability / psychological release from restraint** — folded into the proposed bd-005 replacement rather than added as separate overlapping questions.
 - **Responsibility while restraining** — represented by the proposed merged giving-responsibility question; review whether `responsibility_holding` is sufficient or whether restraint-specific responsibility needs different modeling.
-- **Sensory / communication restriction** — represented by the proposed see/hear/speak question above. Determine whether it belongs under physical restriction, a broader sensory-control concept, or a new canonical signal.
+- **Sensory / communication restriction** — resolved as an existing-construct expression rather than a new canonical dimension: use `constraint_control · Receiving` / `control · Receiving` for the quiz meaning, with concrete sensory/communication implementations kept in catalog/modifier data.
 - **Aesthetic bondage, tasking, praise/reward** — real B&D-adjacent dimensions. Review whether these belong in quiz signals, another quiz, or catalog/modifier data rather than assuming they are out of scope.
 - **Fantasy vs practice vs lifestyle intensity** — the systematic review supports a dimensional spectrum of engagement, but this is different from preference strength and should not be added to the quiz without a separate product decision.
 
