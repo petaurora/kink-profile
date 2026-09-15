@@ -118,6 +118,39 @@
   font-size: .7rem;
 }
 
+.ranking-session-complete {
+  padding: clamp(16px, 3vw, 24px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.ranking-session-complete .eyebrow {
+  margin-bottom: 5px;
+}
+
+.ranking-session-complete h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  letter-spacing: -.03em;
+}
+
+.ranking-session-complete p:last-child {
+  margin: 7px 0 0;
+  color: var(--text-secondary);
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+.ranking-session-complete-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .ranking-session-strip {
   padding: 12px 14px;
   display: flex;
@@ -257,7 +290,8 @@
 }
 
 @media (max-width: 700px) {
-  .ranking-activity-context {
+  .ranking-activity-context,
+  .ranking-session-complete {
     align-items: stretch;
     flex-direction: column;
     gap: 12px;
@@ -272,6 +306,10 @@
     min-width: 0;
     padding-inline: 9px;
     font-size: .74rem;
+  }
+
+  .ranking-session-complete-actions {
+    justify-content: flex-start;
   }
 
   .ranking-session-strip {
@@ -301,7 +339,8 @@
 }
 
 @media (max-width: 480px) {
-  .ranking-activity-context {
+  .ranking-activity-context,
+  .ranking-session-complete {
     padding: 14px;
   }
 
