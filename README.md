@@ -9,7 +9,7 @@ Pet Profile is local-first: the core product runs in the browser without a requi
 Current capabilities include:
 
 - independent Bondage & Discipline, Dominance & Submission, Sadism & Masochism, and Roles & Headspaces quizzes;
-- a searchable kink catalog with direct preference editing and category/Overall This-or-That ranking;
+- a searchable kink catalog organized around **Compare / Overall / Explore**: category This-or-That comparison, cross-category ranking, and direct preference browsing/editing;
 - source-aware profile aggregation that keeps authority, activity-side giving/receiving, roles/headspaces, direct preferences, rankings, and inferred evidence distinct;
 - local profile settings, selective reset, versioned backup/restore, and PNG/HTML/PDF sharing;
 - Rewards & Punishments classification, ranking, randomization, and reusable builders;

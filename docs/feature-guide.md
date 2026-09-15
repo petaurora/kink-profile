@@ -47,15 +47,16 @@ That separation is intentional.
 You do not need to complete everything before the app becomes useful.
 
 1. **Take one or more core quizzes** to establish broad patterns.
-2. **Browse the Kink Catalog** and explicitly mark activities you already know something about.
-3. **Play This-or-That** when relative comparison feels easier than rating items independently.
-4. **View your Overall Profile** to see the combined picture.
-5. **Use the Hub** as the profile grows; it changes from onboarding into a living home that shows only useful/eligible modules.
-6. **Map Rewards & Punishments** if you want to distinguish general interest from contextual suitability.
-7. **Use Scene Builder** when you want the profile turned into a smaller, usable set of options for the current moment.
-8. **Export a private backup** once you have data you care about.
-9. **Use the share summary** when you want a curated human-facing version.
-10. **Compare profiles temporarily** when someone has shared a compatible profile export and you want to explore overlap or shared Scene options without importing their profile.
+2. **Open Kinks and use Compare** when pairwise choices feel easier than rating a large list directly.
+3. **Use Explore** to search the catalog and explicitly mark activities or boundaries you already know something about.
+4. **Use Overall** once you have useful category-ranking evidence and want cross-category comparisons.
+5. **View your Overall Profile** to see the combined picture.
+6. **Use the Hub** as the profile grows; it changes from onboarding into a living home that shows only useful/eligible modules.
+7. **Map Rewards & Punishments** if you want to distinguish general interest from contextual suitability.
+8. **Use Scene Builder** when you want the profile turned into a smaller, usable set of options for the current moment.
+9. **Export a private backup** once you have data you care about.
+10. **Use the share summary** when you want a curated human-facing version.
+11. **Compare profiles temporarily** when someone has shared a compatible profile export and you want to explore overlap or shared Scene options without importing their profile.
 
 You can return to any area later and refine it. The profile is designed to grow with partial evidence.
 
@@ -141,13 +142,25 @@ Technical reference: [Authority, Activity Side & Role Semantics](authority-activ
 
 # Define specific interests: Kink Catalog
 
-## Browse & set preferences
+Kinks uses three lightweight local tasks:
+
+```text
+Compare    Overall    Explore
+```
+
+- **Compare** — category This-or-That ranking and the default Kinks entry.
+- **Overall** — cross-category ranking/synthesis.
+- **Explore** — direct catalog browsing and preference editing.
+
+## Explore & set preferences
 
 **What it is.** The detailed activity library and direct preference-management surface.
 
 **Use it when.** You already know how you feel about a specific activity, want to mark a boundary, or want to browse beyond the quiz topics.
 
-**How to use it.** Search or filter the catalog, then set a direct preference on any item you care about. You do not need to classify the whole catalog.
+**How to use it.** Search directly, open **Filters** for Category/Preference constraints, expand a category, then set a direct preference on any item you care about. You do not need to classify the whole catalog.
+
+Explore keeps the ordinary list lightweight: preference editing stays on the compact row, tapping the item opens deeper details in a contained sheet, and Boundaries stay behind a compact disclosure until intentionally opened. Active filters appear contextually rather than as permanent toolbar clutter.
 
 Current direct states are:
 
@@ -168,7 +181,7 @@ Current direct states are:
 
 ## Profile-informed catalog context
 
-You may see inferred/profile-informed information beside a catalog item.
+You may see inferred/profile-informed information beside a catalog item or inside its details.
 
 **What it is.** A derived hint based on broader profile evidence and the item's semantic mappings.
 
@@ -180,11 +193,11 @@ Technical reference: [Kink Catalog](product/kink-catalog.md)
 
 ---
 
-# Refine relative favorites: This-or-That
+# Refine relative favorites: Compare & Overall
 
-## Category ranking
+## Compare: category ranking
 
-**What it is.** A pairwise comparison game for ranking eligible items relative to one another inside a category.
+**What it is.** A pairwise comparison activity for ranking eligible items relative to one another inside a category.
 
 **Use it when.** Comparing two things feels easier than assigning independent numeric ratings.
 
@@ -197,7 +210,9 @@ Each pair supports:
 
 Meaningful ordering choices gradually refine the ranking.
 
-Session-size shortcuts such as Quick, Standard, Deep Dive, and Gremlin Mode change how long you play, not the scoring model.
+Compare is activity-first: it resumes useful category context, keeps **Switch** and **Pick for me** nearby, and protects the initial pair with a **Tap to start** gate so opening the default Kinks activity cannot accidentally record a choice.
+
+There is no visible session-size picker. Instead, Compare pauses after each **25 answered comparisons** and asks whether to keep going or choose a new category. That checkpoint only paces the UI; it does not change scoring or create a different ranking session/model.
 
 **What it changes.** It creates direct comparative evidence for the active ranking run.
 
@@ -207,9 +222,11 @@ Session-size shortcuts such as Quick, Standard, Deep Dive, and Gremlin Mode chan
 
 **What it is.** Cross-category comparison among candidates that emerged from evidenced category ranking.
 
-**Use it when.** You want to answer which specific interests rise highest across different categories.
+**Use it when.** You want to answer which specific interests rise highest across different categories. Overall becomes more useful once Compare has created meaningful category evidence.
 
 Untouched categories do not contribute arbitrary finalists merely because unrated items start tied.
+
+The current UI keeps Overall directly reachable beside Compare. It does not currently enforce a separate visual “ready” progression state; that presentation concern is intentionally separate from the current ranking-data contract.
 
 Technical reference: [Kink This-or-That Ranking](kink-this-or-that-ranking.md)
 

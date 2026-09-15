@@ -1,6 +1,6 @@
 # Kink Catalog
 
-This document defines the current product and data contract for the kink catalog: stable catalog definitions, explicit user preference state, browsing, resolved catalog results, and the boundaries between catalog state, pairwise ranking, and inferred affinity.
+This document defines the current product and data contract for the kink catalog: stable catalog definitions, explicit user preference state, Explore behavior, resolved catalog results, and the boundaries between catalog state, pairwise ranking, and inferred affinity.
 
 ## Product boundary
 
@@ -36,7 +36,7 @@ The catalog contract owns:
 - catalog-to-Signal mappings;
 - explicit per-item preference state;
 - browser-local catalog-profile persistence;
-- browse/filter/edit behavior;
+- Explore/search/filter/edit behavior;
 - the joined catalog result view;
 - explicit exclusion/suppression behavior.
 
@@ -148,7 +148,7 @@ type KinkCatalogCategory = {
 
 ### Category and domain semantics
 
-Categories are stable browse/ranking groups.
+Categories are stable Explore/ranking groups.
 
 Domains are broader organization metadata used for grouping/filtering/presentation. They are not quiz sections, Overall Facets, Dynamic Modes, or authority roles.
 
@@ -347,20 +347,31 @@ Legacy ranking-only storage is a compatibility input when the catalog-profile st
 
 See [Profile Management](profile-management.md) for backup/reset lifecycle behavior.
 
-## Browse / Preferences surface
+## Explore / Preferences surface
 
-The catalog has a direct-management surface separate from the pairwise mini-game.
+Kinks uses one lightweight local task navigation layer:
 
-Current browsing behavior includes:
+```text
+Compare    Overall    Explore
+```
 
-- search across canonical item labels and aliases;
-- category filtering;
-- explicit-state filtering, including unanswered / Not set;
-- grouping by generated category order;
-- compact explicit Overall-preference editing;
-- expandable catalog metadata/details;
-- read-only joined evidence/ranking context;
-- explicit limit/exclusion summaries.
+**Explore** is the direct-management surface. It is separate from the pairwise ranking activities even though all three operate on the same catalog identities.
+
+Current Explore behavior includes:
+
+- search across canonical item labels and aliases kept immediately available;
+- Category and Preference filters behind one compact Filters control;
+- contextual active-filter chips/counts and `Clear all` only when something is constrained;
+- explicit no-results recovery without treating a filtered-empty view as missing catalog data;
+- grouping by generated category order with the whole category heading as the expand/collapse target;
+- compact item rows with direct Overall-preference editing available inline;
+- quiet read-only ranking/comparison context in collapsed rows;
+- row-tap item details in a contained mobile-first bottom sheet/drawer;
+- detail access to description, direct/ranking/quiz-derived evidence, direction, intensity, risk, and aliases;
+- a compact Boundaries disclosure rather than a permanently expanded limits dashboard;
+- boundary counts visible in the collapsed disclosure, with explicit item names shown only after intentional expansion;
+- Hard Limit / Not Interested / Not Applicable boundary groups that can filter Explore directly;
+- no persistent Expand all / Collapse all controls in Explore primary chrome.
 
 The surface is not a questionnaire and does not require every catalog row to receive an explicit state.
 
@@ -490,6 +501,10 @@ Future changes should preserve these boundaries unless the product deliberately 
 - `src/lib/catalogProfileStorage.ts`
 - `src/lib/catalogResults.ts`
 - `src/lib/catalogRecommendations.ts`
-- `src/KinkCatalogPreferences.tsx`
+- `src/features/catalog/CatalogRoute.tsx`
+- `src/features/catalog/KinkCatalogPreferences.tsx`
+- `src/features/catalog/KinkCatalogPreferences.compact.css`
+- `src/features/catalog/KinkCatalogPreferences.disclosure.css`
+- `src/features/catalog/KinkCatalogPreferences.filters.css`
 
 The code, generator validation, and focused tests remain authoritative when implementation and documentation disagree.

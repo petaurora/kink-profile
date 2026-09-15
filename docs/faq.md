@@ -130,6 +130,16 @@ A strong affinity with partial coverage is valid. Missing evidence should remain
 
 ## Catalog preferences
 
+### What are Compare, Overall, and Explore in Kinks?
+
+They are three tasks over the same catalog, not three separate profiles.
+
+- **Compare** is the default category This-or-That activity.
+- **Overall** is cross-category This-or-That ranking among current eligible candidates.
+- **Explore** is the direct catalog workspace for search, filtering, preference editing, details, and boundaries.
+
+Compare/Overall create relative pairwise evidence. Explore edits explicit item-level preference. One does not silently rewrite the other.
+
 ### What is the difference between Love, Like, Curious, and Unsure?
 
 They are direct preference states.
@@ -185,6 +195,12 @@ Hard Limit, Not Interested, and Not Applicable keep the item out of new ordinary
 
 Current eligibility and history are different concerns.
 
+### Why are Boundaries collapsed in Explore?
+
+Boundaries are important, but they are not the primary action for every catalog visit.
+
+Explore keeps a compact boundary summary available and reveals explicit boundary item names only when you intentionally open that view. Hard Limit, Not Interested, and Not Applicable groups can then filter Explore directly.
+
 See [Kink Catalog](product/kink-catalog.md).
 
 ## This-or-That ranking
@@ -227,11 +243,23 @@ Category ranking establishes local order first. Current evidenced finalists can 
 
 Neither and Skip do not manufacture explicit catalog states.
 
-### What are Quick, Standard, Deep Dive, and Gremlin Mode?
+### Why does Compare pause after 25 choices?
 
-They are session-size conveniences, not different scoring systems.
+The 25-comparison checkpoint is a pacing convenience, not a different scoring mode.
 
-Saved comparisons remain part of the active ranking run regardless of session size.
+Your comparisons are already saved in the active ranking run. At the checkpoint you can keep going for another block or choose another category. The checkpoint does not reset Elo, create a new run, or change how comparisons are scored.
+
+### Why do I have to tap to start before the first pair?
+
+Compare is the default Kinks entry, so the initial gate protects against an accidental ranking choice while entering or navigating into the activity.
+
+The **Tap to start** action only unlocks the pair. It is not recorded as a comparison.
+
+### Why does Overall feel like something I should do after Compare?
+
+Because the current Overall pool is built from meaningful category-ranking evidence plus items with existing Overall history. More category evidence generally makes cross-category comparison more useful.
+
+The current UI keeps Overall directly reachable instead of locking it behind a strict wizard/progression screen. That presentation choice does not change the category-first candidate rules.
 
 ### Why does a ranking have low confidence?
 
