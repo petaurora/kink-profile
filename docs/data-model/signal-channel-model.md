@@ -38,6 +38,11 @@ Care
   Receiving — Being cared for
   Giving    — Caring for someone
 
+Movement Restriction
+  Overall
+  Receiving — Having movement restricted
+  Giving    — Restricting another person's movement
+
 Role Embodiment
   Overall only
 ```
