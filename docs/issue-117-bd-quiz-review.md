@@ -54,7 +54,9 @@ Net effect of the new restraint recommendations: **+2 questions overall**, not +
 ## Rewrite
 
 - **bd-024** — “Knowing in advance that restraint, correction, or a formal ritual is coming can be part of the appeal.”
-  - Bundles three distinct experiences. Prefer a discipline-specific anticipation item, e.g. “Knowing in advance that a consequence or correction is coming can build appealing anticipation.”
+  - **Decision:** rewrite to isolate discipline anticipation: **“Knowing in advance that a consequence or correction is coming can build appealing anticipation.”**
+  - Project primarily to `anticipation · Overall`, with a smaller `discipline · Receiving` contribution.
+  - Drop the ritual contribution; ritual significance is already measured by bd-023/025/026, while restraint anticipation is already measured by bd-008.
 
 ## Keep, but review model / weights
 
