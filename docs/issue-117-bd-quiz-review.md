@@ -66,7 +66,10 @@ Net effect of the new restraint recommendations: **+2 questions overall**, not +
 
 - **bd-011** — “Placing a willing partner in a specific position and expecting them to maintain it can be appealing.”
 - **bd-012** — “Carefully arranging another person's posture or placement can be satisfying in its own right.”
-  - Same maintain-vs-arrange distinction as bd-003/004. Remove or reduce bd-012's `guidance_shaping` weight unless behavioral shaping is actually intended.
+  - **Decision:** keep both. They mirror the same maintain-vs-arrange distinction as bd-003/004 on the Giving side.
+  - Both should primarily project to `positioning · Giving`.
+  - bd-011 should retain secondary `constraint_control · Giving` plus a smaller `structure` contribution because it includes requiring the partner to maintain the position.
+  - bd-012 should drop `guidance_shaping`; arranging someone’s body is not inherently teaching, coaching, correcting, or behaviorally shaping them. Keep it clean as essentially `positioning · Giving` unless later evidence supports a small `control · Giving` secondary weight.
 
 - **bd-014** — “I can enjoy a willing partner testing or struggling against agreed restraint because it makes containment more interactive.”
   - `challenge_escape` currently mixes the experience of struggling/escaping with the experience of containing someone who struggles. Confirm whether this should remain nondirectional.
