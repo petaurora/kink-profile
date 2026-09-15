@@ -30,7 +30,9 @@ Working review notes for `src/data/bondageDisciplineQuiz.ts`. These are recommen
 
 - **bd-006** — “Pulling against or testing agreed restraint can add something enjoyable to the experience for me.”
 - **bd-007** — “The possibility of trying to get free, even when I may not succeed, can make restraint more exciting.”
-  - Merge unless `struggling/testing` and `escape challenge` become separate signals.
+  - **Decision:** merge into one receiving-side escape / containment item: **“Testing or struggling against agreed restraint—including trying to get free—can make the experience more exciting for me.”**
+  - Project primarily to `escape_containment · Receiving`.
+  - Drop the `playful_resistance` secondary weight unless future wording explicitly introduces relational teasing / pushback; physical struggling against restraint is not inherently playful resistance.
 
 - **bd-018** — “A non-painful corrective task or consequence can still feel strongly like discipline to me.”
   - Remove; overlaps bd-016/017 and repeats the non-pain distinction.
