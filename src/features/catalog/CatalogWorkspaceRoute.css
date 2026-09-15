@@ -1,28 +1,70 @@
 .catalog-workspace-shell {
   display: grid;
-  gap: 18px;
+  gap: 16px;
 }
 
 .catalog-workspace-navigation {
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
-  gap: 16px;
-  padding: 12px 2px 0;
+  gap: 20px;
+  padding: 4px 2px 0;
 }
 
-.catalog-workspace-navigation > div:first-child {
-  display: grid;
-  gap: 3px;
+.catalog-workspace-title {
+  color: var(--text-primary);
+  font-size: .92rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
-.catalog-workspace-navigation .eyebrow {
-  margin: 0;
+.catalog-workspace-tabs {
+  display: flex;
+  align-items: end;
+  gap: 24px;
 }
 
-.catalog-workspace-navigation strong {
-  font-size: 0.95rem;
+.catalog-workspace-tab {
+  position: relative;
+  border: 0;
+  padding: 3px 0 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 800;
+}
+
+.catalog-workspace-tab::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.catalog-workspace-tab:hover {
   color: var(--text-secondary);
+}
+
+.catalog-workspace-tab.is-active {
+  color: var(--text-primary);
+}
+
+.catalog-workspace-tab.is-active::after {
+  background: var(--accent-primary);
+}
+
+.catalog-workspace-tab:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+  border-radius: 4px;
 }
 
 .catalog-workspace-shell .catalog-preferences-heading,
@@ -32,9 +74,11 @@
 
 @media (max-width: 640px) {
   .catalog-workspace-navigation {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 10px;
+    gap: 16px;
     padding-top: 2px;
+  }
+
+  .catalog-workspace-tabs {
+    gap: 22px;
   }
 }
