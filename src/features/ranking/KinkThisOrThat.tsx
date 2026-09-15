@@ -37,15 +37,22 @@ import {
   getPreviousComparableRankingSnapshot,
 } from "../../lib/kinkRankingMovement";
 import type { StoredProfile } from "../../lib/profileStorage";
+import "./KinkThisOrThat.activity.css";
 
 type RankingMode = "category" | "overall";
 type SessionSize = 10 | 25 | 50 | "gremlin";
 
+type CategoryRankingSummary = {
+  id: string;
+  comparisons: number;
+  confidence: number;
+};
+
 const sessionOptions: Array<{ value: SessionSize; label: string; detail: string }> = [
-  { value: 10, label: "Quick", detail: "10 comparisons" },
-  { value: 25, label: "Standard", detail: "25 comparisons" },
-  { value: 50, label: "Deep Dive", detail: "50 comparisons" },
-  { value: "gremlin", label: "Gremlin Mode", detail: "keep going" },
+  { value: 10, label: "Quick", detail: "10" },
+  { value: 25, label: "Standard", detail: "25" },
+  { value: 50, label: "Deep Dive", detail: "50" },
+  { value: "gremlin", label: "Gremlin", detail: "∞" },
 ];
 
 function randomId() {
@@ -85,25 +92,72 @@ function comparisonCountForScope(
   }).length;
 }
 
+export function mostRecentRankedCategoryId(
+  comparisons: readonly KinkComparison[],
+) {
+  const latest = comparisons
+    .filter(
+      (comparison) =>
+        comparison.scope.type === "category" &&
+        isOrderingResult(comparison.result),
+    )
+    .slice()
+    .sort((a, b) => b.timestamp.localeCompare(a.timestamp))[0];
+
+  return latest?.scope.type === "category" ? latest.scope.categoryId : null;
+}
+
+export function suggestedRankingCategoryId(
+  summaries: readonly CategoryRankingSummary[],
+  currentCategoryId?: string,
+) {
+  const alternatives = summaries.filter(
+    (summary) => summary.id !== currentCategoryId,
+  );
+  const pool = alternatives.length > 0 ? alternatives : summaries;
+
+  const inProgress = pool
+    .filter((summary) => summary.comparisons > 0 && summary.confidence < 0.45)
+    .slice()
+    .sort(
+      (a, b) =>
+        a.confidence - b.confidence || a.comparisons - b.comparisons,
+    )[0];
+  if (inProgress) return inProgress.id;
+
+  const notStarted = pool.find((summary) => summary.comparisons === 0);
+  if (notStarted) return notStarted.id;
+
+  return (
+    pool.slice().sort((a, b) => a.confidence - b.confidence)[0]?.id ?? null
+  );
+}
+
 export function KinkThisOrThat({
   quizProfile,
-  onClose,
 }: {
   quizProfile: StoredProfile;
   onClose: () => void;
 }) {
   const [profile, setProfile] = useState(() => loadCatalogProfile());
+  const initialComparisons = getActiveKinkRankingComparisons(profile);
+  const initialCategoryId =
+    mostRecentRankedCategoryId(initialComparisons) ?? kinkCategories[0]?.id ?? "";
+
   const [mode, setMode] = useState<RankingMode>("category");
-  const [categoryId, setCategoryId] = useState<string>(
-    kinkCategories[0]?.id ?? "",
-  );
+  const [categoryId, setCategoryId] = useState<string>(initialCategoryId);
   const [sessionSize, setSessionSize] = useState<SessionSize>(25);
-  const [sessionStartCount, setSessionStartCount] = useState(0);
+  const [sessionStartCount, setSessionStartCount] = useState(() =>
+    comparisonCountForScope(initialComparisons, {
+      type: "category",
+      categoryId: initialCategoryId,
+    }),
+  );
   const [showResults, setShowResults] = useState(false);
-  const [pairNonce, setPairNonce] = useState(0);
-  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false);
   const [showNewRunConfirm, setShowNewRunConfirm] = useState(false);
   const [newRunNotice, setNewRunNotice] = useState(false);
+  const [pairNonce, setPairNonce] = useState(0);
   const [openMovementId, setOpenMovementId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -120,12 +174,8 @@ export function KinkThisOrThat({
     [profile],
   );
   const activeRunId = getActiveKinkRankingRunId(profile);
-  const hasMeaningfulRank = useMemo(
-    () =>
-      activeComparisons.some((comparison) =>
-        isOrderingResult(comparison.result),
-      ),
-    [activeComparisons],
+  const hasMeaningfulRank = activeComparisons.some((comparison) =>
+    isOrderingResult(comparison.result),
   );
   const rankingRunNumber = Object.keys(profile.rankingHistory?.runs ?? {}).length;
 
@@ -136,11 +186,7 @@ export function KinkThisOrThat({
 
   const overallCandidates = useMemo(
     () =>
-      selectOverallCandidates(
-        eligibleCatalog,
-        finalists,
-        activeComparisons,
-      ),
+      selectOverallCandidates(eligibleCatalog, finalists, activeComparisons),
     [eligibleCatalog, finalists, activeComparisons],
   );
 
@@ -182,7 +228,6 @@ export function KinkThisOrThat({
     () => selectNextPair(activeCatalog, activeComparisons, scope),
     [activeCatalog, activeComparisons, mode, categoryId, pairNonce],
   );
-
   const pair = useMemo(() => randomizePair(basePair), [basePair, pairNonce]);
 
   const totalInScope = comparisonCountForScope(activeComparisons, scope);
@@ -195,11 +240,8 @@ export function KinkThisOrThat({
   const sessionComplete = sessionAnswered >= sessionLimit;
 
   const resultView = useMemo(
-    () =>
-      showResults || sessionComplete
-        ? buildCatalogResultView(quizProfile, profile)
-        : null,
-    [quizProfile, profile, showResults, sessionComplete],
+    () => (showResults ? buildCatalogResultView(quizProfile, profile) : null),
+    [quizProfile, profile, showResults],
   );
 
   const activeCategory = kinkCategories.find(
@@ -239,23 +281,7 @@ export function KinkThisOrThat({
     [eligibleCatalog, activeComparisons],
   );
 
-  const lastRankedCategoryId = useMemo(() => {
-    const latest = activeComparisons
-      .filter(
-        (comparison) =>
-          comparison.scope.type === "category" &&
-          isOrderingResult(comparison.result),
-      )
-      .slice()
-      .sort((a, b) => b.timestamp.localeCompare(a.timestamp))[0];
-
-    return latest?.scope.type === "category" ? latest.scope.categoryId : null;
-  }, [activeComparisons]);
-
-  const continueCategory = categorySummaries.find(
-    (category) => category.id === lastRankedCategoryId,
-  );
-
+  const lastRankedCategoryId = mostRecentRankedCategoryId(activeComparisons);
   const nextCategory = useMemo(() => {
     if (!activeCategory) return undefined;
     const currentIndex = kinkCategories.findIndex(
@@ -281,21 +307,6 @@ export function KinkThisOrThat({
 
     return kinkCategories[(currentIndex + 1) % kinkCategories.length];
   }, [activeCategory, categorySummaries]);
-
-  const categorizedProgress = useMemo(
-    () => ({
-      inProgress: categorySummaries.filter(
-        (category) => category.comparisons > 0 && category.confidence < 0.45,
-      ),
-      refined: categorySummaries.filter(
-        (category) => category.comparisons > 0 && category.confidence >= 0.45,
-      ),
-      notStarted: categorySummaries.filter(
-        (category) => category.comparisons === 0,
-      ),
-    }),
-    [categorySummaries],
-  );
 
   const startSession = (nextSize: SessionSize) => {
     setSessionSize(nextSize);
@@ -324,6 +335,37 @@ export function KinkThisOrThat({
     setPairNonce((value) => value + 1);
   };
 
+  const changeCategory = (nextCategoryId: string) => {
+    setMode("category");
+    setCategoryId(nextCategoryId);
+    setShowCategoryPicker(false);
+    setShowResults(false);
+    setPairNonce((value) => value + 1);
+    setSessionStartCount(
+      comparisonCountForScope(activeComparisons, {
+        type: "category",
+        categoryId: nextCategoryId,
+      }),
+    );
+  };
+
+  const pickCategoryForMe = () => {
+    const suggested = suggestedRankingCategoryId(categorySummaries, categoryId);
+    if (suggested) changeCategory(suggested);
+  };
+
+  const openOverallRanking = () => {
+    if (overallCandidates.length < 2) return;
+
+    setMode("overall");
+    setShowCategoryPicker(false);
+    setShowResults(false);
+    setPairNonce((value) => value + 1);
+    setSessionStartCount(
+      comparisonCountForScope(activeComparisons, { type: "overall" }),
+    );
+  };
+
   const beginNewRankingRun = () => {
     const startedAt = new Date().toISOString();
 
@@ -336,7 +378,7 @@ export function KinkThisOrThat({
       ),
     );
     setMode("category");
-    setCategoryOpen(false);
+    setShowCategoryPicker(false);
     setShowResults(false);
     setSessionStartCount(0);
     setPairNonce((value) => value + 1);
@@ -344,522 +386,404 @@ export function KinkThisOrThat({
     setNewRunNotice(true);
   };
 
-  const openOverallRanking = () => {
-    if (overallCandidates.length < 2) return;
-
-    setMode("overall");
-    setCategoryOpen(false);
-    setShowResults(false);
-    setPairNonce((value) => value + 1);
-    setSessionStartCount(
-      comparisonCountForScope(activeComparisons, { type: "overall" }),
-    );
-  };
-
-  const returnToCategories = () => {
-    setMode("category");
-    setCategoryOpen(false);
-    setShowResults(false);
-    setPairNonce((value) => value + 1);
-  };
-
-  const changeCategory = (nextCategoryId: string) => {
-    setCategoryId(nextCategoryId);
-    setCategoryOpen(true);
-    setShowResults(false);
-    setPairNonce((value) => value + 1);
-    setSessionStartCount(
-      comparisonCountForScope(activeComparisons, {
-        type: "category",
-        categoryId: nextCategoryId,
-      }),
-    );
-  };
+  const contextLabel =
+    mode === "overall"
+      ? "Overall ranking"
+      : lastRankedCategoryId === categoryId && orderingInScope > 0
+        ? "Continue ranking"
+        : "Current category";
 
   return (
-    <section className="ranking-stack">
-      <div className="ranking-heading panel">
-        <div>
-          <p className="eyebrow">Kink ranking</p>
-          <h1>This or that. Giant list, tiny decisions.</h1>
+    <section className="ranking-stack ranking-activity-stack">
+      <section className="ranking-activity-context panel">
+        <div className="ranking-activity-copy">
+          <p className="eyebrow">{contextLabel}</p>
+          <h1>
+            {mode === "overall" ? "Across everything" : activeCategory?.label}
+          </h1>
           <p>
-            Rank within a category first, then send up to that category's Top 5 items with
-            actual ordering evidence into the overall fight. Your raw choices are saved
-            locally so the ranking can be recalculated later without locking us to one
-            algorithm.
+            {mode === "overall"
+              ? `${overallCandidates.length} candidates · ${orderingInScope} ordering comparisons`
+              : `${orderingInScope} comparisons · ${confidenceLabel(snapshot.confidence)}`}
           </p>
         </div>
-        <button className="secondary" onClick={onClose}>
-          Back to hub
-        </button>
-      </div>
 
-      {(categoryOpen || mode === "overall") && (
-        <div className="ranking-context">
-          <button className="category-back" onClick={returnToCategories}>
-            ← Categories
-          </button>
-          <div className="ranking-context-current">
-            <span className="eyebrow">
-              {mode === "overall" ? "Overall ranking" : "Current category"}
-            </span>
-            <strong>
-              {mode === "overall"
-                ? `${overallCandidates.length} candidates · current finalists + prior Overall history`
-                : activeCategory?.label}
-            </strong>
+        <div className="ranking-activity-actions" aria-label="Ranking options">
+          {mode === "overall" ? (
+            <button
+              className="secondary compact"
+              onClick={() => {
+                setMode("category");
+                setShowCategoryPicker(true);
+                setShowResults(false);
+                setSessionStartCount(
+                  comparisonCountForScope(activeComparisons, {
+                    type: "category",
+                    categoryId,
+                  }),
+                );
+              }}
+            >
+              Choose category
+            </button>
+          ) : (
+            <>
+              <button
+                className="secondary compact"
+                onClick={() => setShowCategoryPicker((open) => !open)}
+                aria-expanded={showCategoryPicker}
+              >
+                Choose category
+              </button>
+              <button className="secondary compact" onClick={pickCategoryForMe}>
+                Pick for me
+              </button>
+              <button
+                className="secondary compact"
+                onClick={openOverallRanking}
+                disabled={overallCandidates.length < 2}
+              >
+                Overall ranking
+              </button>
+            </>
+          )}
+        </div>
+      </section>
+
+      {newRunNotice && (
+        <div className="ranking-run-notice panel ranking-activity-notice" role="status">
+          <div>
+            <strong>Fresh ranking run started.</strong>
+            <span>Your previous ranking is saved as history.</span>
           </div>
+          <button className="text-button" onClick={() => setNewRunNotice(false)}>
+            Dismiss
+          </button>
         </div>
       )}
 
-      {mode === "category" && !categoryOpen ? (
-        <section className="category-map">
-          {newRunNotice && (
-            <div className="ranking-run-notice panel" role="status">
-              <div>
-                <strong>Fresh ranking run started.</strong>
-                <span>
-                  Your previous ranking is saved as history. This run starts from zero
-                  comparisons.
-                </span>
-              </div>
-              <button
-                className="text-button"
-                onClick={() => setNewRunNotice(false)}
-              >
-                Dismiss
-              </button>
+      {showCategoryPicker && mode === "category" && (
+        <section className="ranking-category-picker panel">
+          <div className="ranking-category-picker-heading">
+            <div>
+              <p className="eyebrow">Choose category</p>
+              <h2>What sounds fun right now?</h2>
             </div>
+            <button
+              className="text-button"
+              onClick={() => setShowCategoryPicker(false)}
+            >
+              Close
+            </button>
+          </div>
+          <div className="ranking-category-picker-list">
+            {categorySummaries.map((category) => (
+              <button
+                key={category.id}
+                className={
+                  category.id === categoryId
+                    ? "ranking-category-picker-row is-current"
+                    : "ranking-category-picker-row"
+                }
+                onClick={() => changeCategory(category.id)}
+              >
+                <span>
+                  <strong>{category.label}</strong>
+                  <small>{category.itemCount} items</small>
+                </span>
+                <span>
+                  <strong>{category.comparisons}</strong>
+                  <small>{category.confidenceLabel}</small>
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {!showResults && !sessionComplete && pair && (
+        <PairwiseComparisonPanel
+          ariaLabel="Kink comparison"
+          metaStart={
+            mode === "category" ? activeCategory?.label : "Cross-category finalists"
+          }
+          metaEnd={
+            sessionSize === "gremlin"
+              ? `${sessionAnswered} this session`
+              : `${sessionAnswered} / ${sessionSize}`
+          }
+          left={{
+            id: pair[0].id,
+            eyebrow: pair[0].categoryLabel,
+            label: pair[0].label,
+            description: pair[0].description,
+          }}
+          right={{
+            id: pair[1].id,
+            eyebrow: pair[1].categoryLabel,
+            label: pair[1].label,
+            description: pair[1].description,
+          }}
+          onPick={(side) => answer(side)}
+          actions={
+            <>
+              <button className="secondary compact" onClick={() => answer("equal")}>
+                Both / equal
+              </button>
+              <button className="secondary compact" onClick={() => answer("neither")}>
+                Neither
+              </button>
+              <button className="text-button" onClick={() => answer("skip")}>
+                Skip / don't know
+              </button>
+            </>
+          }
+        />
+      )}
+
+      {!showResults && !sessionComplete && !pair && (
+        <article className="ranking-empty panel">
+          <p className="eyebrow">
+            {mode === "overall" ? "Overall ranking" : activeCategory?.label}
+          </p>
+          <h2>Nothing else to compare here.</h2>
+          <p>
+            Fewer than two eligible items remain in this scope. Existing comparisons are
+            still saved, and excluded items stay out of new pairs.
+          </p>
+          <div className="ranking-empty-actions">
+            {snapshot.items.length > 0 && (
+              <button className="secondary" onClick={() => setShowResults(true)}>
+                View current ranking
+              </button>
+            )}
+            {mode === "category" && nextCategory && nextCategory.id !== categoryId && (
+              <button className="primary" onClick={() => changeCategory(nextCategory.id)}>
+                Next category →
+              </button>
+            )}
+          </div>
+        </article>
+      )}
+
+      {sessionComplete && !showResults && (
+        <article className="ranking-session-complete panel">
+          <div>
+            <p className="eyebrow">Session complete</p>
+            <h2>{sessionAnswered} choices saved.</h2>
+            <p>
+              {mode === "category"
+                ? `${activeCategory?.label ?? "This category"} is ${confidenceLabel(snapshot.confidence).toLowerCase()} right now.`
+                : `Your overall ranking is ${confidenceLabel(snapshot.confidence).toLowerCase()} right now.`}
+            </p>
+          </div>
+          <div className="ranking-session-complete-actions">
+            {activeCatalog.length >= 2 && (
+              <button className="primary" onClick={() => startSession(sessionSize)}>
+                Keep ranking
+              </button>
+            )}
+            {mode === "category" && nextCategory && nextCategory.id !== categoryId && (
+              <button className="secondary" onClick={() => changeCategory(nextCategory.id)}>
+                Next category →
+              </button>
+            )}
+            {snapshot.items.length > 0 && (
+              <button className="text-button" onClick={() => setShowResults(true)}>
+                View current ranking
+              </button>
+            )}
+          </div>
+        </article>
+      )}
+
+      <div className="ranking-session-strip panel">
+        <div>
+          <p className="eyebrow">Session</p>
+          <strong>How feral are we feeling?</strong>
+        </div>
+        <div className="ranking-session-options">
+          {sessionOptions.map((option) => (
+            <button
+              key={String(option.value)}
+              className={
+                sessionSize === option.value
+                  ? "ranking-session-option is-active"
+                  : "ranking-session-option"
+              }
+              onClick={() => startSession(option.value)}
+            >
+              <span>{option.label}</span>
+              <small>{option.detail}</small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {showResults && (
+        <article className="ranking-results panel">
+          <div className="ranking-results-heading">
+            <div>
+              <p className="eyebrow">
+                {mode === "category" ? activeCategory?.label : "Your general top likes"}
+              </p>
+              <h2>{confidenceLabel(snapshot.confidence)}</h2>
+              <p>
+                {orderingInScope} ordering comparisons shape this ranking.
+                {totalInScope > orderingInScope
+                  ? ` ${totalInScope - orderingInScope} Skip/Neither interactions are saved but do not raise confidence.`
+                  : " Keep going whenever you want to refine it."}
+              </p>
+            </div>
+            <div className="ranking-results-actions">
+              {activeCatalog.length >= 2 && (
+                <button className="primary" onClick={() => startSession(sessionSize)}>
+                  Keep ranking
+                </button>
+              )}
+              {mode === "category" && nextCategory && nextCategory.id !== categoryId && (
+                <button className="secondary" onClick={() => changeCategory(nextCategory.id)}>
+                  Next category →
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="ranking-list">
+            {visibleRankingItems.map((item, index) => {
+              const result = resultView?.byCatalogId.get(item.id);
+              const movement = visibleRankingMovements.get(item.id);
+              const movementId = `${mode}:${categoryId}:${item.id}`;
+
+              return (
+                <div className="ranking-row" key={item.id}>
+                  <span className="ranking-position">{index + 1}</span>
+                  <div className="ranking-row-copy">
+                    <div className="ranking-row-title">
+                      <strong>{item.label}</strong>
+                      {movement && (
+                        <RankingMovementIndicator
+                          movement={movement}
+                          open={openMovementId === movementId}
+                          onToggle={() =>
+                            setOpenMovementId((current) =>
+                              current === movementId ? null : movementId,
+                            )
+                          }
+                        />
+                      )}
+                    </div>
+                    <span>{item.categoryLabel}</span>
+                    <div className="ranking-row-evidence">
+                      {result?.explicitState && (
+                        <span className="ranking-evidence-chip explicit">
+                          Explicit: {catalogPreferenceLabels[result.explicitState]}
+                        </span>
+                      )}
+                      {result?.inferred && (
+                        <span className="ranking-evidence-chip inferred">
+                          Quiz-derived {Math.round(result.inferred.affinity)}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span>{item.comparisons} comps</span>
+                </div>
+              );
+            })}
+          </div>
+        </article>
+      )}
+
+      {!sessionComplete && !showResults && pair && (
+        <div className="ranking-footer-actions">
+          <button className="ranking-results-link" onClick={() => setShowResults(true)}>
+            View current ranking
+          </button>
+          {mode === "category" && nextCategory && nextCategory.id !== categoryId && (
+            <button
+              className="ranking-results-link"
+              onClick={() => changeCategory(nextCategory.id)}
+            >
+              Next category →
+            </button>
           )}
+        </div>
+      )}
+
+      <details className="ranking-secondary panel">
+        <summary>
+          <span>
+            <strong>Progress & history</strong>
+            <small>Category confidence, overall pool, and ranking runs</small>
+          </span>
+          <span aria-hidden="true">⌄</span>
+        </summary>
+
+        <div className="ranking-secondary-content">
+          <div className="ranking-secondary-summary">
+            <span>
+              <strong>{categorySummaries.filter((item) => item.comparisons > 0).length}</strong>
+              <small>categories started</small>
+            </span>
+            <span>
+              <strong>{overallCandidates.length}</strong>
+              <small>overall candidates</small>
+            </span>
+            <span>
+              <strong>Run {rankingRunNumber}</strong>
+              <small>current pulse</small>
+            </span>
+          </div>
+
+          <div className="ranking-secondary-actions">
+            <button
+              className="secondary compact"
+              onClick={() => setShowCategoryPicker(true)}
+            >
+              Review category progress
+            </button>
+            <button
+              className="secondary compact"
+              onClick={openOverallRanking}
+              disabled={overallCandidates.length < 2}
+            >
+              Open overall ranking
+            </button>
+          </div>
 
           {hasMeaningfulRank &&
             (showNewRunConfirm ? (
-              <section
-                className="ranking-run-confirm panel"
-                aria-labelledby="ranking-run-confirm-title"
-              >
-                <div className="ranking-run-confirm-copy">
-                  <p className="eyebrow">New ranking pulse</p>
-                  <h2 id="ranking-run-confirm-title">Start fresh?</h2>
+              <div className="ranking-new-run-confirm">
+                <div>
+                  <strong>Start a fresh ranking run?</strong>
                   <p>
-                    Run {rankingRunNumber} will be saved as history. The new run starts
-                    with fresh This-or-That comparisons.
+                    Run {rankingRunNumber} is saved as history. Quiz results and direct
+                    catalog preferences stay exactly as they are.
                   </p>
                 </div>
-                <div className="ranking-run-impact">
-                  <span>
-                    <strong>Saved</strong>
-                    Current ranking + raw comparisons
-                  </span>
-                  <span>
-                    <strong>Kept</strong>
-                    Quiz results + catalog preferences
-                  </span>
-                  <span>
-                    <strong>Fresh</strong>
-                    Pairwise scores + ranking confidence
-                  </span>
-                </div>
-                <div className="ranking-run-confirm-actions">
+                <div>
                   <button
-                    className="secondary"
+                    className="secondary compact"
                     onClick={() => setShowNewRunConfirm(false)}
                   >
                     Cancel
                   </button>
-                  <button className="primary" onClick={beginNewRankingRun}>
-                    Start new ranking run
+                  <button className="primary compact" onClick={beginNewRankingRun}>
+                    Start new run
                   </button>
                 </div>
-              </section>
+              </div>
             ) : (
-              <section className="ranking-run-control panel">
-                <div>
-                  <p className="eyebrow">
-                    Ranking history · Run {rankingRunNumber}
-                  </p>
-                  <strong>Want a fresh pulse?</strong>
-                  <span>
-                    Save this ranking as history and rerank from scratch to see what
-                    shifts.
-                  </span>
-                </div>
-                <button
-                  className="secondary compact"
-                  onClick={() => setShowNewRunConfirm(true)}
-                >
-                  Start a new ranking run
-                </button>
-              </section>
+              <button
+                className="text-button ranking-new-run-link"
+                onClick={() => setShowNewRunConfirm(true)}
+              >
+                Start a new ranking run
+              </button>
             ))}
-
-          <button
-            className={
-              overallCandidates.length >= 2
-                ? "overall-destination panel"
-                : "overall-destination panel locked"
-            }
-            onClick={openOverallRanking}
-            disabled={overallCandidates.length < 2}
-          >
-            <div>
-              <p className="eyebrow">Across everything you've ranked</p>
-              <h2>Your overall ranking</h2>
-              <p>
-                {overallCandidates.length >= 2
-                  ? `${overallCandidates.length} candidates ready · Current finalists plus prior Overall participants stay in the fight.`
-                  : "Make at least one meaningful category comparison to start building your finalist pool."}
-              </p>
-            </div>
-            <span className="overall-destination-arrow">
-              {overallCandidates.length >= 2 ? "→" : "Locked"}
-            </span>
-          </button>
-
-          {continueCategory && (
-            <button
-              className="category-continue panel"
-              onClick={() => changeCategory(continueCategory.id)}
-            >
-              <div>
-                <p className="eyebrow">Continue where you left off</p>
-                <h2>{continueCategory.label}</h2>
-                <p>
-                  {continueCategory.comparisons} comparisons ·{" "}
-                  {continueCategory.confidenceLabel}
-                </p>
-              </div>
-              <span className="category-continue-arrow">→</span>
-            </button>
-          )}
-
-          {categorizedProgress.inProgress.length > 0 && (
-            <div className="category-map-section">
-              <div className="category-map-heading">
-                <div>
-                  <p className="eyebrow">In progress</p>
-                  <h2>Keep shaping these</h2>
-                </div>
-                <span>{categorizedProgress.inProgress.length}</span>
-              </div>
-              <div className="category-card-grid">
-                {categorizedProgress.inProgress.map((category) => (
-                  <button
-                    key={category.id}
-                    className="category-card panel"
-                    onClick={() => changeCategory(category.id)}
-                  >
-                    <div className="category-card-top">
-                      <strong>{category.label}</strong>
-                      <span>{category.itemCount} items</span>
-                    </div>
-                    <div className="category-progress-track">
-                      <span
-                        style={{ width: `${Math.max(6, category.confidence * 100)}%` }}
-                      />
-                    </div>
-                    <div className="category-card-meta">
-                      <span>{category.comparisons} comparisons</span>
-                      <span>{category.confidenceLabel}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {categorizedProgress.notStarted.length > 0 && (
-            <div className="category-map-section">
-              <div className="category-map-heading">
-                <div>
-                  <p className="eyebrow">Not started</p>
-                  <h2>Pick anywhere</h2>
-                </div>
-                <span>{categorizedProgress.notStarted.length}</span>
-              </div>
-              <div className="category-card-grid">
-                {categorizedProgress.notStarted.map((category) => (
-                  <button
-                    key={category.id}
-                    className="category-card category-card-unstarted panel"
-                    onClick={() => changeCategory(category.id)}
-                  >
-                    <div className="category-card-top">
-                      <strong>{category.label}</strong>
-                      <span>{category.itemCount} items</span>
-                    </div>
-                    <div className="category-card-meta">
-                      <span>No comparisons yet</span>
-                      <span>Start →</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {categorizedProgress.refined.length > 0 && (
-            <div className="category-map-section">
-              <div className="category-map-heading">
-                <div>
-                  <p className="eyebrow">Pretty confident</p>
-                  <h2>Already taking shape</h2>
-                </div>
-                <span>{categorizedProgress.refined.length}</span>
-              </div>
-              <div className="category-card-grid">
-                {categorizedProgress.refined.map((category) => (
-                  <button
-                    key={category.id}
-                    className="category-card category-card-refined panel"
-                    onClick={() => changeCategory(category.id)}
-                  >
-                    <div className="category-card-top">
-                      <strong>{category.label}</strong>
-                      <span>{category.itemCount} items</span>
-                    </div>
-                    <div className="category-progress-track">
-                      <span style={{ width: `${category.confidence * 100}%` }} />
-                    </div>
-                    <div className="category-card-meta">
-                      <span>{category.comparisons} comparisons</span>
-                      <span>{category.confidenceLabel}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
-      ) : (
-        <>
-          <div className="session-picker panel">
-            <div>
-              <p className="eyebrow">Session size</p>
-              <h2>How feral are we feeling?</h2>
-            </div>
-            <div className="session-options">
-              {sessionOptions.map((option) => (
-                <button
-                  key={String(option.value)}
-                  className={
-                    sessionSize === option.value
-                      ? "session-option active"
-                      : "session-option"
-                  }
-                  onClick={() => startSession(option.value)}
-                >
-                  <strong>{option.label}</strong>
-                  <span>{option.detail}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-
-      {(mode === "overall" || categoryOpen) &&
-        !showResults &&
-        !sessionComplete &&
-        pair && (
-          <PairwiseComparisonPanel
-            ariaLabel="Kink comparison"
-            metaStart={
-              mode === "category"
-                ? activeCategory?.label
-                : "Cross-category finalists"
-            }
-            metaEnd={
-              sessionSize === "gremlin"
-                ? `${sessionAnswered} this session`
-                : `${sessionAnswered} / ${sessionSize}`
-            }
-            left={{
-              id: pair[0].id,
-              eyebrow: pair[0].categoryLabel,
-              label: pair[0].label,
-              description: pair[0].description,
-            }}
-            right={{
-              id: pair[1].id,
-              eyebrow: pair[1].categoryLabel,
-              label: pair[1].label,
-              description: pair[1].description,
-            }}
-            onPick={(side) => answer(side)}
-            actions={
-              <>
-                <button
-                  className="secondary compact"
-                  onClick={() => answer("equal")}
-                >
-                  Both / equal
-                </button>
-                <button
-                  className="secondary compact"
-                  onClick={() => answer("neither")}
-                >
-                  Neither
-                </button>
-                <button className="text-button" onClick={() => answer("skip")}>
-                  Skip / don't know
-                </button>
-              </>
-            }
-          />
-        )}
-
-      {(mode === "overall" || categoryOpen) &&
-        !showResults &&
-        !sessionComplete &&
-        !pair && (
-          <article className="ranking-empty panel">
-            <p className="eyebrow">
-              {mode === "overall" ? "Overall ranking" : activeCategory?.label}
-            </p>
-            <h2>Nothing else to compare here.</h2>
-            <p>
-              Fewer than two eligible items remain in this scope. Existing comparisons
-              are still saved, and excluded items stay out of new pairs.
-            </p>
-            <div className="ranking-empty-actions">
-              {snapshot.items.length > 0 && (
-                <button
-                  className="secondary"
-                  onClick={() => setShowResults(true)}
-                >
-                  View current ranking
-                </button>
-              )}
-              {mode === "category" &&
-                nextCategory &&
-                nextCategory.id !== activeCategory?.id && (
-                  <button
-                    className="primary"
-                    onClick={() => changeCategory(nextCategory.id)}
-                  >
-                    Next category →
-                  </button>
-                )}
-              {mode === "overall" && (
-                <button className="secondary" onClick={returnToCategories}>
-                  Back to categories
-                </button>
-              )}
-            </div>
-          </article>
-        )}
-
-      {(mode === "overall" || categoryOpen) &&
-        (sessionComplete || showResults) && (
-          <article className="ranking-results panel">
-            <div className="ranking-results-heading">
-              <div>
-                <p className="eyebrow">
-                  {mode === "category"
-                    ? activeCategory?.label
-                    : "Your general top likes"}
-                </p>
-                <h2>{confidenceLabel(snapshot.confidence)}</h2>
-                <p>
-                  {orderingInScope} ordering comparisons shape this ranking.
-                  {totalInScope > orderingInScope
-                    ? ` ${totalInScope - orderingInScope} Skip/Neither interactions are saved but do not raise confidence.`
-                    : " Keep going whenever you want to refine it."}
-                </p>
-              </div>
-              <div className="ranking-results-actions">
-                {activeCatalog.length >= 2 && (
-                  <button
-                    className="primary"
-                    onClick={() => startSession(sessionSize)}
-                  >
-                    Keep ranking
-                  </button>
-                )}
-                {mode === "category" &&
-                  nextCategory &&
-                  nextCategory.id !== activeCategory?.id && (
-                    <button
-                      className="secondary"
-                      onClick={() => changeCategory(nextCategory.id)}
-                    >
-                      Next category →
-                    </button>
-                  )}
-              </div>
-            </div>
-
-            <div className="ranking-list">
-              {visibleRankingItems.map((item, index) => {
-                const result = resultView?.byCatalogId.get(item.id);
-                const movement = visibleRankingMovements.get(item.id);
-                const movementId = `${mode}:${categoryId}:${item.id}`;
-                const visibleRank = index + 1;
-
-                return (
-                  <div className="ranking-row" key={item.id}>
-                    <span className="ranking-position">{visibleRank}</span>
-                    <div className="ranking-row-copy">
-                      <div className="ranking-row-title">
-                        <strong>{item.label}</strong>
-                        {movement && (
-                          <RankingMovementIndicator
-                            movement={movement}
-                            open={openMovementId === movementId}
-                            onToggle={() =>
-                              setOpenMovementId((current) =>
-                                current === movementId ? null : movementId,
-                              )
-                            }
-                          />
-                        )}
-                      </div>
-                      <span>{item.categoryLabel}</span>
-                      <div className="ranking-row-evidence">
-                        {result?.explicitState && (
-                          <span className="ranking-evidence-chip explicit">
-                            Explicit: {catalogPreferenceLabels[result.explicitState]}
-                          </span>
-                        )}
-                        {result?.inferred && (
-                          <span className="ranking-evidence-chip inferred">
-                            Quiz-derived {Math.round(result.inferred.affinity)}%
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <span>{item.comparisons} comps</span>
-                  </div>
-                );
-              })}
-            </div>
-          </article>
-        )}
-
-      {(mode === "overall" || categoryOpen) &&
-        !sessionComplete &&
-        !showResults &&
-        pair && (
-          <div className="ranking-footer-actions">
-            <button
-              className="ranking-results-link"
-              onClick={() => setShowResults(true)}
-            >
-              View current ranking
-            </button>
-            {mode === "category" &&
-              nextCategory &&
-              nextCategory.id !== activeCategory?.id && (
-                <button
-                  className="ranking-results-link"
-                  onClick={() => changeCategory(nextCategory.id)}
-                >
-                  Next category →
-                </button>
-              )}
-          </div>
-        )}
+        </div>
+      </details>
     </section>
   );
 }
