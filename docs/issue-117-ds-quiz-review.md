@@ -23,8 +23,16 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
   - Primary semantic target: `obedience · Giving`.
   - Secondary semantic target: `control · Receiving`.
   - Drop Structure; a clear instruction can be one-off and does not itself establish an ongoing framework.
-- **ds-004** — ordinary task because a partner expects it; Providing Service + Following Direction + Receiving Structure.
-- **ds-006** — standing rules / expectations; Receiving Structure with an obedience contribution.
+- **ds-004** — ordinary task because a partner expects it.
+  - **Decision:** keep wording.
+  - Primary semantic target: `obedience · Giving`.
+  - Secondary semantic target: `service · Giving`.
+  - Drop Structure; complying with an expectation does not itself imply an ongoing framework.
+
+- **ds-006** — standing rules / expectations.
+  - **Decision:** keep wording.
+  - Primary semantic target: `structure · Receiving`.
+  - Drop Obedience; liking an established framework does not necessarily mean the appeal comes from compliance itself.
 - **ds-009** — praise for following direction.
   - **Decision:** keep.
   - Primary semantic target: `praise_approval · Receiving`.
@@ -36,7 +44,11 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
   - Primary semantic target: `praise_approval · Receiving`.
   - Secondary semantic target: `service · Giving`.
   - This specifically measures recognition for usefulness / service rather than obedience.
-- **ds-013** — creating rules / expectations for a willing partner; Giving Control + Providing Structure.
+- **ds-013** — creating rules / expectations for a willing partner.
+  - **Decision:** rewrite to **“Creating clear, ongoing rules or expectations for a willing partner can be appealing to me.”**
+  - Primary semantic target: `structure · Giving`.
+  - Secondary semantic target: `control · Giving`.
+  - “Ongoing” keeps this distinct from ds-011, which measures broader leadership / setting direction.
 - **ds-014** — retaining important decisions unless explicitly handed over; Autonomy.
 - **ds-015** — ownership / commitment symbolism independent of practical control; Ownership Symbolism.
 - **ds-016** — meaningful room to choose how to respond within power exchange; Autonomy.
