@@ -70,6 +70,10 @@ The current D/s bank is strongly asymmetric. It contains substantial evidence fo
 - **Obedience · Receiving** — the appeal of being followed / obeyed.
 - **Service · Receiving** — the appeal of being served.
 - **Ownership Symbolism · Giving** — claiming / owning a willing partner.
+  - **Decision:** add a dedicated Giving-side ownership question: **“Explicitly claiming a willing partner or having them belong to me can feel emotionally meaningful.”**
+  - Primary semantic target: `ownership_symbolism · Giving`.
+  - Keep this clean: do not automatically add `control · Giving`; claiming / ownership symbolism does not inherently imply practical decision authority.
+  - This complements ds-008 (`ownership_symbolism · Receiving`) and ds-015 (`ownership_symbolism · Overall`).
 - **Praise / Approval · Giving** — giving recognition or approval within a dynamic.
 
 ### Worship / gratitude interpretation
