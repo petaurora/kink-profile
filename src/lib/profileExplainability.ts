@@ -158,15 +158,28 @@ function quizState(
   quiz: QuizDefinition,
   storedProfile: StoredProfile,
 ): "not-started" | "in-progress" | "complete" {
-  const answers = storedProfile.quizzes[quiz.id]?.answers ?? {};
+  const progress = storedProfile.quizzes[quiz.id];
+  const answers = progress?.answers ?? {};
   const answered = quiz.questionIds.filter(
     (questionId) => answers[questionId] !== undefined,
   ).length;
 
-  if (answered === 0) return "not-started";
+  if (answered === 0 && Object.keys(answers).length === 0) return "not-started";
   if (quiz.questionIds.length > 0 && answered >= quiz.questionIds.length) {
     return "complete";
   }
+
+  // Match the quiz runtime migration contract: a result explicitly completed
+  // against an older bank remains established after the active question set
+  // changes, until the user chooses to retake the current version.
+  if (
+    progress?.completedAt &&
+    progress.quizVersion < quiz.version &&
+    Object.keys(answers).length > 0
+  ) {
+    return "complete";
+  }
+
   return "in-progress";
 }
 
