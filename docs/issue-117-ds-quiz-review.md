@@ -12,8 +12,17 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
 
 ### Likely keep
 
-- **ds-001** — routine choices made by a trusted partner; Receiving Control + handing over Responsibility + Receiving Structure.
-- **ds-002** — clear instructions / expectation to follow; Receiving Control + Following Direction + Receiving Structure.
+- **ds-001** — routine choices made by a trusted partner.
+  - **Decision:** keep wording.
+  - Primary semantic target: `control · Receiving`.
+  - Secondary semantic target: `responsibility · Giving`.
+  - Drop Structure; routine choices do not inherently imply rules, routines, or an ongoing framework.
+
+- **ds-002** — clear instructions / expectation to follow.
+  - **Decision:** keep wording.
+  - Primary semantic target: `obedience · Giving`.
+  - Secondary semantic target: `control · Receiving`.
+  - Drop Structure; a clear instruction can be one-off and does not itself establish an ongoing framework.
 - **ds-004** — ordinary task because a partner expects it; Providing Service + Following Direction + Receiving Structure.
 - **ds-006** — standing rules / expectations; Receiving Structure with an obedience contribution.
 - **ds-009** — praise for following direction.
