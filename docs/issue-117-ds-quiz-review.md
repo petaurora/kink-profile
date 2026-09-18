@@ -87,6 +87,14 @@ The current D/s bank is strongly asymmetric. It contains substantial evidence fo
   - This complements ds-008 (`ownership_symbolism · Receiving`) and ds-015 (`ownership_symbolism · Overall`).
 - **Praise / Approval · Giving** — giving recognition or approval within a dynamic.
 
+### Approved new praise / worship question
+
+- **Decision:** add a dedicated Giving-side praise / worship question:
+  - **“Expressing admiration, gratitude, or reverence toward a partner I submit to can feel like a meaningful part of the dynamic.”**
+  - Primary semantic target: `praise_approval · Giving`.
+  - Secondary semantic target: `devotion · Giving`.
+  - Do not add Ritual Significance by default; ritualized worship is an implementation/context distinction rather than inherent to the underlying preference.
+
 ### Worship / gratitude interpretation
 
 - **Decision:** do not introduce a separate Worship canonical Signal.
