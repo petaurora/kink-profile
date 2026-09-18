@@ -43,7 +43,10 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
   - Do not force a Structure contribution merely because the ritual is repeated; the question is intended to isolate the meaning of ritual/form itself.
 
 - **ds-008** — being explicitly claimed / belonging to a trusted partner.
-  - Ownership Symbolism · Receiving is clear; Receiving Control may be secondary rather than inherent to the meaning.
+  - **Decision:** keep the wording essentially unchanged.
+  - Primary semantic target: `ownership_symbolism · Receiving`.
+  - Drop the current `control · Receiving` contribution; being claimed / belonging can carry meaning without implying practical authority or decision control.
+  - Keep distinct from ds-015, which measures the broader appeal of commitment / ownership symbols independent of directional claiming.
 
 - **ds-011** — enjoying setting direction when another person wants the user to lead.
   - **Decision:** keep, but rewrite to **“Taking responsibility for setting direction when a willing partner wants me to lead can be deeply satisfying.”**
