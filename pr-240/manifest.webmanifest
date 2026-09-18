@@ -1,0 +1,31 @@
+{
+  "name": "Kink Profile · PR 240",
+  "short_name": "KP · PR 240",
+  "description": "A private, browser-based preference profile.",
+  "id": "/kink-profile/pr-240/",
+  "start_url": "/kink-profile/pr-240/",
+  "scope": "/kink-profile/pr-240/",
+  "display": "standalone",
+  "theme_color": "#08081d",
+  "background_color": "#08081d",
+  "icons": [
+    {
+      "src": "icons/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/pwa-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
