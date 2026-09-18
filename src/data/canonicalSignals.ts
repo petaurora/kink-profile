@@ -413,15 +413,18 @@ export const legacySignalConceptTargets: Readonly<Record<LegacySignalId, LegacyC
 };
 
 const quizChannelOverrides: Readonly<Record<string, Partial<Record<LegacySignalId, SignalChannel>>>> = {
-  "ds-001": { structure: "receiving" },
-  "ds-002": { obedience: "giving", structure: "receiving" },
-  "ds-004": { service: "giving", obedience: "giving", structure: "receiving" },
-  "ds-005": { service: "giving", praise_approval: "receiving" },
-  "ds-006": { obedience: "giving", structure: "receiving" },
+  "ds-002": { obedience: "giving" },
+  "ds-004": { service: "giving", obedience: "giving" },
+  "ds-005": { service: "giving" },
+  "ds-006": { structure: "receiving" },
   "ds-008": { ownership_symbolism: "receiving" },
   "ds-009": { obedience: "giving", praise_approval: "receiving" },
   "ds-010": { service: "giving", praise_approval: "receiving" },
+  "ds-012": { obedience: "receiving" },
   "ds-013": { structure: "giving" },
+  "ds-020": { service: "receiving" },
+  "ds-021": { ownership_symbolism: "giving" },
+  "ds-022": { praise_approval: "giving", devotion: "giving" },
 
   "hs-001": { ownership_symbolism: "receiving" },
   "hs-005": { praise_approval: "receiving" },
