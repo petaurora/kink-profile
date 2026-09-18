@@ -37,7 +37,10 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
   - Service is clear; `praise_approval · Receiving` is less exact because the wording does not require explicit praise/recognition.
 
 - **ds-007** — symbols or rituals marking an ongoing power dynamic.
-  - Currently maps to Structure + Ownership Symbolism but not Ritual Significance despite explicitly mentioning ritual.
+  - **Decision:** rewrite to **“Repeated rituals that mark or reaffirm a power dynamic can carry a lot of emotional meaning for me.”**
+  - Primary semantic target: `ritual_significance · Overall`.
+  - Drop the current Ownership Symbolism weight; ds-015 already measures the emotional meaning of commitment / ownership symbols.
+  - Do not force a Structure contribution merely because the ritual is repeated; the question is intended to isolate the meaning of ritual/form itself.
 
 - **ds-008** — being explicitly claimed / belonging to a trusted partner.
   - Ownership Symbolism · Receiving is clear; Receiving Control may be secondary rather than inherent to the meaning.
