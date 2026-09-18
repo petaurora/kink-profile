@@ -57,7 +57,7 @@ describe("M16.2 canonical curation Signal adapter", () => {
   it("preserves quiz-specific channel semantics during compatibility translation", () => {
     expect(
       canonicalizeCurationSignalRef("structure", 1, {
-        quizQuestionId: "ds-001",
+        quizQuestionId: "ds-006",
       }),
     ).toEqual({
       signalId: "structure",
