@@ -34,7 +34,9 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
   - Keep distinct from ds-001: ds-001 measures enjoying another person making routine choices; merged ds-003 measures the appeal / relief of transferring responsibility itself.
 
 - **ds-005** — anticipating a partner's needs and seeing that it pleased them.
-  - Service is clear; `praise_approval · Receiving` is less exact because the wording does not require explicit praise/recognition.
+  - **Decision:** keep the wording.
+  - Primary semantic target: `service · Giving`.
+  - Drop the current `praise_approval · Receiving` contribution; seeing that a partner is pleased is not the same thing as receiving explicit praise, approval, or recognition.
 
 - **ds-007** — symbols or rituals marking an ongoing power dynamic.
   - **Decision:** rewrite to **“Repeated rituals that mark or reaffirm a power dynamic can carry a lot of emotional meaning for me.”**
