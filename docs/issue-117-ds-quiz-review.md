@@ -27,7 +27,11 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
 
 - **ds-003** — handing over responsibility for what happens next.
 - **ds-017** — enjoying not having to decide because someone trusted has taken responsibility.
-  - These appear to measure nearly the same Responsibility / Receiving Control experience and should be reviewed for merge/removal.
+  - **Decision:** merge these into ds-003 and hide ds-017 as legacy compatibility input when D/s v2 is implemented.
+  - Rewrite ds-003 to **“Deliberately handing over responsibility to someone I trust can make not having to decide feel freeing.”**
+  - Primary semantic target: `responsibility · Giving`.
+  - Secondary semantic target: `control · Receiving`.
+  - Keep distinct from ds-001: ds-001 measures enjoying another person making routine choices; merged ds-003 measures the appeal / relief of transferring responsibility itself.
 
 - **ds-005** — anticipating a partner's needs and seeing that it pleased them.
   - Service is clear; `praise_approval · Receiving` is less exact because the wording does not require explicit praise/recognition.
