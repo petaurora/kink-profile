@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { SegmentedControl } from "../../components/SegmentedControl";
 import { answerOptions } from "../../data/quizScale";
 import { dsSignals } from "../../data/dsQuiz";
 import {
@@ -31,7 +32,11 @@ import {
   scoreHeadspaces,
   scoreSignals,
 } from "../../lib/scoring";
-import { quizResultsPath, quizRoutePath } from "../../app/routes";
+import {
+  quizHomeRoute,
+  quizResultsPath,
+  quizRoutePath,
+} from "../../app/routes";
 import {
   answerQuizQuestion,
   canViewQuizResults,
@@ -56,6 +61,15 @@ type Score = {
   description: string;
   percentage: number;
   coverage: number;
+};
+
+type RadarView = {
+  id: string;
+  tabLabel: string;
+  eyebrow: string;
+  title: string;
+  ariaLabel: string;
+  scores: Score[];
 };
 
 function scoreLabel(score: number, weighted = false) {
@@ -173,8 +187,8 @@ function RadarChart({
       </svg>
       {unmeasuredCount > 0 && (
         <p>
-          {unmeasuredCount} dimension{unmeasuredCount === 1 ? " is" : "s are"}
-          {" "}still unmeasured and omitted from the shape rather than shown as 0%.
+          {unmeasuredCount} dimension{unmeasuredCount === 1 ? " is" : "s are"}{" "}
+          still unmeasured and omitted from the shape rather than shown as 0%.
         </p>
       )}
     </div>
@@ -182,6 +196,9 @@ function RadarChart({
 }
 
 function RankedResults({ scores }: { scores: Score[] }) {
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const orderedScores = [...scores].sort((left, right) => {
     const leftState = resolveQuizDimensionState(left.coverage).state;
     const rightState = resolveQuizDimensionState(right.coverage).state;
@@ -190,39 +207,62 @@ function RankedResults({ scores }: { scores: Score[] }) {
     return right.percentage - left.percentage;
   });
 
+  const toggle = (scoreId: string) => {
+    setExpandedIds((current) => {
+      const next = new Set(current);
+      if (next.has(scoreId)) {
+        next.delete(scoreId);
+      } else {
+        next.add(scoreId);
+      }
+      return next;
+    });
+  };
+
   return (
     <div className="ranked-list">
       {orderedScores.map((score, index) => {
         const dimensionState = resolveQuizDimensionState(score.coverage);
         const isUnmeasured = dimensionState.state === "unexplored";
         const isDeveloping = dimensionState.state === "developing";
+        const expanded = expandedIds.has(score.id);
+        const stateText = isUnmeasured
+          ? "Not enough information"
+          : isDeveloping
+            ? "Developing"
+            : scoreLabel(score.percentage, true);
 
         return (
-          <div className="result-row" key={score.id}>
-            <div className="result-rank">
-              {String(index + 1).padStart(2, "0")}
-            </div>
-            <div className="result-main">
-              <div className="result-title">
-                <strong>{score.label}</strong>
-                <span>{isUnmeasured ? "—" : `${score.percentage}%`}</span>
-              </div>
-              {!isUnmeasured && (
-                <div className="score-track">
-                  <span style={{ width: `${score.percentage}%` }} />
-                </div>
-              )}
-              <div className="result-caption">
-                <span>
-                  {isUnmeasured
-                    ? "Not enough information"
-                    : isDeveloping
-                      ? "Developing"
-                      : scoreLabel(score.percentage, true)}
+          <div
+            className={expanded ? "result-row is-expanded" : "result-row"}
+            key={score.id}
+          >
+            <button
+              type="button"
+              className="result-row-toggle"
+              onClick={() => toggle(score.id)}
+              aria-expanded={expanded}
+            >
+              <span className="result-rank">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="result-main">
+                <span className="result-title">
+                  <strong>{score.label}</strong>
+                  <span>{isUnmeasured ? "—" : `${score.percentage}%`}</span>
                 </span>
+                <span className="result-caption">{stateText}</span>
+              </span>
+              <span className="result-row-chevron" aria-hidden="true">
+                ›
+              </span>
+            </button>
+
+            {expanded && (
+              <div className="result-detail">
                 <p>{score.description}</p>
               </div>
-            </div>
+            )}
           </div>
         );
       })}
@@ -230,10 +270,96 @@ function RankedResults({ scores }: { scores: Score[] }) {
   );
 }
 
+function strongestSignalEyebrow(quiz: QuizDefinition) {
+  if (quiz.id === "roles-headspaces") return "Strongest roles & headspaces";
+  if (quiz.id === "bondage-discipline") return "Strongest B&D signals";
+  if (quiz.id === "sadism-masochism") return "Strongest S/M signals";
+  if (quiz.id === "dominance-submission") return "Strongest D/s signals";
+  return "Strongest signals";
+}
+
+function TopSignalSummary({
+  quiz,
+  scores,
+}: {
+  quiz: QuizDefinition;
+  scores: Score[];
+}) {
+  const topScores = [...scores]
+    .filter(
+      (score) =>
+        resolveQuizDimensionState(score.coverage).state !== "unexplored",
+    )
+    .sort((left, right) => right.percentage - left.percentage)
+    .slice(0, 3);
+
+  return (
+    <article className="panel results-summary-panel">
+      <div className="section-heading">
+        <p className="eyebrow">{strongestSignalEyebrow(quiz)}</p>
+        <h2>At a glance</h2>
+      </div>
+
+      {topScores.length > 0 ? (
+        <div className="results-top-signals">
+          {topScores.map((score, index) => (
+            <div className="results-top-signal" key={score.id}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{score.label}</strong>
+              <span>{score.percentage}%</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="results-summary-empty">
+          No measured dimensions are available yet.
+        </p>
+      )}
+    </article>
+  );
+}
+
+function RadarExplorer({ views }: { views: RadarView[] }) {
+  const [activeId, setActiveId] = useState(views[0]?.id ?? "");
+  const activeView =
+    views.find((view) => view.id === activeId) ?? views[0];
+
+  if (!activeView) return null;
+
+  return (
+    <article className="panel chart-panel results-radar-panel">
+      {views.length > 1 && (
+        <div className="results-radar-tabs">
+          <SegmentedControl
+            value={activeView.id}
+            options={views.map((view) => ({
+              value: view.id,
+              label: view.tabLabel,
+            }))}
+            onChange={setActiveId}
+            ariaLabel="Result radar view"
+          />
+        </div>
+      )}
+
+      <div className="section-heading">
+        <p className="eyebrow">{activeView.eyebrow}</p>
+        <h2>{activeView.title}</h2>
+      </div>
+
+      <RadarChart
+        scores={activeView.scores}
+        ariaLabel={activeView.ariaLabel}
+      />
+    </article>
+  );
+}
+
 function ResultsBody({ quiz, scores }: { quiz: QuizDefinition; scores: Score[] }) {
   const isHeadspaceQuiz = quiz.id === "roles-headspaces";
   const isBdQuiz = quiz.id === "bondage-discipline";
   const isSmQuiz = quiz.id === "sadism-masochism";
+  let radarViews: RadarView[];
 
   if (isHeadspaceQuiz) {
     const selfPositionedScores = selfPositionedRoleHeadspaceIds
@@ -243,44 +369,25 @@ function ResultsBody({ quiz, scores }: { quiz: QuizDefinition; scores: Score[] }
       .map((id) => scores.find((score) => score.id === id))
       .filter((score): score is Score => score !== undefined);
 
-    return (
-      <>
-        <div className="multi-radar-grid">
-          <article className="panel chart-panel">
-            <div className="section-heading">
-              <p className="eyebrow">Self-positioned roles</p>
-              <h2>Headspace radar</h2>
-            </div>
-            <RadarChart
-              scores={selfPositionedScores}
-              ariaLabel="Self-positioned roles and headspaces radar chart"
-            />
-          </article>
-
-          <article className="panel chart-panel">
-            <div className="section-heading">
-              <p className="eyebrow">Partner-positioned roles</p>
-              <h2>Headspace radar</h2>
-            </div>
-            <RadarChart
-              scores={partnerPositionedScores}
-              ariaLabel="Partner-positioned roles and headspaces radar chart"
-            />
-          </article>
-        </div>
-
-        <article className="panel ranked-panel">
-          <div className="section-heading">
-            <p className="eyebrow">Strongest roles & headspaces</p>
-            <h2>Ranked results</h2>
-          </div>
-          <RankedResults scores={scores} />
-        </article>
-      </>
-    );
-  }
-
-  if (isBdQuiz) {
+    radarViews = [
+      {
+        id: "self-positioned",
+        tabLabel: "Self-positioned",
+        eyebrow: "Self-positioned roles",
+        title: "Headspace radar",
+        ariaLabel: "Self-positioned roles and headspaces radar chart",
+        scores: selfPositionedScores,
+      },
+      {
+        id: "partner-positioned",
+        tabLabel: "Partner-positioned",
+        eyebrow: "Partner-positioned roles",
+        title: "Headspace radar",
+        ariaLabel: "Partner-positioned roles and headspaces radar chart",
+        scores: partnerPositionedScores,
+      },
+    ];
+  } else if (isBdQuiz) {
     const bondageScores = bondageRadarSignalIds
       .map((id) => scores.find((score) => score.id === id))
       .filter((score): score is Score => score !== undefined);
@@ -288,44 +395,25 @@ function ResultsBody({ quiz, scores }: { quiz: QuizDefinition; scores: Score[] }
       .map((id) => scores.find((score) => score.id === id))
       .filter((score): score is Score => score !== undefined);
 
-    return (
-      <>
-        <div className="multi-radar-grid">
-          <article className="panel chart-panel">
-            <div className="section-heading">
-              <p className="eyebrow">Bondage / physical control</p>
-              <h2>Restraint radar</h2>
-            </div>
-            <RadarChart
-              scores={bondageScores}
-              ariaLabel="Bondage and physical control radar chart"
-            />
-          </article>
-
-          <article className="panel chart-panel">
-            <div className="section-heading">
-              <p className="eyebrow">Discipline / structural control</p>
-              <h2>Discipline radar</h2>
-            </div>
-            <RadarChart
-              scores={disciplineScores}
-              ariaLabel="Discipline and structural control radar chart"
-            />
-          </article>
-        </div>
-
-        <article className="panel ranked-panel">
-          <div className="section-heading">
-            <p className="eyebrow">Strongest B&D signals</p>
-            <h2>Ranked results</h2>
-          </div>
-          <RankedResults scores={scores} />
-        </article>
-      </>
-    );
-  }
-
-  if (isSmQuiz) {
+    radarViews = [
+      {
+        id: "physical-control",
+        tabLabel: "Physical control",
+        eyebrow: "Bondage / physical control",
+        title: "Restraint radar",
+        ariaLabel: "Bondage and physical control radar chart",
+        scores: bondageScores,
+      },
+      {
+        id: "structural-control",
+        tabLabel: "Structural control",
+        eyebrow: "Discipline / structural control",
+        title: "Discipline radar",
+        ariaLabel: "Discipline and structural control radar chart",
+        scores: disciplineScores,
+      },
+    ];
+  } else if (isSmQuiz) {
     const receivingScores = receivingSmRadarSignalIds
       .map((id) => scores.find((score) => score.id === id))
       .filter((score): score is Score => score !== undefined);
@@ -333,65 +421,54 @@ function ResultsBody({ quiz, scores }: { quiz: QuizDefinition; scores: Score[] }
       .map((id) => scores.find((score) => score.id === id))
       .filter((score): score is Score => score !== undefined);
 
-    return (
-      <>
-        <div className="multi-radar-grid">
-          <article className="panel chart-panel">
-            <div className="section-heading">
-              <p className="eyebrow">Receiving / masochistic</p>
-              <h2>Receiving radar</h2>
-            </div>
-            <RadarChart
-              scores={receivingScores}
-              ariaLabel="Receiving and masochistic pain and intensity radar chart"
-            />
-          </article>
+    radarViews = [
+      {
+        id: "receiving",
+        tabLabel: "Receiving",
+        eyebrow: "Receiving / masochistic",
+        title: "Receiving radar",
+        ariaLabel: "Receiving and masochistic pain and intensity radar chart",
+        scores: receivingScores,
+      },
+      {
+        id: "giving",
+        tabLabel: "Giving",
+        eyebrow: "Giving / sadistic",
+        title: "Giving radar",
+        ariaLabel: "Giving and sadistic pain and intensity radar chart",
+        scores: givingScores,
+      },
+    ];
+  } else {
+    const radarScores = dsSignals
+      .map((signal) => scores.find((score) => score.id === signal.id))
+      .filter((score): score is Score => score !== undefined);
 
-          <article className="panel chart-panel">
-            <div className="section-heading">
-              <p className="eyebrow">Giving / sadistic</p>
-              <h2>Giving radar</h2>
-            </div>
-            <RadarChart
-              scores={givingScores}
-              ariaLabel="Giving and sadistic pain and intensity radar chart"
-            />
-          </article>
-        </div>
-
-        <article className="panel ranked-panel">
-          <div className="section-heading">
-            <p className="eyebrow">Strongest S/M signals</p>
-            <h2>Ranked results</h2>
-          </div>
-          <RankedResults scores={scores} />
-        </article>
-      </>
-    );
+    radarViews = [
+      {
+        id: "preference-shape",
+        tabLabel: "Preference shape",
+        eyebrow: "Preference shape",
+        title: "Radar profile",
+        ariaLabel: "Dominance and submission preference radar chart",
+        scores: radarScores,
+      },
+    ];
   }
 
-  const radarScores = dsSignals
-    .map((signal) => scores.find((score) => score.id === signal.id))
-    .filter((score): score is Score => score !== undefined);
-
   return (
-    <div className="results-grid">
-      <article className="panel chart-panel">
-        <div className="section-heading">
-          <p className="eyebrow">Preference shape</p>
-          <h2>Radar profile</h2>
-        </div>
-        <RadarChart scores={radarScores} />
-      </article>
+    <>
+      <TopSignalSummary quiz={quiz} scores={scores} />
+      <RadarExplorer views={radarViews} />
 
-      <article className="panel ranked-panel">
+      <article className="panel ranked-panel results-ranked-panel">
         <div className="section-heading">
-          <p className="eyebrow">Strongest signals</p>
-          <h2>Ranked results</h2>
+          <p className="eyebrow">{strongestSignalEyebrow(quiz)}</p>
+          <h2>All signals</h2>
         </div>
         <RankedResults scores={scores} />
       </article>
-    </div>
+    </>
   );
 }
 
@@ -445,10 +522,16 @@ function QuizDataErrorPanel({
             </p>
           </div>
           <div className="results-heading-actions">
-            <button className="primary" onClick={() => navigate("/")}>
-              Back to quiz hub
+            <button
+              className="primary"
+              onClick={() => navigate(quizHomeRoute.path)}
+            >
+              Back to quizzes
             </button>
-            <button className="secondary" onClick={() => window.location.reload()}>
+            <button
+              className="secondary"
+              onClick={() => window.location.reload()}
+            >
               Try again
             </button>
           </div>
@@ -472,6 +555,10 @@ function ResolvedQuizRoute({
   );
 
   const activeQuestions = useMemo(() => getQuestionsForQuiz(quiz), [quiz]);
+  const responseOptions = useMemo(
+    () => Array.from(new Map(answerOptions.map((option) => [option.value, option])).values()),
+    [],
+  );
   const lifecycle = resolveQuizLifecycle(quiz, profile);
   const attemptAnswers = getQuizAttemptAnswers(quiz, profile);
   const establishedAnswers = profile.quizzes[quiz.id]?.answers ?? {};
@@ -558,7 +645,7 @@ function ResolvedQuizRoute({
     const nextQuizzes = { ...profile.quizzes };
     delete nextQuizzes[quiz.id];
     saveNextProfile({ ...profile, quizzes: nextQuizzes });
-    navigate("/");
+    navigate(quizHomeRoute.path);
   };
 
   if (mode === "results" && !canViewResults) {
@@ -570,52 +657,61 @@ function ResolvedQuizRoute({
   }
 
   if (mode === "quiz" && !currentQuestion) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={quizHomeRoute.path} replace />;
   }
 
   return (
     <main className="app-shell">
       {mode === "quiz" && currentQuestion ? (
-        <section className="quiz-layout">
-          <aside className="progress-card panel">
-            <button className="back-to-hub" onClick={() => navigate("/")}>
-              ← Quiz hub
-            </button>
-            <p className="eyebrow">
-              {lifecycle.state === "retake-in-progress"
-                ? `${quiz.shortTitle} · Retake`
-                : quiz.shortTitle}
-            </p>
-            <strong>
-              {Math.round((answeredCount / activeQuestions.length) * 100)}%
-            </strong>
-            <div className="progress-track">
-              <span
-                style={{
-                  width: `${(answeredCount / activeQuestions.length) * 100}%`,
-                }}
-              />
-            </div>
-            <p>
-              {answeredCount} of {activeQuestions.length} answered
-            </p>
-            {lifecycle.state === "retake-in-progress" && (
-              <p>Your previous completed result stays active until this retake is finished.</p>
-            )}
-          </aside>
+        <section className="quiz-layout quiz-layout-compact">
+          <article className="question-card panel question-card-compact">
+            <header className="quiz-question-header">
+              <div className="quiz-question-topline">
+                <button
+                  className="text-button quiz-question-back"
+                  onClick={() => navigate(quizHomeRoute.path)}
+                >
+                  ← Quizzes
+                </button>
+                <div className="quiz-question-position">
+                  <span>
+                    {lifecycle.state === "retake-in-progress"
+                      ? `${quiz.shortTitle} · Retake`
+                      : quiz.shortTitle}
+                  </span>
+                  <strong>
+                    {questionIndex + 1} / {activeQuestions.length}
+                  </strong>
+                </div>
+              </div>
 
-          <article className="question-card panel">
-            <div className="question-meta">
+              <div
+                className="progress-track quiz-question-progress"
+                aria-label={`${answeredCount} of ${activeQuestions.length} answered`}
+              >
+                <span
+                  style={{
+                    width: `${(answeredCount / activeQuestions.length) * 100}%`,
+                  }}
+                />
+              </div>
+
+              {lifecycle.state === "retake-in-progress" && (
+                <p className="quiz-question-retake-note">
+                  Your previous completed result stays active until this retake
+                  is finished.
+                </p>
+              )}
+            </header>
+
+            <div className="question-meta question-context-meta">
               <span>{questionContext(quiz)}</span>
-              <span>
-                {questionIndex + 1} / {activeQuestions.length}
-              </span>
             </div>
 
             <h1>{currentQuestion.prompt}</h1>
 
             <div className="answers">
-              {answerOptions.map((option) => (
+              {responseOptions.map((option) => (
                 <button
                   key={option.value}
                   className={
@@ -641,21 +737,33 @@ function ResolvedQuizRoute({
               >
                 ← Back
               </button>
-              <button className="text-button" onClick={() => navigate("/")}>
+              <button
+                className="text-button"
+                onClick={() => navigate(quizHomeRoute.path)}
+              >
                 Save & exit
               </button>
             </div>
           </article>
         </section>
       ) : (
-        <section className="results-stack">
-          <div className="results-heading panel">
-            <div>
+        <section className="results-stack results-stack-compact">
+          <header className="results-heading results-heading-compact">
+            <div className="results-heading-copy">
+              <button
+                className="text-button results-back-link"
+                onClick={() => navigate(quizHomeRoute.path)}
+              >
+                ← Quizzes
+              </button>
               <p className="eyebrow">{quiz.title}</p>
-              <h1>The shape matters more than any single score.</h1>
-              <p>{resultsDescription(quiz)}</p>
+              <h1>Your results</h1>
+              <p className="results-principle">
+                The shape matters more than any single score.
+              </p>
+              <p className="results-description">{resultsDescription(quiz)}</p>
               {lifecycle.state === "retake-in-progress" && (
-                <p>
+                <p className="results-retake-note">
                   A retake is in progress. These remain your last completed
                   results until the new attempt is complete.
                 </p>
@@ -663,7 +771,7 @@ function ResolvedQuizRoute({
             </div>
             <div className="results-heading-actions">
               <button
-                className="secondary"
+                className="secondary compact"
                 onClick={
                   lifecycle.state === "retake-in-progress"
                     ? () => navigate(quizRoutePath(quiz.id))
@@ -674,16 +782,13 @@ function ResolvedQuizRoute({
                   ? "Continue retake"
                   : "Retake quiz"}
               </button>
-              <button className="primary" onClick={() => navigate("/")}>
-                Back to hub
-              </button>
             </div>
-          </div>
+          </header>
 
           <ResultsBody quiz={quiz} scores={scores} />
 
           <div className="results-actions">
-            <button className="secondary" onClick={resetQuiz}>
+            <button className="secondary compact" onClick={resetQuiz}>
               Reset this quiz
             </button>
           </div>
@@ -698,7 +803,7 @@ export function QuizRoutePage({ mode }: { mode: QuizRouteMode }) {
   const quiz = resolveAvailableQuiz(quizId);
 
   if (!quiz) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={quizHomeRoute.path} replace />;
   }
 
   const dataIssue = getQuizDataIssue(quiz);
@@ -706,5 +811,11 @@ export function QuizRoutePage({ mode }: { mode: QuizRouteMode }) {
     return <QuizDataErrorPanel quiz={quiz} issue={dataIssue} />;
   }
 
-  return <ResolvedQuizRoute key={`${quiz.id}:${mode}`} quiz={quiz} mode={mode} />;
+  return (
+    <ResolvedQuizRoute
+      key={`${quiz.id}:${mode}`}
+      quiz={quiz}
+      mode={mode}
+    />
+  );
 }
