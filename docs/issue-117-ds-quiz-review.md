@@ -80,6 +80,9 @@ The current D/s bank is strongly asymmetric. It contains substantial evidence fo
 - **Responsibility · Receiving** — taking / holding responsibility for another person's direction or experience.
 - **Obedience · Receiving** — the appeal of being followed / obeyed.
 - **Service · Receiving** — the appeal of being served.
+  - **Decision:** add a dedicated Receiving-side service question: **“Having a willing partner deliberately serve or take care of things for me can feel meaningful in the dynamic.”**
+  - Primary semantic target: `service · Receiving`.
+  - Keep this clean: do not automatically add Control or Responsibility merely because service occurs inside a D/s dynamic.
 - **Ownership Symbolism · Giving** — claiming / owning a willing partner.
   - **Decision:** add a dedicated Giving-side ownership question: **“Explicitly claiming a willing partner or having them belong to me can feel emotionally meaningful.”**
   - Primary semantic target: `ownership_symbolism · Giving`.
