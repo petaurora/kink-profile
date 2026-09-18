@@ -54,7 +54,10 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
   - Semantic target: `autonomy · Overall`.
   - This measures decision-domain autonomy: which decisions remain personally held.
 
-- **ds-015** — ownership / commitment symbolism independent of practical control; Ownership Symbolism.
+- **ds-015** — ownership / commitment symbolism independent of practical control.
+  - **Decision:** keep wording.
+  - Semantic target: `ownership_symbolism · Overall`.
+  - Keep this clean: no Control, Structure, or directional channel. The question asks whether the symbolism itself carries meaning independent of practical authority.
 
 - **ds-016** — meaningful room to choose how to respond within power exchange.
   - **Decision:** rewrite to **“Within agreed rules or direction, having meaningful room to choose how I carry them out matters to me.”**
@@ -109,6 +112,10 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
 The current D/s bank is strongly asymmetric. It contains substantial evidence for submissive-side / handing-over experiences, but several canonical directional perspectives have little or no direct authored coverage:
 
 - **Responsibility · Receiving** — taking / holding responsibility for another person's direction or experience.
+  - **Decision:** add a dedicated Receiving-side responsibility question: **“Having a willing partner deliberately place decision-making responsibility in my hands can feel meaningful in its own right.”**
+  - Primary semantic target: `responsibility · Receiving`.
+  - Keep this clean: do not automatically add Control or Obedience. Holding responsibility is related to leadership but remains a distinct preference.
+  - This mirrors merged ds-003 (`responsibility · Giving`) without forcing symmetric wording around control.
 - **Obedience · Receiving** — the appeal of being followed / obeyed.
 - **Service · Receiving** — the appeal of being served.
   - **Decision:** add a dedicated Receiving-side service question: **“Having a willing partner deliberately serve or take care of things for me can feel meaningful in the dynamic.”**
