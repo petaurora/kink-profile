@@ -55,6 +55,14 @@ The current D/s bank is strongly asymmetric. It contains substantial evidence fo
 - **Ownership Symbolism · Giving** — claiming / owning a willing partner.
 - **Praise / Approval · Giving** — giving recognition or approval within a dynamic.
 
+### Worship / gratitude interpretation
+
+- **Decision:** do not introduce a separate Worship canonical Signal.
+- Submissive-to-Dominant admiration, gratitude, reverence, and worship primarily express `praise_approval · Giving` because the user is giving recognition / affirmation to the Dominant.
+- Add `devotion · Giving` secondarily when the wording explicitly carries dedication, reverence, or relational devotion rather than simple thanks.
+- Add `ritual_significance · Overall` only when the expression itself is formalized, repeated, ceremonial, or protocol-like; ordinary gratitude should not imply ritual.
+- This is genuine reciprocal D/s coverage, not artificial symmetry: existing ds-009/ds-010 measure receiving praise/approval after obedience/service, while the current bank lacks the reverse acknowledgment flow.
+
 These should be considered as possible new questions only where they represent a distinct psychological preference rather than adding questions for artificial symmetry.
 
 ## Findings from supplied D/s references
