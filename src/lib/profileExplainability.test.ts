@@ -31,6 +31,7 @@ function completedProfile(): StoredProfile {
             4,
           ]),
         ),
+        completedAt: "2026-09-14T12:00:00.000Z",
       },
       "roles-headspaces": {
         quizVersion: 3,
