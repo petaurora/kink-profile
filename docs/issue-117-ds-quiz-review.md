@@ -39,8 +39,15 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
   - Ownership Symbolism · Receiving is clear; Receiving Control may be secondary rather than inherent to the meaning.
 
 - **ds-011** — enjoying setting direction when another person wants the user to lead.
+  - **Decision:** keep, but rewrite to **“Taking responsibility for setting direction when a willing partner wants me to lead can be deeply satisfying.”**
+  - Primary semantic target: `control · Giving`.
+  - Secondary semantic target: `responsibility · Receiving` because the user is taking / holding responsibility for direction.
+
 - **ds-012** — finding it rewarding that someone trusts the user enough to follow their direction.
-  - Both currently map only to Giving Control. They may be distinct, but ds-012 appears to contain unmodeled `obedience · Receiving` and possibly `responsibility · Receiving` evidence.
+  - **Decision:** keep, but rewrite to **“Having a willing partner deliberately follow my direction can feel deeply rewarding.”**
+  - Primary semantic target: `obedience · Receiving` because the appeal is having agreed direction followed.
+  - Secondary semantic target: `control · Giving`.
+  - Keep distinct from ds-011: leadership / setting direction and being obeyed are related but separate preferences.
 
 - **ds-018** — taking charge in some contexts without wanting that role to define every part of the relationship.
   - This may be measuring relationship/lifestyle scope more than Control + Autonomy. Review whether it belongs in D/s scoring or in a future cross-cutting engagement/context layer.
