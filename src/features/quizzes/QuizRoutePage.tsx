@@ -555,6 +555,10 @@ function ResolvedQuizRoute({
   );
 
   const activeQuestions = useMemo(() => getQuestionsForQuiz(quiz), [quiz]);
+  const responseOptions = useMemo(
+    () => Array.from(new Map(answerOptions.map((option) => [option.value, option])).values()),
+    [],
+  );
   const lifecycle = resolveQuizLifecycle(quiz, profile);
   const attemptAnswers = getQuizAttemptAnswers(quiz, profile);
   const establishedAnswers = profile.quizzes[quiz.id]?.answers ?? {};
@@ -659,52 +663,55 @@ function ResolvedQuizRoute({
   return (
     <main className="app-shell">
       {mode === "quiz" && currentQuestion ? (
-        <section className="quiz-layout">
-          <aside className="progress-card panel">
-            <button
-              className="back-to-hub"
-              onClick={() => navigate(quizHomeRoute.path)}
-            >
-              ← Quiz home
-            </button>
-            <p className="eyebrow">
-              {lifecycle.state === "retake-in-progress"
-                ? `${quiz.shortTitle} · Retake`
-                : quiz.shortTitle}
-            </p>
-            <strong>
-              {Math.round((answeredCount / activeQuestions.length) * 100)}%
-            </strong>
-            <div className="progress-track">
-              <span
-                style={{
-                  width: `${(answeredCount / activeQuestions.length) * 100}%`,
-                }}
-              />
-            </div>
-            <p>
-              {answeredCount} of {activeQuestions.length} answered
-            </p>
-            {lifecycle.state === "retake-in-progress" && (
-              <p>
-                Your previous completed result stays active until this retake
-                is finished.
-              </p>
-            )}
-          </aside>
+        <section className="quiz-layout quiz-layout-compact">
+          <article className="question-card panel question-card-compact">
+            <header className="quiz-question-header">
+              <div className="quiz-question-topline">
+                <button
+                  className="text-button quiz-question-back"
+                  onClick={() => navigate(quizHomeRoute.path)}
+                >
+                  ← Quizzes
+                </button>
+                <div className="quiz-question-position">
+                  <span>
+                    {lifecycle.state === "retake-in-progress"
+                      ? `${quiz.shortTitle} · Retake`
+                      : quiz.shortTitle}
+                  </span>
+                  <strong>
+                    {questionIndex + 1} / {activeQuestions.length}
+                  </strong>
+                </div>
+              </div>
 
-          <article className="question-card panel">
-            <div className="question-meta">
+              <div
+                className="progress-track quiz-question-progress"
+                aria-label={`${answeredCount} of ${activeQuestions.length} answered`}
+              >
+                <span
+                  style={{
+                    width: `${(answeredCount / activeQuestions.length) * 100}%`,
+                  }}
+                />
+              </div>
+
+              {lifecycle.state === "retake-in-progress" && (
+                <p className="quiz-question-retake-note">
+                  Your previous completed result stays active until this retake
+                  is finished.
+                </p>
+              )}
+            </header>
+
+            <div className="question-meta question-context-meta">
               <span>{questionContext(quiz)}</span>
-              <span>
-                {questionIndex + 1} / {activeQuestions.length}
-              </span>
             </div>
 
             <h1>{currentQuestion.prompt}</h1>
 
             <div className="answers">
-              {answerOptions.map((option) => (
+              {responseOptions.map((option) => (
                 <button
                   key={option.value}
                   className={
