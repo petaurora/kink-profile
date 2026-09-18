@@ -49,10 +49,10 @@ export const quizzes: QuizDefinition[] = [
     shortTitle: "D/s",
     eyebrow: "Core section",
     description:
-      "Explore authority, control, service, obedience, autonomy, responsibility transfer, and the shape of power exchange.",
+      "Explore authority, control, responsibility, service, obedience, structure, ownership, praise, ritual, autonomy, and the shape of power exchange.",
     icon: "transfer",
-    estimatedMinutes: 6,
-    version: 1,
+    estimatedMinutes: 7,
+    version: 2,
     availability: "available",
     questionIds: dsQuestionIds,
     contributesToOverall: true,
