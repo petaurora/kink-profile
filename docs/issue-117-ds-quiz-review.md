@@ -49,9 +49,17 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
   - Primary semantic target: `structure · Giving`.
   - Secondary semantic target: `control · Giving`.
   - “Ongoing” keeps this distinct from ds-011, which measures broader leadership / setting direction.
-- **ds-014** — retaining important decisions unless explicitly handed over; Autonomy.
+- **ds-014** — retaining important decisions unless explicitly handed over.
+  - **Decision:** keep, with wording sharpened to **“Even in a power dynamic, some important decisions need to remain mine unless I explicitly hand them over.”**
+  - Semantic target: `autonomy · Overall`.
+  - This measures decision-domain autonomy: which decisions remain personally held.
+
 - **ds-015** — ownership / commitment symbolism independent of practical control; Ownership Symbolism.
-- **ds-016** — meaningful room to choose how to respond within power exchange; Autonomy.
+
+- **ds-016** — meaningful room to choose how to respond within power exchange.
+  - **Decision:** rewrite to **“Within agreed rules or direction, having meaningful room to choose how I carry them out matters to me.”**
+  - Semantic target: `autonomy · Overall`.
+  - This measures latitude within delegated structure: how much choice remains in execution, distinct from ds-014's decision-domain boundaries.
 
 ### Review for redundancy or semantic leakage
 
@@ -92,7 +100,9 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
   - Keep distinct from ds-011: leadership / setting direction and being obeyed are related but separate preferences.
 
 - **ds-018** — taking charge in some contexts without wanting that role to define every part of the relationship.
-  - This may be measuring relationship/lifestyle scope more than Control + Autonomy. Review whether it belongs in D/s scoring or in a future cross-cutting engagement/context layer.
+  - **Decision:** remove from active D/s scoring and retain as legacy compatibility input when v2 is implemented.
+  - This measures scope / lifestyle integration (contextual, scene-only, relationship-wide, 24/7, etc.), not core Control or Autonomy preference strength.
+  - Preserve the concept for a future cross-cutting engagement / context layer rather than feeding it into canonical D/s preference scoring.
 
 ## Clear coverage gaps to review
 
