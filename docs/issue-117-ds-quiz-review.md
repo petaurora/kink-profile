@@ -16,8 +16,17 @@ Current legacy-authored signal IDs normalize into canonical concepts including C
 - **ds-002** — clear instructions / expectation to follow; Receiving Control + Following Direction + Receiving Structure.
 - **ds-004** — ordinary task because a partner expects it; Providing Service + Following Direction + Receiving Structure.
 - **ds-006** — standing rules / expectations; Receiving Structure with an obedience contribution.
-- **ds-009** — praise for following direction; Following Direction + Receiving Praise / Approval.
-- **ds-010** — recognition for useful service; Providing Service + Receiving Praise / Approval.
+- **ds-009** — praise for following direction.
+  - **Decision:** keep.
+  - Primary semantic target: `praise_approval · Receiving`.
+  - Secondary semantic target: `obedience · Giving`.
+  - This specifically measures praise in an obedience / following-direction context.
+
+- **ds-010** — recognition for useful service.
+  - **Decision:** keep.
+  - Primary semantic target: `praise_approval · Receiving`.
+  - Secondary semantic target: `service · Giving`.
+  - This specifically measures recognition for usefulness / service rather than obedience.
 - **ds-013** — creating rules / expectations for a willing partner; Giving Control + Providing Structure.
 - **ds-014** — retaining important decisions unless explicitly handed over; Autonomy.
 - **ds-015** — ownership / commitment symbolism independent of practical control; Ownership Symbolism.
