@@ -9,6 +9,9 @@ export function QuizHomePage() {
   const profile = loadProfile();
   const navigate = useNavigate();
   const coreQuizzes = quizzes.filter((quiz) => quiz.contributesToOverall);
+  const completedCount = coreQuizzes.filter(
+    (quiz) => getQuizState(quiz, profile) === "complete",
+  ).length;
 
   const openQuiz = (quiz: QuizDefinition) => {
     if (quiz.availability !== "available") return;
@@ -25,32 +28,23 @@ export function QuizHomePage() {
 
   return (
     <main className="app-shell">
-      <section className="hub-stack">
-        <div className="hub-hero">
+      <section className="hub-stack quiz-home-stack">
+        <header className="hub-hero quiz-home-hero">
           <div>
             <p className="eyebrow">Quiz · Guided exploration</p>
-            <h1>Start broad. Follow what resonates.</h1>
+            <h1>Explore what resonates.</h1>
             <p className="hero-copy">
-              Short, focused quizzes help surface the dynamics, roles, and
-              experiences that resonate with you. Do one, do them all, or come
-              back whenever you want — your progress stays with your profile.
+              Short quizzes surface dynamics, roles, and experiences. Do one,
+              do them all, or come back whenever you want — your progress stays
+              with your profile.
+            </p>
+            <p className="quiz-home-progress">
+              {completedCount} of {coreQuizzes.length} complete
             </p>
           </div>
-        </div>
+        </header>
 
-        <div className="hub-section-heading">
-          <div>
-            <p className="eyebrow">Your quizzes</p>
-            <h2>Explore at your own pace.</h2>
-          </div>
-          <p>
-            Completed quizzes open their results. In-progress quizzes and
-            retakes pick up where you left off, and an unfinished retake keeps
-            the previous completed result intact.
-          </p>
-        </div>
-
-        <div className="quiz-card-grid">
+        <div className="quiz-card-grid quiz-list">
           {coreQuizzes.map((quiz) => (
             <QuizCard
               key={quiz.id}
