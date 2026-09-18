@@ -63,7 +63,7 @@ describe("M16.2 canonical Workbench editor model", () => {
   });
 
   it("preserves quiz-specific channel semantics", () => {
-    const model = canonicalModel("quiz-question", "ds-001");
+    const model = canonicalModel("quiz-question", "ds-006");
     const weights = model.fields.find(
       (field) => field.kind === "weighted-relations" && field.key === "weights",
     );
@@ -121,7 +121,7 @@ describe("M16.2 canonical Workbench editor model", () => {
   });
 
   it("persists channel changes as part of the proposal", () => {
-    const model = canonicalModel("quiz-question", "ds-001");
+    const model = canonicalModel("quiz-question", "ds-006");
     const draft = createCurationDraft(model);
     const weights = draft.weights;
     if (!Array.isArray(weights)) throw new Error("Missing weights draft");
