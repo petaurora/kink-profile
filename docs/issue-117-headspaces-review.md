@@ -151,6 +151,22 @@ This is a first-pass classification, not a final keep/retire decision.
   - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
   - The item primarily re-measures D/s / protocol mechanics already authored elsewhere and does not add a distinct Headspaces-specific primitive.
 
+### Control, playful resistance, and objectification
+
+- **hs-010 — Responsibility Transfer / Receiving Control**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - The item directly re-measures surrendering direction / responsibility already authored in D/s and does not add distinct role/headspace evidence.
+
+- **hs-011 — Playful Resistance**
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `playful_resistance · Overall` only.
+  - Drop the current Playfulness secondary weight. The playful framing is part of the Playful Resistance construct itself; general Playfulness is measured independently by hs-003.
+
+- **hs-012 — Objectification · Receiving**
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `objectification · Receiving` only.
+  - Drop the current Role Embodiment and Receiving Control secondary weights. Objectification should be measured directly rather than inferring generic role immersion or control preference.
+
 ## Review goals
 
 1. Preserve direct authored evidence for genuinely Headspaces-specific primitives.
