@@ -13,8 +13,9 @@ describe("M16.2 canonical Workbench Signal inventory", () => {
 
   it("tracks canonical Signal concepts instead of legacy compatibility IDs", () => {
     expect(curationInventoryCounts.signal).toBe(canonicalSignalDefinitions.length);
-    expect(signals).toHaveLength(37);
+    expect(signals).toHaveLength(38);
     expect(signals.some((entry) => entry.entityId === "control")).toBe(true);
+    expect(signals.some((entry) => entry.entityId === "psychological_pain")).toBe(true);
     expect(signals.some((entry) => entry.entityId === "receiving_control")).toBe(
       false,
     );
