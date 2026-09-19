@@ -157,4 +157,53 @@ describe("quiz bank version migration", () => {
     expect(progress.answers["sm-024"]).toBeUndefined();
     expect(canViewQuizResults(quiz, profile)).toBe(true);
   });
+  it("keeps an older completed Roles & Headspaces result established and drops legacy answers after a v6 retake", () => {
+    const quiz = getQuiz("roles-headspaces")!;
+    expect(quiz.version).toBe(6);
+
+    const legacyProfile: StoredProfile = {
+      schemaVersion: 2,
+      quizzes: {
+        "roles-headspaces": {
+          quizVersion: 5,
+          answers: {
+            "hs-001": 3,
+            "hs-006": 4,
+            "hs-024": 2,
+          },
+          completedAt: "2026-09-18T12:00:00.000Z",
+        },
+      },
+    };
+
+    expect(getQuizState(quiz, legacyProfile)).toBe("complete");
+    expect(canViewQuizResults(quiz, legacyProfile)).toBe(true);
+
+    let profile = startQuizRetake(
+      quiz,
+      legacyProfile,
+      "2026-09-19T02:30:00.000Z",
+    );
+    expect(profile.quizzes[quiz.id]?.retake?.answers).toEqual({});
+
+    for (const questionId of quiz.questionIds) {
+      profile = answerQuizQuestion(
+        quiz,
+        profile,
+        questionId,
+        3,
+        "2026-09-19T03:00:00.000Z",
+      );
+    }
+
+    const progress = profile.quizzes[quiz.id]!;
+    expect(progress.quizVersion).toBe(6);
+    expect(progress.retake).toBeUndefined();
+    expect(Object.keys(progress.answers).sort()).toEqual(
+      [...quiz.questionIds].sort(),
+    );
+    expect(progress.answers["hs-006"]).toBeUndefined();
+    expect(progress.answers["hs-024"]).toBeUndefined();
+    expect(canViewQuizResults(quiz, profile)).toBe(true);
+  });
 });
