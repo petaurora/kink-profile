@@ -102,6 +102,24 @@ These appear to re-measure concepts already authored elsewhere and should be rev
 
 This is a first-pass classification, not a final keep/retire decision.
 
+## Locked decisions
+
+### Foundation primitives
+
+- **hs-001 — Belonging**
+  - **Decision:** keep, but rewrite to **“Feeling deeply connected to a trusted partner, like I genuinely belong in the relationship or dynamic, can deepen it for me.”**
+  - Semantic target: `belonging · Overall` only.
+  - Drop the current Ownership Symbolism secondary weight. Belonging should stand on its own rather than imply claiming / ownership semantics.
+
+- **hs-002 — Role Embodiment**
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `role_embodiment · Overall` only.
+
+- **hs-003 — Playfulness**
+  - **Decision:** keep, but rewrite to **“Playfulness, silliness, or letting myself be less serious can be an important part of enjoying a role.”**
+  - Semantic target: `playfulness · Overall` only.
+  - Drop the current Role Embodiment secondary weight; the item should measure Playfulness directly rather than treating immersion as a second construct.
+
 ## Review goals
 
 1. Preserve direct authored evidence for genuinely Headspaces-specific primitives.
