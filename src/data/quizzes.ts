@@ -65,8 +65,8 @@ export const quizzes: QuizDefinition[] = [
     description:
       "Explore giving and receiving intensity, pain, endurance, challenge, anticipation, and emotional intensity.",
     icon: "bolt",
-    estimatedMinutes: 9,
-    version: 1,
+    estimatedMinutes: 5,
+    version: 2,
     availability: "available",
     questionIds: sadismMasochismQuestionIds,
     contributesToOverall: true,
