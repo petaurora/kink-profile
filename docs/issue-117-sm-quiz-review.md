@@ -244,7 +244,29 @@ Model boundary:
 
 The wording uses **discomfort** rather than **suffering** so the items cover a range of psychological S/M intensity without implying that only extreme emotional distress qualifies.
 
+## Final v2 coverage
+
+The approved v2 bank has **14 active questions**:
+
+- Physical Pain · Receiving — sm-001, sm-002
+- Physical Intensity · Receiving — sm-003
+- Endurance · Receiving — sm-005
+- Challenge · Receiving — sm-007
+- Physical Pain · Giving — sm-013, sm-014
+- Physical Intensity · Giving — sm-015
+- Endurance · Giving — sm-017
+- Challenge · Giving — sm-019
+- Anticipation · Overall — sm-025
+- Emotional Intensity · Overall — sm-026
+- Psychological Pain · Receiving — sm-027
+- Psychological Pain · Giving — sm-028
+
+Pain intentionally has two authored items per direction because the items measure two distinct aspects: separation from Discipline / punishment context and intrinsic-vs-instrumental pain appeal. The scorer normalizes each Signal by its answered authored weight, so two items improve evidence robustness without giving Pain extra percentage weight over one-item Signals.
+
+Retired v1 IDs remain available as hidden compatibility input only.
+
 ## Migration expectation
+
 
 If v2 removes or merges questions, follow the established B&D / D/s compatibility pattern:
 
