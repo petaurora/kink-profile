@@ -9,26 +9,14 @@ export type ComposedDefinition = {
 };
 
 export const headspaceSignalIds: SignalId[] = [
-  "receiving_control",
-  "giving_control",
-  "responsibility_transfer",
-  "service",
-  "obedience",
-  "structure",
-  "ownership_symbolism",
   "praise_approval",
-  "autonomy",
   "belonging",
   "role_embodiment",
   "playfulness",
   "care_receiving",
   "care_giving",
-  "devotion",
-  "ritual_significance",
   "playful_resistance",
   "objectification",
-  "guidance_shaping",
-  "responsibility_holding",
   "younger_headspace",
   "primal_embodiment",
   "pursuit_receiving",
@@ -363,167 +351,239 @@ export const partnerPositionedRoleHeadspaceIds = [
   "master_mistress",
 ] as const;
 
+/**
+ * Active Roles & Headspaces v6 question bank.
+ *
+ * v6 treats this quiz as a progressive follow-up layer: it gathers
+ * headspace-specific evidence while shared D/s, B&D, and S/M mechanics remain
+ * sourced from the quizzes that directly author them.
+ *
+ * Removed v5 questions remain in `legacyHeadspaceQuestions` so stored answer
+ * maps and exports can still be read, but they are not presented in a new
+ * attempt or retake.
+ */
 export const headspaceQuestions: WeightedQuestion[] = [
   {
     id: "hs-001",
-    prompt: "Feeling that I meaningfully belong with or to a trusted partner can deepen a dynamic for me.",
-    weights: { belonging: 1, ownership_symbolism: 0.4 },
+    prompt:
+      "Feeling deeply connected to a trusted partner, like I genuinely belong in the relationship or dynamic, can deepen it for me.",
+    weights: { belonging: 1 },
   },
   {
     id: "hs-002",
-    prompt: "Slipping into a distinct role can change how I think, feel, or behave in a way I enjoy.",
+    prompt:
+      "Slipping into a distinct role can change how I think, feel, or behave in a way I enjoy.",
     weights: { role_embodiment: 1 },
   },
   {
     id: "hs-003",
-    prompt: "Playfulness, silliness, or a more instinctive mode can make a role feel especially immersive.",
-    weights: { playfulness: 1, role_embodiment: 0.4 },
+    prompt:
+      "Playfulness, silliness, or letting myself be less serious can be an important part of enjoying a role.",
+    weights: { playfulness: 1 },
   },
   {
     id: "hs-004",
-    prompt: "Being deliberately looked after or guided by someone I trust can make me feel more settled in a dynamic.",
-    weights: { care_receiving: 1, responsibility_transfer: 0.3 },
+    prompt:
+      "Being deliberately looked after, soothed, or cared for by someone I trust can feel deeply settling in a role or dynamic.",
+    weights: { care_receiving: 1 },
   },
   {
     id: "hs-005",
-    prompt: "Warm approval or recognition can make a relational role feel especially rewarding.",
-    weights: { praise_approval: 0.8, belonging: 0.3 },
+    prompt:
+      "Warm approval or recognition can make a relational role feel especially rewarding.",
+    weights: { praise_approval: 1 },
   },
   {
+    id: "hs-011",
+    prompt:
+      "Negotiated teasing or pushback can make authority more fun because it gives us something to play against.",
+    weights: { playful_resistance: 1 },
+  },
+  {
+    id: "hs-012",
+    prompt:
+      "In the right consensual context, being reduced to a role, purpose, or function can feel immersively appealing.",
+    weights: { objectification: 1 },
+  },
+  {
+    id: "hs-013",
+    prompt:
+      "Deliberately nurturing, soothing, or caring for another person can feel deeply rewarding in a role or dynamic.",
+    weights: { care_giving: 1 },
+  },
+  {
+    id: "hs-020",
+    prompt:
+      "In the right negotiated context, defining a partner mainly by a role or function can be appealing.",
+    weights: { objectification: 1 },
+  },
+  {
+    id: "hs-025",
+    prompt:
+      "In the right role, feeling younger, smaller, or less anchored to my everyday adult self can be appealing or immersive.",
+    weights: { younger_headspace: 1 },
+  },
+  {
+    id: "hs-026",
+    prompt:
+      "Being in a role where I can set aside some everyday adult responsibilities and simply be cared for can feel comforting or immersive.",
+    weights: { younger_headspace: 1 },
+  },
+  {
+    id: "hs-027",
+    prompt:
+      "A more youthful or less-adult role can appeal to me even when I still want independence, opinions, and room to push back.",
+    weights: { younger_headspace: 1 },
+  },
+  {
+    id: "hs-028",
+    prompt:
+      "In the right consensual context, feeling more instinctive, feral, or driven by body language than ordinary social rules can be deeply immersive.",
+    weights: { primal_embodiment: 1 },
+  },
+  {
+    id: "hs-029",
+    prompt:
+      "Being pursued or tracked by a willing partner can be especially exciting or immersive for me.",
+    weights: { pursuit_receiving: 1 },
+  },
+  {
+    id: "hs-030",
+    prompt:
+      "Within an agreed scene, the tension of trying to evade someone who intends to catch me can be especially appealing.",
+    weights: { pursuit_receiving: 1 },
+  },
+  {
+    id: "hs-031",
+    prompt:
+      "Pursuing or tracking a willing partner can be especially exciting or immersive for me.",
+    weights: { pursuit_giving: 1 },
+  },
+  {
+    id: "hs-032",
+    prompt:
+      "Within an agreed scene, closing distance and eventually catching a partner who wants to be pursued can be especially appealing.",
+    weights: { pursuit_giving: 1 },
+  },
+];
+
+/**
+ * Questions removed from the active bank but retained as compatibility input
+ * for profiles/exports that still contain their v5 answer IDs.
+ */
+export const legacyHeadspaceQuestions: WeightedQuestion[] = [
+  {
     id: "hs-006",
-    prompt: "Doing something because it expresses dedication to a partner can give an ordinary act extra meaning.",
+    prompt:
+      "Doing something because it expresses dedication to a partner can give an ordinary act extra meaning.",
     weights: { devotion: 1, service: 0.4 },
   },
   {
     id: "hs-007",
-    prompt: "Small repeated rituals can become emotionally important to me even when they have little practical purpose.",
+    prompt:
+      "Small repeated rituals can become emotionally important to me even when they have little practical purpose.",
     weights: { ritual_significance: 1, structure: 0.3 },
   },
   {
     id: "hs-008",
-    prompt: "Being useful can feel like part of my role in a relationship, not just something helpful I happened to do.",
+    prompt:
+      "Being useful can feel like part of my role in a relationship, not just something helpful I happened to do.",
     weights: { service: 1, role_embodiment: 0.5 },
   },
   {
     id: "hs-009",
-    prompt: "Formal manners, rules, or expected ways of behaving can make a dynamic feel more intentional.",
+    prompt:
+      "Formal manners, rules, or expected ways of behaving can make a dynamic feel more intentional.",
     weights: { structure: 0.8, ritual_significance: 0.7, obedience: 0.4 },
   },
   {
     id: "hs-010",
-    prompt: "I can enjoy the internal feeling of stopping myself from steering and letting someone trusted hold the direction.",
+    prompt:
+      "I can enjoy the internal feeling of stopping myself from steering and letting someone trusted hold the direction.",
     weights: { responsibility_transfer: 1, receiving_control: 0.8 },
   },
   {
-    id: "hs-011",
-    prompt: "Negotiated teasing or pushback can make authority more fun because it gives us something to play against.",
-    weights: { playful_resistance: 1, playfulness: 0.7 },
-  },
-  {
-    id: "hs-012",
-    prompt: "In the right consensual context, being reduced to a role, purpose, or function can feel immersively appealing.",
-    weights: { objectification: 1, role_embodiment: 0.5, receiving_control: 0.2 },
-  },
-  {
-    id: "hs-013",
-    prompt: "Being responsible for another person's comfort or sense of being held can feel deeply rewarding.",
-    weights: { care_giving: 1, responsibility_holding: 0.8 },
-  },
-  {
     id: "hs-014",
-    prompt: "I enjoy showing someone how to do something in the way I want while helping them improve.",
+    prompt:
+      "I enjoy showing someone how to do something in the way I want while helping them improve.",
     weights: { guidance_shaping: 1, care_giving: 0.4 },
   },
   {
     id: "hs-015",
-    prompt: "I enjoy being the person whose direction sets the tone when another person wants me in that position.",
+    prompt:
+      "I enjoy being the person whose direction sets the tone when another person wants me in that position.",
     weights: { giving_control: 1, responsibility_holding: 0.4 },
   },
   {
     id: "hs-016",
-    prompt: "Knowing another person has chosen to follow my direction can make authority feel emotionally significant.",
+    prompt:
+      "Knowing another person has chosen to follow my direction can make authority feel emotionally significant.",
     weights: { giving_control: 0.8, responsibility_holding: 0.5 },
   },
   {
     id: "hs-017",
-    prompt: "Consensually claiming someone or treating them as 'mine' can carry emotional meaning beyond practical control.",
-    weights: { ownership_symbolism: 1, responsibility_holding: 0.6, belonging: 0.4 },
+    prompt:
+      "Consensually claiming someone or treating them as 'mine' can carry emotional meaning beyond practical control.",
+    weights: {
+      ownership_symbolism: 1,
+      responsibility_holding: 0.6,
+      belonging: 0.4,
+    },
   },
   {
     id: "hs-018",
-    prompt: "Helping a willing partner practice expectations until they become natural can be satisfying.",
+    prompt:
+      "Helping a willing partner practice expectations until they become natural can be satisfying.",
     weights: { guidance_shaping: 1, structure: 0.4 },
   },
   {
     id: "hs-019",
-    prompt: "Agreed correction can feel constructive when it helps shape behavior toward a shared expectation.",
-    weights: { guidance_shaping: 0.8, giving_control: 0.5, structure: 0.4 },
-  },
-  {
-    id: "hs-020",
-    prompt: "In the right negotiated context, defining a partner mainly by a role or function can be appealing.",
-    weights: { objectification: 1, giving_control: 0.4 },
+    prompt:
+      "Agreed correction can feel constructive when it helps shape behavior toward a shared expectation.",
+    weights: {
+      guidance_shaping: 0.8,
+      giving_control: 0.5,
+      structure: 0.4,
+    },
   },
   {
     id: "hs-021",
-    prompt: "Creating rituals or formal expectations for another person can make my side of a dynamic feel more meaningful.",
-    weights: { ritual_significance: 0.8, structure: 0.7, giving_control: 0.4 },
+    prompt:
+      "Creating rituals or formal expectations for another person can make my side of a dynamic feel more meaningful.",
+    weights: {
+      ritual_significance: 0.8,
+      structure: 0.7,
+      giving_control: 0.4,
+    },
   },
   {
     id: "hs-022",
-    prompt: "Receiving someone's deliberate dedication can feel meaningful because of what their commitment represents.",
+    prompt:
+      "Receiving someone's deliberate dedication can feel meaningful because of what their commitment represents.",
     weights: { devotion: 0.8, belonging: 0.4, care_receiving: 0.3 },
   },
   {
     id: "hs-023",
-    prompt: "Having someone rely on me to hold direction or make the call can feel like a responsibility I want.",
-    weights: { responsibility_holding: 1, care_giving: 0.4, giving_control: 0.4 },
+    prompt:
+      "Having someone rely on me to hold direction or make the call can feel like a responsibility I want.",
+    weights: {
+      responsibility_holding: 1,
+      care_giving: 0.4,
+      giving_control: 0.4,
+    },
   },
   {
     id: "hs-024",
-    prompt: "Even in an immersive role, I value knowing which choices remain mine and which ones I deliberately hand over.",
+    prompt:
+      "Even in an immersive role, I value knowing which choices remain mine and which ones I deliberately hand over.",
     weights: { autonomy: 1, role_embodiment: 0.3 },
-  },
-  {
-    id: "hs-025",
-    prompt: "In the right role, feeling younger, smaller, or less adult than I do in everyday life can be comforting or immersive.",
-    weights: { younger_headspace: 1, role_embodiment: 0.5, responsibility_transfer: 0.3 },
-  },
-  {
-    id: "hs-026",
-    prompt: "Being cared for in a way that lets me set aside some everyday adult responsibilities can feel appealing.",
-    weights: { younger_headspace: 0.7, care_receiving: 0.8, responsibility_transfer: 0.6 },
-  },
-  {
-    id: "hs-027",
-    prompt: "A younger or youthful role can appeal to me even when I still want independence, opinions, and room to push back.",
-    weights: { younger_headspace: 0.8, autonomy: 0.7, playfulness: 0.5, playful_resistance: 0.3 },
-  },
-  {
-    id: "hs-028",
-    prompt: "In the right consensual scene, feeling more instinctive, feral, or driven by body-language than ordinary social rules can be deeply immersive.",
-    weights: { primal_embodiment: 1, role_embodiment: 0.4 },
-  },
-  {
-    id: "hs-029",
-    prompt: "Being pursued or tracked by a willing partner can make a role feel exciting in a way ordinary power exchange does not.",
-    weights: { pursuit_receiving: 1, primal_embodiment: 0.4, role_embodiment: 0.3 },
-  },
-  {
-    id: "hs-030",
-    prompt: "Within an agreed scene, the tension of trying to evade someone who intends to catch me can be especially appealing.",
-    weights: { pursuit_receiving: 1, primal_embodiment: 0.5, playful_resistance: 0.3 },
-  },
-  {
-    id: "hs-031",
-    prompt: "Pursuing or tracking a willing partner can make me feel focused, instinctive, and strongly inside a role.",
-    weights: { pursuit_giving: 1, primal_embodiment: 0.5, role_embodiment: 0.3 },
-  },
-  {
-    id: "hs-032",
-    prompt: "Within an agreed scene, closing distance and eventually catching a partner who wants to be pursued can be especially appealing.",
-    weights: { pursuit_giving: 1, primal_embodiment: 0.4, giving_control: 0.3 },
   },
 ];
 
-export const headspaceQuestionIds = headspaceQuestions.map((question) => question.id);
+export const headspaceQuestionIds = headspaceQuestions.map(
+  (question) => question.id,
+);
+
+export const legacyHeadspaceQuestionIds = legacyHeadspaceQuestions.map(
+  (question) => question.id,
+);
