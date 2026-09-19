@@ -39,10 +39,17 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Physical Intensity — Receiving
 
 - **sm-003** — strong physical experience even when pain is not the main point.
-- **sm-004** — increasing physical intensity makes an experience more immersive/compelling.
-- **sm-012** — strong physical intensity can appeal even when only mildly painful / not primarily pain.
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `physical_intensity · Receiving`.
+  - Drop the current Pain secondary weight; the question explicitly establishes that strong physical intensity can appeal even when Pain is not central.
 
-sm-003 and sm-012 appear especially close. sm-004 may be measuring escalation / immersion rather than a distinct canonical preference.
+- **sm-004** — increasing physical intensity makes an experience more immersive/compelling.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - This primarily measures escalation / ramping as a route to immersion. We do not need a separate escalation construct in the current model, and keeping it as another Physical Intensity item would mostly duplicate the anchor question.
+
+- **sm-012** — strong physical intensity can appeal even when only mildly painful / not primarily pain.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - This repeats the Pain-vs-Physical-Intensity distinction already measured cleanly by sm-003.
 
 ### Endurance — Receiving
 
