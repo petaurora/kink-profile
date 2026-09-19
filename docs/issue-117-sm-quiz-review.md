@@ -115,10 +115,17 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Physical Intensity — Giving
 
 - **sm-015** — creating a strong physical experience even when pain is not the main point.
-- **sm-016** — increasing physical intensity can make the experience more compelling to give.
-- **sm-024** — creating strong intensity even when only mildly painful / not primarily pain.
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `physical_intensity · Giving`.
+  - Drop the current Pain secondary weight; the question explicitly establishes that strong physical intensity can appeal even when Pain is not central.
 
-Mirrors sm-003 / sm-004 / sm-012. sm-015 and sm-024 appear especially close.
+- **sm-016** — increasing physical intensity can make the experience more compelling to give.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - This primarily measures escalation / ramping as a route to appeal. We are not preserving a separate escalation construct, and keeping it as another Physical Intensity item would mostly duplicate the anchor question.
+
+- **sm-024** — creating strong intensity even when only mildly painful / not primarily pain.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - This repeats the Pain-vs-Physical-Intensity distinction already measured cleanly by sm-015.
 
 ### Endurance — Giving
 
