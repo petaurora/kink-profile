@@ -203,7 +203,11 @@ These exclusions are current taxonomy boundaries, not a requirement to erase com
 
 ## Relationship to the Roles & Headspaces quiz
 
-The Roles & Headspaces quiz gathers direct answer evidence for Signals that can support these compositions.
+The Roles & Headspaces quiz gathers **incremental** direct answer evidence for Signals that are especially specific to role/headspace experience.
+
+It is intentionally a progressive follow-up layer rather than a fourth independent re-measurement of D/s, B&D, or S/M. Shared mechanics such as control, responsibility, service, structure, ownership, devotion, ritual, and guidance can be supplied by the core quizzes that directly author those concepts, while Roles & Headspaces focuses on evidence such as belonging, role embodiment, playfulness, care, objectification, younger/less-adult headspace, primal embodiment, and pursuit.
+
+A derived role therefore does not require a dedicated question in this quiz. For example, Slave or Master / Mistress may be supported primarily by D/s evidence, while Little / Middle, Prey / Predator, Pet, Object, or Caregiver gain additional distinguishing evidence from this section.
 
 The quiz itself is not a direct `Pet score` / `Predator score` questionnaire.
 
@@ -219,7 +223,7 @@ canonical Signal/channel normalization
 role/headspace + mode compositions
 ```
 
-Current quiz version is `5`.
+Current quiz version is `6`.
 
 Existing stored answers can remain compatible while derived taxonomy results change when composition definitions intentionally evolve. That is why raw quiz evidence and derived taxonomy results must remain distinct layers.
 
