@@ -120,6 +120,19 @@ This is a first-pass classification, not a final keep/retire decision.
   - Semantic target: `playfulness · Overall` only.
   - Drop the current Role Embodiment secondary weight; the item should measure Playfulness directly rather than treating immersion as a second construct.
 
+### Care and praise
+
+- **hs-004 — Care · Receiving**
+  - **Decision:** keep, but rewrite to **“Being deliberately looked after, soothed, or cared for by someone I trust can feel deeply settling in a role or dynamic.”**
+  - Semantic target: `care · Receiving` only.
+  - Drop the current Responsibility Transfer secondary weight. Guidance / responsibility transfer is not required for receiving care.
+
+- **hs-005 — Praise / Approval**
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `praise_approval · Overall` only.
+  - Drop the current Belonging secondary weight. Warm approval may reinforce belonging, but the item does not directly establish Belonging.
+  - This remains useful despite D/s praise coverage because the D/s questions anchor praise to obedience / service, while hs-005 measures praise as part of role experience more broadly.
+
 ## Review goals
 
 1. Preserve direct authored evidence for genuinely Headspaces-specific primitives.
