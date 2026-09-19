@@ -1,5 +1,5 @@
 import { dsQuestions, legacyDsQuestions } from "./dsQuiz";
-import { headspaceQuestions } from "./headspacesQuiz";
+import { headspaceQuestions, legacyHeadspaceQuestions } from "./headspacesQuiz";
 import {
   bondageDisciplineQuestions,
   legacyBondageDisciplineQuestions,
@@ -17,6 +17,10 @@ export const quizQuestions: QuizQuestion[] = [
   ...dsQuestions.map((question) => ({ ...question, kind: "weighted" as const })),
   ...legacyDsQuestions.map((question) => ({ ...question, kind: "weighted" as const })),
   ...headspaceQuestions.map((question) => ({ ...question, kind: "weighted" as const })),
+  ...legacyHeadspaceQuestions.map((question) => ({
+    ...question,
+    kind: "weighted" as const,
+  })),
   ...bondageDisciplineQuestions.map((question) => ({
     ...question,
     kind: "weighted" as const,
