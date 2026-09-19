@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   dynamicModes,
+  headspaceQuestionIds,
+  headspaceQuestions,
+  legacyHeadspaceQuestionIds,
+  legacyHeadspaceQuestions,
   partnerPositionedRoleHeadspaceIds,
   roleHeadspaces,
   selfPositionedRoleHeadspaceIds,
@@ -9,8 +13,9 @@ import {
   canonicalDynamicModes,
   canonicalRoleHeadspaces,
 } from "./canonicalRoleCompositions";
+import { canonicalQuizSignalRef } from "./canonicalSignals";
 
-describe("M3 v5 roles/headspaces and dynamic modes taxonomy", () => {
+describe("roles/headspaces and dynamic modes taxonomy", () => {
   it("keeps expressions and orientations out of the peer headspace layer", () => {
     const ids = roleHeadspaces.map((definition) => definition.id);
 
@@ -112,5 +117,89 @@ describe("M3 v5 roles/headspaces and dynamic modes taxonomy", () => {
     expect(canonicalModeIds).toEqual(
       dynamicModes.map((definition) => definition.id).sort(),
     );
+  });
+});
+
+describe("Roles & Headspaces v6 question bank", () => {
+  it("keeps 17 active questions and 15 hidden v5 compatibility questions", () => {
+    expect(headspaceQuestionIds).toHaveLength(17);
+    expect(legacyHeadspaceQuestionIds).toHaveLength(15);
+
+    for (const retiredId of [
+      "hs-006",
+      "hs-007",
+      "hs-008",
+      "hs-009",
+      "hs-010",
+      "hs-014",
+      "hs-015",
+      "hs-016",
+      "hs-017",
+      "hs-018",
+      "hs-019",
+      "hs-021",
+      "hs-022",
+      "hs-023",
+      "hs-024",
+    ]) {
+      expect(headspaceQuestionIds).not.toContain(retiredId);
+      expect(legacyHeadspaceQuestionIds).toContain(retiredId);
+    }
+
+    expect(legacyHeadspaceQuestions).toHaveLength(15);
+  });
+
+  it("keeps every active question focused on one authored primitive", () => {
+    for (const question of headspaceQuestions) {
+      expect(Object.keys(question.weights)).toHaveLength(1);
+      expect(Object.values(question.weights)).toEqual([1]);
+    }
+  });
+
+  it("weights the three younger / less-adult headspace probes equally", () => {
+    const byId = new Map(
+      headspaceQuestions.map((question) => [question.id, question]),
+    );
+
+    for (const id of ["hs-025", "hs-026", "hs-027"]) {
+      expect(byId.get(id)?.weights).toEqual({ younger_headspace: 1 });
+    }
+
+    expect(byId.get("hs-025")?.prompt).toContain("younger");
+    expect(byId.get("hs-026")?.prompt).toContain("adult responsibilities");
+    expect(byId.get("hs-027")?.prompt).toContain("independence");
+  });
+
+  it("keeps role-context praise directional without tying it to obedience or service", () => {
+    const praise = headspaceQuestions.find((question) => question.id === "hs-005");
+
+    expect(praise?.weights).toEqual({ praise_approval: 1 });
+    expect(canonicalQuizSignalRef("hs-005", "praise_approval")).toEqual({
+      signalId: "praise_approval",
+      channel: "receiving",
+    });
+  });
+
+  it("keeps objectification and pursuit evidence directional while primal remains broad", () => {
+    expect(canonicalQuizSignalRef("hs-012", "objectification")).toEqual({
+      signalId: "objectification",
+      channel: "receiving",
+    });
+    expect(canonicalQuizSignalRef("hs-020", "objectification")).toEqual({
+      signalId: "objectification",
+      channel: "giving",
+    });
+    expect(canonicalQuizSignalRef("hs-029", "pursuit_receiving")).toEqual({
+      signalId: "pursuit",
+      channel: "receiving",
+    });
+    expect(canonicalQuizSignalRef("hs-031", "pursuit_giving")).toEqual({
+      signalId: "pursuit",
+      channel: "giving",
+    });
+    expect(canonicalQuizSignalRef("hs-028", "primal_embodiment")).toEqual({
+      signalId: "primal_embodiment",
+      channel: "overall",
+    });
   });
 });
