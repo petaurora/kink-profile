@@ -130,9 +130,13 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Endurance — Giving
 
 - **sm-017** — sustaining an intense experience over time.
-- **sm-018** — maintaining an agreed difficult experience rather than making it brief.
+  - **Decision:** keep, but rewrite to **“Sustaining an intense physical experience for a willing partner over time can feel rewarding in its own right.”**
+  - Semantic target: `endurance · Giving`.
+  - Drop the current `physical_intensity · Giving` secondary weight. The item measures sustaining an experience over time, not a separate preference for Physical Intensity.
 
-Likely redundant or near-redundant, mirroring sm-005 / sm-006.
+- **sm-018** — maintaining an agreed difficult experience rather than making it brief.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - This substantially overlaps sm-017's Endurance construct, and “difficult” does not directly establish Pain.
 
 ### Challenge — Giving
 
