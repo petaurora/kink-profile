@@ -186,6 +186,41 @@ This is a first-pass classification, not a final keep/retire decision.
   - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
   - The emotional significance of a partner following direction still primarily measures authority / responsibility mechanics already established in D/s.
 
+### Ownership, shaping, ritual, devotion, responsibility, and autonomy overlap
+
+- **hs-017 — Ownership / claiming**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - D/s already directly authors claiming / Ownership Symbolism. Do not preserve the Responsibility Holding or Belonging secondary weights.
+
+- **hs-018 — Guidance / practice**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - Guidance / Shaping and Structure are already authored through D/s / B&D.
+
+- **hs-019 — Correction / shaping**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - This is primarily B&D correction / shaping territory and does not add a distinct Headspaces primitive.
+
+- **hs-020 — Objectification · Giving**
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `objectification · Giving` only.
+  - Drop the current Giving Control secondary weight. Defining a partner by role / function establishes Objectification without inherently establishing authority preference.
+
+- **hs-021 — Ritual / Structure / Giving Control**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - Ritual Significance, Structure, and Giving Control are already directly authored elsewhere.
+
+- **hs-022 — Receiving devotion**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - The wording captures being the recipient of devotion, but canonical Devotion is currently Overall-only. Keeping this would add another Overall Devotion vote rather than preserving meaningful directionality. If directional Devotion is desired later, model it intentionally as a schema change.
+
+- **hs-023 — Responsibility Holding**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - D/s already owns Responsibility evidence; hs-013 now cleanly owns Care · Giving.
+
+- **hs-024 — Autonomy**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - D/s already directly measures Autonomy. Drop the current Role Embodiment secondary weight.
+
 ## Review goals
 
 1. Preserve direct authored evidence for genuinely Headspaces-specific primitives.
