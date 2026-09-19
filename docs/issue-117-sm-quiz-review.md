@@ -65,9 +65,14 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Challenge — Receiving
 
 - **sm-007** — being pushed toward an agreed personal edge.
-- **sm-008** — discovering one's response when an agreed experience becomes genuinely difficult.
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `challenge · Receiving`.
+  - Drop the current `physical_intensity · Receiving` secondary weight. The item is about the appeal of being pushed toward an agreed edge, not Physical Intensity itself.
 
-Potentially distinct: edge-seeking vs self-testing/discovery. However sm-008 currently also contributes Endurance and Emotional Intensity; those secondary weights need semantic review.
+- **sm-008** — discovering one's response when an agreed experience becomes genuinely difficult.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - The wording primarily measures self-testing / discovery under difficulty, which is not currently a distinct canonical Signal.
+  - Do not preserve the current Endurance or Emotional Intensity secondary weights; difficulty alone does not establish either construct.
 
 ### Receiving anticipation / emotional context
 
