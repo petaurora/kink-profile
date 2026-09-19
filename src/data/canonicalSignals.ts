@@ -33,6 +33,7 @@ export type CanonicalSignalId =
   | "anticipation"
   | "escape_containment"
   | "pain"
+  | "psychological_pain"
   | "physical_intensity"
   | "endurance"
   | "challenge"
@@ -285,8 +286,18 @@ export const canonicalSignalDefinitions: readonly CanonicalSignalDefinition[] = 
     id: "pain",
     label: "Pain",
     shortLabel: "Pain",
-    description: "Consensual pain can be intrinsically appealing rather than merely tolerated as a means to another effect.",
-    channels: directional("Receiving pain", "Causing pain"),
+    description: "Consensual physical pain can be intrinsically appealing rather than merely tolerated as a means to another effect.",
+    channels: directional("Receiving physical pain", "Causing physical pain"),
+  },
+  {
+    id: "psychological_pain",
+    label: "Psychological Pain",
+    shortLabel: "Psych Pain",
+    description: "Consensual psychological or emotional discomfort can itself be appealing independent of physical pain or emotional intensity.",
+    channels: directional(
+      "Experiencing psychological / emotional pain",
+      "Causing psychological / emotional pain",
+    ),
   },
   {
     id: "physical_intensity",
@@ -403,6 +414,8 @@ export const legacySignalConceptTargets: Readonly<Record<LegacySignalId, LegacyC
   challenge_escape: { signalId: "escape_containment" },
   pain_receiving: { signalId: "pain", inherentChannel: "receiving" },
   pain_giving: { signalId: "pain", inherentChannel: "giving" },
+  psychological_pain_receiving: { signalId: "psychological_pain", inherentChannel: "receiving" },
+  psychological_pain_giving: { signalId: "psychological_pain", inherentChannel: "giving" },
   receiving_intensity: { signalId: "physical_intensity", inherentChannel: "receiving" },
   giving_intensity: { signalId: "physical_intensity", inherentChannel: "giving" },
   receiving_endurance: { signalId: "endurance", inherentChannel: "receiving" },

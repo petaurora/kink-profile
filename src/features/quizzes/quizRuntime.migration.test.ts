@@ -108,4 +108,53 @@ describe("quiz bank version migration", () => {
     expect(progress.answers["ds-018"]).toBeUndefined();
     expect(canViewQuizResults(quiz, profile)).toBe(true);
   });
+  it("keeps an older completed S/M result established and drops legacy answers after a v2 retake", () => {
+    const quiz = getQuiz("sadism-masochism")!;
+    expect(quiz.version).toBe(2);
+
+    const legacyProfile: StoredProfile = {
+      schemaVersion: 2,
+      quizzes: {
+        "sadism-masochism": {
+          quizVersion: 1,
+          answers: {
+            "sm-001": 3,
+            "sm-004": 4,
+            "sm-024": 2,
+          },
+          completedAt: "2026-09-18T12:00:00.000Z",
+        },
+      },
+    };
+
+    expect(getQuizState(quiz, legacyProfile)).toBe("complete");
+    expect(canViewQuizResults(quiz, legacyProfile)).toBe(true);
+
+    let profile = startQuizRetake(
+      quiz,
+      legacyProfile,
+      "2026-09-19T01:00:00.000Z",
+    );
+    expect(profile.quizzes[quiz.id]?.retake?.answers).toEqual({});
+
+    for (const questionId of quiz.questionIds) {
+      profile = answerQuizQuestion(
+        quiz,
+        profile,
+        questionId,
+        3,
+        "2026-09-19T01:30:00.000Z",
+      );
+    }
+
+    const progress = profile.quizzes[quiz.id]!;
+    expect(progress.quizVersion).toBe(2);
+    expect(progress.retake).toBeUndefined();
+    expect(Object.keys(progress.answers).sort()).toEqual(
+      [...quiz.questionIds].sort(),
+    );
+    expect(progress.answers["sm-004"]).toBeUndefined();
+    expect(progress.answers["sm-024"]).toBeUndefined();
+    expect(canViewQuizResults(quiz, profile)).toBe(true);
+  });
 });

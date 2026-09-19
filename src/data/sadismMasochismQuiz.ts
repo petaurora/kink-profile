@@ -3,6 +3,8 @@ import type { SignalId, WeightedQuestion } from "./signals";
 export const sadismMasochismSignalIds: SignalId[] = [
   "pain_receiving",
   "pain_giving",
+  "psychological_pain_receiving",
+  "psychological_pain_giving",
   "receiving_intensity",
   "giving_intensity",
   "receiving_endurance",
@@ -15,6 +17,7 @@ export const sadismMasochismSignalIds: SignalId[] = [
 
 export const receivingSmRadarSignalIds: SignalId[] = [
   "pain_receiving",
+  "psychological_pain_receiving",
   "receiving_intensity",
   "receiving_endurance",
   "receiving_challenge",
@@ -24,6 +27,7 @@ export const receivingSmRadarSignalIds: SignalId[] = [
 
 export const givingSmRadarSignalIds: SignalId[] = [
   "pain_giving",
+  "psychological_pain_giving",
   "giving_intensity",
   "giving_endurance",
   "giving_challenge",
@@ -31,6 +35,13 @@ export const givingSmRadarSignalIds: SignalId[] = [
   "emotional_intensity",
 ];
 
+/**
+ * Active S/M v2 question bank.
+ *
+ * Removed v1 questions remain in `legacySadismMasochismQuestions` so stored
+ * answer maps and exports can still be read, but they are not presented in a
+ * new attempt or retake.
+ */
 export const sadismMasochismQuestions: WeightedQuestion[] = [
   {
     id: "sm-001",
@@ -42,14 +53,87 @@ export const sadismMasochismQuestions: WeightedQuestion[] = [
     id: "sm-002",
     prompt:
       "Pain itself can be part of what I want from an intense experience, rather than merely something I tolerate to get another effect.",
-    weights: { pain_receiving: 1, receiving_intensity: 0.3 },
+    weights: { pain_receiving: 1 },
   },
   {
     id: "sm-003",
     prompt:
       "A physically strong experience can be appealing to me even when pain is not the main point.",
-    weights: { receiving_intensity: 1, pain_receiving: 0.2 },
+    weights: { receiving_intensity: 1 },
   },
+  {
+    id: "sm-005",
+    prompt:
+      "Remaining in an intense physical experience for a sustained period can feel rewarding in its own right.",
+    weights: { receiving_endurance: 1 },
+  },
+  {
+    id: "sm-007",
+    prompt:
+      "Being consensually pushed toward an agreed personal edge can be exciting in a way ordinary intensity is not.",
+    weights: { receiving_challenge: 1 },
+  },
+  {
+    id: "sm-013",
+    prompt:
+      "Consensually causing pain to a willing partner can be appealing even when it is not part of discipline or punishment.",
+    weights: { pain_giving: 1 },
+  },
+  {
+    id: "sm-014",
+    prompt:
+      "A willing partner's experience of pain can itself be part of what makes an interaction compelling to me.",
+    weights: { pain_giving: 1 },
+  },
+  {
+    id: "sm-015",
+    prompt:
+      "Creating a physically strong experience for a willing partner can be appealing even when pain is not the main point.",
+    weights: { giving_intensity: 1 },
+  },
+  {
+    id: "sm-017",
+    prompt:
+      "Sustaining an intense physical experience for a willing partner over time can feel rewarding in its own right.",
+    weights: { giving_endurance: 1 },
+  },
+  {
+    id: "sm-019",
+    prompt:
+      "Carefully pushing a willing partner toward an agreed personal edge can be exciting in a way ordinary intensity is not.",
+    weights: { giving_challenge: 1 },
+  },
+  {
+    id: "sm-025",
+    prompt:
+      "The waiting and buildup before an intense experience can be an important part of the appeal for me.",
+    weights: { anticipation: 1 },
+  },
+  {
+    id: "sm-026",
+    prompt:
+      "A highly charged emotional atmosphere can make an intense experience more compelling even when the physical intensity is moderate.",
+    weights: { emotional_intensity: 1 },
+  },
+  {
+    id: "sm-027",
+    prompt:
+      "Consensual psychological or emotional discomfort can be appealing to me even when physical pain is not involved.",
+    weights: { psychological_pain_receiving: 1 },
+  },
+  {
+    id: "sm-028",
+    prompt:
+      "Creating consensual psychological or emotional discomfort for a willing partner can be appealing to me even when physical pain is not involved.",
+    weights: { psychological_pain_giving: 1 },
+  },
+];
+
+/**
+ * Questions removed from the active bank but retained as compatibility input
+ * for profiles/exports that still contain their answer IDs.
+ */
+export const legacySadismMasochismQuestions: WeightedQuestion[] = [
   {
     id: "sm-004",
     prompt:
@@ -57,22 +141,10 @@ export const sadismMasochismQuestions: WeightedQuestion[] = [
     weights: { receiving_intensity: 1, emotional_intensity: 0.2 },
   },
   {
-    id: "sm-005",
-    prompt:
-      "Staying with sustained physical intensity over time can feel rewarding rather than merely tiring.",
-    weights: { receiving_endurance: 1, receiving_intensity: 0.5 },
-  },
-  {
     id: "sm-006",
     prompt:
       "There can be satisfaction in continuing through an agreed difficult sensation instead of wanting it to end quickly.",
     weights: { receiving_endurance: 1, pain_receiving: 0.3 },
-  },
-  {
-    id: "sm-007",
-    prompt:
-      "Being consensually pushed toward an agreed personal edge can be exciting in a way ordinary intensity is not.",
-    weights: { receiving_challenge: 1, receiving_intensity: 0.5 },
   },
   {
     id: "sm-008",
@@ -117,46 +189,16 @@ export const sadismMasochismQuestions: WeightedQuestion[] = [
     weights: { receiving_intensity: 0.9 },
   },
   {
-    id: "sm-013",
-    prompt:
-      "Consensually causing pain to a willing partner can be appealing even when it is not part of discipline or punishment.",
-    weights: { pain_giving: 1 },
-  },
-  {
-    id: "sm-014",
-    prompt:
-      "A willing partner's experience of pain can itself be part of what makes an interaction compelling to me.",
-    weights: { pain_giving: 1, giving_intensity: 0.3 },
-  },
-  {
-    id: "sm-015",
-    prompt:
-      "Creating a physically strong experience for a willing partner can be appealing even when pain is not the main point.",
-    weights: { giving_intensity: 1, pain_giving: 0.2 },
-  },
-  {
     id: "sm-016",
     prompt:
       "Increasing the physical intensity of an agreed experience can make it more compelling for me to give.",
     weights: { giving_intensity: 1, emotional_intensity: 0.2 },
   },
   {
-    id: "sm-017",
-    prompt:
-      "Deliberately sustaining an intense experience for a willing partner over time can be satisfying.",
-    weights: { giving_endurance: 1, giving_intensity: 0.5 },
-  },
-  {
     id: "sm-018",
     prompt:
       "There can be satisfaction in maintaining an agreed difficult experience rather than making it brief.",
     weights: { giving_endurance: 1, pain_giving: 0.3 },
-  },
-  {
-    id: "sm-019",
-    prompt:
-      "Carefully pushing a willing partner toward an agreed personal edge can be exciting in a way ordinary intensity is not.",
-    weights: { giving_challenge: 1, giving_intensity: 0.5 },
   },
   {
     id: "sm-020",
@@ -200,20 +242,11 @@ export const sadismMasochismQuestions: WeightedQuestion[] = [
       "I can enjoy creating strong physical intensity even when the experience is only mildly painful or not primarily about pain.",
     weights: { giving_intensity: 0.9 },
   },
-  {
-    id: "sm-025",
-    prompt:
-      "The waiting and buildup before an intense experience can be an important part of the appeal for me.",
-    weights: { anticipation: 1, emotional_intensity: 0.3 },
-  },
-  {
-    id: "sm-026",
-    prompt:
-      "A highly charged emotional atmosphere can make an intense experience more compelling even when the physical intensity is moderate.",
-    weights: { emotional_intensity: 1 },
-  },
 ];
 
 export const sadismMasochismQuestionIds = sadismMasochismQuestions.map(
   (question) => question.id,
 );
+
+export const legacySadismMasochismQuestionIds =
+  legacySadismMasochismQuestions.map((question) => question.id);

@@ -37,6 +37,8 @@ export type SignalId =
   | "challenge_escape"
   | "pain_receiving"
   | "pain_giving"
+  | "psychological_pain_receiving"
+  | "psychological_pain_giving"
   | "receiving_intensity"
   | "giving_intensity"
   | "receiving_endurance"
@@ -286,6 +288,18 @@ export const signalDefinitions: SignalDefinition[] = [
     label: "Pain Giving",
     shortLabel: "Pain give",
     description: "Consensually causing pain to a willing partner can be intrinsically appealing rather than only a means to another effect.",
+  },
+  {
+    id: "psychological_pain_receiving",
+    label: "Psychological Pain Receiving",
+    shortLabel: "Psych pain receive",
+    description: "Consensual psychological or emotional discomfort directed toward you can itself be appealing independent of physical pain.",
+  },
+  {
+    id: "psychological_pain_giving",
+    label: "Psychological Pain Giving",
+    shortLabel: "Psych pain give",
+    description: "Creating consensual psychological or emotional discomfort for a willing partner can itself be appealing independent of physical pain.",
   },
   {
     id: "receiving_intensity",
