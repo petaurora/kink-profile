@@ -129,7 +129,7 @@ This is a first-pass classification, not a final keep/retire decision.
 
 - **hs-005 — Praise / Approval**
   - **Decision:** keep wording unchanged.
-  - Semantic target: `praise_approval · Overall` only.
+  - Semantic target: `praise_approval · Receiving` only.
   - Drop the current Belonging secondary weight. Warm approval may reinforce belonging, but the item does not directly establish Belonging.
   - This remains useful despite D/s praise coverage because the D/s questions anchor praise to obedience / service, while hs-005 measures praise as part of role experience more broadly.
 
@@ -282,6 +282,51 @@ Primal Embodiment + Pursuit · Giving    → stronger Predator evidence
 ```
 
 Primal preference and pursuit preference remain independently measurable, so someone can be primal without liking chase or enjoy pursuit without strongly identifying with a feral / primal state.
+
+## Final v6 coverage audit
+
+The approved v6 bank has **17 active questions** and **15 retired v5 compatibility questions**.
+
+### Active Headspaces-owned evidence
+
+- **Belonging** — hs-001
+- **Role Embodiment** — hs-002
+- **Playfulness** — hs-003
+- **Care · Receiving** — hs-004
+- **Praise / Approval · Receiving** — hs-005
+- **Playful Resistance** — hs-011
+- **Objectification · Receiving** — hs-012
+- **Care · Giving** — hs-013
+- **Objectification · Giving** — hs-020
+- **Younger / less-adult Headspace** — hs-025, hs-026, hs-027
+- **Primal Embodiment** — hs-028
+- **Pursuit · Receiving** — hs-029, hs-030
+- **Pursuit · Giving** — hs-031, hs-032
+
+### Retired overlap
+
+The following v5 questions are retired from new attempts because their primary semantic work is already authored by D/s / B&D or because they are composite mini-role questions rather than clean primitives:
+
+`hs-006`, `hs-007`, `hs-008`, `hs-009`, `hs-010`, `hs-014`, `hs-015`, `hs-016`, `hs-017`, `hs-018`, `hs-019`, `hs-021`, `hs-022`, `hs-023`, `hs-024`.
+
+### Derived-role coverage check
+
+The trimmed bank intentionally does **not** require every derived role to have a dedicated Headspaces question.
+
+- **Pet** combines Headspaces-owned Belonging / Role Embodiment / Playfulness / Care / Praise with shared Ownership evidence.
+- **Slave** is primarily a D/s-derived interpretation of Responsibility Transfer / Obedience / Service / Ownership / Structure / Devotion / Control.
+- **Little** combines Younger Headspace with Care, Role Embodiment, Responsibility Transfer, Playfulness, and Praise.
+- **Middle** combines Younger Headspace with Role Embodiment, Playfulness, Autonomy, Care, and Playful Resistance.
+- **Brat** combines Playful Resistance / Playfulness with D/s Autonomy / Control / Praise evidence.
+- **Prey** combines Pursuit · Receiving + Primal Embodiment with supporting Role / Control / Resistance evidence.
+- **Object** combines Objectification · Receiving + Role Embodiment with shared Control evidence.
+- **Owner / Handler** combines shared Ownership / Guidance / Responsibility / Structure / Control evidence with Care · Giving.
+- **Caregiver** combines Care · Giving with shared Responsibility / Guidance / Structure evidence.
+- **Brat Tamer** combines shared Giving Control / Guidance / Responsibility with Playful Resistance / Playfulness.
+- **Predator** combines Pursuit · Giving + Primal Embodiment with supporting Role / Control evidence.
+- **Master / Mistress** remains primarily a D/s-derived interpretation of sustained Control / Responsibility / Ownership / Structure / Guidance.
+
+This is intentional. Roles/headspaces are derived interpretations of canonical evidence, not direct quiz scores. A role may therefore become visible from earlier quizzes before the Roles & Headspaces section is completed, with affinity and evidence coverage remaining separate.
 
 ## Review goals
 
