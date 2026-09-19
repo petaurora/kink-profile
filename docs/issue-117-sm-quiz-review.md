@@ -54,9 +54,13 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Endurance — Receiving
 
 - **sm-005** — sustained physical intensity over time can be rewarding.
-- **sm-006** — continuing through an agreed difficult sensation can be satisfying.
+  - **Decision:** keep, but rewrite to **“Remaining in an intense physical experience for a sustained period can feel rewarding in its own right.”**
+  - Semantic target: `endurance · Receiving`.
+  - Drop the current `physical_intensity · Receiving` secondary weight. The question is about sustaining an experience over time, not separately establishing a preference for Physical Intensity.
 
-Likely redundant or near-redundant. Review whether one clean Endurance question is enough or whether duration vs difficulty is meaningfully distinct.
+- **sm-006** — continuing through an agreed difficult sensation can be satisfying.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - This substantially overlaps sm-005's Endurance construct, and “difficult sensation” does not directly establish Pain.
 
 ### Challenge — Receiving
 
