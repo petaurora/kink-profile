@@ -77,17 +77,23 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Receiving anticipation / emotional context
 
 - **sm-009** — suspense before receiving pain or high intensity.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - Anticipation is currently an Overall-only canonical concept, so receiving-specific wording does not create meaningful directional evidence.
+  - Do not preserve the Pain or Physical Intensity secondary weights; anticipation of an experience does not itself establish those preferences.
+
 - **sm-010** — emotional charge of receiving pain/intensity.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - The item mixes receiving context, Pain, Physical Intensity, and emotional-vs-physical importance. It is less clean than the general Emotional Intensity anchor.
+
 - **sm-025** — general buildup before an intense experience.
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `anticipation · Overall`.
+  - Drop the current Emotional Intensity secondary weight; buildup / suspense is sufficient on its own.
+
 - **sm-026** — highly charged emotional atmosphere independent of physical intensity.
-
-sm-009 and sm-025 both feed the same Overall-only Anticipation concept despite one being receiving-specific in wording.
-sm-010 and sm-026 both feed Overall Emotional Intensity despite one being receiving-specific in wording.
-
-Review whether:
-- the directional wording is useful even when canonical evidence is Overall,
-- one general question can replace mirrored side-specific questions, or
-- Anticipation / Emotional Intensity actually need directional channels.
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `emotional_intensity · Overall`.
+  - Keep this as the clean general anchor for emotional atmosphere rather than side-specific receiving / giving variants.
 
 ### Pain — Giving
 
