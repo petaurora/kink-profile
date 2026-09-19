@@ -137,6 +137,29 @@ The review should keep secondary evidence only where the wording itself establis
 5. Should Emotional Intensity remain Overall-only despite receiving/giving-specific authored questions?
 6. Are mirrored receiving/giving questions genuinely useful evidence, or are some pairs only symmetry for symmetry's sake?
 
+
+## Findings from supplied S/M references
+
+The supplied practitioner / educational references sharpen several model boundaries:
+
+- **S/M should not be treated as synonymous with D/s.** The sources consistently define sadism / masochism around the consensual appeal of inflicting or receiving pain, while noting that sadistic / masochistic roles may overlap with Dominant / submissive roles without requiring that overlap.
+- **Intrinsic pain appeal is a legitimate distinct construct.** Several sources distinguish enjoying pain itself from pain used only as a vehicle for another effect. This supports retaining direct Pain questions rather than inferring Pain preference from Intensity, Discipline, Control, or submission.
+- **Pain and intensity are related but separable.** The literature on pain-as-pleasure supports context-dependent pleasurable pain and shows that pain intensity can correlate with pleasure for some practitioners, but correlation is not identity. A Pain score should therefore not automatically manufacture Physical Intensity evidence, or vice versa.
+- **S/M can include psychological / emotional pain, not only physical pain.** Sources explicitly include humiliation, emotional distress, mindfucks, fear, or other psychological suffering alongside physical pain. The current bank is overwhelmingly physical and may therefore under-model part of the S/M domain.
+- **Emotional pain is not equivalent to Emotional Intensity.** A highly charged emotional atmosphere can exist without psychological pain, and psychological pain can be the direct target of sadistic / masochistic enjoyment. Review whether the canonical model needs direct psychological-pain coverage or whether an existing canonical concept can represent it without semantic distortion.
+- **Context matters.** Research on masochistic pain perception suggests that pain can be experienced as pleasurable specifically in BDSM / masochistic contexts rather than reflecting a generic preference for everyday pain. This supports wording that anchors questions in consensual kink context rather than measuring ordinary pain tolerance.
+- **Intensity, endurance, and challenge should remain separate unless wording actually establishes overlap.** Sensation seeking, pain intensity, endurance / tolerance, and being pushed toward an edge may co-occur, but the references do not justify automatically treating one as evidence for all of the others.
+
+References supplied / sanity-checked:
+
+- MasterClass, *Essential S&M Guide: 6 Common S&M Techniques* — https://www.masterclass.com/articles/s-and-m-guide
+- Sensuel et Marquant, *What is BDSM Sadism and Masochism?* — https://sensueletmarquant.com/en/what-is-bdsm-sadism-and-masochism/
+- KYNK 101, *Sadism & Masochism (S&M)* — https://kynk101.com/kink-bdsm-facts/sadism-masochism
+- Playful Promises, *Unpacking the 'SM' in BDSM: The Psychology Behind Sadomasochism* — https://www.playfulpromises.com/blogs/playful-guide-to-bondage/unpacking-the-sm-in-bdsm-the-psychology-behind-sadomasochism
+- Dunkley et al. (2020), *Physical Pain as Pleasure: A Theoretical Perspective*
+- De Neef et al. (2019), *BDSM From an Integrative Biopsychosocial Perspective: A Systematic Review*
+- Baudic et al. (2023), *Pain and masochistic behaviour: The role of descending modulation*
+
 ## Migration expectation
 
 If v2 removes or merges questions, follow the established B&D / D/s compatibility pattern:
