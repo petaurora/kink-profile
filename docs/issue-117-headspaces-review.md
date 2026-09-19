@@ -167,6 +167,25 @@ This is a first-pass classification, not a final keep/retire decision.
   - Semantic target: `objectification · Receiving` only.
   - Drop the current Role Embodiment and Receiving Control secondary weights. Objectification should be measured directly rather than inferring generic role immersion or control preference.
 
+### Caregiver, guidance, and authority overlap
+
+- **hs-013 — Care · Giving**
+  - **Decision:** keep, but rewrite to **“Deliberately nurturing, soothing, or caring for another person can feel deeply rewarding in a role or dynamic.”**
+  - Semantic target: `care · Giving` only.
+  - Drop the current Responsibility Holding secondary weight. The item should measure care itself rather than the separate burden / meaning of holding responsibility.
+
+- **hs-014 — Guidance / Shaping**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - Guidance / Shaping is already directly authored through B&D / D/s mechanics and does not add a distinct role/headspace primitive here.
+
+- **hs-015 — Giving Control / Responsibility**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - The item directly re-measures authority / direction-setting already authored in D/s.
+
+- **hs-016 — Giving Control / Responsibility**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - The emotional significance of a partner following direction still primarily measures authority / responsibility mechanics already established in D/s.
+
 ## Review goals
 
 1. Preserve direct authored evidence for genuinely Headspaces-specific primitives.
