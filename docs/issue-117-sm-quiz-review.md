@@ -22,15 +22,19 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Pain — Receiving
 
 - **sm-001** — consensual pain can be appealing outside discipline/punishment.
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `pain · Receiving`.
+  - Keep this clean; the value of the item is explicitly separating Pain from Discipline / punishment context.
+
 - **sm-002** — pain itself is desired rather than merely tolerated for another effect.
+  - **Decision:** keep wording.
+  - Semantic target: `pain · Receiving`.
+  - Drop the current `physical_intensity · Receiving` secondary weight. “Intense experience” is context here, not direct evidence of a separate Physical Intensity preference.
+  - This remains distinct from sm-001 because it measures intrinsic pain appeal vs instrumental tolerance.
+
 - **sm-011** — pain can be enjoyable without extreme physical intensity.
-
-These appear related but may be doing three different jobs:
-1. separating pain from Discipline,
-2. separating intrinsic pain appeal from instrumental tolerance,
-3. separating Pain from Physical Intensity.
-
-Review whether all three earn their interaction cost or whether one/two can carry the distinction cleanly.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - The wording sounds contrastive, but positive-weight scoring only adds another Pain vote; the Pain-vs-Intensity distinction is already represented by answering Pain high and Physical Intensity low.
 
 ### Physical Intensity — Receiving
 
