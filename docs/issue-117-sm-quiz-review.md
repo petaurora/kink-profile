@@ -98,10 +98,19 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Pain — Giving
 
 - **sm-013** — causing consensual pain can be appealing outside discipline/punishment.
-- **sm-014** — a willing partner's pain itself can be compelling.
-- **sm-023** — agreed pain can be appealing without extreme physical intensity.
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `pain · Giving`.
+  - Keep this clean; the item explicitly separates Pain from Discipline / punishment context.
 
-Mirrors sm-001 / sm-002 / sm-011 and presents the same redundancy/distinction questions.
+- **sm-014** — a willing partner's pain itself can be compelling.
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `pain · Giving`.
+  - Drop the current `physical_intensity · Giving` secondary weight. The partner's experience of pain can be intrinsically appealing without establishing a separate Physical Intensity preference.
+  - This remains distinct from sm-013 because it measures intrinsic pain appeal rather than merely separating Pain from Discipline.
+
+- **sm-023** — agreed pain can be appealing without extreme physical intensity.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - As with sm-011, the wording is contrastive but positive-weight scoring only contributes another Pain vote. Pain-vs-Intensity is represented more cleanly by independent Pain and Physical Intensity answers.
 
 ### Physical Intensity — Giving
 
