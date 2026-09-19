@@ -4,7 +4,10 @@ import {
   bondageDisciplineQuestions,
   legacyBondageDisciplineQuestions,
 } from "./bondageDisciplineQuiz";
-import { sadismMasochismQuestions } from "./sadismMasochismQuiz";
+import {
+  legacySadismMasochismQuestions,
+  sadismMasochismQuestions,
+} from "./sadismMasochismQuiz";
 import type { WeightedQuestion } from "./signals";
 
 export type WeightedQuizQuestion = WeightedQuestion & { kind: "weighted" };
@@ -23,6 +26,10 @@ export const quizQuestions: QuizQuestion[] = [
     kind: "weighted" as const,
   })),
   ...sadismMasochismQuestions.map((question) => ({
+    ...question,
+    kind: "weighted" as const,
+  })),
+  ...legacySadismMasochismQuestions.map((question) => ({
     ...question,
     kind: "weighted" as const,
   })),
