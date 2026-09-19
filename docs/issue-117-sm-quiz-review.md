@@ -153,9 +153,14 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Giving anticipation / emotional context
 
 - **sm-021** — suspense before later creating pain/high intensity.
-- **sm-022** — emotional charge of giving pain/intensity.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - Anticipation is Overall-only, and sm-025 already provides a cleaner general anchor.
+  - Do not preserve the Pain or Physical Intensity secondary weights; anticipating an experience does not establish those preferences.
 
-These mirror sm-009 / sm-010 but currently normalize into Overall-only Anticipation / Emotional Intensity.
+- **sm-022** — emotional charge of giving pain/intensity.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - Emotional Intensity is Overall-only, and sm-026 already provides a cleaner general anchor.
+  - Do not preserve the Physical Intensity or Pain secondary weights.
 
 ## First-pass semantic leakage to review
 
