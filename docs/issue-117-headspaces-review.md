@@ -245,6 +245,44 @@ The initial proposal to keep only hs-025 and retire hs-026 / hs-027 was reconsid
 
 This preserves multiple interpretations of Little / Middle without directly scoring either role. The derived compositions still distinguish them through their other component evidence.
 
+### Primal, Prey, and Predator
+
+- **hs-028 — Primal Embodiment**
+  - **Decision:** keep, with wording refined to **“In the right consensual context, feeling more instinctive, feral, or driven by body language than ordinary social rules can be deeply immersive.”**
+  - Semantic target: `primal_embodiment · Overall` only.
+  - Drop the current Role Embodiment secondary weight. Primal embodiment should stand on its own rather than automatically imply generic role immersion.
+
+- **hs-029 — Pursuit · Receiving**
+  - **Decision:** keep, with wording cleaned to preserve the direct pursuit concept.
+  - Semantic target: `pursuit · Receiving` only.
+  - Drop Primal Embodiment and Role Embodiment secondary weights.
+
+- **hs-030 — Pursuit · Receiving**
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `pursuit · Receiving` only.
+  - This remains distinct from hs-029 because it measures active evasion / eventual capture rather than pursuit in the broad sense.
+  - Drop Primal Embodiment and Playful Resistance secondary weights.
+
+- **hs-031 — Pursuit · Giving**
+  - **Decision:** keep, with wording cleaned to preserve the direct pursuit concept.
+  - Semantic target: `pursuit · Giving` only.
+  - Drop Primal Embodiment and Role Embodiment secondary weights.
+
+- **hs-032 — Pursuit · Giving**
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `pursuit · Giving` only.
+  - This remains distinct from hs-031 because it measures closing distance / eventual capture rather than pursuit in the broad sense.
+  - Drop Primal Embodiment and Giving Control secondary weights.
+
+The intended derived relationship is:
+
+```text
+Primal Embodiment + Pursuit · Receiving → stronger Prey evidence
+Primal Embodiment + Pursuit · Giving    → stronger Predator evidence
+```
+
+Primal preference and pursuit preference remain independently measurable, so someone can be primal without liking chase or enjoy pursuit without strongly identifying with a feral / primal state.
+
 ## Review goals
 
 1. Preserve direct authored evidence for genuinely Headspaces-specific primitives.
