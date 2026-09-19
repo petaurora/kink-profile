@@ -133,6 +133,24 @@ This is a first-pass classification, not a final keep/retire decision.
   - Drop the current Belonging secondary weight. Warm approval may reinforce belonging, but the item does not directly establish Belonging.
   - This remains useful despite D/s praise coverage because the D/s questions anchor praise to obedience / service, while hs-005 measures praise as part of role experience more broadly.
 
+### Devotion, ritual, service, and protocol overlap
+
+- **hs-006 — Devotion / Service**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - The item primarily re-measures Devotion / Service territory already authored directly in D/s and does not add a distinct Headspaces-specific primitive.
+
+- **hs-007 — Ritual Significance**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - Ritual Significance is already directly authored in D/s. Protocol / Devotion modes can continue to derive from that shared evidence without a second quiz vote.
+
+- **hs-008 — Service**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - “Part of my role” does not by itself establish separate Role Embodiment evidence. The semantic target remains Service, which D/s already measures directly.
+
+- **hs-009 — Structure / Ritual / Obedience**
+  - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
+  - The item primarily re-measures D/s / protocol mechanics already authored elsewhere and does not add a distinct Headspaces-specific primitive.
+
 ## Review goals
 
 1. Preserve direct authored evidence for genuinely Headspaces-specific primitives.
