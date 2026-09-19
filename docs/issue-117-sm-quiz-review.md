@@ -216,6 +216,34 @@ References supplied / sanity-checked:
 - De Neef et al. (2019), *BDSM From an Integrative Biopsychosocial Perspective: A Systematic Review*
 - Baudic et al. (2023), *Pain and masochistic behaviour: The role of descending modulation*
 
+## New v2 coverage — Psychological Pain
+
+**Decision:** add a new canonical directional Signal, **Psychological Pain**, rather than collapsing psychological sadomasochism into Physical Pain, Emotional Intensity, or Degradation / Humiliation.
+
+Canonical meaning:
+
+- **Receiving** — experiencing consensual psychological / emotional pain or distress can itself be appealing.
+- **Giving** — causing consensual psychological / emotional pain or distress for a willing partner can itself be appealing.
+
+Model boundary:
+
+- **Physical Pain** remains the existing `pain` construct.
+- **Emotional Intensity** measures a highly charged emotional atmosphere; it does not imply that emotional hurt / distress itself is desired.
+- **Degradation / Humiliation** describes a mechanism / content domain and may overlap Psychological Pain, but does not always create or require psychological pain.
+- Catalog / rewards-punishments / downstream mappings need a later curation sweep so existing items can be mapped intentionally to the new Signal where appropriate.
+
+### New authored questions
+
+- **sm-027 — Psychological Pain · Receiving**
+  - **“Consensual psychological or emotional discomfort can be appealing to me even when physical pain is not involved.”**
+  - Semantic target: `psychological_pain · Receiving` only.
+
+- **sm-028 — Psychological Pain · Giving**
+  - **“Creating consensual psychological or emotional discomfort for a willing partner can be appealing to me even when physical pain is not involved.”**
+  - Semantic target: `psychological_pain · Giving` only.
+
+The wording uses **discomfort** rather than **suffering** so the items cover a range of psychological S/M intensity without implying that only extreme emotional distress qualifies.
+
 ## Migration expectation
 
 If v2 removes or merges questions, follow the established B&D / D/s compatibility pattern:
