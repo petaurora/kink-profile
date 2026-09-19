@@ -141,9 +141,14 @@ The bank is intentionally mirrored between receiving and giving for most directi
 ### Challenge — Giving
 
 - **sm-019** — carefully pushing a willing partner toward an agreed personal edge.
-- **sm-020** — appeal in seeing how a partner responds when an agreed experience becomes genuinely difficult.
+  - **Decision:** keep wording unchanged.
+  - Semantic target: `challenge · Giving`.
+  - Drop the current `physical_intensity · Giving` secondary weight. The item is about the appeal of pushing toward an agreed edge, not Physical Intensity itself.
 
-Potentially distinct: edge-pushing vs observing/testing response. sm-020's Endurance and Emotional Intensity secondary weights need review.
+- **sm-020** — appeal in seeing how a partner responds when an agreed experience becomes genuinely difficult.
+  - **Decision:** retire from the active v2 bank and retain as hidden legacy compatibility input.
+  - The wording primarily measures testing / observing response under difficulty, which is not currently a distinct canonical Signal.
+  - Do not preserve the current Endurance or Emotional Intensity secondary weights; difficulty alone does not establish either construct.
 
 ### Giving anticipation / emotional context
 
