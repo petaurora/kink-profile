@@ -221,6 +221,30 @@ This is a first-pass classification, not a final keep/retire decision.
   - **Decision:** retire from the active v6 bank and retain as hidden legacy compatibility input.
   - D/s already directly measures Autonomy. Drop the current Role Embodiment secondary weight.
 
+### Younger / less-adult headspace coverage
+
+The initial proposal to keep only hs-025 and retire hs-026 / hs-027 was reconsidered before being locked.
+
+**Decision:** keep three distinct authored probes for the same broader `younger_headspace` primitive because people may recognize this headspace through different phenomenology and may reject explicit “feeling younger” language while still resonating with a softer / less-adult / cared-for mode.
+
+- **hs-025 — explicit age / adult-role shift**
+  - **Decision:** keep, with wording refined to **“In the right role, feeling younger, smaller, or less anchored to my everyday adult self can be appealing or immersive.”**
+  - Semantic target: `younger_headspace · Overall` only.
+  - Drop Role Embodiment and Responsibility Transfer secondary weights.
+
+- **hs-026 — setting aside adult responsibility**
+  - **Decision:** keep, but rewrite to **“Being in a role where I can set aside some everyday adult responsibilities and simply be cared for can feel comforting or immersive.”**
+  - Semantic target: `younger_headspace · Overall` only.
+  - Care is the scenario / route into the headspace here, not a second Care vote; generic Care · Receiving is already measured by hs-004.
+  - Drop Care · Receiving and Responsibility Transfer secondary weights.
+
+- **hs-027 — agentic / middle-like expression**
+  - **Decision:** keep, but rewrite to **“A more youthful or less-adult role can appeal to me even when I still want independence, opinions, and room to push back.”**
+  - Semantic target: `younger_headspace · Overall` only.
+  - Autonomy / Playfulness / Playful Resistance are contextual qualifiers that distinguish this expression from a more dependent one; they should not become additional weights because those primitives are measured independently elsewhere.
+
+This preserves multiple interpretations of Little / Middle without directly scoring either role. The derived compositions still distinguish them through their other component evidence.
+
 ## Review goals
 
 1. Preserve direct authored evidence for genuinely Headspaces-specific primitives.
