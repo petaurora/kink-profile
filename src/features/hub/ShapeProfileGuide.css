@@ -1,0 +1,214 @@
+.shape-profile-guide {
+  position: relative;
+  display: grid;
+  gap: 1.2rem;
+  padding: clamp(1.25rem, 3.5vw, 1.8rem);
+  border: 1px solid var(--accent-border);
+  border-radius: 1.55rem;
+  background:
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent-primary) 10%, transparent), transparent 34%),
+    radial-gradient(circle at 94% 100%, color-mix(in srgb, var(--accent-secondary) 12%, transparent), transparent 36%),
+    var(--bg-surface-raised);
+  box-shadow: 0 14px 34px var(--shadow-panel);
+  overflow: hidden;
+}
+
+.shape-profile-guide-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+}
+
+.shape-profile-guide-heading h2 {
+  margin: .2rem 0 .35rem;
+  font-size: clamp(1.45rem, 4vw, 2.2rem);
+  letter-spacing: -.03em;
+}
+
+.shape-profile-guide-heading > div > p:last-child {
+  max-width: 38rem;
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.shape-profile-guide-note {
+  max-width: 18rem;
+  color: var(--text-muted);
+  font-size: .8rem;
+  line-height: 1.45;
+  text-align: right;
+}
+
+.shape-profile-guide-stages {
+  display: grid;
+  grid-template-columns: 1.15fr .8fr 1.15fr;
+  gap: .75rem;
+  align-items: stretch;
+}
+
+.shape-profile-stage {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: .85rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.2rem;
+  background: color-mix(in srgb, var(--bg-surface) 92%, transparent);
+}
+
+.shape-profile-stage-heading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .7rem;
+  align-items: start;
+}
+
+.shape-profile-stage-icon {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: .8rem;
+  background: var(--bg-accent-soft);
+  color: var(--accent-primary);
+}
+
+.shape-profile-stage h3 {
+  margin: .05rem 0 .18rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+  letter-spacing: -.01em;
+}
+
+.shape-profile-stage-heading p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
+.shape-profile-steps {
+  display: grid;
+  gap: .45rem;
+  align-content: start;
+}
+
+.shape-profile-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: .65rem;
+  align-items: center;
+  width: 100%;
+  min-height: 4.55rem;
+  padding: .7rem;
+  border: 1px solid transparent;
+  border-radius: .95rem;
+  background: var(--bg-surface);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
+}
+
+.shape-profile-step:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent-border);
+  background: var(--bg-surface-emphasis);
+}
+
+.shape-profile-step:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.shape-profile-step-number {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 1px solid var(--accent-border);
+  border-radius: 50%;
+  background: var(--bg-accent-soft);
+  color: var(--accent-primary);
+  font-size: .76rem;
+  font-weight: 850;
+}
+
+.shape-profile-step-copy {
+  display: grid;
+  gap: .12rem;
+  min-width: 0;
+}
+
+.shape-profile-step-copy strong {
+  color: var(--text-primary);
+  font-size: .88rem;
+}
+
+.shape-profile-step-copy > span {
+  color: var(--text-muted);
+  font-size: .74rem;
+  line-height: 1.35;
+}
+
+.shape-profile-step-arrow {
+  color: var(--text-secondary);
+}
+
+.shape-profile-stage-evidence {
+  margin: 0;
+  padding-top: .65rem;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: .72rem;
+  font-weight: 750;
+  letter-spacing: .015em;
+}
+
+@media (max-width: 820px) {
+  .shape-profile-guide-heading {
+    display: grid;
+    align-items: start;
+  }
+
+  .shape-profile-guide-note {
+    max-width: none;
+    text-align: left;
+  }
+
+  .shape-profile-guide-stages {
+    grid-template-columns: 1fr;
+  }
+
+  .shape-profile-stage {
+    padding: .9rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .shape-profile-guide {
+    padding: 1rem;
+  }
+
+  .shape-profile-step {
+    min-height: 4.2rem;
+    padding: .62rem;
+  }
+
+  .shape-profile-step-copy > span {
+    font-size: .72rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shape-profile-step {
+    transition: none;
+  }
+
+  .shape-profile-step:hover {
+    transform: none;
+  }
+}
