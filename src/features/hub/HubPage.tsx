@@ -47,6 +47,8 @@ import {
 } from "./hubComposition";
 import { buildHubMetrics } from "./hubMetrics";
 import { ShapeProfileGuide } from "./ShapeProfileGuide";
+import { buildShapeProfileJourney } from "./shapeProfileGuide";
+import { buildShapeProfileProgress } from "./shapeProfileProgress";
 import "./HubPage.css";
 
 const facetDefinitionById = new Map(
@@ -145,6 +147,20 @@ export function HubPage() {
       summary.state === "in-progress" ||
       summary.state === "retake-in-progress",
   );
+  const shapeProfileProgress = useMemo(
+    () =>
+      buildShapeProfileProgress(
+        snapshot,
+        completedQuizCount,
+        quizSummaries.length,
+      ),
+    [completedQuizCount, quizSummaries.length, snapshot],
+  );
+  const shapeProfileJourney = useMemo(
+    () => buildShapeProfileJourney(shapeProfileProgress),
+    [shapeProfileProgress],
+  );
+
   const randomizerReady = metrics.readyChoiceCount > 0;
   const composition = useMemo(
     () =>
@@ -285,7 +301,7 @@ export function HubPage() {
           </div>
         </header>
 
-        <ShapeProfileGuide />
+        <ShapeProfileGuide journey={shapeProfileJourney} />
 
         {!hubHasModule(composition, "onboarding") && (
           <>
