@@ -79,6 +79,7 @@ export function RewardsCatalogRoute({
         {view === "browse" ? (
           <div className="catalog-rewards-browse">
             <RewardPunishmentProfiles
+              key={`browse-${initialBrowseView}`}
               catalogProfile={snapshot.catalogProfile}
               catalogResultView={snapshot.catalogResultView}
               canonicalSignals={snapshot.canonicalSignals}
@@ -106,6 +107,7 @@ export function RewardsCatalogRoute({
             </article>
 
             <RewardPunishmentRanking
+              key={`rank-${initialRankingContext}`}
               profile={rewardPunishmentProfile}
               onReclassify={() => navigate(catalogRewardsRoute.path)}
               initialContext={initialRankingContext}
