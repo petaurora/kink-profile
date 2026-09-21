@@ -174,16 +174,25 @@ function proposalBandLabel(
   return `${band} ${contextNoun(context)}`;
 }
 
+export type RewardPunishmentProfilesView =
+  | "sorter"
+  | "ranking"
+  | "randomizer"
+  | "recipes"
+  | "details";
+
 export function RewardPunishmentProfiles({
   catalogProfile,
   catalogResultView,
   canonicalSignals,
   onClose,
+  initialView = "sorter",
 }: {
   catalogProfile: CatalogProfileState;
   catalogResultView: CatalogResultView;
   canonicalSignals: readonly CanonicalSignalResult[];
   onClose: () => void;
+  initialView?: RewardPunishmentProfilesView;
 }) {
   const [profile, setProfile] = useState<RewardPunishmentProfileState>(() =>
     loadRewardPunishmentProfile(),
@@ -196,9 +205,8 @@ export function RewardPunishmentProfiles({
   const [suitabilityFilter, setSuitabilityFilter] =
     useState<SuitabilityFilter>("all");
   const [randomOnly, setRandomOnly] = useState(false);
-  const [view, setView] = useState<
-    "sorter" | "ranking" | "randomizer" | "recipes" | "details"
-  >("sorter");
+  const [view, setView] =
+    useState<RewardPunishmentProfilesView>(initialView);
 
   const commitProfile = (next: RewardPunishmentProfileState) => {
     saveRewardPunishmentProfile(next);
