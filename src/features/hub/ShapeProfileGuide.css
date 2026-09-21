@@ -1,6 +1,6 @@
 .shape-profile-guide {
   display: grid;
-  gap: .95rem;
+  gap: .9rem;
   padding: 1rem 1.05rem;
   border: 1px solid var(--accent-border);
   border-radius: 1.35rem;
@@ -30,56 +30,34 @@
   text-align: right;
 }
 
-.shape-profile-guide-stages {
+.shape-profile-guide-groups {
   display: grid;
-  grid-template-columns: 1.1fr .8fr 1.1fr;
   gap: 0;
 }
 
-.shape-profile-stage {
+.shape-profile-group {
   display: grid;
-  align-content: start;
-  gap: .5rem;
+  grid-template-columns: minmax(5.25rem, .78fr) minmax(0, 2.7fr);
+  gap: .7rem;
+  align-items: center;
   min-width: 0;
-  padding: .15rem .85rem;
+  padding: .55rem 0;
 }
 
-.shape-profile-stage:first-child {
-  padding-left: 0;
+.shape-profile-group + .shape-profile-group {
+  border-top: 1px solid var(--border-subtle);
 }
 
-.shape-profile-stage:last-child {
-  padding-right: 0;
-}
-
-.shape-profile-stage + .shape-profile-stage {
-  border-left: 1px solid var(--border-subtle);
-}
-
-.shape-profile-stage-heading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: .5rem;
-  min-width: 0;
-}
-
-.shape-profile-stage-heading strong {
-  color: var(--text-primary);
-  font-size: .82rem;
+.shape-profile-group-label {
+  color: var(--text-secondary);
+  font-size: .78rem;
   font-weight: 850;
-}
-
-.shape-profile-stage-heading span {
-  color: var(--text-muted);
-  font-size: .68rem;
-  line-height: 1.25;
-  text-align: right;
+  line-height: 1.2;
 }
 
 .shape-profile-steps {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: .4rem;
 }
 
@@ -93,8 +71,8 @@
   gap: .42rem;
   align-items: center;
   min-width: 0;
-  min-height: 2.8rem;
-  padding: .45rem .5rem;
+  min-height: 2.7rem;
+  padding: .43rem .5rem;
   border: 1px solid var(--border-subtle);
   border-radius: .8rem;
   background: color-mix(in srgb, var(--bg-surface) 92%, transparent);
@@ -117,13 +95,13 @@
 .shape-profile-step-number {
   display: grid;
   place-items: center;
-  width: 1.45rem;
-  height: 1.45rem;
+  width: 1.42rem;
+  height: 1.42rem;
   border: 1px solid var(--accent-border);
   border-radius: 50%;
   background: var(--bg-accent-soft);
   color: var(--accent-primary);
-  font-size: .68rem;
+  font-size: .67rem;
   font-weight: 850;
 }
 
@@ -136,7 +114,7 @@
 
 @media (max-width: 820px) {
   .shape-profile-guide {
-    gap: .75rem;
+    gap: .72rem;
     padding: .9rem;
   }
 
@@ -150,44 +128,28 @@
     text-align: left;
   }
 
-  .shape-profile-guide-stages {
-    grid-template-columns: 1fr;
-  }
-
-  .shape-profile-stage {
-    gap: .4rem;
-    padding: .65rem 0;
-  }
-
-  .shape-profile-stage:first-child {
-    padding-top: .1rem;
-  }
-
-  .shape-profile-stage:last-child {
-    padding-bottom: .1rem;
-  }
-
-  .shape-profile-stage + .shape-profile-stage {
-    border-top: 1px solid var(--border-subtle);
-    border-left: 0;
-  }
-
-  .shape-profile-stage-heading {
-    justify-content: flex-start;
-  }
-
-  .shape-profile-stage-heading span {
-    text-align: left;
+  .shape-profile-group {
+    grid-template-columns: 5.2rem minmax(0, 1fr);
+    gap: .55rem;
+    padding: .48rem 0;
   }
 }
 
 @media (max-width: 380px) {
+  .shape-profile-group {
+    grid-template-columns: 4.75rem minmax(0, 1fr);
+  }
+
+  .shape-profile-group-label {
+    font-size: .72rem;
+  }
+
   .shape-profile-step {
     padding-inline: .4rem;
   }
 
   .shape-profile-step strong {
-    font-size: .72rem;
+    font-size: .71rem;
   }
 }
 
