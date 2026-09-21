@@ -286,47 +286,9 @@ export function HubPage() {
           </div>
         </header>
 
-        <ShapeProfileGuide
-          completedQuizCount={completedQuizCount}
-          totalQuizCount={quizSummaries.length}
-          rankingChoiceCount={metrics.rankingChoiceCount}
-          catalogRatedCount={metrics.catalogRatedCount}
-          contextPreferenceCount={metrics.contextPreferenceCount}
-        />
+        <ShapeProfileGuide />
 
-        {hubHasModule(composition, "onboarding") ? (
-          <article className="hub-home-empty">
-            <div>
-              <p className="eyebrow">Blank canvas</p>
-              <h2>The path above is a guide, not a gate.</h2>
-              <p>
-                Start wherever feels interesting. Guided quizzes are good for broad
-                patterns; the catalog is good when you already know what you want to
-                react to.
-              </p>
-            </div>
-            <div className="hub-home-empty-actions">
-              <button
-                className="hub-home-empty-action"
-                type="button"
-                onClick={() => navigate(quizHomeRoute.path)}
-              >
-                <IconSparkles size={24} stroke={1.6} aria-hidden="true" />
-                <strong>Start broad</strong>
-                <span>Use guided quizzes to surface patterns.</span>
-              </button>
-              <button
-                className="hub-home-empty-action"
-                type="button"
-                onClick={() => navigate(catalogRoute.path)}
-              >
-                <IconBook2 size={24} stroke={1.6} aria-hidden="true" />
-                <strong>Start specific</strong>
-                <span>Browse the catalog and react to whatever catches you.</span>
-              </button>
-            </div>
-          </article>
-        ) : (
+        {!hubHasModule(composition, "onboarding") && (
           <>
             {hubHasModule(composition, "reflection") && (
               <article className="hub-home-reflection">
