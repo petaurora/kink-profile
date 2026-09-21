@@ -1,8 +1,17 @@
+import {
+  IconArrowRight,
+  IconCheck,
+  IconLock,
+} from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import { shapeProfileGroups } from "./shapeProfileGuide";
+import type { ShapeProfileJourney } from "./shapeProfileGuide";
 import "./ShapeProfileGuide.css";
 
-export function ShapeProfileGuide() {
+export function ShapeProfileGuide({
+  journey,
+}: {
+  journey: ShapeProfileJourney;
+}) {
   const navigate = useNavigate();
 
   return (
@@ -15,32 +24,68 @@ export function ShapeProfileGuide() {
           <p className="eyebrow">Recommended path</p>
           <h2 id="shape-profile-guide-title">Shape Your Profile</h2>
         </div>
-        <p>Suggested order — skip around anytime.</p>
+        <p>One useful next step at a time.</p>
       </header>
 
-      <div className="shape-profile-guide-groups">
-        {shapeProfileGroups.map((group) => (
-          <section className="shape-profile-group" key={group.id}>
-            <strong className="shape-profile-group-label">{group.label}</strong>
-            <div
-              className="shape-profile-steps"
-              data-step-count={group.steps.length}
-            >
-              {group.steps.map((step) => (
-                <button
-                  className="shape-profile-step"
-                  type="button"
-                  key={step.id}
-                  onClick={() => navigate(step.path)}
-                  aria-label={`${step.number}. ${step.title}. ${step.detail}`}
-                >
-                  <span className="shape-profile-step-number" aria-hidden="true">
-                    {step.number}
-                  </span>
-                  <strong>{step.title}</strong>
-                </button>
-              ))}
+      <div className="shape-profile-sections">
+        {journey.sections.map((section) => (
+          <section
+            className={`shape-profile-section is-${section.state}`}
+            key={section.id}
+          >
+            <div className="shape-profile-section-summary">
+              <div>
+                <strong>{section.label}</strong>
+                <span>{section.summary}</span>
+              </div>
+              {section.state === "complete" ? (
+                <IconCheck size={18} stroke={2} aria-label="Complete" />
+              ) : section.state === "upcoming" ? (
+                <IconLock size={16} stroke={1.7} aria-label="Upcoming" />
+              ) : null}
             </div>
+
+            {section.state === "current" && section.step && (
+              <div className="shape-profile-current-step">
+                <div className="shape-profile-current-copy">
+                  <h3>{section.step.title}</h3>
+                  <p>{section.step.detail}</p>
+                </div>
+
+                {section.step.progress !== null && (
+                  <div className="shape-profile-progress">
+                    <progress
+                      max={1}
+                      value={section.step.progress}
+                      aria-label={section.step.progressLabel}
+                    />
+                    <span>{section.step.progressLabel}</span>
+                  </div>
+                )}
+
+                {section.step.progress === null && (
+                  <p className="shape-profile-progress-label">
+                    {section.step.progressLabel}
+                  </p>
+                )}
+
+                <div className="shape-profile-current-footer">
+                  <button
+                    className="shape-profile-action"
+                    type="button"
+                    onClick={() => navigate(section.step?.path ?? "/")}
+                  >
+                    {section.step.actionLabel}
+                    <IconArrowRight size={17} stroke={1.9} aria-hidden="true" />
+                  </button>
+                  {section.step.trail && (
+                    <span className="shape-profile-trail">
+                      {section.step.trail}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
           </section>
         ))}
       </div>
