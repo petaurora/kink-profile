@@ -4,50 +4,115 @@ import {
   catalogRewardsRoute,
   rankingRoute,
 } from "../../app/routes";
-import { shapeProfileGroups } from "./shapeProfileGuide";
+import {
+  buildShapeProfileJourney,
+  KINK_CATEGORY_GUIDE_CHECKPOINT,
+  KINK_DEFINITION_GUIDE_TARGET_PERCENT,
+  KINK_OVERALL_GUIDE_CHECKPOINT,
+  RP_RANK_GUIDE_CONFIDENCE_TARGET,
+  type ShapeProfileProgress,
+} from "./shapeProfileGuide";
 
-describe("Shape Your Profile guide", () => {
-  it("matches the product workflow grouping and eight-step order", () => {
-    expect(
-      shapeProfileGroups.map((group) => ({
-        label: group.label,
-        steps: group.steps.map((step) => step.title),
-      })),
-    ).toEqual([
-      { label: "Quiz", steps: ["Complete quizzes"] },
-      { label: "Kink Rank", steps: ["Categories", "Overall"] },
-      { label: "Kink Browse", steps: ["Browse & define"] },
-      { label: "R/P Fit", steps: ["Sort fit"] },
-      { label: "R/P Rank", steps: ["Rewards", "Punishments"] },
-      { label: "R/P Browse", steps: ["Browse & define"] },
+const completeFoundation: ShapeProfileProgress = {
+  completedQuizCount: 4,
+  totalQuizCount: 4,
+  rankedCategoryCount: 12,
+  totalCategoryCount: 12,
+  overallRankingChoices: KINK_OVERALL_GUIDE_CHECKPOINT,
+  kinkDefinedPercent: KINK_DEFINITION_GUIDE_TARGET_PERCENT,
+  rpClassifiedCount: 20,
+  rewardCandidateCount: 2,
+  punishmentCandidateCount: 2,
+  rewardRankConfidence: RP_RANK_GUIDE_CONFIDENCE_TARGET,
+  punishmentRankConfidence: RP_RANK_GUIDE_CONFIDENCE_TARGET,
+};
+
+describe("Shape Your Profile progressive guide", () => {
+  it("starts with Quiz and keeps Kink/RP collapsed as future sections", () => {
+    const journey = buildShapeProfileJourney({
+      ...completeFoundation,
+      completedQuizCount: 1,
+    });
+
+    expect(journey.sections.map((section) => section.state)).toEqual([
+      "current",
+      "upcoming",
+      "upcoming",
     ]);
+    expect(journey.sections[0].step?.title).toBe("Complete your quizzes");
   });
 
-  it("deep-links both kink ranking lanes", () => {
-    const kinkRank = shapeProfileGroups.find(
-      (group) => group.id === "kink-rank",
+  it("moves through category rank, overall rank, then kink definition", () => {
+    const categories = buildShapeProfileJourney({
+      ...completeFoundation,
+      rankedCategoryCount: 5,
+    });
+    expect(categories.sections[1].step?.title).toBe("Rank your categories");
+    expect(categories.sections[1].step?.path).toBe(
+      `${rankingRoute.path}?mode=category`,
     );
 
-    expect(kinkRank?.steps.map((step) => step.path)).toEqual([
-      `${rankingRoute.path}?mode=category`,
+    const overall = buildShapeProfileJourney({
+      ...completeFoundation,
+      overallRankingChoices: KINK_OVERALL_GUIDE_CHECKPOINT - 1,
+    });
+    expect(overall.sections[1].step?.title).toBe(
+      "Rank your overall favorites",
+    );
+    expect(overall.sections[1].step?.path).toBe(
       `${rankingRoute.path}?mode=overall`,
-    ]);
+    );
+
+    const define = buildShapeProfileJourney({
+      ...completeFoundation,
+      kinkDefinedPercent: KINK_DEFINITION_GUIDE_TARGET_PERCENT - 1,
+    });
+    expect(define.sections[1].step?.title).toBe("Define your kink profile");
   });
 
-  it("deep-links R/P fit, both ranking lanes, and detailed browse", () => {
-    const fit = shapeProfileGroups.find((group) => group.id === "rp-fit");
-    const rank = shapeProfileGroups.find((group) => group.id === "rp-rank");
-    const browse = shapeProfileGroups.find((group) => group.id === "rp-browse");
+  it("does not suggest R/P rank until both contextual lanes have candidates", () => {
+    const journey = buildShapeProfileJourney({
+      ...completeFoundation,
+      rewardCandidateCount: 2,
+      punishmentCandidateCount: 1,
+    });
 
-    expect(fit?.steps[0].path).toBe(
+    expect(journey.sections[2].step?.title).toBe("Sort what fits");
+    expect(journey.sections[2].step?.path).toBe(
       `${catalogRewardsRoute.path}?view=sorter`,
     );
-    expect(rank?.steps.map((step) => step.path)).toEqual([
+  });
+
+  it("moves through reward rank, punishment rank, then R/P detail browse", () => {
+    const rewardRank = buildShapeProfileJourney({
+      ...completeFoundation,
+      rewardRankConfidence: RP_RANK_GUIDE_CONFIDENCE_TARGET - 0.01,
+      punishmentRankConfidence: 0,
+    });
+    expect(rewardRank.sections[2].step?.title).toBe("Rank your rewards");
+    expect(rewardRank.sections[2].step?.path).toBe(
       `${catalogRewardsRankingRoute.path}?context=reward`,
+    );
+
+    const punishmentRank = buildShapeProfileJourney({
+      ...completeFoundation,
+      punishmentRankConfidence: RP_RANK_GUIDE_CONFIDENCE_TARGET - 0.01,
+    });
+    expect(punishmentRank.sections[2].step?.title).toBe(
+      "Rank your punishments",
+    );
+    expect(punishmentRank.sections[2].step?.path).toBe(
       `${catalogRewardsRankingRoute.path}?context=punishment`,
-    ]);
-    expect(browse?.steps[0].path).toBe(
+    );
+
+    const browse = buildShapeProfileJourney(completeFoundation);
+    expect(browse.sections[2].step?.title).toBe("Refine the details");
+    expect(browse.sections[2].step?.path).toBe(
       `${catalogRewardsRoute.path}?view=details`,
     );
+  });
+
+  it("uses the existing 25-choice category checkpoint", () => {
+    expect(KINK_CATEGORY_GUIDE_CHECKPOINT).toBe(25);
   });
 });
