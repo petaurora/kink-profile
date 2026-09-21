@@ -47,6 +47,7 @@ import {
   type HubIntentDoorId,
 } from "./hubComposition";
 import { buildHubMetrics } from "./hubMetrics";
+import { ShapeProfileGuide } from "./ShapeProfileGuide";
 import "./HubPage.css";
 
 const facetDefinitionById = new Map(
@@ -285,11 +286,19 @@ export function HubPage() {
           </div>
         </header>
 
+        <ShapeProfileGuide
+          completedQuizCount={completedQuizCount}
+          totalQuizCount={quizSummaries.length}
+          rankingChoiceCount={metrics.rankingChoiceCount}
+          catalogRatedCount={metrics.catalogRatedCount}
+          contextPreferenceCount={metrics.contextPreferenceCount}
+        />
+
         {hubHasModule(composition, "onboarding") ? (
           <article className="hub-home-empty">
             <div>
               <p className="eyebrow">Blank canvas</p>
-              <h2>There is nothing to “complete” here.</h2>
+              <h2>The path above is a guide, not a gate.</h2>
               <p>
                 Start wherever feels interesting. Guided quizzes are good for broad
                 patterns; the catalog is good when you already know what you want to
