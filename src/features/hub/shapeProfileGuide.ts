@@ -6,7 +6,13 @@ import {
   rankingRoute,
 } from "../../app/routes";
 
-export type ShapeProfileStageId = "discover" | "refine" | "rewards";
+export type ShapeProfileGroupId =
+  | "quiz"
+  | "kink-rank"
+  | "kink-browse"
+  | "rp-fit"
+  | "rp-rank"
+  | "rp-browse";
 
 export type ShapeProfileGuideStep = {
   id: string;
@@ -16,18 +22,16 @@ export type ShapeProfileGuideStep = {
   path: string;
 };
 
-export type ShapeProfileGuideStage = {
-  id: ShapeProfileStageId;
+export type ShapeProfileGuideGroup = {
+  id: ShapeProfileGroupId;
   label: string;
-  summary: string;
   steps: readonly ShapeProfileGuideStep[];
 };
 
-export const shapeProfileStages: readonly ShapeProfileGuideStage[] = [
+export const shapeProfileGroups: readonly ShapeProfileGuideGroup[] = [
   {
-    id: "discover",
-    label: "Discover",
-    summary: "Start broad, then sharpen what rises to the top.",
+    id: "quiz",
+    label: "Quiz",
     steps: [
       {
         id: "quizzes",
@@ -36,26 +40,31 @@ export const shapeProfileStages: readonly ShapeProfileGuideStage[] = [
         detail: "Surface broad patterns, roles, and themes.",
         path: quizHomeRoute.path,
       },
+    ],
+  },
+  {
+    id: "kink-rank",
+    label: "Kink Rank",
+    steps: [
       {
         id: "rank-categories",
         number: 2,
-        title: "Rank each category",
-        detail: "Compare favorites within the same kind of play.",
+        title: "Categories",
+        detail: "Compare favorites within each kink category.",
         path: `${rankingRoute.path}?mode=category`,
       },
       {
         id: "rank-overall",
         number: 3,
-        title: "Rank overall",
+        title: "Overall",
         detail: "Bring the category finalists together.",
         path: `${rankingRoute.path}?mode=overall`,
       },
     ],
   },
   {
-    id: "refine",
-    label: "Refine",
-    summary: "Add the specific details ranking cannot infer for you.",
+    id: "kink-browse",
+    label: "Kink Browse",
     steps: [
       {
         id: "define-kinks",
@@ -67,30 +76,48 @@ export const shapeProfileStages: readonly ShapeProfileGuideStage[] = [
     ],
   },
   {
-    id: "rewards",
-    label: "Rewards & Punishments",
-    summary: "Build the contextual model for what motivates and corrects.",
+    id: "rp-fit",
+    label: "R/P Fit",
     steps: [
       {
-        id: "review-rewards",
+        id: "review-rp-fit",
         number: 5,
-        title: "Review what fits",
-        detail: "Sort what works as a reward, punishment, both, or neither.",
-        path: catalogRewardsRoute.path,
+        title: "Sort fit",
+        detail: "Decide what works as a reward, punishment, both, or neither.",
+        path: `${catalogRewardsRoute.path}?view=sorter`,
       },
+    ],
+  },
+  {
+    id: "rp-rank",
+    label: "R/P Rank",
+    steps: [
       {
         id: "rank-rewards",
         number: 6,
-        title: "Rank them",
-        detail: "Compare the options that actually fit your dynamic.",
-        path: catalogRewardsRankingRoute.path,
+        title: "Rewards",
+        detail: "Compare eligible rewards against each other.",
+        path: `${catalogRewardsRankingRoute.path}?context=reward`,
       },
       {
-        id: "define-rewards",
+        id: "rank-punishments",
         number: 7,
-        title: "Browse & define details",
+        title: "Punishments",
+        detail: "Compare eligible punishments against each other.",
+        path: `${catalogRewardsRankingRoute.path}?context=punishment`,
+      },
+    ],
+  },
+  {
+    id: "rp-browse",
+    label: "R/P Browse",
+    steps: [
+      {
+        id: "define-rp",
+        number: 8,
+        title: "Browse & define",
         detail: "Refine suitability, notes, and randomizer eligibility.",
-        path: catalogRewardsRoute.path,
+        path: `${catalogRewardsRoute.path}?view=details`,
       },
     ],
   },
