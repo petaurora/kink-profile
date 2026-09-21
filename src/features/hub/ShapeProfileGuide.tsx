@@ -1,47 +1,9 @@
-import {
-  IconArrowRight,
-  IconBook2,
-  IconChecklist,
-  IconSparkles,
-} from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import {
-  shapeProfileStages,
-  type ShapeProfileStageId,
-} from "./shapeProfileGuide";
+import { shapeProfileStages } from "./shapeProfileGuide";
 import "./ShapeProfileGuide.css";
 
-const stageIconById: Record<
-  ShapeProfileStageId,
-  typeof IconSparkles
-> = {
-  discover: IconSparkles,
-  refine: IconBook2,
-  rewards: IconChecklist,
-};
-
-type ShapeProfileGuideProps = {
-  completedQuizCount: number;
-  totalQuizCount: number;
-  rankingChoiceCount: number;
-  catalogRatedCount: number;
-  contextPreferenceCount: number;
-};
-
-export function ShapeProfileGuide({
-  completedQuizCount,
-  totalQuizCount,
-  rankingChoiceCount,
-  catalogRatedCount,
-  contextPreferenceCount,
-}: ShapeProfileGuideProps) {
+export function ShapeProfileGuide() {
   const navigate = useNavigate();
-
-  const evidenceByStage: Record<ShapeProfileStageId, string> = {
-    discover: `${completedQuizCount}/${totalQuizCount} quizzes · ${rankingChoiceCount} ranking choices`,
-    refine: `${catalogRatedCount} preferences defined`,
-    rewards: `${contextPreferenceCount} contextual choices`,
-  };
 
   return (
     <section
@@ -52,63 +14,39 @@ export function ShapeProfileGuide({
         <div>
           <p className="eyebrow">Recommended path</p>
           <h2 id="shape-profile-guide-title">Shape Your Profile</h2>
-          <p>
-            Build a clearer picture of what you like, how you like it, and what
-            matters most.
-          </p>
         </div>
-        <span className="shape-profile-guide-note">
-          Follow the path or skip around — nothing here is gated.
-        </span>
+        <p>Suggested order — skip around anytime.</p>
       </header>
 
       <div className="shape-profile-guide-stages">
-        {shapeProfileStages.map((stage) => {
-          const StageIcon = stageIconById[stage.id];
+        {shapeProfileStages.map((stage) => (
+          <section className="shape-profile-stage" key={stage.id}>
+            <div className="shape-profile-stage-heading">
+              <strong>{stage.label}</strong>
+              <span>{stage.summary}</span>
+            </div>
 
-          return (
-            <article className="shape-profile-stage" key={stage.id}>
-              <div className="shape-profile-stage-heading">
-                <span className="shape-profile-stage-icon" aria-hidden="true">
-                  <StageIcon size={22} stroke={1.65} />
-                </span>
-                <div>
-                  <h3>{stage.label}</h3>
-                  <p>{stage.summary}</p>
-                </div>
-              </div>
-
-              <div className="shape-profile-steps">
-                {stage.steps.map((step) => (
-                  <button
-                    className="shape-profile-step"
-                    type="button"
-                    key={step.id}
-                    onClick={() => navigate(step.path)}
-                  >
-                    <span className="shape-profile-step-number" aria-hidden="true">
-                      {step.number}
-                    </span>
-                    <span className="shape-profile-step-copy">
-                      <strong>{step.title}</strong>
-                      <span>{step.detail}</span>
-                    </span>
-                    <IconArrowRight
-                      className="shape-profile-step-arrow"
-                      size={17}
-                      stroke={1.8}
-                      aria-hidden="true"
-                    />
-                  </button>
-                ))}
-              </div>
-
-              <p className="shape-profile-stage-evidence">
-                {evidenceByStage[stage.id]}
-              </p>
-            </article>
-          );
-        })}
+            <div
+              className="shape-profile-steps"
+              data-step-count={stage.steps.length}
+            >
+              {stage.steps.map((step) => (
+                <button
+                  className="shape-profile-step"
+                  type="button"
+                  key={step.id}
+                  onClick={() => navigate(step.path)}
+                  aria-label={`${step.number}. ${step.title}. ${step.detail}`}
+                >
+                  <span className="shape-profile-step-number" aria-hidden="true">
+                    {step.number}
+                  </span>
+                  <strong>{step.title}</strong>
+                </button>
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
     </section>
   );
