@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { shapeProfileStages } from "./shapeProfileGuide";
+import { shapeProfileGroups } from "./shapeProfileGuide";
 import "./ShapeProfileGuide.css";
 
 export function ShapeProfileGuide() {
@@ -18,19 +18,15 @@ export function ShapeProfileGuide() {
         <p>Suggested order — skip around anytime.</p>
       </header>
 
-      <div className="shape-profile-guide-stages">
-        {shapeProfileStages.map((stage) => (
-          <section className="shape-profile-stage" key={stage.id}>
-            <div className="shape-profile-stage-heading">
-              <strong>{stage.label}</strong>
-              <span>{stage.summary}</span>
-            </div>
-
+      <div className="shape-profile-guide-groups">
+        {shapeProfileGroups.map((group) => (
+          <section className="shape-profile-group" key={group.id}>
+            <strong className="shape-profile-group-label">{group.label}</strong>
             <div
               className="shape-profile-steps"
-              data-step-count={stage.steps.length}
+              data-step-count={group.steps.length}
             >
-              {stage.steps.map((step) => (
+              {group.steps.map((step) => (
                 <button
                   className="shape-profile-step"
                   type="button"
