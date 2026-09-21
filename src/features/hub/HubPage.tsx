@@ -22,7 +22,6 @@ import {
   catalogRoute,
   compareRoute,
   profileRoute,
-  quizHomeRoute,
   quizRoutePath,
   rewardsToolsRandomizerRoute,
   sceneBuilderRoute,
