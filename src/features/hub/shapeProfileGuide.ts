@@ -1,10 +1,10 @@
 import {
   catalogRewardsRankingRoute,
   catalogRewardsRoute,
-  catalogRoute,
   quizHomeRoute,
   rankingRoute,
 } from "../../app/routes";
+import { catalogRoutePath } from "../catalog/catalogRouteState";
 
 export const KINK_CATEGORY_GUIDE_CHECKPOINT = 25;
 export const KINK_OVERALL_GUIDE_CHECKPOINT = 25;
@@ -182,7 +182,7 @@ export function buildShapeProfileJourney(
           KINK_DEFINITION_GUIDE_TARGET_PERCENT,
         ),
         progressLabel: `${progress.kinkDefinedPercent}% defined · R/P becomes suggested at ${KINK_DEFINITION_GUIDE_TARGET_PERCENT}%`,
-        path: catalogRoute.path,
+        path: catalogRoutePath(),
         actionLabel: "Browse & define",
         trail: "Categories ✓ · Overall ✓",
       },
