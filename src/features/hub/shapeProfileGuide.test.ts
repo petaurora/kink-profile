@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { catalogRoutePath } from "../catalog/catalogRouteState";
 import {
   catalogRewardsRankingRoute,
   catalogRewardsRoute,
@@ -68,6 +69,7 @@ describe("Shape Your Profile progressive guide", () => {
       kinkDefinedPercent: KINK_DEFINITION_GUIDE_TARGET_PERCENT - 1,
     });
     expect(define.sections[1].step?.title).toBe("Define your kink profile");
+    expect(define.sections[1].step?.path).toBe(catalogRoutePath());
   });
 
   it("does not suggest R/P rank until both contextual lanes have candidates", () => {
