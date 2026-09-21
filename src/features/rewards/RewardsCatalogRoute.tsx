@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
 import {
   catalogRewardsRankingRoute,
@@ -9,7 +9,10 @@ import { SegmentedControl } from "../../components/SegmentedControl";
 import { loadCurrentProfileSnapshot } from "../../app/currentProfileSnapshot";
 import { RewardPunishmentRanking } from "../../RewardPunishmentRanking";
 import { loadRewardPunishmentProfile } from "../../lib/rewardPunishmentProfileStorage";
-import { RewardPunishmentProfiles } from "./RewardPunishmentProfiles";
+import {
+  RewardPunishmentProfiles,
+  type RewardPunishmentProfilesView,
+} from "./RewardPunishmentProfiles";
 import "../catalog/CatalogWorkspaceRoute.css";
 import "./RewardsCatalogRoute.css";
 
@@ -19,6 +22,20 @@ const workspaceOptions = [
   { value: "browse", label: "Browse" },
   { value: "rank", label: "Rank" },
 ] as const;
+
+export function rewardsBrowseViewFromSearchParams(
+  searchParams: URLSearchParams,
+): RewardPunishmentProfilesView {
+  return searchParams.get("view") === "details" ? "details" : "sorter";
+}
+
+export function rewardsRankingContextFromSearchParams(
+  searchParams: URLSearchParams,
+) {
+  return searchParams.get("context") === "punishment"
+    ? "punishment"
+    : "reward";
+}
 
 export function RewardsCatalogRoute({
   view = "browse",
@@ -30,6 +47,10 @@ export function RewardsCatalogRoute({
     loadRewardPunishmentProfile(),
   );
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialBrowseView = rewardsBrowseViewFromSearchParams(searchParams);
+  const initialRankingContext =
+    rewardsRankingContextFromSearchParams(searchParams);
 
   const changeView = (nextView: RewardsCatalogWorkspaceView) => {
     navigate(
@@ -62,6 +83,7 @@ export function RewardsCatalogRoute({
               catalogResultView={snapshot.catalogResultView}
               canonicalSignals={snapshot.canonicalSignals}
               onClose={() => navigate("/")}
+              initialView={initialBrowseView}
             />
           </div>
         ) : (
@@ -86,6 +108,7 @@ export function RewardsCatalogRoute({
             <RewardPunishmentRanking
               profile={rewardPunishmentProfile}
               onReclassify={() => navigate(catalogRewardsRoute.path)}
+              initialContext={initialRankingContext}
             />
           </section>
         )}
