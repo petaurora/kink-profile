@@ -233,3 +233,43 @@
     transition: none;
   }
 }
+
+
+.shape-profile-guide-complete {
+  display: block;
+  padding: .72rem .9rem;
+}
+
+.shape-profile-guide-complete-copy {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+}
+
+.shape-profile-guide-complete-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 50%;
+  background: var(--bg-accent-soft);
+  color: var(--accent-primary);
+}
+
+.shape-profile-guide-complete-copy > div {
+  display: grid;
+  gap: .08rem;
+  min-width: 0;
+}
+
+.shape-profile-guide-complete-copy strong {
+  color: var(--text-primary);
+  font-size: .84rem;
+}
+
+.shape-profile-guide-complete-copy span {
+  color: var(--text-muted);
+  font-size: .72rem;
+  line-height: 1.3;
+}
