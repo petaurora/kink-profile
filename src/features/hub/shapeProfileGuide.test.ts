@@ -85,7 +85,7 @@ describe("Shape Your Profile progressive guide", () => {
     );
   });
 
-  it("moves through reward rank, punishment rank, then R/P detail browse", () => {
+  it("moves through reward rank and punishment rank, then completes the foundation", () => {
     const rewardRank = buildShapeProfileJourney({
       ...completeFoundation,
       rewardRankConfidence: RP_RANK_GUIDE_CONFIDENCE_TARGET - 0.01,
@@ -107,11 +107,15 @@ describe("Shape Your Profile progressive guide", () => {
       `${catalogRewardsRankingRoute.path}?context=punishment`,
     );
 
-    const browse = buildShapeProfileJourney(completeFoundation);
-    expect(browse.sections[2].step?.title).toBe("Refine the details");
-    expect(browse.sections[2].step?.path).toBe(
-      `${catalogRewardsRoute.path}?view=details`,
-    );
+    const complete = buildShapeProfileJourney(completeFoundation);
+    expect(complete.complete).toBe(true);
+    expect(complete.sections.map((section) => section.state)).toEqual([
+      "complete",
+      "complete",
+      "complete",
+    ]);
+    expect(complete.sections[2].summary).toBe("Fit + rankings established");
+    expect(complete.sections[2].step).toBeUndefined();
   });
 
   it("uses the existing 25-choice category checkpoint", () => {
