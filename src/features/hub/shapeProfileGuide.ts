@@ -48,6 +48,7 @@ export type ShapeProfileSection = {
 };
 
 export type ShapeProfileJourney = {
+  complete: boolean;
   sections: readonly ShapeProfileSection[];
 };
 
@@ -117,7 +118,7 @@ export function buildShapeProfileJourney(
       state: "upcoming",
       summary: "Later",
     };
-    return { sections: [quizSection, kinkSection, rpSection] };
+    return { complete: false, sections: [quizSection, kinkSection, rpSection] };
   }
 
   quizSection = {
@@ -203,7 +204,7 @@ export function buildShapeProfileJourney(
       state: "upcoming",
       summary: "After your kink foundation",
     };
-    return { sections: [quizSection, kinkSection, rpSection] };
+    return { complete: false, sections: [quizSection, kinkSection, rpSection] };
   }
 
   if (!rpFitReady) {
@@ -270,20 +271,13 @@ export function buildShapeProfileJourney(
     rpSection = {
       id: "rp",
       label: "Rewards & Punishments",
-      state: "current",
-      summary: "Browse & refine",
-      step: {
-        title: "Refine the details",
-        detail:
-          "Your foundation is in place. From here, keep refining suitability, notes, and randomizer eligibility whenever something changes.",
-        progress: null,
-        progressLabel: `${progress.rpClassifiedCount} contextual choices defined`,
-        path: `${catalogRewardsRoute.path}?view=details`,
-        actionLabel: "Browse R/P details",
-        trail: "Fit ✓ · Rewards ranked ✓ · Punishments ranked ✓",
-      },
+      state: "complete",
+      summary: "Fit + rankings established",
     };
   }
 
-  return { sections: [quizSection, kinkSection, rpSection] };
+  return {
+    complete: rpSection.state === "complete",
+    sections: [quizSection, kinkSection, rpSection],
+  };
 }
