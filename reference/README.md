@@ -27,8 +27,12 @@ Repository source data:
 - `catalog/lists.tsv` — supporting list values
 - `catalog/research-sources.tsv` — source references
 - `catalog/new-additions.tsv` — research additions / staging data
+- `catalog/modern-nonphysical-power-exchange-additions.tsv` — staged, non-runtime modern/nonphysical power-exchange candidates using the canonical catalog columns
+- `catalog/modern-nonphysical-power-exchange-decisions.tsv` — curation ledger explaining which explored concepts become proposed rows, reuse existing coverage, merge into another proposal, or defer to future refinements
 
 These are tab-separated text exports so catalog changes are readable, searchable, and diffable in GitHub.
+
+Only `catalog/kink-catalog.tsv` is the canonical runtime catalog source. Staging/review TSVs do not become product behavior merely by existing under `reference/catalog/`; they require an explicit curation/merge step.
 
 The original `master_pet_kink_catalog_expanded.xlsx` is retained as a historical/reference artifact, but application code should consume the TSV source instead.
 
