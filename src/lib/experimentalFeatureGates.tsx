@@ -101,7 +101,7 @@ export function filterExperimentalNavigation<
 export function resolveExperimentalRoute<Key extends string>(
   runtime: ExperimentalFeatureReader<Key>,
   key: Key,
-  fallbackPath = unknownRouteFallbackPath,
+  fallbackPath: string = unknownRouteFallbackPath,
   storage?: FeatureFlagStorage,
 ) {
   return runtime.isEnabled(key, storage)
