@@ -4,7 +4,7 @@ A privacy-first React app for exploring BDSM, kink, power-dynamic, headspace, an
 
 ## What the app does today
 
-Pet Profile is local-first: the core product runs in the browser without a required account or backend.
+Kink Profile is local-first: the core product runs in the browser without a required account or backend.
 
 Current capabilities include:
 
