@@ -1,56 +1,11 @@
 import { useState } from "react";
+import { featureFlags } from "../../lib/featureFlags";
 import {
-  featureFlags,
-  type FeatureFlagState,
-  type FeatureFlagStorage,
-} from "../../lib/featureFlags";
+  clearExperimentalFeatureOverride,
+  resetExperimentalFeatureOverrides,
+  setExperimentalFeatureOverride,
+} from "../../lib/experimentalFeatureGates";
 import "./ExperimentalFeaturesPanel.css";
-
-type FeatureFlagRuntime<Key extends string> = {
-  getState: (
-    key: Key,
-    storage?: FeatureFlagStorage,
-  ) => FeatureFlagState<Key>;
-  getAllStates: (
-    storage?: FeatureFlagStorage,
-  ) => FeatureFlagState<Key>[];
-  setOverride: (
-    key: Key,
-    value: boolean,
-    storage?: FeatureFlagStorage,
-  ) => void;
-  clearOverride: (
-    key: Key,
-    storage?: FeatureFlagStorage,
-  ) => void;
-  resetOverrides: (
-    storage?: FeatureFlagStorage,
-  ) => void;
-};
-
-export function toggleExperimentalFeature<Key extends string>(
-  runtime: FeatureFlagRuntime<Key>,
-  key: Key,
-  storage?: FeatureFlagStorage,
-) {
-  const state = runtime.getState(key, storage);
-  runtime.setOverride(key, !state.effectiveValue, storage);
-}
-
-export function clearExperimentalFeatureOverride<Key extends string>(
-  runtime: FeatureFlagRuntime<Key>,
-  key: Key,
-  storage?: FeatureFlagStorage,
-) {
-  runtime.clearOverride(key, storage);
-}
-
-export function resetExperimentalFeatureOverrides<Key extends string>(
-  runtime: FeatureFlagRuntime<Key>,
-  storage?: FeatureFlagStorage,
-) {
-  runtime.resetOverrides(storage);
-}
 
 export function ExperimentalFeaturesPanel() {
   const [states, setStates] = useState(() => featureFlags.getAllStates());
@@ -131,7 +86,11 @@ export function ExperimentalFeaturesPanel() {
                   aria-checked={state.effectiveValue}
                   aria-label={`${state.label}: ${state.effectiveValue ? "On" : "Off"}`}
                   onClick={() => {
-                    toggleExperimentalFeature(featureFlags, state.key);
+                    setExperimentalFeatureOverride(
+                      featureFlags,
+                      state.key,
+                      !state.effectiveValue,
+                    );
                     refresh();
                   }}
                 >

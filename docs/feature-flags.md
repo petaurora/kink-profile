@@ -67,8 +67,36 @@ Production keeps the normal key unchanged. Preview builds do not read or mutate 
 
 Feature components should not know the persistence key or payload format.
 
-## Boundaries
+## Advanced Settings controls
 
-This runtime does not yet define UI/navigation/route gating conventions or the Advanced Settings controls. Those are tracked separately under #247 and #248.
+When Developer / Admin Tools is enabled, Settings exposes an **Experimental Features** panel. It is generated from the registry and shows effective state, default state, and whether a browser-local override exists.
 
-Flags should remain temporary scaffolding. The lifecycle and cleanup rules for graduating or abandoning a flag will be finalized with the gating work in #248.
+Turning Developer Tools off only hides the controls. It does not change feature-flag values.
+
+## Standard gating pattern
+
+Experimental product code should use `src/lib/experimentalFeatureGates.tsx` rather than ad hoc `featureFlags.isEnabled(...)` checks scattered through the app.
+
+Use the provided patterns for:
+
+- **Component/UI rendering:** wrap experimental UI in `<ExperimentalFeatureGate flag="...">`.
+- **Routes:** wrap routed content in `<ExperimentalRouteGate flag="..." fallbackPath="/">`. Disabled deep links redirect safely instead of rendering the feature.
+- **Navigation/actions:** attach `featureFlag` metadata to candidate navigation items and pass them through `filterExperimentalNavigation(...)`.
+- **Direct state checks:** use `isExperimentalFeatureEnabled(...)` only when a boolean is genuinely more appropriate than a render/navigation gate.
+
+The app-level gate hook listens for local flag changes and cross-tab storage updates, so navigation and mounted surfaces can react immediately after a developer changes a flag in Settings.
+
+Feature flags hide experimental UX; they do not authorize access and must not be treated as a security boundary.
+
+## Flag lifecycle
+
+Flags are temporary scaffolding:
+
+1. **Create** a registry entry with a stable key, clear label/description, and conservative default.
+2. **Develop/test** the feature behind the shared component, route, and navigation gates.
+3. **Graduate or abandon** the experiment once the product decision is made.
+4. **Remove the flag promptly:** delete the registry entry, remove gating branches, and remove dead experimental code if abandoned.
+
+Persisted overrides for removed keys require no migration. The runtime already ignores unknown/stale keys when it loads overrides, and the next write stores only currently registered keys.
+
+Do not preserve obsolete compatibility branches merely because an override may exist in old local storage.
