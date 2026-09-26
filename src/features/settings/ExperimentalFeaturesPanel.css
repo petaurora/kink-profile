@@ -1,0 +1,129 @@
+.settings-experiments {
+  padding: clamp(1.15rem, 3vw, 1.6rem);
+  display: grid;
+  gap: 1rem;
+}
+
+.settings-experiments-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+}
+
+.settings-experiments-heading h3 {
+  margin: .1rem 0 .35rem;
+  font-size: 1.08rem;
+}
+
+.settings-experiments-heading p:not(.eyebrow) {
+  max-width: 720px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: .84rem;
+  line-height: 1.5;
+}
+
+.settings-experiments-heading .secondary:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+.settings-experiments-list {
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+}
+
+.settings-experiment-row {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.settings-experiment-row + .settings-experiment-row {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.settings-experiment-copy {
+  min-width: 0;
+}
+
+.settings-experiment-copy > strong {
+  display: block;
+}
+
+.settings-experiment-copy > p {
+  max-width: 720px;
+  margin: .25rem 0 0;
+  color: var(--text-secondary);
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+.settings-experiment-status {
+  margin-top: .5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem .7rem;
+  color: var(--text-muted);
+  font-size: .7rem;
+  line-height: 1.35;
+}
+
+.settings-experiment-status b {
+  color: var(--text-primary);
+}
+
+.settings-experiment-controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .55rem;
+}
+
+.settings-experiments-empty {
+  padding: 1rem;
+  border: 1px dashed var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-muted);
+  display: grid;
+  gap: .2rem;
+}
+
+.settings-experiments-empty strong {
+  font-size: .86rem;
+}
+
+.settings-experiments-empty span,
+.settings-experiments-note {
+  color: var(--text-muted);
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
+.settings-experiments-note {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .settings-experiments-heading,
+  .settings-experiment-row {
+    display: grid;
+  }
+
+  .settings-experiments-heading .secondary,
+  .settings-experiment-controls {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 420px) {
+  .settings-experiment-controls {
+    display: grid;
+    justify-items: start;
+  }
+}

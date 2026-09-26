@@ -3,6 +3,7 @@ import { ProfileResetPanel } from "../../ProfileResetPanel";
 import { ProfileBackupPanel } from "../../ProfileBackupPanel";
 import { ProfileImportPanel } from "../../ProfileImportPanel";
 import { ProfileSharePanel } from "../../ProfileSharePanel";
+import { ExperimentalFeaturesPanel } from "./ExperimentalFeaturesPanel";
 import {
   MAX_PROFILE_DISPLAY_NAME_LENGTH,
   normalizeProfileDisplayName,
@@ -322,6 +323,8 @@ export function ProfileSettingsPage({
             </article>
           )}
         </div>
+
+        {developerToolsEnabled && <ExperimentalFeaturesPanel />}
       </section>
     </section>
   );
