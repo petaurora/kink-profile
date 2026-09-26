@@ -75,6 +75,25 @@ Ordinary product pages expose one persistent navigation system appropriate to th
 
 Page-specific UI does not belong in `AppShell`.
 
+## Experimental feature infrastructure
+
+Experimental work uses the shared client-side feature-flag system rather than one-off local-storage checks.
+
+`src/lib/featureFlags.ts` owns the typed `FEATURE_FLAG_REGISTRY`, resolves registry defaults plus browser-local overrides, and keeps flag persistence separate from profile data. The production registry may legitimately be empty when no experiment is active.
+
+When Developer / Admin Tools is enabled, Settings exposes the registry-driven **Experimental Features** panel. Hiding Developer Tools hides those controls but does not rewrite existing overrides.
+
+`src/lib/experimentalFeatureGates.tsx` owns the standard consumption patterns:
+
+- `ExperimentalFeatureGate` for conditional component/UI rendering;
+- `ExperimentalRouteGate` for safe direct-entry fallback when a routed experiment is disabled;
+- `filterExperimentalNavigation` for removing disabled experiments from ordinary navigation/actions;
+- reactive flag subscriptions so mounted surfaces update after local toggles or cross-tab storage changes.
+
+Experimental flags are developer scaffolding, not authorization or a security boundary. A graduating or abandoned experiment should remove its registry entry and gating branch instead of leaving a permanent compatibility fork.
+
+See [Internal Feature Flags](feature-flags.md).
+
 ## Source ownership
 
 The target ownership model is:
