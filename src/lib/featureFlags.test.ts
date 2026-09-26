@@ -22,15 +22,15 @@ class MemoryStorage implements FeatureFlagStorage {
 }
 
 class ThrowingStorage implements FeatureFlagStorage {
-  getItem() {
+  getItem(_key: string): string | null {
     throw new Error("storage unavailable");
   }
 
-  removeItem() {
+  removeItem(_key: string): void {
     throw new Error("storage unavailable");
   }
 
-  setItem() {
+  setItem(_key: string, _value: string): void {
     throw new Error("storage unavailable");
   }
 }
