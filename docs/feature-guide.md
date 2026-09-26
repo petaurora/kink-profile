@@ -44,19 +44,21 @@ That separation is intentional.
 
 ## A simple first-time path
 
-You do not need to complete everything before the app becomes useful.
+You do not need to complete everything before the app becomes useful. The Hub's **Shape Your Profile** guide gives one recommended next step at a time rather than presenting a giant permanent checklist.
 
-1. **Take one or more core quizzes** to establish broad patterns.
-2. **Open Kinks and use Compare** when pairwise choices feel easier than rating a large list directly.
-3. **Use Explore** to search the catalog and explicitly mark activities or boundaries you already know something about.
-4. **Use Overall** once you have useful category-ranking evidence and want cross-category comparisons.
-5. **View your Overall Profile** to see the combined picture.
-6. **Use the Hub** as the profile grows; it changes from onboarding into a living home that shows only useful/eligible modules.
-7. **Map Rewards & Punishments** if you want to distinguish general interest from contextual suitability.
-8. **Use Scene Builder** when you want the profile turned into a smaller, usable set of options for the current moment.
-9. **Export a private backup** once you have data you care about.
-10. **Use the share summary** when you want a curated human-facing version.
-11. **Compare profiles temporarily** when someone has shared a compatible profile export and you want to explore overlap or shared Scene options without importing their profile.
+Its current guided foundation moves through:
+
+1. completing the available quizzes;
+2. giving every kink category a first Compare pass;
+3. doing an initial Overall ranking pass;
+4. defining enough catalog preferences/boundaries to hand off into contextual work;
+5. sorting Reward/Punishment fit;
+6. creating a rough Reward ranking;
+7. creating a rough Punishment ranking.
+
+The guide is advisory. You can still open other areas whenever you want, and the handoff thresholds are not a “profile completion” score.
+
+Once that guided foundation is established, the entire guide disappears from the Hub. Ongoing Explore, ranking, Rewards & Punishments refinement, Scene Builder, comparison, backup, and sharing remain available normally.
 
 You can return to any area later and refine it. The profile is designed to grow with partial evidence.
 
@@ -66,17 +68,19 @@ You can return to any area later and refine it. The profile is designed to grow 
 
 The Hub is a **living home**, not a fixed feature directory and not a profile-completion dashboard.
 
-Its broad shape follows the current profile posture:
+While the finite **Shape Your Profile** foundation is still developing, the Hub shows one useful recommended step at a time. Completed guide sections collapse, future sections stay quiet, and the whole guide leaves the Hub once its foundation thresholds are satisfied.
 
-- **Unformed** — a deliberately small blank-canvas experience with useful starting actions.
+Behind that guide, the Hub's broader shape still follows current profile posture:
+
+- **Unformed** — deliberately small; ordinary dashboard/reflection modules stay suppressed while the guide provides the next starting action.
 - **Emerging** — reflection plus durable Profile/Catalog directions, with optional modules only when they have truthful content.
 - **Established** — a richer living dashboard with Profile, Compare, Scene Builder, and Catalog directions; optional modules still appear only when currently eligible.
 
-A card disappearing does not mean data was deleted. Optional modules are intentionally omitted when there is nothing useful to show rather than turning the Hub into a wall of empty/setup boxes.
+A card disappearing does not mean data was deleted. Optional modules are intentionally omitted when there is nothing useful to show, and the guided-path card intentionally disappears when it has finished its job.
 
 **Continue** means real resumable work exists. A never-started or already-complete quiz is not presented as something to continue. An unfinished retake can be resumed while its previous completed result remains active.
 
-Finite facts such as `2/4 quizzes with established results` are ordinary workflow progress. The app does not combine those facts into an overall “profile completion” percentage.
+Finite workflow thresholds and facts are ordinary progress signals. The app does not combine them into an overall “profile completion” percentage.
 
 Technical reference: [Hub](product/hub.md)
 

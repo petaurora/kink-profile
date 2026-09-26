@@ -1,11 +1,20 @@
-# Profile and Settings navigation ownership
+# M19 Profile / Settings navigation — compatibility pointer
 
-M19 treats Profile as the owner of profile-adjacent actions and Settings as the owner of advanced/local configuration.
+This milestone-named file is retained for older links. It is **not** the current navigation or Settings contract.
 
-- `/profile` is the primary Profile destination.
-- Profile exposes real `Share` and `Settings` actions. Share enters `/settings?section=sharing` and opens the share-summary area; Settings enters `/settings` normally.
-- `/settings` is classified as Profile in primary navigation. Direct Settings entry safely returns to `/profile`; route state may preserve another valid invoking route.
-- Settings uses local back/title chrome. The legacy desktop header remains only as temporary desktop compatibility until the M19 desktop rail work.
-- Advanced Settings owns the local Developer / Admin Tools preference. That preference is stored separately from profile data and is not included in profile backup/export.
-- Enabling Developer / Admin Tools reveals Curation Workbench from Advanced Settings. This is discoverability only, not authentication or authorization.
-- Curation remains absent from ordinary primary navigation and launchers. Curation opened from Advanced Settings returns to Settings when closed.
+The M19 navigation work has landed. Current behavior is documented in the durable topic-based contracts:
+
+- [Application Architecture](application-architecture.md) — React Router ownership, desktop/mobile global navigation, Settings route semantics, and shell responsibilities.
+- [Profile Management](product/profile-management.md) — profile lifecycle, reset, backup/restore, and sharing.
+- [Internal Feature Flags](feature-flags.md) — Developer / Admin Tools, Experimental Features controls, browser-local overrides, and experimental gating conventions.
+
+Current implementation highlights include:
+
+- `/profile` remains the primary Profile destination.
+- `/settings` participates in Profile primary-navigation semantics while desktop navigation also gives Settings its own active state.
+- the desktop navigation rail and mobile primary navigation are the current global-navigation surfaces;
+- Settings owns only its local back/title header;
+- Curation Workbench remains an internal Developer / Admin surface and is absent from ordinary navigation;
+- Developer Tools and experimental feature overrides are browser-local developer settings, not authentication or authorization.
+
+Historical M19 sequencing and acceptance details belong in closed Issues/PRs and git history.

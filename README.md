@@ -1,10 +1,10 @@
-# Pet Profile
+# Kink Profile
 
 A privacy-first React app for exploring BDSM, kink, power-dynamic, headspace, and contextual preferences through modular quizzes, direct preference editing, ranking, visual profiles, and profile-aware tools.
 
 ## What the app does today
 
-Pet Profile is local-first: the core product runs in the browser without a required account or backend.
+Kink Profile is local-first: the core product runs in the browser without a required account or backend.
 
 Current capabilities include:
 
@@ -97,7 +97,7 @@ GitHub Pages publishes from the generated `gh-pages` branch.
 - Preview deployments are updated on each PR synchronize event and removed when the PR closes.
 - The preview workflow adds or updates a comment on the PR with the preview URL.
 
-Vite's base path is controlled at build time with `VITE_BASE_PATH`. Production uses `/kink-profile/`; PR previews use `/kink-profile/pr-<number>/`. The app currently uses state-driven navigation rather than React Router, so no router basename is required.
+Vite's base path is controlled at build time with `VITE_BASE_PATH`. Production uses `/kink-profile/`; PR previews use `/kink-profile/pr-<number>/`. The app uses React Router's `HashRouter`, so GitHub Pages does not need server-side route rewrites or a router basename. Vite's build-time base path still scopes production and PR-preview assets to their deployment subtree.
 
 Repository setup: under **Settings → Pages**, set **Source** to **Deploy from a branch**, choose `gh-pages`, and publish from `/(root)`. Both production and preview workflows serialize writes to that branch so they do not overwrite each other.
 

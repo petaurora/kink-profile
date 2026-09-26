@@ -36,11 +36,13 @@ Keeping these answers separate prevents one interaction from pretending to mean 
 
 Because the Hub is compositional rather than a fixed feature directory.
 
-An Unformed profile gets a small set of useful starting actions. Emerging and Established profiles get richer reflection/direction, but optional modules only appear when they have truthful content right now.
+Early on, **Shape Your Profile** recommends one useful next step at a time across quizzes, kink ranking/definition, and Rewards & Punishments. Completed sections collapse, future sections stay quiet, and once the finite guided foundation is established the entire guide disappears. That disappearance means the onboarding scaffold finished its job; it does not delete profile data.
+
+Emerging and Established profiles also get richer reflection/direction, but optional modules only appear when they have truthful content right now.
 
 A missing optional card does not mean your data disappeared. It usually means that module has nothing useful/eligible to show at the moment.
 
-`Continue` is reserved for genuinely resumable quiz work. Finite facts such as `2/4 quizzes with established results` are allowed, but the app does not turn them into an overall profile-completion percentage.
+`Continue` is reserved for genuinely resumable quiz work. Finite workflow thresholds are allowed, but the app does not turn them into an overall profile-completion percentage.
 
 See [Hub](product/hub.md).
 
