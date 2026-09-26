@@ -15,22 +15,7 @@ export function ShapeProfileGuide({
   const navigate = useNavigate();
 
   if (journey.complete) {
-    return (
-      <section
-        className="shape-profile-guide shape-profile-guide-complete"
-        aria-label="Shape Your Profile"
-      >
-        <div className="shape-profile-guide-complete-copy">
-          <span className="shape-profile-guide-complete-icon" aria-hidden="true">
-            <IconCheck size={18} stroke={2.2} />
-          </span>
-          <div>
-            <strong>Profile foundation established</strong>
-            <span>Quiz, kink, and R/P foundations are in place.</span>
-          </div>
-        </div>
-      </section>
-    );
+    return null;
   }
 
   return (
