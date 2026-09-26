@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loadProfile } from "../../lib/profileStorage";
 import { RoutedFeatureFrame } from "../../app/RoutedFeatureFrame";
@@ -44,7 +44,13 @@ export function resolveCatalogReturnPath(state: unknown) {
   return from === "/profile" ? "/profile" : "/";
 }
 
-function initialRankingMode(state: unknown): RankingMode {
+export function resolveCatalogRankingMode(
+  search: string,
+  state?: unknown,
+): RankingMode {
+  const requested = new URLSearchParams(search).get("mode");
+  if (requested === "overall" || requested === "category") return requested;
+
   return (state as CatalogNavigationState | null)?.rankingMode === "overall"
     ? "overall"
     : "category";
@@ -58,14 +64,28 @@ export function CatalogRoute({
   const [quizProfile] = useState(() => loadProfile());
   const location = useLocation();
   const navigate = useNavigate();
-  const [rankingMode, setRankingMode] = useState<RankingMode>(() =>
-    initialRankingMode(location.state),
+  const requestedRankingMode = useMemo(
+    () => resolveCatalogRankingMode(location.search, location.state),
+    [location.search, location.state],
   );
+  const [rankingMode, setRankingMode] =
+    useState<RankingMode>(requestedRankingMode);
   const initialFocus = useMemo(
     () => parseCatalogRouteFocus(location.search),
     [location.search],
   );
   const returnPath = resolveCatalogReturnPath(location.state);
+
+  useEffect(() => {
+    setRankingMode(requestedRankingMode);
+  }, [requestedRankingMode]);
+
+  const navigateToRankingMode = (nextMode: RankingMode) => {
+    setRankingMode(nextMode);
+    navigate(`${rankingRoute.path}?mode=${nextMode}`, {
+      state: location.state,
+    });
+  };
 
   const activeTab: CatalogWorkspaceTab =
     view === "browse"
@@ -82,13 +102,7 @@ export function CatalogRoute({
 
     const nextRankingMode: RankingMode =
       nextTab === "overall" ? "overall" : "category";
-    setRankingMode(nextRankingMode);
-
-    if (view === "browse") {
-      navigate(rankingRoute.path, {
-        state: { rankingMode: nextRankingMode },
-      });
-    }
+    navigateToRankingMode(nextRankingMode);
   };
 
   return (
@@ -123,17 +137,14 @@ export function CatalogRoute({
             closeLabel={returnPath === "/profile" ? "Back to profile" : "Back to hub"}
             onClose={() => navigate(returnPath)}
             onPlayRanking={() => {
-              setRankingMode("category");
-              navigate(rankingRoute.path, {
-                state: { rankingMode: "category" },
-              });
+              navigateToRankingMode("category");
             }}
           />
         ) : (
           <KinkThisOrThat
             quizProfile={quizProfile}
             initialMode={rankingMode}
-            onModeChange={setRankingMode}
+            onModeChange={navigateToRankingMode}
             onClose={() => navigate("/")}
           />
         )}

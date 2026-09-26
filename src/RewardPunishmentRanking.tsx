@@ -63,18 +63,20 @@ function primitiveDescription(primitive: RewardPunishmentPrimitive) {
 export function RewardPunishmentRanking({
   profile,
   onReclassify,
+  initialContext = "reward",
 }: {
   profile: RewardPunishmentProfileState;
   onReclassify: (
     primitive: RewardPunishmentPrimitive,
     context: RewardPunishmentContext,
   ) => void;
+  initialContext?: RewardPunishmentContext;
 }) {
   const [rankingState, setRankingState] = useState(() =>
     loadRewardPunishmentRankingState(),
   );
   const [context, setContext] =
-    useState<RewardPunishmentContext>("reward");
+    useState<RewardPunishmentContext>(initialContext);
   const [pairNonce, setPairNonce] = useState(0);
 
   const rewardSnapshot = useMemo(

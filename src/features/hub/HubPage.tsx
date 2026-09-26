@@ -22,7 +22,6 @@ import {
   catalogRoute,
   compareRoute,
   profileRoute,
-  quizHomeRoute,
   quizRoutePath,
   rewardsToolsRandomizerRoute,
   sceneBuilderRoute,
@@ -47,6 +46,9 @@ import {
   type HubIntentDoorId,
 } from "./hubComposition";
 import { buildHubMetrics } from "./hubMetrics";
+import { ShapeProfileGuide } from "./ShapeProfileGuide";
+import { buildShapeProfileJourney } from "./shapeProfileGuide";
+import { buildShapeProfileProgress } from "./shapeProfileProgress";
 import "./HubPage.css";
 
 const facetDefinitionById = new Map(
@@ -145,6 +147,20 @@ export function HubPage() {
       summary.state === "in-progress" ||
       summary.state === "retake-in-progress",
   );
+  const shapeProfileProgress = useMemo(
+    () =>
+      buildShapeProfileProgress(
+        snapshot,
+        completedQuizCount,
+        quizSummaries.length,
+      ),
+    [completedQuizCount, quizSummaries.length, snapshot],
+  );
+  const shapeProfileJourney = useMemo(
+    () => buildShapeProfileJourney(shapeProfileProgress),
+    [shapeProfileProgress],
+  );
+
   const randomizerReady = metrics.readyChoiceCount > 0;
   const composition = useMemo(
     () =>
@@ -285,39 +301,9 @@ export function HubPage() {
           </div>
         </header>
 
-        {hubHasModule(composition, "onboarding") ? (
-          <article className="hub-home-empty">
-            <div>
-              <p className="eyebrow">Blank canvas</p>
-              <h2>There is nothing to “complete” here.</h2>
-              <p>
-                Start wherever feels interesting. Guided quizzes are good for broad
-                patterns; the catalog is good when you already know what you want to
-                react to.
-              </p>
-            </div>
-            <div className="hub-home-empty-actions">
-              <button
-                className="hub-home-empty-action"
-                type="button"
-                onClick={() => navigate(quizHomeRoute.path)}
-              >
-                <IconSparkles size={24} stroke={1.6} aria-hidden="true" />
-                <strong>Start broad</strong>
-                <span>Use guided quizzes to surface patterns.</span>
-              </button>
-              <button
-                className="hub-home-empty-action"
-                type="button"
-                onClick={() => navigate(catalogRoute.path)}
-              >
-                <IconBook2 size={24} stroke={1.6} aria-hidden="true" />
-                <strong>Start specific</strong>
-                <span>Browse the catalog and react to whatever catches you.</span>
-              </button>
-            </div>
-          </article>
-        ) : (
+        <ShapeProfileGuide journey={shapeProfileJourney} />
+
+        {!hubHasModule(composition, "onboarding") && (
           <>
             {hubHasModule(composition, "reflection") && (
               <article className="hub-home-reflection">
