@@ -4,12 +4,12 @@ import {
   createFeatureFlagRuntime,
   type FeatureFlagStorage,
 } from "../../lib/featureFlags";
+import { ExperimentalFeaturesPanel } from "./ExperimentalFeaturesPanel";
 import {
   clearExperimentalFeatureOverride,
-  ExperimentalFeaturesPanel,
   resetExperimentalFeatureOverrides,
-  toggleExperimentalFeature,
-} from "./ExperimentalFeaturesPanel";
+  setExperimentalFeatureOverride,
+} from "../../lib/experimentalFeatureGates";
 
 class MemoryStorage implements FeatureFlagStorage {
   private values = new Map<string, string>();
@@ -53,7 +53,7 @@ describe("Experimental Features controls", () => {
     const runtime = createFeatureFlagRuntime(registry, "test:experiments");
     const storage = new MemoryStorage();
 
-    toggleExperimentalFeature(runtime, "bodyMap", storage);
+    setExperimentalFeatureOverride(runtime, "bodyMap", true, storage);
 
     expect(runtime.getState("bodyMap", storage)).toMatchObject({
       defaultValue: false,
@@ -62,7 +62,7 @@ describe("Experimental Features controls", () => {
       isOverridden: true,
     });
 
-    toggleExperimentalFeature(runtime, "alternateHub", storage);
+    setExperimentalFeatureOverride(runtime, "alternateHub", false, storage);
 
     expect(runtime.getState("alternateHub", storage)).toMatchObject({
       defaultValue: true,
@@ -76,8 +76,8 @@ describe("Experimental Features controls", () => {
     const runtime = createFeatureFlagRuntime(registry, "test:experiments");
     const storage = new MemoryStorage();
 
-    toggleExperimentalFeature(runtime, "bodyMap", storage);
-    toggleExperimentalFeature(runtime, "alternateHub", storage);
+    setExperimentalFeatureOverride(runtime, "bodyMap", true, storage);
+    setExperimentalFeatureOverride(runtime, "alternateHub", false, storage);
     clearExperimentalFeatureOverride(runtime, "bodyMap", storage);
 
     expect(runtime.getState("bodyMap", storage)).toMatchObject({
@@ -94,8 +94,8 @@ describe("Experimental Features controls", () => {
     const runtime = createFeatureFlagRuntime(registry, "test:experiments");
     const storage = new MemoryStorage();
 
-    toggleExperimentalFeature(runtime, "bodyMap", storage);
-    toggleExperimentalFeature(runtime, "alternateHub", storage);
+    setExperimentalFeatureOverride(runtime, "bodyMap", true, storage);
+    setExperimentalFeatureOverride(runtime, "alternateHub", false, storage);
     resetExperimentalFeatureOverrides(runtime, storage);
 
     expect(runtime.getState("bodyMap", storage)).toMatchObject({
