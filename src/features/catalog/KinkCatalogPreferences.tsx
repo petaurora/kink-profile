@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ExpandableGroupedList } from "../../components/ExpandableGroupedList";
+import { CollarsV2Pilot } from "./CollarsV2Pilot";
 import {
   kinkCatalog,
   kinkCategories,
@@ -235,6 +236,8 @@ export function KinkCatalogPreferences({
           </button>
         </div>
       </div>
+
+      <CollarsV2Pilot />
 
       <section className="catalog-filter-shell panel">
         <div className="catalog-filter-primary-row">
