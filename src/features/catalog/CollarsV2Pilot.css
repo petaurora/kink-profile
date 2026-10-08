@@ -22,3 +22,42 @@
 .catalog-v2-demo-row>.catalog-preference-editor{min-width:0}
 .catalog-v2-demo-row>.catalog-preference-editor select{width:100%;max-width:100%}
 @media(max-width:420px){.catalog-v2-demo{padding:.8rem}.catalog-v2-demo-row{grid-template-columns:minmax(0,1fr) 110px;gap:.5rem}}
+
+/* Keep the pilot's overall selector alongside its name at phone widths. */
+.catalog-v2-demo .catalog-v2-demo-row{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.catalog-v2-demo .catalog-v2-demo-main{
+  flex:1 1 0;
+  width:0;
+  min-width:0;
+}
+.catalog-v2-demo .catalog-v2-demo-row>.catalog-preference-editor{
+  display:block;
+  flex:0 0 116px;
+  width:116px;
+  max-width:116px;
+  margin:0;
+  align-self:flex-start;
+}
+.catalog-v2-demo .catalog-v2-demo-row>.catalog-preference-editor select{
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  margin:0;
+  padding-inline:10px 22px;
+  font-size:.75rem;
+}
+.catalog-v2-demo .catalog-v2-demo-main>.catalog-row-title{font-size:1rem}
+.catalog-v2-demo .collars-v2-refine-toggle{font-size:.86rem;padding:.35rem 0}
+@media(max-width:360px){
+  .catalog-v2-demo .catalog-v2-demo-row{gap:8px}
+  .catalog-v2-demo .catalog-v2-demo-row>.catalog-preference-editor{flex-basis:105px;width:105px;max-width:105px}
+}
