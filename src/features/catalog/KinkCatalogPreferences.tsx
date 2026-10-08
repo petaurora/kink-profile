@@ -237,6 +237,31 @@ export function KinkCatalogPreferences({
         </div>
       </div>
 
+      <section className="panel catalog-v2-demo" aria-label="Collars V2 example">
+        <p className="eyebrow">Catalog V2 · Interactive example</p>
+        <div className="catalog-v2-demo-row">
+          <div className="catalog-v2-demo-main">
+            <strong className="catalog-row-title">Collars</strong>
+            <CollarsV2Pilot />
+          </div>
+          <label className="catalog-preference-editor">
+            <span className="sr-only">Overall Collars preference</span>
+            <select
+              value={getCatalogPreference(profile.preferences[kinkCatalog.find(item => item.label.toLowerCase() === "collars")?.id ?? ""], "overall") ?? ""}
+              onChange={(event) => {
+                const collars = kinkCatalog.find(item => item.label.toLowerCase() === "collars");
+                if (collars) updatePreference(collars.id, event.target.value ? event.target.value as CatalogPreferenceState : undefined);
+              }}
+            >
+              <option value="">Not set</option>
+              {catalogPreferenceStates.map(state => (
+                <option key={state} value={state}>{catalogPreferenceLabels[state]}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </section>
+
       <section className="catalog-filter-shell panel">
         <div className="catalog-filter-primary-row">
           <label className="catalog-search catalog-search-compact">
@@ -490,7 +515,7 @@ export function KinkCatalogPreferences({
                 </button>
 
 
-                  {item.label.toLowerCase() === "collars" && <CollarsV2Pilot />}
+
                 </div>
                 <label className="catalog-preference-editor">
                                   <span className="sr-only">
