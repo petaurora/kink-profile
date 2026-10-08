@@ -16,20 +16,11 @@ export function CollarsV2Pilot() {
     setRatings(next);
     if (typeof localStorage !== "undefined") localStorage.setItem(COLLARS_V2_STORAGE_KEY, JSON.stringify(next));
   };
-  const rated = Object.keys(ratings).length;
   return (
-    <section className="collars-v2-pilot" aria-label="Refine Collars preferences">
-      <div className="collars-v2-heading">
-        <div>
-          <p className="eyebrow">Catalog V2 · First interactive family</p>
-          <h2>Collars <span className="collars-v2-beta">Preview</span></h2>
-          <p>{collarsV2.description}</p>
-          <p className="collars-v2-note">Your existing overall Collars rating stays in the current catalog. {rated} modifier ratings saved on this device during the V2 pilot.</p>
-        </div>
-        <button type="button" className="secondary" aria-expanded={expanded} aria-controls="collars-v2-details" onClick={() => setExpanded(!expanded)}>
-          {expanded ? "− Hide refinements" : "+ Refine"}
-        </button>
-      </div>
+    <section className="collars-v2-pilot" aria-label="Collars refinements">
+      <button type="button" className="collars-v2-refine-toggle" aria-expanded={expanded} aria-controls="collars-v2-details" onClick={() => setExpanded(!expanded)}>
+        {expanded ? "− Hide refinements" : "+ Refine"}
+      </button>
       {expanded && <div id="collars-v2-details" className="collars-v2-groups">
         {collarsV2.groups.map(group => <fieldset key={group.id} className="collars-v2-group">
           <legend>{group.label}</legend>
