@@ -1,1 +1,15 @@
-.collars-v2-pilot{margin-block:1rem;padding:1.25rem}.collars-v2-heading{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem}.collars-v2-heading>div{flex:1 1 260px}.collars-v2-heading h2{margin:.25rem 0}.collars-v2-beta{font-size:.65em;opacity:.7}.collars-v2-note{font-size:.85rem;opacity:.75;max-width:65ch}.collars-v2-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:1rem;margin-top:1.25rem}.collars-v2-group{border:1px solid var(--border-color,rgba(180,160,180,.35));border-radius:12px;padding:1rem;min-width:0}.collars-v2-group legend{font-weight:700;padding:0 .35rem}.collars-v2-option{display:flex;justify-content:space-between;align-items:center;gap:.75rem;padding:.45rem 0}.collars-v2-option select{max-width:55%;min-width:120px}.collars-v2-groups>.collars-v2-note{grid-column:1/-1}
+.catalog-row-summary:has(.collars-v2-pilot){display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:.75rem;padding:.85rem 1rem}
+.catalog-v2-item-main{min-width:0}
+.catalog-v2-item-main .catalog-row-open{width:100%;min-width:0}
+.catalog-row-summary:has(.collars-v2-pilot)>.catalog-preference-editor{align-self:start;min-width:0}
+.catalog-row-summary:has(.collars-v2-pilot)>.catalog-preference-editor select{max-width:140px;width:100%}
+.collars-v2-pilot{margin:.3rem 0 0;padding:0}
+.collars-v2-refine-toggle{background:transparent;border:0;padding:.35rem 0;color:var(--accent-color,#d66ab4);font:inherit;font-weight:700;cursor:pointer;text-align:left}
+.collars-v2-groups{display:grid;grid-template-columns:1fr;gap:.9rem;margin-top:.75rem}
+.collars-v2-group{border:1px solid var(--border-color,rgba(180,160,180,.35));border-radius:12px;padding:.7rem;min-width:0}
+.collars-v2-group legend{font-weight:700;padding:0 .3rem}
+.collars-v2-option{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.5rem 0;min-width:0}
+.collars-v2-option span{min-width:0;overflow-wrap:anywhere}
+.collars-v2-option select{width:110px;max-width:48%;min-width:95px}
+.collars-v2-note{font-size:.8rem;opacity:.75}
+@media(max-width:420px){.catalog-row-summary:has(.collars-v2-pilot){grid-template-columns:minmax(0,1fr) 112px;gap:.45rem;padding:.75rem}.collars-v2-option{flex-wrap:wrap}.collars-v2-option select{width:100%;max-width:100%}}
