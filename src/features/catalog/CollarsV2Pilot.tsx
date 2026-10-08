@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { catalogPreferenceStates, type CatalogPreferenceState } from "../../lib/catalogProfile";
 import { catalogPreferenceLabels } from "../../lib/catalogResults";
-import { COLLARS_V2_STORAGE_KEY, collarsModifierKey, collarsV2, parseCollarsV2Ratings } from "../../lib/catalogV2Collars";
+import { COLLARS_V2_STORAGE_KEY, collarsModifierKey, collarsV2, parseCollarsV2Ratings, type CollarsV2Ratings } from "../../lib/catalogV2Collars";
 import "./CollarsV2Pilot.css";
 
 /** Opt-in V2 vertical slice. The existing V1 overall Collars rating remains authoritative. */
 export function CollarsV2Pilot() {
-  const [ratings, setRatings] = useState(() =>
+  const [ratings, setRatings] = useState<CollarsV2Ratings>(() =>
     typeof localStorage === "undefined" ? {} : parseCollarsV2Ratings(localStorage.getItem(COLLARS_V2_STORAGE_KEY)));
   const [expanded, setExpanded] = useState(false);
   const update = (key: string, state: CatalogPreferenceState | "") => {
