@@ -65,9 +65,37 @@ This document captures the decisions confirmed in the October 8 refinement sessi
 - Remove Partner-Watched Masturbation and Magic-Wand Stimulation per earlier refinement decisions.
 - Do not add anatomy/tool modifiers to Anal/Vaginal Penetration at this stage; fingering/fisting remain distinct techniques.
 
+## Existing approved batch decision sources
+
+The source of truth for completed reviews is the explicit approval/outcome sections in the following GitHub issues. Historical first-pass proposals within those issues must not override later approvals.
+
+| Batch | Review slice | Decision issue | Review status |
+| --- | --- | --- | --- |
+| 1 | Bondage & Restraint | #256 | Approved |
+| 2 | Collars, Gags & Restraint Equipment | #257 | Approved |
+| 3 | Impact Play | #258 | Approved |
+| 4 | Humiliation / Degradation / Objectification | #259 | Approved |
+| 5 | Fantasy / Scenario / Roleplay | #260 | Approved |
+| 6 | Praise | #261 | Approved |
+| 7 | Rewards / Punishments / Discipline | #262 | Intentionally deferred |
+| 8 | Power Exchange & Roles | #263 | Approved |
+| 9 | Protocol / Obedience / Service | #264 | Approved |
+| 10 | Endurance & Positioning | #265 | Approved |
+| 11 | Primal Play | #266 | Approved |
+| 12 | Exhibitionism & Voyeurism | #267 | Approved |
+| 13 | Symbols & Marking | #268 | Approved |
+| 14 | Sensory Play | #269 | Approved |
+| 15 | Pain & Sensation | #270 | Approved |
+| 16 | Electrical Specialty | #271 | Approved |
+| 17 | Orgasm & Arousal Control | #272 | Approved 2026-10-08 |
+| 18 | Sexual Activities & Techniques | #274 | Approved 2026-10-08 |
+
+Parent decision history: #255. Migration must read these approved issue outcomes and map each source row; it must not re-run design review.
+
 ## Next steps / implementation checklist
 - [x] Locate existing batch 1–16 decisions: GitHub issues #256–#271 and parent #255 (Batch 7 #262 deliberately deferred).
-- [ ] Carry approved decisions from existing issue records into the eventual canonical migration ledger; do not re-review already approved batches.
+- [x] Index the approved decision sources for Batches 1–18, with Batch 7 intentionally deferred.
+- [ ] Build the **row-by-row** V1/staged-source → V2 migration ledger from the approved outcomes; this is implementation preparation, not design re-review.
 - [ ] Identify the canonical catalog source(s) and modifier schema in the app, rather than editing only the legacy reference TSV.
 - [ ] Implement approved changes in a separate scoped implementation PR.
 - [ ] Check duplicate IDs, migration/compatibility, and catalog UI rendering.
