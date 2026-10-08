@@ -13,3 +13,12 @@
 .collars-v2-option select{width:110px;max-width:48%;min-width:95px}
 .collars-v2-note{font-size:.8rem;opacity:.75}
 @media(max-width:420px){.catalog-row-summary:has(.collars-v2-pilot){grid-template-columns:minmax(0,1fr) 112px;gap:.45rem;padding:.75rem}.collars-v2-option{flex-wrap:wrap}.collars-v2-option select{width:100%;max-width:100%}}
+
+.catalog-v2-demo{margin-block:1rem;padding:1rem}
+.catalog-v2-demo>.eyebrow{margin:0 0 .75rem}
+.catalog-v2-demo-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(105px,135px);align-items:start;gap:.75rem}
+.catalog-v2-demo-main{min-width:0}
+.catalog-v2-demo-main>.catalog-row-title{display:block;margin-bottom:.25rem}
+.catalog-v2-demo-row>.catalog-preference-editor{min-width:0}
+.catalog-v2-demo-row>.catalog-preference-editor select{width:100%;max-width:100%}
+@media(max-width:420px){.catalog-v2-demo{padding:.8rem}.catalog-v2-demo-row{grid-template-columns:minmax(0,1fr) 110px;gap:.5rem}}
