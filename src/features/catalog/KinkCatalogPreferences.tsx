@@ -488,29 +488,30 @@ export function KinkCatalogPreferences({
                   </span>
                 </button>
 
+
                 <label className="catalog-preference-editor">
-                  <span className="sr-only">
-                    Preference for {item.label}
-                  </span>
-                  <select
-                    value={preference ?? ""}
-                    onChange={(event) =>
-                      updatePreference(
-                        item.id,
-                        event.target.value
-                          ? (event.target.value as CatalogPreferenceState)
-                          : undefined,
-                      )
-                    }
-                  >
-                    <option value="">Not set</option>
-                    {catalogPreferenceStates.map((state) => (
-                      <option key={state} value={state}>
-                        {catalogPreferenceLabels[state]}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                                  <span className="sr-only">
+                                    Preference for {item.label}
+                                  </span>
+                                  <select
+                                    value={preference ?? ""}
+                                    onChange={(event) =>
+                                      updatePreference(
+                                        item.id,
+                                        event.target.value
+                                          ? (event.target.value as CatalogPreferenceState)
+                                          : undefined,
+                                      )
+                                    }
+                                  >
+                                    <option value="">Not set</option>
+                                    {catalogPreferenceStates.map((state) => (
+                                      <option key={state} value={state}>
+                                        {catalogPreferenceLabels[state]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </label>
               </div>
               {item.label.toLowerCase() === "collars" && <CollarsV2Pilot />}
             </article>
