@@ -237,8 +237,6 @@ export function KinkCatalogPreferences({
         </div>
       </div>
 
-      <CollarsV2Pilot />
-
       <section className="catalog-filter-shell panel">
         <div className="catalog-filter-primary-row">
           <label className="catalog-search catalog-search-compact">
@@ -514,6 +512,7 @@ export function KinkCatalogPreferences({
                   </select>
                 </label>
               </div>
+              {item.label.toLowerCase() === "collars" && <CollarsV2Pilot />}
             </article>
           );
         }}
