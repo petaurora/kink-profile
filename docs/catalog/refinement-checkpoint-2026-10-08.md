@@ -2,7 +2,7 @@
 
 Status: **discussion-approved decisions; not yet implemented in canonical catalog**.
 
-This document captures the decisions confirmed in the October 8 refinement session. Earlier batches (1–16) should be reconciled against their prior discussion notes before implementation; do not treat them as verified or complete based on this checkpoint alone.
+This document captures the decisions confirmed in the October 8 refinement session. Batches 1–16 were already reviewed and recorded in GitHub issues #256–#271 and summarized in parent issue #255. Batch 7 (#262) was deliberately deferred until core catalog migration is complete. These issue records are the existing decision history; do not repeat the review.
 
 ## Working principles
 - One catalog item plus at most one modifier level.
@@ -66,7 +66,8 @@ This document captures the decisions confirmed in the October 8 refinement sessi
 - Do not add anatomy/tool modifiers to Anal/Vaginal Penetration at this stage; fingering/fisting remain distinct techniques.
 
 ## Next steps / implementation checklist
-- [ ] Reconcile earlier batches 1–16 from original decisions and record their status.
+- [x] Locate existing batch 1–16 decisions: GitHub issues #256–#271 and parent #255 (Batch 7 #262 deliberately deferred).
+- [ ] Carry approved decisions from existing issue records into the eventual canonical migration ledger; do not re-review already approved batches.
 - [ ] Identify the canonical catalog source(s) and modifier schema in the app, rather than editing only the legacy reference TSV.
 - [ ] Implement approved changes in a separate scoped implementation PR.
 - [ ] Check duplicate IDs, migration/compatibility, and catalog UI rendering.
