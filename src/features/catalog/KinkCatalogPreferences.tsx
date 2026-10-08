@@ -461,6 +461,7 @@ export function KinkCatalogPreferences({
               key={item.id}
             >
               <div className="catalog-row-summary">
+                <div className="catalog-v2-item-main">
                 <button
                   type="button"
                   className="catalog-row-open"
@@ -489,6 +490,8 @@ export function KinkCatalogPreferences({
                 </button>
 
 
+                  {item.label.toLowerCase() === "collars" && <CollarsV2Pilot />}
+                </div>
                 <label className="catalog-preference-editor">
                                   <span className="sr-only">
                                     Preference for {item.label}
