@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ExpandableGroupedList } from "../../components/ExpandableGroupedList";
+import { CollarsV2Pilot } from "./CollarsV2Pilot";
 import {
   kinkCatalog,
   kinkCategories,
@@ -67,6 +68,7 @@ export function KinkCatalogPreferences({
   const [showFilters, setShowFilters] = useState(false);
   const [openItemId, setOpenItemId] = useState<string | null>(null);
   const [showBoundaries, setShowBoundaries] = useState(false);
+  const [collarsExpanded, setCollarsExpanded] = useState(false);
 
   const filterState = { query, categoryFilter, preferenceFilter };
   const hasActiveFilters = hasActiveExploreFilters(filterState);
@@ -235,6 +237,40 @@ export function KinkCatalogPreferences({
           </button>
         </div>
       </div>
+
+      <section className="panel catalog-v2-demo" aria-label="Collars V2 example">
+        <div className="catalog-v2-demo-row" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 116px 36px", alignItems: "center", gap: "8px", width: "100%" }}>
+          <strong className="catalog-row-title" style={{ minWidth: 0, margin: 0 }}>Collars</strong>
+          <label className="catalog-preference-editor" style={{ width: "116px", minWidth: 0, margin: 0, gridColumn: 2 }}>
+            <span className="sr-only">Overall Collars preference</span>
+            <select
+              style={{ boxSizing: "border-box", width: "100%", minWidth: 0, maxWidth: "100%" }}
+              value={getCatalogPreference(profile.preferences[kinkCatalog.find(item => item.label.toLowerCase() === "collars")?.id ?? ""], "overall") ?? ""}
+              onChange={(event) => {
+                const collars = kinkCatalog.find(item => item.label.toLowerCase() === "collars");
+                if (collars) updatePreference(collars.id, event.target.value ? event.target.value as CatalogPreferenceState : undefined);
+              }}
+            >
+              <option value="">Not set</option>
+              {catalogPreferenceStates.map(state => (
+                <option key={state} value={state}>{catalogPreferenceLabels[state]}</option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            className="catalog-v2-expand"
+            style={{ gridColumn: 3, width: 36, height: 36, minWidth: 36 }}
+            aria-label={collarsExpanded ? "Collapse Collars modifiers" : "Expand Collars modifiers"}
+            aria-expanded={collarsExpanded}
+            aria-controls="collars-v2-details"
+            onClick={() => setCollarsExpanded(value => !value)}
+          >
+            <span aria-hidden="true">{collarsExpanded ? "⌃" : "⌄"}</span>
+          </button>
+        </div>
+        <CollarsV2Pilot expanded={collarsExpanded} />
+      </section>
 
       <section className="catalog-filter-shell panel">
         <div className="catalog-filter-primary-row">
@@ -460,6 +496,7 @@ export function KinkCatalogPreferences({
               key={item.id}
             >
               <div className="catalog-row-summary">
+                <div className="catalog-v2-item-main">
                 <button
                   type="button"
                   className="catalog-row-open"
@@ -487,29 +524,32 @@ export function KinkCatalogPreferences({
                   </span>
                 </button>
 
+
+
+                </div>
                 <label className="catalog-preference-editor">
-                  <span className="sr-only">
-                    Preference for {item.label}
-                  </span>
-                  <select
-                    value={preference ?? ""}
-                    onChange={(event) =>
-                      updatePreference(
-                        item.id,
-                        event.target.value
-                          ? (event.target.value as CatalogPreferenceState)
-                          : undefined,
-                      )
-                    }
-                  >
-                    <option value="">Not set</option>
-                    {catalogPreferenceStates.map((state) => (
-                      <option key={state} value={state}>
-                        {catalogPreferenceLabels[state]}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                                  <span className="sr-only">
+                                    Preference for {item.label}
+                                  </span>
+                                  <select
+                                    value={preference ?? ""}
+                                    onChange={(event) =>
+                                      updatePreference(
+                                        item.id,
+                                        event.target.value
+                                          ? (event.target.value as CatalogPreferenceState)
+                                          : undefined,
+                                      )
+                                    }
+                                  >
+                                    <option value="">Not set</option>
+                                    {catalogPreferenceStates.map((state) => (
+                                      <option key={state} value={state}>
+                                        {catalogPreferenceLabels[state]}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </label>
               </div>
             </article>
           );
