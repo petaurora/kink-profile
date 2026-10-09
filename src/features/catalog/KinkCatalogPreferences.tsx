@@ -549,7 +549,6 @@ export function KinkCatalogPreferences({
                                   </select>
                                 </label>
               </div>
-              {item.label.toLowerCase() === "collars" && <CollarsV2Pilot expanded={false} />}
             </article>
           );
         }}
