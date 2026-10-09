@@ -5,10 +5,9 @@ import { COLLARS_V2_STORAGE_KEY, collarsModifierKey, collarsV2, parseCollarsV2Ra
 import "./CollarsV2Pilot.css";
 
 /** Opt-in V2 vertical slice. The existing V1 overall Collars rating remains authoritative. */
-export function CollarsV2Pilot() {
+export function CollarsV2Pilot({ expanded, onToggle }: { expanded: boolean; onToggle: () => void }) {
   const [ratings, setRatings] = useState<CollarsV2Ratings>(() =>
     typeof localStorage === "undefined" ? {} : parseCollarsV2Ratings(localStorage.getItem(COLLARS_V2_STORAGE_KEY)));
-  const [expanded, setExpanded] = useState(false);
   const update = (key: string, state: CatalogPreferenceState | "") => {
     const next = { ...ratings };
     if (state) next[key] = state;
@@ -18,9 +17,6 @@ export function CollarsV2Pilot() {
   };
   return (
     <section className="collars-v2-pilot" aria-label="Collars refinements">
-      <button type="button" className="collars-v2-refine-toggle" aria-expanded={expanded} aria-controls="collars-v2-details" onClick={() => setExpanded(!expanded)}>
-        {expanded ? "− Hide refinements" : "+ Refine"}
-      </button>
       {expanded && <div id="collars-v2-details" className="collars-v2-groups">
         {collarsV2.groups.map(group => <fieldset key={group.id} className="collars-v2-group">
           <legend>{group.label}</legend>
