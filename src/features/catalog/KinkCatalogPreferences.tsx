@@ -239,11 +239,12 @@ export function KinkCatalogPreferences({
       </div>
 
       <section className="panel catalog-v2-demo" aria-label="Collars V2 example">
-        <div className="catalog-v2-demo-row">
-          <strong className="catalog-row-title">Collars</strong>
-          <label className="catalog-preference-editor">
+        <div className="catalog-v2-demo-row" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 116px 36px", alignItems: "center", gap: "8px", width: "100%" }}>
+          <strong className="catalog-row-title" style={{ minWidth: 0, margin: 0 }}>Collars</strong>
+          <label className="catalog-preference-editor" style={{ width: "116px", minWidth: 0, margin: 0, gridColumn: 2 }}>
             <span className="sr-only">Overall Collars preference</span>
             <select
+              style={{ boxSizing: "border-box", width: "100%", minWidth: 0, maxWidth: "100%" }}
               value={getCatalogPreference(profile.preferences[kinkCatalog.find(item => item.label.toLowerCase() === "collars")?.id ?? ""], "overall") ?? ""}
               onChange={(event) => {
                 const collars = kinkCatalog.find(item => item.label.toLowerCase() === "collars");
@@ -259,6 +260,7 @@ export function KinkCatalogPreferences({
           <button
             type="button"
             className="catalog-v2-expand"
+            style={{ gridColumn: 3, width: 36, height: 36, minWidth: 36 }}
             aria-label={collarsExpanded ? "Collapse Collars modifiers" : "Expand Collars modifiers"}
             aria-expanded={collarsExpanded}
             aria-controls="collars-v2-details"
