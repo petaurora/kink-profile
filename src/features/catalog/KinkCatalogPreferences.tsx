@@ -68,6 +68,7 @@ export function KinkCatalogPreferences({
   const [showFilters, setShowFilters] = useState(false);
   const [openItemId, setOpenItemId] = useState<string | null>(null);
   const [showBoundaries, setShowBoundaries] = useState(false);
+  const [collarsExpanded, setCollarsExpanded] = useState(false);
 
   const filterState = { query, categoryFilter, preferenceFilter };
   const hasActiveFilters = hasActiveExploreFilters(filterState);
@@ -238,12 +239,8 @@ export function KinkCatalogPreferences({
       </div>
 
       <section className="panel catalog-v2-demo" aria-label="Collars V2 example">
-        <p className="eyebrow">Catalog V2 · Interactive example</p>
         <div className="catalog-v2-demo-row">
-          <div className="catalog-v2-demo-main">
-            <strong className="catalog-row-title">Collars</strong>
-            <CollarsV2Pilot />
-          </div>
+          <strong className="catalog-row-title">Collars</strong>
           <label className="catalog-preference-editor">
             <span className="sr-only">Overall Collars preference</span>
             <select
@@ -259,7 +256,18 @@ export function KinkCatalogPreferences({
               ))}
             </select>
           </label>
+          <button
+            type="button"
+            className="catalog-v2-expand"
+            aria-label={collarsExpanded ? "Collapse Collars modifiers" : "Expand Collars modifiers"}
+            aria-expanded={collarsExpanded}
+            aria-controls="collars-v2-details"
+            onClick={() => setCollarsExpanded(value => !value)}
+          >
+            <span aria-hidden="true">{collarsExpanded ? "⌃" : "⌄"}</span>
+          </button>
         </div>
+        <CollarsV2Pilot expanded={collarsExpanded} />
       </section>
 
       <section className="catalog-filter-shell panel">
