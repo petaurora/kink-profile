@@ -5,7 +5,7 @@ import { COLLARS_V2_STORAGE_KEY, collarsModifierKey, collarsV2, parseCollarsV2Ra
 import "./CollarsV2Pilot.css";
 
 /** Opt-in V2 vertical slice. The existing V1 overall Collars rating remains authoritative. */
-export function CollarsV2Pilot({ expanded, onToggle }: { expanded: boolean; onToggle: () => void }) {
+export function CollarsV2Pilot({ expanded }: { expanded: boolean }) {
   const [ratings, setRatings] = useState<CollarsV2Ratings>(() =>
     typeof localStorage === "undefined" ? {} : parseCollarsV2Ratings(localStorage.getItem(COLLARS_V2_STORAGE_KEY)));
   const update = (key: string, state: CatalogPreferenceState | "") => {
