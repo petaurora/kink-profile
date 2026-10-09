@@ -73,3 +73,15 @@
 .catalog-v2-demo .catalog-v2-demo-row>.catalog-preference-editor{flex:0 0 108px;width:108px;max-width:108px;align-self:center}
 .catalog-v2-demo .catalog-v2-demo-row>.catalog-preference-editor select{min-height:34px;border-radius:12px;padding:6px 22px 6px 10px;font-size:.73rem}
 @media(max-width:360px){.catalog-v2-demo{padding:12px}.catalog-v2-demo .catalog-v2-demo-row>.catalog-preference-editor{flex-basis:102px;width:102px;max-width:102px}}
+
+/* Option 4: one-line item, compact overall rating, circular expansion affordance. */
+.catalog-v2-demo{padding:12px 14px;border-radius:18px}
+.catalog-v2-demo .catalog-v2-demo-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(105px,125px) 36px;align-items:center;gap:10px}
+.catalog-v2-demo .catalog-v2-demo-row>.catalog-row-title{font-size:1rem;margin:0;min-width:0}
+.catalog-v2-demo .catalog-v2-demo-row>.catalog-preference-editor{display:block;min-width:0;width:100%;max-width:none;margin:0;align-self:center}
+.catalog-v2-demo .catalog-v2-demo-row>.catalog-preference-editor select{width:100%;max-width:100%;min-width:0;min-height:36px;border-radius:999px;font-size:.73rem}
+.catalog-v2-expand{display:grid;place-items:center;width:36px;height:36px;min-width:36px;padding:0;border:1px solid var(--border-subtle);border-radius:50%;background:var(--bg-muted);color:var(--text-secondary);font-size:1.3rem;cursor:pointer}
+.catalog-v2-expand:hover,.catalog-v2-expand:focus-visible{border-color:var(--accent-border);color:var(--text-primary)}
+.catalog-v2-demo>.collars-v2-pilot{margin:0}
+.catalog-v2-demo .collars-v2-groups{margin-top:12px;padding-top:12px;border-top:1px solid var(--border-subtle)}
+@media(max-width:420px){.catalog-v2-demo .catalog-v2-demo-row{grid-template-columns:minmax(0,1fr) 108px 32px;gap:7px}.catalog-v2-expand{width:32px;height:32px;min-width:32px}}
