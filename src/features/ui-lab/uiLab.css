@@ -51,3 +51,51 @@
 .ui-lab-mock-rich .ui-lab-mock-bottom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .ui-lab-mock-rich .ui-lab-mock-bottom button{font-size:11px}
 }
+
+
+/* Full-page interactive shell concept */
+.ui-lab-app{display:block;background:#0b0c25;min-height:100dvh;color:#f0d3e7}
+.ui-lab-app-rail{position:fixed;left:0;top:0;bottom:0;width:220px;background:#12132f;border-right:1px solid #ffffff1b;display:flex;flex-direction:column;padding:24px 12px;gap:6px;z-index:12}
+.ui-lab-app-brand{padding:14px 12px 32px;font-size:20px;color:#f0d3e7}.ui-lab-app-brand strong{font-size:16px}.ui-lab-app-brand small{display:block;font-size:10px;letter-spacing:.2em;color:#a9a0bb;margin:5px 0 0 28px}
+.ui-lab-app-rail button{border:0;background:transparent;color:#bdb2ce;border-radius:10px;padding:13px;text-align:left;display:flex;align-items:center;gap:15px}
+.ui-lab-app-rail button span{font-size:23px}.ui-lab-app-rail button.active{background:#520e25;color:#ffe4f1;border-left:3px solid #f0b8d6}
+.ui-lab-app-rail .ui-lab-app-rail-lab{margin-top:auto;color:#e2bbd3}
+.ui-lab-app-frame{margin-left:220px;min-height:100dvh;position:relative}
+.ui-lab-app-header{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;border-bottom:1px solid #ffffff1c;background:#10112b}
+.ui-lab-app-header button{background:none;border:0;color:#f0d3e7;font-size:23px}.ui-lab-app-header .ui-lab-app-logo{font-size:17px;font-weight:700}.ui-lab-app-header>div{display:flex;gap:14px}
+.ui-lab-app-content{max-width:980px;margin:auto;padding:48px 32px 110px}
+.ui-lab-app-kicker{font-size:11px;letter-spacing:.2em;color:#e6a4c6;font-weight:700}
+.ui-lab-app h1{font-size:clamp(36px,5vw,56px);margin:10px 0 12px}
+.ui-lab-app-lede{font-size:15px;color:#bdb5d1;line-height:1.7;max-width:620px;margin-bottom:30px}
+.ui-lab-app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ui-lab-app-tile{position:relative;min-height:165px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:10px;background:#1b1a39;border:1px solid #59415f;border-radius:18px;padding:24px;color:#f5dce9}
+.ui-lab-app-tile.featured{background:linear-gradient(120deg,#43203d,#1a1b40);border-color:#95617c}
+.ui-lab-app-tile-icon{font-size:25px;color:#eab1d0}.ui-lab-app-tile strong{font-size:17px}.ui-lab-app-tile small{font-size:13px;line-height:1.5;color:#c2b6cf}.ui-lab-app-tile-arrow{position:absolute;right:22px;top:22px;color:#dca9c5}
+.ui-lab-app-note{margin-top:30px;font-size:11px;color:#9c91ad}
+.ui-lab-app-modes{display:flex;gap:5px;padding:5px;background:#1d1a39;border-radius:12px;margin-bottom:22px;width:max-content;max-width:100%}
+.ui-lab-app-modes button{background:transparent;border:0;border-radius:8px;padding:10px 16px;color:#c7b6cb}.ui-lab-app-modes button.active{background:#520e25;color:#ffe1f0}
+.ui-lab-app-switch{background:none;border:0;color:#f0b5d5;padding:0 0 20px}
+.ui-lab-app-bottom{display:none}
+.ui-lab-app-launcher{position:fixed;bottom:18px;left:calc(50% + 110px);transform:translateX(-50%);width:min(440px,90vw);z-index:21;background:#25203d;border:1px solid #8d5c7d;border-radius:24px;padding:18px;box-shadow:0 20px 55px #0009}
+.ui-lab-app-launcher-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.ui-lab-app-launcher-top button{background:none;border:0;color:#fff;font-size:25px}
+.ui-lab-app-launcher>div:last-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.ui-lab-app-launcher>div:last-child button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:82px;background:#351e3d;border:1px solid #77506d;border-radius:15px;color:#f5d8e8;padding:10px;font-size:12px}
+.ui-lab-app-launcher>div:last-child button span{font-size:22px}
+.ui-lab-app-overlay{position:fixed;inset:0;z-index:30;background:#050511bb;display:grid;place-items:center;padding:22px}
+.ui-lab-app-overlay>div{background:#211c3b;border:1px solid #8e6381;border-radius:18px;padding:25px;width:min(430px,100%)}.ui-lab-app-overlay button{float:right;background:none;border:0;color:white;font-size:26px}
+.ui-lab-app-design{margin-top:30px;padding:22px;background:#211c3b;border-radius:15px}.ui-lab-app-design a{color:#f0d3e7}
+.ui-lab-app-swatches{display:flex;gap:10px;margin:15px 0}.ui-lab-app-swatches div{height:45px;flex:1;border:1px solid #ffffff40;border-radius:8px}
+@media(max-width:700px){
+.ui-lab-app{padding-bottom:0}.ui-lab-app-rail{display:none}.ui-lab-app-frame{margin-left:0;padding-bottom:76px}
+.ui-lab-app-header{padding:15px 18px}.ui-lab-app-content{padding:32px 18px 50px}
+.ui-lab-app-grid{grid-template-columns:1fr;gap:11px}.ui-lab-app-tile{min-height:120px;padding:18px}
+.ui-lab-app-bottom{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:end;justify-content:space-around;background:#171431;border-top:1px solid #73526f;min-height:72px;padding:6px 4px max(8px,env(safe-area-inset-bottom));z-index:20}
+.ui-lab-app-bottom button{flex:1;min-width:0;background:none;border:0;color:#afa5bf;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 3px;border-radius:11px}
+.ui-lab-app-bottom button span{font-size:23px;line-height:1}.ui-lab-app-bottom button small{font-size:10px}
+.ui-lab-app-bottom button.active{color:#ffe4f0;background:#520e25}
+.ui-lab-app-bottom button.hub span{font-size:28px}
+.ui-lab-app-bottom button.hub{transform:translateY(-9px);background:#342044;border:1px solid #8c5b7e;border-radius:16px;padding:12px 0 7px}
+.ui-lab-app-bottom button.hub.active{background:#520e25}
+.ui-lab-app-launcher{bottom:calc(80px + env(safe-area-inset-bottom));left:50%;width:calc(100vw - 26px);border-radius:28px 28px 18px 18px}
+}
