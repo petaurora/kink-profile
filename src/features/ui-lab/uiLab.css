@@ -33,3 +33,21 @@
 .ui-lab-mock-bottom button.active{background:#520e25;color:#f0d3e7}
 .ui-lab-jumps{gap:8px}
 }
+
+
+.ui-lab-mock-rich .ui-lab-mock-body{min-height:430px}
+.ui-lab-mock-rich .ui-lab-mock-side{width:175px}
+.ui-lab-mock-rich .ui-lab-mock-page{background:radial-gradient(ellipse at top right,#40203e55,transparent 65%)}
+.ui-lab-mock-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ui-lab-mock-grid .ui-lab-mock-card{min-width:0;min-height:120px;background:linear-gradient(145deg,#30223f,#191b3c);border-color:#75506b}
+.ui-lab-mock-grid .ui-lab-mock-card strong{color:#f5d7e7;font-size:15px}
+.ui-lab-mock-grid .ui-lab-mock-card p{font-size:12px;line-height:1.5;margin:8px 0;color:#c4b8ce}
+.ui-lab-mock-grid .ui-lab-mock-card span{font-size:11px;color:#efbad6}
+.ui-lab-mock-modes{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.ui-lab-mock-modes span{border:1px solid #9b5a7c;background:#520e2560;padding:8px 12px;border-radius:20px;font-size:12px}
+@media(max-width:700px){
+.ui-lab-mock-grid{grid-template-columns:1fr}
+.ui-lab-mock-grid .ui-lab-mock-card{min-height:95px;padding:16px}
+.ui-lab-mock-rich .ui-lab-mock-bottom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.ui-lab-mock-rich .ui-lab-mock-bottom button{font-size:11px}
+}
