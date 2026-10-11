@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./uiLab.css";
 
 type Area = "Home" | "Catalog" | "Profile" | "Discover" | "Tools";
@@ -25,8 +25,10 @@ export function UiLabPage() {
  const [mode,setMode]=useState("Explore");
  const [detail,setDetail]=useState<string|null>(null);
  const [showLab,setShowLab]=useState(false);
+ const [menuOpen,setMenuOpen]=useState(false);
+ useEffect(()=>{if(!menuOpen)return;const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setMenuOpen(false);};window.addEventListener("keydown",onKey);return()=>window.removeEventListener("keydown",onKey);},[menuOpen]);
  const navigate=(next:Area)=>{
-   setArea(next);setWorkspace("");setDetail(null);setDomain("All");
+   setArea(next);setWorkspace("");setDetail(null);setDomain("All");setMenuOpen(false);
  };
  const choose=(name:string)=>{setArea("Catalog");setWorkspace(name);setMode("Explore");setDetail(null);};
  const heading=workspace||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools."} as Record<Area,string>)[area];
@@ -38,7 +40,7 @@ export function UiLabPage() {
   </aside>
   <div className="ui-lab-app-frame">
    <header className="ui-lab-app-header">
-    <button type="button" className="ui-lab-header-action" aria-label="Open full menu" onClick={()=>setDetail("Full menu: Home, Catalog, Profile, Discover, Tools, Creations, Learn, Relationships")}>
+    <button type="button" className="ui-lab-header-action" aria-label="Open full menu" aria-expanded={menuOpen} aria-controls="ui-lab-full-menu" onClick={()=>setMenuOpen(true)}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
     <button type="button" className="ui-lab-app-logo" onClick={()=>navigate("Home")} aria-label="Kink Profile, go to Home"><span className="ui-lab-brand-mark" aria-hidden="true">♡</span><span>Kink Profile</span></button>
@@ -48,6 +50,22 @@ export function UiLabPage() {
       </button>
     </div>
    </header>
+   {menuOpen&&<div className="ui-lab-menu-layer">
+     <button type="button" className="ui-lab-menu-backdrop" aria-label="Close navigation menu" onClick={()=>setMenuOpen(false)}/>
+     <aside id="ui-lab-full-menu" className="ui-lab-menu-drawer" role="dialog" aria-modal="true" aria-label="Full navigation menu">
+       <div className="ui-lab-menu-heading"><span className="ui-lab-menu-title"><span aria-hidden="true">♡</span> Kink Profile</span><button type="button" className="ui-lab-menu-close" aria-label="Close menu" onClick={()=>setMenuOpen(false)}>×</button></div>
+       <p className="ui-lab-menu-eyebrow">YOUR SPACE</p>
+       <nav aria-label="All destinations" className="ui-lab-menu-links">
+         {areas.map(item=><button type="button" key={item} className={area===item?"selected":""} aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-menu-link-icon"><NavIcon area={item}/></span><span>{item}</span><span className="ui-lab-menu-chevron" aria-hidden="true">›</span></button>)}
+       </nav>
+       <div className="ui-lab-menu-divider"/>
+       <p className="ui-lab-menu-eyebrow">MORE TO EXPLORE</p>
+       <div className="ui-lab-menu-links">
+         {(["Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} onClick={()=>{setMenuOpen(false);setDetail(item+" · Coming soon");}}><span className="ui-lab-menu-link-icon" aria-hidden="true">{["◇","✧","♡"][i]}</span><span>{item}</span><small>Preview</small><span className="ui-lab-menu-chevron" aria-hidden="true">›</span></button>)}
+       </div>
+       <div className="ui-lab-menu-footer">Explore freely. Your preferences stay yours.</div>
+     </aside>
+   </div>}
    <main className="ui-lab-app-content">
     <p className="ui-lab-app-kicker">{area.toUpperCase()} {workspace&&" / "+workspace.toUpperCase()}</p>
     <h1>{heading}</h1>
