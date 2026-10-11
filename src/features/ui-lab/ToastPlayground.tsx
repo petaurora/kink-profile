@@ -9,7 +9,7 @@ export function ToastPlayground() {
  const dismiss=useCallback((id:number)=>setItems(prev=>prev.filter(t=>t.id!==id)),[]);
  const push=(message:string,kind:LabToast["kind"],actionLabel?:string,onAction?:()=>void,duration?:number)=>{
   const toast:LabToast={id:++nextId.current,message,kind,actionLabel,onAction,duration};
-  setItems(prev=>[...prev.filter(t=>!(kind==="success"&&!actionLabel&&t.kind==="success"&&!t.actionLabel)),toast]);
+  setItems(prev=>{if(prev.some(t=>t.message===message&&t.kind===kind&&t.actionLabel===actionLabel))return prev;return [...prev.filter(t=>!(kind==="success"&&!actionLabel&&t.kind==="success"&&!t.actionLabel)),toast]});
  };
  const demoRetry=()=>{setLastAction("Retry selected");push("Saved successfully after retry","success")};
  const demoUndo=()=>{setLastAction("Rating restored");push("Rating restored","success")};
