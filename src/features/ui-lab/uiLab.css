@@ -38,13 +38,15 @@
 .ui-lab-app-bottom{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:end;justify-content:space-around;background:#171431;border-top:1px solid #73526f;min-height:72px;padding:6px 4px max(8px,env(safe-area-inset-bottom));z-index:20}
 .ui-lab-app-bottom button{flex:1;min-width:0;background:none;border:0;color:#afa5bf;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 3px;border-radius:11px}
 .ui-lab-app-bottom button span{font-size:23px;line-height:1}.ui-lab-app-bottom button small{font-size:10px}
-.ui-lab-app-bottom button.active{color:#ffe4f0;background:#520e25}
-.ui-lab-app-bottom button.hub span{font-size:28px}
-.ui-lab-app-bottom button.hub{transform:translateY(-9px);background:#342044;border:1px solid #8c5b7e;border-radius:16px;padding:12px 0 7px}
-.ui-lab-app-bottom button.hub.active{background:#520e25}
+.ui-lab-app-bottom button.active{color:#ffe4f0;background:#520e254d}.ui-lab-app-bottom button.active span{filter:drop-shadow(0 0 5px #d98cb26b)}
+
+
+
 
 }
 
 @media(min-width:701px){}
 
 .ui-lab-catalog{display:flex;flex-direction:column;gap:18px}.ui-lab-catalog h2{font-size:17px;margin:12px 0 0;color:#f0d3e7}.ui-lab-catalog-search{width:100%;display:flex;align-items:center;gap:14px;text-align:left;border:1px solid #66516f;background:#211e40;border-radius:13px;color:#d8c4d6;padding:17px 19px}.ui-lab-catalog-search span:nth-child(2){flex:1}.ui-lab-catalog-all{border:1px solid #875b78;background:#520e25;color:#f0d3e7;border-radius:13px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:600}.ui-lab-catalog-filters{display:flex;gap:9px;flex-wrap:wrap}.ui-lab-catalog-filters button{border:1px solid #73516d;background:#221d3c;color:#ddc6d8;border-radius:30px;padding:10px 14px}.ui-lab-catalog-filters button.active{background:#520e25;border-color:#d59ab9;color:#fff}.ui-lab-catalog-items{border:1px solid #59415f;border-radius:14px;overflow:hidden}.ui-lab-catalog-items button{display:flex;align-items:center;gap:10px;width:100%;border:0;border-bottom:1px solid #ffffff1a;background:#1b1a39;color:#f0d3e7;padding:18px;text-align:left}.ui-lab-catalog-items button:last-child{border-bottom:0}.ui-lab-catalog-items button span:first-child{flex:1}.ui-lab-catalog-items button small{color:#a9a0bb}.ui-lab-catalog-items button span:last-child{margin-left:auto;font-size:21px;color:#d5a5c0}
+
+.ui-lab-app-header{gap:12px}.ui-lab-app-header .ui-lab-app-logo{margin-right:auto;text-align:left}.ui-lab-app-header>div{flex-shrink:0}@media(max-width:700px){.ui-lab-app-header{padding:12px 16px}.ui-lab-app-bottom button{padding:10px 0 6px}.ui-lab-app-bottom button.active{border-radius:13px}}
