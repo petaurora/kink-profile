@@ -21,12 +21,12 @@
 .ui-lab-app-modes button{background:transparent;border:0;border-radius:8px;padding:10px 16px;color:#c7b6cb}.ui-lab-app-modes button.active{background:#520e25;color:#ffe1f0}
 .ui-lab-app-switch{background:none;border:0;color:#f0b5d5;padding:0 0 20px}
 .ui-lab-app-bottom{display:none}
-.ui-lab-app-launcher{position:fixed;bottom:18px;left:calc(50% + 110px);transform:translateX(-50%);width:min(360px,85vw);z-index:19;background:#29203f;border:1px solid #8d5c7d;border-radius:100px 100px 18px 18px;padding:35px 18px 18px;box-shadow:0 20px 55px #0009}.ui-lab-app-launcher-crest{position:absolute;top:7px;left:50%;transform:translateX(-50%);font-size:20px;color:#f0d3e7}
-.ui-lab-app-launcher-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.ui-lab-app-launcher-top button{background:none;border:0;color:#fff;font-size:25px}
-.ui-lab-app-launcher>div:last-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.ui-lab-app-launcher>div:last-child button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:78px;background:transparent;border:0;border-radius:15px;color:#f5d8e8;padding:10px;font-size:12px}
-.ui-lab-app-launcher>div:last-child button span{font-size:22px}
+
+
+
+
+
+
 .ui-lab-app-overlay{position:fixed;inset:0;z-index:30;background:#050511bb;display:grid;place-items:center;padding:22px}
 .ui-lab-app-overlay>div{background:#211c3b;border:1px solid #8e6381;border-radius:18px;padding:25px;width:min(430px,100%)}.ui-lab-app-overlay button{float:right;background:none;border:0;color:white;font-size:26px}
 .ui-lab-app-design{margin-top:30px;padding:22px;background:#211c3b;border-radius:15px}.ui-lab-app-design a{color:#f0d3e7}
@@ -42,7 +42,9 @@
 .ui-lab-app-bottom button.hub span{font-size:28px}
 .ui-lab-app-bottom button.hub{transform:translateY(-9px);background:#342044;border:1px solid #8c5b7e;border-radius:16px;padding:12px 0 7px}
 .ui-lab-app-bottom button.hub.active{background:#520e25}
-.ui-lab-app-launcher{bottom:calc(61px + env(safe-area-inset-bottom));left:50%;width:min(330px,calc(100vw - 30px));border-radius:115px 115px 16px 16px;padding:38px 12px 19px}
+
 }
 
-@media(min-width:701px){.ui-lab-app-launcher{left:325px;bottom:auto;top:215px;transform:none;border-radius:22px;padding:24px 14px 12px}.ui-lab-app-launcher-crest{display:none}}
+@media(min-width:701px){}
+
+.ui-lab-catalog{display:flex;flex-direction:column;gap:18px}.ui-lab-catalog h2{font-size:17px;margin:12px 0 0;color:#f0d3e7}.ui-lab-catalog-search{width:100%;display:flex;align-items:center;gap:14px;text-align:left;border:1px solid #66516f;background:#211e40;border-radius:13px;color:#d8c4d6;padding:17px 19px}.ui-lab-catalog-search span:nth-child(2){flex:1}.ui-lab-catalog-all{border:1px solid #875b78;background:#520e25;color:#f0d3e7;border-radius:13px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:600}.ui-lab-catalog-filters{display:flex;gap:9px;flex-wrap:wrap}.ui-lab-catalog-filters button{border:1px solid #73516d;background:#221d3c;color:#ddc6d8;border-radius:30px;padding:10px 14px}.ui-lab-catalog-filters button.active{background:#520e25;border-color:#d59ab9;color:#fff}.ui-lab-catalog-items{border:1px solid #59415f;border-radius:14px;overflow:hidden}.ui-lab-catalog-items button{display:flex;align-items:center;gap:10px;width:100%;border:0;border-bottom:1px solid #ffffff1a;background:#1b1a39;color:#f0d3e7;padding:18px;text-align:left}.ui-lab-catalog-items button:last-child{border-bottom:0}.ui-lab-catalog-items button span:first-child{flex:1}.ui-lab-catalog-items button small{color:#a9a0bb}.ui-lab-catalog-items button span:last-child{margin-left:auto;font-size:21px;color:#d5a5c0}
