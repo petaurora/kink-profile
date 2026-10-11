@@ -206,3 +206,21 @@
 .ui-lab-app .ui-lab-menu-settings:focus-visible{outline:2px solid #f0d3e7;outline-offset:2px;}
 .ui-lab-app .ui-lab-menu-bottom .ui-lab-menu-footer{padding:18px 12px 0;}
 @media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-menu-settings{transition:none}}
+
+/* Backdrop is a dismiss surface, not a link: suppress mobile tap highlight/flash. */
+.ui-lab-app .ui-lab-menu-backdrop{
+ -webkit-tap-highlight-color:transparent;
+ -webkit-touch-callout:none;
+ appearance:none;
+ outline:none;
+ touch-action:manipulation;
+}
+.ui-lab-app .ui-lab-menu-backdrop:focus,
+.ui-lab-app .ui-lab-menu-backdrop:active{
+ outline:none;
+ background:rgba(5,5,21,.65);
+}
+.ui-lab-app .ui-lab-menu-backdrop:focus-visible{
+ outline:2px solid #f0d3e7;
+ outline-offset:-3px;
+}
