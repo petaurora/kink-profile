@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "./labToasts.css";
 
 export type LabToast = {id:number;message:string;kind:"success"|"error"|"info";actionLabel?:string;onAction?:()=>void;duration?:number};
-export function LabToasts({items,onDismiss}:{items:LabToast[];onDismiss:(id:number)=>void}) {
+export function LabToasts({items,onDismiss,modalOpen=false}:{items:LabToast[];onDismiss:(id:number)=>void;modalOpen?:boolean}) {
  const active=items[0];
  const [paused,setPaused]=useState(false);
  const [offset,setOffset]=useState(0);
@@ -24,7 +24,7 @@ export function LabToasts({items,onDismiss}:{items:LabToast[];onDismiss:(id:numb
  const dismiss=useCallback(()=>{if(!active||leaving)return;setLeaving(true);const id=active.id;window.setTimeout(()=>dismissRef.current(id),150)},[active?.id,leaving]);
  if(!active)return null;
  const compact=active.kind==="success"&&!active.actionLabel&&active.message.length<45;
- return <div className="lt-region" aria-label="Notifications"><div key={active.id} className={"lt-toast "+(compact?"lt-pill":"lt-rect")+" lt-"+active.kind+(leaving?" lt-leaving":"")} role={active.kind==="error"?"alert":"status"}
+ return <div className={"lt-region"+(modalOpen?" lt-region-modal":"")} aria-label="Notifications"><div key={active.id} className={"lt-toast "+(compact?"lt-pill":"lt-rect")+" lt-"+active.kind+(leaving?" lt-leaving":"")} role={active.kind==="error"?"alert":"status"}
  onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)}
  onFocusCapture={()=>setPaused(true)} onBlurCapture={e=>{if(!e.currentTarget.contains(e.relatedTarget))setPaused(false)}}
  onPointerDown={e=>{if(e.pointerType==="touch"||e.pointerType==="pen"){pointer.current={x:e.clientX,y:e.clientY,id:e.pointerId};setPaused(true)}}}
