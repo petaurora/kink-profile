@@ -48,7 +48,7 @@ export function UiLabPage() {
   const start=gestureStart.current;gestureStart.current=null;
   const t=event.changedTouches[0];if(!start||!t)return;
   const dx=t.clientX-start.x,dy=t.clientY-start.y;
-  if(menuOpen){if(dx < -55 && Math.abs(dx)>Math.abs(dy)*1.1)setMenuOpen(false);return;}
+  if(menuOpen){if(dx < -60 && Math.abs(dx)>Math.abs(dy)*1.6)setMenuOpen(false);return;}
   // Only a deliberate horizontal right swipe opens the drawer; diagonal scrolling remains native.
   if(dx>85&&Math.abs(dx)>Math.abs(dy)*2.2)openDrawer();
  };
@@ -78,7 +78,7 @@ export function UiLabPage() {
       </button>
     </div>
    </header>
-   {menuOpen&&<div className="ui-lab-menu-layer">
+   {menuOpen&&<div className="ui-lab-menu-layer" onTouchStart={onGestureStart} onTouchEnd={event=>{event.stopPropagation();onGestureEnd(event);}}>
      <button type="button" className="ui-lab-menu-backdrop" aria-label="Close navigation menu" onClick={()=>setMenuOpen(false)}/>
      <aside id="ui-lab-full-menu" className="ui-lab-menu-drawer" role="dialog" aria-modal="true" aria-label="Full navigation menu">
        <div className="ui-lab-menu-heading"><span className="ui-lab-menu-title"><span aria-hidden="true">♡</span> Kink Profile</span><button type="button" className="ui-lab-menu-close" aria-label="Close menu" onClick={()=>setMenuOpen(false)}>×</button></div>
