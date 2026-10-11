@@ -18,3 +18,6 @@
 
 /* Overall rating in Refine uses the same quiet text affordance as modifier rows. */
 .cc-refine-overall{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 0;color:#d8bbd0;font-size:13px}.cc-refine-overall .cc-rating-wrap{min-width:0}.cc-refine-overall .cc-rating{font-size:13px!important;font-weight:400;color:#c6b1ca;min-height:36px;min-width:0;padding:5px 3px;background:transparent;border:1px solid transparent;border-radius:5px;text-align:right;white-space:nowrap}.cc-refine-overall .cc-rating:hover{color:#f0d3e7;background:#f0d3e70a}.cc-refine-overall .cc-rating:focus-visible{outline:2px solid #f0d3e7;outline-offset:2px}
+
+/* Refine maintains a stable viewport-relative sheet height regardless of group disclosure. */
+.cc-refine-sheet{height:min(80dvh,760px);max-height:calc(100dvh - 24px);display:flex;flex-direction:column;overflow:hidden}.cc-refine-sheet>.cc-selector-head{flex:0 0 auto}.cc-refine-sheet>.cc-refine-content{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto}.cc-refine-underlay{z-index:1100;pointer-events:none}.cc-refine-underlay .cc-backdrop{pointer-events:none}.cc-rating-over-refine{z-index:1110}.cc-rating-over-refine .cc-backdrop{background:#07082085}@media(max-width:680px){.cc-refine-sheet{height:70dvh;max-height:calc(100dvh - 12px)}.cc-refine-sheet>.cc-refine-content{max-height:none}}
