@@ -58,10 +58,10 @@ export function CatalogComposite({initialItem}:{initialItem?:string;onClose?:()=
  function renderItem(x:Item){
   const open=!!expanded[x.id];const overall=x.id+":overall";const errors=Object.keys(saves).filter(k=>k.startsWith(x.id+":")&&saves[k]==="failed");
   return <article className={"cc-item "+(open?"cc-item-open":"")} data-item-id={x.id} key={x.id}>
-   <div className="cc-item-row"><button className="cc-item-toggle" aria-expanded={open} aria-controls={"cc-panel-"+x.id.replace(/[^a-z0-9]/gi,"-")} onClick={()=>setExpanded(p=>({...p,[x.id]:!p[x.id]}))}><span className="cc-item-name">{x.name}</span><span className="cc-chevron" aria-hidden="true">{open?"⌃":"⌄"}</span></button>{ratingButton(overall,x.name+" overall",x.name)}</div>
+   <div className="cc-item-row"><span className="cc-item-name">{x.name}</span>{ratingButton(overall,x.name+" overall",x.name)}<button type="button" className="cc-refine-toggle" aria-expanded={open} aria-controls={"cc-panel-"+x.id.replace(/[^a-z0-9]/gi,"-")} onClick={()=>setExpanded(p=>({...p,[x.id]:!p[x.id]}))}><span aria-hidden="true">{open?"−":"+"}</span> Refine{!open&&Object.keys(ratings).some(k=>k.startsWith(x.id+":")&&k!==overall)?<span className="cc-rated-dot" aria-hidden="true"/>:null}</button></div>
    {open&&<div className="cc-item-panel" id={"cc-panel-"+x.id.replace(/[^a-z0-9]/gi,"-")}>
     
-    <div className="cc-modifier-label">Refine <small>Optional · Overall rating stays in the Item row</small></div>
+
     {x.groups.map(g=>{const gk=x.id+":"+g.name;const go=groupsOpen[gk]??g.values.length<=4;return <section className="cc-group" key={gk}><button className="cc-group-head" aria-expanded={go} onClick={()=>setGroupsOpen(p=>({...p,[gk]:!go}))}><span>{g.name}<small>{g.values.length} options</small></span><span aria-hidden="true">{go?"⌃":"⌄"}</span></button>{go&&<div className="cc-values">{g.values.map(v=><div className="cc-value" key={v}><span>{v}</span>{ratingButton(x.id+":"+g.name+":"+v,v,x.name+" / "+g.name)}</div>)}</div>}</section>})}
     {errors.length>0&&<p className="cc-error-summary" role="status">{errors.length} save issue{errors.length===1?"":"s"} · Retry beside the affected rating.</p>}
    </div>}
