@@ -1,3 +1,4 @@
+import { CatalogComposite } from "./CatalogComposite";
 import { useEffect, useRef, useState } from "react";
 import "./uiLab.css";
 
@@ -136,7 +137,7 @@ export function UiLabPage() {
         </div>
         <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}>Browse everything <span>→</span></button>
       </>}
-      {workspace==="Explore All"&&<>
+      {workspace==="Explore All"&&<><CatalogComposite />
         <div className="ui-lab-catalog-filters" aria-label="Catalog domains">{["All","Kinks","Rewards & Punishments"].map(d=><button key={d} className={domain===d?"active":""} onClick={()=>setDomain(d)}>{d}</button>)}</div>
         <div className="ui-lab-catalog-items">{(domain==="Kinks"?["Collars","Restraints","Sensory Play"]:domain==="Rewards & Punishments"?["Praise","Privileges","Playful Challenges"]:["Collars","Restraints","Praise","Sensory Play","Privileges"]).map(item=><button key={item} onClick={()=>setDetail(item)}><span>{item}</span><small>{["Praise","Privileges","Playful Challenges"].includes(item)?"Rewards & Punishments":"Kinks"}</small><span>›</span></button>)}</div>
       </>}
@@ -151,7 +152,8 @@ export function UiLabPage() {
     <p className="ui-lab-app-note">Experimental shell · Illustrative content only · No preferences are saved here</p>
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}} title={color}/>)}</div><a href="#/hub">Return to production app</a></section>}
    </main>}
-   {detail&&<div className="ui-lab-app-overlay" onClick={()=>setDetail(null)}><div role="dialog" aria-label={detail} onClick={e=>e.stopPropagation()}><button onClick={()=>setDetail(null)} aria-label="Close">×</button><h2>{detail}</h2>{focusedModifier&&detail==="Collars"?<p>Material → <strong>Leather</strong> · Contextual deep link preview. The modifier would be expanded and briefly highlighted in the full item view.</p>:<p>Placeholder for the future {detail.toLowerCase()} experience.</p>}</div></div>}
+   {detail&&area==="Catalog"&&detail==="Collars"?<div className="ui-lab-composite-overlay"><CatalogComposite initialItem="Collars" onClose={()=>setDetail(null)}/></div>:null}
+   {detail&&!(area==="Catalog"&&detail==="Collars")&&<div className="ui-lab-app-overlay" onClick={()=>setDetail(null)}><div role="dialog" aria-label={detail} onClick={e=>e.stopPropagation()}><button onClick={()=>setDetail(null)} aria-label="Close">×</button><h2>{detail}</h2>{focusedModifier&&detail==="Collars"?<p>Material → <strong>Leather</strong> · Contextual deep link preview. The modifier would be expanded and briefly highlighted in the full item view.</p>:<p>Placeholder for the future {detail.toLowerCase()} experience.</p>}</div></div>}
    <nav className="ui-lab-app-bottom" aria-label="Primary mobile navigation">{areas.map(item=><button key={item} type="button" className={area===item?"active":""} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span><small>{item}</small></button>)}</nav>
   </div>
  </div>;
