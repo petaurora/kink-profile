@@ -328,3 +328,6 @@
 .ui-lab-app .ui-lab-search-results strong{display:block;font-size:13px;font-weight:600;}
 .ui-lab-app .ui-lab-search-results small{display:block;margin-top:3px;color:rgba(240,211,231,.66);font-size:11px;}
 .ui-lab-app .ui-lab-search-results>button>span:last-child{font-size:20px;color:#d6b0ca;}
+
+/* Composite Item detail preview layer */
+.ui-lab-composite-overlay{position:fixed;inset:0;z-index:1050;overflow:auto;background:#08091ddc;padding:clamp(12px,3vw,36px);overscroll-behavior:contain}.ui-lab-composite-overlay>.cc{width:min(100%,960px);margin:0 auto 36px;box-shadow:0 18px 70px #0008}
