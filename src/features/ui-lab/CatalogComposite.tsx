@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./catalogComposite.css";
+import { LabToasts, type LabToast } from "./LabToasts";
 
 type SaveState = "idle" | "saving" | "failed";
 type Group = { name: string; values: string[] };
@@ -19,7 +20,10 @@ export function CatalogComposite({ initialItem, onClose }: { initialItem?: strin
  const [showHelp, setShowHelp] = useState(false);
  const [failNext, setFailNext] = useState(false);
  const [filter, setFilter] = useState("");
- const [toast, setToast] = useState("");
+ const [toasts, setToasts] = useState<LabToast[]>([]);
+ const nextToast = useRef(0);
+ const notify=(message:string,kind:LabToast["kind"],actionLabel?:string,onAction?:()=>void)=>setToasts(prev=>[...prev.filter(t=>!(kind==="success"&&t.kind==="success"&&!t.actionLabel)),{id:++nextToast.current,message,kind,actionLabel,onAction}]);
+ const dismissToast=(id:number)=>setToasts(prev=>prev.filter(t=>t.id!==id));
  const timers = useRef<Record<string,ReturnType<typeof setTimeout>>>({});
  const headingRef = useRef<HTMLHeadingElement>(null);
  const originRef = useRef<HTMLButtonElement|null>(null);
@@ -36,7 +40,7 @@ export function CatalogComposite({ initialItem, onClose }: { initialItem?: strin
   setSave(prev=>({...prev,[key]:"saving"}));
   clearTimeout(timers.current[key]);
   const shouldFail=failNext;setFailNext(false);
-  timers.current[key]=setTimeout(()=>{setSave(prev=>({...prev,[key]:shouldFail?"failed":"idle"}));if(shouldFail)setToast("A modifier couldn't be saved. Your selection is preserved.");else setToast("Preference saved in this demo session.");},850);
+  timers.current[key]=setTimeout(()=>{setSave(prev=>({...prev,[key]:shouldFail?"failed":"idle"}));if(shouldFail)notify("Save failed. Your selection is preserved.","error","Retry",()=>retry(key));else notify("Preference saved","success");},850);
  }
  function retry(key:string){commit(key,ratings[key])}
  function revealError(){const key=errorKeys[0];if(!key)return;setExpanded(true);setOpenGroups(p=>({...p,[key.split(":")[0]]:true}));requestAnimationFrame(()=>document.getElementById("lab-mod-"+key.replace(/[^a-z0-9]/gi,"-"))?.scrollIntoView({block:"nearest",behavior:"smooth"}))}
@@ -52,7 +56,7 @@ export function CatalogComposite({ initialItem, onClose }: { initialItem?: strin
   <div className="cc-filter"><label htmlFor="cc-filter-input">Filter modifier values</label><input id="cc-filter-input" value={filter} onChange={e=>setFilter(e.target.value)} placeholder="Try leather or ceremonial…" />{filter&&<button onClick={()=>setFilter("")}>Clear</button>}</div>
   {errorKeys.length>0&&<button className="cc-recover" onClick={revealError}>⚠ {errorKeys.length} save issue{errorKeys.length>1?"s":""} · Go to first failed modifier</button>}
   </div></div>
-  {toast&&<div className="cc-toast" role="status">{toast}<button onClick={()=>setToast("")} aria-label="Dismiss notification">×</button></div>}
+  <LabToasts items={toasts} onDismiss={dismissToast}/>
   {selector&&<div className="cc-modal-layer"><button className="cc-backdrop" onClick={()=>closeSelector()} aria-label="Dismiss rating selector"/><div className="cc-selector" role="dialog" aria-modal="true" aria-labelledby="cc-selector-title"><div className="cc-selector-head"><div><small>{item} / {selector.split(":")[0]}</small><h3 id="cc-selector-title" tabIndex={-1} ref={headingRef}>{selector.split(":")[1]}</h3></div><button onClick={()=>closeSelector()} aria-label="Close selector">×</button></div><div className="cc-options">{choices.map(choice=><button key={choice} className={ratings[selector]===choice?"chosen":""} onClick={()=>{commit(selector,choice);closeSelector()}}>{choice}{ratings[selector]===choice?" ✓":""}</button>)}</div><button className="cc-help" aria-expanded={showHelp} onClick={()=>setShowHelp(v=>!v)}>What do these mean? {showHelp?"−":"+"}</button>{showHelp&&<p className="cc-explanation">These describe your personal preference, not your experience or comfort. You can change them at any time.</p>}{ratings[selector]&&<button className="cc-clear" onClick={()=>{commit(selector,undefined);closeSelector()}}>Clear rating</button>}</div></div>}
  </section>;
 }
