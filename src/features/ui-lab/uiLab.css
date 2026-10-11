@@ -104,3 +104,30 @@
 .ui-lab-app .ui-lab-app-rail button .ui-lab-nav-icon{width:21px;height:21px;}
 .ui-lab-app .ui-lab-app-rail button.active{background:rgba(122,52,89,.42);border-left:3px solid #e5aacd;}
 @media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-nav-icon-wrap,.ui-lab-app .ui-lab-app-bottom button{transition:none;}}
+
+/* Refined navigation interaction and mirrored header accent. */
+.ui-lab-app .ui-lab-app-bottom{position:fixed;isolation:isolate;border-top:1px solid rgba(240,211,231,.13);}
+.ui-lab-app .ui-lab-app-bottom::before{
+  content:"";position:absolute;top:0;left:16px;right:16px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(133,48,85,.65),rgba(240,211,231,.28),transparent);
+  pointer-events:none;
+}
+.ui-lab-app .ui-lab-app-bottom button{
+  position:relative;-webkit-tap-highlight-color:transparent;
+  transition:color .18s ease,transform .16s ease;
+}
+.ui-lab-app .ui-lab-app-bottom button .ui-lab-nav-icon-wrap{
+  transition:background .18s ease,box-shadow .18s ease,transform .16s ease;
+}
+.ui-lab-app .ui-lab-app-bottom button.active .ui-lab-nav-icon-wrap{
+  background:rgba(122,52,89,.29);
+  box-shadow:inset 0 0 0 1px rgba(240,211,231,.13);
+}
+.ui-lab-app .ui-lab-app-bottom button.active small{color:#f0d3e7;font-weight:650;}
+.ui-lab-app .ui-lab-app-bottom button:active .ui-lab-nav-icon-wrap{transform:scale(.92);background:rgba(240,211,231,.16);}
+.ui-lab-app .ui-lab-app-bottom button:not(.active):hover{color:#e3c5da;}
+.ui-lab-app .ui-lab-app-bottom button:not(.active):hover .ui-lab-nav-icon-wrap{background:rgba(240,211,231,.07);}
+.ui-lab-app .ui-lab-app-bottom button:focus-visible{outline:2px solid #f0d3e7;outline-offset:-2px;}
+@media(prefers-reduced-motion:reduce){
+ .ui-lab-app .ui-lab-app-bottom button,.ui-lab-app .ui-lab-app-bottom button .ui-lab-nav-icon-wrap{transition:none;}
+}
