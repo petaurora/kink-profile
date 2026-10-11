@@ -29,7 +29,7 @@ export function CatalogComposite({initialItem}:{initialItem?:string;onClose?:()=
  const [ratings,setRatings]=useState<Record<string,string>>({});
  const [saves,setSaves]=useState<Record<string,SaveState>>({});
  const [selector,setSelector]=useState<{id:string;label:string;parent:string}|null>(null);
- const [help,setHelp]=useState(false);
+ const [help,setHelp]=useState(false);\n useEffect(()=>{if(!selector&&!refining)return;const previous=document.body.style.overflow;document.body.style.overflow="hidden";return()=>{document.body.style.overflow=previous}},[selector,refining]);
  const [failNext,setFailNext]=useState(false);
  const [toasts,setToasts]=useState<LabToast[]>([]);
  const toastId=useRef(0);
