@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./uiLab.css";
 
 type Area = "Home" | "Catalog" | "Profile" | "Discover" | "Tools";
@@ -26,13 +26,39 @@ export function UiLabPage() {
  const [detail,setDetail]=useState<string|null>(null);
  const [showLab,setShowLab]=useState(false);
  const [menuOpen,setMenuOpen]=useState(false);
+ const [expandedMenu,setExpandedMenu]=useState<Area|null>(null);
+ const gestureStart=useRef<{x:number;y:number}|null>(null);
+ const menuChildren: Record<Area,string[]> = {
+  Home:[],
+  Catalog:["Overview","Explore All","Kinks","Rewards & Punishments","Concept Explorer"],
+  Profile:["My Profile","Preferences","Sharing & Permissions"],
+  Discover:["Learn","React","Play"],
+  Tools:["Scene Builder","Agreements & Rituals","Compare Profiles"]
+ };
+ const openMenuChild=(parent:Area,child:string)=>{
+  navigate(parent);
+  if(parent==="Catalog") { if(child==="Overview")setWorkspace("");else choose(child); }
+  else if(parent==="Discover"){setMode(child);}
+  else if(parent==="Profile"||parent==="Tools"){setWorkspace(child);}
+ };
+ const onGestureStart=(event:React.TouchEvent)=>{
+  const t=event.touches[0];if(t)gestureStart.current={x:t.clientX,y:t.clientY};
+ };
+ const onGestureEnd=(event:React.TouchEvent)=>{
+  const start=gestureStart.current;gestureStart.current=null;
+  const t=event.changedTouches[0];if(!start||!t)return;
+  const dx=t.clientX-start.x,dy=t.clientY-start.y;
+  if(menuOpen){if(dx < -75 && Math.abs(dx)>Math.abs(dy)*1.2)setMenuOpen(false);return;}
+  // Edge-only gestures avoid hijacking normal vertical scrolling.
+  if(start.x<=36 && ((dx>75&&Math.abs(dx)>Math.abs(dy)*1.2)||(dy < -100&&Math.abs(dy)>Math.abs(dx)*1.5)))setMenuOpen(true);
+ };
  useEffect(()=>{if(!menuOpen)return;const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setMenuOpen(false);};window.addEventListener("keydown",onKey);return()=>window.removeEventListener("keydown",onKey);},[menuOpen]);
  const navigate=(next:Area)=>{
    setArea(next);setWorkspace("");setDetail(null);setDomain("All");setMenuOpen(false);
  };
  const choose=(name:string)=>{setArea("Catalog");setWorkspace(name);setMode("Explore");setDetail(null);};
  const heading=workspace||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools."} as Record<Area,string>)[area];
- return <div className="ui-lab ui-lab-app">
+ return <div className="ui-lab ui-lab-app" onTouchStart={onGestureStart} onTouchEnd={onGestureEnd}>
   <aside className="ui-lab-app-rail" aria-label="Primary navigation">
    <div className="ui-lab-app-brand">♡ <strong>Kink Profile</strong><small>UI LAB</small></div>
    {areas.map(item=><button key={item} type="button" className={area===item?"active":""} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span>{item}</button>)}
@@ -56,12 +82,18 @@ export function UiLabPage() {
        <div className="ui-lab-menu-heading"><span className="ui-lab-menu-title"><span aria-hidden="true">♡</span> Kink Profile</span><button type="button" className="ui-lab-menu-close" aria-label="Close menu" onClick={()=>setMenuOpen(false)}>×</button></div>
        <p className="ui-lab-menu-eyebrow">YOUR SPACE</p>
        <nav aria-label="All destinations" className="ui-lab-menu-links">
-         {areas.map(item=><button type="button" key={item} className={area===item?"selected":""} aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-menu-link-icon"><NavIcon area={item}/></span><span>{item}</span><span className="ui-lab-menu-chevron" aria-hidden="true">›</span></button>)}
+         {areas.map(item=><div className="ui-lab-menu-group" key={item}>
+          <div className={"ui-lab-menu-parent "+(area===item?"selected":"")}>
+            <button type="button" className="ui-lab-menu-destination" aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-menu-link-icon"><NavIcon area={item}/></span><span>{item}</span></button>
+            {menuChildren[item].length>0&&<button type="button" className="ui-lab-menu-expand" aria-label={(expandedMenu===item?"Collapse ":"Expand ")+item} aria-expanded={expandedMenu===item} onClick={()=>setExpandedMenu(expandedMenu===item?null:item)}><span className={"ui-lab-menu-chevron "+(expandedMenu===item?"expanded":"")} aria-hidden="true">›</span></button>}
+          </div>
+          {expandedMenu===item&&menuChildren[item].length>0&&<div className="ui-lab-menu-subitems">{menuChildren[item].map(child=><button type="button" key={child} onClick={()=>openMenuChild(item,child)}>{child}</button>)}</div>}
+         </div>)}
        </nav>
        <div className="ui-lab-menu-divider"/>
        <p className="ui-lab-menu-eyebrow">MORE TO EXPLORE</p>
        <div className="ui-lab-menu-links">
-         {(["Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} onClick={()=>{setMenuOpen(false);setDetail(item+" · Coming soon");}}><span className="ui-lab-menu-link-icon" aria-hidden="true">{["◇","✧","♡"][i]}</span><span>{item}</span><small>Preview</small><span className="ui-lab-menu-chevron" aria-hidden="true">›</span></button>)}
+         {(["Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} onClick={()=>{setMenuOpen(false);setDetail(item+" · Coming soon");}}><span className="ui-lab-menu-link-icon" aria-hidden="true">{["◇","✧","♡"][i]}</span><span>{item}</span><small>Preview</small></button>)}
        </div>
        <div className="ui-lab-menu-footer">Explore freely. Your preferences stay yours.</div>
      </aside>
