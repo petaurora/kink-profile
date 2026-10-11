@@ -301,3 +301,12 @@
 .ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active::before{content:"";position:absolute;left:-2px;top:0;bottom:0;width:2px;background:#f0a6d0;box-shadow:none;}
 .ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active::after{display:none;}
 .ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child:hover:not(.active){background:rgba(240,211,231,.045);}
+
+/* Full-bleed selection bands: top-level spans drawer, children span guide to drawer edge. */
+.ui-lab-app .ui-lab-menu-links:has(> .ui-lab-menu-group){overflow:visible;}
+.ui-lab-app .ui-lab-menu-group{margin-left:-14px;margin-right:-14px;}
+.ui-lab-app .ui-lab-menu-parent-button{width:100%;padding-left:25px;padding-right:25px;border:0;border-radius:0;}
+.ui-lab-app .ui-lab-menu-parent-button.selected{border:0;border-radius:0;background:rgba(122,52,89,.34);}
+.ui-lab-app .ui-lab-menu-branches{margin-left:48px;margin-right:0;padding-right:0;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child{width:100%;border-radius:0;padding-right:25px;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active{border-radius:0;background:rgba(122,52,89,.23);}
