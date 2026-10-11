@@ -129,11 +129,11 @@ export function UiLabPage() {
     <div className="ui-lab-search-results">{(catalogQuery.trim()?searchResults:searchResults.slice(0,3)).map(r=><button key={r.name} onClick={()=>selectSearchResult(r.name)}><span><strong>{r.name}</strong><small>{r.path} · {r.type}</small></span><span>›</span></button>)}{catalogQuery.trim()&&searchResults.length===0&&<p>No matches in this prototype. Try another term or filter.</p>}</div>
     <p className="ui-lab-app-note">Illustrative results only · Search is not connected to live catalog data</p>
    </main>:<main className="ui-lab-app-content">
-    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-kicker">{area.toUpperCase()} {workspace&&" / "+workspace.toUpperCase()}</p>}
-    {!(area==="Catalog"&&workspace==="Explore All")&&<h1>{heading}</h1>}
-    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
+    {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>{setWorkspace("");setDetail(null)}}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
+    <h1 className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
+    {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
     {area==="Catalog"&&<div className="ui-lab-catalog">
-      {workspace&&workspace!=="Explore All"&&<button className="ui-lab-app-switch" onClick={()=>choose("")}>← Catalog overview</button>}
+
       {!workspace&&<>
         <button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Catalog")}>⌕ <span>Search items, modifiers, concepts...</span><span>→</span></button>
         <h2>Explore by interest</h2>
@@ -142,7 +142,7 @@ export function UiLabPage() {
         </div>
         <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}>Browse everything <span>→</span></button>
       </>}
-      {workspace==="Explore All"&&<><button type="button" className="ui-lab-app-switch" onClick={()=>choose("")}>← Catalog</button><CatalogComposite initialItem={focusedModifier?"Collars":undefined} />
+      {workspace==="Explore All"&&<><CatalogComposite initialItem={focusedModifier?"Collars":undefined} />
       </>}
       {workspace==="Concept Explorer"&&<><button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Concept Explorer")}>⌕ Search concepts...</button><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
       {(workspace==="Kinks"||workspace==="Rewards & Punishments")&&<>
