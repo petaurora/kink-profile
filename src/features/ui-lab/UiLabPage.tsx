@@ -48,9 +48,9 @@ export function UiLabPage() {
   const start=gestureStart.current;gestureStart.current=null;
   const t=event.changedTouches[0];if(!start||!t)return;
   const dx=t.clientX-start.x,dy=t.clientY-start.y;
-  if(menuOpen){if(dx < -75 && Math.abs(dx)>Math.abs(dy)*1.2)setMenuOpen(false);return;}
+  if(menuOpen){if(dx < -55 && Math.abs(dx)>Math.abs(dy)*1.1)setMenuOpen(false);return;}
   // Edge-only gestures avoid hijacking normal vertical scrolling.
-  if(start.x<=36 && ((dx>75&&Math.abs(dx)>Math.abs(dy)*1.2)||(dy < -100&&Math.abs(dy)>Math.abs(dx)*1.5)))setMenuOpen(true);
+  if(start.x<=64 && ((dx>42&&Math.abs(dx)>Math.abs(dy)*1.1)||(dy < -65&&Math.abs(dy)>Math.abs(dx)*1.35)))setMenuOpen(true);
  };
  useEffect(()=>{if(!menuOpen)return;const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setMenuOpen(false);};window.addEventListener("keydown",onKey);return()=>window.removeEventListener("keydown",onKey);},[menuOpen]);
  const navigate=(next:Area)=>{
@@ -95,7 +95,13 @@ export function UiLabPage() {
        <div className="ui-lab-menu-links">
          {(["Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} onClick={()=>{setMenuOpen(false);setDetail(item+" · Coming soon");}}><span className="ui-lab-menu-link-icon" aria-hidden="true">{["◇","✧","♡"][i]}</span><span>{item}</span><small>Preview</small></button>)}
        </div>
-       <div className="ui-lab-menu-footer">Explore freely. Your preferences stay yours.</div>
+       <div className="ui-lab-menu-bottom">
+         <button type="button" className="ui-lab-menu-settings" onClick={()=>{setMenuOpen(false);setDetail("Settings · Coming soon");}}>
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06-2.8 2.8-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.07 1.55V21h-4v-.12A1.7 1.7 0 0 0 8.93 19.3a1.7 1.7 0 0 0-1.87.34L7 19.7l-2.8-2.8.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1.07H3v-4h.05A1.7 1.7 0 0 0 4.6 8.86a1.7 1.7 0 0 0-.34-1.87L4.2 6.93l2.8-2.8.06.06a1.7 1.7 0 0 0 1.87.34A1.7 1.7 0 0 0 10 2.98V3h4v-.02a1.7 1.7 0 0 0 1.07 1.55 1.7 1.7 0 0 0 1.87-.34L17 4.13l2.8 2.8-.06.06a1.7 1.7 0 0 0-.34 1.87 1.7 1.7 0 0 0 1.55 1.07H21v4h-.05A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+           <span>Settings</span><span aria-hidden="true" className="ui-lab-menu-settings-arrow">›</span>
+         </button>
+         <div className="ui-lab-menu-footer">Explore freely. Your preferences stay yours.</div>
+       </div>
      </aside>
    </div>}
    <main className="ui-lab-app-content">
