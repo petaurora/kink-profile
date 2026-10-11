@@ -1,3 +1,4 @@
+import { ToastPlayground } from "./ToastPlayground";
 import { CatalogComposite } from "./CatalogComposite";
 import { useEffect, useRef, useState } from "react";
 import "./uiLab.css";
@@ -26,6 +27,7 @@ export function UiLabPage() {
  const [mode,setMode]=useState("Explore");
  const [detail,setDetail]=useState<string|null>(null);
  const [showLab,setShowLab]=useState(false);
+ const [toastLabOpen,setToastLabOpen]=useState(false);
  const [catalogSearchOpen,setCatalogSearchOpen]=useState(false);
  const [catalogQuery,setCatalogQuery]=useState("");
  const [catalogType,setCatalogType]=useState("All");
@@ -150,6 +152,8 @@ export function UiLabPage() {
     {area==="Discover"&&<div className="ui-lab-app-modes">{["Learn","React","Play"].map(m=><button key={m} className={mode===m?"active":""} onClick={()=>setMode(m)}>{m}</button>)}</div>}
     {area!=="Catalog"&&<div className="ui-lab-app-grid">{(workspace?[[workspace,"Your working space and saved drafts."],...cards[area].filter(x=>x[0]!==workspace)]:cards[area]).map(([title,description],i)=><button className={"ui-lab-app-tile "+(i===0?"featured":"")} key={title} onClick={()=>setDetail(title)}><span className="ui-lab-app-tile-icon">{["✧","♡","◇","✦"][i%4]}</span><strong>{title}</strong><small>{description}</small><span className="ui-lab-app-tile-arrow">↗</span></button>)}</div>}
     <p className="ui-lab-app-note">Experimental shell · Illustrative content only · No preferences are saved here</p>
+    <button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}>{toastLabOpen?"− Hide":"✦ Open"} Toast Playground</button>
+    {toastLabOpen&&<ToastPlayground/>}
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}} title={color}/>)}</div><a href="#/hub">Return to production app</a></section>}
    </main>}
    {detail&&area==="Catalog"&&detail==="Collars"?<div className="ui-lab-composite-overlay"><CatalogComposite initialItem="Collars" onClose={()=>setDetail(null)}/></div>:null}
