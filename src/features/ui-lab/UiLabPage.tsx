@@ -30,7 +30,17 @@ export function UiLabPage() {
    <button className="ui-lab-app-rail-lab" onClick={()=>setShowLab(!showLab)}>⚙ Design lab</button>
   </aside>
   <div className="ui-lab-app-frame">
-   <header className="ui-lab-app-header"><button aria-label="Open full menu" onClick={()=>setDetail("Full menu: Home, Catalog, Profile, Discover, Tools, Creations, Learn, Relationships")}>☰</button><button className="ui-lab-app-logo" onClick={()=>{setArea("Home");setWorkspace("");setDomain("All");}}>♡ Kink Profile</button><div><button aria-label="Search" onClick={()=>setDetail("Search across tools, concepts, preferences and creations")}>⌕</button></div></header>
+   <header className="ui-lab-app-header">
+    <button type="button" className="ui-lab-header-action" aria-label="Open full menu" onClick={()=>setDetail("Full menu: Home, Catalog, Profile, Discover, Tools, Creations, Learn, Relationships")}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <button type="button" className="ui-lab-app-logo" onClick={()=>navigate("Home")} aria-label="Kink Profile, go to Home"><span className="ui-lab-brand-mark" aria-hidden="true">♡</span><span>Kink Profile</span></button>
+    <div className="ui-lab-header-actions">
+      <button type="button" className="ui-lab-header-action" aria-label="Search" onClick={()=>setDetail("Search across tools, concepts, preferences and creations")}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.5 4.5"/></svg>
+      </button>
+    </div>
+   </header>
    <main className="ui-lab-app-content">
     <p className="ui-lab-app-kicker">{area.toUpperCase()} {workspace&&" / "+workspace.toUpperCase()}</p>
     <h1>{heading}</h1>
