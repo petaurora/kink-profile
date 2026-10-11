@@ -129,11 +129,11 @@ export function UiLabPage() {
     <div className="ui-lab-search-results">{(catalogQuery.trim()?searchResults:searchResults.slice(0,3)).map(r=><button key={r.name} onClick={()=>selectSearchResult(r.name)}><span><strong>{r.name}</strong><small>{r.path} · {r.type}</small></span><span>›</span></button>)}{catalogQuery.trim()&&searchResults.length===0&&<p>No matches in this prototype. Try another term or filter.</p>}</div>
     <p className="ui-lab-app-note">Illustrative results only · Search is not connected to live catalog data</p>
    </main>:<main className="ui-lab-app-content">
-    <p className="ui-lab-app-kicker">{area.toUpperCase()} {workspace&&" / "+workspace.toUpperCase()}</p>
-    <h1>{heading}</h1>
-    <p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>
+    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-kicker">{area.toUpperCase()} {workspace&&" / "+workspace.toUpperCase()}</p>}
+    {!(area==="Catalog"&&workspace==="Explore All")&&<h1>{heading}</h1>}
+    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
     {area==="Catalog"&&<div className="ui-lab-catalog">
-      {workspace&&<button className="ui-lab-app-switch" onClick={()=>choose("")}>← Catalog overview</button>}
+      {workspace&&workspace!=="Explore All"&&<button className="ui-lab-app-switch" onClick={()=>choose("")}>← Catalog overview</button>}
       {!workspace&&<>
         <button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Catalog")}>⌕ <span>Search items, modifiers, concepts...</span><span>→</span></button>
         <h2>Explore by interest</h2>
@@ -142,7 +142,7 @@ export function UiLabPage() {
         </div>
         <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}>Browse everything <span>→</span></button>
       </>}
-      {workspace==="Explore All"&&<><CatalogComposite initialItem={focusedModifier?"Collars":undefined} />
+      {workspace==="Explore All"&&<><button type="button" className="ui-lab-app-switch" onClick={()=>choose("")}>← Catalog</button><CatalogComposite initialItem={focusedModifier?"Collars":undefined} />
       </>}
       {workspace==="Concept Explorer"&&<><button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Concept Explorer")}>⌕ Search concepts...</button><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
       {(workspace==="Kinks"||workspace==="Rewards & Punishments")&&<>
@@ -152,7 +152,7 @@ export function UiLabPage() {
     </div>}
     {area==="Discover"&&<div className="ui-lab-app-modes">{["Learn","React","Play"].map(m=><button key={m} className={mode===m?"active":""} onClick={()=>setMode(m)}>{m}</button>)}</div>}
     {area!=="Catalog"&&<div className="ui-lab-app-grid">{(workspace?[[workspace,"Your working space and saved drafts."],...cards[area].filter(x=>x[0]!==workspace)]:cards[area]).map(([title,description],i)=><button className={"ui-lab-app-tile "+(i===0?"featured":"")} key={title} onClick={()=>setDetail(title)}><span className="ui-lab-app-tile-icon">{["✧","♡","◇","✦"][i%4]}</span><strong>{title}</strong><small>{description}</small><span className="ui-lab-app-tile-arrow">↗</span></button>)}</div>}
-    <p className="ui-lab-app-note">Experimental shell · Illustrative content only · No preferences are saved here</p>
+    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">Experimental shell · Illustrative content only · No preferences are saved here</p>}
     <button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}>{toastLabOpen?"− Hide":"✦ Open"} Toast Playground</button>
     {toastLabOpen&&<ToastPlayground/>}
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}} title={color}/>)}</div><a href="#/hub">Return to production app</a></section>}
