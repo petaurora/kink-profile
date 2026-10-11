@@ -24,3 +24,6 @@
 
 /* Global dialog close affordance: unboxed icon, accessible tap area, visible keyboard focus. */
 .cc-modal-layer .cc-selector-head>button{appearance:none;border:0!important;background:transparent!important;box-shadow:none!important;border-radius:50%;width:44px;height:44px;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0;color:#f0d3e7;line-height:1;cursor:pointer}.cc-modal-layer .cc-selector-head>button:hover{background:#f0d3e710!important}.cc-modal-layer .cc-selector-head>button:active{background:#f0d3e71c!important;transform:scale(.94)}.cc-modal-layer .cc-selector-head>button:focus-visible{outline:2px solid #f0d3e7;outline-offset:2px}.cc-refine-overall{justify-content:flex-end;margin-top:0}.cc-refine-overall .cc-rating{min-height:32px}
+
+/* Single-choice browse filters reuse the rating sheet on mobile. */
+.cc-sheet-trigger{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;max-width:100%;padding:8px 12px;background:#211d4b;border:1px solid #f0d3e740;border-radius:8px;color:#f0d3e7;text-align:left;font-size:12px!important}.cc-sheet-trigger span{flex:none;color:#cdb5ca}.cc-browse-layer .cc-options{grid-template-columns:1fr}.cc-browse-layer .cc-selector-head h3{margin:0 0 18px}.cc-browse-layer .cc-selector{overflow-y:auto}
