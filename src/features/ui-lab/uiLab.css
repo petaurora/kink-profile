@@ -248,3 +248,34 @@
 .ui-lab-app .ui-lab-rope-peek svg{width:100%;height:100%;display:block;}
 .ui-lab-app .ui-lab-menu-layer~.ui-lab-rope-peek{display:none;}
 @media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child{animation:none;opacity:1;transform:none}.ui-lab-app .ui-lab-menu-parent-button .ui-lab-menu-chevron{transition:none}}
+
+/* Refined tree: compact rows, continuous trunk, one rounded branch per child. */
+.ui-lab-app .ui-lab-menu-branches{position:relative;gap:0;margin:1px 5px 5px 34px;padding:0;border:0;animation:none;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child{
+ min-height:34px;height:34px;padding:5px 10px 5px 29px;gap:0;
+ border-radius:7px;line-height:1.2;font-size:12.5px;
+}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active::after{display:none;}
+.ui-lab-app .ui-lab-menu-branch{left:0;top:0;width:24px;height:100%;background:transparent;}
+/* The straight trunk stops at the beginning of the final curved turn. */
+.ui-lab-app .ui-lab-menu-branch::before{
+ left:0;top:0;height:100%;border-left:1.5px solid rgba(231,176,211,.5);
+}
+.ui-lab-app .ui-lab-menu-branch::after{
+ left:0;top:calc(50% - 9px);width:23px;height:10px;
+ border:0;border-left:1.5px solid rgba(231,176,211,.5);
+ border-bottom:1.5px solid rgba(231,176,211,.5);
+ border-bottom-left-radius:11px;
+}
+/* No overlapping vertical stroke at the elbow: the curve itself provides the join. */
+.ui-lab-app .ui-lab-menu-branch::after{border-left:0;border-bottom-left-radius:0;}
+.ui-lab-app .ui-lab-menu-branch::before{height:calc(50% - 8px);}
+.ui-lab-app .ui-lab-menu-child:not(.last) .ui-lab-menu-branch::before{height:100%;}
+.ui-lab-app .ui-lab-menu-child:not(.last) .ui-lab-menu-branch::after{border-left:1.5px solid rgba(231,176,211,.5);border-bottom-left-radius:11px;}
+.ui-lab-app .ui-lab-menu-child.last .ui-lab-menu-branch::before{height:calc(50% - 9px);}
+.ui-lab-app .ui-lab-menu-child.last .ui-lab-menu-branch::after{border-left:1.5px solid rgba(231,176,211,.5);border-bottom-left-radius:11px;}
+/* Use a continuous SVG-like L-turn without the duplicate vertical from the old pseudo-elements. */
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child{background-clip:padding-box;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active{background:rgba(122,52,89,.22);}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active span:last-child{color:#f3c2df;}
+.ui-lab-app .ui-lab-menu-rope-edge,.ui-lab-app .ui-lab-rope-peek{display:none!important;}
