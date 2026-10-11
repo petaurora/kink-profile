@@ -10,3 +10,6 @@
 
 /* Reserve an inner scrollbar gutter so scroll thumbs never overlap modifier labels, chevrons or rating actions. */
 .cc-refine-content{padding-right:14px;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#8d7598 transparent}.cc-refine-content::-webkit-scrollbar{width:5px}.cc-refine-content::-webkit-scrollbar-track{background:transparent}.cc-refine-content::-webkit-scrollbar-thumb{background:#8d7598;border-radius:8px}.cc-refine-content .cc-group-head,.cc-refine-content .cc-value{padding-right:5px}
+
+/* Keep the lab-only controls secondary to the actual browse experience. */
+.cc-demo-compact{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:6px 0 12px;margin:0;background:transparent;border:0;font-size:12px;opacity:.76}.cc-demo-compact label{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.cc-demo-compact input{width:15px;height:15px}.cc-demo-compact+ .cc-browser{margin-top:0}
