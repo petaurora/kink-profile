@@ -157,3 +157,22 @@
 @keyframes uiLabDrawer{from{transform:translateX(-105%)}to{transform:translateX(0)}}
 @keyframes uiLabBackdrop{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-menu-drawer,.ui-lab-app .ui-lab-menu-backdrop{animation:none}.ui-lab-app .ui-lab-menu-links button{transition:none}}
+
+/* Drawer refinements: slimmer, denser, borderless close control. */
+.ui-lab-app .ui-lab-menu-drawer{
+  width:min(310px,82vw);
+  padding:18px 14px max(32px,env(safe-area-inset-bottom));
+  overscroll-behavior:contain;
+}
+.ui-lab-app .ui-lab-menu-heading{margin-bottom:24px;padding-left:3px;}
+.ui-lab-app .ui-lab-menu-close{
+  border:0;box-shadow:none;background:transparent;border-radius:10px;
+  transition:background .16s ease,transform .16s ease;
+}
+.ui-lab-app .ui-lab-menu-close:hover,.ui-lab-app .ui-lab-menu-close:focus-visible{background:rgba(240,211,231,.08);}
+.ui-lab-app .ui-lab-menu-close:active{transform:scale(.91);}
+.ui-lab-app .ui-lab-menu-links{gap:2px;}
+.ui-lab-app .ui-lab-menu-links button{min-height:46px;padding:7px 11px;gap:11px;}
+.ui-lab-app .ui-lab-menu-divider{margin:16px 12px;}
+.ui-lab-app .ui-lab-menu-eyebrow{margin-bottom:7px;}
+@media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-menu-close{transition:none;}}
