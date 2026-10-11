@@ -87,3 +87,20 @@
   .ui-lab-app .ui-lab-app-logo{font-size:16px;gap:7px;}
 }
 @media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-header-action{transition:none;}}
+
+/* Navigation direction B: soft & polished, matching the approved header. */
+.ui-lab-app .ui-lab-nav-icon-wrap{display:grid;place-items:center;flex-shrink:0;width:38px;height:34px;border-radius:11px;transition:background .16s ease,color .16s ease;}
+.ui-lab-app .ui-lab-nav-icon{display:block;width:22px;height:22px;stroke:currentColor;filter:none;}
+.ui-lab-app .ui-lab-app-bottom{background:linear-gradient(180deg,#191530,#12132f);border-top:1px solid rgba(240,211,231,.18);box-shadow:0 -5px 20px rgba(8,7,27,.18);}
+.ui-lab-app .ui-lab-app-bottom button{gap:3px;min-height:57px;padding:7px 2px 5px;border-radius:12px;color:#b3a8c2;background:transparent;cursor:pointer;transition:color .16s ease;}
+.ui-lab-app .ui-lab-app-bottom button small{font-size:10px;line-height:1.3;font-weight:500;letter-spacing:.015em;}
+.ui-lab-app .ui-lab-app-bottom button.active{color:#f0d3e7;background:transparent;}
+.ui-lab-app .ui-lab-app-bottom button.active .ui-lab-nav-icon-wrap{background:rgba(122,52,89,.38);box-shadow:inset 0 0 0 1px rgba(240,211,231,.09);}
+.ui-lab-app .ui-lab-app-bottom button.active .ui-lab-nav-icon{filter:none;}
+.ui-lab-app .ui-lab-app-bottom button.active small{font-weight:650;}
+.ui-lab-app .ui-lab-app-bottom button:hover .ui-lab-nav-icon-wrap,.ui-lab-app .ui-lab-app-bottom button:focus-visible .ui-lab-nav-icon-wrap{background:rgba(240,211,231,.11);}
+.ui-lab-app .ui-lab-app-bottom button:focus-visible,.ui-lab-app .ui-lab-app-rail button:focus-visible{outline:2px solid #f0d3e7;outline-offset:-2px;}
+.ui-lab-app .ui-lab-app-rail button .ui-lab-nav-icon-wrap{width:28px;height:28px;}
+.ui-lab-app .ui-lab-app-rail button .ui-lab-nav-icon{width:21px;height:21px;}
+.ui-lab-app .ui-lab-app-rail button.active{background:rgba(122,52,89,.42);border-left:3px solid #e5aacd;}
+@media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-nav-icon-wrap,.ui-lab-app .ui-lab-app-bottom button{transition:none;}}
