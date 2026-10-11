@@ -58,7 +58,7 @@ export function CatalogComposite({initialItem,subject,compact=false}:{initialIte
  function ratingButton(id:string,label:string,parent:string,cls="cc-rating"){
   return <span className="cc-rating-wrap"><button type="button" className={cls} aria-label={label+": "+(ratings[id]||"Not rated")+". Change rating"} onClick={e=>{e.stopPropagation();origin.current=e.currentTarget;setSelector({id,label,parent})}}>{ratings[id]||"Not rated"}</button>{saves[id]==="saving"&&<span className="cc-save-state" aria-label="Saving">◌</span>}{saves[id]==="failed"&&<button className="cc-retry" onClick={()=>retry(id)} aria-label={"Retry saving "+label}>Retry</button>}</span>
  }
- const matching=items.filter(x=>(!subject||x.category===subject)&&(categoryFilter==="All"||x.category===categoryFilter)&&(x.name+" "+x.category+" "+x.groups.flatMap(g=>g.values).join(" ")).toLowerCase().includes(query.trim().toLowerCase()));
+ const matching=items.filter(x=>(!subject||x.category===subject||x.name===subject)&&(categoryFilter==="All"||x.category===categoryFilter)&&(x.name+" "+x.category+" "+x.groups.flatMap(g=>g.values).join(" ")).toLowerCase().includes(query.trim().toLowerCase()));
  const sections=compact?[["All Items",matching] as const]:view==="All Items"?[["All Items",matching] as const]:view==="Categories"?Object.keys(catalogSeeds).map(c=>[c,matching.filter(x=>x.category===c)] as const):Array.from(new Set(matching.map(x=>x.name[0].toUpperCase()))).sort().map(letter=>[letter,matching.filter(x=>x.name.toUpperCase().startsWith(letter))] as const);
  function renderItem(x:Item){
   const overall=x.id+":overall";
