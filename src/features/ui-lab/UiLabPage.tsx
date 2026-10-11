@@ -27,7 +27,6 @@ export function UiLabPage() {
  const [showLab,setShowLab]=useState(false);
  const [menuOpen,setMenuOpen]=useState(false);
  const [expandedMenu,setExpandedMenu]=useState<Area|null>(null);
- const [menuVisited,setMenuVisited]=useState(false);
  const gestureStart=useRef<{x:number;y:number}|null>(null);
  const menuChildren: Record<Area,string[]> = {
   Home:[],
@@ -59,7 +58,7 @@ export function UiLabPage() {
  };
  const choose=(name:string)=>{setArea("Catalog");setWorkspace(name);setMode("Explore");setDetail(null);};
  const activeChild=(parent:Area)=>parent!==area?null:parent==="Catalog"?(workspace||"Overview"):parent==="Discover"?(mode==="Explore"?"Overview":mode):(workspace||"Overview");
- const openDrawer=()=>{setExpandedMenu(area==="Home"?null:area);setMenuVisited(true);setMenuOpen(true);};
+ const openDrawer=()=>{setExpandedMenu(area==="Home"?null:area);setMenuOpen(true);};
  const heading=workspace||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools."} as Record<Area,string>)[area];
  return <div className="ui-lab ui-lab-app" onTouchStart={onGestureStart} onTouchEnd={onGestureEnd}>
   <aside className="ui-lab-app-rail" aria-label="Primary navigation">
