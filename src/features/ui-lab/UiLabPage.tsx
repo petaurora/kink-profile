@@ -36,7 +36,7 @@ export function UiLabPage() {
  const searchMatches=[{name:"Collars",type:"Items",path:"Kinks"},{name:"Leather",type:"Modifiers",path:"Collars → Material"},{name:"Leather fetish",type:"Items",path:"Kinks"},{name:"Ownership",type:"Concepts",path:"Concept Explorer"},{name:"Sensory Play",type:"Items",path:"Kinks"},{name:"Restraints",type:"Items",path:"Kinks"}];
  const openCatalogSearch=(origin="Catalog")=>{setSearchOrigin(origin);setCatalogSearchOpen(true);setMenuOpen(false);};
  const searchResults=searchMatches.filter(r=>(catalogType==="All"||catalogType===r.type)&&(!catalogQuery.trim()||[r.name,r.path].join(" ").toLowerCase().includes(catalogQuery.trim().toLowerCase())));
- const selectSearchResult=(name:string)=>{setCatalogSearchOpen(false);setArea("Catalog");setWorkspace("Explore All");setDetail(null);setFocusedModifier(name==="Leather");};
+ const selectSearchResult=(name:string)=>{resetPageScroll();setCatalogSearchOpen(false);setArea("Catalog");setWorkspace("Explore All");setDetail(null);setFocusedModifier(name==="Leather");};
  const [menuOpen,setMenuOpen]=useState(false);
  const [expandedMenu,setExpandedMenu]=useState<Area|null>(null);
  const gestureStart=useRef<{x:number;y:number}|null>(null);
@@ -68,10 +68,12 @@ export function UiLabPage() {
   if(dx>85&&Math.abs(dx)>Math.abs(dy)*2.2)openDrawer();
  };
  useEffect(()=>{if(!menuOpen)return;const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setMenuOpen(false);};window.addEventListener("keydown",onKey);return()=>window.removeEventListener("keydown",onKey);},[menuOpen]);
+ const resetPageScroll=()=>{window.scrollTo({top:0,left:0,behavior:"instant"});requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"instant"}));};
  const navigate=(next:Area)=>{
+   resetPageScroll();
    setArea(next);setWorkspace("");setDetail(null);setDomain("All");setMenuOpen(false);
  };
- const choose=(name:string)=>{setArea("Catalog");setWorkspace(name);setMode("Explore");setDetail(null);};
+ const choose=(name:string)=>{resetPageScroll();setArea("Catalog");setWorkspace(name);setMode("Explore");setDetail(null);};
  const activeChild=(parent:Area)=>parent!==area?null:parent==="Catalog"?(workspace||"Overview"):parent==="Discover"?(mode==="Explore"?"Overview":mode):(workspace||"Overview");
  const openDrawer=()=>{if(modalActive())return;setExpandedMenu(area==="Home"?null:area);setMenuOpen(true);};
  const heading=workspace||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools."} as Record<Area,string>)[area];
