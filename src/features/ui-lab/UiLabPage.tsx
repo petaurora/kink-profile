@@ -30,7 +30,7 @@ export function UiLabPage() {
    <button className="ui-lab-app-rail-lab" onClick={()=>setShowLab(!showLab)}>⚙ Design lab</button>
   </aside>
   <div className="ui-lab-app-frame">
-   <header className="ui-lab-app-header"><button aria-label="Open full menu" onClick={()=>setDetail("Full menu: Home, Catalog, Profile, Discover, Tools, Creations, Learn, Relationships")}>☰</button><button className="ui-lab-app-logo" onClick={()=>{setArea("Home");setWorkspace("");setDomain("All");}}>♡ Kink Profile</button><div><button aria-label="Search" onClick={()=>setDetail("Search across tools, concepts, preferences and creations")}>⌕</button><button aria-label="Open profile" onClick={()=>navigate("Profile")}>♙</button></div></header>
+   <header className="ui-lab-app-header"><button aria-label="Open full menu" onClick={()=>setDetail("Full menu: Home, Catalog, Profile, Discover, Tools, Creations, Learn, Relationships")}>☰</button><button className="ui-lab-app-logo" onClick={()=>{setArea("Home");setWorkspace("");setDomain("All");}}>♡ Kink Profile</button><div><button aria-label="Search" onClick={()=>setDetail("Search across tools, concepts, preferences and creations")}>⌕</button></div></header>
    <main className="ui-lab-app-content">
     <p className="ui-lab-app-kicker">{area.toUpperCase()} {workspace&&" / "+workspace.toUpperCase()}</p>
     <h1>{heading}</h1>
