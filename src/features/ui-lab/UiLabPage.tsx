@@ -49,8 +49,8 @@ export function UiLabPage() {
   const t=event.changedTouches[0];if(!start||!t)return;
   const dx=t.clientX-start.x,dy=t.clientY-start.y;
   if(menuOpen){if(dx < -55 && Math.abs(dx)>Math.abs(dy)*1.1)setMenuOpen(false);return;}
-  // Open from anywhere on the screen; directional thresholds limit accidental opens.
-  if((dx>42&&Math.abs(dx)>Math.abs(dy)*1.1)||(dy < -65&&Math.abs(dy)>Math.abs(dx)*1.35))openDrawer();
+  // Only a deliberate horizontal right swipe opens the drawer; diagonal scrolling remains native.
+  if(dx>85&&Math.abs(dx)>Math.abs(dy)*2.2)openDrawer();
  };
  useEffect(()=>{if(!menuOpen)return;const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setMenuOpen(false);};window.addEventListener("keydown",onKey);return()=>window.removeEventListener("keydown",onKey);},[menuOpen]);
  const navigate=(next:Area)=>{
@@ -89,7 +89,7 @@ export function UiLabPage() {
            <span className="ui-lab-menu-link-icon"><NavIcon area={item}/></span><span className="ui-lab-menu-parent-label">{item}</span>
            {menuChildren[item].length>0&&<span className={"ui-lab-menu-chevron "+(expandedMenu===item?"expanded":"")} aria-hidden="true">›</span>}
           </button>
-          {expandedMenu===item&&menuChildren[item].length>0&&<div className="ui-lab-menu-subitems ui-lab-menu-branches">{menuChildren[item].map((child,index)=><button type="button" key={child} style={{animationDelay:index*55+"ms"}} className={"ui-lab-menu-child "+(activeChild(item)===child?"active":"")+(index===menuChildren[item].length-1?" last":"")} aria-current={activeChild(item)===child?"page":undefined} onClick={()=>openMenuChild(item,child)}><span className="ui-lab-menu-branch" aria-hidden="true"/><span>{child}</span></button>)}</div>}
+          {expandedMenu===item&&menuChildren[item].length>0&&<div className="ui-lab-menu-subitems ui-lab-menu-branches">{menuChildren[item].map((child,index)=><button type="button" key={child} style={{animationDelay:index*55+"ms"}} className={"ui-lab-menu-child "+(activeChild(item)===child?"active":"")+(index===menuChildren[item].length-1?" last":"")} aria-current={activeChild(item)===child?"page":undefined} onClick={()=>openMenuChild(item,child)}><svg className="ui-lab-menu-branch" viewBox="0 0 28 40" preserveAspectRatio="none" aria-hidden="true"><path d="M2 0 V17 Q2 24 10 24 H27"/>{index!==menuChildren[item].length-1&&<path d="M2 17 V40"/>}</svg><span>{child}</span></button>)}</div>}
          </div>)}
        </nav>
        <div className="ui-lab-menu-divider"/>
