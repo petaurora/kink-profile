@@ -78,11 +78,9 @@ export function UiLabPage() {
       </button>
     </div>
    </header>
-   <button type="button" className="ui-lab-rope-peek" aria-label="Open navigation drawer" onClick={openDrawer}><svg viewBox="0 0 22 240" preserveAspectRatio="none" aria-hidden="true"><path d="M10 0 C2 25 18 47 10 72 S2 115 11 144 S17 191 10 240"/></svg></button>
    {menuOpen&&<div className="ui-lab-menu-layer">
      <button type="button" className="ui-lab-menu-backdrop" aria-label="Close navigation menu" onClick={()=>setMenuOpen(false)}/>
      <aside id="ui-lab-full-menu" className="ui-lab-menu-drawer" role="dialog" aria-modal="true" aria-label="Full navigation menu">
-       <svg className="ui-lab-menu-rope-edge" viewBox="0 0 22 240" preserveAspectRatio="none" aria-hidden="true"><path d="M10 0 C2 25 18 47 10 72 S2 115 11 144 S17 191 10 240"/></svg>
        <div className="ui-lab-menu-heading"><span className="ui-lab-menu-title"><span aria-hidden="true">♡</span> Kink Profile</span><button type="button" className="ui-lab-menu-close" aria-label="Close menu" onClick={()=>setMenuOpen(false)}>×</button></div>
        <p className="ui-lab-menu-eyebrow">YOUR SPACE</p>
        <nav aria-label="All destinations" className="ui-lab-menu-links">
