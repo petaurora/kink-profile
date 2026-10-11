@@ -279,3 +279,12 @@
 .ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active{background:rgba(122,52,89,.22);}
 .ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active span:last-child{color:#f3c2df;}
 .ui-lab-app .ui-lab-menu-rope-edge,.ui-lab-app .ui-lab-rope-peek{display:none!important;}
+
+/* Single-stroke SVG branch connectors; remove old pseudo-element joints. */
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child{height:40px;min-height:40px;padding-left:34px;background:transparent;border-radius:6px;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active{background:transparent;color:#f0d3e7;font-weight:650;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active span:last-child{color:#f0c1dd;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active .ui-lab-menu-branch{stroke:#f0a6d0;filter:drop-shadow(0 0 2px rgba(240,166,208,.23));}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child:hover{background:rgba(240,211,231,.055);}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child .ui-lab-menu-branch{position:absolute;left:0;top:0;width:28px;height:100%;overflow:visible;pointer-events:none;fill:none;stroke:rgba(231,176,211,.5);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child .ui-lab-menu-branch::before,.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child .ui-lab-menu-branch::after{content:none;display:none;}
