@@ -310,3 +310,21 @@
 .ui-lab-app .ui-lab-menu-branches{margin-left:48px;margin-right:0;padding-right:0;}
 .ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child{width:100%;border-radius:0;padding-right:25px;}
 .ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active{border-radius:0;background:rgba(122,52,89,.23);}
+
+/* Compact dedicated catalog search prototype */
+.ui-lab-app .ui-lab-search-page{flex:1;min-height:0;overflow:auto;padding:18px 18px 88px;color:#f0d3e7;}
+.ui-lab-app .ui-lab-search-head{display:flex;align-items:center;gap:8px;background:rgba(240,211,231,.07);border:1px solid rgba(240,211,231,.19);border-radius:9px;padding:5px 9px;min-height:44px;}
+.ui-lab-app .ui-lab-search-head button{background:transparent;border:0;color:#f0d3e7;font-size:21px;min-width:30px;min-height:32px;cursor:pointer;}
+.ui-lab-app .ui-lab-search-head input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#f0d3e7;font:inherit;font-size:14px;}
+.ui-lab-app .ui-lab-search-head input::placeholder{color:rgba(240,211,231,.57);}
+.ui-lab-app .ui-lab-search-chips{display:flex;gap:6px;overflow-x:auto;padding:13px 0 9px;}
+.ui-lab-app .ui-lab-search-chips button,.ui-lab-app .ui-lab-search-suggestions button{border:1px solid rgba(240,211,231,.19);border-radius:7px;background:rgba(240,211,231,.04);color:#e9cadd;padding:7px 12px;font:inherit;font-size:12px;white-space:nowrap;cursor:pointer;}
+.ui-lab-app .ui-lab-search-chips button.active{background:rgba(122,52,89,.55);border-color:rgba(240,211,231,.38);color:#f0d3e7;}
+.ui-lab-app .ui-lab-search-label{margin:16px 0 7px;font-size:10px;letter-spacing:.11em;font-weight:700;color:rgba(240,211,231,.66);}
+.ui-lab-app .ui-lab-search-hint{font-size:12px;color:rgba(240,211,231,.7);margin:0 0 8px;}
+.ui-lab-app .ui-lab-search-suggestions{display:flex;gap:7px;flex-wrap:wrap;}
+.ui-lab-app .ui-lab-search-results{display:flex;flex-direction:column;margin-top:6px;}
+.ui-lab-app .ui-lab-search-results>button{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;width:100%;padding:11px 3px;border:0;border-bottom:1px solid rgba(240,211,231,.12);background:transparent;color:#f0d3e7;cursor:pointer;}
+.ui-lab-app .ui-lab-search-results strong{display:block;font-size:13px;font-weight:600;}
+.ui-lab-app .ui-lab-search-results small{display:block;margin-top:3px;color:rgba(240,211,231,.66);font-size:11px;}
+.ui-lab-app .ui-lab-search-results>button>span:last-child{font-size:20px;color:#d6b0ca;}
