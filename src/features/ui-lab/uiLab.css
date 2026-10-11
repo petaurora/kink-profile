@@ -224,3 +224,27 @@
  outline:2px solid #f0d3e7;
  outline-offset:-3px;
 }
+
+/* Rope-inspired branching drawer */
+.ui-lab-app .ui-lab-menu-parent-button{width:100%;display:flex;align-items:center;gap:11px;padding:7px 11px;text-align:left;background:transparent;color:#d7c8de;border:1px solid transparent;cursor:pointer;font-size:14px;font-weight:550;-webkit-tap-highlight-color:transparent;}
+.ui-lab-app .ui-lab-menu-parent-button.selected{background:rgba(122,52,89,.3);border-color:rgba(240,211,231,.12);color:#f0d3e7;}
+.ui-lab-app .ui-lab-menu-parent-button .ui-lab-menu-parent-label{flex:1;}
+.ui-lab-app .ui-lab-menu-parent-button .ui-lab-menu-chevron{margin-left:auto;display:block;color:#c6a8c1;font-size:24px;transition:transform .2s ease;}
+.ui-lab-app .ui-lab-menu-parent-button .ui-lab-menu-chevron.expanded{transform:rotate(90deg);}
+.ui-lab-app .ui-lab-menu-parent-button:focus-visible{outline:2px solid #f0d3e7;outline-offset:2px;}
+.ui-lab-app .ui-lab-menu-branches{margin:0 5px 9px 34px;padding:0;border:0;gap:0;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child{position:relative;display:flex;align-items:center;min-height:42px;padding:6px 10px 6px 30px;margin:0;border-radius:9px;opacity:0;transform:translateY(-13px);animation:uiLabRopeDrop .3s cubic-bezier(.18,.78,.24,1) forwards;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active{background:rgba(122,52,89,.26);color:#f0d3e7;font-weight:650;}
+.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child.active::after{content:"";position:absolute;left:26px;top:14px;bottom:14px;width:2px;border-radius:2px;background:#f0a6d0;box-shadow:0 0 7px rgba(240,166,208,.5);}
+.ui-lab-app .ui-lab-menu-branch{position:absolute;left:0;top:0;width:24px;height:100%;pointer-events:none;background:none;}
+.ui-lab-app .ui-lab-menu-branch::before{content:"";position:absolute;left:0;top:0;height:100%;border-left:1.5px solid rgba(231,176,211,.55);}
+.ui-lab-app .ui-lab-menu-branch::after{content:"";position:absolute;left:0;top:calc(50% - 10px);width:23px;height:11px;border-left:1.5px solid rgba(231,176,211,.55);border-bottom:1.5px solid rgba(231,176,211,.55);border-bottom-left-radius:12px;}
+.ui-lab-app .ui-lab-menu-child.last .ui-lab-menu-branch::before{height:calc(50% - 9px);}
+.ui-lab-app .ui-lab-menu-child.last .ui-lab-menu-branch::after{border-bottom-left-radius:14px;}
+@keyframes uiLabRopeDrop{to{opacity:1;transform:translateY(0)}}
+.ui-lab-app .ui-lab-menu-rope-edge{position:absolute;z-index:3;right:-9px;top:0;height:100%;width:18px;overflow:visible;pointer-events:none;filter:drop-shadow(0 0 3px rgba(240,211,231,.22));}
+.ui-lab-app .ui-lab-menu-rope-edge path,.ui-lab-app .ui-lab-rope-peek path{fill:none;stroke:#b68ba9;stroke-width:3.4;stroke-linecap:round;stroke-dasharray:2 1.5;}
+.ui-lab-app .ui-lab-rope-peek{position:fixed;z-index:12;left:0;top:28%;width:16px;height:190px;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;opacity:.8;}
+.ui-lab-app .ui-lab-rope-peek svg{width:100%;height:100%;display:block;}
+.ui-lab-app .ui-lab-menu-layer~.ui-lab-rope-peek{display:none;}
+@media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-menu-branches .ui-lab-menu-child{animation:none;opacity:1;transform:none}.ui-lab-app .ui-lab-menu-parent-button .ui-lab-menu-chevron{transition:none}}
