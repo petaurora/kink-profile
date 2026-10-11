@@ -13,3 +13,5 @@
 
 /* Keep the lab-only controls secondary to the actual browse experience. */
 .cc-demo-compact{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:6px 0 12px;margin:0;background:transparent;border:0;font-size:12px;opacity:.76}.cc-demo-compact label{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.cc-demo-compact input{width:15px;height:15px}.cc-demo-compact+ .cc-browser{margin-top:0}
+
+.cc-refine-overall{display:flex;align-items:center;gap:12px;margin-top:10px;font-size:13px;color:#d8bbd0}.cc-refine-overall .cc-rating{color:#f0d3e7;font-weight:600;min-height:38px}.cc-refine-sheet .cc-selector-head{align-items:flex-start}
