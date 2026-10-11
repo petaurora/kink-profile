@@ -20,8 +20,21 @@ const cards: Record<Area,[string,string][]> = {
   Profile:[["Your profile","Roles, themes and preference evidence"],["Relationships","Connections and linked profiles"],["Sharing & permissions","Decide what others can see"],["Identity & expression","Your own words and presentation"]],
   Tools:[["Scene Builder","Plan scenes and save drafts"],["Agreements & rituals","Create and maintain shared practices"],["Randomizers & recipes","Get practical inspiration"],["Compare profiles","Compare only with permission"]]
 };
+const featuredSubjects = [
+ {name:"Power Exchange",description:"Explore authority, rituals and the ways people negotiate control.",symbol:"◇",tone:"power"},
+ {name:"Sensation & Intensity",description:"Discover textures, pressure and different kinds of sensation.",symbol:"✧",tone:"sensation"},
+ {name:"Restraint & Control",description:"Explore restriction, restraint and intentional boundaries.",symbol:"⌁",tone:"restraint"},
+ {name:"Connection & Expression",description:"Explore affection, praise and ways of expressing connection.",symbol:"♡",tone:"connection"}
+] as const;
+const subjectNames=featuredSubjects.map(s=>s.name);
+const extraSubjects=["Collars","Aftercare","Primal Play","Sensory Play","Service","Roleplay","Praise","Protocols","Temperature Play","Pet Play"];
+function dailyFeatured(){const day=Math.floor(new Date().setHours(0,0,0,0)/86400000);const first=((day%featuredSubjects.length)+featuredSubjects.length)%featuredSubjects.length;return [featuredSubjects[first],featuredSubjects[(first+2)%featuredSubjects.length]];}
 export function UiLabPage() {
  const [area,setArea]=useState<Area>("Home");
+ const [subjectsExpanded,setSubjectsExpanded]=useState(false);
+ const [featured,setFeatured]=useState(dailyFeatured);
+ const [selectedSubject,setSelectedSubject]=useState<string|null>(null);
+ const [exploreSubject,setExploreSubject]=useState<string|null>(null);
  const [domain,setDomain]=useState("All");
  const [workspace,setWorkspace]=useState("");
  const [mode,setMode]=useState("Explore");
@@ -34,7 +47,7 @@ export function UiLabPage() {
  const [searchOrigin,setSearchOrigin]=useState("Catalog");
  const [focusedModifier,setFocusedModifier]=useState(false);
  const searchMatches=[{name:"Collars",type:"Items",path:"Kinks"},{name:"Leather",type:"Modifiers",path:"Collars → Material"},{name:"Leather fetish",type:"Items",path:"Kinks"},{name:"Ownership",type:"Concepts",path:"Concept Explorer"},{name:"Sensory Play",type:"Items",path:"Kinks"},{name:"Restraints",type:"Items",path:"Kinks"}];
- const openCatalogSearch=(origin="Catalog")=>{setSearchOrigin(origin);setCatalogSearchOpen(true);setMenuOpen(false);};
+ const openCatalogSearch=(origin="Catalog")=>{setSearchOrigin(origin);setCatalogType(origin==="Catalog"?"Items":"All");setCatalogSearchOpen(true);setMenuOpen(false);};
  const searchResults=searchMatches.filter(r=>(catalogType==="All"||catalogType===r.type)&&(!catalogQuery.trim()||[r.name,r.path].join(" ").toLowerCase().includes(catalogQuery.trim().toLowerCase())));
  const selectSearchResult=(name:string)=>{resetPageScroll();setCatalogSearchOpen(false);setArea("Catalog");setWorkspace("Explore All");setDetail(null);setFocusedModifier(name==="Leather");};
  const [menuOpen,setMenuOpen]=useState(false);
@@ -71,12 +84,14 @@ export function UiLabPage() {
  const resetPageScroll=()=>{window.scrollTo({top:0,left:0,behavior:"instant"});requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"instant"}));};
  const navigate=(next:Area)=>{
    resetPageScroll();
-   setArea(next);setWorkspace("");setDetail(null);setDomain("All");setMenuOpen(false);
+   setArea(next);setWorkspace("");setSelectedSubject(null);setExploreSubject(null);if(next==="Catalog")setFeatured(dailyFeatured());setDetail(null);setDomain("All");setMenuOpen(false);
  };
- const choose=(name:string)=>{resetPageScroll();setArea("Catalog");setWorkspace(name);setMode("Explore");setDetail(null);};
+ const choose=(name:string)=>{resetPageScroll();setArea("Catalog");setSelectedSubject(null);setExploreSubject(null);setWorkspace(name);setMode("Explore");setDetail(null);};
+ const openSubject=(name:string)=>{resetPageScroll();setArea("Catalog");setSelectedSubject(name);setWorkspace("Subject Overview");setDetail(null);};
+ const exploreRelated=()=>{resetPageScroll();setExploreSubject(selectedSubject);setSelectedSubject(null);setWorkspace("Explore All");};
  const activeChild=(parent:Area)=>parent!==area?null:parent==="Catalog"?(workspace||"Overview"):parent==="Discover"?(mode==="Explore"?"Overview":mode):(workspace||"Overview");
  const openDrawer=()=>{if(modalActive())return;setExpandedMenu(area==="Home"?null:area);setMenuOpen(true);};
- const heading=workspace||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools."} as Record<Area,string>)[area];
+ const heading=(selectedSubject||workspace)||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools."} as Record<Area,string>)[area];
  return <div className="ui-lab ui-lab-app" onTouchStart={onGestureStart} onTouchEnd={onGestureEnd}>
   <aside className="ui-lab-app-rail" aria-label="Primary navigation">
    <div className="ui-lab-app-brand">♡ <strong>Kink Profile</strong><small>UI LAB</small></div>
@@ -133,20 +148,22 @@ export function UiLabPage() {
     <p className="ui-lab-app-note">Illustrative results only · Search is not connected to live catalog data</p>
    </div></section></div>}
    <main className="ui-lab-app-content">
-    {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>{setWorkspace("");setDetail(null)}}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
+    {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>{resetPageScroll();setWorkspace("");setSelectedSubject(null);setExploreSubject(null);setDetail(null)}}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
     <h1 className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
     {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
     {area==="Catalog"&&<div className="ui-lab-catalog">
 
       {!workspace&&<>
-        <button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Catalog")}>⌕ <span>Search items, modifiers, concepts...</span><span>→</span></button>
-        <h2>Explore by interest</h2>
-        <div className="ui-lab-app-grid">
-          {([["Kinks","Explore and refine your interests","♡"],["Rewards & Punishments","Discover rewards, boundaries and preferences","◇"],["Concept Explorer","Explore concepts and their connections","✧"],["Surprise me","Find something interesting to learn","✦"]] as const).map(([name,description,symbol])=><button key={name} className="ui-lab-app-tile" onClick={()=>name==="Surprise me"?setDetail("A little inspiration"):choose(name)}><span className="ui-lab-app-tile-icon">{symbol}</span><strong>{name}</strong><small>{description}</small><span className="ui-lab-app-tile-arrow">↗</span></button>)}
-        </div>
-        <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}>Browse everything <span>→</span></button>
+        <button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Catalog")}>⌕ <span>Search the Catalog…</span><span>→</span></button>
+        <section className="ui-lab-subjects-featured" aria-label="Featured subjects">
+          <div className="ui-lab-subject-section-title"><h2>Featured subjects</h2><small>Today's discoveries</small></div>
+          <div className="ui-lab-subject-feature-grid">{featured.map(subject=><button type="button" key={subject.name} className={"ui-lab-subject-feature ui-lab-subject-"+subject.tone} onClick={()=>openSubject(subject.name)}><span className="ui-lab-subject-art" aria-hidden="true">{subject.symbol}</span><span className="ui-lab-subject-feature-copy"><strong>{subject.name}</strong><small>{subject.description}</small></span><span className="ui-lab-subject-feature-arrow" aria-hidden="true">↗</span></button>)}</div>
+        </section>
+        <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}><span><strong>Explore All</strong><small>Browse the complete Catalog</small></span><span aria-hidden="true">→</span></button>
+        <section className="ui-lab-more-subjects"><h2>More subjects</h2><div className="ui-lab-subject-chips">{[...subjectNames.filter(name=>!featured.some(f=>f.name===name)),...extraSubjects].slice(0,subjectsExpanded?undefined:6).map(name=><button type="button" key={name} onClick={()=>openSubject(name)}>{name}</button>)}</div><button className="ui-lab-subject-more" aria-expanded={subjectsExpanded} onClick={()=>setSubjectsExpanded(v=>!v)}>{subjectsExpanded?"Show Less ↑":"Show More ↓"}</button></section>
       </>}
-      {workspace==="Explore All"&&<><CatalogComposite initialItem={focusedModifier?"Collars":undefined} />
+      {workspace==="Subject Overview"&&selectedSubject&&<section className="ui-lab-subject-overview"><p>{featuredSubjects.find(x=>x.name===selectedSubject)?.description||"Explore related Catalog Items and refine your preferences."}</p><div className="ui-lab-subject-related-head"><h2>Related Items</h2><button onClick={exploreRelated}>View All Related Items →</button></div><CatalogComposite compact subject={subjectNames.includes(selectedSubject)?selectedSubject:undefined} initialItem={undefined}/></section>}
+      {workspace==="Explore All"&&<>{exploreSubject&&<div className="ui-lab-subject-filter-note"><span>Exploring: {exploreSubject}</span><button onClick={()=>{setExploreSubject(null);setWorkspace("");requestAnimationFrame(()=>choose("Explore All"))}}>Clear subject ×</button></div>}<CatalogComposite key={exploreSubject||"all"} subject={subjectNames.includes(exploreSubject||"")?exploreSubject||undefined:undefined} initialItem={focusedModifier?"Collars":undefined} />
       </>}
       {workspace==="Concept Explorer"&&<><button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Concept Explorer")}>⌕ Search concepts...</button><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
       {(workspace==="Kinks"||workspace==="Rewards & Punishments")&&<>
