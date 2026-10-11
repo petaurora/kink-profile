@@ -27,19 +27,20 @@ export function UiLabPage() {
  const [showLab,setShowLab]=useState(false);
  const [menuOpen,setMenuOpen]=useState(false);
  const [expandedMenu,setExpandedMenu]=useState<Area|null>(null);
+ const [menuVisited,setMenuVisited]=useState(false);
  const gestureStart=useRef<{x:number;y:number}|null>(null);
  const menuChildren: Record<Area,string[]> = {
   Home:[],
   Catalog:["Overview","Explore All","Kinks","Rewards & Punishments","Concept Explorer"],
-  Profile:["My Profile","Preferences","Sharing & Permissions"],
-  Discover:["Learn","React","Play"],
-  Tools:["Scene Builder","Agreements & Rituals","Compare Profiles"]
+  Profile:["Overview","My Profile","Preferences","Sharing & Permissions"],
+  Discover:["Overview","Learn","React","Play"],
+  Tools:["Overview","Scene Builder","Agreements & Rituals","Compare Profiles"]
  };
  const openMenuChild=(parent:Area,child:string)=>{
   navigate(parent);
   if(parent==="Catalog") { if(child==="Overview")setWorkspace("");else choose(child); }
-  else if(parent==="Discover"){setMode(child);}
-  else if(parent==="Profile"||parent==="Tools"){setWorkspace(child);}
+  else if(parent==="Discover"){if(child!=="Overview")setMode(child);else setMode("Explore");}
+  else if(parent==="Profile"||parent==="Tools"){setWorkspace(child==="Overview"?"":child);}
  };
  const onGestureStart=(event:React.TouchEvent)=>{
   const t=event.touches[0];if(t)gestureStart.current={x:t.clientX,y:t.clientY};
@@ -50,13 +51,15 @@ export function UiLabPage() {
   const dx=t.clientX-start.x,dy=t.clientY-start.y;
   if(menuOpen){if(dx < -55 && Math.abs(dx)>Math.abs(dy)*1.1)setMenuOpen(false);return;}
   // Open from anywhere on the screen; directional thresholds limit accidental opens.
-  if((dx>42&&Math.abs(dx)>Math.abs(dy)*1.1)||(dy < -65&&Math.abs(dy)>Math.abs(dx)*1.35))setMenuOpen(true);
+  if((dx>42&&Math.abs(dx)>Math.abs(dy)*1.1)||(dy < -65&&Math.abs(dy)>Math.abs(dx)*1.35))openDrawer();
  };
  useEffect(()=>{if(!menuOpen)return;const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setMenuOpen(false);};window.addEventListener("keydown",onKey);return()=>window.removeEventListener("keydown",onKey);},[menuOpen]);
  const navigate=(next:Area)=>{
    setArea(next);setWorkspace("");setDetail(null);setDomain("All");setMenuOpen(false);
  };
  const choose=(name:string)=>{setArea("Catalog");setWorkspace(name);setMode("Explore");setDetail(null);};
+ const activeChild=(parent:Area)=>parent!==area?null:parent==="Catalog"?(workspace||"Overview"):parent==="Discover"?(mode==="Explore"?"Overview":mode):(workspace||"Overview");
+ const openDrawer=()=>{setExpandedMenu(area==="Home"?null:area);setMenuVisited(true);setMenuOpen(true);};
  const heading=workspace||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools."} as Record<Area,string>)[area];
  return <div className="ui-lab ui-lab-app" onTouchStart={onGestureStart} onTouchEnd={onGestureEnd}>
   <aside className="ui-lab-app-rail" aria-label="Primary navigation">
@@ -66,7 +69,7 @@ export function UiLabPage() {
   </aside>
   <div className="ui-lab-app-frame">
    <header className="ui-lab-app-header">
-    <button type="button" className="ui-lab-header-action" aria-label="Open full menu" aria-expanded={menuOpen} aria-controls="ui-lab-full-menu" onClick={()=>setMenuOpen(true)}>
+    <button type="button" className="ui-lab-header-action" aria-label="Open full menu" aria-expanded={menuOpen} aria-controls="ui-lab-full-menu" onClick={openDrawer}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
     <button type="button" className="ui-lab-app-logo" onClick={()=>navigate("Home")} aria-label="Kink Profile, go to Home"><span className="ui-lab-brand-mark" aria-hidden="true">♡</span><span>Kink Profile</span></button>
@@ -76,18 +79,20 @@ export function UiLabPage() {
       </button>
     </div>
    </header>
+   <button type="button" className="ui-lab-rope-peek" aria-label="Open navigation drawer" onClick={openDrawer}><svg viewBox="0 0 22 240" preserveAspectRatio="none" aria-hidden="true"><path d="M10 0 C2 25 18 47 10 72 S2 115 11 144 S17 191 10 240"/></svg></button>
    {menuOpen&&<div className="ui-lab-menu-layer">
      <button type="button" className="ui-lab-menu-backdrop" aria-label="Close navigation menu" onClick={()=>setMenuOpen(false)}/>
      <aside id="ui-lab-full-menu" className="ui-lab-menu-drawer" role="dialog" aria-modal="true" aria-label="Full navigation menu">
+       <svg className="ui-lab-menu-rope-edge" viewBox="0 0 22 240" preserveAspectRatio="none" aria-hidden="true"><path d="M10 0 C2 25 18 47 10 72 S2 115 11 144 S17 191 10 240"/></svg>
        <div className="ui-lab-menu-heading"><span className="ui-lab-menu-title"><span aria-hidden="true">♡</span> Kink Profile</span><button type="button" className="ui-lab-menu-close" aria-label="Close menu" onClick={()=>setMenuOpen(false)}>×</button></div>
        <p className="ui-lab-menu-eyebrow">YOUR SPACE</p>
        <nav aria-label="All destinations" className="ui-lab-menu-links">
          {areas.map(item=><div className="ui-lab-menu-group" key={item}>
-          <div className={"ui-lab-menu-parent "+(area===item?"selected":"")}>
-            <button type="button" className="ui-lab-menu-destination" aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-menu-link-icon"><NavIcon area={item}/></span><span>{item}</span></button>
-            {menuChildren[item].length>0&&<button type="button" className="ui-lab-menu-expand" aria-label={(expandedMenu===item?"Collapse ":"Expand ")+item} aria-expanded={expandedMenu===item} onClick={()=>setExpandedMenu(expandedMenu===item?null:item)}><span className={"ui-lab-menu-chevron "+(expandedMenu===item?"expanded":"")} aria-hidden="true">›</span></button>}
-          </div>
-          {expandedMenu===item&&menuChildren[item].length>0&&<div className="ui-lab-menu-subitems">{menuChildren[item].map(child=><button type="button" key={child} onClick={()=>openMenuChild(item,child)}>{child}</button>)}</div>}
+          <button type="button" className={"ui-lab-menu-parent ui-lab-menu-parent-button "+(area===item?"selected":"")} aria-current={area===item&&item==="Home"?"page":undefined} aria-expanded={menuChildren[item].length?expandedMenu===item:undefined} onClick={()=>{if(!menuChildren[item].length)navigate(item);else setExpandedMenu(expandedMenu===item?null:item);}}>
+           <span className="ui-lab-menu-link-icon"><NavIcon area={item}/></span><span className="ui-lab-menu-parent-label">{item}</span>
+           {menuChildren[item].length>0&&<span className={"ui-lab-menu-chevron "+(expandedMenu===item?"expanded":"")} aria-hidden="true">›</span>}
+          </button>
+          {expandedMenu===item&&menuChildren[item].length>0&&<div className="ui-lab-menu-subitems ui-lab-menu-branches">{menuChildren[item].map((child,index)=><button type="button" key={child} style={{animationDelay:index*55+"ms"}} className={"ui-lab-menu-child "+(activeChild(item)===child?"active":"")+(index===menuChildren[item].length-1?" last":"")} aria-current={activeChild(item)===child?"page":undefined} onClick={()=>openMenuChild(item,child)}><span className="ui-lab-menu-branch" aria-hidden="true"/><span>{child}</span></button>)}</div>}
          </div>)}
        </nav>
        <div className="ui-lab-menu-divider"/>
