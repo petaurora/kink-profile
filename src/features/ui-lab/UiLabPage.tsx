@@ -36,7 +36,7 @@ export function UiLabPage() {
  const searchMatches=[{name:"Collars",type:"Items",path:"Kinks"},{name:"Leather",type:"Modifiers",path:"Collars → Material"},{name:"Leather fetish",type:"Items",path:"Kinks"},{name:"Ownership",type:"Concepts",path:"Concept Explorer"},{name:"Sensory Play",type:"Items",path:"Kinks"},{name:"Restraints",type:"Items",path:"Kinks"}];
  const openCatalogSearch=(origin="Catalog")=>{setSearchOrigin(origin);setCatalogSearchOpen(true);setMenuOpen(false);};
  const searchResults=searchMatches.filter(r=>(catalogType==="All"||catalogType===r.type)&&(!catalogQuery.trim()||[r.name,r.path].join(" ").toLowerCase().includes(catalogQuery.trim().toLowerCase())));
- const selectSearchResult=(name:string)=>{setCatalogSearchOpen(false);setArea("Catalog");setWorkspace("Explore All");setDetail(name==="Leather"?"Collars":name);setFocusedModifier(name==="Leather");};
+ const selectSearchResult=(name:string)=>{setCatalogSearchOpen(false);setArea("Catalog");setWorkspace("Explore All");setDetail(null);setFocusedModifier(name==="Leather");};
  const [menuOpen,setMenuOpen]=useState(false);
  const [expandedMenu,setExpandedMenu]=useState<Area|null>(null);
  const gestureStart=useRef<{x:number;y:number}|null>(null);
@@ -139,9 +139,7 @@ export function UiLabPage() {
         </div>
         <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}>Browse everything <span>→</span></button>
       </>}
-      {workspace==="Explore All"&&<><CatalogComposite />
-        <div className="ui-lab-catalog-filters" aria-label="Catalog domains">{["All","Kinks","Rewards & Punishments"].map(d=><button key={d} className={domain===d?"active":""} onClick={()=>setDomain(d)}>{d}</button>)}</div>
-        <div className="ui-lab-catalog-items">{(domain==="Kinks"?["Collars","Restraints","Sensory Play"]:domain==="Rewards & Punishments"?["Praise","Privileges","Playful Challenges"]:["Collars","Restraints","Praise","Sensory Play","Privileges"]).map(item=><button key={item} onClick={()=>setDetail(item)}><span>{item}</span><small>{["Praise","Privileges","Playful Challenges"].includes(item)?"Rewards & Punishments":"Kinks"}</small><span>›</span></button>)}</div>
+      {workspace==="Explore All"&&<><CatalogComposite initialItem={focusedModifier?"Collars":undefined} />
       </>}
       {workspace==="Concept Explorer"&&<><button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Concept Explorer")}>⌕ Search concepts...</button><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
       {(workspace==="Kinks"||workspace==="Rewards & Punishments")&&<>
@@ -156,8 +154,8 @@ export function UiLabPage() {
     {toastLabOpen&&<ToastPlayground/>}
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}} title={color}/>)}</div><a href="#/hub">Return to production app</a></section>}
    </main>}
-   {detail&&area==="Catalog"&&detail==="Collars"?<div className="ui-lab-composite-overlay"><CatalogComposite initialItem="Collars" onClose={()=>setDetail(null)}/></div>:null}
-   {detail&&!(area==="Catalog"&&detail==="Collars")&&<div className="ui-lab-app-overlay" onClick={()=>setDetail(null)}><div role="dialog" aria-label={detail} onClick={e=>e.stopPropagation()}><button onClick={()=>setDetail(null)} aria-label="Close">×</button><h2>{detail}</h2>{focusedModifier&&detail==="Collars"?<p>Material → <strong>Leather</strong> · Contextual deep link preview. The modifier would be expanded and briefly highlighted in the full item view.</p>:<p>Placeholder for the future {detail.toLowerCase()} experience.</p>}</div></div>}
+   
+   {detail&&<div className="ui-lab-app-overlay" onClick={()=>setDetail(null)}><div role="dialog" aria-label={detail} onClick={e=>e.stopPropagation()}><button onClick={()=>setDetail(null)} aria-label="Close">×</button><h2>{detail}</h2>{focusedModifier&&detail==="Collars"?<p>Material → <strong>Leather</strong> · Contextual deep link preview. The modifier would be expanded and briefly highlighted in the full item view.</p>:<p>Placeholder for the future {detail.toLowerCase()} experience.</p>}</div></div>}
    <nav className="ui-lab-app-bottom" aria-label="Primary mobile navigation">{areas.map(item=><button key={item} type="button" className={area===item?"active":""} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span><small>{item}</small></button>)}</nav>
   </div>
  </div>;
