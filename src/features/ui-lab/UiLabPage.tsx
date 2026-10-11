@@ -25,6 +25,15 @@ export function UiLabPage() {
  const [mode,setMode]=useState("Explore");
  const [detail,setDetail]=useState<string|null>(null);
  const [showLab,setShowLab]=useState(false);
+ const [catalogSearchOpen,setCatalogSearchOpen]=useState(false);
+ const [catalogQuery,setCatalogQuery]=useState("");
+ const [catalogType,setCatalogType]=useState("All");
+ const [searchOrigin,setSearchOrigin]=useState("Catalog");
+ const [focusedModifier,setFocusedModifier]=useState(false);
+ const searchMatches=[{name:"Collars",type:"Items",path:"Kinks"},{name:"Leather",type:"Modifiers",path:"Collars → Material"},{name:"Leather fetish",type:"Items",path:"Kinks"},{name:"Ownership",type:"Concepts",path:"Concept Explorer"},{name:"Sensory Play",type:"Items",path:"Kinks"},{name:"Restraints",type:"Items",path:"Kinks"}];
+ const openCatalogSearch=(origin="Catalog")=>{setSearchOrigin(origin);setCatalogSearchOpen(true);setMenuOpen(false);};
+ const searchResults=searchMatches.filter(r=>(catalogType==="All"||catalogType===r.type)&&(!catalogQuery.trim()||[r.name,r.path].join(" ").toLowerCase().includes(catalogQuery.trim().toLowerCase())));
+ const selectSearchResult=(name:string)=>{setCatalogSearchOpen(false);setArea("Catalog");setWorkspace("Explore All");setDetail(name==="Leather"?"Collars":name);setFocusedModifier(name==="Leather");};
  const [menuOpen,setMenuOpen]=useState(false);
  const [expandedMenu,setExpandedMenu]=useState<Area|null>(null);
  const gestureStart=useRef<{x:number;y:number}|null>(null);
@@ -73,7 +82,7 @@ export function UiLabPage() {
     </button>
     <button type="button" className="ui-lab-app-logo" onClick={()=>navigate("Home")} aria-label="Kink Profile, go to Home"><span className="ui-lab-brand-mark" aria-hidden="true">♡</span><span>Kink Profile</span></button>
     <div className="ui-lab-header-actions">
-      <button type="button" className="ui-lab-header-action" aria-label="Search" onClick={()=>setDetail("Search across tools, concepts, preferences and creations")}>
+      <button type="button" className="ui-lab-header-action" aria-label="Search" onClick={()=>openCatalogSearch(area)}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.5 4.5"/></svg>
       </button>
     </div>
@@ -106,14 +115,21 @@ export function UiLabPage() {
        </div>
      </aside>
    </div>}
-   <main className="ui-lab-app-content">
+   {catalogSearchOpen?<main className="ui-lab-search-page">
+    <div className="ui-lab-search-head"><button aria-label="Back to previous screen" onClick={()=>setCatalogSearchOpen(false)}>←</button><input autoFocus aria-label="Search catalog" placeholder="Search catalog…" value={catalogQuery} onChange={e=>setCatalogQuery(e.target.value)}/>{catalogQuery&&<button aria-label="Clear search" onClick={()=>setCatalogQuery("")}>×</button>}</div>
+    <div className="ui-lab-search-chips">{["All","Items","Modifiers","Concepts"].map(t=><button key={t} className={catalogType===t?"active":""} onClick={()=>setCatalogType(t)}>{t}</button>)}</div>
+    {!catalogQuery.trim()&&<><p className="ui-lab-search-label">STARTING FROM {searchOrigin.toUpperCase()}</p><p className="ui-lab-search-hint">Suggestions reflect where you opened search, but results span the whole catalog.</p><p className="ui-lab-search-label">SUGGESTED SEARCHES</p><div className="ui-lab-search-suggestions">{["Collars","Leather","Ownership"].map(q=><button key={q} onClick={()=>setCatalogQuery(q)}>{q} ↗</button>)}</div></>}
+    {catalogQuery.trim()&&<p className="ui-lab-search-label">BEST MATCHES · {searchResults.length}</p>}
+    <div className="ui-lab-search-results">{(catalogQuery.trim()?searchResults:searchResults.slice(0,3)).map(r=><button key={r.name} onClick={()=>selectSearchResult(r.name)}><span><strong>{r.name}</strong><small>{r.path} · {r.type}</small></span><span>›</span></button>)}{catalogQuery.trim()&&searchResults.length===0&&<p>No matches in this prototype. Try another term or filter.</p>}</div>
+    <p className="ui-lab-app-note">Illustrative results only · Search is not connected to live catalog data</p>
+   </main>:<main className="ui-lab-app-content">
     <p className="ui-lab-app-kicker">{area.toUpperCase()} {workspace&&" / "+workspace.toUpperCase()}</p>
     <h1>{heading}</h1>
     <p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>
     {area==="Catalog"&&<div className="ui-lab-catalog">
       {workspace&&<button className="ui-lab-app-switch" onClick={()=>choose("")}>← Catalog overview</button>}
       {!workspace&&<>
-        <button className="ui-lab-catalog-search" onClick={()=>choose("Explore All")}>⌕ <span>Search concepts, preferences, topics...</span><span>→</span></button>
+        <button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Catalog")}>⌕ <span>Search items, modifiers, concepts...</span><span>→</span></button>
         <h2>Explore by interest</h2>
         <div className="ui-lab-app-grid">
           {([["Kinks","Explore and refine your interests","♡"],["Rewards & Punishments","Discover rewards, boundaries and preferences","◇"],["Concept Explorer","Explore concepts and their connections","✧"],["Surprise me","Find something interesting to learn","✦"]] as const).map(([name,description,symbol])=><button key={name} className="ui-lab-app-tile" onClick={()=>name==="Surprise me"?setDetail("A little inspiration"):choose(name)}><span className="ui-lab-app-tile-icon">{symbol}</span><strong>{name}</strong><small>{description}</small><span className="ui-lab-app-tile-arrow">↗</span></button>)}
@@ -124,7 +140,7 @@ export function UiLabPage() {
         <div className="ui-lab-catalog-filters" aria-label="Catalog domains">{["All","Kinks","Rewards & Punishments"].map(d=><button key={d} className={domain===d?"active":""} onClick={()=>setDomain(d)}>{d}</button>)}</div>
         <div className="ui-lab-catalog-items">{(domain==="Kinks"?["Collars","Restraints","Sensory Play"]:domain==="Rewards & Punishments"?["Praise","Privileges","Playful Challenges"]:["Collars","Restraints","Praise","Sensory Play","Privileges"]).map(item=><button key={item} onClick={()=>setDetail(item)}><span>{item}</span><small>{["Praise","Privileges","Playful Challenges"].includes(item)?"Rewards & Punishments":"Kinks"}</small><span>›</span></button>)}</div>
       </>}
-      {workspace==="Concept Explorer"&&<><button className="ui-lab-catalog-search" onClick={()=>setDetail("Search concepts")}>⌕ Search concepts...</button><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
+      {workspace==="Concept Explorer"&&<><button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Concept Explorer")}>⌕ Search concepts...</button><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
       {(workspace==="Kinks"||workspace==="Rewards & Punishments")&&<>
         <div className="ui-lab-app-modes" aria-label="Catalog modes">{["Compare","Overall","Explore"].map(m=><button key={m} className={mode===m?"active":""} onClick={()=>setMode(m)}>{m}</button>)}</div>
         <div className="ui-lab-catalog-items">{(workspace==="Kinks"?["Collars","Restraints","Sensory Play"]:["Praise","Privileges","Playful Challenges"]).map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div>
@@ -134,8 +150,8 @@ export function UiLabPage() {
     {area!=="Catalog"&&<div className="ui-lab-app-grid">{(workspace?[[workspace,"Your working space and saved drafts."],...cards[area].filter(x=>x[0]!==workspace)]:cards[area]).map(([title,description],i)=><button className={"ui-lab-app-tile "+(i===0?"featured":"")} key={title} onClick={()=>setDetail(title)}><span className="ui-lab-app-tile-icon">{["✧","♡","◇","✦"][i%4]}</span><strong>{title}</strong><small>{description}</small><span className="ui-lab-app-tile-arrow">↗</span></button>)}</div>}
     <p className="ui-lab-app-note">Experimental shell · Illustrative content only · No preferences are saved here</p>
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}} title={color}/>)}</div><a href="#/hub">Return to production app</a></section>}
-   </main>
-   {detail&&<div className="ui-lab-app-overlay" onClick={()=>setDetail(null)}><div role="dialog" aria-label={detail} onClick={e=>e.stopPropagation()}><button onClick={()=>setDetail(null)} aria-label="Close">×</button><h2>{detail}</h2><p>Placeholder for the future {detail.toLowerCase()} experience.</p></div></div>}
+   </main>}
+   {detail&&<div className="ui-lab-app-overlay" onClick={()=>setDetail(null)}><div role="dialog" aria-label={detail} onClick={e=>e.stopPropagation()}><button onClick={()=>setDetail(null)} aria-label="Close">×</button><h2>{detail}</h2>{focusedModifier&&detail==="Collars"?<p>Material → <strong>Leather</strong> · Contextual deep link preview. The modifier would be expanded and briefly highlighted in the full item view.</p>:<p>Placeholder for the future {detail.toLowerCase()} experience.</p>}</div></div>}
    <nav className="ui-lab-app-bottom" aria-label="Primary mobile navigation">{areas.map(item=><button key={item} type="button" className={area===item?"active":""} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span><small>{item}</small></button>)}</nav>
   </div>
  </div>;
