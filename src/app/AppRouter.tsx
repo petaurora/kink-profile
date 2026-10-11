@@ -19,6 +19,7 @@ import { RewardsToolsRoute } from "../features/rewards/RewardsToolsRoute";
 import { SceneBuilderRoute } from "../features/scenes/SceneBuilderRoute";
 import { SettingsRoute } from "../features/settings/SettingsRoute";
 import { AppShell } from "./AppShell";
+import { UiLabPage } from "../features/ui-lab/UiLabPage";
 import {
   catalogRewardsRankingRoute,
   catalogRewardsRoute,
@@ -59,6 +60,7 @@ function KinkCatalogEntryRoute() {
 export function RoutedApplication() {
   return (
     <Routes>
+      <Route path="/ui-lab" element={<UiLabPage />} />
       <Route element={<AppShell />}>
         <Route path={hubRoute.path} element={<HubPage />} />
         <Route path={profileRoute.path} element={<ProfileRoute />} />
