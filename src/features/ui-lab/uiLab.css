@@ -195,3 +195,14 @@
 .ui-lab-app .ui-lab-menu-parent button:focus-visible,.ui-lab-app .ui-lab-menu-subitems button:focus-visible{outline:2px solid #f0d3e7;outline-offset:-2px;}
 @keyframes uiLabSubmenu{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-menu-subitems{animation:none}.ui-lab-app .ui-lab-menu-parent .ui-lab-menu-chevron{transition:none}}
+
+/* Settings stays separate from the destination hierarchy. */
+.ui-lab-app .ui-lab-menu-bottom{margin-top:auto;padding-top:22px;}
+.ui-lab-app .ui-lab-menu-settings{display:flex;align-items:center;gap:13px;width:100%;min-height:48px;padding:9px 12px;border:1px solid rgba(240,211,231,.12);border-radius:12px;background:rgba(240,211,231,.045);color:#e8cee0;font-size:14px;font-weight:550;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .16s ease,transform .16s ease;}
+.ui-lab-app .ui-lab-menu-settings svg{width:21px;height:21px;color:#d7b4d0;}
+.ui-lab-app .ui-lab-menu-settings-arrow{margin-left:auto;color:#aa91b0;font-size:22px;}
+.ui-lab-app .ui-lab-menu-settings:hover,.ui-lab-app .ui-lab-menu-settings:focus-visible{background:rgba(240,211,231,.11);}
+.ui-lab-app .ui-lab-menu-settings:active{transform:scale(.985);}
+.ui-lab-app .ui-lab-menu-settings:focus-visible{outline:2px solid #f0d3e7;outline-offset:2px;}
+.ui-lab-app .ui-lab-menu-bottom .ui-lab-menu-footer{padding:18px 12px 0;}
+@media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-menu-settings{transition:none}}
