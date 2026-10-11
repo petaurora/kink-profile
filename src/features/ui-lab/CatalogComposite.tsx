@@ -16,14 +16,14 @@ const specific:Record<string,Item["groups"]>={
  "Praise":[{name:"Expression",values:["Verbal","Written","Public","Private"]}],
  "Privileges":[{name:"Context",values:["Everyday","Scene","Ceremonial"]}]
 };
-const suffixes=[""," — Everyday"," — Scene"," — Ceremonial"," — Giving"," — Receiving"," — Self-directed"];
-const items:Item[]=Object.entries(catalogSeeds).flatMap(([category,names])=>names.flatMap((name,i)=>suffixes.map((suffix,j)=>({id:category+":"+i+":"+j,name:name+suffix,category,groups:specific[name]||[{name:"Context",values:["Everyday","Scene / Play","Ceremonial"]},{name:"Role",values:["Giving","Receiving","Self-directed"]}]}))));
+const items:Item[]=Object.entries(catalogSeeds).flatMap(([category,names])=>names.map((name,i)=>({id:category+":"+i,name,category,groups:specific[name]||[{name:"Context",values:["Everyday","Scene / Play","Ceremonial"]},{name:"Role",values:["Giving","Receiving","Self-directed"]}]})));
 const choices=["Love","Like","Neutral","Dislike","Hard limit"];
 type SaveState="saving"|"failed"|"idle";
 export function CatalogComposite({initialItem}:{initialItem?:string;onClose?:()=>void}){
  const [view,setView]=useState<"Categories"|"All Items"|"A–Z">("All Items");
- const [query,setQuery]=useState("");\n const [categoryFilter,setCategoryFilter]=useState("All");
- const [expanded,setExpanded]=useState<Record<string,boolean>>({});
+ const [query,setQuery]=useState("");
+ const [categoryFilter,setCategoryFilter]=useState("All");
+ const [refining,setRefining]=useState<string|null>(null);
  const [closedCategories,setClosedCategories]=useState<Record<string,boolean>>({});
  const [groupsOpen,setGroupsOpen]=useState<Record<string,boolean>>({});
  const [ratings,setRatings]=useState<Record<string,string>>({});
@@ -37,10 +37,12 @@ export function CatalogComposite({initialItem}:{initialItem?:string;onClose?:()=
  const origin=useRef<HTMLButtonElement|null>(null);
  const titleRef=useRef<HTMLHeadingElement>(null);
  const root=useRef<HTMLElement>(null);
+ const refineOrigin=useRef<HTMLButtonElement|null>(null);
  useEffect(()=>()=>Object.values(timers.current).forEach(clearTimeout),[]);
- useEffect(()=>{if(selector)titleRef.current?.focus()},[selector]);
- useEffect(()=>{if(!selector)return;const handler=(e:KeyboardEvent)=>{if(e.key==="Escape")closeSelector()};window.addEventListener("keydown",handler);return()=>window.removeEventListener("keydown",handler)},[selector]);
- useEffect(()=>{if(!initialItem)return;const found=items.find(x=>x.name===initialItem);if(found){setExpanded(p=>({...p,[found.id]:true}));requestAnimationFrame(()=>root.current?.querySelector('[data-item-id="'+found.id+'"]')?.scrollIntoView({block:"nearest"}))}},[initialItem]);
+ useEffect(()=>{if(selector)titleRef.current?.focus()},[selector,refining]);
+ useEffect(()=>{if(!selector&&!refining)return;const handler=(e:KeyboardEvent)=>{if(e.key==="Escape"){if(selector)closeSelector();else closeRefine()}};window.addEventListener("keydown",handler);return()=>window.removeEventListener("keydown",handler)},[selector]);
+ useEffect(()=>{if(!initialItem)return;const found=items.find(x=>x.name===initialItem);if(found){setRefining(found.id);requestAnimationFrame(()=>root.current?.querySelector('[data-item-id="'+found.id+'"]')?.scrollIntoView({block:"nearest"}))}},[initialItem]);
+ function closeRefine(){setRefining(null);requestAnimationFrame(()=>refineOrigin.current?.focus())}
  function closeSelector(){setSelector(null);setHelp(false);requestAnimationFrame(()=>origin.current?.focus())}
  function notify(message:string,kind:LabToast["kind"]){setToasts(p=>kind==="success"?[...p.filter(x=>x.kind!=="success"),{id:++toastId.current,message,kind}]:[...p,{id:++toastId.current,message,kind}])}
  function commit(id:string,value:string|undefined){
@@ -56,16 +58,18 @@ export function CatalogComposite({initialItem}:{initialItem?:string;onClose?:()=
  const matching=items.filter(x=>(categoryFilter==="All"||x.category===categoryFilter)&&(x.name+" "+x.category+" "+x.groups.flatMap(g=>g.values).join(" ")).toLowerCase().includes(query.trim().toLowerCase()));
  const sections=view==="All Items"?[["All Items",matching] as const]:view==="Categories"?Object.keys(catalogSeeds).map(c=>[c,matching.filter(x=>x.category===c)] as const):Array.from(new Set(matching.map(x=>x.name[0].toUpperCase()))).sort().map(letter=>[letter,matching.filter(x=>x.name.toUpperCase().startsWith(letter))] as const);
  function renderItem(x:Item){
-  const open=!!expanded[x.id];const overall=x.id+":overall";const errors=Object.keys(saves).filter(k=>k.startsWith(x.id+":")&&saves[k]==="failed");
-  return <article className={"cc-item "+(open?"cc-item-open":"")} data-item-id={x.id} key={x.id}>
-   <div className="cc-item-row"><span className="cc-item-name">{x.name}</span>{ratingButton(overall,x.name+" overall",x.name)}<button type="button" className="cc-refine-toggle" aria-expanded={open} aria-controls={"cc-panel-"+x.id.replace(/[^a-z0-9]/gi,"-")} onClick={()=>setExpanded(p=>({...p,[x.id]:!p[x.id]}))}><span aria-hidden="true">{open?"−":"+"}</span> Refine{!open&&Object.keys(ratings).some(k=>k.startsWith(x.id+":")&&k!==overall)?<span className="cc-rated-dot" aria-hidden="true"/>:null}</button></div>
-   {open&&<div className="cc-item-panel" id={"cc-panel-"+x.id.replace(/[^a-z0-9]/gi,"-")}>
-    
-
-    {x.groups.map(g=>{const gk=x.id+":"+g.name;const go=groupsOpen[gk]??g.values.length<=4;return <section className="cc-group" key={gk}><button className="cc-group-head" aria-expanded={go} onClick={()=>setGroupsOpen(p=>({...p,[gk]:!go}))}><span>{g.name}<small>{g.values.length} options</small></span><span aria-hidden="true">{go?"⌃":"⌄"}</span></button>{go&&<div className="cc-values">{g.values.map(v=><div className="cc-value" key={v}><span>{v}</span>{ratingButton(x.id+":"+g.name+":"+v,v,x.name+" / "+g.name)}</div>)}</div>}</section>})}
-    {errors.length>0&&<p className="cc-error-summary" role="status">{errors.length} save issue{errors.length===1?"":"s"} · Retry beside the affected rating.</p>}
-   </div>}
+  const overall=x.id+":overall";
+  const hasModifiers=x.groups.some(g=>g.values.length>0);
+  const ratedModifier=Object.keys(ratings).some(k=>k.startsWith(x.id+":")&&k!==overall);
+  return <article className="cc-item" data-item-id={x.id} key={x.id}>
+   <div className="cc-item-row"><span className="cc-item-name">{x.name}</span>{ratingButton(overall,x.name+" overall",x.name)}
+   {hasModifiers&&<button type="button" className="cc-refine-toggle" aria-haspopup="dialog" onClick={e=>{refineOrigin.current=e.currentTarget;setRefining(x.id)}}><span aria-hidden="true">+</span> Refine{ratedModifier&&<span className="cc-rated-dot" aria-hidden="true"/>}</button>}</div>
   </article>
+ }
+ const refinedItem=items.find(x=>x.id===refining);
+ function modifierContent(x:Item){
+  const errors=Object.keys(saves).filter(k=>k.startsWith(x.id+":")&&k!==x.id+":overall"&&saves[k]==="failed");
+  return <div className="cc-refine-content">{x.groups.map(g=>{const gk=x.id+":"+g.name;const go=groupsOpen[gk]??g.values.length<=4;return <section className="cc-group" key={gk}><button className="cc-group-head" aria-expanded={go} onClick={()=>setGroupsOpen(p=>({...p,[gk]:!go}))}><span>{g.name}<small>{g.values.length} options</small></span><span aria-hidden="true">{go?"⌃":"⌄"}</span></button>{go&&<div className="cc-values">{g.values.map(v=><div className="cc-value" key={v}><span>{v}</span>{ratingButton(x.id+":"+g.name+":"+v,v,x.name+" / "+g.name)}</div>)}</div>}</section>})}{errors.length>0&&<p className="cc-error-summary" role="status">{errors.length} save issue{errors.length===1?"":"s"} · Retry beside affected rating.</p>}</div>
  }
  return <section className="cc" ref={root} aria-label="Interactive inline Catalog prototype">
   <div className="cc-top"><div><span className="cc-eyebrow">UI LAB / INLINE CATALOG</span><h2>Explore preferences</h2><p>Search and browse freely. Rate an Item directly or expand to refine.</p></div></div>
@@ -74,7 +78,8 @@ export function CatalogComposite({initialItem}:{initialItem?:string;onClose?:()=
    <div className="cc-toolbar"><span>{matching.length} Items</span><div className="cc-view-wide" role="group" aria-label="Browse view">{(["Categories","All Items","A–Z"] as const).map(v=><button key={v} aria-pressed={view===v} className={view===v?"active":""} onClick={()=>setView(v)}>{v}</button>)}</div><label className="cc-view-mobile">Browse by <select aria-label="Browse view" value={view} onChange={e=>setView(e.target.value as typeof view)}><option>Categories</option><option>All Items</option><option>A–Z</option></select></label></div>
    <div className="cc-category-filter"><label htmlFor="cc-category-filter">Category</label><select id="cc-category-filter" value={categoryFilter} onChange={e=>setCategoryFilter(e.target.value)}><option value="All">All categories</option>{Object.keys(catalogSeeds).map(c=><option key={c}>{c}</option>)}</select></div><div className="cc-sections">{sections.filter(([,list])=>list.length).map(([heading,list])=><section key={heading} className="cc-section"><button className={"cc-section-title"+(heading==="All Items"?" cc-section-title-flat":"")} aria-expanded={!closedCategories[heading]} onClick={()=>setClosedCategories(p=>({...p,[heading]:!p[heading]}))}><span>{heading==="All Items"?"":heading} <small>{heading==="All Items"?"":list.length+" Items"}</small></span><span aria-hidden="true">{closedCategories[heading]?"⌄":"⌃"}</span></button>{!closedCategories[heading]&&<div className="cc-section-items">{list.map(renderItem)}</div>}</section>)}{matching.length===0&&<p className="cc-empty">No matching Items. <button onClick={()=>setQuery("")}>Clear search</button></p>}</div>
   </div>
-  <LabToasts items={toasts} modalOpen={!!selector} onDismiss={id=>setToasts(p=>p.filter(t=>t.id!==id))}/>
+  <LabToasts items={toasts} modalOpen={!!selector||!!refining} onDismiss={id=>setToasts(p=>p.filter(t=>t.id!==id))}/>
+  {refinedItem&&!selector&&<div className="cc-modal-layer"><button className="cc-backdrop" aria-label="Close refinement" onClick={closeRefine}/><div className="cc-selector cc-refine-sheet" role="dialog" aria-modal="true" aria-label={"Refine "+refinedItem.name}><div className="cc-selector-head"><div><small>REFINE ITEM</small><h3>{refinedItem.name}</h3><p className="cc-refine-intro">Optional details · Overall rating stays in the list</p></div><button onClick={closeRefine} aria-label="Close refinement">×</button></div>{modifierContent(refinedItem)}</div></div>}
   {selector&&<div className="cc-modal-layer"><button className="cc-backdrop" aria-label="Close rating selector" onClick={closeSelector}/><div className="cc-selector" role="dialog" aria-modal="true" aria-labelledby="cc-selector-title"><div className="cc-selector-head"><div><small>{selector.parent}</small><h3 id="cc-selector-title" ref={titleRef} tabIndex={-1}>{selector.label}</h3></div><button onClick={closeSelector} aria-label="Close selector">×</button></div><div className="cc-options">{choices.map(c=><button key={c} className={ratings[selector.id]===c?"chosen":""} onClick={()=>{commit(selector.id,c);closeSelector()}}>{c}{ratings[selector.id]===c?" ✓":""}</button>)}</div><button className="cc-help" aria-expanded={help} onClick={()=>setHelp(p=>!p)}>What do these mean? {help?"−":"+"}</button>{help&&<p className="cc-explanation">These describe preference, not experience or comfort. All ratings are optional.</p>}{ratings[selector.id]&&<button className="cc-clear" onClick={()=>{commit(selector.id,undefined);closeSelector()}}>Clear rating</button>}</div></div>}
  </section>
 }
