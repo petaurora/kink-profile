@@ -6,7 +6,7 @@
 .ui-lab-app-rail button span{font-size:23px}.ui-lab-app-rail button.active{background:#520e25;color:#ffe4f1;border-left:3px solid #f0b8d6}
 .ui-lab-app-rail .ui-lab-app-rail-lab{margin-top:auto;color:#e2bbd3}
 .ui-lab-app-frame{margin-left:220px;min-height:100dvh;position:relative}
-.ui-lab-app-header{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;border-bottom:1px solid #ffffff1c;background:#10112b}
+.ui-lab-app-header{position:sticky;top:0;z-index:15;display:flex;justify-content:space-between;align-items:center;padding:16px 32px;border-bottom:1px solid #ffffff1c;background:#10112b}
 .ui-lab-app-header button{background:none;border:0;color:#f0d3e7;font-size:23px}.ui-lab-app-header .ui-lab-app-logo{font-size:17px;font-weight:700}.ui-lab-app-header>div{display:flex;gap:14px}
 .ui-lab-app-content{max-width:980px;margin:auto;padding:48px 32px 110px}
 .ui-lab-app-kicker{font-size:11px;letter-spacing:.2em;color:#e6a4c6;font-weight:700}
