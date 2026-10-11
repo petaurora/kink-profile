@@ -49,8 +49,8 @@ export function UiLabPage() {
   const t=event.changedTouches[0];if(!start||!t)return;
   const dx=t.clientX-start.x,dy=t.clientY-start.y;
   if(menuOpen){if(dx < -55 && Math.abs(dx)>Math.abs(dy)*1.1)setMenuOpen(false);return;}
-  // Activate from the left third of the viewport, with directional thresholds to limit accidental opens.
-  if(start.x<=window.innerWidth/3 && ((dx>42&&Math.abs(dx)>Math.abs(dy)*1.1)||(dy < -65&&Math.abs(dy)>Math.abs(dx)*1.35)))setMenuOpen(true);
+  // Open from anywhere on the screen; directional thresholds limit accidental opens.
+  if((dx>42&&Math.abs(dx)>Math.abs(dy)*1.1)||(dy < -65&&Math.abs(dy)>Math.abs(dx)*1.35))setMenuOpen(true);
  };
  useEffect(()=>{if(!menuOpen)return;const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setMenuOpen(false);};window.addEventListener("keydown",onKey);return()=>window.removeEventListener("keydown",onKey);},[menuOpen]);
  const navigate=(next:Area)=>{
