@@ -53,10 +53,13 @@ export function UiLabPage() {
   else if(parent==="Discover"){if(child!=="Overview")setMode(child);else setMode("Explore");}
   else if(parent==="Profile"||parent==="Tools"){setWorkspace(child==="Overview"?"":child);}
  };
- const modalActive=()=>Boolean(document.querySelector(".ui-lab [aria-modal=\"true\"]:not(#ui-lab-full-menu)"));\n const onGestureStart=(event:React.TouchEvent)=>{\n  if(modalActive()){gestureStart.current=null;return;}
+ const modalActive=()=>Boolean(document.querySelector(".ui-lab [aria-modal=\"true\"]:not(#ui-lab-full-menu)"));
+ const onGestureStart=(event:React.TouchEvent)=>{
+  if(modalActive()){gestureStart.current=null;return;}
   const t=event.touches[0];if(t)gestureStart.current={x:t.clientX,y:t.clientY};
  };
- const onGestureEnd=(event:React.TouchEvent)=>{\n  if(modalActive()){gestureStart.current=null;return;}
+ const onGestureEnd=(event:React.TouchEvent)=>{
+  if(modalActive()){gestureStart.current=null;return;}
   const start=gestureStart.current;gestureStart.current=null;
   const t=event.changedTouches[0];if(!start||!t)return;
   const dx=t.clientX-start.x,dy=t.clientY-start.y;
