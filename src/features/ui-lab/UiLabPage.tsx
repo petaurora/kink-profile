@@ -121,14 +121,15 @@ export function UiLabPage() {
        </div>
      </aside>
    </div>}
-   {catalogSearchOpen?<main className="ui-lab-search-page">
+   {catalogSearchOpen&&<div className="ui-lab-search-overlay"><button className="ui-lab-search-backdrop" aria-label="Close search" onClick={()=>setCatalogSearchOpen(false)}/><section className="ui-lab-search-dialog" role="dialog" aria-modal="true" aria-label="Global catalog search"><div className="ui-lab-search-page">
     <div className="ui-lab-search-head"><button aria-label="Back to previous screen" onClick={()=>setCatalogSearchOpen(false)}>←</button><input autoFocus aria-label="Search catalog" placeholder="Search catalog…" value={catalogQuery} onChange={e=>setCatalogQuery(e.target.value)}/>{catalogQuery&&<button aria-label="Clear search" onClick={()=>setCatalogQuery("")}>×</button>}</div>
     <div className="ui-lab-search-chips">{["All","Items","Modifiers","Concepts"].map(t=><button key={t} className={catalogType===t?"active":""} onClick={()=>setCatalogType(t)}>{t}</button>)}</div>
     {!catalogQuery.trim()&&<><p className="ui-lab-search-label">STARTING FROM {searchOrigin.toUpperCase()}</p><p className="ui-lab-search-hint">Suggestions reflect where you opened search, but results span the whole catalog.</p><p className="ui-lab-search-label">SUGGESTED SEARCHES</p><div className="ui-lab-search-suggestions">{["Collars","Leather","Ownership"].map(q=><button key={q} onClick={()=>setCatalogQuery(q)}>{q} ↗</button>)}</div></>}
     {catalogQuery.trim()&&<p className="ui-lab-search-label">BEST MATCHES · {searchResults.length}</p>}
     <div className="ui-lab-search-results">{(catalogQuery.trim()?searchResults:searchResults.slice(0,3)).map(r=><button key={r.name} onClick={()=>selectSearchResult(r.name)}><span><strong>{r.name}</strong><small>{r.path} · {r.type}</small></span><span>›</span></button>)}{catalogQuery.trim()&&searchResults.length===0&&<p>No matches in this prototype. Try another term or filter.</p>}</div>
     <p className="ui-lab-app-note">Illustrative results only · Search is not connected to live catalog data</p>
-   </main>:<main className="ui-lab-app-content">
+   </div></section></div>}
+   <main className="ui-lab-app-content">
     {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>{setWorkspace("");setDetail(null)}}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
     <h1 className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
     {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
@@ -156,7 +157,7 @@ export function UiLabPage() {
     <button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}>{toastLabOpen?"− Hide":"✦ Open"} Toast Playground</button>
     {toastLabOpen&&<ToastPlayground/>}
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}} title={color}/>)}</div><a href="#/hub">Return to production app</a></section>}
-   </main>}
+   </main>
    
    {detail&&<div className="ui-lab-app-overlay" onClick={()=>setDetail(null)}><div role="dialog" aria-label={detail} onClick={e=>e.stopPropagation()}><button onClick={()=>setDetail(null)} aria-label="Close">×</button><h2>{detail}</h2>{focusedModifier&&detail==="Collars"?<p>Material → <strong>Leather</strong> · Contextual deep link preview. The modifier would be expanded and briefly highlighted in the full item view.</p>:<p>Placeholder for the future {detail.toLowerCase()} experience.</p>}</div></div>}
    <nav className="ui-lab-app-bottom" aria-label="Primary mobile navigation">{areas.map(item=><button key={item} type="button" className={area===item?"active":""} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span><small>{item}</small></button>)}</nav>
