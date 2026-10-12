@@ -1,6 +1,7 @@
 import { ToastPlayground } from "./ToastPlayground";
 import { CatalogComposite } from "./CatalogComposite";
 import { CatalogSearchField } from "./CatalogSearchField";
+import { SearchFilterButton, SearchChips, SortGroupSheet, type SortBy, type GroupBy } from "./CatalogSearchControls";
 import { useEffect, useRef, useState } from "react";
 import "./uiLab.css";
 
@@ -45,11 +46,17 @@ export function UiLabPage() {
  const [catalogSearchOpen,setCatalogSearchOpen]=useState(false);
  const [catalogQuery,setCatalogQuery]=useState("");
  const [catalogType,setCatalogType]=useState("All");
+ const [catalogSort,setCatalogSort]=useState<SortBy>("default");
+ const [catalogGroup,setCatalogGroup]=useState<GroupBy>("none");
+ const [catalogOrderOpen,setCatalogOrderOpen]=useState(false);
  const [searchOrigin,setSearchOrigin]=useState("Catalog");
  const [focusedModifier,setFocusedModifier]=useState(false);
  const searchMatches=[{name:"Collars",type:"Items",path:"Kinks"},{name:"Leather",type:"Modifiers",path:"Collars → Material"},{name:"Leather fetish",type:"Items",path:"Kinks"},{name:"Ownership",type:"Concepts",path:"Concept Explorer"},{name:"Sensory Play",type:"Items",path:"Kinks"},{name:"Restraints",type:"Items",path:"Kinks"}];
- const openCatalogSearch=(origin="Catalog")=>{setSearchOrigin(origin);setCatalogType(origin==="Catalog"?"Items":"All");setCatalogSearchOpen(true);setMenuOpen(false);};
+ const openCatalogSearch=(origin="Catalog",openOrder=false)=>{setSearchOrigin(origin);setCatalogType(origin==="Catalog"?"Items":"All");setCatalogOrderOpen(openOrder);setCatalogSearchOpen(true);setMenuOpen(false);};
  const searchResults=searchMatches.filter(r=>(catalogType==="All"||catalogType===r.type)&&(!catalogQuery.trim()||[r.name,r.path].join(" ").toLowerCase().includes(catalogQuery.trim().toLowerCase())));
+ const orderedSearchResults=[...searchResults].sort((a,b)=>catalogSort==="az"?a.name.localeCompare(b.name):catalogSort==="za"?b.name.localeCompare(a.name):0);
+ const visibleSearchResults=catalogQuery.trim()?orderedSearchResults:orderedSearchResults.slice(0,3);
+ const searchSections=catalogGroup==="category"?["Items","Modifiers","Concepts"].map(kind=>({label:kind,rows:visibleSearchResults.filter(r=>r.type===kind)})).filter(section=>section.rows.length):[{label:"",rows:visibleSearchResults}];
  const selectSearchResult=(name:string)=>{resetPageScroll();setCatalogSearchOpen(false);setArea("Catalog");setWorkspace("Explore All");setExploreSubject(null);setSelectedSubject(null);setDetail(null);setFocusedModifier(name==="Leather");};
  const [menuOpen,setMenuOpen]=useState(false);
  const [expandedMenu,setExpandedMenu]=useState<Area|null>(null);
@@ -141,12 +148,13 @@ export function UiLabPage() {
    </div>}
    {catalogSearchOpen&&<div className="ui-lab-search-overlay"><button className="ui-lab-search-backdrop" aria-label="Close search" onClick={()=>setCatalogSearchOpen(false)}/><section className="ui-lab-search-dialog" role="dialog" aria-modal="true" aria-label="Global catalog search"><div className="ui-lab-search-page">
     <div className="ui-lab-search-modal-header"><span>Search</span><button type="button" className="ui-lab-search-close" aria-label="Close search" onClick={()=>setCatalogSearchOpen(false)}>×</button></div>
-    <CatalogSearchField mode="input" autoFocus ariaLabel="Search catalog" placeholder="Search catalog…" value={catalogQuery} onChange={setCatalogQuery} onClear={()=>setCatalogQuery("")} />
-    <div className="ui-lab-search-chips">{["All","Items","Modifiers","Concepts"].map(t=><button key={t} className={catalogType===t?"active":""} onClick={()=>setCatalogType(t)}>{t}</button>)}</div>
+    <div className="lab-search-row"><CatalogSearchField mode="input" autoFocus ariaLabel="Search catalog" placeholder="Search catalog…" value={catalogQuery} onChange={setCatalogQuery} onClear={()=>setCatalogQuery("")} /><SearchFilterButton active={catalogSort!=="default"||catalogGroup!=="none"} expanded={catalogOrderOpen} onClick={()=>setCatalogOrderOpen(true)}/></div>
+    <SearchChips label="Search result types" options={["All","Items","Modifiers","Concepts"].map(t=>({id:t,label:t,active:catalogType===t,onClick:()=>setCatalogType(t)}))} />
     {!catalogQuery.trim()&&<><p className="ui-lab-search-label">STARTING FROM {searchOrigin.toUpperCase()}</p><p className="ui-lab-search-hint">Search is scoped to Catalog content in this prototype.</p><p className="ui-lab-search-label">SUGGESTED SEARCHES</p><div className="ui-lab-search-suggestions">{["Collars","Leather","Ownership"].map(q=><button key={q} onClick={()=>setCatalogQuery(q)}>{q} ↗</button>)}</div></>}
     {catalogQuery.trim()&&<p className="ui-lab-search-label">BEST MATCHES · {searchResults.length}</p>}
-    <div className="ui-lab-search-results">{(catalogQuery.trim()?searchResults:searchResults.slice(0,3)).map(r=><button key={r.name} onClick={()=>selectSearchResult(r.name)}><span><strong>{r.name}</strong><small>{r.path} · {r.type}</small></span><span>›</span></button>)}{catalogQuery.trim()&&searchResults.length===0&&<p>No matches in this prototype. Try another term or filter.</p>}</div>
+    <div className="ui-lab-search-results">{searchSections.map(section=><section className="lab-search-results-section" key={section.label||"all"}>{section.label&&<h3 className="lab-search-results-heading">{section.label}</h3>}{section.rows.map(r=><button key={r.name} onClick={()=>selectSearchResult(r.name)}><span><strong>{r.name}</strong><small>{r.path} · {r.type}</small></span><span>›</span></button>)}</section>)}{catalogQuery.trim()&&searchResults.length===0&&<p>No matches in this prototype. Try another term or filter.</p>}</div>
     <p className="ui-lab-app-note">Illustrative results only · Search is not connected to live catalog data</p>
+    <SortGroupSheet open={catalogOrderOpen} onClose={()=>setCatalogOrderOpen(false)} sort={catalogSort} onSort={setCatalogSort} group={catalogGroup} onGroup={setCatalogGroup} defaultSortLabel="Best matches" />
    </div></section></div>}
    <main className="ui-lab-app-content">
     {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>{resetPageScroll();setWorkspace("");setSelectedSubject(null);setExploreSubject(null);setDetail(null)}}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
@@ -155,7 +163,7 @@ export function UiLabPage() {
     {area==="Catalog"&&<div className="ui-lab-catalog">
 
       {!workspace&&<>
-        <CatalogSearchField mode="launch" placeholder="Search the Catalog…" onActivate={()=>openCatalogSearch("Catalog")} />
+        <div className="lab-search-row"><CatalogSearchField mode="launch" placeholder="Search the Catalog…" onActivate={()=>openCatalogSearch("Catalog")} /><SearchFilterButton active={catalogSort!=="default"||catalogGroup!=="none"} onClick={()=>openCatalogSearch("Catalog",true)}/></div>
         <section className="ui-lab-collections" aria-label="Browse collections"><h2>Browse collections</h2><button onClick={()=>choose("Kinks")}><span><strong>Kinks</strong><small>Explore preferences and refinements</small></span><span aria-hidden="true">→</span></button><button onClick={()=>choose("Rewards & Punishments")}><span><strong>Rewards & Punishments</strong><small>Explore rewards, punishments and personal classifications</small></span><span aria-hidden="true">→</span></button></section>
         <section className="ui-lab-subjects-featured" aria-label="Featured subjects">
           <div className="ui-lab-subject-section-title"><h2>Featured subjects</h2><small>Today's discoveries</small></div>
@@ -167,7 +175,7 @@ export function UiLabPage() {
       {workspace==="Subject Overview"&&selectedSubject&&<section className="ui-lab-subject-overview"><p>{featuredSubjects.find(x=>x.name===selectedSubject)?.description||"Explore related Catalog Items and refine your preferences."}</p><div className="ui-lab-subject-related-head"><h2>Related Items</h2><button onClick={exploreRelated}>View All Related Items →</button></div><CatalogComposite compact subject={selectedSubject} initialItem={undefined}/></section>}
       {workspace==="Explore All"&&<>{exploreSubject&&<div className="ui-lab-subject-filter-note"><span>Exploring: {exploreSubject}</span><button onClick={()=>{setExploreSubject(null);resetPageScroll()}}>Clear subject ×</button></div>}<CatalogComposite key={exploreSubject||"all"} subject={exploreSubject||undefined} initialItem={focusedModifier?"Collars":undefined} />
       </>}
-      {workspace==="Concept Explorer"&&<><CatalogSearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
+      {workspace==="Concept Explorer"&&<><div className="lab-search-row"><CatalogSearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><SearchFilterButton active={catalogSort!=="default"||catalogGroup!=="none"} onClick={()=>openCatalogSearch("Concept Explorer",true)}/></div><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
       {workspace==="Kinks"&&<CatalogComposite />}
       {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Illustrative classifications for testing filters · Classification editing in Refine comes later.</p><CatalogComposite collection="rewards" /></>}    </div>}
     {area==="Discover"&&<div className="ui-lab-app-modes">{["Learn","React","Play"].map(m=><button key={m} className={mode===m?"active":""} onClick={()=>setMode(m)}>{m}</button>)}</div>}
