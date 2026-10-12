@@ -5,5 +5,6 @@ Reader-facing educational article drafts for the future Kink Profile learning ex
 ## Fundamentals
 
 - [Bondage & Discipline: Understanding the B and D of BDSM](fundamentals/bondage-and-discipline.md)
+- [Dominance & Submission: Understanding the D and S of BDSM](fundamentals/dominance-and-submission.md)
 
 These Markdown sources are editorial content, not a declaration that an education UI or publishing pipeline is implemented. Articles should undergo editorial, accessibility, and safety review before publication. Product strategy and unresolved education architecture remain in the private planning workspace.
