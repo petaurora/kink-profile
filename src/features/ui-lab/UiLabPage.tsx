@@ -1,5 +1,6 @@
 import { ToastPlayground } from "./ToastPlayground";
 import { CatalogComposite } from "./CatalogComposite";
+import { CatalogSearchField } from "./CatalogSearchField";
 import { useEffect, useRef, useState } from "react";
 import "./uiLab.css";
 
@@ -140,7 +141,7 @@ export function UiLabPage() {
    </div>}
    {catalogSearchOpen&&<div className="ui-lab-search-overlay"><button className="ui-lab-search-backdrop" aria-label="Close search" onClick={()=>setCatalogSearchOpen(false)}/><section className="ui-lab-search-dialog" role="dialog" aria-modal="true" aria-label="Global catalog search"><div className="ui-lab-search-page">
     <div className="ui-lab-search-modal-header"><span>Search</span><button type="button" className="ui-lab-search-close" aria-label="Close search" onClick={()=>setCatalogSearchOpen(false)}>×</button></div>
-    <div className="ui-lab-search-head"><button aria-label="Back to previous screen" onClick={()=>setCatalogSearchOpen(false)}>←</button><input autoFocus aria-label="Search catalog" placeholder="Search catalog…" value={catalogQuery} onChange={e=>setCatalogQuery(e.target.value)}/>{catalogQuery&&<button aria-label="Clear search" onClick={()=>setCatalogQuery("")}>×</button>}</div>
+    <CatalogSearchField mode="input" autoFocus ariaLabel="Search catalog" placeholder="Search catalog…" value={catalogQuery} onChange={setCatalogQuery} onClear={()=>setCatalogQuery("")} />
     <div className="ui-lab-search-chips">{["All","Items","Modifiers","Concepts"].map(t=><button key={t} className={catalogType===t?"active":""} onClick={()=>setCatalogType(t)}>{t}</button>)}</div>
     {!catalogQuery.trim()&&<><p className="ui-lab-search-label">STARTING FROM {searchOrigin.toUpperCase()}</p><p className="ui-lab-search-hint">Search is scoped to Catalog content in this prototype.</p><p className="ui-lab-search-label">SUGGESTED SEARCHES</p><div className="ui-lab-search-suggestions">{["Collars","Leather","Ownership"].map(q=><button key={q} onClick={()=>setCatalogQuery(q)}>{q} ↗</button>)}</div></>}
     {catalogQuery.trim()&&<p className="ui-lab-search-label">BEST MATCHES · {searchResults.length}</p>}
@@ -154,7 +155,7 @@ export function UiLabPage() {
     {area==="Catalog"&&<div className="ui-lab-catalog">
 
       {!workspace&&<>
-        <button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Catalog")}>⌕ <span>Search the Catalog…</span><span>→</span></button>
+        <CatalogSearchField mode="launch" placeholder="Search the Catalog…" onActivate={()=>openCatalogSearch("Catalog")} />
         <section className="ui-lab-collections" aria-label="Browse collections"><h2>Browse collections</h2><button onClick={()=>choose("Kinks")}><span><strong>Kinks</strong><small>Explore preferences and refinements</small></span><span aria-hidden="true">→</span></button><button onClick={()=>choose("Rewards & Punishments")}><span><strong>Rewards & Punishments</strong><small>Explore rewards, punishments and personal classifications</small></span><span aria-hidden="true">→</span></button></section>
         <section className="ui-lab-subjects-featured" aria-label="Featured subjects">
           <div className="ui-lab-subject-section-title"><h2>Featured subjects</h2><small>Today's discoveries</small></div>
@@ -166,7 +167,7 @@ export function UiLabPage() {
       {workspace==="Subject Overview"&&selectedSubject&&<section className="ui-lab-subject-overview"><p>{featuredSubjects.find(x=>x.name===selectedSubject)?.description||"Explore related Catalog Items and refine your preferences."}</p><div className="ui-lab-subject-related-head"><h2>Related Items</h2><button onClick={exploreRelated}>View All Related Items →</button></div><CatalogComposite compact subject={selectedSubject} initialItem={undefined}/></section>}
       {workspace==="Explore All"&&<>{exploreSubject&&<div className="ui-lab-subject-filter-note"><span>Exploring: {exploreSubject}</span><button onClick={()=>{setExploreSubject(null);resetPageScroll()}}>Clear subject ×</button></div>}<CatalogComposite key={exploreSubject||"all"} subject={exploreSubject||undefined} initialItem={focusedModifier?"Collars":undefined} />
       </>}
-      {workspace==="Concept Explorer"&&<><button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Concept Explorer")}>⌕ Search concepts...</button><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
+      {workspace==="Concept Explorer"&&<><CatalogSearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
       {workspace==="Kinks"&&<CatalogComposite />}
       {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Illustrative classifications for testing filters · Classification editing in Refine comes later.</p><CatalogComposite collection="rewards" /></>}    </div>}
     {area==="Discover"&&<div className="ui-lab-app-modes">{["Learn","React","Play"].map(m=><button key={m} className={mode===m?"active":""} onClick={()=>setMode(m)}>{m}</button>)}</div>}
