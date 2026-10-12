@@ -35,3 +35,20 @@
 .cc-rp-filters button.active{background:#520e25;border-color:#f0d3e7a8}
 .cc-rp-filters .cc-rp-clear{border:0;background:transparent;text-decoration:underline}
 .cc-rp-count{margin:18px 0 2px;color:#d2bbd2;font-size:13px}
+
+
+/* R/P row indicators: item name, compact state icons, then rating and Refine. */
+.cc-item-main{display:flex;align-items:center;gap:9px;flex:1 1 auto;min-width:0;padding:9px 3px}
+.cc-item-main>.cc-item-name{min-width:0;overflow-wrap:anywhere;font-size:14px}
+.cc-rp-indicators{display:inline-flex;align-items:center;gap:3px;flex:none}
+.cc-rp-indicator-anchor{position:relative;display:inline-flex}
+.cc-rp-indicator{display:inline-flex;align-items:center;justify-content:center;gap:3px;min-width:40px;min-height:40px;padding:5px;border:0;border-radius:7px;background:transparent;color:#d7c1d4;font-size:12px!important}
+.cc-rp-indicator svg{width:17px;height:17px;flex:none}
+.cc-rp-state-yes span{color:#a9dbba}.cc-rp-state-no span{color:#efb5c1}.cc-rp-state-unanswered span{color:#b5a8c4}
+.cc-rp-indicator:hover,.cc-rp-indicator[aria-expanded=true]{background:#f0d3e719}
+.cc-rp-popover{position:absolute;top:calc(100% + 5px);left:0;z-index:40;display:flex;flex-direction:column;gap:8px;width:225px;max-width:calc(100vw - 35px);padding:13px;border:1px solid #f0d3e75a;border-radius:12px;background:#20204d;box-shadow:0 12px 34px #0009;color:#f0d3e7;font-size:12px;line-height:1.4}
+.cc-rp-indicator-anchor:last-child .cc-rp-popover{left:auto;right:0}
+.cc-rp-popover strong{font-size:13px}
+.cc-rp-popover button{align-self:flex-end;border:0;background:transparent;color:#f0d3e7;text-decoration:underline;padding:4px}
+.cc-item:has(.cc-rp-popover){position:relative;z-index:20}
+@media(max-width:680px){.cc-item-main{gap:5px;flex:1 1 100%;padding:3px 2px 0}.cc-item-main>.cc-item-name{font-size:13px}.cc-rp-indicator{min-width:35px;min-height:36px}.cc-item-row:has(.cc-rp-indicators)>.cc-rating-wrap{margin-left:auto}.cc-rp-popover{width:210px}}
