@@ -23,6 +23,8 @@ export function CatalogComposite({initialItem,subject,compact=false,collection="
  const isRewards=collection==="rewards";
  const [mine,setMine]=useState(false),[reward,setReward]=useState(false),[punishment,setPunishment]=useState(false);
  const [states,setStates]=useState<string[]>([]),[filtersOpen,setFiltersOpen]=useState(false);
+ const [indicatorInfo,setIndicatorInfo]=useState<{id:string;kind:"reward"|"punishment"}|null>(null);
+ const indicatorOrigin=useRef<HTMLButtonElement|null>(null);
  const [classification]=useState(()=>Object.fromEntries(items.map((x,i)=>[x.id,{reward:["yes","no","unanswered","no"][i%4],punishment:["unanswered","yes","no","no","yes"][i%5]}])));
  const [view,setView]=useState<"Categories"|"All Items"|"A–Z">("All Items");
  const [query,setQuery]=useState("");
@@ -75,12 +77,13 @@ export function CatalogComposite({initialItem,subject,compact=false,collection="
  return (x.name+" "+x.category).toLowerCase().includes(query.trim().toLowerCase());
  }).sort((a,b)=>isRewards?a.name.localeCompare(b.name):0);
  const sections=compact?[["All Items",matching] as const]:view==="All Items"?[["All Items",matching] as const]:view==="Categories"?Object.keys(catalogSeeds).map(c=>[c,matching.filter(x=>x.category===c)] as const):Array.from(new Set(matching.map(x=>x.name[0].toUpperCase()))).sort().map(letter=>[letter,matching.filter(x=>x.name.toUpperCase().startsWith(letter))] as const);
+ useEffect(()=>{if(!indicatorInfo)return;const dismiss=(e:KeyboardEvent)=>{if(e.key==="Escape"){setIndicatorInfo(null);indicatorOrigin.current?.focus()}};const outside=(e:PointerEvent)=>{if(!(e.target as HTMLElement).closest(".cc-rp-indicators"))setIndicatorInfo(null)};document.addEventListener("keydown",dismiss);document.addEventListener("pointerdown",outside);return()=>{document.removeEventListener("keydown",dismiss);document.removeEventListener("pointerdown",outside)}},[indicatorInfo]);
  function renderItem(x:Item){
   const overall=x.id+":overall";
   const hasModifiers=x.groups.some(g=>g.values.length>0);
   const ratedModifier=Object.keys(ratings).some(k=>k.startsWith(x.id+":")&&k!==overall);
   return <article className="cc-item" data-item-id={x.id} key={x.id}>
-   <div className="cc-item-row"><span className="cc-item-name">{x.name}</span>{ratingButton(overall,x.name+" overall",x.name)}
+   <div className="cc-item-row"><span className="cc-item-main"><span className="cc-item-name">{x.name}</span>{isRewards&&<span className="cc-rp-indicators">{(["reward","punishment"] as const).map(kind=>{const state=classification[x.id][kind];const open=indicatorInfo?.id===x.id&&indicatorInfo.kind===kind;const label=kind==="reward"?"Reward":"Punishment";const stateLabel=state==="yes"?"Yes":state==="no"?"No":"Unanswered";return <span className="cc-rp-indicator-anchor" key={kind}><button type="button" className={"cc-rp-indicator cc-rp-state-"+state} aria-label={x.name+": "+label+" — "+stateLabel+". Show explanation"} aria-expanded={open} aria-haspopup="dialog" onClick={e=>{indicatorOrigin.current=e.currentTarget;setIndicatorInfo(open?null:{id:x.id,kind})}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==="reward"?<><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-7 0-7-7-3-7 2.5 0 3 4 3 7Zm0 0c7 0 7-7 3-7-2.5 0-3 4-3 7Z"/></>:<><path d="m13 4 7 7M10 7l7 7M4 20l10-10M2 22l4-4M14 2l8 8"/></>}</svg><span aria-hidden="true">{state==="yes"?"✓":state==="no"?"✕":"?"}</span></button>{open&&<span className="cc-rp-popover" role="dialog" aria-label={label+" classification for "+x.name}><strong>{label} · {stateLabel}</strong><span>{state==="yes"?"You've classified this Item as a "+label.toLowerCase()+".":state==="no"?"You've marked this Item as not a "+label.toLowerCase()+".":"You haven't answered whether this Item is a "+label.toLowerCase()+"."}</span><button type="button" onClick={()=>{setIndicatorInfo(null);indicatorOrigin.current?.focus()}}>Close</button></span>}</span>})}</span>}</span>{ratingButton(overall,x.name+" overall",x.name)}
    {hasModifiers&&<button type="button" className="cc-refine-toggle" aria-haspopup="dialog" onClick={e=>{refineOrigin.current=e.currentTarget;openRefine(x.id)}}><span aria-hidden="true">+</span> Refine{ratedModifier&&<span className="cc-rated-dot" aria-hidden="true"/>}</button>}</div>
   </article>
  }
