@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./catalogComposite.css";
 import { LabToasts, type LabToast } from "./LabToasts";
 
-type Item={id:string;name:string;category:string;groups:{name:string;values:string[]}[]};
+type Item={id:string;name:string;category:string;description?:string;groups:{name:string;values:string[]}[]};
 const catalogSeeds:Record<string,string[]>={
  "Power Exchange":["Collars","Ownership","Protocol","Service","Permission Rituals","Authority Exchange","Roleplay","Obedience","Rules","Ceremonies","Training","Devotion"],
  "Restraint & Control":["Restraints","Cuffs","Rope Bondage","Blindfolds","Chastity","Positioning","Movement Restriction","Sensory Deprivation","Harnesses","Shibari","Suspension","Confinement"],
@@ -16,7 +16,29 @@ const specific:Record<string,Item["groups"]>={
  "Praise":[{name:"Expression",values:["Verbal","Written","Public","Private"]}],
  "Privileges":[{name:"Context",values:["Everyday","Scene","Ceremonial"]}]
 };
-const items:Item[]=Object.entries(catalogSeeds).flatMap(([category,names])=>names.map((name,i)=>({id:category+":"+i,name,category,groups:specific[name]||[{name:"Context",values:["Everyday","Scene / Play","Ceremonial"]},{name:"Role",values:["Giving","Receiving","Self-directed"]}]})));
+const descriptions:Record<string,string>={
+ "Collars":"Collars worn for everyday expression, play or ceremony.",
+ "Ownership":"Symbols, agreements and expressions of belonging.",
+ "Protocol":"Agreed rituals, rules and structured interactions.",
+ "Restraints":"Using cuffs, rope, fabric or other forms of restraint.",
+ "Sensory Play":"Exploring sensations such as texture, pressure and temperature.",
+ "Praise":"Verbal, written, public or private affirmation.",
+ "Privileges":"Special permissions, opportunities or meaningful rewards.",
+ "Aftercare":"Connection, comfort and care after an experience.",
+ "Permission Rituals":"Ceremonial or practical ways to request and grant permission."
+};
+const items:Item[]=Object.entries(catalogSeeds).flatMap(([category,names])=>names.map((name,i)=>({id:category+":"+i,name,category,description:descriptions[name],groups:specific[name]||[{name:"Context",values:["Everyday","Scene / Play","Ceremonial"]},{name:"Role",values:["Giving","Receiving","Self-directed"]}]})));
+// Shared inline search semantics for Kinks, Rewards & Punishments and Explore All.
+// Search available Item metadata consistently, independent of collection filters.
+function normalizedSearch(value:string){
+ return value.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+}
+function matchesCatalogSearch(item:Item,query:string){
+ const words=normalizedSearch(query).split(" ").filter(Boolean);
+ if(!words.length)return true;
+ const searchable=normalizedSearch([item.name,item.description||"",item.category,...item.groups.flatMap(g=>[g.name,...g.values])].join(" "));
+ return words.every(word=>searchable.includes(word));
+}
 const choices=["Love","Like","Neutral","Dislike","Hard limit"];
 type SaveState="saving"|"failed"|"idle";
 export function CatalogComposite({initialItem,subject,compact=false,collection="kinks"}:{collection?:"kinks"|"rewards";initialItem?:string;subject?:string;compact?:boolean;onClose?:()=>void}){
@@ -28,6 +50,8 @@ export function CatalogComposite({initialItem,subject,compact=false,collection="
  const [classification]=useState(()=>Object.fromEntries(items.map((x,i)=>[x.id,{reward:["yes","no","unanswered","no"][i%4],punishment:["unanswered","yes","no","no","yes"][i%5]}])));
  const [view,setView]=useState<"Categories"|"All Items"|"A–Z">("All Items");
  const [query,setQuery]=useState("");
+ const [debouncedQuery,setDebouncedQuery]=useState("");
+ const clearSearch=()=>{setQuery("");setDebouncedQuery("")};
  const [categoryFilter,setCategoryFilter]=useState(subject&&Object.hasOwn(catalogSeeds,subject)?subject:"All");
  const [refining,setRefining]=useState<string|null>(null);
  const [closedCategories,setClosedCategories]=useState<Record<string,boolean>>({});
@@ -47,6 +71,8 @@ export function CatalogComposite({initialItem,subject,compact=false,collection="
  const root=useRef<HTMLElement>(null);
  const refineOrigin=useRef<HTMLButtonElement|null>(null);
  useEffect(()=>()=>Object.values(timers.current).forEach(clearTimeout),[]);
+ useEffect(()=>{const timer=setTimeout(()=>setDebouncedQuery(query),275);return()=>clearTimeout(timer)},[query]);
+ useEffect(()=>{setClosedCategories({})},[debouncedQuery]);
  useEffect(()=>{if(selector)titleRef.current?.focus()},[selector,refining]);
  useEffect(()=>{if(!selector&&!refining&&!browseSelector)return;const handler=(e:KeyboardEvent)=>{if(e.key==="Escape"){if(selector)closeSelector();else if(browseSelector)setBrowseSelector(null);else closeRefine()}};window.addEventListener("keydown",handler);return()=>window.removeEventListener("keydown",handler)},[selector,refining]);
  useEffect(()=>{if(!initialItem)return;const found=items.find(x=>x.name===initialItem);if(found){openRefine(found.id);requestAnimationFrame(()=>root.current?.querySelector('[data-item-id="'+found.id+'"]')?.scrollIntoView({block:"nearest"}))}},[initialItem]);
@@ -68,13 +94,13 @@ export function CatalogComposite({initialItem,subject,compact=false,collection="
  const clearFilters=()=>{setMine(false);setReward(false);setPunishment(false);setStates([])};
  const nativeRewards=new Set(["Praise","Privileges","Protocol","Permission Rituals","Rules","Training","Teasing","Anticipation"]);
  const matching=items.filter(x=>{
- if(!isRewards)return (!subject||x.category===subject||x.name===subject)&&(categoryFilter==="All"||x.category===categoryFilter)&&(x.name+" "+x.category+" "+x.groups.flatMap(g=>g.values).join(" ")).toLowerCase().includes(query.trim().toLowerCase());
+ if(!isRewards)return (!subject||x.category===subject||x.name===subject)&&(categoryFilter==="All"||x.category===categoryFilter)&&matchesCatalogSearch(x,debouncedQuery);
  const cl=classification[x.id];
  if(!nativeRewards.has(x.name)&&cl.reward!=="yes"&&cl.punishment!=="yes")return false;
  if(mine&&cl.reward!=="yes"&&cl.punishment!=="yes")return false;
  const dims=reward||punishment?[...(reward?["reward" as const]:[]),...(punishment?["punishment" as const]:[])]:(["reward","punishment"] as const);
  if((reward||punishment||states.length>0)&&!dims.some(d=>states.length?states.includes(cl[d]):cl[d]==="yes"))return false;
- return (x.name+" "+x.category).toLowerCase().includes(query.trim().toLowerCase());
+ return matchesCatalogSearch(x,debouncedQuery);
  }).sort((a,b)=>isRewards?a.name.localeCompare(b.name):0);
  const sections=compact?[["All Items",matching] as const]:view==="All Items"?[["All Items",matching] as const]:view==="Categories"?Object.keys(catalogSeeds).map(c=>[c,matching.filter(x=>x.category===c)] as const):Array.from(new Set(matching.map(x=>x.name[0].toUpperCase()))).sort().map(letter=>[letter,matching.filter(x=>x.name.toUpperCase().startsWith(letter))] as const);
  useEffect(()=>{if(!indicatorInfo)return;const dismiss=(e:KeyboardEvent)=>{if(e.key==="Escape"){setIndicatorInfo(null);indicatorOrigin.current?.focus()}};const outside=(e:PointerEvent)=>{if(!(e.target as HTMLElement).closest(".cc-rp-indicators"))setIndicatorInfo(null)};document.addEventListener("keydown",dismiss);document.addEventListener("pointerdown",outside);return()=>{document.removeEventListener("keydown",dismiss);document.removeEventListener("pointerdown",outside)}},[indicatorInfo]);
@@ -95,10 +121,10 @@ export function CatalogComposite({initialItem,subject,compact=false,collection="
  return <section className="cc" ref={root} aria-label="Interactive inline Catalog prototype">
   
   {!compact&&<div className="cc-demo cc-demo-compact"><span>{items.length} sample Items · Ratings are not saved</span><label><input type="checkbox" checked={failNext} onChange={e=>setFailNext(e.target.checked)}/> Test save failure</label></div>}
-  <div className="cc-browser">{!compact&&<><label className="cc-search-label" htmlFor="cc-item-search">Find an Item</label><div className="cc-search-wrap"><input id="cc-item-search" type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder={isRewards?"Search Items…":"Search Items or modifiers…"}/>{query&&<button onClick={()=>setQuery("")}>Clear</button>}</div>
+  <div className="cc-browser">{!compact&&<><label className="cc-search-label" htmlFor="cc-item-search">Search Items</label><div className="cc-search-wrap"><svg className="cc-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="cc-item-search" type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search Items…" autoComplete="off" aria-controls="cc-search-results"/>{query&&<button type="button" className="cc-search-clear" aria-label="Clear search" onClick={clearSearch}>×</button>}</div>
    {isRewards&&<div className="cc-rp-filters" aria-label="Reward and punishment filters">{([["Mine",mine,setMine],["Reward",reward,setReward],["Punishment",punishment,setPunishment]] as const).map(([label,active,setActive])=><button type="button" key={label} className={active?"active":""} aria-pressed={active} onClick={()=>setActive(!active)}>{label}</button>)}<button type="button" className={states.length?"active":""} onClick={()=>setFiltersOpen(true)}>⚑ Filters{states.length?" · "+states.length:""}</button>{hasFilters&&<button type="button" className="cc-rp-clear" onClick={clearFilters}>Clear Filters</button>}</div>}
-    <div className="cc-toolbar"><span>{matching.length} Items</span><div className="cc-view-wide" role="group" aria-label="Browse view">{(["Categories","All Items","A–Z"] as const).map(v=><button key={v} aria-pressed={view===v} className={view===v?"active":""} onClick={()=>setView(v)}>{v}</button>)}</div><div className="cc-view-mobile">Browse by <button type="button" className="cc-sheet-trigger" aria-haspopup="dialog" onClick={()=>setBrowseSelector("view")}>{view} <span aria-hidden="true">⌄</span></button></div></div>
-   {!isRewards&&<div className="cc-category-filter"><label htmlFor="cc-category-filter">Category</label><button type="button" id="cc-category-filter" className="cc-sheet-trigger" aria-haspopup="dialog" onClick={()=>setBrowseSelector("category")}>{categoryFilter==="All"?"All categories":categoryFilter} <span aria-hidden="true">⌄</span></button></div>}</>}<div className="cc-sections">{sections.filter(([,list])=>list.length).map(([heading,list])=><section key={heading} className="cc-section"><button className={"cc-section-title"+(heading==="All Items"?" cc-section-title-flat":"")} aria-expanded={!closedCategories[heading]} onClick={()=>setClosedCategories(p=>({...p,[heading]:!p[heading]}))}><span>{heading==="All Items"?"":heading} <small>{heading==="All Items"?"":list.length+" Items"}</small></span><span aria-hidden="true">{closedCategories[heading]?"⌄":"⌃"}</span></button>{!closedCategories[heading]&&<div className="cc-section-items">{list.map(renderItem)}</div>}</section>)}{matching.length===0&&<p className="cc-empty">No matching Items. {isRewards&&hasFilters?<button onClick={clearFilters}>Clear Filters</button>:<button onClick={()=>setQuery("")}>Clear search</button>}</p>}</div>
+    <div className="cc-toolbar"><span aria-live="polite" aria-atomic="true">{matching.length} {matching.length===1?"Item":"Items"}</span><div className="cc-view-wide" role="group" aria-label="Browse view">{(["Categories","All Items","A–Z"] as const).map(v=><button key={v} aria-pressed={view===v} className={view===v?"active":""} onClick={()=>setView(v)}>{v}</button>)}</div><div className="cc-view-mobile">Browse by <button type="button" className="cc-sheet-trigger" aria-haspopup="dialog" onClick={()=>setBrowseSelector("view")}>{view} <span aria-hidden="true">⌄</span></button></div></div>
+   {!isRewards&&<div className="cc-category-filter"><label htmlFor="cc-category-filter">Category</label><button type="button" id="cc-category-filter" className="cc-sheet-trigger" aria-haspopup="dialog" onClick={()=>setBrowseSelector("category")}>{categoryFilter==="All"?"All categories":categoryFilter} <span aria-hidden="true">⌄</span></button></div>}</>}<div className="cc-sections" id="cc-search-results" aria-busy={query!==debouncedQuery}>{sections.filter(([,list])=>list.length).map(([heading,list])=><section key={heading} className="cc-section"><button className={"cc-section-title"+(heading==="All Items"?" cc-section-title-flat":"")} aria-expanded={!closedCategories[heading]} onClick={()=>setClosedCategories(p=>({...p,[heading]:!p[heading]}))}><span>{heading==="All Items"?"":heading} <small>{heading==="All Items"?"":list.length+" Items"}</small></span><span aria-hidden="true">{closedCategories[heading]?"⌄":"⌃"}</span></button>{!closedCategories[heading]&&<div className="cc-section-items">{list.map(renderItem)}</div>}</section>)}{matching.length===0&&<div className="cc-empty" role="status"><p>No matching Items. Try another search or adjust filters.</p><div className="cc-empty-actions">{query&&<button type="button" onClick={clearSearch}>Clear search</button>}{isRewards&&hasFilters&&<button type="button" onClick={clearFilters}>Clear filters</button>}{!isRewards&&categoryFilter!=="All"&&<button type="button" onClick={()=>setCategoryFilter("All")}>Clear category</button>}</div></div>}</div>
   </div>
   {isRewards&&filtersOpen&&<div className="cc-modal-layer cc-rp-layer"><button className="cc-backdrop" aria-label="Close filters" onClick={()=>setFiltersOpen(false)}/><div className="cc-selector" role="dialog" aria-modal="true" aria-label="Answer filters"><div className="cc-selector-head"><div><small>REWARDS & PUNISHMENTS</small><h3>Filters</h3></div><button aria-label="Close filters" onClick={()=>setFiltersOpen(false)}>×</button></div><p className="cc-refine-intro">Filter by your classification answers</p><div className="cc-rp-filters">{([["unanswered","? Unanswered"],["no","✕ No"],["yes","✓ Yes"]] as const).map(([value,label])=><button key={value} type="button" className={states.includes(value)?"active":""} aria-pressed={states.includes(value)} onClick={()=>setStates(prev=>prev.includes(value)?prev.filter(v=>v!==value):[...prev,value])}>{label}</button>)}</div><p className="cc-rp-count">{matching.length} matching Items</p></div></div>}
    <LabToasts items={toasts} modalOpen={!!selector||!!refining||!!browseSelector} onDismiss={id=>setToasts(p=>p.filter(t=>t.id!==id))}/>
