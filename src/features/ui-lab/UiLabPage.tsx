@@ -155,6 +155,7 @@ export function UiLabPage() {
 
       {!workspace&&<>
         <button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Catalog")}>⌕ <span>Search the Catalog…</span><span>→</span></button>
+        <section className="ui-lab-collections" aria-label="Browse collections"><h2>Browse collections</h2><button onClick={()=>choose("Kinks")}><span><strong>Kinks</strong><small>Explore preferences and refinements</small></span><span aria-hidden="true">→</span></button><button onClick={()=>choose("Rewards & Punishments")}><span><strong>Rewards & Punishments</strong><small>Explore rewards, punishments and personal classifications</small></span><span aria-hidden="true">→</span></button></section>
         <section className="ui-lab-subjects-featured" aria-label="Featured subjects">
           <div className="ui-lab-subject-section-title"><h2>Featured subjects</h2><small>Today's discoveries</small></div>
           <div className="ui-lab-subject-feature-grid">{featured.map(subject=><button type="button" key={subject.name} className={"ui-lab-subject-feature ui-lab-subject-"+subject.tone} onClick={()=>openSubject(subject.name)}><span className="ui-lab-subject-art" aria-hidden="true">{subject.symbol}</span><span className="ui-lab-subject-feature-copy"><strong>{subject.name}</strong><small>{subject.description}</small></span><span className="ui-lab-subject-feature-arrow" aria-hidden="true">↗</span></button>)}</div>
@@ -166,11 +167,8 @@ export function UiLabPage() {
       {workspace==="Explore All"&&<>{exploreSubject&&<div className="ui-lab-subject-filter-note"><span>Exploring: {exploreSubject}</span><button onClick={()=>{setExploreSubject(null);resetPageScroll()}}>Clear subject ×</button></div>}<CatalogComposite key={exploreSubject||"all"} subject={exploreSubject||undefined} initialItem={focusedModifier?"Collars":undefined} />
       </>}
       {workspace==="Concept Explorer"&&<><button className="ui-lab-catalog-search" onClick={()=>openCatalogSearch("Concept Explorer")}>⌕ Search concepts...</button><div className="ui-lab-catalog-items">{["Ownership","Leather","Ceremonial","Trust"].map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div></>}
-      {(workspace==="Kinks"||workspace==="Rewards & Punishments")&&<>
-        <div className="ui-lab-app-modes" aria-label="Catalog modes">{["Compare","Overall","Explore"].map(m=><button key={m} className={mode===m?"active":""} onClick={()=>setMode(m)}>{m}</button>)}</div>
-        <div className="ui-lab-catalog-items">{(workspace==="Kinks"?["Collars","Restraints","Sensory Play"]:["Praise","Privileges","Playful Challenges"]).map(item=><button key={item} onClick={()=>setDetail(item)}>{item}<span>›</span></button>)}</div>
-      </>}
-    </div>}
+      {workspace==="Kinks"&&<CatalogComposite />}
+      {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Illustrative classifications for testing filters · Classification editing in Refine comes later.</p><CatalogComposite collection="rewards" /></>}    </div>}
     {area==="Discover"&&<div className="ui-lab-app-modes">{["Learn","React","Play"].map(m=><button key={m} className={mode===m?"active":""} onClick={()=>setMode(m)}>{m}</button>)}</div>}
     {area!=="Catalog"&&<div className="ui-lab-app-grid">{(workspace?[[workspace,"Your working space and saved drafts."],...cards[area].filter(x=>x[0]!==workspace)]:cards[area]).map(([title,description],i)=><button className={"ui-lab-app-tile "+(i===0?"featured":"")} key={title} onClick={()=>setDetail(title)}><span className="ui-lab-app-tile-icon">{["✧","♡","◇","✦"][i%4]}</span><strong>{title}</strong><small>{description}</small><span className="ui-lab-app-tile-arrow">↗</span></button>)}</div>}
     {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">Experimental shell · Illustrative content only · No preferences are saved here</p>}
