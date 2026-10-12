@@ -51,12 +51,12 @@ export function UiLabPage() {
  const [catalogOrderOpen,setCatalogOrderOpen]=useState(false);
  const [searchOrigin,setSearchOrigin]=useState("Catalog");
  const [focusedModifier,setFocusedModifier]=useState(false);
- const searchMatches=[{name:"Collars",type:"Items",path:"Kinks"},{name:"Leather",type:"Modifiers",path:"Collars → Material"},{name:"Leather fetish",type:"Items",path:"Kinks"},{name:"Ownership",type:"Concepts",path:"Concept Explorer"},{name:"Sensory Play",type:"Items",path:"Kinks"},{name:"Restraints",type:"Items",path:"Kinks"}];
+ const searchMatches=[{name:"Collars",type:"Items",path:"Kinks",category:"Power Exchange"},{name:"Leather",type:"Modifiers",path:"Collars → Material",category:"Power Exchange"},{name:"Leather fetish",type:"Items",path:"Kinks",category:"Power Exchange"},{name:"Ownership",type:"Concepts",path:"Concept Explorer",category:"Concept Explorer"},{name:"Sensory Play",type:"Items",path:"Kinks",category:"Sensation & Intensity"},{name:"Restraints",type:"Items",path:"Kinks",category:"Restraint & Control"}];
  const openCatalogSearch=(origin="Catalog",openOrder=false)=>{setSearchOrigin(origin);setCatalogType(origin==="Catalog"?"Items":"All");setCatalogOrderOpen(openOrder);setCatalogSearchOpen(true);setMenuOpen(false);};
  const searchResults=searchMatches.filter(r=>(catalogType==="All"||catalogType===r.type)&&(!catalogQuery.trim()||[r.name,r.path].join(" ").toLowerCase().includes(catalogQuery.trim().toLowerCase())));
  const orderedSearchResults=[...searchResults].sort((a,b)=>catalogSort==="az"?a.name.localeCompare(b.name):catalogSort==="za"?b.name.localeCompare(a.name):0);
  const visibleSearchResults=catalogQuery.trim()?orderedSearchResults:orderedSearchResults.slice(0,3);
- const searchSections=catalogGroup==="category"?["Items","Modifiers","Concepts"].map(kind=>({label:kind,rows:visibleSearchResults.filter(r=>r.type===kind)})).filter(section=>section.rows.length):[{label:"",rows:visibleSearchResults}];
+ const searchSections=catalogGroup==="category"?[...new Set(visibleSearchResults.map(result=>result.category))].sort().map(category=>({label:category,rows:visibleSearchResults.filter(result=>result.category===category)})):[{label:"",rows:visibleSearchResults}];
  const selectSearchResult=(name:string)=>{resetPageScroll();setCatalogSearchOpen(false);setArea("Catalog");setWorkspace("Explore All");setExploreSubject(null);setSelectedSubject(null);setDetail(null);setFocusedModifier(name==="Leather");};
  const [menuOpen,setMenuOpen]=useState(false);
  const [expandedMenu,setExpandedMenu]=useState<Area|null>(null);
