@@ -24,4 +24,8 @@ Reader-facing educational article drafts for the future Kink Profile learning ex
 
 - [Total Power Exchange: Understanding TPE Relationships](fundamentals/total-power-exchange.md)
 
+### Collars, symbols, and rituals
+
+- [Collars & Collaring: Meaning, Commitment, and Choice in BDSM](fundamentals/collars-and-collaring.md)
+
 These Markdown sources are editorial content, not a declaration that an education UI or publishing pipeline is implemented. Articles should undergo editorial, accessibility, source, and safety review before publication. Product strategy and unresolved education architecture remain in the private planning workspace.
