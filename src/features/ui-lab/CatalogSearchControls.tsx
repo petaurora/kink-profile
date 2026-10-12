@@ -91,6 +91,7 @@ export function SortGroupSheet({
   group,
   onGroup,
   defaultSortLabel = "Default order",
+  showDefault = true,
 }: {
   open: boolean;
   onClose: () => void;
@@ -99,6 +100,7 @@ export function SortGroupSheet({
   group: GroupBy;
   onGroup: (value: GroupBy) => void;
   defaultSortLabel?: string;
+  showDefault?: boolean;
 }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const onCloseRef = useRef(onClose);
@@ -140,8 +142,15 @@ export function SortGroupSheet({
         </div>
         <fieldset className="lab-order-section">
           <legend>Sort by</legend>
+          {showDefault && (
+            <button type="button" aria-pressed={sort === "default"}
+              className={"lab-order-option" + (sort === "default" ? " is-selected" : "")}
+              onClick={() => onSort("default")}
+            >
+              {defaultSortLabel}<span aria-hidden="true">{sort === "default" ? "✓" : ""}</span>
+            </button>
+          )}
           {([
-            ["default", defaultSortLabel],
             ["az", "Name: A–Z"],
             ["za", "Name: Z–A"],
           ] as const).map(([value, title]) => (
