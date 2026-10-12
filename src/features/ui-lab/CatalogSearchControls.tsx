@@ -14,17 +14,19 @@ export function SearchFilterButton({
   onClick,
   active = false,
   expanded = false,
+  groupingAvailable = true,
 }: {
   onClick: () => void;
   active?: boolean;
   expanded?: boolean;
+  groupingAvailable?: boolean;
 }) {
   return (
     <button
       type="button"
       className={"lab-search-filter-trigger" + (active ? " is-active" : "")}
-      aria-label="Sort and group results"
-      title="Sort and group results"
+      aria-label={groupingAvailable ? "Sort and group results" : "Sort results"}
+      title={groupingAvailable ? "Sort and group results" : "Sort results"}
       aria-haspopup="dialog"
       aria-expanded={expanded}
       onClick={onClick}
@@ -92,16 +94,19 @@ export function SortGroupSheet({
   onGroup,
   defaultSortLabel = "Default order",
   showDefault = true,
+  showGrouping = true,
 }: {
   open: boolean;
   onClose: () => void;
   sort: SortBy;
   onSort: (value: SortBy) => void;
-  group: GroupBy;
-  onGroup: (value: GroupBy) => void;
+  group?: GroupBy;
+  onGroup?: (value: GroupBy) => void;
   defaultSortLabel?: string;
   showDefault?: boolean;
+  showGrouping?: boolean;
 }) {
+  const canGroup = showGrouping && !!onGroup && group !== undefined;
   const titleRef = useRef<HTMLHeadingElement>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
@@ -134,7 +139,7 @@ export function SortGroupSheet({
       <section className="lab-order-sheet" role="dialog" aria-modal="true" aria-labelledby="lab-order-title">
         <div className="lab-order-header">
           <h2 id="lab-order-title" ref={titleRef} tabIndex={-1}>
-            Sort & Group
+            {canGroup ? "Sort & Group" : "Sort"}
           </h2>
           <button type="button" aria-label="Close" className="lab-order-close" onClick={onClose}>
             ×
@@ -162,7 +167,7 @@ export function SortGroupSheet({
             </button>
           ))}
         </fieldset>
-        <fieldset className="lab-order-section">
+        {canGroup && <fieldset className="lab-order-section">
           <legend>Group by</legend>
           {([
             ["none", "None"],
@@ -170,12 +175,12 @@ export function SortGroupSheet({
           ] as const).map(([value, title]) => (
             <button key={value} type="button" aria-pressed={group === value}
               className={"lab-order-option" + (group === value ? " is-selected" : "")}
-              onClick={() => onGroup(value)}
+              onClick={() => onGroup?.(value)}
             >
               {title}<span aria-hidden="true">{group === value ? "✓" : ""}</span>
             </button>
           ))}
-        </fieldset>
+        </fieldset>}
         <button type="button" className="lab-order-done" onClick={onClose}>Done</button>
       </section>
     </div>
