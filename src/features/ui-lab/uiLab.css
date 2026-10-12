@@ -375,3 +375,20 @@
 .ui-lab-subject-related-head button,.ui-lab-subject-filter-note button{border:0;background:transparent;color:#f0d3e7;font:inherit;font-size:12px;cursor:pointer}
 .ui-lab-subject-filter-note{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #f0d3e72b;border-radius:10px;font-size:12px}
 @media(max-width:450px){.ui-lab-subject-feature-grid{gap:9px}.ui-lab-subject-feature{min-height:190px}.ui-lab-subject-art{height:94px;font-size:52px}.ui-lab-subject-feature-copy{padding:10px 22px 12px 10px}.ui-lab-subject-feature-copy strong{font-size:12px}.ui-lab-subject-feature-copy small{font-size:10px}}
+
+
+/* Shared search field treatment across Catalog landing, Explore All and global search. */
+.ui-lab-app{--lab-search-bg:#17183f;--lab-search-border:#f0d3e74a;--lab-search-radius:12px;--lab-search-height:52px}
+.ui-lab-app .ui-lab-catalog-search,
+.ui-lab-app .ui-lab-search-head,
+.ui-lab-app .cc-search-wrap{box-sizing:border-box;min-height:var(--lab-search-height);border:1px solid var(--lab-search-border);border-radius:var(--lab-search-radius);background:var(--lab-search-bg);color:#f0d3e7;box-shadow:none}
+.ui-lab-app .ui-lab-catalog-search{padding:0 14px;gap:12px;font-size:14px;font-weight:400}
+.ui-lab-app .ui-lab-catalog-search span:nth-child(2){color:#bba9c4}
+.ui-lab-app .ui-lab-search-head{padding:0 10px;gap:8px}
+.ui-lab-app .ui-lab-search-head input{font-size:14px;min-height:48px}
+.ui-lab-app .ui-lab-search-head input::placeholder,.ui-lab-app .cc-search-wrap input::placeholder{color:#bba9c4;opacity:1}
+.ui-lab-app .cc-search-wrap{display:flex;align-items:center;gap:6px;padding:0 10px}
+.ui-lab-app .cc-search-wrap input{flex:1;width:100%;min-width:0;min-height:48px;padding:0 4px;background:transparent;border:0;border-radius:0;outline:0;box-shadow:none;font-size:14px}
+.ui-lab-app .cc-search-wrap input:focus-visible{outline:0}
+.ui-lab-app .cc-search-wrap:focus-within,.ui-lab-app .ui-lab-search-head:focus-within,.ui-lab-app .ui-lab-catalog-search:focus-visible{border-color:#f0d3e7;outline:2px solid #f0d3e7;outline-offset:2px}
+.ui-lab-app .cc-search-wrap button{flex:none;padding:8px 4px;font-size:12px}
