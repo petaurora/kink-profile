@@ -20,4 +20,8 @@ Reader-facing educational article drafts for the future Kink Profile learning ex
 - [Kinks Are Not Roles: Understanding the Difference Between What You Do and Why You Enjoy It](fundamentals/kinks-are-not-roles.md)
 - [Kink Without Dominance or Submission: You Don't Need a Power Exchange to Play](fundamentals/kink-without-power-exchange.md)
 
+### Relationship structures
+
+- [Total Power Exchange: Understanding TPE Relationships](fundamentals/total-power-exchange.md)
+
 These Markdown sources are editorial content, not a declaration that an education UI or publishing pipeline is implemented. Articles should undergo editorial, accessibility, source, and safety review before publication. Product strategy and unresolved education architecture remain in the private planning workspace.
