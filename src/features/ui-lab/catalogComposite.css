@@ -27,3 +27,11 @@
 
 /* Single-choice browse filters reuse the rating sheet on mobile. */
 .cc-sheet-trigger{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;max-width:100%;padding:8px 12px;background:#211d4b;border:1px solid #f0d3e740;border-radius:8px;color:#f0d3e7;text-align:left;font-size:12px!important}.cc-sheet-trigger span{flex:none;color:#cdb5ca}.cc-browse-layer .cc-options{grid-template-columns:1fr}.cc-browse-layer .cc-selector-head h3{margin:0 0 18px}.cc-browse-layer .cc-selector{overflow-y:auto}
+
+
+/* Rewards & Punishments: collection-specific extension controls. */
+.cc-rp-filters{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:13px 0}
+.cc-rp-filters button{border:1px solid #f0d3e74a;border-radius:999px;background:#f0d3e70b;color:#f0d3e7;padding:9px 12px;min-height:40px;font-size:12px!important}
+.cc-rp-filters button.active{background:#520e25;border-color:#f0d3e7a8}
+.cc-rp-filters .cc-rp-clear{border:0;background:transparent;text-decoration:underline}
+.cc-rp-count{margin:18px 0 2px;color:#d2bbd2;font-size:13px}
