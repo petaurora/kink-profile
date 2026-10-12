@@ -52,3 +52,16 @@
 .cc-rp-popover button{align-self:flex-end;border:0;background:transparent;color:#f0d3e7;text-decoration:underline;padding:4px}
 .cc-item:has(.cc-rp-popover){position:relative;z-index:20}
 @media(max-width:680px){.cc-item-main{gap:5px;flex:1 1 100%;padding:3px 2px 0}.cc-item-main>.cc-item-name{font-size:13px}.cc-rp-indicator{min-width:35px;min-height:36px}.cc-item-row:has(.cc-rp-indicators)>.cc-rating-wrap{margin-left:auto}.cc-rp-popover{width:210px}}
+
+/* One compact inline search treatment for Kinks, Rewards & Punishments and Explore All. */
+.cc .cc-search-wrap{align-items:center}
+.cc .cc-search-icon{flex:none;width:19px;height:19px;color:#bba9c4;pointer-events:none}
+.cc .cc-search-wrap input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.cc .cc-search-wrap .cc-search-clear{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:40px;min-height:40px;padding:0;border:0;border-radius:8px;background:transparent;color:#f0d3e7;font-size:23px!important;line-height:1;text-decoration:none}
+.cc .cc-search-wrap .cc-search-clear:hover{background:#f0d3e714}
+.cc .cc-search-wrap .cc-search-clear:focus-visible{outline:2px solid #f0d3e7;outline-offset:-2px}
+.cc .cc-empty{display:flex;flex-direction:column;gap:8px;padding:22px 4px;color:#d2bbd2;font-size:13px}
+.cc .cc-empty p{margin:0}
+.cc .cc-empty-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.cc .cc-empty-actions button{min-height:40px;padding:8px 0;color:#f0d3e7;text-decoration:underline}
+@media(max-width:680px){.cc .cc-search-icon{width:18px;height:18px}.cc .cc-search-wrap .cc-search-clear{min-width:44px;min-height:44px}}
