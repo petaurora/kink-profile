@@ -101,18 +101,24 @@ export function SortGroupSheet({
   defaultSortLabel?: string;
 }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   useEffect(() => {
     if (!open) return;
+    const returnFocusTo = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     titleRef.current?.focus();
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.stopPropagation();
-        onClose();
+        onCloseRef.current();
       }
     };
     window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [open, onClose]);
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+      requestAnimationFrame(() => returnFocusTo?.focus());
+    };
+  }, [open]);
 
   if (!open) return null;
   return (
