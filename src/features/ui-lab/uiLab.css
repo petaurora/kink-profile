@@ -392,3 +392,13 @@
 .ui-lab-app .cc-search-wrap input:focus-visible{outline:0}
 .ui-lab-app .cc-search-wrap:focus-within,.ui-lab-app .ui-lab-search-head:focus-within,.ui-lab-app .ui-lab-catalog-search:focus-visible{border-color:#f0d3e7;outline:2px solid #f0d3e7;outline-offset:2px}
 .ui-lab-app .cc-search-wrap button{flex:none;padding:8px 4px;font-size:12px}
+
+
+/* Catalog collection rows, ahead of featured subjects. */
+.ui-lab-collections{margin:20px 0 24px}
+.ui-lab-collections h2{font-size:17px;color:#f0d3e7;margin:0 0 10px}
+.ui-lab-collections>button{display:flex;width:100%;justify-content:space-between;align-items:center;gap:12px;text-align:left;border:0;border-bottom:1px solid #f0d3e72b;background:transparent;color:#f0d3e7;padding:12px 5px;cursor:pointer}
+.ui-lab-collections>button>span:first-child{display:flex;flex-direction:column;gap:4px}
+.ui-lab-collections strong{font-size:14px}
+.ui-lab-collections small{font-size:11px;color:#d2bbd2}
+.ui-lab-rp-note{font-size:12px;color:#d2bbd2}
