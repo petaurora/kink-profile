@@ -1,0 +1,32 @@
+/* Defaults travel with shared components; override these variables at a parent
+   to theme a composed view without importing any feature stylesheet. */
+:root {
+  --kp-navy: #101240;
+  --kp-burgundy: #520e25;
+  --kp-pink: #f0d3e7;
+  --kp-muted: #bba9c4;
+  --kp-search-bg: #17183f;
+  --kp-search-border: #f0d3e74a;
+  --kp-search-radius: 12px;
+  --kp-search-height: 52px;
+}
+.kp-ui {
+  color: var(--kp-pink);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.kp-ui *,
+.kp-ui *::before,
+.kp-ui *::after {
+  box-sizing: border-box;
+}
+:where(.kp-ui button, .kp-ui input) {
+  font: inherit;
+}
+:where(.kp-ui button) {
+  cursor: pointer;
+}
+.kp-ui button:focus-visible {
+  outline: 2px solid var(--kp-pink);
+  outline-offset: 2px;
+}

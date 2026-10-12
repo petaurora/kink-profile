@@ -1,0 +1,131 @@
+@import "./tokens.css";
+.kp-toast-region {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1300;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  width: min(94vw, 540px);
+}
+.kp-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #242047;
+  color: #f0d3e7;
+  box-shadow: 0 12px 35px #0008;
+  border: 1px solid #f0d3e74a;
+  font-size: 13px;
+  max-width: 100%;
+  touch-action: pan-y;
+  transition:
+    transform 0.16s ease,
+    opacity 0.16s ease;
+}
+.kp-toast-pill {
+  border-radius: 999px;
+  padding: 9px 17px;
+}
+.kp-toast-rect {
+  border-radius: 12px;
+  padding: 12px 10px 12px 15px;
+  border-left: 3px solid #bc89a6;
+}
+.kp-toast-error {
+  border-left-color: #ffb4c2;
+}
+.kp-toast-message {
+  flex: 1;
+  min-width: 0;
+}
+.kp-toast-action {
+  background: transparent;
+  color: #ffd1e4;
+  border: 0;
+  border-left: 1px solid #f0d3e750;
+  padding: 6px 12px;
+  font: inherit;
+  font-weight: 600;
+  min-height: 38px;
+  cursor: pointer;
+}
+.kp-toast-dismiss {
+  border: 0;
+  background: transparent;
+  color: #f0d3e7;
+  padding: 5px 9px;
+  font-size: 19px;
+  cursor: pointer;
+}
+.kp-toast button:focus-visible {
+  outline: 2px solid #f0d3e7;
+  outline-offset: 2px;
+}
+@media (min-width: 800px) {
+  .kp-toast-region {
+    bottom: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kp-toast {
+    transition: none;
+  }
+}
+.kp-toast.kp-toast-leaving {
+  opacity: 0 !important;
+  transform: translateY(8px) scale(0.97) !important;
+  pointer-events: none;
+}
+.kp-toast-action,
+.kp-toast-dismiss {
+  border-radius: 7px;
+  transition:
+    background-color 0.12s ease,
+    transform 0.12s ease;
+}
+.kp-toast-action:hover,
+.kp-toast-dismiss:hover {
+  background: #f0d3e719;
+}
+.kp-toast-action:active,
+.kp-toast-dismiss:active {
+  background: #f0d3e73b;
+  transform: scale(0.91);
+}
+.kp-toast-dismiss {
+  min-width: 36px;
+  min-height: 36px;
+  display: grid;
+  place-items: center;
+}
+.kp-toast {
+  user-select: none;
+  -webkit-user-select: none;
+}
+.kp-toast-message {
+  user-select: text;
+  -webkit-user-select: text;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kp-toast.kp-toast-leaving {
+    transform: none !important;
+  }
+  .kp-toast-action,
+  .kp-toast-dismiss {
+    transition: none;
+  }
+}
+
+.kp-toast-region.kp-toast-region-modal {
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 1500;
+}
+@media (min-width: 800px) {
+  .kp-toast-region.kp-toast-region-modal {
+    bottom: 18px;
+  }
+}

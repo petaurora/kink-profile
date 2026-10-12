@@ -61,7 +61,12 @@ Browser Back/Forward therefore reflects route navigation rather than a parallel 
 
 ## Application shell
 
-`src/app/AppShell.tsx` wraps every route and owns application-wide concerns that must survive route transitions:
+Reusable interaction primitives live in `src/components/ui` and own their styles
+independently of feature CSS. The isolated `#/ui-lab` route consumes these through
+its own `ToastProvider`; this does not migrate production shell treatments. See
+[Shared UI Components](shared-ui-components.md) for module APIs and boundaries.
+
+`src/app/AppShell.tsx` wraps production routes and owns application-wide concerns that must survive route transitions. The isolated UI Lab route renders outside it:
 
 - `ProfileSettingsProvider` and persistence of profile settings
 - the legacy profile-name bridge required by remaining compatibility surfaces

@@ -1,0 +1,24 @@
+@import "./tokens.css";
+.kp-disclosure + .kp-disclosure {
+  border-top: 1px solid #f0d3e72b;
+}
+.kp-disclosure-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: var(--kp-pink);
+  padding: 9px 3px;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.kp-disclosure-trigger small {
+  display: block;
+  color: #bba9c1;
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 3px;
+}

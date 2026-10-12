@@ -1,16 +1,11 @@
-import { useCallback, useRef, useState } from "react";
-import { LabToasts, type LabToast } from "./LabToasts";
-import "./toastPlayground.css";
+import { useState } from "react";
+import type { ToastMessage } from "../../components/ui/ToastViewport";
+import { useToasts } from "../../components/ui/ToastProvider";
 
 export function ToastPlayground() {
- const [items,setItems]=useState<LabToast[]>([]);
+ const {items,notify,clear}=useToasts();
  const [lastAction,setLastAction]=useState("No actions yet.");
- const nextId=useRef(0);
- const dismiss=useCallback((id:number)=>setItems(prev=>prev.filter(t=>t.id!==id)),[]);
- const push=(message:string,kind:LabToast["kind"],actionLabel?:string,onAction?:()=>void,duration?:number)=>{
-  const toast:LabToast={id:++nextId.current,message,kind,actionLabel,onAction,duration};
-  setItems(prev=>{if(prev.some(t=>t.message===message&&t.kind===kind&&t.actionLabel===actionLabel))return prev;return [...prev.filter(t=>!(kind==="success"&&!actionLabel&&t.kind==="success"&&!t.actionLabel)),toast]});
- };
+ const push=(message:string,kind:ToastMessage["kind"],actionLabel?:string,onAction?:()=>void,duration?:number)=>notify({message,kind,actionLabel,onAction,duration});
  const demoRetry=()=>{setLastAction("Retry selected");push("Saved successfully after retry","success")};
  const demoUndo=()=>{setLastAction("Rating restored");push("Rating restored","success")};
  const demos=[
@@ -25,8 +20,7 @@ export function ToastPlayground() {
  return <section className="tp" aria-label="Toast playground">
   <div className="tp-head"><div><span className="tp-kicker">DESIGN LAB / NOTIFICATIONS</span><h2>Toast Playground</h2><p>Trigger each notification and inspect its size, timing, actions, and dismissal. No real preferences are changed.</p></div><span className="tp-count">{items.length} queued</span></div>
   <div className="tp-grid">{demos.map(d=><button key={d.name} type="button" className="tp-trigger" onClick={d.run}><strong>{d.name}</strong><small>{d.description}</small><span>Try →</span></button>)}</div>
-  <div className="tp-footer"><span role="status">Last action: {lastAction}</span><button onClick={()=>setItems([])}>Clear notifications</button></div>
+  <div className="tp-footer"><span role="status">Last action: {lastAction}</span><button onClick={clear}>Clear notifications</button></div>
   <p className="tp-note">Hover or focus to pause. Swipe horizontally to dismiss on touch. Error notifications remain until dismissed or acted on. This is a UI prototype, not production persistence.</p>
-  <LabToasts items={items} onDismiss={dismiss}/>
  </section>;
 }
