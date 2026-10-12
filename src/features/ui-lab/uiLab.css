@@ -377,22 +377,119 @@
 @media(max-width:450px){.ui-lab-subject-feature-grid{gap:9px}.ui-lab-subject-feature{min-height:190px}.ui-lab-subject-art{height:94px;font-size:52px}.ui-lab-subject-feature-copy{padding:10px 22px 12px 10px}.ui-lab-subject-feature-copy strong{font-size:12px}.ui-lab-subject-feature-copy small{font-size:10px}}
 
 
-/* Shared search field treatment across Catalog landing, Explore All and global search. */
-.ui-lab-app{--lab-search-bg:#17183f;--lab-search-border:#f0d3e74a;--lab-search-radius:12px;--lab-search-height:52px}
-.ui-lab-app .ui-lab-catalog-search,
-.ui-lab-app .ui-lab-search-head,
-.ui-lab-app .cc-search-wrap{box-sizing:border-box;min-height:var(--lab-search-height);border:1px solid var(--lab-search-border);border-radius:var(--lab-search-radius);background:var(--lab-search-bg);color:#f0d3e7;box-shadow:none}
-.ui-lab-app .ui-lab-catalog-search{padding:0 14px;gap:12px;font-size:14px;font-weight:400}
-.ui-lab-app .ui-lab-catalog-search span:nth-child(2){color:#bba9c4}
-.ui-lab-app .ui-lab-search-head{padding:0 10px;gap:8px}
-.ui-lab-app .ui-lab-search-head input{font-size:14px;min-height:48px}
-.ui-lab-app .ui-lab-search-head input::placeholder,.ui-lab-app .cc-search-wrap input::placeholder{color:#bba9c4;opacity:1}
-.ui-lab-app .cc-search-wrap{display:flex;align-items:center;gap:6px;padding:0 10px}
-.ui-lab-app .cc-search-wrap input{flex:1;width:100%;min-width:0;min-height:48px;padding:0 4px;background:transparent;border:0;border-radius:0;outline:0;box-shadow:none;font-size:14px}
-.ui-lab-app .cc-search-wrap input:focus-visible{outline:0}
-.ui-lab-app .cc-search-wrap:focus-within,.ui-lab-app .ui-lab-search-head:focus-within,.ui-lab-app .ui-lab-catalog-search:focus-visible{border-color:#f0d3e7;outline:2px solid #f0d3e7;outline-offset:2px}
-.ui-lab-app .cc-search-wrap button{flex:none;padding:8px 4px;font-size:12px}
-
+/* Canonical search field design: Catalog landing, Kinks, R/P, Explore All,
+   Concept Explorer and global search all use the same component and tokens. */
+.ui-lab-app{
+  --lab-search-bg:#17183f;
+  --lab-search-border:#f0d3e74a;
+  --lab-search-radius:12px;
+  --lab-search-height:52px;
+}
+.ui-lab-app .lab-search-field{
+  appearance:none;
+  -webkit-appearance:none;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  min-width:0;
+  height:var(--lab-search-height);
+  min-height:var(--lab-search-height);
+  margin:0;
+  padding:0 14px;
+  border:1px solid var(--lab-search-border);
+  border-radius:var(--lab-search-radius);
+  background:var(--lab-search-bg);
+  box-shadow:none;
+  color:#f0d3e7;
+  font:inherit;
+  font-size:14px;
+  font-weight:400;
+  line-height:1.4;
+}
+.ui-lab-app button.lab-search-field--launch{
+  cursor:pointer;
+  text-align:left;
+}
+.ui-lab-app .lab-search-field__icon{
+  width:20px;
+  height:20px;
+  flex:none;
+  color:#bba9c4;
+  pointer-events:none;
+}
+.ui-lab-app .lab-search-field__placeholder{
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  color:#bba9c4;
+}
+.ui-lab-app .lab-search-field input[type="search"]{
+  appearance:none;
+  -webkit-appearance:none;
+  display:block;
+  flex:1;
+  width:100%;
+  min-width:0;
+  height:100%;
+  min-height:0;
+  padding:0;
+  margin:0;
+  border:0;
+  border-radius:0;
+  outline:0;
+  background:transparent;
+  box-shadow:none;
+  color:#f0d3e7;
+  font:inherit;
+  font-size:14px;
+}
+.ui-lab-app .lab-search-field input[type="search"]::placeholder{
+  color:#bba9c4;
+  opacity:1;
+}
+.ui-lab-app .lab-search-field input[type="search"]::-webkit-search-cancel-button{
+  -webkit-appearance:none;
+  appearance:none;
+}
+.ui-lab-app .lab-search-field:focus-within,
+.ui-lab-app button.lab-search-field--launch:focus-visible{
+  border-color:#f0d3e7;
+  box-shadow:0 0 0 1px #f0d3e775;
+  outline:0;
+}
+.ui-lab-app .lab-search-field__clear{
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:none;
+  width:40px;
+  height:44px;
+  min-width:40px;
+  padding:0;
+  margin-right:-9px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:#f0d3e7;
+  cursor:pointer;
+}
+.ui-lab-app .lab-search-field__clear svg{
+  width:18px;
+  height:18px;
+}
+.ui-lab-app .lab-search-field__clear:hover{background:#f0d3e714}
+.ui-lab-app .lab-search-field__clear:focus-visible{
+  outline:2px solid #f0d3e7;
+  outline-offset:-3px;
+}
+@media(max-width:680px){
+  .ui-lab-app .lab-search-field__clear{width:44px;min-width:44px}
+}
 
 /* Catalog collection rows, ahead of featured subjects. */
 .ui-lab-collections{margin:20px 0 24px}
