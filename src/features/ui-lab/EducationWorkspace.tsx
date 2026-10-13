@@ -13,7 +13,7 @@ import "./education.css";
 type Go = (area:LabArea,workspace?:string,params?:Record<string,string>)=>void;
 const sections:EducationSection[] = [
   "Understanding BDSM", "Consent and scenes", "Kinks, roles, and motivation",
-  "Relationship structures", "Collars, symbols, and rituals",
+  "Relationship structures", "Collars, symbols, and rituals", "Practices & safety",
 ];
 const topicOptions:{id:EducationSection | "all";label:string}[] = [
   {id:"all",label:"All topics"},
