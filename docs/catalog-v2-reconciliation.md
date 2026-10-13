@@ -50,3 +50,9 @@ Status: **active audit; not merge-ready**. Review source: final approved decisio
 7. Get design approval on genuinely open Batch 7 and Batch 13 decisions in their own workshops.
 
 Do **not** merge #293 as a completed Catalog V2 migration based solely on CI success.
+
+## Exhaustive disposition milestone — October 13, 2026
+
+`src/catalog-v2/fullSourceDisposition.ts` now creates an **exactly one decision per V1 source ID** ledger from the 551 original IDs. Verified Item/refinement/exclude decisions override the default explicit `review` disposition. The remaining `review` IDs are **not mapped**, and any original ratings attached to them must remain unresolved and must not be copied to guessed targets. The corresponding test enforces 551 unique accounted-for sources and that collisions preserve existing ratings. Source-linked exclusions and deferrals from approved review batches are tracked explicitly.
+
+**This is an audit completeness gate, not migration completion.** The product may not advertise 551 migrated ratings until each pending source is resolved, and the resulting mapping and persisted-data compatibility have been validated.
