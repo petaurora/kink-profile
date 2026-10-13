@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { legacyCatalogIds } from "./legacyCatalogIds";
 import { describe, expect, it } from "vitest";
 import { approvedV1ToV2Slice, approvedV2Slice } from "./approvedSlice";
 import { reviewedBatch1Decisions, reviewedCatalogExpansion } from "./reviewedExpansion";
@@ -7,10 +7,7 @@ import { migrateV1Ratings } from "./migration";
 import type { CatalogV2 } from "./model";
 
 /** The original V1 source of record has 551 entries; never call the migration complete based on rendered count. */
-const source = readFileSync(new URL("../../reference/catalog/kink-catalog.tsv",import.meta.url),"utf8");
-const [header,...records] = source.trimEnd().split(/\r?\n/);
-const idColumn=header.split("\t").indexOf("Catalog ID");
-const sourceIds=records.map(row=>row.split("\t")[idColumn]);
+const sourceIds: string[] = [...legacyCatalogIds];
 const merged: CatalogV2={
  schemaVersion:2,
  items:[...new Map([...approvedV2Slice.items,...reviewedCatalogExpansion.items,...additionalReviewedCatalog.items].map(i=>[i.id,i])).values()],
