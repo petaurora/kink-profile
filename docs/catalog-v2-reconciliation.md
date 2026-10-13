@@ -56,3 +56,9 @@ Do **not** merge #293 as a completed Catalog V2 migration based solely on CI suc
 `src/catalog-v2/fullSourceDisposition.ts` now creates an **exactly one decision per V1 source ID** ledger from the 551 original IDs. Verified Item/refinement/exclude decisions override the default explicit `review` disposition. The remaining `review` IDs are **not mapped**, and any original ratings attached to them must remain unresolved and must not be copied to guessed targets. The corresponding test enforces 551 unique accounted-for sources and that collisions preserve existing ratings. Source-linked exclusions and deferrals from approved review batches are tracked explicitly.
 
 **This is an audit completeness gate, not migration completion.** The product may not advertise 551 migrated ratings until each pending source is resolved, and the resulting mapping and persisted-data compatibility have been validated.
+
+## Approved product decision: archive unresolved V1 preferences (2026-10-13)
+
+Unresolved, excluded, deferred, and conflicted V1 preference ratings may be preserved in a **separate, read-only legacy archive** during the initial Catalog V2 rollout. They do not require immediate full catalog mapping, and they do not appear as V2 ratings. Full cleanup/reconciliation belongs in subsequent database integration. Keep the original source ID, preference value, and disposition/conflict reason, with source/schema metadata. Never silently discard, infer, or overwrite them.
+
+`buildLegacyPreferenceArchive` currently returns a pure, versioned archive payload and a separate V2 migration preview. **The payload is not persisted automatically**: saving/migrating browser preferences, crash-safe storage, Collars pilot import, and subsequent DB data transfer still require explicit implementation and verification prior to any destructive migration. Archive disposition now reduces the taxonomy-completeness merge blocker; it does not eliminate the data-preservation gate.
