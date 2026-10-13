@@ -11,7 +11,7 @@ export function toAppCatalogItems(catalog: CatalogV2, existing: CatalogItem[] = 
    const previous=byId.get(v2.id);
    const category=catalog.themes.find(theme=>v2.themeIds.includes(theme.id))?.name ?? previous?.category ?? "Catalog V2";
    byId.set(v2.id,{
-     id:v2.id,name:v2.name,description:v2.description,category,
+     id:v2.id,name:v2.name,description:v2.description,category,themeIds:[...v2.themeIds],
      groups:v2.groups.map(g=>({id:g.id,name:g.name,values:g.values.map(v=>({...v}))})),
      collections:v2.collections ?? previous?.collections ?? ["kinks"],
    });
