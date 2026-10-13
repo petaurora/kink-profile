@@ -36,20 +36,16 @@ describe("Education article footers",()=>{
     expect(html).toContain("not proof of skill.");
     expect((html.match(/<p>/g)??[])).toHaveLength(4);
   });
-  it("preserves the real Impact Play misconceptions and marking descriptions",()=>{
-    const sample=localEducationArticles.find(article=>article.id==="edu-impact");
-    if(!sample)throw new Error("Impact Play editorial source is missing");
-    const html=renderToStaticMarkup(EducationMarkdown({markdown:articleBody(sample.markdown)}));
-    for(const expected of [
-      "appearance alone does not rule out injury",
-      "Persistent or especially painful welts warrant assessment",
-      "Some deeper injuries are not visible at first",
-      "Someone might freeze or become unable to communicate",
-      "A broad dull sensation can still accompany significant deep-tissue force",
-      "Bruising demonstrates tissue injury, not skill or consent",
-      "Health, boundaries, and context change",
-      "Remaining gentle, reducing intensity, or stopping",
-    ]) expect(html).toContain(expected);
+  it("preserves safety and mark descriptions in the shortened Impact overview and its recovery deep dive",()=>{
+    const overview=localEducationArticles.find(article=>article.id==="edu-impact");
+    const recovery=localEducationArticles.find(article=>article.id==="edu-impact-marks");
+    if(!overview||!recovery)throw new Error("Impact Play series source is missing");
+    const intro=renderToStaticMarkup(EducationMarkdown({markdown:articleBody(overview.markdown)}));
+    const details=renderToStaticMarkup(EducationMarkdown({markdown:articleBody(recovery.markdown)}));
+    for(const expected of ["Welts", "Bruises", "Stop and check in even without a safeword", "A bruise is evidence of injury"])
+      expect(intro).toContain(expected);
+    for(const expected of ["A welt is not an achievement badge", "Bruises may appear hours later", "No bruise means no injury", "A big bruise means an especially good scene"])
+      expect(details).toContain(expected);
   });
   it("retains a full article without draft suggestions",()=>{
     expect(articleBody("# Hello\n\n---\n\n## Safety\n\nStay aware.")).toContain("## Safety");
