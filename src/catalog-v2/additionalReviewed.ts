@@ -3,7 +3,6 @@ import type { CatalogV2, CatalogV2Item, CatalogV2Group } from "./model";
 const slug=(x:string)=>x.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 const g=(name:string, values:string[]):CatalogV2Group=>({id:slug(name),name,values:values.map(name=>({id:slug(name),name}))});
 const item=(name:string,themeId:string,groups:CatalogV2Group[]=[]):CatalogV2Item=>({id:slug(name),name,themeIds:[themeId],groups,collections:["kinks"]});
-const bodyParts=["Nipples","Clitoris","Vulva / Labia","Penis","Testicles","Arms","Legs","Back","Other Body Areas"];
 const groupOf=(name:string,theme:string, groups:CatalogV2Group[]=[])=>(item(name,theme,groups));
 const collections: Record<string,CatalogV2Item[]>={
  equipment:[
@@ -12,7 +11,7 @@ const collections: Record<string,CatalogV2Item[]>={
  item("Stocks / Pillory","equipment"),item("Saint Andrew's Cross","equipment")
  ],
  impact:[
- item("Impact Play","impact",[g("Sensation",["Thuddy","Stingy"]),g("Target / Body Area",bodyParts)]),
+ item("Impact Play","impact",[g("Sensation",["Thuddy","Stingy"]),g("Target / Body Area",[])]),
  ...["Spanking / Slapping","Paddles","Floggers","Canes","Whips","Other Implements","Rhythmic Impact","Counting Impacts","Impact Warm-up","Impact Endurance","Bastinado","Florentine Flogging"].map(n=>item(n,"impact"))
  ],
  psychological:[
@@ -40,21 +39,21 @@ const collections: Record<string,CatalogV2Item[]>={
  sensory:[
  item("Sensory Deprivation","sensory",[g("Sense",["Sight","Hearing","Multi-sensory"]),g("Method",["Blindfold","Headphones","Earplugs"])]),
  item("Sensory Overload","sensory"),
- item("Texture Play","sensory",[g("Material / Method",["Feather","Soft Fur / Faux Fur","Silk / Satin","Abrasive / Rough Texture"]),g("Body Part",bodyParts)]),
+ item("Texture Play","sensory",[g("Material / Method",["Feather","Soft Fur / Faux Fur","Silk / Satin","Abrasive / Rough Texture"]),g("Body Part",[])]),
  item("Temperature Play","sensory",[g("Temperature",["Cold","Warm","Contrast"]),g("Method",["Water","Ice","Wax"])]),
  item("Tickling","sensory",[g("Intensity / Framing",["Tickle Torture"])]),item("ASMR","sensory")
  ],
  pain:[
  ...["Masochism","Sadism"].map(n=>item(n,"pain",[g("Experience",["Endurance / Sustained Pain","Pain Processing / Response"])])),
- item("Pinching","pain",[g("Body Part",bodyParts)]),
- item("Scratching","pain",[g("Method",["Fingernails","Claw / Rake Tools"]),g("Body Part",bodyParts)]),
- item("Biting","pain",[g("Body Part",bodyParts)]),item("Hair Pulling","pain"),
- item("Clamp / Clip Play","pain",[g("Tool / Type",["Clothespins","Clamps","Other Clips / Clamps"]),g("Body Part",bodyParts)]),
- item("Wartenberg Wheel","pain",[g("Body Part",bodyParts)]),
- item("Suction Play","pain",[g("Method",["Cupping","Other Suction Methods"]),g("Body Part",bodyParts)])
+ item("Pinching","pain",[g("Body Part",[])]),
+ item("Scratching","pain",[g("Method",["Fingernails","Claw / Rake Tools"]),g("Body Part",[])]),
+ item("Biting","pain",[g("Body Part",[])]),item("Hair Pulling","pain"),
+ item("Clamp / Clip Play","pain",[g("Tool / Type",["Clothespins","Clamps","Other Clips / Clamps"]),g("Body Part",[])]),
+ item("Wartenberg Wheel","pain",[g("Body Part",[])]),
+ item("Suction Play","pain",[g("Method",["Cupping","Other Suction Methods"]),g("Body Part",[])])
  ],
  electrical:[
- item("Electrical Play","electrical",[g("Device / Method",["TENS-style","Violet Wand","Contact Zapper","Electric Pinwheel"]),g("Sensation / Response",["Tickle / Twitch Response"]),g("Body Part",bodyParts)])
+ item("Electrical Play","electrical",[g("Device / Method",["TENS-style","Violet Wand","Contact Zapper","Electric Pinwheel"]),g("Sensation / Response",["Tickle / Twitch Response"]),g("Body Part",[])])
  ]
 };
 const names:Record<string,string>={
