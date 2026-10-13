@@ -18,27 +18,32 @@ export type CatalogSubject = {
   id: string; name: string; description: string; itemIds: string[];
   featured?: { symbol: string; tone: string };
 };
-export type CatalogConcept = { id: string; name: string; description: string };
+export type CatalogConcept = { id: string; name: string; description: string; relatedItemIds?:string[] };
 export type CatalogReferenceData = {
   items: CatalogItem[]; subjects: CatalogSubject[]; concepts: CatalogConcept[];
 };
 export type PreferenceTarget =
   | { kind: "item"; itemId: string }
-  | { kind: "modifier"; itemId: string; groupId: string; valueId: string };
+  | { kind: "modifier"; itemId: string; groupId: string; valueId: string }
+  | { kind: "concept"; conceptId:string };
 /** Tuple encoding avoids collisions between labels, groups and overall values. */
 export function ratingKey(target: PreferenceTarget): string {
   return JSON.stringify(target.kind === "item"
     ? ["item", target.itemId]
-    : ["modifier", target.itemId, target.groupId, target.valueId]);
+    : target.kind === "modifier" ? ["modifier", target.itemId, target.groupId, target.valueId] : ["concept",target.conceptId]);
 }
+export type ComfortValue = "uncomfortable" | "somewhat_comfortable" | "comfortable";
+export type ExperienceValue = true | ComfortValue;
 export type PreferenceSnapshot = {
   ratings: Record<string, PreferenceRating>;
   classifications: Record<string, Classification>;
+  experience?:Record<string,{tried?:true;comfort?:ComfortValue}>;
 };
 export type CatalogSearchTarget = { itemId: string; groupId?: string; valueId?: string };
 export type SearchResult = {
   id: string; name: string; type: "Items" | "Modifiers" | "Concepts"; path: string;
   target: CatalogSearchTarget | { conceptId: string };
+  score?:number;
 };
 export type SearchQuery = { text: string; type?: SearchResult["type"]; sort?: "default" | "az" | "za" };
 export interface AppServices {
@@ -46,6 +51,7 @@ export interface AppServices {
   search: { search(query: SearchQuery, options?: RequestOptions): Promise<SearchResult[]> };
   preferences: {
     getSnapshot(options?: RequestOptions): Promise<PreferenceSnapshot>;
+    setExperience(itemId:string,field:"tried"|"comfort",value:ExperienceValue|undefined,options?:RequestOptions):Promise<void>;
     setRating(target: PreferenceTarget, value: PreferenceRating | undefined, options?: RequestOptions): Promise<void>;
   };
 }

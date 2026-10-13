@@ -324,3 +324,12 @@ button.kp-search-field--launch:focus-visible {
     padding: 20px 18px max(20px, env(safe-area-inset-bottom));
   }
 }
+
+/* Controls remain identifiable without relying on their surrounding text. */
+.kp-search-chips .kp-search-chip { border-color: var(--kp-control-border); white-space: normal; }
+.kp-search-chip__check { margin-left: 6px; }
+.kp-search-chips .kp-search-chip,
+.kp-search-chips .kp-search-chips-clear { min-height: 44px; }
+.kp-search-field { height: auto; }
+.kp-search-field input[type="search"] { min-height: var(--kp-search-height); }
+.kp-search-field__clear { flex-basis: 44px; min-width: 44px; }

@@ -131,3 +131,11 @@
     transform: none;
   }
 }
+
+.kp-preference-explanation dt { font-weight: 600; margin-top: 12px; }
+.kp-preference-explanation dd { margin: 4px 0; line-height: 1.5; }
+.kp-keyboard-hint { display: block; color: #c6b1ca; font-size: 12px; margin-bottom: 12px; }
+.kp-preference-options button:focus-visible { outline: 2px solid var(--kp-pink); outline-offset: 3px; }
+.kp-preference-options button { border-color: var(--kp-control-border); }
+.kp-rating, .kp-retry, .kp-preference-help, .kp-preference-clear { min-height: 44px; }
+.kp-sheet-header > div { min-width: 0; overflow-wrap: anywhere; }

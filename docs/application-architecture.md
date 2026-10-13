@@ -236,14 +236,10 @@ When changing application architecture:
 6. Move ownership when it becomes clearer; do not perform folder churn solely for visual neatness.
 7. Update this document when the implemented architecture contract changes materially.
 
-## Experimental application services
+## UI Lab application services
 
-The isolated `#/ui-lab` route uses `AppServicesProvider` and typed async contracts
-under `src/services` for reference data, search, and preference writes. The Lab
-composition root creates an in-memory adapter; production feature routes retain
-their existing domain/storage contracts. UI components obtain data through the
-provider rather than importing sample datasets or implementing save timers.
-
-The [application services contract](app-services.md) describes injection,
-cancellation, session ownership, independent preference targets, serial writes,
-error recovery, and the limits of the sample adapter.
+The isolated v2 shell uses AppServicesProvider for async reference/search reads
+and initial records. LabRecordsProvider remains its sole mutable record coordinator
+and sends preference/concept/experience edits through typed services, preserving
+independent fields, guarded Undo and recovery. The local adapter confirms changes
+in memory; production routes/storage remain separate. See [Application Services](app-services.md).

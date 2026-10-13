@@ -13,7 +13,8 @@ Catalog V2 schema or HTTP endpoint specification.
 | `catalog.getReferenceData` | Read Items, nested modifier definitions, subjects with explicit Item links, and concepts | Catalog browsing, subject discovery, Concept Explorer |
 | `search.search` | Read typed results with actual Item/modifier/concept targets; optional type and ordering | Shell/Catalog search overlay |
 | `preferences.getSnapshot` | Read independent ratings and R/P classifications | Session initialization and classification filters |
-| `preferences.setRating` | Confirm one Item or item-specific modifier edit; `undefined` clears that target | Overall and modifier rating controls |
+| `preferences.setRating` | Confirm one Item, concept or item-specific modifier edit; `undefined` clears that target | Rating controls |
+| `preferences.setExperience` | Confirm independent Tried/Comfort edits or clears | Experience controls |
 
 Collection search operates on the loaded reference data with the same text
 normalization used by service search. Filter, Sort, and Group remain presentation
@@ -29,7 +30,7 @@ not live records or implemented domain services.
 an optional `services: AppServices` prop; injecting another implementation replaces
 the source without editing Catalog/search/rating presentation. `AppServicesProvider`
 loads the reference universe and initial preference snapshot before rendering its
-consumers, then owns one shared preference coordinator. Production routes do not
+consumers, then supplies one shared Lab record coordinator. Production routes do not
 use this provider and their existing storage/import/export behavior is unchanged.
 
 An API adapter implements the same promise-returning methods, translates transport
@@ -54,27 +55,27 @@ production catalog or treat fixture categories as final taxonomy decisions.
 
 ## Async lifecycle and recovery
 
-`useServiceQuery` cancels replaced/unmounted requests and ignores late success or
-failure even if an adapter does not honor abort. Pending/error reads expose
-accessible status and Retry controls; query failures do not fabricate empty
-results or overwrite preference data. Search returns targets from the same
-universe that Catalog renders. Selecting an Item opens its refinement; selecting
-a modifier also opens its group, scrolls/focuses that value and highlights it.
-Selecting a concept opens its own description.
+`useServiceQuery` cancels boot reads on replacement/unmount and ignores stale
+results even if an adapter ignores abort. Catalog/search errors have accessible
+status and Retry. The approved global Search retains its 200 ms debounce,
+relevance/type sections, independent Clear, previous-result failure recovery and
+nested return state. Its requests carry AbortSignal and ignore obsolete results.
 
-`createPreferenceStore` exposes a shared optimistic snapshot. Editing immediately
-shows the new value and Saving; a success notice requires service confirmation.
-Writes serialize **per target**, and edits waiting behind an in-flight write are
-coalesced to the latest value. Independent targets can save concurrently. Each
-target has a revision so an old completion cannot replace newer values/statuses
-or emit misleading feedback. This prevents stale ordering within one Lab session;
-it does not establish cross-client server concurrency guarantees.
+`AppServicesProvider` owns service injection and initial reference/snapshot loading.
+`LabRecordsProvider` is the single optimistic record coordinator used by Catalog,
+concept and experience controls. It translates display keys to typed stable
+transport targets, serializes per-target writes, coalesces waiting edits and only
+reports Saved after service confirmation. Independent targets can save concurrently.
+Saved feedback fades after 1.25 seconds. Old responses cannot replace newer values
+or statuses. Failed edits (including clears) remain available for contextual Retry,
+Retry All and guarded exact-value Undo. Feature navigation retains the provider;
+leaving/remounting the Lab does not provide durable recovery.
 
-A failed save preserves the latest edit, including an attempted clear, with an
-unresolved failed status and contextual Retry. The adapter's committed snapshot
-is unchanged on failure. Pending writes belong to the session coordinator and
-continue when a Catalog view unmounts, so navigation does not lose a write or its
-recovery state. Leaving the entire Lab is not a durable recovery boundary.
+Concept preferences, Item preferences, modifiers, Tried and Comfort are independent.
+Revisions/help/disclosure and search state remain session presentation state; they
+are not new preference evidence or server concurrency guarantees. The local adapter
+confirms in memory. Cross-device conflicts and durable edit metadata require a
+separate backend contract.
 
 ## Local adapter and limits
 
@@ -91,7 +92,7 @@ control rejects the next adapter save. Tests may inject latency, data or failure
 An injected API adapter does not receive this diagnostic control.
 
 Durable persistence, offline synchronization, classification editing, education,
-profile/relationship/tool records and live collaboration are outside this slice.
+relationship/tool records and live collaboration are outside this slice.
 
 ## Search matching
 

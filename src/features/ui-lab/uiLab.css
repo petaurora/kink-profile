@@ -421,3 +421,55 @@
 .ui-lab-app .ui-lab-app-overlay { z-index:1300; }
 .ui-lab-app .ui-lab-detail-dialog { grid-area:1 / 1; }
 .ui-lab-app .ui-lab-app-overlay>.kp-modal-backdrop { background:transparent; }
+
+/* Accessibility overrides follow prototype refinements so the final cascade
+   preserves focus visibility, reduced motion and narrow/text-zoom reflow. */
+.ui-lab-app { color-scheme: dark; overflow-wrap: anywhere; }
+.ui-lab-app .ui-lab-app-header { position: relative; }
+.ui-lab-app .ui-lab-skip-link {
+  position: fixed; top: 8px; left: 8px; z-index: 1700;
+  padding: 12px 16px; border-radius: 8px;
+  background: #f0d3e7; color: #101240;
+  transform: translateY(-180%);
+}
+.ui-lab-app .ui-lab-skip-link:focus { transform: none; outline: 3px solid #101240; outline-offset: -5px; }
+.ui-lab-app h1 { scroll-margin: 16px; }
+.ui-lab-app h1:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 4px; }
+.ui-lab-app .ui-lab-app-frame, .ui-lab-app .ui-lab-app-content { min-width: 0; }
+.ui-lab-app .ui-lab-app-tile { border-color: #9c85a7; }
+.ui-lab-app .ui-lab-app-bottom small { overflow-wrap: normal; }
+.ui-lab-app .ui-lab-breadcrumbs { flex-wrap: wrap; }
+.ui-lab-app .ui-lab-breadcrumbs button,
+.ui-lab-app .ui-lab-app-modes button,
+.ui-lab-app .ui-lab-subject-more,
+.ui-lab-app .ui-lab-subject-related-head button,
+.ui-lab-app .ui-lab-subject-filter-note button,
+.ui-lab-app .ui-lab-app-switch,
+.ui-lab-app .ui-lab-app-overlay button,
+.ui-lab-app .ui-lab-app-logo { min-width: 44px; min-height: 44px; }
+.ui-lab-app .ui-lab-app-modes { flex-wrap: wrap; }
+.ui-lab-app .ui-lab-app-modes button[aria-pressed="true"]::after { content: " ✓"; }
+.ui-lab-app .ui-lab-app-swatches { flex-wrap: wrap; }
+.ui-lab-app .ui-lab-app-swatches div { min-width: 100px; display: grid; place-items: center; }
+.ui-lab-app .ui-lab-app-swatches code { background: #101240; color: #f0d3e7; padding: 3px; }
+.ui-lab-app .ui-lab-subject-feature-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
+.ui-lab-app .ui-lab-subject-related-head, .ui-lab-app .ui-lab-subject-section-title { flex-wrap: wrap; }
+.ui-lab-app .ui-lab-app-frame { padding-bottom: max(90px, calc(90px + env(safe-area-inset-bottom))); }
+@media (min-width: 701px) { .ui-lab-app .ui-lab-app-frame { padding-bottom: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .ui-lab *, .ui-lab *::before, .ui-lab *::after {
+    animation: none !important; transition: none !important; scroll-behavior: auto !important;
+  }
+  .ui-lab button:active, .ui-lab button:active .ui-lab-nav-icon-wrap { transform: none !important; }
+  .ui-lab .ui-lab-menu-child { opacity: 1 !important; transform: none !important; }
+}
+@media (forced-colors: active) {
+  .ui-lab button, .kp-ui button { border: 1px solid ButtonText; }
+  .ui-lab button[aria-current="page"], .ui-lab button[aria-pressed="true"],
+  .kp-ui button[aria-pressed="true"] { outline: 2px solid Highlight; outline-offset: -3px; }
+}
+
+.ui-lab-app .ui-lab-app-logo { flex: 1 1 auto; min-width: 0; white-space: normal; }
+.ui-lab-app .ui-lab-app-logo > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.ui-lab-app .ui-lab-brand-mark { flex-shrink: 0; }
+.ui-lab-app .ui-lab-app-bottom small { overflow-wrap: anywhere; }

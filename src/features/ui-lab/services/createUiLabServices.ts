@@ -26,6 +26,7 @@ export function createUiLabServices({ latencyMs = 180, saveLatencyMs = 850, refe
     return structuredClone(work());
   }
   function validateTarget(target: PreferenceTarget) {
+    if(target.kind==="concept"){if(!data.concepts.some(c=>c.id===target.conceptId))throw new ServiceError("invalid-target","This concept is unavailable.");return;}
     const item = data.items.find(item => item.id === target.itemId);
     if ((target.kind !== "item" && target.kind !== "modifier") || !item || (target.kind === "modifier" && !item.groups.find(group => group.id === target.groupId)?.values.some(value => value.id === target.valueId))) {
       throw new ServiceError("invalid-target", "This preference target is unavailable.");
@@ -38,6 +39,14 @@ export function createUiLabServices({ latencyMs = 180, saveLatencyMs = 850, refe
       search: {search: (query, options) => request("search", () => searchReferenceData(data, query), options)},
       preferences: {
         getSnapshot: options => request("preferences", () => snapshot, options),
+        setExperience: (itemId,field,value,options)=>request("save",()=>{
+          if(!data.items.some(item=>item.id===itemId))throw new ServiceError("invalid-target","This Item is unavailable.");
+          if(field!=="tried"&&field!=="comfort")throw new ServiceError("invalid-target","Unknown experience field.");
+          if(value!==undefined&&(field==="tried"?value!==true:!["uncomfortable","somewhat_comfortable","comfortable"].includes(value as string)))throw new ServiceError("invalid-value","Unknown experience value.");
+          snapshot.experience??={};const record={...snapshot.experience[itemId]};
+          if(value===undefined)delete record[field];else if(field==="tried")record.tried=true;else record.comfort=value as "uncomfortable"|"somewhat_comfortable"|"comfortable";
+          if(Object.keys(record).length)snapshot.experience[itemId]=record;else delete snapshot.experience[itemId];
+        },options),
         setRating: (target, value, options) => {
           // Capture input before the asynchronous boundary; callers cannot mutate a pending write.
           const capturedTarget = structuredClone(target);

@@ -1,16 +1,20 @@
 import { ToastPlayground } from "./ToastPlayground";
 import { CatalogComposite } from "./CatalogComposite";
 import { SearchField } from "../../components/ui/SearchField";
-import { SearchFilterButton, SearchChips, SortGroupSheet, type SortBy } from "../../components/ui/SearchControls";
-import { useCallback, useRef, useState } from "react";
+import { SearchFilterButton, type SortBy } from "../../components/ui/SearchControls";
+import { useEffect, useId, useRef, useState } from "react";
 import { ModalLayer } from "../../components/ui/ModalLayer";
 import { ToastProvider } from "../../components/ui/ToastProvider";
 import { SearchRow } from "../../components/ui/SearchControls";
-import { AppServicesProvider, ServiceQueryStatus, useAppServices, useReferenceData } from "../../services/AppServicesProvider";
-import { useServiceQuery } from "../../services/useServiceQuery";
-import type { AppServices, CatalogSearchTarget, CatalogSubject, RequestOptions, SearchResult } from "../../services/contracts";
-import { createUiLabServices, type UiLabAdapter } from "./services/createUiLabServices";
 import "./uiLab.css";
+import { GlobalCatalogSearch } from "./GlobalCatalogSearch";
+import { ConceptDetail } from "./ConceptDetail";
+
+import { LabRecordsProvider, LabSaveSummary } from "./LabRecords";
+import { AppServicesProvider } from "../../services/AppServicesProvider";
+import type { AppServices } from "../../services/contracts";
+import { createUiLabServices } from "./services/createUiLabServices";
+import { useLabCatalog } from "./LabCatalog";
 
 type Area = "Home" | "Catalog" | "Profile" | "Discover" | "Tools";
 const areas: Area[] = ["Home","Catalog","Profile","Discover","Tools"];
@@ -29,26 +33,23 @@ const cards: Record<Area,[string,string][]> = {
   Profile:[["Your profile","Roles, themes and preference evidence"],["Relationships","Connections and linked profiles"],["Sharing & permissions","Decide what others can see"],["Identity & expression","Your own words and presentation"]],
   Tools:[["Scene Builder","Plan scenes and save drafts"],["Agreements & rituals","Create and maintain shared practices"],["Randomizers & recipes","Get practical inspiration"],["Compare profiles","Compare only with permission"]]
 };
-function dailyFeatured(subjects:CatalogSubject[]){
- const featured=subjects.filter(s=>s.featured);
- if(!featured.length)return [];
- const day=Math.floor(new Date().setHours(0,0,0,0)/86400000);
- const first=((day%featured.length)+featured.length)%featured.length;
- return [featured[first],featured[(first+2)%featured.length]].filter((s,i,list)=>list.findIndex(x=>x.id===s.id)===i);
-}
+function dailyFeatured(subjects:{name:string;description:string;symbol:string;tone:string}[]){if(!subjects.length)return [];const day=Math.floor(new Date().setHours(0,0,0,0)/86400000);const first=((day%subjects.length)+subjects.length)%subjects.length;return [subjects[first],subjects[(first+2)%subjects.length]].filter((subject,index,list)=>list.findIndex(x=>x.name===subject.name)===index);}
 export function UiLabPage({services}:{services?:AppServices}={}) {
  const [adapter]=useState(createUiLabServices);
- return <AppServicesProvider services={services??adapter.services}><ToastProvider><UiLabContent diagnostics={services?undefined:adapter}/></ToastProvider></AppServicesProvider>;
+ return <AppServicesProvider services={services??adapter.services}><ToastProvider><LabRecordsProvider diagnostics={services?undefined:adapter}><UiLabContent/></LabRecordsProvider></ToastProvider></AppServicesProvider>;
 }
-function UiLabContent({diagnostics}:{diagnostics?:UiLabAdapter}) {
- const services=useAppServices();
- const {subjects,concepts}=useReferenceData();
- const featured=dailyFeatured(subjects);
- const featuredSubjects=subjects.filter(s=>s.featured);
- const subjectNames=featuredSubjects.map(s=>s.name);
- const extraSubjects=subjects.filter(s=>!s.featured).map(s=>s.name);
+function UiLabContent() {
+ const {concepts,data}=useLabCatalog();
+ const featuredSubjects=data.subjects.filter(subject=>subject.featured).map(subject=>({...subject,...subject.featured!}));
+ const subjectNames=featuredSubjects.map(subject=>subject.name);
+ const extraSubjects=data.subjects.filter(subject=>!subject.featured).map(subject=>subject.name);
+ const pageHeading = useRef<HTMLHeadingElement>(null);
+ const contentId = useId();
+ const searchResultsId = useId();
+ const hasNavigated = useRef(false);
  const [area,setArea]=useState<Area>("Home");
  const [subjectsExpanded,setSubjectsExpanded]=useState(false);
+ const [featured,setFeatured]=useState(()=>dailyFeatured(featuredSubjects));
  const [selectedSubject,setSelectedSubject]=useState<string|null>(null);
  const [exploreSubject,setExploreSubject]=useState<string|null>(null);
  const [domain,setDomain]=useState("All");
@@ -58,24 +59,11 @@ function UiLabContent({diagnostics}:{diagnostics?:UiLabAdapter}) {
  const [showLab,setShowLab]=useState(false);
  const [toastLabOpen,setToastLabOpen]=useState(false);
  const [catalogSearchOpen,setCatalogSearchOpen]=useState(false);
- const [catalogQuery,setCatalogQuery]=useState("");
- const [catalogType,setCatalogType]=useState("All");
  const [catalogSort,setCatalogSort]=useState<SortBy>("default");
  const [catalogOrderOpen,setCatalogOrderOpen]=useState(false);
  const [searchOrigin,setSearchOrigin]=useState("Catalog");
- const [searchTarget,setSearchTarget]=useState<CatalogSearchTarget|undefined>();
- const openCatalogSearch=(origin="Catalog",openOrder=false)=>{setSearchOrigin(origin);setCatalogType(origin==="Catalog"?"Items":"All");setCatalogOrderOpen(openOrder);setCatalogSearchOpen(true);setMenuOpen(false);};
- const searchRequest=useCallback((options:RequestOptions)=>services.search.search({text:catalogQuery,type:catalogType==="All"?undefined:catalogType as SearchResult["type"],sort:catalogSort},options),[services,catalogQuery,catalogType,catalogSort]);
- const search=useServiceQuery(searchRequest,catalogSearchOpen);
- const searchResults=search.data??[];
- const visibleSearchResults=catalogQuery.trim()?searchResults:searchResults.slice(0,3);
- // Type chips already distinguish global results; category grouping is not useful here.
- const searchSections=[{label:"",rows:visibleSearchResults}];
- const selectSearchResult=(result:SearchResult)=>{
-  resetPageScroll();setCatalogSearchOpen(false);setArea("Catalog");setExploreSubject(null);setSelectedSubject(null);
-  if("conceptId" in result.target){setWorkspace("Concept Explorer");setSearchTarget(undefined);setDetail(result.name);}
-  else {setWorkspace("Explore All");setSearchTarget(result.target);setDetail(null);}
- };
+ const [conceptId,setConceptId]=useState<string|null>(null);
+ const openCatalogSearch=(origin="Catalog",openOrder=false)=>{setSearchOrigin(origin);setCatalogOrderOpen(openOrder);setCatalogSearchOpen(true);setMenuOpen(false);};
  const [menuOpen,setMenuOpen]=useState(false);
  const [expandedMenu,setExpandedMenu]=useState<Area|null>(null);
  const gestureStart=useRef<{x:number;y:number}|null>(null);
@@ -109,20 +97,30 @@ function UiLabContent({diagnostics}:{diagnostics?:UiLabAdapter}) {
  const resetPageScroll=()=>{window.scrollTo({top:0,left:0,behavior:"instant"});requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"instant"}));};
  const navigate=(next:Area)=>{
    resetPageScroll();
-   setArea(next);setWorkspace("");setSelectedSubject(null);setExploreSubject(null);setSearchTarget(undefined);setDetail(null);setDomain("All");setMenuOpen(false);
+   setArea(next);setWorkspace("");setSelectedSubject(null);setExploreSubject(null);if(next==="Catalog")setFeatured(dailyFeatured(featuredSubjects));setDetail(null);setDomain("All");setMenuOpen(false);
  };
- const choose=(name:string)=>{resetPageScroll();setArea("Catalog");setSelectedSubject(null);setExploreSubject(null);setSearchTarget(undefined);setWorkspace(name);setMode("Explore");setDetail(null);};
+ const choose=(name:string)=>{resetPageScroll();setArea("Catalog");setSelectedSubject(null);setExploreSubject(null);setWorkspace(name);setMode("Explore");setDetail(null);};
  const openSubject=(name:string)=>{resetPageScroll();setArea("Catalog");setSelectedSubject(name);setWorkspace("Subject Overview");setDetail(null);};
  const exploreRelated=()=>{resetPageScroll();setExploreSubject(selectedSubject);setSelectedSubject(null);setWorkspace("Explore All");};
  const activeChild=(parent:Area)=>parent!==area?null:parent==="Catalog"?(workspace||"Overview"):parent==="Discover"?(mode==="Explore"?"Overview":mode):(workspace||"Overview");
  const openDrawer=()=>{if(modalActive())return;setExpandedMenu(area==="Home"?null:area);setMenuOpen(true);};
  const heading=(selectedSubject||workspace)||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools."} as Record<Area,string>)[area];
+ useEffect(() => {
+  if (hasNavigated.current) pageHeading.current?.focus();
+  hasNavigated.current = true;
+ }, [area, workspace, selectedSubject]);
+ useEffect(() => {
+  const previousTitle = document.title;
+  document.title = `${heading} · Kink Profile UI Lab`;
+  return () => { document.title = previousTitle; };
+ }, [heading]);
  return <div className="ui-lab ui-lab-app" onTouchStart={onGestureStart} onTouchEnd={onGestureEnd}>
-  <aside className="ui-lab-app-rail" aria-label="Primary navigation">
+  <a className="ui-lab-skip-link" href={`#${contentId}`} onClick={event=>{event.preventDefault();pageHeading.current?.focus();pageHeading.current?.scrollIntoView({block:"start"})}}>Skip to content</a>
+  <nav className="ui-lab-app-rail" aria-label="Primary navigation">
    <div className="ui-lab-app-brand">♡ <strong>Kink Profile</strong><small>UI LAB</small></div>
-   {areas.map(item=><button key={item} type="button" className={area===item?"active":""} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span>{item}</button>)}
-   <button className="ui-lab-app-rail-lab" onClick={()=>setShowLab(!showLab)}>⚙ Design lab</button>
-  </aside>
+   {areas.map(item=><button key={item} type="button" className={area===item?"active":""} aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span>{item}</button>)}
+   <button className="ui-lab-app-rail-lab" aria-expanded={showLab} onClick={()=>setShowLab(!showLab)}>⚙ Design lab</button>
+  </nav>
   <div className="ui-lab-app-frame">
    <header className="ui-lab-app-header">
     <button type="button" className="ui-lab-header-action" aria-label="Open full menu" aria-expanded={menuOpen} aria-controls="ui-lab-full-menu" onClick={openDrawer}>
@@ -160,19 +158,12 @@ function UiLabContent({diagnostics}:{diagnostics?:UiLabAdapter}) {
          <div className="ui-lab-menu-footer">Explore freely. Your preferences stay yours.</div>
        </div>
    </ModalLayer>
-   <ModalLayer open={catalogSearchOpen} onClose={()=>{setCatalogOrderOpen(false);setCatalogSearchOpen(false)}} label="Global catalog search" closeLabel="Close search" className="ui-lab-search-overlay" backdropClassName="ui-lab-search-backdrop" panelClassName="ui-lab-search-dialog"><div className="ui-lab-search-page">
-    <div className="ui-lab-search-modal-header"><span>Search</span><button type="button" className="ui-lab-search-close" aria-label="Close search" onClick={()=>setCatalogSearchOpen(false)}>×</button></div>
-    <SearchRow><SearchField mode="input" autoFocus ariaLabel="Search catalog" placeholder="Search catalog…" value={catalogQuery} onChange={setCatalogQuery} onClear={()=>setCatalogQuery("")} /><SearchFilterButton active={catalogSort!=="default"} groupingAvailable={false} expanded={catalogOrderOpen} onClick={()=>setCatalogOrderOpen(true)}/></SearchRow>
-    <SearchChips label="Search result types" options={["All","Items","Modifiers","Concepts"].map(t=>({id:t,label:t,active:catalogType===t,onClick:()=>setCatalogType(t)}))} />
-    {!catalogQuery.trim()&&<><p className="ui-lab-search-label">STARTING FROM {searchOrigin.toUpperCase()}</p><p className="ui-lab-search-hint">Search is scoped to Catalog content in this prototype.</p><p className="ui-lab-search-label">SUGGESTED SEARCHES</p><div className="ui-lab-search-suggestions">{["Collars","Leather","Ownership"].map(q=><button key={q} onClick={()=>setCatalogQuery(q)}>{q} ↗</button>)}</div></>}
-    {catalogQuery.trim()&&<p className="ui-lab-search-label">BEST MATCHES · {searchResults.length}</p>}
-    <ServiceQueryStatus loading={search.loading} error={search.error} onRetry={search.retry} label="search results"/><div className="ui-lab-search-results" aria-busy={search.loading}>{searchSections.map(section=><section className="lab-search-results-section" key={section.label||"all"}>{section.label&&<h3 className="lab-search-results-heading">{section.label}</h3>}{section.rows.map(r=><button key={r.id} onClick={()=>selectSearchResult(r)}><span><strong>{r.name}</strong><small>{r.path} · {r.type}</small></span><span>›</span></button>)}</section>)}{catalogQuery.trim()&&!search.loading&&!search.error&&searchResults.length===0&&<p>No matches in this prototype. Try another term or filter.</p>}</div>
-    <p className="ui-lab-app-note">Search uses the sample Catalog service</p>
-    <SortGroupSheet open={catalogOrderOpen} onClose={()=>setCatalogOrderOpen(false)} sort={catalogSort} onSort={setCatalogSort} showGrouping={false} defaultSortLabel="Best matches" />
-   </div></ModalLayer>
-   <main className="ui-lab-app-content">
+   <GlobalCatalogSearch open={catalogSearchOpen} onClose={()=>{setCatalogSearchOpen(false);setCatalogOrderOpen(false)}} origin={searchOrigin} sort={catalogSort} onSort={setCatalogSort} orderOpen={catalogOrderOpen} onOrderOpen={setCatalogOrderOpen}/>
+   {conceptId&&<ConceptDetail id={conceptId} onClose={()=>setConceptId(null)}/>}
+   <main id={contentId} className="ui-lab-app-content" aria-labelledby="ui-lab-page-heading">
+    {area!=="Catalog"&&<LabSaveSummary/>}
     {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>{resetPageScroll();setWorkspace("");setSelectedSubject(null);setExploreSubject(null);setDetail(null)}}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
-    <h1 className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
+    <h1 id="ui-lab-page-heading" ref={pageHeading} tabIndex={-1} className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
     {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
     {area==="Catalog"&&<div className="ui-lab-catalog">
 
@@ -181,28 +172,28 @@ function UiLabContent({diagnostics}:{diagnostics?:UiLabAdapter}) {
         <section className="ui-lab-collections" aria-label="Browse collections"><h2>Browse collections</h2><button onClick={()=>choose("Kinks")}><span><strong>Kinks</strong><small>Explore preferences and refinements</small></span><span aria-hidden="true">→</span></button><button onClick={()=>choose("Rewards & Punishments")}><span><strong>Rewards & Punishments</strong><small>Explore rewards, punishments and personal classifications</small></span><span aria-hidden="true">→</span></button></section>
         <section className="ui-lab-subjects-featured" aria-label="Featured subjects">
           <div className="ui-lab-subject-section-title"><h2>Featured subjects</h2><small>Today's discoveries</small></div>
-          <div className="ui-lab-subject-feature-grid">{featured.map(subject=><button type="button" key={subject.name} className={"ui-lab-subject-feature ui-lab-subject-"+subject.featured?.tone} onClick={()=>openSubject(subject.name)}><span className="ui-lab-subject-art" aria-hidden="true">{subject.featured?.symbol}</span><span className="ui-lab-subject-feature-copy"><strong>{subject.name}</strong><small>{subject.description}</small></span><span className="ui-lab-subject-feature-arrow" aria-hidden="true">↗</span></button>)}</div>
+          <div className="ui-lab-subject-feature-grid">{featured.map(subject=><button type="button" key={subject.name} className={"ui-lab-subject-feature ui-lab-subject-"+subject.tone} onClick={()=>openSubject(subject.name)}><span className="ui-lab-subject-art" aria-hidden="true">{subject.symbol}</span><span className="ui-lab-subject-feature-copy"><strong>{subject.name}</strong><small>{subject.description}</small></span><span className="ui-lab-subject-feature-arrow" aria-hidden="true">↗</span></button>)}</div>
         </section>
         <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}><span><strong>Explore All</strong><small>Browse the complete Catalog</small></span><span aria-hidden="true">→</span></button>
         <section className="ui-lab-more-subjects"><h2>More subjects</h2><div className="ui-lab-subject-chips">{[...subjectNames.filter(name=>!featured.some(f=>f.name===name)),...extraSubjects].slice(0,subjectsExpanded?undefined:6).map(name=><button type="button" key={name} onClick={()=>openSubject(name)}>{name}</button>)}</div><button className="ui-lab-subject-more" aria-expanded={subjectsExpanded} onClick={()=>setSubjectsExpanded(v=>!v)}>{subjectsExpanded?"Show Less ↑":"Show More ↓"}</button></section>
       </>}
-      {workspace==="Subject Overview"&&selectedSubject&&<section className="ui-lab-subject-overview"><p>{featuredSubjects.find(x=>x.name===selectedSubject)?.description||"Explore related Catalog Items and refine your preferences."}</p><div className="ui-lab-subject-related-head"><h2>Related Items</h2><button onClick={exploreRelated}>View All Related Items →</button></div><CatalogComposite compact subject={selectedSubject} diagnostics={diagnostics}/></section>}
-      {workspace==="Explore All"&&<>{exploreSubject&&<div className="ui-lab-subject-filter-note"><span>Exploring: {exploreSubject}</span><button onClick={()=>{setExploreSubject(null);resetPageScroll()}}>Clear subject ×</button></div>}<CatalogComposite key={exploreSubject||"all"} subject={exploreSubject||undefined} initialTarget={searchTarget} diagnostics={diagnostics} />
+      {workspace==="Subject Overview"&&selectedSubject&&<section className="ui-lab-subject-overview"><p>{featuredSubjects.find(x=>x.name===selectedSubject)?.description||"Explore related Catalog Items and refine your preferences."}</p><div className="ui-lab-subject-related-head"><h2>Related Items</h2><button onClick={exploreRelated}>View All Related Items →</button></div><CatalogComposite compact subject={selectedSubject} initialItem={undefined}/></section>}
+      {workspace==="Explore All"&&<>{exploreSubject&&<div className="ui-lab-subject-filter-note"><span>Exploring: {exploreSubject}</span><button onClick={()=>{setExploreSubject(null);resetPageScroll()}}>Clear subject ×</button></div>}<CatalogComposite key={exploreSubject||"all"} subject={exploreSubject||undefined} />
       </>}
-      {workspace==="Concept Explorer"&&<><SearchRow><SearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><SearchFilterButton active={catalogSort!=="default"} groupingAvailable={false} onClick={()=>openCatalogSearch("Concept Explorer",true)}/></SearchRow><div className="ui-lab-catalog-items">{concepts.map(item=><button key={item.id} onClick={()=>setDetail(item.name)}>{item.name}<span>›</span></button>)}</div></>}
-      {workspace==="Kinks"&&<CatalogComposite diagnostics={diagnostics}/>}
-      {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Illustrative classifications for testing filters · Classification editing in Refine comes later.</p><CatalogComposite collection="rewards" diagnostics={diagnostics}/></>}    </div>}
-    {area==="Discover"&&<div className="ui-lab-app-modes">{["Learn","React","Play"].map(m=><button key={m} className={mode===m?"active":""} onClick={()=>setMode(m)}>{m}</button>)}</div>}
-    {area!=="Catalog"&&<div className="ui-lab-app-grid">{(workspace?[[workspace,"Your working space and saved drafts."],...cards[area].filter(x=>x[0]!==workspace)]:cards[area]).map(([title,description],i)=><button className={"ui-lab-app-tile "+(i===0?"featured":"")} key={title} onClick={()=>setDetail(title)}><span className="ui-lab-app-tile-icon">{["✧","♡","◇","✦"][i%4]}</span><strong>{title}</strong><small>{description}</small><span className="ui-lab-app-tile-arrow">↗</span></button>)}</div>}
-    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">Experimental shell · Sample data · Preferences last for this Lab session</p>}
+      {workspace==="Concept Explorer"&&<><SearchRow><SearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><SearchFilterButton active={catalogSort!=="default"} groupingAvailable={false} onClick={()=>openCatalogSearch("Concept Explorer",true)}/></SearchRow><div className="ui-lab-catalog-items">{concepts.map(item=><button key={item.id} onClick={()=>setConceptId(item.id)}>{item.name}<span>›</span></button>)}</div></>}
+      {workspace==="Kinks"&&<CatalogComposite />}
+      {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Illustrative classifications for testing filters · Classification editing in Refine comes later.</p><CatalogComposite collection="rewards" /></>}    </div>}
+    {area==="Discover"&&<div className="ui-lab-app-modes" role="group" aria-label="Discovery mode">{["Learn","React","Play"].map(m=><button key={m} className={mode===m?"active":""} aria-pressed={mode===m} onClick={()=>setMode(m)}>{m}</button>)}</div>}
+    {area!=="Catalog"&&<div className="ui-lab-app-grid">{(workspace?[[workspace,"Your working space and saved drafts."],...cards[area].filter(x=>x[0]!==workspace)]:cards[area]).map(([title,description],i)=><button className={"ui-lab-app-tile "+(i===0?"featured":"")} key={title} onClick={()=>setDetail(title)}><span className="ui-lab-app-tile-icon" aria-hidden="true">{["✧","♡","◇","✦"][i%4]}</span><strong>{title}</strong><small>{description}</small><span className="ui-lab-app-tile-arrow" aria-hidden="true">↗</span></button>)}</div>}
+    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">Experimental shell · Illustrative content only · Preferences last for this Lab session</p>}
     <button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}>{toastLabOpen?"− Hide":"✦ Open"} Toast Playground</button>
     {toastLabOpen&&<ToastPlayground/>}
-    {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}} title={color}/>)}</div><a href="#/hub">Return to production app</a></section>}
+    {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}}><code>{color}</code></div>)}</div><a href="#/hub">Return to production app</a></section>}
    </main>
-   
-   <ModalLayer open={!!detail} onClose={()=>setDetail(null)} label={detail||"Details"} className="ui-lab-app-overlay" panelClassName="ui-lab-detail-dialog"><button type="button" onClick={()=>setDetail(null)} aria-label="Close">×</button><h2>{detail}</h2>{concepts.some(c=>c.name===detail)?<p>{concepts.find(c=>c.name===detail)?.description}</p>:<p>Placeholder for the future {detail?.toLowerCase()} experience.</p>}</ModalLayer>
 
-   <nav className="ui-lab-app-bottom" aria-label="Primary mobile navigation">{areas.map(item=><button key={item} type="button" className={area===item?"active":""} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span><small>{item}</small></button>)}</nav>
+   <ModalLayer open={!!detail} onClose={()=>setDetail(null)} label={detail||"Details"} className="ui-lab-app-overlay" panelClassName="ui-lab-detail-dialog"><button type="button" onClick={()=>setDetail(null)} aria-label="Close">×</button><h2>{detail}</h2><p>Placeholder for the future {detail?.toLowerCase()} experience.</p></ModalLayer>
+
+   <nav className="ui-lab-app-bottom" aria-label="Primary mobile navigation">{areas.map(item=><button key={item} type="button" className={area===item?"active":""} aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span><small>{item}</small></button>)}</nav>
   </div>
  </div>;
 }

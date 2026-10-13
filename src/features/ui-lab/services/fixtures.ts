@@ -117,10 +117,10 @@ const catalogItems = Object.entries(catalogSeeds).flatMap(([category, names]) =>
 export const labReferenceData: CatalogReferenceData = {
   items: catalogItems,
   concepts: [
-    {id:"ownership",name:"Ownership",description:"Symbols and negotiated expressions of belonging."},
-    {id:"leather",name:"Leather",description:"A material used in equipment and personal expression."},
-    {id:"ceremonial",name:"Ceremonial",description:"Meaningful rituals and occasions."},
-    {id:"trust",name:"Trust",description:"Communication, reliability and agreed boundaries."},
+    {id:"ownership",name:"Ownership",description:"A negotiated concept of belonging or authority. Meaning depends on explicit agreements.",relatedItemIds:["collars","protocol"]},
+    {id:"leather",name:"Leather",description:"A material and a broader cultural concept. An item’s Leather modifier has its own independent meaning and rating.",relatedItemIds:["collars"]},
+    {id:"ceremonial",name:"Ceremonial",description:"Actions or objects given deliberate symbolic meaning through a ceremony.",relatedItemIds:["collars","ceremonies"]},
+    {id:"trust",name:"Trust",description:"Confidence developed through communication, reliability and respected boundaries.",relatedItemIds:["aftercare","protocol"]},
   ],
   subjects: [
     {id:"power-exchange",name:"Power Exchange",description:"Explore authority, rituals and the ways people negotiate control.",featured:{symbol:"◇",tone:"power"}},

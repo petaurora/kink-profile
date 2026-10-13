@@ -68,3 +68,17 @@ it("accepts every canonical preference state without changing its meaning",async
     expect(await settle(services.preferences.getSnapshot())).toHaveProperty(["value","ratings",ratingKey(overall)],value);
   }
 });
+
+it("keeps concept ratings, modifier ratings and experience independent",async()=>{
+ const {services}=createUiLabServices();
+ await settle(services.preferences.setRating({kind:"concept",conceptId:"leather"},"Curious"));
+ await settle(services.preferences.setRating(leather,"Like"));
+ await settle(services.preferences.setExperience("collars","tried",true));
+ await settle(services.preferences.setExperience("collars","comfort","comfortable"));
+ const result=await settle(services.preferences.getSnapshot());
+ expect(result).toHaveProperty(["value","ratings",ratingKey({kind:"concept",conceptId:"leather"})],"Curious");
+ expect(result).toHaveProperty(["value","ratings",ratingKey(leather)],"Like");
+ expect(result).toHaveProperty(["value","experience","collars"],{tried:true,comfort:"comfortable"});
+ await settle(services.preferences.setExperience("collars","tried",undefined));
+ expect(await settle(services.preferences.getSnapshot())).toHaveProperty(["value","experience","collars"],{comfort:"comfortable"});
+});

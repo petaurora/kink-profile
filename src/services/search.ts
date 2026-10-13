@@ -28,5 +28,6 @@ export function searchReferenceData(data: CatalogReferenceData, query: SearchQue
   for (const concept of data.concepts) if (matchesNamedSearch(concept.name,concept.description,query.text)) {
     results.push({id:`concept:${concept.id}`,name:concept.name,type:"Concepts",path:"Concept Explorer",target:{conceptId:concept.id}});
   }
-  return results.filter(result => !query.type || query.type === result.type).sort((a,b) => query.sort === "az" ? a.name.localeCompare(b.name) : query.sort === "za" ? b.name.localeCompare(a.name) : 0);
+  const needle=normalizeSearch(query.text);
+  return results.filter(result=>!query.type||query.type===result.type).map(result=>({...result,score:normalizeSearch(result.name)===needle?3:normalizeSearch(result.name).startsWith(needle)?2:1})).sort((a,b)=>query.sort==="az"?a.name.localeCompare(b.name):query.sort==="za"?b.name.localeCompare(a.name):b.score-a.score||a.name.localeCompare(b.name)||a.path.localeCompare(b.path));
 }

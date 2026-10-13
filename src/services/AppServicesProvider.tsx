@@ -1,10 +1,10 @@
-import { createContext, useCallback, useContext, useMemo, useSyncExternalStore, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
 import type { AppServices, CatalogReferenceData, RequestOptions } from "./contracts";
-import { createPreferenceStore } from "./preferenceStore";
+import type { PreferenceSnapshot } from "./contracts";
 import { useServiceQuery } from "./useServiceQuery";
 
 const ServicesContext = createContext<AppServices | null>(null);
-const DataContext = createContext<{referenceData:CatalogReferenceData;preferences:ReturnType<typeof createPreferenceStore>} | null>(null);
+const DataContext = createContext<{referenceData:CatalogReferenceData;snapshot:PreferenceSnapshot} | null>(null);
 export function ServiceQueryStatus({loading,error,onRetry,label}: {loading:boolean;error?:Error;onRetry:()=>void;label:string}) {
   if (loading) return <p role="status">Loading {label}…</p>;
   if (error) return <div role="alert"><p>Unable to load {label}. Your existing preferences are unchanged.</p><button type="button" onClick={onRetry}>Retry loading {label}</button></div>;
@@ -19,7 +19,7 @@ function ServiceData({services,children}: {services:AppServices;children:ReactNo
     return {referenceData,snapshot};
   }, [services]);
   const query = useServiceQuery(load);
-  const data = useMemo(() => query.data ? {referenceData:query.data.referenceData,preferences:createPreferenceStore(services.preferences,query.data.snapshot)} : null,[query.data,services]);
+  const data = useMemo(() => query.data ? {referenceData:query.data.referenceData,snapshot:query.data.snapshot} : null,[query.data,services]);
   if (!data) return <section className="ui-lab kp-ui" aria-label="UI Lab data"><ServiceQueryStatus loading={query.loading} error={query.error} onRetry={query.retry} label="UI Lab data"/></section>;
   return <DataContext.Provider value={data}>{children}</DataContext.Provider>;
 }
@@ -33,9 +33,5 @@ export function useReferenceData() {
   if (!data) throw new Error("Loaded AppServicesProvider is required.");
   return data.referenceData;
 }
-export function usePreferences() {
-  const data = useContext(DataContext);
-  if (!data) throw new Error("Loaded AppServicesProvider is required.");
-  const state = useSyncExternalStore(data.preferences.subscribe,data.preferences.getSnapshot,data.preferences.getSnapshot);
-  return {...state,setRating:data.preferences.setRating};
-}
+export function useOptionalServices(){return useContext(ServicesContext);}
+export function useOptionalServiceData(){return useContext(DataContext);}

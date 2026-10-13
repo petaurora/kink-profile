@@ -10,8 +10,6 @@ import { ToastViewport, type ToastMessage } from "./ToastViewport";
 import { ToastProvider, useToasts } from "./ToastProvider";
 import { enqueueToast } from "./useToastQueue";
 import { CatalogComposite } from "../../features/ui-lab/CatalogComposite";
-import { AppServicesProvider } from "../../services/AppServicesProvider";
-import { createUiLabServices } from "../../features/ui-lab/services/createUiLabServices";
 
 let container: HTMLDivElement;
 let root: Root;
@@ -205,15 +203,13 @@ describe("controlled preferences, disclosure and search", () => {
     click(button("Clear rating"));
     expect(change).toHaveBeenCalledWith(undefined);
   });
-  it("preserves independent overall and modifier values through nested rating sheets", async () => {
+  it("preserves independent overall and modifier values through nested rating sheets", () => {
     vi.useFakeTimers();
-    const adapter = createUiLabServices({latencyMs:0});
     mount(
-      <AppServicesProvider services={adapter.services}><ToastProvider>
-        <CatalogComposite diagnostics={adapter}/>
-      </ToastProvider></AppServicesProvider>,
+      <ToastProvider>
+        <CatalogComposite />
+      </ToastProvider>,
     );
-    await act(async () => {await vi.advanceTimersByTimeAsync(0);});
     click(button("Collars overall: Not rated. Change rating"));
     click(button("Like"));
     expect(button("Collars overall: Like. Change rating")).toBeTruthy();
@@ -240,13 +236,11 @@ describe("controlled preferences, disclosure and search", () => {
   });
   it("keeps a failed latest rating recoverable with contextual Retry", async () => {
     vi.useFakeTimers();
-    const adapter = createUiLabServices({latencyMs:0});
     mount(
-      <AppServicesProvider services={adapter.services}><ToastProvider>
-        <CatalogComposite diagnostics={adapter}/>
-      </ToastProvider></AppServicesProvider>,
+      <ToastProvider>
+        <CatalogComposite />
+      </ToastProvider>,
     );
-    await act(async () => {await vi.advanceTimersByTimeAsync(0);});
     click(document.querySelector('input[type="checkbox"]')!);
     click(button("Collars overall: Not rated. Change rating"));
     click(button("Love"));
@@ -329,13 +323,13 @@ describe("notification queue and timing", () => {
   it("gives each newly active message its full duration and pauses on focus", () => {
     vi.useFakeTimers();
     const dismiss = vi.fn();
-    const info = { ...toast(1, "info", "Undo"), duration: 1000 };
+    const info = { ...toast(1, "info"), duration: 1000 };
     mount(<ToastViewport items={[info]} onDismiss={dismiss} />);
     act(() => vi.advanceTimersByTime(400));
-    act(() => button("Undo").focus());
+    act(() => button("Dismiss notification").focus());
     act(() => vi.advanceTimersByTime(2000));
     expect(dismiss).not.toHaveBeenCalled();
-    act(() => button("Undo").blur());
+    act(() => button("Dismiss notification").blur());
     act(() => vi.advanceTimersByTime(599));
     expect(dismiss).not.toHaveBeenCalled();
     act(() => vi.advanceTimersByTime(1));

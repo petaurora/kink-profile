@@ -34,24 +34,24 @@ describe("service-backed UI Lab",()=>{
     const storage=vi.spyOn(Storage.prototype,"setItem");
     const adapter=createUiLabServices({latencyMs:0,saveLatencyMs:10});mount(adapter);await advance();openKinks();
     click(button("Collars overall: Not rated. Change rating"));click(button("Love"));
-    expect(container.querySelector('[aria-label="Collars overall: Saving"]')).not.toBeNull();
+    expect([...container.querySelectorAll('[role="status"]')].find(node=>node.textContent==="Collars overall: Saving")??null).not.toBeNull();
     await advance(10);click(button("Home"));openKinks();
     expect(button("Collars overall: Love. Change rating")).toBeTruthy();expect(storage).not.toHaveBeenCalled();
   });
   it("opens the exact modifier and parent from a service search result",async()=>{
     const adapter=createUiLabServices({latencyMs:0});mount(adapter);await advance();
-    click(button("Search"));await advance();click(button("Leather ↗"));await advance();
+    click(button("Search"));await advance();click(button("Leather ↗"));await advance(201);
     click(button("Modifiers"));await advance();
     const result=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.querySelector("strong")?.textContent==="Leather"&&b.textContent?.includes("Collars → Material"))!;
     expect(result).toBeTruthy();click(result);await advance();
-    expect(container.querySelector('[aria-label="Refine Collars"]')).not.toBeNull();
+    expect(container.querySelector('[role="dialog"][aria-label="Refine Collars"]')).not.toBeNull();
     expect(button("Leather: Not rated. Change rating")).toBeTruthy();
     expect(button("Material4 options⌃").getAttribute("aria-expanded")).toBe("true");
   });
   it("shows actionable search failures and retries through the injected service",async()=>{
     const adapter=createUiLabServices({latencyMs:0});mount(adapter);await advance();adapter.failNext("search");
-    click(button("Search"));await advance();expect(container.textContent).toContain("Unable to load search results");
-    click(button("Retry loading search results"));await advance();
+    click(button("Search"));click(button("Collars ↗"));await advance(201);expect(container.textContent).toContain("Search failed");
+    click(button("Retry search"));await advance(201);
     expect(container.querySelector('[role="alert"]')).toBeNull();
     expect(container.querySelector(".ui-lab-search-results strong")?.textContent).toBe("Collars");
   });
@@ -59,7 +59,7 @@ describe("service-backed UI Lab",()=>{
 
 it("keeps the inline ca search explainable from the visible Item names",async()=>{
   const adapter=createUiLabServices({latencyMs:0});mount(adapter);await advance();openKinks();
-  const input=container.querySelector<HTMLInputElement>('[aria-label="Search kinks"]')!;
+  const input=container.querySelector<HTMLInputElement>('[aria-label="Search Items in kinks"]')!;
   act(()=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")!.set!.call(input,"ca");input.dispatchEvent(new Event("input",{bubbles:true}));});await advance(275);
   expect([...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'))).toEqual(["aftercare"]);
 });

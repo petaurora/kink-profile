@@ -63,3 +63,6 @@
     padding: 6px 3px;
   }
 }
+
+.kp-refine-status { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; font-size: 12px; }
+.kp-refine-status--failed { border: 1px solid #ffa6b9; border-radius: 50%; color: #ffd4de; }

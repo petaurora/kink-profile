@@ -1,4 +1,4 @@
-import { useId, useState, type MouseEvent } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { ModalLayer } from "./ModalLayer";
 import "./preference.css";
 
@@ -14,10 +14,11 @@ export function InlineSaveStatus({
   label: string;
   onRetry?: () => void;
 }) {
-  if (state === "failed")
-    return (
-      <span className="kp-save-status" role="status">
-        {onRetry ? (
+  const message = state === "saving" ? `${label}: Saving` : state === "saved" ? `${label}: Saved` : state === "failed" ? `${label}: Not saved` : "";
+  return (
+    <span className="kp-save-status">
+      <span role="status" aria-atomic="true" className="kp-visually-hidden">{message}</span>
+      {state === "failed" ? (onRetry ? (
           <button
             type="button"
             className="kp-retry"
@@ -27,25 +28,12 @@ export function InlineSaveStatus({
             Retry
           </button>
         ) : (
-          <span aria-label={`${label}: Not saved`}>!</span>
-        )}
-      </span>
-    );
-  return (
-    <span
-      className="kp-save-status"
-      role="status"
-      aria-label={
-        state === "saving"
-          ? `${label}: Saving`
-          : state === "saved"
-            ? `${label}: Saved`
-            : undefined
-      }
-    >
+          <span aria-hidden="true">!</span>
+        )) : (
       <span aria-hidden="true">
         {state === "saving" ? "◌" : state === "saved" ? "✓" : ""}
       </span>
+      )}
     </span>
   );
 }
@@ -92,6 +80,8 @@ export function PreferenceSheet({
   options,
   onChange,
   help,
+  helpOpen,
+  onHelpOpenChange,
   className = "",
 }: {
   open: boolean;
@@ -101,14 +91,19 @@ export function PreferenceSheet({
   value?: string;
   options: readonly string[];
   onChange: (value: string | undefined) => void;
-  help?: string;
+  help?: ReactNode;
+  helpOpen?: boolean;
+  onHelpOpenChange?: (open: boolean) => void;
   className?: string;
 }) {
   const titleId = useId();
   const helpId = useId();
   const [showHelp, setShowHelp] = useState(false);
+  const expanded = helpOpen ?? showHelp;
+  const [focusIndex, setFocusIndex] = useState(Math.max(0, options.indexOf(value || "")));
+  const choicesRef = useRef<HTMLDivElement>(null);
+  useEffect(() => setFocusIndex(Math.max(0, options.indexOf(value || ""))), [label, open, value, options]);
   const close = () => {
-    setShowHelp(false);
     onClose();
   };
   return (
@@ -125,21 +120,43 @@ export function PreferenceSheet({
         context={context}
         onClose={close}
         closeLabel="Close selector"
+        onTitleKeyDown={event => {
+          if (event.key === "Tab" && !event.shiftKey) {
+            event.preventDefault();
+            choicesRef.current?.querySelector<HTMLButtonElement>('button[tabindex="0"]')?.focus();
+          }
+        }}
       />
-      <div className="kp-preference-options">
-        {options.map((option) => (
+      <span className="kp-keyboard-hint">Arrow keys move focus; Enter or Space chooses. Escape cancels.</span>
+      <div className="kp-preference-options" role="group" aria-label="Rating choices" ref={choicesRef} onKeyDown={event => {
+        if ((event.key === "Enter" || event.key === " ") && event.target instanceof HTMLButtonElement) {
+          event.preventDefault();
+          onChange(options[focusIndex]);
+          close();
+          return;
+        }
+        const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : ["ArrowLeft", "ArrowUp"].includes(event.key) ? -1 : 0;
+        if (!direction && event.key !== "Home" && event.key !== "End") return;
+        event.preventDefault();
+        const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 : (focusIndex + direction + options.length) % options.length;
+        setFocusIndex(next);
+        choicesRef.current?.querySelectorAll<HTMLButtonElement>("button")[next]?.focus();
+      }}>
+        {options.map((option, index) => (
           <button
             key={option}
             type="button"
             className={value === option ? "chosen" : ""}
             aria-pressed={value === option}
+            tabIndex={index === focusIndex ? 0 : -1}
+            onFocus={() => setFocusIndex(index)}
             onClick={() => {
               onChange(option);
               close();
             }}
           >
             {option}
-            {value === option ? " ✓" : ""}
+            {value === option && <span aria-hidden="true"> ✓</span>}
           </button>
         ))}
       </div>
@@ -148,17 +165,13 @@ export function PreferenceSheet({
           <button
             type="button"
             className="kp-preference-help"
-            aria-expanded={showHelp}
+            aria-expanded={expanded}
             aria-controls={helpId}
-            onClick={() => setShowHelp((previous) => !previous)}
+            onClick={() => { setShowHelp(!expanded); onHelpOpenChange?.(!expanded); }}
           >
-            What do these mean? {showHelp ? "−" : "+"}
+            What do these mean? {expanded ? "−" : "+"}
           </button>
-          {showHelp && (
-            <p className="kp-preference-explanation" id={helpId}>
-              {help}
-            </p>
-          )}
+            <div className="kp-preference-explanation" id={helpId} hidden={!expanded}>{help}</div>
         </>
       )}
       {value && (
@@ -184,6 +197,7 @@ export function SheetHeader({
   onClose,
   closeLabel = "Close",
   children,
+  onTitleKeyDown,
 }: {
   title: string;
   titleId?: string;
@@ -191,12 +205,13 @@ export function SheetHeader({
   onClose: () => void;
   closeLabel?: string;
   children?: React.ReactNode;
+  onTitleKeyDown?: (event: KeyboardEvent<HTMLHeadingElement>) => void;
 }) {
   return (
     <div className="kp-sheet-header">
       <div>
         {context && <small>{context}</small>}
-        <h3 id={titleId} data-dialog-initial-focus tabIndex={-1}>
+        <h3 id={titleId} data-dialog-initial-focus tabIndex={-1} onKeyDown={onTitleKeyDown}>
           {title}
         </h3>
         {children}
