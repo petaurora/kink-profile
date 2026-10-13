@@ -1,4 +1,5 @@
 import { legacyCatalogIds } from "./legacyCatalogIds";
+import { approvedBatchItemIds } from "./approvedBatchInventory";
 import { approvedV1ToV2Slice } from "./approvedSlice";
 import { reviewedBatch1Decisions } from "./reviewedExpansion";
 import { verifiedImpactDecisions, verifiedSourceDecisions } from "./verifiedSourceDecisions";
@@ -21,10 +22,20 @@ export const approvedExclusionsAndDeferrals: MigrationDecision[] = [
  {sourceId:"magic-wand-stimulation",outcome:"exclude",reason:"Standalone Magic-Wand Stimulation removed (#274)"},
 ];
 
-export const verifiedMigrationDecisions: MigrationDecision[] = [
+const sourceLinkedDecisions: MigrationDecision[] = [
   ...approvedV1ToV2Slice, ...reviewedBatch1Decisions,
   ...verifiedSourceDecisions, ...verifiedImpactDecisions,
   ...approvedExclusionsAndDeferrals, ...verifiedReviewBatchDecisions,
+];
+const explicitSources = new Set(sourceLinkedDecisions.map(d=>d.sourceId));
+const explicitlyApprovedItems = new Set(Object.values(approvedBatchItemIds).flat());
+/** Strict stable-ID equality to an expressly approved standalone Item.
+ * This is NOT similarity matching. Explicit dispositions always take precedence. */
+export const identicalApprovedItemDecisions: MigrationDecision[] = legacyCatalogIds
+  .filter(sourceId=>explicitlyApprovedItems.has(sourceId) && !explicitSources.has(sourceId))
+  .map(sourceId=>({sourceId,outcome:"item",targetItemId:sourceId}));
+export const verifiedMigrationDecisions: MigrationDecision[] = [
+  ...sourceLinkedDecisions, ...identicalApprovedItemDecisions,
 ];
 const approved = new Map<string, MigrationDecision>();
 for (const decision of verifiedMigrationDecisions) {
