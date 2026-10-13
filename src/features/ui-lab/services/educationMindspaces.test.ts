@@ -5,7 +5,11 @@ describe("Mindspaces education",()=>{
   it("has a stable, browsable, self-contained introduction",()=>{
     const article=localEducationArticles.find(a=>a.id==="edu-mindspaces");
     expect(article).toBeDefined();
-    expect(article?.readingMinutes).toBe(11);
+    expect(article?.readingMinutes).toBe(13);
+    expect(article?.markdown).toContain("### When Mindspaces Blend—or Pull in Different Directions");
+    expect(article?.markdown).toContain("every day is a very new day for me");
+    expect(article?.markdown).toContain("what I\u0027m resisting, what I\u0027m wanting, and how to communicate it");
+    expect(article?.markdown).toContain("Anonymous first-person reflection, shared with permission");
     expect(article?.section).toBe("Kinks, roles, and motivation");
     expect(article?.markdown).toContain("Mindspaces Can Blend");
     expect(article?.markdown).toContain("Mindspaces Can Change Over Time");
