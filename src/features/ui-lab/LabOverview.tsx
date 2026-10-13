@@ -5,20 +5,39 @@ import { ContinueActivities } from "./DiscoverWorkspace";
 import { useLabRecords } from "./LabRecords";
 import { items } from "./LabCatalog";
 import type { LabArea } from "./LabNavigation";
+import { LabCard } from "./LabCard";
 
 type Go=(area:LabArea,workspace?:string,params?:Record<string,string>)=>void;
 export function LabOverview({area,workspace,go,shortcuts,onShortcuts}:{area:LabArea;workspace:string;go:Go;shortcuts:LabArea[];onShortcuts:(areas:LabArea[])=>void}) {
   const records=useLabRecords();
   const [editing,setEditing]=useState(false);
   const entries=Object.entries(records.values).filter(([,value])=>value!==undefined);
-  if(area==="Home")return <div className="ui-lab-app-grid lab-home-cards">
+  if(area==="Home")return <div className="ui-lab-app-grid lab-card-grid lab-home-cards">
     <ContinueActivities go={go} card/>
-    <button type="button" className="ui-lab-app-tile" onClick={()=>go("Profile")}><span className="ui-lab-app-tile-icon" aria-hidden="true">♡</span><strong>Your profile at a glance</strong><small>{entries.length?`${entries.length} explicit records in this session.`:"No preferences or experience recorded in this Lab session."}</small><span className="ui-lab-app-tile-arrow" aria-hidden="true">↗</span></button>
-    <button type="button" className="ui-lab-app-tile" onClick={()=>go("Discover")}><span className="ui-lab-app-tile-icon" aria-hidden="true">◇</span><strong>Discover something</strong><small>Optional ideas, without pressure</small><span className="ui-lab-app-tile-arrow" aria-hidden="true">↗</span></button>
-    <section className="ui-lab-app-tile lab-shortcut-card"><span className="ui-lab-app-tile-icon" aria-hidden="true">✦</span><h2>Your shortcuts</h2><p>Quick access to the tools you choose</p><div className="lab-shortcuts">{shortcuts.map(area=><button type="button" key={area} onClick={()=>go(area)}>{area}</button>)}</div><DisclosureSection title="Edit shortcuts" open={editing} onToggle={()=>setEditing(!editing)}>{(["Catalog","Profile","Discover","Tools","Creations","Learn"] as LabArea[]).map(area=><label className="lab-shortcut-choice" key={area}><input type="checkbox" checked={shortcuts.includes(area)} onChange={()=>onShortcuts(shortcuts.includes(area)?shortcuts.filter(value=>value!==area):[...shortcuts,area])}/>{area}</label>)}</DisclosureSection></section>
+    <LabCard title="Your profile at a glance" icon="♡" description={entries.length?`${entries.length} explicit records in this session.`:"No preferences or experience recorded in this Lab session."} onClick={()=>go("Profile")}/>
+    <LabCard title="Discover something" icon="◇" description="Optional ideas, without pressure" onClick={()=>go("Discover")}/>
+    <LabCard title="Your shortcuts" icon="✦" description="Quick access to the tools you choose" className="lab-shortcut-card"><div className="lab-shortcuts">{shortcuts.map(area=><button type="button" key={area} onClick={()=>go(area)}>{area}</button>)}</div><DisclosureSection title="Edit shortcuts" open={editing} onToggle={()=>setEditing(!editing)}>{(["Catalog","Profile","Discover","Tools","Creations","Learn"] as LabArea[]).map(area=><label className="lab-shortcut-choice" key={area}><input type="checkbox" checked={shortcuts.includes(area)} onChange={()=>onShortcuts(shortcuts.includes(area)?shortcuts.filter(value=>value!==area):[...shortcuts,area])}/>{area}</label>)}</DisclosureSection></LabCard>
   </div>;
+  if(area==="Profile"&&!workspace)return <div className="ui-lab-app-grid lab-card-grid lab-profile-cards">
+    <LabCard title="Your profile" icon="✧" featured description="Roles, themes and preference evidence" status={entries.length?`${entries.length} explicit records in this session.`:"No explicit records yet."} onClick={()=>go("Profile","My Profile")}/>
+    <LabCard title="Relationships" icon="♡" description="Connections and linked profiles" status="Connected relationships are not available in this Lab yet." onClick={()=>go("Relationships")}/>
+    <LabCard title="Sharing & permissions" icon="◇" description="Decide what others can see" onClick={()=>go("Profile","Sharing & Permissions")}/>
+    <LabCard title="Identity & expression" icon="✦" description="Your own words and presentation" status="Not available in this Lab yet." onClick={()=>go("Profile","Identity & Expression")}/>
+  </div>;
+  if(area==="Profile"&&workspace==="Identity & Expression")return <section className="lab-section"><p>Identity and expression editing is not available in this Lab yet. Your own words and presentation are separate from preference and experience records.</p><button onClick={()=>go("Profile","My Profile")}>Review your records</button><a href={`#${profileRoute.path}`}>Open current Profile</a></section>;
   if(area==="Profile")return <section className="lab-section"><h2>{workspace==="Sharing & Permissions"?"Sharing":"Recorded in this session"}</h2>{workspace==="Sharing & Permissions"?<><p>Choose deliberate sharing from the current app's Profile. Connected relationship permissions are unavailable in this Lab.</p><a href={`#${profileRoute.path}`}>Open current Profile</a></>:<>{!entries.length&&<p>No explicit records yet. Browsing, learning and activities do not fill in your profile.</p>}<dl className="lab-records">{entries.map(([target,value])=>{const item=items.find(item=>target.startsWith(item.id+":")||target.startsWith("experience:"+item.id+":"));const label=item?target.replace("experience:","").replace(item.id,item.name):target;return <div key={target}><dt>{label.replaceAll(":"," · ")}</dt><dd>{value===true?"Tried recorded":String(value)}</dd></div>})}</dl><button onClick={()=>go("Catalog","Explore All")}>Edit Catalog records</button><button onClick={()=>go("Profile","Sharing & Permissions")}>Sharing & permissions</button></>}</section>;
-  if(area==="Tools")return <section className="lab-section"><h2>Available tools</h2><p>Open an existing tool deliberately. Lab preferences and activity notes stay in this session.</p><div className="lab-link-list"><a href={`#${sceneBuilderRoute.path}`}>Scene Builder</a><a href={`#${rewardsToolsRandomizerRoute.path}`}>Reward / Punishment randomizer</a><a href={`#${rewardsToolsRecipesRoute.path}`}>Recipes</a><a href={`#${compareRoute.path}`}>Compare profiles</a></div>{workspace==="Agreements & Rituals"&&<p>Agreements and rituals do not yet have an editor in this Lab.</p>}</section>;
+  if(area==="Tools"&&!workspace)return <div className="ui-lab-app-grid lab-card-grid lab-tool-cards">
+    <LabCard title="Scene Builder" icon="✧" featured description="Plan scenes and save drafts" href={`#${sceneBuilderRoute.path}`}/>
+    <LabCard title="Agreements & rituals" icon="♡" description="Create and maintain shared practices" status="Not available in this Lab yet." onClick={()=>go("Tools","Agreements & Rituals")}/>
+    <LabCard title="Randomizers & recipes" icon="◇" description="Get practical inspiration" onClick={()=>go("Tools","Randomizers & Recipes")}/>
+    <LabCard title="Compare profiles" icon="✦" description="Compare only with permission" href={`#${compareRoute.path}`}/>
+  </div>;
+  if(area==="Tools"&&workspace==="Randomizers & Recipes")return <div className="ui-lab-app-grid lab-card-grid">
+    <LabCard title="Reward / Punishment randomizer" icon="◇" featured description="Explore possibilities with your own inputs" href={`#${rewardsToolsRandomizerRoute.path}`}/>
+    <LabCard title="Recipes" icon="✦" description="Find practical inspiration" href={`#${rewardsToolsRecipesRoute.path}`}/>
+  </div>;
+  if(area==="Tools"&&workspace==="Agreements & Rituals")return <section className="lab-section"><p>Agreements and rituals do not yet have an editor in this Lab.</p><button onClick={()=>go("Tools")}>Back to tools</button></section>;
+  if(area==="Tools")return <section className="lab-section"><p>Open an existing tool deliberately. Lab preferences and activity notes stay in this session.</p><a href={`#${workspace==="Compare Profiles"?compareRoute.path:sceneBuilderRoute.path}`}>Open {workspace}</a></section>;
   if(area==="Creations")return <section className="lab-section"><p>No creations are stored in this Lab. Scene drafts are managed in the current Scene Builder.</p><a href={`#${sceneBuilderRoute.path}`}>Open Scene Builder</a></section>;
   if(area==="Learn")return <section className="lab-section"><h2>Understand the concepts</h2><p>Learning and curiosity are independent of participation, preference and consent.</p><button onClick={()=>go("Catalog","Concept Explorer")}>Browse concepts</button><button onClick={()=>go("Discover","Learn")}>Explore learning paths</button></section>;
   if(area==="Relationships")return <section className="lab-section"><p>No connected relationship workspace is available in this Lab.</p><p>Sharing is deliberate. Personal records and permissions are independent.</p><button onClick={()=>go("Profile","Sharing & Permissions")}>Review sharing</button></section>;

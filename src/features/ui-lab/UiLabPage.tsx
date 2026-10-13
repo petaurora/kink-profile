@@ -72,9 +72,9 @@ function UiLabContent() {
  const menuChildren: Record<Area,string[]> = {
   Home:[],
   Catalog:["Overview","Explore All","Kinks","Rewards & Punishments","Concept Explorer"],
-  Profile:["Overview","My Profile","Preferences","Sharing & Permissions"],
+  Profile:["Overview","My Profile","Preferences","Sharing & Permissions","Identity & Expression"],
   Discover:["Overview","Learn","React","Play"],
-  Tools:["Overview","Scene Builder","Agreements & Rituals","Compare Profiles"]
+  Tools:["Overview","Scene Builder","Agreements & Rituals","Randomizers & Recipes","Compare Profiles"]
  };
  const openMenuChild=(parent:Area,child:string)=>go(parent,child==="Overview"?"":child);
  const modalActive=()=>Boolean(document.querySelector(".ui-lab [aria-modal=\"true\"]:not(#ui-lab-full-menu)"));

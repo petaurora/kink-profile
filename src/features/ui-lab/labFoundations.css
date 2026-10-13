@@ -26,14 +26,22 @@
 
 .ui-lab-app-rail button .lab-rail-label { font-size: 14px; }
 
-.lab-home-cards .ui-lab-app-tile { width: 100%; min-width: 0; overflow-wrap: anywhere; }
-.lab-home-cards h2 { margin: 0; font-size: 17px; }
-.lab-home-cards p { margin: 0; color: #d6bfd2; font-size: 13px; line-height: 1.5; }
-.lab-home-cards .lab-list-row { width: 100%; min-width: 0; flex-wrap: wrap; }
-.lab-home-cards .lab-list-row > span { min-width: 0; }
-.lab-home-cards .lab-list-row strong { font-size: 14px; }
-.lab-home-cards .lab-text-link { min-height: 44px; padding: 8px 0; border: 0; background: transparent; color: #f0d3e7; text-decoration: underline; }
-.lab-home-cards .lab-shortcuts { width: 100%; }
-.lab-home-cards .lab-shortcuts button { min-height: 44px; color: #f0d3e7; }
-.lab-home-cards .lab-shortcuts button { background: #21214b; border: 1px solid #f0d3e74a; border-radius: 9px; padding: 10px 14px; cursor: pointer; }
-.lab-home-cards button:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 3px; }
+.lab-card-grid .ui-lab-app-tile { width: 100%; min-width: 0; overflow-wrap: anywhere; }
+.lab-card-grid h2 { margin: 0; font-size: 17px; }
+.lab-card-grid p { margin: 0; color: #d6bfd2; font-size: 13px; line-height: 1.5; }
+.lab-card-grid .lab-list-row { width: 100%; min-width: 0; flex-wrap: wrap; }
+.lab-card-grid .lab-list-row > span { min-width: 0; }
+.lab-card-grid .lab-list-row strong { font-size: 14px; }
+.lab-card-grid .lab-text-link, .lab-card-footer .lab-text-link { min-height: 44px; padding: 8px 0; border: 0; background: transparent; color: #f0d3e7; text-decoration: underline; }
+.lab-card-grid .lab-shortcuts { width: 100%; }
+.lab-card-grid .lab-shortcuts button, .lab-card-grid .lab-list-row button { min-height: 44px; color: #f0d3e7; background: #21214b; border: 1px solid #f0d3e74a; border-radius: 9px; padding: 10px 14px; cursor: pointer; }
+.lab-card-grid button:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 3px; }
+.lab-card { text-decoration: none; }
+.lab-card-main { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; }
+.lab-card strong, .lab-card h2 { padding-right: 20px; }
+.lab-card-main .ui-lab-app-tile-arrow { top: 22px; right: 22px; }
+.lab-card-status { color: #c2b6cf; font-size: 11px; line-height: 1.5; }
+.lab-card-actions { width: 100%; display: flex; justify-content: flex-end; margin-top: auto; }
+.lab-card-actions button { min-height: 44px; padding: 6px 0 0 10px; border: 0; background: transparent; color: #c2b6cf; font-size: 12px; text-decoration: underline; }
+.lab-card-footer { margin-top: 14px; }
+@media (max-width: 700px) { .lab-card-main .ui-lab-app-tile-arrow { top: 18px; right: 18px; } }

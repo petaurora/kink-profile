@@ -6,6 +6,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { UiLabPage } from "./UiLabPage";
 import { labPath, parseLabRoute } from "./LabNavigation";
 import { ViewErrorBoundary } from "../../components/ui/ViewErrorBoundary";
+import { compareRoute, rewardsToolsRandomizerRoute, rewardsToolsRecipesRoute, sceneBuilderRoute } from "../../app/routes";
 
 let root:Root;let container:HTMLDivElement;let navigate:NavigateFunction;
 const button=(label:string)=>{const el=[...document.querySelectorAll<HTMLButtonElement>('button')].find(el=>el.getAttribute('aria-label')===label||el.textContent===label);if(!el)throw new Error(`Missing: ${label}`);return el;};
@@ -51,7 +52,7 @@ it('dismisses content by ID, restores individually and confirms reset without lo
 });
 it('resumes real drafts, preserves completed snapshots and repeats as a separate attempt without profile writes',()=>{
   mount('/ui-lab/home');expect(document.body.textContent).toContain('No unfinished activities');click(button('Discover'));
-  const row=[...document.querySelectorAll('.lab-list-row')].find(row=>row.textContent?.includes('Reflect on your interests'))!;click(row.querySelector<HTMLButtonElement>('button')!);const firstRoute=route();
+  click(button('Open Reflect on your interests'));const firstRoute=route();
   type('#lab-reflection-answer','A deliberate note');click(button('Next prompt'));click(button('Save and exit'));click(button('Home'));expect(button('Resume')).toBeTruthy();click(button('Resume'));expect(document.body.textContent).toContain('Optional prompt 2 of 3');click(button('Next prompt'));click(button('Finish reflection'));expect(document.body.textContent).toContain('A deliberate note');
   click(button('Repeat with latest version'));expect(route()).not.toBe(firstRoute);type('#lab-reflection-answer','A new note');act(()=>navigate(firstRoute));expect(document.body.textContent).toContain('A deliberate note');expect(document.body.textContent).not.toContain('A new note');expect(document.querySelector('textarea')).toBeNull();click(button('Profile'));expect(document.body.textContent).toContain('No explicit records yet');
 });
@@ -73,6 +74,27 @@ it('keeps the four styled Home cards and truthful empty states with working dest
   click(button('Home'));const discover=[...document.querySelectorAll<HTMLButtonElement>('.lab-home-cards button.ui-lab-app-tile')].find(node=>node.textContent?.includes('Discover something'))!;click(discover);expect(route()).toBe('/ui-lab/discover');
 });
 it('labels Training records using exact item identity rather than the Ownership prefix',()=>{
-  mount('/ui-lab/catalog/kinks');click(button('Training overall: Not rated. Change rating'));click(button('Love'));click(button('Profile'));
+  mount('/ui-lab/catalog/kinks');click(button('Training overall: Not rated. Change rating'));click(button('Love'));click(button('Profile'));click(button('Your profile'));
   expect(document.querySelector('.lab-records')?.textContent).toContain('Training');expect(document.querySelector('.lab-records')?.textContent).not.toContain('Ownership0');
+});
+
+it('keeps Profile records and honest capability destinations accessible from its cards',()=>{
+  mount('/ui-lab/profile');click(button('Your profile'));expect(route()).toBe('/ui-lab/profile/records');expect(document.body.textContent).toContain('No explicit records yet');
+  click(button('Profile'));click(button('Relationships'));expect(route()).toBe('/ui-lab/relationships');expect(document.body.textContent).toContain('No connected relationship workspace');
+  click(button('Profile'));click(button('Sharing & permissions'));expect(route()).toBe('/ui-lab/profile/sharing');
+  click(button('Profile'));const identity=button('Identity & expression');const descriptions=identity.getAttribute('aria-describedby')!.split(' ').map(id=>document.getElementById(id)?.textContent).join(' ');expect(descriptions).toContain('Not available');
+  click(identity);expect(route()).toBe('/ui-lab/profile/identity');expect(document.body.textContent).toContain('Identity and expression editing is not available');
+});
+it('keeps tool cards connected to current tools and truthful unavailable states',()=>{
+  mount('/ui-lab/tools');expect(document.querySelector('a[aria-label="Scene Builder"]')?.getAttribute('href')).toBe('#'+sceneBuilderRoute.path);
+  expect(document.querySelector('a[aria-label="Compare profiles"]')?.getAttribute('href')).toBe('#'+compareRoute.path);
+  click(button('Agreements & rituals'));expect(route()).toBe('/ui-lab/tools/agreements');expect(document.body.textContent).toContain('do not yet have an editor');
+  click(button('Back to tools'));click(button('Randomizers & recipes'));expect(route()).toBe('/ui-lab/tools/randomizers-recipes');
+  expect(document.querySelector('a[aria-label="Reward / Punishment randomizer"]')?.getAttribute('href')).toBe('#'+rewardsToolsRandomizerRoute.path);
+  expect(document.querySelector('a[aria-label="Recipes"]')?.getAttribute('href')).toBe('#'+rewardsToolsRecipesRoute.path);
+});
+it('keeps Discover navigation and dismissal separate without nested buttons or invented drafts',()=>{
+  mount('/ui-lab/discover');expect(document.querySelector('.lab-discover-cards button button')).toBeNull();
+  click(button('Dismiss Reflect on your interests'));click(button('Home'));expect(document.body.textContent).toContain('No unfinished activities');expect(document.querySelector('.lab-continue-card .lab-list-row')).toBeNull();
+  click(button('Discover'));click(button('Open Explore concepts'));expect(route()).toBe('/ui-lab/catalog/concepts');
 });

@@ -31,6 +31,12 @@ been migrated to the experimental treatments merely because the code is shared.
 
 ## Interaction contracts
 
+The feature-level `src/features/ui-lab/LabCard.tsx` composes the existing workspace
+tile styles for Home, Profile, Discover and Tools. It supplies a navigation button
+or link, or a section containing separately operable controls. Descriptions and
+capability status are associated with the action for assistive technology; icons
+and corner arrows are decorative. It owns no records, routing or save behavior.
+
 - Filter narrows results, Sort orders them, and Group organizes presentation.
   `SortGroupSheet` does not decide eligibility or classification semantics.
 - The caller hides grouping for a single category, subject-scoped or compact view,

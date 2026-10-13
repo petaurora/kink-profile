@@ -4,9 +4,9 @@ export type LabArea = PrimaryArea | "Creations" | "Learn" | "Relationships" | "S
 const destinations: Record<LabArea,string> = { Home:"home",Catalog:"catalog",Profile:"profile",Discover:"discover",Tools:"tools",Creations:"creations",Learn:"learn",Relationships:"relationships",Settings:"settings" };
 const workspaces: Partial<Record<LabArea, Record<string,string>>> = {
   Catalog:{"Explore All":"all",Kinks:"kinks","Rewards & Punishments":"rewards-punishments","Concept Explorer":"concepts","Subject Overview":"subject"},
-  Profile:{"My Profile":"records",Preferences:"preferences","Sharing & Permissions":"sharing"},
+  Profile:{"My Profile":"records",Preferences:"preferences","Sharing & Permissions":"sharing","Identity & Expression":"identity"},
   Discover:{Learn:"learn",React:"react",Play:"play","Manage Suggestions":"suggestions","Saved Activities":"activities",Activity:"activity"},
-  Tools:{"Scene Builder":"scenes","Agreements & Rituals":"agreements","Compare Profiles":"compare"},
+  Tools:{"Scene Builder":"scenes","Agreements & Rituals":"agreements","Randomizers & Recipes":"randomizers-recipes","Compare Profiles":"compare"},
 };
 export function labPath(area: LabArea, workspace="", params?: Record<string,string>) {
   const suffix=workspace?workspaces[area]?.[workspace]:"";

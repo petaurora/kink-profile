@@ -111,10 +111,21 @@ These activities, dismissals and shortcuts remain memory-only. This implements t
 UI basis; durable retention, account sync, activity publication/version withdrawal,
 Recently Explored and production recommendation ranking are not implemented.
 
-## Home presentation
+## Workspace card presentation
 
 Home retains the original four styled cards: Continue, Your profile at a glance,
 Discover something and Your shortcuts. Continue uses the featured gradient but
 shows only real unfinished activity records, with an honest empty state otherwise.
 Profile counts come from explicit session records; shortcuts remain user-controlled.
 The cards navigate to real destinations and do not create activity/profile evidence.
+
+Profile, Discover and Tools reuse the same rounded cards, icons, corner arrows and
+featured gradient through `LabCard`. Profile's landing routes to explicit records,
+relationships, sharing and identity; its record list remains in My Profile.
+Unavailable relationship/identity/agreement capabilities are stated accurately.
+Tools retain deliberate links to existing Scene Builder, comparison, randomizer
+and recipe routes. Discover retains stable suggestion IDs, reasons, independent
+dismissal/management and real saved activities within the card presentation.
+Secondary controls are siblings of the card's navigation button, avoiding nested
+interactive elements. Cards stack on narrow screens and use two columns on wider
+screens. Catalog Item/modifier rows keep their compact list presentation.
