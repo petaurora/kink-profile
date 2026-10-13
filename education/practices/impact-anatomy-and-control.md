@@ -3,7 +3,7 @@
 *Why body location, movement, accuracy, and communication are central to reducing impact-play injuries.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 7 minutes  
+**Estimated reading time:** 8 minutes  
 **Topics:** Impact Play · Anatomy · Accuracy · Body Position · Injury Prevention
 
 **Content note:** Discusses injuries to nerves, organs, bones, and soft tissue. It is not a safe-target diagram, technical striking lesson, or medical clearance to participate.
