@@ -87,9 +87,12 @@ describe("service-backed Education",()=>{
 
   it("opens the breath-play safety guide by immutable ID with its medical warnings",async()=>{
     mount("/ui-lab/learn/article?id=edu-breath-safety");await flush(300);
-    expect(container.querySelector(".lab-education-article-header")?.textContent).toContain("Breath Play, Choking, and Strangulation");
+    expect(container.querySelector(".lab-education-article-header")?.textContent).toContain("Breath Play: Choking, Strangulation, and Suffocation");
     const body=container.querySelector(".lab-education-prose")?.textContent??"";
     expect(body).toContain("There is no reliably safe way to strangle someone");
+    expect(body).toContain("Suffocation: Restricted Access to Breath Without Neck Compression");
+    expect(body).toContain("Suffocation Is the Safe Alternative to Strangulation");
+    expect(container.querySelector(".lab-education-table-scroll th")?.textContent).toBe("Term");
     expect(body).toContain("Emergency Signs");
     expect(body).toContain("Exploring the Fantasy Without Restricting Breathing");
     expect(container.querySelector(".lab-education-related")?.textContent).toContain("Safewords");
