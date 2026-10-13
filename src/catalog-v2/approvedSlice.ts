@@ -13,14 +13,27 @@ export const approvedV2Slice: CatalogV2 = {
     description: "Collars worn as meaningful objects for play, expression or ceremony.",
     themeIds: ["power-exchange", "equipment"], collections: ["kinks"],
     groups: [
-      { id: "material", name: "Material", values: [
-        { id: "leather", name: "Leather", conceptId: "leather" },
-        { id: "metal", name: "Metal" }, { id: "fabric", name: "Fabric" }, { id: "silicone", name: "Silicone" },
-      ] },
-      { id: "use-context", name: "Use / Context", values: [
-        { id: "everyday", name: "Everyday" }, { id: "scene-play", name: "Scene / Play" },
-        { id: "ceremonial", name: "Ceremonial" },
-      ] },
+      {id:"use",name:"Use / context",values:[
+        {id:"play-scene",name:"Play / scene"},{id:"day-everyday",name:"Day / everyday"},{id:"ceremonial-formal",name:"Ceremonial / formal"}
+      ]},
+      {id:"form",name:"Function / form",values:[
+        {id:"posture-restrictive",name:"Posture / restrictive"},{id:"choker-necklace",name:"Choker / necklace-style"}
+      ]},
+      {id:"material",name:"Material",values:[
+        {id:"leather",name:"Leather",conceptId:"leather"},{id:"metal",name:"Metal"},
+        {id:"fabric-textile",name:"Fabric / textile"},{id:"synthetic-silicone",name:"Synthetic / silicone"}
+      ]},
+      {id:"features",name:"Features",values:[
+        {id:"locking",name:"Locking"},{id:"rigid-semirigid",name:"Rigid / semi-rigid"},
+        {id:"attachment-point",name:"Leash / attachment point"},{id:"tag-plate",name:"Tag / plate"},
+        {id:"discreet",name:"Discreet / public-wearable"}
+      ]},
+      {id:"meaning",name:"Meaning / symbolism",values:[
+        {id:"ownership-belonging",name:"Ownership / belonging"},{id:"submission-service",name:"Submission / service"},
+        {id:"protocol",name:"Protocol"},{id:"pet-symbolism",name:"Pet-role symbolism"},
+        {id:"commitment-devotion",name:"Commitment / devotion"},{id:"ritual-ceremony",name:"Ritual / ceremony"},
+        {id:"fashion-aesthetic",name:"Fashion / aesthetic"}
+      ]}
     ],
   }],
 };
