@@ -11,6 +11,21 @@ export type ReviewExpectation = {
  note?: string;
 };
 export const reconciliationExpectations: readonly ReviewExpectation[] = [
+ {sourceIssue:259,itemId:"humiliation-play",decision:"approved",groups:{"modality":["verbal","task-behavioral","presentation-exposure","evaluative"],"context":["private","witnessed-consenting-audience","public-style-fantasy"]}},
+ {sourceIssue:259,itemId:"degradation",decision:"approved",groups:{"modality":["verbal","behavioral-treatment","symbolic-status"]}},
+ {sourceIssue:259,itemId:"objectification",decision:"approved",groups:{"framing":["use-object-fantasy","functional-use","sexual-use","decorative-display","ownership-property","dollification"]}},
+ {sourceIssue:259,itemId:"rating-evaluation",decision:"approved",groups:{"style":["praise","critique","teasing","degradation","neutral-clinical"],"format":["numerical-scored","qualitative"]}},
+ {sourceIssue:259,itemId:"human-furniture",decision:"approved",groups:{"role-function":["stool","footrest","table","display-stand"]}},
+ {sourceIssue:259,itemId:"body-writing",decision:"approved",groups:{"content-type":["ownership","praise","humiliation","instructions","decorative","evaluative-scoring"]}},
+ {sourceIssue:263,itemId:"master-slave-dynamic",decision:"approved",groups:{"role":["master","slave"]}},
+ {sourceIssue:263,itemId:"caregiver-little-middle-dynamic",decision:"approved",groups:{"role":["caregiver","little","middle"]}},
+ {sourceIssue:263,itemId:"owner-pet-dynamic",decision:"approved",groups:{"role":["owner-handler","pet"]}},
+ {sourceIssue:263,itemId:"ownership",decision:"approved",groups:{"direction":["owning","being-owned"]}},
+ {sourceIssue:263,itemId:"total-power-exchange-tpe",decision:"approved",groups:{"scope":["24-7","temporary-bounded"]}},
+ {sourceIssue:263,itemId:"worship",decision:"approved",groups:{"direction":["giving","receiving"]}},
+ {sourceIssue:257,itemId:"restraint-gear",decision:"approved",groups:{"type":["armbinder","bondage-mitts","under-bed-system","spreader-bar","yoke","head-harness"]}},
+ {sourceIssue:257,itemId:"saint-andrew-s-cross",decision:"approved",groups:{"mounting":["wall-mounted","freestanding"]}},
+
  {sourceIssue:264,itemId:"low-protocol",decision:"approved",groups:{"practice":["speech-communication","eye-contact","etiquette","check-ins-reporting","messaging","online-interaction","communication-restriction-silence"]}},
  {sourceIssue:264,itemId:"high-protocol",decision:"approved",groups:{"practice":["speech-communication","eye-contact","etiquette","check-ins-reporting","messaging","online-interaction","communication-restriction-silence"]}},
  {sourceIssue:264,itemId:"task-assignment",decision:"approved",groups:{"mode":["assigning-tasks","receiving-tasks"],"structure":["timed","precision-exactness"]}},
