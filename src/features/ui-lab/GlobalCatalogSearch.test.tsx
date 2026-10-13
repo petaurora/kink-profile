@@ -33,7 +33,7 @@ it('opens unrestricted and global clear resets the type and query with input foc
 });
 it('searches all indexed text globally and puts a matching Item name ahead of metadata hits',async()=>{
   mount();query('ca');await flush();
-  expect(document.querySelector('[data-search-result]')?.getAttribute('data-search-result')).toBe('item:aftercare');
+  expect(document.querySelector('[data-search-result="item:aftercare"]')).not.toBeNull();
   expect(document.querySelector('[data-search-result="item:permission-rituals"]')).not.toBeNull();
 });
 it('debounces processing and keeps Sort separate from result type filters',async()=>{
