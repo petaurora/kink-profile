@@ -2,7 +2,7 @@ import type { CatalogV2, CatalogV2Item, CatalogV2Group } from "./model";
 /** Approved selections from #257–#271. This is NOT a comprehensive V1 migration ledger. */
 const slug=(x:string)=>x.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 const g=(name:string, values:string[]):CatalogV2Group=>({id:slug(name),name,values:values.map(name=>({id:slug(name),name}))});
-const item=(name:string,themeId:string,groups:CatalogV2Group[]=[]):CatalogV2Item=>({id:slug(name),name,themeIds:[themeId],groups,collections:["kinks"]});
+const item=(name:string,themeId:string,groups:CatalogV2Group[]=[]):CatalogV2Item=>({id:slug(name),name,themeIds:[themeId],groups:groups.filter(group=>group.values.length>0),collections:["kinks"]});
 const groupOf=(name:string,theme:string, groups:CatalogV2Group[]=[])=>(item(name,theme,groups));
 const collections: Record<string,CatalogV2Item[]>={
  equipment:[
