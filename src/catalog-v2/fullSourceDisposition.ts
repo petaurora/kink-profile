@@ -9,9 +9,21 @@ import type { MigrationDecision } from "./migration";
  * Additional approvals must replace 'review' with a verified decision and
  * retain provenance. Never derive targets from matching names.
  */
+/** Explicit final outcomes from #261, #263, #265, #272 and #274.
+ * These are intentional dispositions, not inferred migrations. */
+export const approvedExclusionsAndDeferrals: MigrationDecision[] = [
+ {sourceId:"praise-kink",outcome:"review",reason:"Core Praise intentionally deferred to Rewards & Punishments (#261/#262)"},
+ ...["good-girl-good-boy-praise","competence-praise","pet-praise","praise-ritual","daily-praise-dynamic"].map(sourceId=>({sourceId,outcome:"exclude" as const,reason:"Granular Praise variants expressly excluded by #261"})),
+ {sourceId:"training-dynamic",outcome:"exclude",reason:"Training Dynamic excluded as standalone Item (#263)"},
+ {sourceId:"kneeling-endurance",outcome:"exclude",reason:"Kneeling Endurance explicitly excluded (#265)"},
+ {sourceId:"tease-and-denial",outcome:"exclude",reason:"Composite Tease and Denial excluded from V2 (#272)"},
+ {sourceId:"magic-wand-stimulation",outcome:"exclude",reason:"Standalone Magic-Wand Stimulation removed (#274)"},
+];
+
 export const verifiedMigrationDecisions: MigrationDecision[] = [
   ...approvedV1ToV2Slice, ...reviewedBatch1Decisions,
   ...verifiedSourceDecisions, ...verifiedImpactDecisions,
+  ...approvedExclusionsAndDeferrals,
 ];
 const approved = new Map<string, MigrationDecision>();
 for (const decision of verifiedMigrationDecisions) {
