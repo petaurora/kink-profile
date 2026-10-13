@@ -11,6 +11,13 @@ export type ReviewExpectation = {
  note?: string;
 };
 export const reconciliationExpectations: readonly ReviewExpectation[] = [
+ {sourceIssue:264,itemId:"low-protocol",decision:"approved",groups:{"practice":["speech-communication","eye-contact","etiquette","check-ins-reporting","messaging","online-interaction","communication-restriction-silence"]}},
+ {sourceIssue:264,itemId:"high-protocol",decision:"approved",groups:{"practice":["speech-communication","eye-contact","etiquette","check-ins-reporting","messaging","online-interaction","communication-restriction-silence"]}},
+ {sourceIssue:264,itemId:"task-assignment",decision:"approved",groups:{"mode":["assigning-tasks","receiving-tasks"],"structure":["timed","precision-exactness"]}},
+ {sourceIssue:264,itemId:"permission-decision-control",decision:"approved",groups:{"domain":["bathroom","outings-location","social-plans","spending","appearance-presentation","devices-apps","schedule-time","online-presentation","online-interaction","communication","interpersonal-behavior"]}},
+ {sourceIssue:264,itemId:"service",decision:"approved",groups:{"type":["domestic-service","personal-assistant-service","bootblacking","foot-service","food-drink-service","fetching","chauffeur-service"]}},
+ ...["obedience","command-play","d-s-contract-ritual","honorifics-titles","inspection","presentation","automated-tasking","system-control"].map(itemId=>({sourceIssue:264,itemId,decision:"approved" as const})),
+
  {sourceIssue:260,itemId:"roleplay",decision:"approved",groups:{"scenario":["teacher-student","boss-employee","doctor-patient","guard-prisoner","interrogation","stranger-first-meeting","royalty-servant","knight-captive","villain-hero","trainer-trainee","owner-property","historical","photographer-model","delivery-person","celebrity-fan","practical-sex-ed-teaching","cheating-forbidden-attraction","rescue","adult-taboo-family-role-fantasy"],"medium-context":["vr-virtual-world"]}},
  {sourceIssue:260,itemId:"consensual-non-consent",decision:"approved",groups:{"scenario":["kidnap-abduction","capture","home-invasion","threat-coercion","torture"]}},
  {sourceIssue:260,itemId:"creature-nonhuman-fantasy",decision:"approved",groups:{"type":["monster","vampire","alien","tentacles","knotting","oviposition"]}},
