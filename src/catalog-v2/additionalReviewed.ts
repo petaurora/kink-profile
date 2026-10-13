@@ -25,7 +25,14 @@ const collections: Record<string,CatalogV2Item[]>={
  ...["Humiliation","Degradation","Objectification","Embarrassment Play","Name-calling","Mockery","Rating / Evaluation","Small Penis Humiliation","Human Furniture","Body Writing"].map(n=>item(n,"psychological"))
  ],
  roleplay:[
- ...["Roleplay","Consensual Non-Consent","Ageplay","ABDL","Creature / Nonhuman Fantasy","Transformation Fantasy","Bimbofication","Inflation Fantasy","Abandonment Play Fantasy","Furry / Anthro Fantasy","Vore Fantasy","Omegaverse","Corruption Fantasy","Isolation Fantasy"].map(n=>item(n,"roleplay"))
+ item("Roleplay","roleplay",[g("Scenario",["Teacher / Student","Boss / Employee","Doctor / Patient","Guard / Prisoner","Interrogation","Stranger / First Meeting","Royalty / Servant","Knight / Captive","Villain / Hero","Trainer / Trainee","Owner / Property","Historical","Photographer / Model","Delivery Person","Celebrity / Fan","Practical Sex-ed / Teaching","Cheating / Forbidden Attraction","Rescue","Adult Taboo-family-role Fantasy"]),g("Medium / Context",["VR / Virtual World"])]),
+ item("Consensual Non-Consent","roleplay",[g("Scenario",["Kidnap / Abduction","Capture","Home Invasion","Threat / Coercion","Torture"])]),
+ item("Creature / Nonhuman Fantasy","roleplay",[g("Type",["Monster","Vampire","Alien","Tentacles","Knotting","Oviposition"])]),
+ item("Transformation Fantasy","roleplay",[g("Type",["Body Swap"])]),
+ item("Mind Control / Conditioning Fantasy","roleplay",[g("Type",["Mind Control","Brainwashing / Conditioning","Psychological Control / Influence"])]),
+ item("Consensual Blackmail / Leverage Play","roleplay",[g("Form",["Blackmail / Leverage","Controlled Disclosure"])]),
+ item("Free Use","roleplay",[g("Context",["Public-style Simulation / Fake Public-use Fantasy"])]),
+ ...["Ageplay","ABDL","Bimbofication","Inflation Fantasy","Abandonment Play Fantasy","Furry / Anthro Fantasy","Vore Fantasy","Omegaverse Fantasy","Corruption Kink","Isolation Fantasy","Sleep Play / Consensual Somnophilia"].map(n=>item(n,"roleplay"))
  ],
  power:[
  ...["Low Protocol","High Protocol","Command Play","Permission / Decision Control","Service","Automated Tasking / System Control","Verbal / Mental Restraint"].map(n=>item(n,"power")),
