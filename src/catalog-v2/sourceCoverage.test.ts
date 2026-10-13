@@ -44,6 +44,10 @@ describe("V1 source coverage audit (#292)",()=>{
   expect(result.applied.length).toBe(verifiedImpactDecisions.length-2);
   for(const d of verifiedImpactDecisions)expect(sourceIds).toContain(d.sourceId);
  });
+ it("does not assign two incompatible decisions to one V1 source",()=>{
+  const ids=decisions.map(d=>d.sourceId);
+  expect(new Set(ids).size).toBe(ids.length);
+ });
  it("every migration decision names a real V1 source identifier",()=>{
   for(const decision of decisions)expect(sourceIds,`Unexpected V1 source ID: ${decision.sourceId}`).toContain(decision.sourceId);
  });
