@@ -11,45 +11,9 @@ import { ItemExperience } from "./ItemExperience";
 import { useLabRecords } from "./LabRecords";
 import { preferenceChoices, PreferenceReference } from "./PreferenceVocabulary";
 
-type Item={id:string;name:string;category:string;description?:string;groups:{name:string;values:string[]}[]};
-const catalogSeeds:Record<string,string[]>={
- "Power Exchange":["Collars","Ownership","Protocol","Service","Permission Rituals","Authority Exchange","Roleplay","Obedience","Rules","Ceremonies","Training","Devotion"],
- "Restraint & Control":["Restraints","Cuffs","Rope Bondage","Blindfolds","Chastity","Positioning","Movement Restriction","Sensory Deprivation","Harnesses","Shibari","Suspension","Confinement"],
- "Sensation & Intensity":["Sensory Play","Wartenberg Wheel","Compression Clothing","Temperature Play","Impact Play","Texture Play","Cupping","Massage","Wax Play","Pressure Play","Tickling","Sound Play"],
- "Connection & Expression":["Praise","Privileges","Aftercare","Affection","Pet Play","Primal Play","Exhibitionism","Voyeurism","Role Reversal","Teasing","Anticipation","Body Worship"]
-};
-const specific:Record<string,Item["groups"]>={
- "Collars":[{name:"Material",values:["Leather","Metal","Fabric","Silicone"]},{name:"Use / Context",values:["Everyday","Scene / Play","Ceremonial"]}],
- "Restraints":[{name:"Material",values:["Rope","Cuffs","Fabric"]},{name:"Use / Context",values:["Decorative","Functional"]}],
- "Sensory Play":[{name:"Sensation",values:["Soft","Sharp / Prickly","Warm","Cold"]},{name:"Role",values:["Giving","Receiving"]}],
- "Praise":[{name:"Expression",values:["Verbal","Written","Public","Private"]}],
- "Privileges":[{name:"Context",values:["Everyday","Scene","Ceremonial"]}]
-};
-const descriptions:Record<string,string>={
- "Collars":"Collars worn for everyday expression, play or ceremony.",
- "Ownership":"Symbols, agreements and expressions of belonging.",
- "Protocol":"Agreed rituals, rules and structured interactions.",
- "Restraints":"Using cuffs, rope, fabric or other forms of restraint.",
- "Sensory Play":"Exploring sensations such as texture, pressure and temperature.",
- "Praise":"Verbal, written, public or private affirmation.",
- "Privileges":"Special permissions, opportunities or meaningful rewards.",
- "Aftercare":"Connection, comfort and care after an experience.",
- "Permission Rituals":"Ceremonial or practical ways to request and grant permission."
-};
-const items:Item[]=Object.entries(catalogSeeds).flatMap(([category,names])=>names.map((name,i)=>({id:category+":"+i,name,category,description:descriptions[name],groups:specific[name]||[{name:"Context",values:["Everyday","Scene / Play","Ceremonial"]},{name:"Role",values:["Giving","Receiving","Self-directed"]}]})));
-// Shared inline search semantics for Kinks, Rewards & Punishments and Explore All.
-// Search available Item metadata consistently, independent of collection filters.
-function normalizedSearch(value:string){
- return value.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().replace(/[^a-z0-9]+/g," ").trim();
-}
-function matchesCatalogSearch(item:Item,query:string){
- const words=normalizedSearch(query).split(" ").filter(Boolean);
- if(!words.length)return true;
- const searchable=normalizedSearch([item.name,item.description||"",item.category,...item.groups.flatMap(g=>[g.name,...g.values])].join(" "));
- return words.every(word=>searchable.includes(word));
-}
+import { items, catalogSeeds, matchesCatalogSearch, type Item } from "./LabCatalog";
 const choices=preferenceChoices;
-export function CatalogComposite({initialItem,subject,compact=false,collection="kinks"}:{collection?:"kinks"|"rewards";initialItem?:string;subject?:string;compact?:boolean;onClose?:()=>void}){
+export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,subject,compact=false,collection="kinks"}:{collection?:"kinks"|"rewards";initialItem?:string;initialGroup?:string;initialValue?:string;subject?:string;compact?:boolean;onClose?:()=>void}){
  const isRewards=collection==="rewards";
  const [mine,setMine]=useState(false),[reward,setReward]=useState(false),[punishment,setPunishment]=useState(false);
  const [states,setStates]=useState<string[]>([]),[filtersOpen,setFiltersOpen]=useState(false);
@@ -69,6 +33,7 @@ export function CatalogComposite({initialItem,subject,compact=false,collection="
  const ratings=records.values as Record<string,string>;
  const saves=records.saves;
  const [experienceOpen,setExperienceOpen]=useState(false);
+ const [highlightTarget,setHighlightTarget]=useState<string|null>(null);
  const [issueTarget,setIssueTarget]=useState<string|null>(null);
  const [selector,setSelector]=useState<{id:string;label:string;parent:string}|null>(null);
 
@@ -85,10 +50,28 @@ export function CatalogComposite({initialItem,subject,compact=false,collection="
  });return()=>cancelAnimationFrame(frame)},[issueTarget,refining,groupsOpen]);
 
 
- useEffect(()=>{if(!initialItem)return;const found=items.find(x=>x.name===initialItem);if(found){openRefine(found.id);requestAnimationFrame(()=>root.current?.querySelector('[data-item-id="'+found.id+'"]')?.scrollIntoView({block:"nearest"}))}},[initialItem]);
+ useEffect(()=>{
+  if(!initialItem)return;
+  const found=items.find(x=>x.name===initialItem);
+  if(!found)return;
+  openRefine(found.id);
+  if(initialGroup&&initialValue){
+   setGroupsOpen({[found.id+":"+initialGroup]:true});setIssueTarget(null);
+   setHighlightTarget(found.id+":"+initialGroup+":"+initialValue);
+  }
+ },[initialItem,initialGroup,initialValue]);
+ useEffect(()=>{
+  if(!highlightTarget)return;
+  const frame=requestAnimationFrame(()=>{
+   const field=[...document.querySelectorAll<HTMLElement>('[data-field-id]')].find(el=>el.dataset.fieldId===highlightTarget);
+   field?.scrollIntoView({block:"nearest"});field?.querySelector<HTMLButtonElement>('.kp-rating')?.focus();
+  });
+  const timer=setTimeout(()=>setHighlightTarget(null),1800);
+  return()=>{cancelAnimationFrame(frame);clearTimeout(timer)};
+ },[highlightTarget,refining]);
  function openRefine(id:string){setGroupsOpen({});setExperienceOpen(false);setIssueTarget(null);setRefining(id);const error=Object.keys(saves).find(k=>k.startsWith(id+":")&&saves[k]==="failed");if(error)revealIssue(error)}
  function revealIssue(target:string){const item=items.find(x=>target.startsWith(x.id+":"));if(!item)return;setRefining(item.id);const group=item.groups.find(g=>target.startsWith(item.id+":"+g.name+":"));if(group)setGroupsOpen(previous=>({...previous,[item.id+":"+group.name]:true}));setIssueTarget(target)}
- function closeRefine(){setRefining(null)}
+ function closeRefine(){setRefining(null);onClose?.()}
  function closeSelector(){setSelector(null)}
  const notify=toastQueue.notify;
  function commit(id:string,value:string|undefined){
@@ -133,7 +116,7 @@ export function CatalogComposite({initialItem,subject,compact=false,collection="
  function modifierContent(x:Item){
   const errors=Object.keys(saves).filter(k=>k.startsWith(x.id+":")&&k!==x.id+":overall"&&saves[k]==="failed");
   const issueIndex=Math.max(0,errors.indexOf(issueTarget||""));
-  return <div className="cc-refine-content">{errors.length>0&&<div className="cc-error-summary" role="status"><span>Issue {issueIndex+1} of {errors.length} · Latest edits kept</span><button onClick={()=>errors.forEach(retry)}>Retry all</button>{errors.length>1&&<button onClick={()=>revealIssue(errors[(issueIndex+1)%errors.length])}>Next issue</button>}</div>}{x.groups.map(g=>{const gk=x.id+":"+g.name;const go=groupsOpen[gk]??false;const keys=g.values.map(v=>gk+":"+v);const status=keys.some(k=>saves[k]==="failed")?"failed":keys.some(k=>saves[k]==="saving")?"saving":undefined;return <DisclosureSection title={g.name} description={g.values.length+" options"} key={gk} open={go} status={status} onToggle={()=>{setGroupsOpen(p=>({...p,[gk]:!go}));if(!go&&status==="failed")revealIssue(keys.find(k=>saves[k]==="failed")!)}}><div className="cc-values">{g.values.map(v=><div className={"cc-value"+(issueTarget===gk+":"+v?" cc-value-highlight":"")} key={v} data-field-id={gk+":"+v}><span>{v}</span>{ratingButton(gk+":"+v,v,x.name+" / "+g.name)}</div>)}</div></DisclosureSection>})}<ItemExperience itemId={x.id} name={x.name} open={experienceOpen} onToggle={()=>setExperienceOpen(!experienceOpen)} records={records}/></div>
+  return <div className="cc-refine-content">{errors.length>0&&<div className="cc-error-summary" role="status"><span>Issue {issueIndex+1} of {errors.length} · Latest edits kept</span><button onClick={()=>errors.forEach(retry)}>Retry all</button>{errors.length>1&&<button onClick={()=>revealIssue(errors[(issueIndex+1)%errors.length])}>Next issue</button>}</div>}{x.groups.map(g=>{const gk=x.id+":"+g.name;const go=groupsOpen[gk]??false;const keys=g.values.map(v=>gk+":"+v);const status=keys.some(k=>saves[k]==="failed")?"failed":keys.some(k=>saves[k]==="saving")?"saving":undefined;return <DisclosureSection title={g.name} description={g.values.length+" options"} key={gk} open={go} status={status} onToggle={()=>{setGroupsOpen(p=>({...p,[gk]:!go}));if(!go&&status==="failed")revealIssue(keys.find(k=>saves[k]==="failed")!)}}><div className="cc-values">{g.values.map(v=><div className={"cc-value"+((issueTarget===gk+":"+v||highlightTarget===gk+":"+v)?" cc-value-highlight":"")} key={v} data-field-id={gk+":"+v}><span>{v}</span>{ratingButton(gk+":"+v,v,x.name+" / "+g.name)}</div>)}</div></DisclosureSection>})}<ItemExperience itemId={x.id} name={x.name} open={experienceOpen} onToggle={()=>setExperienceOpen(!experienceOpen)} records={records}/></div>
 
  }
  return <section className="cc" ref={root} aria-label="Interactive inline Catalog prototype">

@@ -46,3 +46,25 @@ editing is deferred.
 All new records and revisions are memory-only. Reloading or leaving the mounted
 Lab ends the session. The simulated persistence indicators do not establish a
 durable write, cross-device sync, permission or consent.
+
+## Global search and result handoff
+
+Global Search indexes the same sample Item/modifier records as local lists, plus
+illustrative concepts. Context changes suggestions, without applying a type filter.
+Queries process after a 200 ms debounce. Relevance order provides Best matches,
+then nonempty Item/Modifier/Concept sections without repeating target IDs. Type
+chips filter; the options sheet sorts only. Clear resets query and type filters,
+retains sorting and returns focus to the search field.
+
+Results open nested contextual layers while keeping the underlying Catalog and
+Search mounted. A modifier result opens its parent, expands its exact group,
+scrolls/focuses the matching value and briefly highlights it. Concept results open
+Concept Explorer detail with an independently keyed general-concept preference.
+Closing a result returns to the search query, filters, results and scroll position.
+Closing/reopening Search retains its state only within the mounted Lab session.
+
+Actual query processing exposes busy feedback. Obsolete requests cannot overwrite
+newer results. A failed update retains previous successful results with an explicit
+label and Retry; no fabricated network delay is added to the local index.
+Queries are not written to local/session storage or tracked as preference evidence.
+No autocomplete, aliases, automatic Recently Viewed or production index is implied.
