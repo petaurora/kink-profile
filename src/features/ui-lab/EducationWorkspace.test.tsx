@@ -33,7 +33,7 @@ describe("service-backed Education",()=>{
     expect(parseLabRoute(original.split("?")[0],"?id=edu-collars").unknown).toBe(false);
     const storage=vi.spyOn(Storage.prototype,"setItem");
     mount();await flush(300);
-    expect(container.textContent).toContain("13 articles");
+    expect(container.textContent).toContain("14 articles");
     expect(container.querySelector(".kp-search-field--input")).not.toBeNull();
     expect(container.querySelector(".kp-search-filter-trigger")).not.toBeNull();
     expect(container.querySelector(".lab-education-starters")).not.toBeNull();
@@ -67,7 +67,7 @@ describe("service-backed Education",()=>{
     expect(container.querySelector('[role="alert"]')?.textContent).toContain("Unable to load the Education library");
     const retry=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent==="Retry loading articles")!;
     click(retry);await flush(300);
-    expect(container.textContent).toContain("13 articles");
+    expect(container.textContent).toContain("14 articles");
   });
 
   it("keeps the original Impact article deep link as a short overview with follow-up guides",async()=>{
@@ -83,6 +83,16 @@ describe("service-backed Education",()=>{
     expect(container.querySelector(".lab-education-article-header")?.textContent).toContain("Understanding Impact Implements");
     expect(container.querySelector(".lab-education-table-scroll table")).not.toBeNull();
     expect(container.querySelector(".lab-education-table-scroll th")?.textContent).toBe("Implement");
+  });
+
+  it("opens the breath-play safety guide by immutable ID with its medical warnings",async()=>{
+    mount("/ui-lab/learn/article?id=edu-breath-safety");await flush(300);
+    expect(container.querySelector(".lab-education-article-header")?.textContent).toContain("Breath Play, Choking, and Strangulation");
+    const body=container.querySelector(".lab-education-prose")?.textContent??"";
+    expect(body).toContain("There is no reliably safe way to strangle someone");
+    expect(body).toContain("Emergency Signs");
+    expect(body).toContain("Exploring the Fantasy Without Restricting Breathing");
+    expect(container.querySelector(".lab-education-related")?.textContent).toContain("Safewords");
   });
 
   it("handles unavailable deep-linked articles without inventing content",async()=>{
