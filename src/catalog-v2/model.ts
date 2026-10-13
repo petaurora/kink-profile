@@ -4,6 +4,8 @@ export type CatalogV2Group = { id: string; name: string; values: CatalogV2Value[
 export type CatalogV2Item = {
   id: string; name: string; description?: string;
   themeIds: string[]; groups: CatalogV2Group[];
+  /** Approved dimensions lacking final value vocabulary. Never treat as completed modifiers. */
+  pendingGroupIds?: string[];
   aliases?: string[]; relatedItemIds?: string[];
   collections?: ("kinks" | "rewards")[];
 };
@@ -34,6 +36,8 @@ export function validateCatalogV2(catalog: CatalogV2): string[] {
   const themeIds = new Set(catalog.themes.map(t => t.id));
   for (const item of catalog.items) {
     unique(item.groups.map(g => g.id), `${item.id} group ID`);
+    unique(item.pendingGroupIds ?? [], `${item.id} pending group ID`);
+    for(const id of item.pendingGroupIds ?? []) if(item.groups.some(g=>g.id===id)) errors.push(`Group ${id} both pending and active in ${item.id}`);
     for (const group of item.groups) unique(group.values.map(v => v.id), `${item.id}/${group.id} value ID`);
     for (const id of item.themeIds) if (!themeIds.has(id)) errors.push(`Unknown theme ${id} in ${item.id}`);
     for (const id of item.relatedItemIds ?? []) if (!itemIds.has(id)) errors.push(`Unknown related Item ${id} in ${item.id}`);
