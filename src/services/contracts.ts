@@ -47,7 +47,7 @@ export type SearchResult = {
 };
 export type SearchQuery = { text: string; type?: SearchResult["type"]; sort?: "default" | "az" | "za" };
 /** Stable Education identity is not a file path or display title. The UI only consumes this service contract. */
-export type EducationSection = "Understanding BDSM" | "Consent and scenes" | "Kinks, roles, and motivation" | "Relationship structures" | "Collars, symbols, and rituals";
+export type EducationSection = "Understanding BDSM" | "Consent and scenes" | "Kinks, roles, and motivation" | "Relationship structures" | "Collars, symbols, and rituals" | "Practices & safety";
 export type EducationLink = {
   target: { kind:"article"|"catalog-item"|"concept"; id:string };
   relation: "further-reading"|"discusses"|"explains";
