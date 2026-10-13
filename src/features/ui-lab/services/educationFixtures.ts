@@ -29,6 +29,7 @@ const seeds:Seed[] = [
   {id:"edu-impact-tools",slug:"impact-implements-and-sensations",folder:"practices",description:"Thud, sting, padding, perforations, materials, flogger tails, crop tips, and sensory differences.",section:"Practices & safety",level:"Beginner–Intermediate",minutes:8,related:["edu-impact","edu-impact-anatomy","edu-impact-marks"]},
   {id:"edu-impact-anatomy",slug:"impact-anatomy-and-control",folder:"practices",description:"Anatomy, vulnerable areas, accuracy, off-body practice, and when to stop.",section:"Practices & safety",level:"Beginner–Intermediate",minutes:8,related:["edu-impact","edu-impact-tools","edu-impact-marks"]},
   {id:"edu-impact-marks",slug:"impact-marks-and-recovery",folder:"practices",description:"Redness, welts, bruises, tissue injury, aftercare, and medical warning signs.",section:"Practices & safety",level:"Beginner–Intermediate",minutes:8,related:["edu-impact","edu-impact-anatomy","edu-safewords"]},
+  {id:"edu-breath-safety",slug:"breath-play-choking-and-strangulation",folder:"practices",description:"How breath play differs from choking and strangulation, why neck compression is dangerous, emergency signs, and noncompressive alternatives.",section:"Practices & safety",level:"Beginner–Intermediate",minutes:12,related:["edu-safewords","edu-negotiation","edu-ds","edu-bd"]},
 ];
 
 export const localEducationArticles:EducationArticle[] = seeds.map(seed => {
