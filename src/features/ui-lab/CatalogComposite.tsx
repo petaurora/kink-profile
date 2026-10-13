@@ -8,7 +8,7 @@ import { DisclosureSection } from "../../components/ui/DisclosureSection";
 import { SearchField } from "../../components/ui/SearchField";
 import { SearchRow, SearchFilterButton, SearchChips, SortGroupSheet, type SortBy, type GroupBy } from "../../components/ui/SearchControls";
 import { ItemExperience } from "./ItemExperience";
-import { useLabRecords } from "./LabRecords";
+import { useLabRecords, useLabViewState } from "./LabRecords";
 import { preferenceChoices, PreferenceReference } from "./PreferenceVocabulary";
 
 import { useLabCatalog, type Item } from "./LabCatalog";
@@ -19,15 +19,16 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  const searchId=useId(), resultsId=useId(), categoryPrefix=useId();
  const panelId=(name:string)=>categoryPrefix+"-"+encodeURIComponent(name);
  const isRewards=collection==="rewards";
- const [mine,setMine]=useState(false),[reward,setReward]=useState(false),[punishment,setPunishment]=useState(false);
- const [states,setStates]=useState<string[]>([]),[filtersOpen,setFiltersOpen]=useState(false);
+ const viewScope=`${collection}:${subject||"all"}:${compact?"compact":"list"}`;
+ const [mine,setMine]=useLabViewState(viewScope,"mine",false),[reward,setReward]=useLabViewState(viewScope,"reward",false),[punishment,setPunishment]=useLabViewState(viewScope,"punishment",false);
+ const [states,setStates]=useLabViewState<string[]>(viewScope,"answers",[]),[filtersOpen,setFiltersOpen]=useState(false);
  const [indicatorInfo,setIndicatorInfo]=useState<{id:string;kind:"reward"|"punishment"}|null>(null);
  const indicatorOrigin=useRef<HTMLButtonElement|null>(null);
- const [sortBy,setSortBy]=useState<SortBy>("default");
- const [groupBy,setGroupBy]=useState<GroupBy>("none");
+ const [sortBy,setSortBy]=useLabViewState<SortBy>(viewScope,"sort","default");
+ const [groupBy,setGroupBy]=useLabViewState<GroupBy>(viewScope,"group","none");
  const [orderOpen,setOrderOpen]=useState(false);
- const [query,setQuery]=useState("");
- const [debouncedQuery,setDebouncedQuery]=useState("");
+ const [query,setQuery]=useLabViewState(viewScope,"query","");
+ const [debouncedQuery,setDebouncedQuery]=useState(query);
  const searching=Boolean(normalizeSearch(debouncedQuery));
  const effectiveSort=!searching&&isRewards&&sortBy==="default"?"az":sortBy;
  const clearSearch=()=>{setQuery("");setDebouncedQuery("")};
@@ -85,7 +86,11 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
    if(!records.restore(id,version,previous))notify({message:"A newer edit was kept",kind:"info"});
   }});
  }
- function retry(id:string){records.retry(id)}
+ function retry(id:string){
+  const focused=document.activeElement?.getAttribute("aria-label")?.startsWith("Retry saving");
+  records.retry(id);
+  if(focused)requestAnimationFrame(()=>[...document.querySelectorAll<HTMLElement>('[data-field-id]')].find(el=>el.dataset.fieldId===id)?.querySelector<HTMLButtonElement>('.kp-rating')?.focus());
+ }
  function ratingButton(id:string,label:string,parent:string){
   return <span data-field-id={id}><PreferenceControl value={ratings[id]} label={label} saveState={saves[id]} onRetry={()=>retry(id)} onActivate={()=>setSelector({id,label,parent})}/></span>;
  }

@@ -3,6 +3,7 @@ import { act, useState, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import axe from "axe-core";
+import { MemoryRouter } from "react-router-dom";
 import { ModalLayer } from "./ModalLayer";
 import { InlineSaveStatus } from "./PreferenceControl";
 import { ToastProvider, useToasts } from "./ToastProvider";
@@ -124,7 +125,7 @@ describe("accessibility regressions", () => {
     await audit();
   });
   it("announces navigation through the new heading and current destination; global search announces results", async () => {
-    mount(<UiLabPage/>);
+    mount(<MemoryRouter initialEntries={["/ui-lab/home"]}><UiLabPage/></MemoryRouter>);
     await act(async()=>{await new Promise(resolve=>setTimeout(resolve,220));});
     click(button("Catalog"));
     const heading = document.querySelector("h1")!;

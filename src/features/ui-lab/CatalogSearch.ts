@@ -16,3 +16,8 @@ export function searchSections(results:SearchResult[],type:string,sort:"default"
  const best=sort==="default"?filtered.slice(0,3):[];const ids=new Set(best.map(result=>result.id));
  return [{label:"Best matches",rows:best},...["Items","Modifiers","Concepts"].map(label=>({label,rows:filtered.filter(result=>result.type===label&&!ids.has(result.id))}))].filter(section=>section.rows.length);
 }
+
+export function findSearchResult(id:string,data:CatalogReferenceData=labReferenceData){
+ const result=searchReferenceData(data,{text:""}).find(result=>result.id===id);
+ return result?toLabResult(result,data):undefined;
+}

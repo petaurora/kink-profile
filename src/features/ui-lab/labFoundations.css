@@ -1,0 +1,47 @@
+.lab-section { padding: 16px 0; border-bottom: 1px solid #f0d3e72b; }
+.lab-section h2 { font-size: 18px; margin: 0 0 12px; }
+.lab-section p { color: #d6bfd2; font-size: 14px; line-height: 1.6; }
+.lab-section button, .lab-dialog-actions button { min-height: 44px; border: 1px solid #f0d3e74a; background: #21214b; color: #f0d3e7; border-radius: 9px; padding: 10px 14px; cursor: pointer; }
+.lab-section a { color: #f0d3e7; }
+.lab-section button:focus-visible, .lab-section a:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 3px; }
+.lab-list-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid #f0d3e71a; padding: 12px 0; }
+.lab-list-row > span { flex: 1 1 220px; }
+.lab-list-row strong, .lab-list-row small { display: block; }
+.lab-list-row small { color: #c6b1ca; margin-top: 5px; line-height: 1.5; }
+.lab-section .lab-text-link { background: transparent; border: 0; text-decoration: underline; }
+.lab-focused-workflow label { display: block; margin-bottom: 12px; font-weight: 600; }
+.lab-focused-workflow textarea { display: block; width: 100%; min-height: 150px; resize: vertical; padding: 12px; border: 1px solid #f0d3e74a; border-radius: 9px; background: #0e1038; color: #f0d3e7; font: inherit; }
+.lab-dialog-actions, .lab-shortcuts { display: flex; flex-wrap: wrap; gap: 10px; }
+.lab-shortcut-choice { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-right: 12px; }
+.lab-records dt { font-size: 13px; color: #c6b1ca; }
+.lab-records dd { margin: 4px 0 14px; }
+.lab-link-list { display: flex; flex-wrap: wrap; gap: 16px; }
+.lab-rail-toggle { margin-bottom: 12px; }
+@media (min-width: 701px) {
+  .lab-rail-collapsed .ui-lab-app-rail { width: 78px; padding-inline: 10px; }
+  .lab-rail-collapsed .ui-lab-app-frame { margin-left: 78px; }
+  .lab-rail-collapsed .lab-rail-label, .lab-rail-collapsed .ui-lab-app-brand strong, .lab-rail-collapsed .ui-lab-app-brand small, .lab-rail-collapsed .ui-lab-app-rail-lab { display: none; }
+  .lab-rail-collapsed .ui-lab-app-rail > button { justify-content: center; }
+}
+
+.ui-lab-app-rail button .lab-rail-label { font-size: 14px; }
+
+.lab-card-grid .ui-lab-app-tile { width: 100%; min-width: 0; overflow-wrap: anywhere; }
+.lab-card-grid h2 { margin: 0; font-size: 17px; }
+.lab-card-grid p { margin: 0; color: #d6bfd2; font-size: 13px; line-height: 1.5; }
+.lab-card-grid .lab-list-row { width: 100%; min-width: 0; flex-wrap: wrap; }
+.lab-card-grid .lab-list-row > span { min-width: 0; }
+.lab-card-grid .lab-list-row strong { font-size: 14px; }
+.lab-card-grid .lab-text-link, .lab-card-footer .lab-text-link { min-height: 44px; padding: 8px 0; border: 0; background: transparent; color: #f0d3e7; text-decoration: underline; }
+.lab-card-grid .lab-shortcuts { width: 100%; }
+.lab-card-grid .lab-shortcuts button, .lab-card-grid .lab-list-row button { min-height: 44px; color: #f0d3e7; background: #21214b; border: 1px solid #f0d3e74a; border-radius: 9px; padding: 10px 14px; cursor: pointer; }
+.lab-card-grid button:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 3px; }
+.lab-card { text-decoration: none; }
+.lab-card-main { width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; }
+.lab-card strong, .lab-card h2 { padding-right: 20px; }
+.lab-card-main .ui-lab-app-tile-arrow { top: 22px; right: 22px; }
+.lab-card-status { color: #c2b6cf; font-size: 11px; line-height: 1.5; }
+.lab-card-actions { width: 100%; display: flex; justify-content: flex-end; margin-top: auto; }
+.lab-card-actions button { min-height: 44px; padding: 6px 0 0 10px; border: 0; background: transparent; color: #c2b6cf; font-size: 12px; text-decoration: underline; }
+.lab-card-footer { margin-top: 14px; }
+@media (max-width: 700px) { .lab-card-main .ui-lab-app-tile-arrow { top: 18px; right: 18px; } }

@@ -62,7 +62,7 @@ Browser Back/Forward therefore reflects route navigation rather than a parallel 
 ## Application shell
 
 Reusable interaction primitives live in `src/components/ui` and own their styles
-independently of feature CSS. The isolated `#/ui-lab` route consumes these through
+independently of feature CSS. The isolated, lazy-loaded `#/ui-lab/*` routes consume these through
 its own `ToastProvider`; this does not migrate production shell treatments. See
 [Shared UI Components](shared-ui-components.md) for module APIs and boundaries.
 

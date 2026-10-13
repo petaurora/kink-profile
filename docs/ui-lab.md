@@ -1,6 +1,6 @@
 # UI Lab
 
-`#/ui-lab` composes the experimental responsive shell and shared controls. It uses
+`#/ui-lab` and its registered nested routes compose the experimental responsive shell and shared controls. It uses
 illustrative Catalog records. Production Catalog routes and durable profile data
 remain separate.
 
@@ -73,6 +73,67 @@ label and Retry; no fabricated network delay is added to the local index.
 Queries are not written to local/session storage or tracked as preference evidence.
 No autocomplete, aliases, automatic Recently Viewed or production index is implied.
 
+## Routed shell and feature foundations
+
+The Lab is lazy-loaded outside the production AppShell. Its destination registry
+contains Home, Catalog, Profile, Discover, Tools, Creations, Learn, Relationships
+and Settings. Primary navigation stays consistent across the desktop rail and
+mobile bar. Desktop supports compact/labeled rail modes; the full menu exposes all
+destinations. Nested pages have a clickable parent breadcrumb and one title.
+Unknown Lab destinations show a recoverable message within the Lab.
+
+Search and result layers have navigation entries. Browser Back returns first from
+result to Search and then to the exact underlying workspace. Query text stays in
+memory and is excluded from URLs/history state. Direct result URLs identify only
+the target and open it without creating a rating. Local list queries, classification
+filters and ordering also survive feature navigation as session view state, separate
+from profile records. Fresh Refine group-collapse rules are unchanged.
+
+Home shows only deliberately started unfinished activities (at most three Resume
+links) and explicit records, plus editable session shortcuts. Profile lists only
+explicit session records. Tools and Creations deliberately link existing app tools;
+Learn offers concept exploration. Relationships and sharing expose honest capability
+boundaries rather than fabricated people, accounts, permissions or drafts.
+The Lab view recovery boundary retries a failed view or returns Home without
+remounting the session providers. This does not alter the production error boundary.
+
+## Discover
+
+General suggestions carry reasons, not fabricated personalized claims. Dismissal
+uses stable content IDs throughout the Lab session. Manage Suggestions restores
+individual content; reset-all requires confirmation and changes only dismissals.
+
+The illustrative reflection activity establishes the focused workflow and saved
+activity lifecycle: deliberate start, optional prompts, retained draft notes and
+prompt position, Save and exit, Resume, and explicit Finish. Completion creates a
+read-only snapshot. Repeat starts a separate attempt linked to the original, using
+the current supported activity version; earlier answers stay unchanged. Saved
+activities can be removed with confirmation. Completion/repetition never writes
+Catalog ratings, Tried or Comfort. This content is not a validated assessment.
+
+These activities, dismissals and shortcuts remain memory-only. This implements the
+UI basis; durable retention, account sync, activity publication/version withdrawal,
+Recently Explored and production recommendation ranking are not implemented.
+
+## Workspace card presentation
+
+Home retains the original four styled cards: Continue, Your profile at a glance,
+Discover something and Your shortcuts. Continue uses the featured gradient but
+shows only real unfinished activity records, with an honest empty state otherwise.
+Profile counts come from explicit session records; shortcuts remain user-controlled.
+The cards navigate to real destinations and do not create activity/profile evidence.
+
+Profile, Discover and Tools reuse the same rounded cards, icons, corner arrows and
+featured gradient through `LabCard`. Profile's landing routes to explicit records,
+relationships, sharing and identity; its record list remains in My Profile.
+Unavailable relationship/identity/agreement capabilities are stated accurately.
+Tools retain deliberate links to existing Scene Builder, comparison, randomizer
+and recipe routes. Discover retains stable suggestion IDs, reasons, independent
+dismissal/management and real saved activities within the card presentation.
+Secondary controls are siblings of the card's navigation button, avoiding nested
+interactive elements. Cards stack on narrow screens and use two columns on wider
+screens. Catalog Item/modifier rows keep their compact list presentation.
+
 ## Application service ownership
 
 The Lab receives reference data, subjects, concepts, search, classifications and
@@ -84,3 +145,11 @@ Inline Catalog queries search names, descriptions, categories and modifiers.
 Default search order puts name matches first, with small matching-field excerpts
 under supporting-text results. Clearing search restores ordinary browsing;
 explicit alphabetical sorting remains available. See [Application Services](app-services.md).
+
+The service, record and Discover providers remain mounted around the routed shell
+and its recovery boundary. Feature navigation retains confirmed/pending records,
+saved activities and separate browse state. Search result routes resolve stable
+Item/modifier/concept IDs against the loaded reference universe, including direct
+links; query text stays out of URLs. Profile record labels use that same loaded
+data. Home/cards, primary/full-menu navigation, breadcrumbs and tool links all
+invoke registered Lab or existing application routes.

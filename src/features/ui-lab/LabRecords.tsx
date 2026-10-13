@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode, type SetStateAction } from "react";
 import type { SaveState } from "../../components/ui/PreferenceControl";
 import { useOptionalServices, useOptionalServiceData } from "../../services/AppServicesProvider";
 import { ratingKey, type CatalogReferenceData, type PreferenceTarget, type PreferenceRating, type ExperienceValue } from "../../services/contracts";
@@ -30,6 +30,7 @@ function useSessionRecords(diagnostics?:UiLabAdapter) {
   const [saves, setSaves] = useState<Record<string, SaveState>>({});
   const [revisions, setRevisions] = useState<LabRevision[]>([]);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [views, setViews] = useState<Record<string, unknown>>({});
   const current = useRef<Record<string, LabValue>>(values);
   const versions = useRef<Record<string, number>>({});
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
@@ -64,7 +65,7 @@ function useSessionRecords(diagnostics?:UiLabAdapter) {
     commit(target, previous);
     return true;
   }, [commit]);
-  return { values, saves, revisions, helpOpen, setHelpOpen, commit, retry, restore };
+  return { values, saves, revisions, helpOpen, setHelpOpen, views, setViews, commit, retry, restore };
 }
 export type Records = ReturnType<typeof useSessionRecords>;
 const RecordsContext = createContext<Records | null>(null);
@@ -76,6 +77,17 @@ export function useLabRecords() {
   const shared = useContext(RecordsContext);
   const standalone = useSessionRecords();
   return shared || standalone;
+}
+/** Navigation/view state is session continuity, separate from explicit records. */
+export function useLabViewState<T>(scope: string, key: string, initial: T): [T, (update: SetStateAction<T>) => void] {
+  const shared = useContext(RecordsContext);
+  const [local, setLocal] = useState(initial);
+  const field = `${scope}:${key}`;
+  const value = shared ? (shared.views[field] as T | undefined) ?? local : local;
+  return [value, update => {
+    if (!shared) { setLocal(update); return; }
+    shared.setViews(previous => ({ ...previous, [field]: typeof update === "function" ? (update as (value:T)=>T)((previous[field] as T | undefined) ?? local) : update }));
+  }];
 }
 
 export function LabSaveSummary() {

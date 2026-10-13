@@ -4,6 +4,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { UiLabPage } from "./UiLabPage";
 import { createUiLabServices } from "./services/createUiLabServices";
+import { MemoryRouter } from "react-router-dom";
 import { labReferenceData } from "./services/fixtures";
 let root:Root,container:HTMLDivElement;
 beforeEach(()=>{
@@ -19,7 +20,7 @@ afterEach(()=>{act(()=>root.unmount());container.remove();vi.restoreAllMocks();v
 function button(label:string){const found=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.getAttribute("aria-label")===label||b.textContent===label);if(!found)throw new Error("Missing button: "+label);return found;}
 function click(element:HTMLElement){act(()=>{element.focus();element.click();});}
 async function advance(ms=0){await act(async()=>{await vi.advanceTimersByTimeAsync(ms);});}
-function mount(adapter:ReturnType<typeof createUiLabServices>){act(()=>root.render(<UiLabPage services={adapter.services}/>));}
+function mount(adapter:ReturnType<typeof createUiLabServices>){act(()=>root.render(<MemoryRouter initialEntries={["/ui-lab/home"]}><UiLabPage services={adapter.services}/></MemoryRouter>));}
 function openKinks(){click(button("Catalog"));const tile=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.querySelector("strong")?.textContent==="Kinks")!;click(tile);}
 describe("service-backed UI Lab",()=>{
   it("shows loading, recovers from a failed load, and renders injected reference data",async()=>{
