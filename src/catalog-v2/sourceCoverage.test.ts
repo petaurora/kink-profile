@@ -44,6 +44,9 @@ describe("V1 source coverage audit (#292)",()=>{
   expect(result.applied.length).toBe(verifiedImpactDecisions.length-2);
   for(const d of verifiedImpactDecisions)expect(sourceIds).toContain(d.sourceId);
  });
+ it("every migration decision names a real V1 source identifier",()=>{
+  for(const decision of decisions)expect(sourceIds,`Unexpected V1 source ID: ${decision.sourceId}`).toContain(decision.sourceId);
+ });
  it("all explicit Batch 1 mappings correspond to actual legacy rows",()=>{
   for(const decision of reviewedBatch1Decisions)expect(sourceIds).toContain(decision.sourceId);
  });
