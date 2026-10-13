@@ -32,7 +32,7 @@ describe("complete, loss-auditable V1 source disposition",()=>{
   expect(source).toBeDefined();
   if(!source||source.outcome!=="item") return;
   const key=JSON.stringify(["item",source.targetItemId]);
-  const report=migrateV1Ratings({[source.sourceId]:"No"},fullSourceDisposition,catalog,{[key]:"Love"});
+  const report=migrateV1Ratings({[source.sourceId]:"Not Interested"},fullSourceDisposition,catalog,{[key]:"Love"});
   expect(report.ratings[key]).toBe("Love");
   expect(report.conflicts.some(c=>c.sourceId===source.sourceId)).toBe(true);
  });
