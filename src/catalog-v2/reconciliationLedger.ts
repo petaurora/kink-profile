@@ -11,6 +11,13 @@ export type ReviewExpectation = {
  note?: string;
 };
 export const reconciliationExpectations: readonly ReviewExpectation[] = [
+ {sourceIssue:260,itemId:"roleplay",decision:"approved",groups:{"scenario":["teacher-student","boss-employee","doctor-patient","guard-prisoner","interrogation","stranger-first-meeting","royalty-servant","knight-captive","villain-hero","trainer-trainee","owner-property","historical","photographer-model","delivery-person","celebrity-fan","practical-sex-ed-teaching","cheating-forbidden-attraction","rescue","adult-taboo-family-role-fantasy"],"medium-context":["vr-virtual-world"]}},
+ {sourceIssue:260,itemId:"consensual-non-consent",decision:"approved",groups:{"scenario":["kidnap-abduction","capture","home-invasion","threat-coercion","torture"]}},
+ {sourceIssue:260,itemId:"creature-nonhuman-fantasy",decision:"approved",groups:{"type":["monster","vampire","alien","tentacles","knotting","oviposition"]}},
+ {sourceIssue:260,itemId:"transformation-fantasy",decision:"approved",groups:{"type":["body-swap"]}},
+ {sourceIssue:260,itemId:"mind-control-conditioning-fantasy",decision:"approved",groups:{"type":["mind-control","brainwashing-conditioning","psychological-control-influence"]}},
+ {sourceIssue:260,itemId:"consensual-blackmail-leverage-play",decision:"approved",groups:{"form":["blackmail-leverage","controlled-disclosure"]}},
+ {sourceIssue:260,itemId:"free-use",decision:"approved",groups:{"context":["public-style-simulation-fake-public-use-fantasy"]}},
  {sourceIssue:264,itemId:"position-training",decision:"approved",groups:{"form":["kneeling","standing-display","hands-behind-back","waiting-positions"]}},
  {sourceIssue:265,itemId:"verbal-mental-restraint",decision:"approved"},
  {sourceIssue:269,itemId:"sensory-deprivation",decision:"approved",groups:{"sense":["sight","hearing","multi-sensory"],"method":["blindfold","headphones","earplugs"]}},
