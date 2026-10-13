@@ -40,7 +40,7 @@
 .cc-rp-indicator-anchor:last-child .cc-rp-popover{left:auto;right:0}
 .cc-rp-popover strong{font-size:13px}
 .cc-rp-popover button{align-self:flex-end;border:0;background:transparent;color:#f0d3e7;text-decoration:underline;padding:4px}
-.kp-item:has(.cc-rp-popover){position:relative;z-index:20}
+.kp-item:has(.cc-rp-popover:not([hidden])){position:relative;z-index:20}
 @media(max-width:680px){.cc-rp-indicator{min-width:35px;min-height:36px}.cc-rp-popover{width:210px}}
 
 /* One compact inline search treatment for Kinks, Rewards & Punishments and Explore All. */
@@ -67,3 +67,21 @@
 .cc-experience legend { margin-bottom: 8px; }
 .cc-experience button[aria-pressed=true] { background: #520e25; }
 .cc-value-highlight { background: #f0d3e714; outline: 1px solid #f0d3e755; }
+/* Hidden disclosures must stay hidden despite explicit flex layout. */
+.cc-rp-popover[hidden] { display: none; }
+.cc-category-heading { margin: 0; font-size: 1rem; }
+.cc-category-heading[hidden], .cc-section-items[hidden] { display: none; }
+.cc .cc-demo-compact { opacity: 1; }
+.cc-demo-compact label { min-height: 44px; white-space: normal; }
+.cc .cc-refine-overall .kp-rating, .cc .cc-rp-indicator,
+.cc-rp-popover button { min-width: 44px; min-height: 44px; }
+.cc-refine-sheet .kp-rating { min-height: 44px; }
+.cc-refine-sheet { overflow-y: auto; }
+.cc-refine-sheet > .cc-refine-content { flex-shrink: 0; }
+.cc-rp-popover { left: auto; right: 0; }
+
+/* Anchor explanations to the row so either R/P trigger fits at phone width. */
+.cc-rp-indicator-anchor { position: static; }
+.cc-rp-popover, .cc-rp-indicator-anchor:last-child .cc-rp-popover {
+  left: 0; right: auto; max-width: 100%;
+}

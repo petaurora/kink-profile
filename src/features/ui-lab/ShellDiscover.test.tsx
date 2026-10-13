@@ -31,13 +31,13 @@ it('routes full-menu destinations and preserves active navigation and rail state
   click(button('Open full menu'));expect(document.querySelector('.ui-lab-menu-settings')!.getAttribute('aria-current')).toBe('page');click(button('Close menu'));click(button('Catalog'));expect(route()).toBe('/ui-lab/catalog');expect(document.querySelector('.lab-rail-collapsed')).not.toBeNull();
 });
 it('keeps R/P filters and search through navigation without changing independent clear semantics',async()=>{
-  mount('/ui-lab/catalog/rewards-punishments');click(button('Reward'));type('[aria-label="Search rewards and punishments"]','praise');await flush(275);click(button('Profile'));act(()=>navigate('/ui-lab/catalog/rewards-punishments'));
-  expect(button('Reward').getAttribute('aria-pressed')).toBe('true');expect((document.querySelector('[aria-label="Search rewards and punishments"]') as HTMLInputElement).value).toBe('praise');click(button('Clear search'));expect(button('Reward').getAttribute('aria-pressed')).toBe('true');
+  mount('/ui-lab/catalog/rewards-punishments');click(button('Reward'));type('[aria-label="Search Items in rewards and punishments"]','praise');await flush(275);click(button('Profile'));act(()=>navigate('/ui-lab/catalog/rewards-punishments'));
+  expect(button('Reward').getAttribute('aria-pressed')).toBe('true');expect((document.querySelector('[aria-label="Search Items in rewards and punishments"]') as HTMLInputElement).value).toBe('praise');click(button('Clear search'));expect(button('Reward').getAttribute('aria-pressed')).toBe('true');
 });
 it('browser Back restores Search and then the exact underlying workspace without queries in the URL',async()=>{
   mount('/ui-lab/catalog/rewards-punishments');click(button('Reward'));click(button('Search'));type('#lab-global-query','leather');await flush();click(button('Modifiers'));
   click(document.querySelector<HTMLElement>('[data-search-result="modifier:Power Exchange:0:Material:Leather"]')!);await flush(20);expect(route()).toContain('target=');expect(route()).not.toContain('query=');
-  act(()=>navigate(-1));await flush(20);expect(document.querySelector('[aria-label="Refine Collars"]')).toBeNull();expect((document.querySelector('#lab-global-query') as HTMLInputElement).value).toBe('leather');expect(button('Modifiers').getAttribute('aria-pressed')).toBe('true');
+  act(()=>navigate(-1));await flush(20);expect(document.querySelector('[role="dialog"][aria-label="Refine Collars"]')).toBeNull();expect((document.querySelector('#lab-global-query') as HTMLInputElement).value).toBe('leather');expect(button('Modifiers').getAttribute('aria-pressed')).toBe('true');
   act(()=>navigate(-1));expect(route()).toBe('/ui-lab/catalog/rewards-punishments');expect(button('Reward').getAttribute('aria-pressed')).toBe('true');
 });
 it('blocks drawer swipes while another modal owns interaction',()=>{
@@ -63,4 +63,16 @@ it('recovers a failed view on retry and after navigation',()=>{
   function Broken(){if(fail)throw new Error('test');return <p>Recovered view</p>;}
   const render=(key:string)=>act(()=>root.render(<ViewErrorBoundary resetKey={key} onHome={()=>{}}><Broken/></ViewErrorBoundary>));
   render('one');expect(document.body.textContent).toContain('This view could not be displayed');fail=false;click(button('Try again'));expect(document.body.textContent).toContain('Recovered view');fail=true;render('one');fail=false;render('two');expect(document.body.textContent).toContain('Recovered view');
+});
+
+it('keeps the four styled Home cards and truthful empty states with working destinations',()=>{
+  mount();expect(document.querySelectorAll('.lab-home-cards > .ui-lab-app-tile')).toHaveLength(4);
+  expect(document.querySelector('.lab-continue-card.featured')).not.toBeNull();
+  expect(document.body.textContent).toContain('No unfinished activities');
+  const profile=document.querySelector<HTMLButtonElement>('.lab-home-cards button.ui-lab-app-tile')!;click(profile);expect(route()).toBe('/ui-lab/profile');
+  click(button('Home'));const discover=[...document.querySelectorAll<HTMLButtonElement>('.lab-home-cards button.ui-lab-app-tile')].find(node=>node.textContent?.includes('Discover something'))!;click(discover);expect(route()).toBe('/ui-lab/discover');
+});
+it('labels Training records using exact item identity rather than the Ownership prefix',()=>{
+  mount('/ui-lab/catalog/kinks');click(button('Training overall: Not rated. Change rating'));click(button('Love'));click(button('Profile'));
+  expect(document.querySelector('.lab-records')?.textContent).toContain('Training');expect(document.querySelector('.lab-records')?.textContent).not.toContain('Ownership0');
 });

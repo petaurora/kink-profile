@@ -25,3 +25,13 @@
 }
 
 .ui-lab-app-rail button .lab-rail-label { font-size: 14px; }
+
+.lab-home-cards .ui-lab-app-tile { width: 100%; min-width: 0; overflow-wrap: anywhere; }
+.lab-home-cards h2 { margin: 0; font-size: 17px; }
+.lab-home-cards p { margin: 0; color: #d6bfd2; font-size: 13px; line-height: 1.5; }
+.lab-home-cards .lab-list-row { width: 100%; min-width: 0; flex-wrap: wrap; }
+.lab-home-cards .lab-list-row > span { min-width: 0; }
+.lab-home-cards .lab-list-row strong { font-size: 14px; }
+.lab-home-cards .lab-text-link { min-height: 44px; padding: 8px 0; border: 0; background: transparent; color: #f0d3e7; text-decoration: underline; }
+.lab-home-cards .lab-shortcuts { width: 100%; }
+.lab-home-cards .lab-shortcuts button { min-height: 44px; color: #f0d3e7; }

@@ -323,13 +323,13 @@ describe("notification queue and timing", () => {
   it("gives each newly active message its full duration and pauses on focus", () => {
     vi.useFakeTimers();
     const dismiss = vi.fn();
-    const info = { ...toast(1, "info", "Undo"), duration: 1000 };
+    const info = { ...toast(1, "info"), duration: 1000 };
     mount(<ToastViewport items={[info]} onDismiss={dismiss} />);
     act(() => vi.advanceTimersByTime(400));
-    act(() => button("Undo").focus());
+    act(() => button("Dismiss notification").focus());
     act(() => vi.advanceTimersByTime(2000));
     expect(dismiss).not.toHaveBeenCalled();
-    act(() => button("Undo").blur());
+    act(() => button("Dismiss notification").blur());
     act(() => vi.advanceTimersByTime(599));
     expect(dismiss).not.toHaveBeenCalled();
     act(() => vi.advanceTimersByTime(1));

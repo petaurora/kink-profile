@@ -110,3 +110,11 @@ Catalog ratings, Tried or Comfort. This content is not a validated assessment.
 These activities, dismissals and shortcuts remain memory-only. This implements the
 UI basis; durable retention, account sync, activity publication/version withdrawal,
 Recently Explored and production recommendation ranking are not implemented.
+
+## Home presentation
+
+Home retains the original four styled cards: Continue, Your profile at a glance,
+Discover something and Your shortcuts. Continue uses the featured gradient but
+shows only real unfinished activity records, with an honest empty state otherwise.
+Profile counts come from explicit session records; shortcuts remain user-controlled.
+The cards navigate to real destinations and do not create activity/profile evidence.

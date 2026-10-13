@@ -10,10 +10,10 @@ const suggestions=[
   {id:"concepts",title:"Explore concepts",reason:"General learning · Understand meanings without recording a preference.",area:"Catalog" as const,workspace:"Concept Explorer"},
   {id:"reflection",title:reflection.title,reason:"Optional reflection · Your notes stay separate from profile records."},
 ];
-export function ContinueActivities({go}:{go:Go}) {
+export function ContinueActivities({go,card=false}:{go:Go;card?:boolean}) {
   const {attempts}=useDiscoverSession();
   const unfinished=attempts.filter(attempt=>attempt.status==="draft").sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt));
-  return <section className="lab-section"><h2>Continue exploring</h2>{!unfinished.length?<p>No unfinished activities. Start one when you choose.</p>:unfinished.slice(0,3).map(attempt=><div className="lab-list-row" key={attempt.id}><span><strong>{reflection.title}</strong><small>Saved in this Lab session</small></span><button onClick={()=>go("Discover","Activity",{attempt:attempt.id})}>Resume</button></div>)}<button className="lab-text-link" onClick={()=>go("Discover","Saved Activities")}>View all activities</button></section>;
+  return <section className={card?"ui-lab-app-tile featured lab-continue-card":"lab-section"}>{card&&<span className="ui-lab-app-tile-icon" aria-hidden="true">✧</span>}<h2>{card?"Continue":"Continue exploring"}</h2>{!unfinished.length?<p>No unfinished activities. Start one when you choose.</p>:unfinished.slice(0,3).map(attempt=><div className="lab-list-row" key={attempt.id}><span><strong>{reflection.title}</strong><small>Saved in this Lab session</small></span><button onClick={()=>go("Discover","Activity",{attempt:attempt.id})}>Resume</button></div>)}<button className="lab-text-link" onClick={()=>go("Discover","Saved Activities")}>View all activities</button></section>;
 }
 export function DiscoverWorkspace({view,attemptId,go}:{view:string;attemptId?:string;go:Go}) {
   const session=useDiscoverSession();

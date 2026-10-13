@@ -14,10 +14,11 @@ export function InlineSaveStatus({
   label: string;
   onRetry?: () => void;
 }) {
-  if (state === "failed")
-    return (
-      <span className="kp-save-status" role="status">
-        {onRetry ? (
+  const message = state === "saving" ? `${label}: Saving` : state === "saved" ? `${label}: Saved` : state === "failed" ? `${label}: Not saved` : "";
+  return (
+    <span className="kp-save-status">
+      <span role="status" aria-atomic="true" className="kp-visually-hidden">{message}</span>
+      {state === "failed" ? (onRetry ? (
           <button
             type="button"
             className="kp-retry"
@@ -27,25 +28,12 @@ export function InlineSaveStatus({
             Retry
           </button>
         ) : (
-          <span aria-label={`${label}: Not saved`}>!</span>
-        )}
-      </span>
-    );
-  return (
-    <span
-      className="kp-save-status"
-      role="status"
-      aria-label={
-        state === "saving"
-          ? `${label}: Saving`
-          : state === "saved"
-            ? `${label}: Saved`
-            : undefined
-      }
-    >
+          <span aria-hidden="true">!</span>
+        )) : (
       <span aria-hidden="true">
         {state === "saving" ? "◌" : state === "saved" ? "✓" : ""}
       </span>
+      )}
     </span>
   );
 }
@@ -168,7 +156,7 @@ export function PreferenceSheet({
             }}
           >
             {option}
-            {value === option ? " ✓" : ""}
+            {value === option && <span aria-hidden="true"> ✓</span>}
           </button>
         ))}
       </div>
@@ -183,11 +171,7 @@ export function PreferenceSheet({
           >
             What do these mean? {expanded ? "−" : "+"}
           </button>
-          {expanded && (
-            <div className="kp-preference-explanation" id={helpId}>
-              {help}
-            </div>
-          )}
+            <div className="kp-preference-explanation" id={helpId} hidden={!expanded}>{help}</div>
         </>
       )}
       {value && (

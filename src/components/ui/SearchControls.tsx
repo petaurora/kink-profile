@@ -14,6 +14,8 @@ export type ChipOption = {
   label: string;
   active: boolean;
   onClick: () => void;
+  opensDialog?: boolean;
+  expanded?: boolean;
 };
 
 export function SearchFilterButton({
@@ -75,9 +77,13 @@ export function SearchChips({
           key={option.id}
           className={"kp-search-chip" + (option.active ? " is-active" : "")}
           aria-pressed={option.active}
+          aria-label={option.label}
+          aria-haspopup={option.opensDialog ? "dialog" : undefined}
+          aria-expanded={option.opensDialog ? option.expanded : undefined}
           onClick={option.onClick}
         >
           {option.label}
+          {option.active && <span className="kp-search-chip__check" aria-hidden="true">✓</span>}
         </button>
       ))}
       {clear && (

@@ -129,3 +129,16 @@
     bottom: 18px;
   }
 }
+
+.kp-toast { flex-wrap: wrap; }
+.kp-toast-message { overflow-wrap: anywhere; }
+.kp-toast-action, .kp-toast-dismiss { min-width: 44px; min-height: 44px; }
+
+/* A transformed drawer establishes a fixed-position containing block. Insets
+   keep dialog-owned notifications inside that block instead of centering at
+   half the viewport width and clipping their dismiss action. */
+.kp-modal-panel .kp-toast-region {
+  left: 12px; right: 12px; width: auto; transform: none;
+}
+.kp-toast .kp-toast-action { float: none; font: inherit; font-weight: 600; }
+.kp-toast .kp-toast-dismiss { float: none; }
