@@ -136,13 +136,27 @@ const illustrativeReferenceData: CatalogReferenceData = {
 };
 /** Default V2 reference data is curated-only. Illustrative fixtures are never merged into the real browse list. */
 const curatedBase:CatalogReferenceData = {items:[],subjects:[],concepts:illustrativeReferenceData.concepts};
-export const labReferenceData: CatalogReferenceData = replaceReferenceCatalog(
+const curatedReferenceData: CatalogReferenceData = replaceReferenceCatalog(
   replaceReferenceCatalog(
     replaceReferenceCatalog(curatedBase, approvedV2Slice),
     reviewedCatalogExpansion,
   ),
   additionalReviewedCatalog,
 );
+// Featured discovery subjects are service-owned curated unions, not stale demo category matches.
+const featuredSubjectGroups = [
+  {id:"power-exchange",name:"Power Exchange",description:"Explore negotiated authority, devotion, and protocol.",featured:{symbol:"◇",tone:"power"},themeIds:["power-exchange","power"]},
+  {id:"sensation-intensity",name:"Sensation & Intensity",description:"Explore impact, temperature, sensation and intensity.",featured:{symbol:"✧",tone:"sensation"},themeIds:["impact","sensory","pain","electrical"]},
+  {id:"restraint-control",name:"Restraint & Control",description:"Explore physical restriction, equipment and negotiated control.",featured:{symbol:"⌁",tone:"restraint"},themeIds:["bondage","equipment"]},
+  {id:"connection-expression",name:"Connection & Expression",description:"Explore pet, primal and expressive connections.",featured:{symbol:"♡",tone:"connection"},themeIds:["pet","primal","exhibition"]},
+];
+export const labReferenceData: CatalogReferenceData = {
+  ...curatedReferenceData,
+  subjects:[...curatedReferenceData.subjects, ...featuredSubjectGroups.map(({themeIds,...subject})=>({
+    ...subject,
+    itemIds:[...new Set(curatedReferenceData.subjects.filter(theme=>themeIds.includes(theme.id)).flatMap(theme=>theme.itemIds))].filter(id=>curatedReferenceData.items.some(item=>item.id===id)),
+  }))],
+};
 /** For isolated component or search tests that expressly require the old demo dataset. */
 export { illustrativeReferenceData };
 // Stable, explicitly illustrative classifications; no inference from general ratings.
