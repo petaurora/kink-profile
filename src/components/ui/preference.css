@@ -131,3 +131,7 @@
     transform: none;
   }
 }
+
+.kp-preference-options button { border-color: var(--kp-control-border); }
+.kp-rating, .kp-retry, .kp-preference-help, .kp-preference-clear { min-height: 44px; }
+.kp-sheet-header > div { min-width: 0; overflow-wrap: anywhere; }

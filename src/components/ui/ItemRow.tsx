@@ -29,6 +29,7 @@ export function ItemRow({
           <button
             type="button"
             className="kp-refine-toggle"
+            aria-label={`Refine ${name}${refined ? ". Has rated modifiers" : ""}`}
             aria-haspopup="dialog"
             onClick={onRefine}
           >

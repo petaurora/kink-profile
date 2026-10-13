@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import { useEffect, useRef, useState } from "react";
 import "./toast.css";
+import { useModalPanel } from "./ModalLayer";
 
 export type ToastMessage = {
   id: number;
@@ -18,6 +19,9 @@ function ToastCard({
   toast: ToastMessage;
   onDismiss: (id: number) => void;
 }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const modalPanel = useModalPanel();
+  const [returnFocus] = useState(() => document.activeElement instanceof HTMLElement ? document.activeElement : null);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -29,9 +33,8 @@ function ToastCard({
     id: number;
     horizontal: boolean;
   } | null>(null);
-  const duration =
-    toast.duration ??
-    (toast.kind === "error" ? 0 : toast.actionLabel ? 8000 : 3500);
+  // Recovery/Undo must remain available while someone reads or navigates to it.
+  const duration = toast.kind === "error" || toast.actionLabel ? 0 : (toast.duration ?? 3500);
   const remaining = useRef(duration);
   const dismissTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
@@ -58,14 +61,22 @@ function ToastCard({
   const dismiss = () => {
     if (leaving) return;
     setLeaving(true);
-    dismissTimer.current = setTimeout(() => dismissRef.current(toast.id), 150);
+    dismissTimer.current = setTimeout(() => {
+      if (cardRef.current?.contains(document.activeElement)) {
+        if (returnFocus?.isConnected && !returnFocus.closest("[inert], [hidden]")) returnFocus.focus();
+        else modalPanel?.focus();
+      }
+      dismissRef.current(toast.id);
+    }, 150);
   };
   const compact =
     toast.kind === "success" && !toast.actionLabel && toast.message.length < 45;
   return (
     <div
+      ref={cardRef}
       className={`kp-toast ${compact ? "kp-toast-pill" : "kp-toast-rect"} kp-toast-${toast.kind}${leaving ? " kp-toast-leaving" : ""}`}
       role={toast.kind === "error" ? "alert" : "status"}
+      aria-atomic="true"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocusCapture={() => setFocused(true)}
@@ -171,6 +182,7 @@ export function ToastViewport({
   onDismiss: (id: number) => void;
   position?: "above-navigation" | "modal";
 }) {
+  const modalPanel = useModalPanel();
   const active = items[0];
   if (!active) return null;
   return createPortal(
@@ -181,6 +193,6 @@ export function ToastViewport({
     >
       <ToastCard key={active.id} toast={active} onDismiss={onDismiss} />
     </div>,
-    document.body,
+    modalPanel ?? document.body,
   );
 }
