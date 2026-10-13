@@ -7,17 +7,22 @@ async function settle<T>(promise:Promise<T>){
   const result=promise.then(value=>({value}),error=>({error}));
   await vi.runAllTimersAsync();return result;
 }
-it("lists nine stable summaries and loads full Markdown only for a requested article",async()=>{
+it("lists ten stable summaries and loads full Markdown only for a requested article",async()=>{
   const service=createUiLabServices({latencyMs:0}).services.education!;
   const summary=await settle(service.listArticles());
   if(!("value" in summary))throw new Error("Education list failed");
-  expect(summary.value).toHaveLength(9);
+  expect(summary.value).toHaveLength(10);
   expect(summary.value.map(x=>x.id)).toContain("edu-collars");
+  expect(summary.value.find(x=>x.id==="edu-impact")).toMatchObject({slug:"impact-play-safety",section:"Practices & safety",readingMinutes:16});
   expect(summary.value.every(x=>!("markdown" in x))).toBe(true);
   const detail=await settle(service.getArticle("edu-collars"));
   if(!("value" in detail))throw new Error("Education detail failed");
   expect(detail.value?.markdown).toContain("# Collars & Collaring");
   expect(detail.value?.links.some(link=>link.target.kind==="catalog-item"&&link.target.id==="collars")).toBe(true);
+  const impact=await settle(service.getArticle("edu-impact"));
+  if(!("value" in impact))throw new Error("Impact article read failed");
+  expect(impact.value?.markdown).toContain("# Impact Play: Technique");
+  expect(impact.value?.markdown).toContain("| Implement | Typical quality |");
   expect(await settle(service.getArticle("edu-nonexistent"))).toEqual({value:null});
 });
 it("honors abort, surfaces failures, and does not rewrite preference evidence on reads",async()=>{
