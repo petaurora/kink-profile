@@ -1,5 +1,5 @@
 import { describe,expect,it } from "vitest";
-import { fullSourceDisposition,sourceDispositionCounts,verifiedMigrationDecisions,planLosslessV1Migration } from "./fullSourceDisposition";
+import { fullSourceDisposition,sourceDispositionCounts,verifiedMigrationDecisions,planLosslessV1Migration,buildLegacyPreferenceArchive } from "./fullSourceDisposition";
 import { legacyCatalogIds } from "./legacyCatalogIds";
 import { migrateV1Ratings } from "./migration";
 import { approvedV2Slice } from "./approvedSlice";
@@ -51,6 +51,16 @@ describe("complete, loss-auditable V1 source disposition",()=>{
    expect(conflict.ratings[key]).toBe("Love");
    expect(conflict.retainedLegacyRatings[direct.sourceId]).toBe("Not Interested");
   }
+ });
+ it("builds a read-only V1 archive payload for later DB reconciliation",()=>{
+  const {archive,migratedRatings,report}=buildLegacyPreferenceArchive({"praise-kink":"Like","hand-spanking":"Love"},catalog);
+  expect(archive.schemaVersion).toBe(1);
+  expect(archive.status).toBe("awaiting-db-reconciliation");
+  expect(archive.ratings["praise-kink"]).toBe("Like");
+  expect(archive.ratings["hand-spanking"]).toBeUndefined();
+  expect(archive.reasons["praise-kink"]).toBeTruthy();
+  expect(report.applied).toContain("hand-spanking");
+  expect(migratedRatings[JSON.stringify(["item","spanking-slapping"])]).toBe("Love");
  });
  it("preserves existing preferences on collisions and reports their source",()=>{
   const source=verifiedMigrationDecisions.find(d=>d.outcome==="item");
