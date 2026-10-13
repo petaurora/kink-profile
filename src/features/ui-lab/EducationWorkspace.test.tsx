@@ -33,7 +33,7 @@ describe("service-backed Education",()=>{
     expect(parseLabRoute(original.split("?")[0],"?id=edu-collars").unknown).toBe(false);
     const storage=vi.spyOn(Storage.prototype,"setItem");
     mount();await flush(300);
-    expect(container.textContent).toContain("14 articles");
+    expect(container.textContent).toContain("15 articles");
     expect(container.querySelector(".kp-search-field--input")).not.toBeNull();
     expect(container.querySelector(".kp-search-filter-trigger")).not.toBeNull();
     expect(container.querySelector(".lab-education-starters")).not.toBeNull();
@@ -67,7 +67,7 @@ describe("service-backed Education",()=>{
     expect(container.querySelector('[role="alert"]')?.textContent).toContain("Unable to load the Education library");
     const retry=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent==="Retry loading articles")!;
     click(retry);await flush(300);
-    expect(container.textContent).toContain("14 articles");
+    expect(container.textContent).toContain("15 articles");
   });
 
   it("keeps the original Impact article deep link as a short overview with follow-up guides",async()=>{
