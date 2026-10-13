@@ -13,11 +13,11 @@ const collections: Record<string,CatalogV2Item[]>={
  impact:[
  item("Impact Play","impact",[g("Method / Practice",["Paddling","Flogging","Caning","Strapping","Crop Play","Slapper / Tawse Play","Whipping"]),g("Sensation",["Thuddy","Stingy"])]),
  item("Spanking / Slapping","impact"),
- item("Paddles","impact",[g("Material",["Leather","Wood","Rubber / Silicone","Acrylic / Plastic","Metal"])]),
+ item("Paddles","impact",[g("Material",["Leather","Wood","Rubber / Silicone","Acrylic / Plastic","Metal"]),g("Construction",["Solid","Perforated / Holes","Padded"]),g("Surface / Inlay",["Smooth","Decorative Inlay / Pattern","Raised Texture","Spiked / Studded"])]),
  item("Floggers","impact",[g("Material",["Leather","Suede","Rubber / Silicone","Synthetic / Vegan Leather","Rope / Cord"]),g("Thickness",["Thin Falls","Medium Falls","Thick Falls"]),g("Tip Style",["Plain / Untied","Knotted","Weighted"])]),
  item("Canes","impact",[g("Material",["Rattan","Bamboo","Wood","Synthetic / Plastic"]),g("Thickness",["Thin","Medium","Thick"])]),
  item("Whips","impact",[g("Type",["Single-tail","Dragon-tail","Cat-o'-nine-tails","Sjambok"])]),
- item("Crops","impact",[g("Material",["Leather","Synthetic / Vegan Leather","Rubber / Silicone"]),g("Tip Style",["Flat","Looped"])]),
+ item("Crops","impact",[g("Material",["Leather","Synthetic / Vegan Leather","Rubber / Silicone"]),g("Style",["Riding Crop","Jumping Bat","Dressage Whip","Lunge Whip"]),g("Tip Style",["Flat / Keeper","Looped","Popper / Lash"])]),
  item("Other Implements","impact",[g("Type",["Wooden Spoon","Hairbrush","Impact Jack / Thumper"])]),
  ...["Rhythmic Impact","Counting Impacts","Impact Warm-up","Impact Endurance","Bastinado","Florentine Flogging"].map(n=>item(n,"impact"))
  ],
