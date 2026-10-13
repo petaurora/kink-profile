@@ -12,7 +12,7 @@ describe("Education article footers",()=>{
     expect(rendered).toContain("https://example.org/consent");
   });
   it("renders practice-guide Markdown pipe tables as accessible, escaped table cells",()=>{
-    const rendered=renderToStaticMarkup(EducationMarkdown({markdown:"## Tools\\n\\n| Implement | Consideration |\\n| --- | --- |\\n| Padded tool | **Light pressure** |\\n| Cane | <script>unsafe</script> |"}));
+    const rendered=renderToStaticMarkup(EducationMarkdown({markdown:"## Tools\n\n| Implement | Consideration |\n| --- | --- |\n| Padded tool | **Light pressure** |\n| Cane | <script>unsafe</script> |"}));
     expect(rendered).toContain('<table>');
     expect(rendered).toContain('<th scope="col">Implement</th>');
     expect(rendered).toContain("<strong>Light pressure</strong>");
@@ -20,7 +20,7 @@ describe("Education article footers",()=>{
     expect(rendered).toContain("&lt;script&gt;");
   });
   it("suppresses Impact article's plain-text Related Learning list without losing its editorial notice",()=>{
-    const body=articleBody("# Impact Play\\n\\n---\\n\\n## Safety\\n\\nStay safe.\\n\\n## Related Learning\\n\\n- **Safewords:** More to read.\\n\\n---\\n\\n*Editorial status: draft.*");
+    const body=articleBody("# Impact Play\n\n---\n\n## Safety\n\nStay safe.\n\n## Related Learning\n\n- **Safewords:** More to read.\n\n---\n\n*Editorial status: draft.*");
     expect(body).toContain("Stay safe.");
     expect(body).not.toContain("## Related Learning");
     expect(body).toContain("Editorial status: draft.");
