@@ -10,6 +10,8 @@ export type CatalogItem = {
   id: string;
   name: string;
   category: string;
+  /** Non-exclusive canonical browse memberships; category is only a legacy display label. */
+  themeIds?: string[];
   description?: string;
   groups: ModifierGroup[];
   collections: ("kinks" | "rewards")[];
