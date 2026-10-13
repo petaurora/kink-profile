@@ -14,7 +14,7 @@ describe("UI Lab adapter contract",()=>{
     const two=await settle(second.services.preferences.getSnapshot());
     expect(one).toHaveProperty(["value","ratings",ratingKey(overall)],"Love");
     expect(two).toMatchObject({value:{ratings:{}}});
-    if("value" in one)one.value.ratings[ratingKey(overall)]="Dislike";
+    if("value" in one)one.value.ratings[ratingKey(overall)]="Not Interested";
     expect(await settle(first.services.preferences.getSnapshot())).toHaveProperty(["value","ratings",ratingKey(overall)],"Love");
     const data=await settle(first.services.catalog.getReferenceData());
     if("value" in data)data.value.items[0].name="Changed";
@@ -54,4 +54,17 @@ describe("UI Lab adapter contract",()=>{
     expect(await settle(services.search.search({text:"Trust",type:"Concepts"}))).toMatchObject({value:[{target:{conceptId:"trust"}}]});
     expect(await settle(services.search.search({text:"definitely nonexistent"}))).toEqual({value:[]});
   });
+});
+
+it("matches short Item queries against visible names rather than hidden description substrings",async()=>{
+  const {services}=createUiLabServices();
+  expect(await settle(services.search.search({text:"ca",type:"Items"}))).toMatchObject({value:[{name:"Aftercare"}]});
+  const result=await settle(services.search.search({text:"ca",type:"Items"}));if("value" in result)expect(result.value.some(item=>item.name==="Permission Rituals")).toBe(false);
+});
+it("accepts every canonical preference state without changing its meaning",async()=>{
+  const {services}=createUiLabServices();
+  for(const value of ["Curious","Unsure","Not Interested","Hard Limit","Not Applicable"] as const){
+    expect(await settle(services.preferences.setRating(overall,value))).toEqual({value:undefined});
+    expect(await settle(services.preferences.getSnapshot())).toHaveProperty(["value","ratings",ratingKey(overall)],value);
+  }
 });

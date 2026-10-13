@@ -46,8 +46,8 @@ Item rating targets its Item ID; a modifier rating targets the Item, group and
 value IDs together. `ratingKey` encodes tuples without using labels or positions.
 Shared concepts such as Leather may be referenced by a modifier definition, but
 do not share a rating with other Items or change their parent Item's rating.
-Categories/groups are not rateable. Unknown remains absent, distinct from Neutral,
-Dislike and Hard limit. Clearing removes only the targeted record.
+Categories/groups are not rateable. The rating vocabulary is Love, Like, Curious, Unsure, Not Interested, Hard Limit
+and Not Applicable. Unknown remains absent and is not an explicit rating. Clearing removes only the targeted record.
 
 These IDs belong to illustrative Lab data. Do not import Lab preferences into the
 production catalog or treat fixture categories as final taxonomy decisions.
@@ -92,3 +92,11 @@ An injected API adapter does not receive this diagnostic control.
 
 Durable persistence, offline synchronization, classification editing, education,
 profile/relationship/tool records and live collaboration are outside this slice.
+
+## Search matching
+
+Names support partial-word searches. Hidden description, category and modifier
+metadata participates only for terms of at least three characters and matches
+word prefixes, not arbitrary substrings. Thus `ca` finds Aftercare through its
+visible name but does not match Permission Rituals through the word `practical`.
+Longer queries such as Leather can still discover a parent Item's modifiers.

@@ -9,12 +9,12 @@ import { SearchField } from "../../components/ui/SearchField";
 import { SearchRow, SearchFilterButton, SearchChips, SortGroupSheet, type SortBy, type GroupBy } from "../../components/ui/SearchControls";
 
 import { preferenceRatings, ratingKey, type CatalogItem as Item, type CatalogSearchTarget, type PreferenceTarget, type PreferenceRating } from "../../services/contracts";
-import { matchesSearch } from "../../services/search";
+import { matchesNamedSearch } from "../../services/search";
 import { useReferenceData, usePreferences } from "../../services/AppServicesProvider";
 import type { UiLabAdapter } from "./services/createUiLabServices";
 
 function matchesCatalogSearch(item:Item,query:string){
- return matchesSearch([item.name,item.description||"",item.category,...item.groups.flatMap(g=>[g.name,...g.values.map(v=>v.name)])].join(" "),query);
+ return matchesNamedSearch(item.name,[item.description||"",item.category,...item.groups.flatMap(g=>[g.name,...g.values.map(v=>v.name)])].join(" "),query);
 }
 function modifierKeys(item:Item){return item.groups.flatMap(group=>group.values.map(value=>ratingKey({kind:"modifier",itemId:item.id,groupId:group.id,valueId:value.id})));}
 export function CatalogComposite({initialTarget,subject,compact=false,collection="kinks",diagnostics}:{collection?:"kinks"|"rewards";initialTarget?:CatalogSearchTarget;subject?:string;compact?:boolean;diagnostics?:UiLabAdapter}){

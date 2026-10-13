@@ -1,6 +1,6 @@
 /** Application-facing contracts. Adapters own transport/storage; React owns presentation. */
 export type RequestOptions = { signal?: AbortSignal };
-export const preferenceRatings = ["Love", "Like", "Neutral", "Dislike", "Hard limit"] as const;
+export const preferenceRatings = ["Love", "Like", "Curious", "Unsure", "Not Interested", "Hard Limit", "Not Applicable"] as const;
 export type PreferenceRating = typeof preferenceRatings[number];
 export type ClassificationAnswer = "yes" | "no" | "unanswered";
 export type Classification = { reward: ClassificationAnswer; punishment: ClassificationAnswer };

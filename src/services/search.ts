@@ -2,6 +2,12 @@ import type { CatalogReferenceData, SearchQuery, SearchResult } from "./contract
 export function normalizeSearch(value: string) {
   return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
+/** Names permit partial-word lookup. Hidden metadata requires a word prefix and 3+ characters. */
+export function matchesNamedSearch(name:string,metadata:string,query:string){
+  const title=normalizeSearch(name);
+  const words=normalizeSearch(metadata).split(" ");
+  return normalizeSearch(query).split(" ").filter(Boolean).every(term=>title.includes(term)||(term.length>=3&&words.some(word=>word.startsWith(term))));
+}
 export function matchesSearch(text: string, query: string) {
   const searchable = normalizeSearch(text);
   return normalizeSearch(query).split(" ").filter(Boolean).every(word => searchable.includes(word));
@@ -10,16 +16,16 @@ export function matchesSearch(text: string, query: string) {
 export function searchReferenceData(data: CatalogReferenceData, query: SearchQuery): SearchResult[] {
   const results: SearchResult[] = [];
   for (const item of data.items) {
-    if (matchesSearch([item.name, item.description, item.category, ...item.groups.flatMap(g => [g.name, ...g.values.map(v => v.name)])].join(" "), query.text)) {
+    if (matchesNamedSearch(item.name,[item.description, item.category, ...item.groups.flatMap(g => [g.name, ...g.values.map(v => v.name)])].join(" "), query.text)) {
       results.push({id:`item:${item.id}`, name:item.name, type:"Items", path:item.category, target:{itemId:item.id}});
     }
     for (const group of item.groups) for (const value of group.values) {
-      if (matchesSearch([value.name, group.name, item.name].join(" "), query.text)) {
+      if (matchesNamedSearch(value.name,[group.name,item.name].join(" "),query.text)) {
         results.push({id:`modifier:${item.id}:${group.id}:${value.id}`, name:value.name, type:"Modifiers", path:`${item.name} → ${group.name}`, target:{itemId:item.id,groupId:group.id,valueId:value.id}});
       }
     }
   }
-  for (const concept of data.concepts) if (matchesSearch(`${concept.name} ${concept.description}`, query.text)) {
+  for (const concept of data.concepts) if (matchesNamedSearch(concept.name,concept.description,query.text)) {
     results.push({id:`concept:${concept.id}`,name:concept.name,type:"Concepts",path:"Concept Explorer",target:{conceptId:concept.id}});
   }
   return results.filter(result => !query.type || query.type === result.type).sort((a,b) => query.sort === "az" ? a.name.localeCompare(b.name) : query.sort === "za" ? b.name.localeCompare(a.name) : 0);

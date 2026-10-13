@@ -56,3 +56,10 @@ describe("service-backed UI Lab",()=>{
     expect(container.querySelector(".ui-lab-search-results strong")?.textContent).toBe("Collars");
   });
 });
+
+it("keeps the inline ca search explainable from the visible Item names",async()=>{
+  const adapter=createUiLabServices({latencyMs:0});mount(adapter);await advance();openKinks();
+  const input=container.querySelector<HTMLInputElement>('[aria-label="Search kinks"]')!;
+  act(()=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")!.set!.call(input,"ca");input.dispatchEvent(new Event("input",{bubbles:true}));});await advance(275);
+  expect([...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'))).toEqual(["aftercare"]);
+});
