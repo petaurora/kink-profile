@@ -15,7 +15,7 @@ describe("curated V2 service source",()=>{
   expect(illustrativeReferenceData.items.some(x=>x.id==="authority-exchange")).toBe(true);
  });
  it("retains independent ratings and does not synthesize Context and Role modifiers",()=>{
-  expect(labReferenceData.items.find(x=>x.id==="stocks-pillory")?.groups).toEqual([]);
+  expect(labReferenceData.items.find(x=>x.id==="stocks-pillory")?.groups.map(g=>g.id)).toEqual(["style-form"]);
   expect(labReferenceData.items.find(x=>x.id==="chastity")?.groups.map(g=>g.name)).toEqual(["Material"]);
  });
  it("all separately sourced review files validate",()=>{
