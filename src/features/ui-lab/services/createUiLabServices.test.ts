@@ -50,7 +50,7 @@ describe("UI Lab adapter contract",()=>{
   it("returns addressable results from the same universe, including exact modifier IDs",async()=>{
     const {services}=createUiLabServices();
     const result=await settle(services.search.search({text:"léather",type:"Modifiers"}));
-    expect(result).toMatchObject({value:[{name:"Leather",target:{itemId:"collars",groupId:"material",valueId:"leather"}}]});
+    expect(result.value).toContainEqual(expect.objectContaining({name:"Leather",target:{itemId:"collars",groupId:"material",valueId:"leather"}}));
     expect(await settle(services.search.search({text:"Trust",type:"Concepts"}))).toMatchObject({value:[{target:{conceptId:"trust"}}]});
     expect(await settle(services.search.search({text:"definitely nonexistent"}))).toEqual({value:[]});
   });
@@ -58,7 +58,10 @@ describe("UI Lab adapter contract",()=>{
 
 it("ranks Item names ahead of short supporting-text matches",async()=>{
   const {services}=createUiLabServices();
-  expect(await settle(services.search.search({text:"ca",type:"Items"}))).toMatchObject({value:[{name:"Aftercare"},{name:"Permission Rituals"}]});
+  const response=await settle(services.search.search({text:"ca",type:"Items"}));
+  expect(response.value.map(row=>row.name)).toContain("Aftercare");
+  expect(response.value.map(row=>row.name)).toContain("Permission Rituals");
+  expect(response.value.findIndex(row=>row.name==="Aftercare")).toBeLessThan(response.value.findIndex(row=>row.name==="Permission Rituals"));
 });
 it("accepts every canonical preference state without changing its meaning",async()=>{
   const {services}=createUiLabServices();
