@@ -235,3 +235,15 @@ When changing application architecture:
 5. Preserve storage and import/export compatibility unless a deliberate migration is part of the same change.
 6. Move ownership when it becomes clearer; do not perform folder churn solely for visual neatness.
 7. Update this document when the implemented architecture contract changes materially.
+
+## Experimental application services
+
+The isolated `#/ui-lab` route uses `AppServicesProvider` and typed async contracts
+under `src/services` for reference data, search, and preference writes. The Lab
+composition root creates an in-memory adapter; production feature routes retain
+their existing domain/storage contracts. UI components obtain data through the
+provider rather than importing sample datasets or implementing save timers.
+
+The [application services contract](app-services.md) describes injection,
+cancellation, session ownership, independent preference targets, serial writes,
+error recovery, and the limits of the sample adapter.

@@ -55,11 +55,13 @@ been migrated to the experimental treatments merely because the code is shared.
 
 ## Current limits
 
-The UI Lab still owns illustrative data and an 850 ms simulated save. It does not
-persist preferences, implement a server save coordinator, durable recovery/offline
-sync, or risk-based destructive confirmations. `InlineSaveStatus` presents state;
-passing `saved` requires real confirmation from a caller. UI Lab “saved” messages
-are simulation feedback under its explicit no-persistence notice.
+The UI Lab receives illustrative data and preference saves through the async
+[application service boundary](app-services.md). One injected service provider owns
+session preferences across Lab navigation. The local adapter confirms saves in
+memory and offers failure simulation; Lab notices describe this session-only
+behavior. Production storage, durable recovery/offline sync, and server concurrency
+remain separate work. `InlineSaveStatus` presents state; callers must await their
+service confirmation before reporting a saved result.
 
 Do not treat the component inventory as completion of every approved feedback
 workshop decision. Container morph animation, full-page recovery, session recovery,

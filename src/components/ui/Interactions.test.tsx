@@ -10,6 +10,8 @@ import { ToastViewport, type ToastMessage } from "./ToastViewport";
 import { ToastProvider, useToasts } from "./ToastProvider";
 import { enqueueToast } from "./useToastQueue";
 import { CatalogComposite } from "../../features/ui-lab/CatalogComposite";
+import { AppServicesProvider } from "../../services/AppServicesProvider";
+import { createUiLabServices } from "../../features/ui-lab/services/createUiLabServices";
 
 let container: HTMLDivElement;
 let root: Root;
@@ -203,17 +205,19 @@ describe("controlled preferences, disclosure and search", () => {
     click(button("Clear rating"));
     expect(change).toHaveBeenCalledWith(undefined);
   });
-  it("preserves independent overall and modifier values through nested rating sheets", () => {
+  it("preserves independent overall and modifier values through nested rating sheets", async () => {
     vi.useFakeTimers();
+    const adapter = createUiLabServices({latencyMs:0});
     mount(
-      <ToastProvider>
-        <CatalogComposite />
-      </ToastProvider>,
+      <AppServicesProvider services={adapter.services}><ToastProvider>
+        <CatalogComposite diagnostics={adapter}/>
+      </ToastProvider></AppServicesProvider>,
     );
+    await act(async () => {await vi.advanceTimersByTimeAsync(0);});
     click(button("Collars overall: Not rated. Change rating"));
     click(button("Like"));
     expect(button("Collars overall: Like. Change rating")).toBeTruthy();
-    const row = document.querySelector('[data-item-id="Power Exchange:0"]')!;
+    const row = document.querySelector('[data-item-id="collars"]')!;
     click(
       [...row.querySelectorAll<HTMLButtonElement>("button")].find((element) =>
         element.textContent?.includes("Refine"),
@@ -234,20 +238,22 @@ describe("controlled preferences, disclosure and search", () => {
     expect(document.querySelector('[aria-label="Refine Collars"]')).toBeNull();
     expect(button("Collars overall: Like. Change rating")).toBeTruthy();
   });
-  it("keeps a failed latest rating recoverable with contextual Retry", () => {
+  it("keeps a failed latest rating recoverable with contextual Retry", async () => {
     vi.useFakeTimers();
+    const adapter = createUiLabServices({latencyMs:0});
     mount(
-      <ToastProvider>
-        <CatalogComposite />
-      </ToastProvider>,
+      <AppServicesProvider services={adapter.services}><ToastProvider>
+        <CatalogComposite diagnostics={adapter}/>
+      </ToastProvider></AppServicesProvider>,
     );
+    await act(async () => {await vi.advanceTimersByTimeAsync(0);});
     click(document.querySelector('input[type="checkbox"]')!);
     click(button("Collars overall: Not rated. Change rating"));
     click(button("Love"));
-    act(() => vi.advanceTimersByTime(850));
+    await act(async () => {await vi.advanceTimersByTimeAsync(850);});
     expect(button("Collars overall: Love. Change rating")).toBeTruthy();
     click(button("Retry saving Collars overall"));
-    act(() => vi.advanceTimersByTime(850));
+    await act(async () => {await vi.advanceTimersByTimeAsync(850);});
     expect(
       document.querySelector('[aria-label="Retry saving Collars overall"]'),
     ).toBeNull();

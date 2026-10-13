@@ -58,3 +58,8 @@
 
 @media(max-width:680px){.cc .kp-item-main:has(.cc-rp-indicators){flex:1 1 100%}}
 @media(max-width:680px){.cc .kp-item-row:has(.cc-rp-indicators)>.kp-rating-wrap{margin-left:auto}}
+
+.cc-search-target {
+  outline: 1px solid var(--kp-pink, #F0D3E7);
+  outline-offset: 2px;
+}
