@@ -14,7 +14,7 @@ type DialogEntry = {
 };
 const dialogs: DialogEntry[] = [];
 const focusableSelector =
-  'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
+  'button:not(:disabled), a[href], input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
 let previousOverflow = "";
 const listeners = new Set<() => void>();
 const notify = () => listeners.forEach((listener) => listener());
@@ -32,14 +32,55 @@ export function useModalOpen() {
   );
 }
 
+export function useModalPanel() {
+  return useSyncExternalStore(subscribe, () => dialogs.at(-1)?.panel ?? null, () => null);
+}
+
+// Hide only sibling branches, never an ancestor of the active dialog. Preserve
+// pre-existing attributes and recompute when nested dialogs/portal content change.
+const isolated = new Map<HTMLElement, { inert: string | null; hidden: string | null }>();
+let isolationObserver: MutationObserver | undefined;
+function restoreBackground() {
+  for (const [element, original] of isolated) {
+    if (original.inert === null) element.removeAttribute("inert");
+    else element.setAttribute("inert", original.inert);
+    if (original.hidden === null) element.removeAttribute("aria-hidden");
+    else element.setAttribute("aria-hidden", original.hidden);
+  }
+  isolated.clear();
+}
+function isolateBackground() {
+  restoreBackground();
+  const top = dialogs.at(-1);
+  if (!top) return;
+  const backdrop = top.panel.parentElement?.querySelector<HTMLElement>(".kp-modal-backdrop");
+  // The active backdrop stays pointer-operable; its own aria-hidden/tabindex
+  // keeps it out of assistive technology and sequential keyboard navigation.
+  const allowed = [top.panel, ...(backdrop ? [backdrop] : []), ...document.querySelectorAll<HTMLElement>("[data-modal-accessory]")];
+  function visit(parent: HTMLElement) {
+    for (const element of parent.children) {
+      if (!(element instanceof HTMLElement) || /^(SCRIPT|STYLE|LINK)$/.test(element.tagName)) continue;
+      if (allowed.includes(element)) continue;
+      if (allowed.some((surface) => element.contains(surface))) visit(element);
+      else {
+        isolated.set(element, { inert: element.getAttribute("inert"), hidden: element.getAttribute("aria-hidden") });
+        element.setAttribute("inert", "");
+        element.setAttribute("aria-hidden", "true");
+      }
+    }
+  }
+  visit(document.body);
+}
+
 function focusable(panel: HTMLElement) {
-  return [
+  return [...new Set([
     ...panel.querySelectorAll<HTMLElement>(focusableSelector),
     ...document.querySelectorAll<HTMLElement>(
       `[data-modal-accessory] ${focusableSelector.split(", ").join(", [data-modal-accessory] ")}`,
     ),
-  ].filter(
+  ])].filter(
     (element) =>
+      element.tabIndex >= 0 &&
       !element.closest('[hidden], [inert], [aria-hidden="true"]') &&
       element.getClientRects().length > 0,
   );
@@ -143,6 +184,8 @@ function ModalSurface({
       document.body.style.overflow = "hidden";
       document.addEventListener("keydown", handleKey, true);
       document.addEventListener("focusin", handleFocus);
+      isolationObserver = new MutationObserver(isolateBackground);
+      isolationObserver.observe(document.body, { childList: true, subtree: true });
     }
     // Child effects can register first; ancestors must stay below their children.
     const childIndex = dialogs.findIndex((dialog) =>
@@ -154,18 +197,25 @@ function ModalSurface({
       dialogs.splice(childIndex, 0, entry);
     }
     notify();
+    // A newly mounted sheet may have been isolated by the observer before its
+    // effect registers. Release that isolation before trying to focus its title.
+    restoreBackground();
     if (dialogs.at(-1) === entry && !panel.contains(document.activeElement))
       focusDialog(panel);
+    isolateBackground();
     return () => {
       const wasTop = dialogs.at(-1) === entry;
       const index = dialogs.indexOf(entry);
       if (index !== -1) dialogs.splice(index, 1);
       notify();
       if (!dialogs.length) {
+        isolationObserver?.disconnect();
+        isolationObserver = undefined;
         document.body.style.overflow = previousOverflow;
         document.removeEventListener("keydown", handleKey, true);
         document.removeEventListener("focusin", handleFocus);
       }
+      isolateBackground();
       if (wasTop) {
         const target = entry.returnFocus;
         const top = dialogs.at(-1);
@@ -182,6 +232,7 @@ function ModalSurface({
         tabIndex={-1}
         className={`kp-modal-backdrop ${backdropClassName}`}
         aria-label={closeLabel}
+        aria-hidden="true"
         onClick={onClose}
       />
       <section

@@ -32,7 +32,7 @@ export function ItemRow({
             type="button"
             className="kp-refine-toggle"
             aria-haspopup="dialog"
-            aria-label={refineStatus === "failed" ? `${name}: Modifier save failed. Reveal issue` : refineStatus === "saving" ? `${name}: Saving modifiers. Refine` : undefined}
+            aria-label={refineStatus === "failed" ? `${name}: Modifier save failed. Reveal issue` : refineStatus === "saving" ? `${name}: Saving modifiers. Refine` : `Refine ${name}${refined ? ". Has rated modifiers" : ""}`}
             onClick={onRefine}
           >
             <span aria-hidden="true">+</span> Refine

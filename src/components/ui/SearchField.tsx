@@ -53,6 +53,7 @@ export function SearchField(props: SearchFieldProps) {
         type="button"
         className="kp-ui kp-search-field kp-search-field--launch"
         aria-label={props.ariaLabel || props.placeholder}
+        aria-haspopup="dialog"
         onClick={props.onActivate}
       >
         <SearchIcon />

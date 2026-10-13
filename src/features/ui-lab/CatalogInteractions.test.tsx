@@ -54,8 +54,8 @@ it("clears with genuine exact-value Undo while a previous save is pending", () =
   expect(button("Collars overall: Not rated. Change rating")).toBeTruthy();
   click(button("Undo")); advance(850);
   expect(button("Collars overall: Curious. Change rating")).toBeTruthy();
-  expect(document.querySelector('[aria-label="Collars overall: Saved"]')).not.toBeNull();
-  advance(1250); expect(document.querySelector('[aria-label="Collars overall: Saved"]')).toBeNull();
+  expect([...document.querySelectorAll('[role="status"]')].find(node=>node.textContent==="Collars overall: Saved")??null).not.toBeNull();
+  advance(1250); expect([...document.querySelectorAll('[role="status"]')].find(node=>node.textContent==="Collars overall: Saved")??null).toBeNull();
 });
 
 it("an older Undo never overwrites a newer explicit edit", () => {
