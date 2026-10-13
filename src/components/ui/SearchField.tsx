@@ -1,6 +1,7 @@
 import { useRef } from "react";
+import "./search.css";
 
-type CatalogSearchFieldProps =
+export type SearchFieldProps =
   | {
       mode: "launch";
       placeholder: string;
@@ -22,7 +23,7 @@ type CatalogSearchFieldProps =
 function SearchIcon() {
   return (
     <svg
-      className="lab-search-field__icon"
+      className="kp-search-field__icon"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -38,30 +39,32 @@ function SearchIcon() {
 }
 
 /**
- * Shared search-field surface for the UI Lab's landing-page launcher,
- * Catalog collection lists, and global search dialog.
+ * Shared launcher and editable search surface. Matching and result policy
+ * belong to the caller.
  * The launcher is a button; editable locations render the same surface
  * with a search input and optional clear action.
  */
-export function CatalogSearchField(props: CatalogSearchFieldProps) {
+export function SearchField(props: SearchFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   if (props.mode === "launch") {
     return (
       <button
         type="button"
-        className="lab-search-field lab-search-field--launch"
+        className="kp-ui kp-search-field kp-search-field--launch"
         aria-label={props.ariaLabel || props.placeholder}
         onClick={props.onActivate}
       >
         <SearchIcon />
-        <span className="lab-search-field__placeholder">{props.placeholder}</span>
+        <span className="kp-search-field__placeholder">
+          {props.placeholder}
+        </span>
       </button>
     );
   }
 
   return (
-    <div className="lab-search-field lab-search-field--input">
+    <div className="kp-ui kp-search-field kp-search-field--input">
       <SearchIcon />
       <input
         ref={inputRef}
@@ -78,7 +81,7 @@ export function CatalogSearchField(props: CatalogSearchFieldProps) {
       {props.value && (
         <button
           type="button"
-          className="lab-search-field__clear"
+          className="kp-search-field__clear"
           aria-label="Clear search"
           onClick={() => {
             props.onClear();

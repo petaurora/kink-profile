@@ -28,7 +28,7 @@
 
 
 .ui-lab-app-overlay{position:fixed;inset:0;z-index:30;background:#050511bb;display:grid;place-items:center;padding:22px}
-.ui-lab-app-overlay>div{background:#211c3b;border:1px solid #8e6381;border-radius:18px;padding:25px;width:min(430px,100%)}.ui-lab-app-overlay button{float:right;background:none;border:0;color:white;font-size:26px}
+.ui-lab-app-overlay>.ui-lab-detail-dialog{background:#211c3b;border:1px solid #8e6381;border-radius:18px;padding:25px;width:min(430px,100%)}.ui-lab-app-overlay button{float:right;background:none;border:0;color:white;font-size:26px}
 .ui-lab-app-design{margin-top:30px;padding:22px;background:#211c3b;border-radius:15px}.ui-lab-app-design a{color:#f0d3e7}
 .ui-lab-app-swatches{display:flex;gap:10px;margin:15px 0}.ui-lab-app-swatches div{height:45px;flex:1;border:1px solid #ffffff40;border-radius:8px}
 @media(max-width:700px){
@@ -377,120 +377,6 @@
 @media(max-width:450px){.ui-lab-subject-feature-grid{gap:9px}.ui-lab-subject-feature{min-height:190px}.ui-lab-subject-art{height:94px;font-size:52px}.ui-lab-subject-feature-copy{padding:10px 22px 12px 10px}.ui-lab-subject-feature-copy strong{font-size:12px}.ui-lab-subject-feature-copy small{font-size:10px}}
 
 
-/* Canonical search field design: Catalog landing, Kinks, R/P, Explore All,
-   Concept Explorer and global search all use the same component and tokens. */
-.ui-lab-app{
-  --lab-search-bg:#17183f;
-  --lab-search-border:#f0d3e74a;
-  --lab-search-radius:12px;
-  --lab-search-height:52px;
-}
-.ui-lab-app .lab-search-field{
-  appearance:none;
-  -webkit-appearance:none;
-  box-sizing:border-box;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  width:100%;
-  min-width:0;
-  height:var(--lab-search-height);
-  min-height:var(--lab-search-height);
-  margin:0;
-  padding:0 14px;
-  border:1px solid var(--lab-search-border);
-  border-radius:var(--lab-search-radius);
-  background:var(--lab-search-bg);
-  box-shadow:none;
-  color:#f0d3e7;
-  font:inherit;
-  font-size:14px;
-  font-weight:400;
-  line-height:1.4;
-}
-.ui-lab-app button.lab-search-field--launch{
-  cursor:pointer;
-  text-align:left;
-}
-.ui-lab-app .lab-search-field__icon{
-  width:20px;
-  height:20px;
-  flex:none;
-  color:#bba9c4;
-  pointer-events:none;
-}
-.ui-lab-app .lab-search-field__placeholder{
-  flex:1;
-  min-width:0;
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-  color:#bba9c4;
-}
-.ui-lab-app .lab-search-field input[type="search"]{
-  appearance:none;
-  -webkit-appearance:none;
-  display:block;
-  flex:1;
-  width:100%;
-  min-width:0;
-  height:100%;
-  min-height:0;
-  padding:0;
-  margin:0;
-  border:0;
-  border-radius:0;
-  outline:0;
-  background:transparent;
-  box-shadow:none;
-  color:#f0d3e7;
-  font:inherit;
-  font-size:14px;
-}
-.ui-lab-app .lab-search-field input[type="search"]::placeholder{
-  color:#bba9c4;
-  opacity:1;
-}
-.ui-lab-app .lab-search-field input[type="search"]::-webkit-search-cancel-button{
-  -webkit-appearance:none;
-  appearance:none;
-}
-.ui-lab-app .lab-search-field:focus-within,
-.ui-lab-app button.lab-search-field--launch:focus-visible{
-  border-color:#f0d3e7;
-  box-shadow:0 0 0 1px #f0d3e775;
-  outline:0;
-}
-.ui-lab-app .lab-search-field__clear{
-  appearance:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  flex:none;
-  width:40px;
-  height:44px;
-  min-width:40px;
-  padding:0;
-  margin-right:-9px;
-  border:0;
-  border-radius:8px;
-  background:transparent;
-  color:#f0d3e7;
-  cursor:pointer;
-}
-.ui-lab-app .lab-search-field__clear svg{
-  width:18px;
-  height:18px;
-}
-.ui-lab-app .lab-search-field__clear:hover{background:#f0d3e714}
-.ui-lab-app .lab-search-field__clear:focus-visible{
-  outline:2px solid #f0d3e7;
-  outline-offset:-3px;
-}
-@media(max-width:680px){
-  .ui-lab-app .lab-search-field__clear{width:44px;min-width:44px}
-}
-
 /* Catalog collection rows, ahead of featured subjects. */
 .ui-lab-collections{margin:20px 0 24px}
 .ui-lab-collections h2{font-size:17px;color:#f0d3e7;margin:0 0 10px}
@@ -500,189 +386,6 @@
 .ui-lab-collections small{font-size:11px;color:#d2bbd2}
 .ui-lab-rp-note{font-size:12px;color:#d2bbd2}
 
-/* Shared search/filter row, content chips and concise Sort & Group sheet. */
-.ui-lab-app .lab-search-row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  width:100%;
-  min-width:0;
-}
-.ui-lab-app .lab-search-row .lab-search-field{flex:1 1 auto;width:auto;min-width:0}
-.ui-lab-app .lab-search-filter-trigger{
-  appearance:none;
-  display:inline-flex;
-  flex:none;
-  align-items:center;
-  justify-content:center;
-  width:var(--lab-search-height);
-  height:var(--lab-search-height);
-  min-width:var(--lab-search-height);
-  padding:0;
-  border:1px solid var(--lab-search-border);
-  border-radius:var(--lab-search-radius);
-  background:var(--lab-search-bg);
-  color:#cbb4ca;
-  cursor:pointer;
-}
-.ui-lab-app .lab-search-filter-trigger:hover,
-.ui-lab-app .lab-search-filter-trigger.is-active{
-  border-color:#f0d3e7a6;
-  background:#520e254f;
-  color:#f0d3e7;
-}
-.ui-lab-app .lab-search-filter-trigger:focus-visible{
-  border-color:#f0d3e7;
-  outline:2px solid #f0d3e7;
-  outline-offset:2px;
-}
-.ui-lab-app .lab-search-chips{
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:8px;
-  margin:12px 0 10px;
-}
-.ui-lab-app .lab-search-chip{
-  appearance:none;
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  min-height:40px;
-  padding:8px 13px;
-  margin:0;
-  border:1px solid #f0d3e74a;
-  border-radius:999px;
-  background:#f0d3e708;
-  color:#f0d3e7;
-  font:inherit;
-  font-size:12px;
-  line-height:1.2;
-  white-space:nowrap;
-  cursor:pointer;
-}
-.ui-lab-app .lab-search-chip.is-active{
-  background:#520e25;
-  border-color:#f0d3e7aa;
-}
-.ui-lab-app .lab-search-chip:hover{border-color:#f0d3e78b}
-.ui-lab-app .lab-search-chip:focus-visible,
-.ui-lab-app .lab-search-chips-clear:focus-visible{
-  outline:2px solid #f0d3e7;
-  outline-offset:2px;
-}
-.ui-lab-app .lab-search-chips-clear{
-  min-height:40px;
-  padding:7px 4px;
-  border:0;
-  background:transparent;
-  color:#d6b9ce;
-  font:inherit;
-  font-size:12px;
-  text-decoration:underline;
-  cursor:pointer;
-}
-.ui-lab-app .lab-order-layer{
-  position:fixed;
-  inset:0;
-  z-index:1600;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  padding:12px;
-}
-.ui-lab-app .lab-order-backdrop{
-  position:absolute;
-  inset:0;
-  border:0;
-  background:#06071cc9;
-  cursor:default;
-}
-.ui-lab-app .lab-order-sheet{
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-  width:min(480px,100%);
-  max-height:calc(100dvh - 24px);
-  padding:20px;
-  overflow-y:auto;
-  border:1px solid #f0d3e748;
-  border-radius:19px;
-  background:#17183f;
-  color:#f0d3e7;
-  box-shadow:0 18px 56px #0009;
-}
-.ui-lab-app .lab-order-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.ui-lab-app .lab-order-header h2{
-  margin:0;
-  font-size:19px;
-  font-weight:650;
-  color:#f0d3e7;
-}
-.ui-lab-app .lab-order-header h2:focus{outline:none}
-.ui-lab-app .lab-order-close{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:44px;
-  min-height:44px;
-  padding:0;
-  border:0;
-  border-radius:8px;
-  background:transparent;
-  color:#f0d3e7;
-  font-size:26px;
-  cursor:pointer;
-}
-.ui-lab-app .lab-order-section{
-  display:flex;
-  flex-direction:column;
-  gap:0;
-  min-width:0;
-  margin:0;
-  padding:0;
-  border:0;
-}
-.ui-lab-app .lab-order-section legend{
-  padding:0 0 10px;
-  font-size:13px;
-  font-weight:650;
-  color:#f0d3e7;
-}
-.ui-lab-app .lab-order-option{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  min-height:44px;
-  width:100%;
-  padding:10px 4px;
-  border:0;
-  border-bottom:1px solid #f0d3e721;
-  background:transparent;
-  color:#e6c9dc;
-  font:inherit;
-  font-size:13px;
-  text-align:left;
-  cursor:pointer;
-}
-.ui-lab-app .lab-order-option.is-selected{color:#f0d3e7;font-weight:650}
-.ui-lab-app .lab-order-option.is-selected span{color:#bce1cb}
-.ui-lab-app .lab-order-option:focus-visible,
-.ui-lab-app .lab-order-close:focus-visible,
-.ui-lab-app .lab-order-done:focus-visible{outline:2px solid #f0d3e7;outline-offset:2px}
-.ui-lab-app .lab-order-done{
-  min-height:44px;
-  border:1px solid #f0d3e76b;
-  border-radius:10px;
-  background:#520e25;
-  color:#f0d3e7;
-  font:inherit;
-  font-size:13px;
-  font-weight:650;
-  cursor:pointer;
-}
 .ui-lab-app .cc-toolbar--compact{justify-content:flex-start;padding-top:10px}
 .ui-lab-app .ui-lab-search-results .lab-search-results-section{display:flex;flex-direction:column}
 .ui-lab-app .ui-lab-search-results .lab-search-results-heading{
@@ -710,11 +413,11 @@
   font-size:20px;
   color:#d6b0ca;
 }
-@media(max-width:680px){
-  .ui-lab-app .lab-order-layer{padding:0}
-  .ui-lab-app .lab-order-sheet{
-    width:100%;
-    border-radius:18px 18px 0 0;
-    padding:20px 18px max(20px, env(safe-area-inset-bottom));
-  }
-}
+
+/* Visual shell variants composed over the shared modal interaction layer. */
+.ui-lab-app .ui-lab-menu-layer { align-items:stretch; justify-content:flex-start; padding:0; }
+.ui-lab-app .ui-lab-menu-drawer { border-radius:0; border-top:0; border-bottom:0; border-left:0; }
+.ui-lab-app .ui-lab-search-dialog { padding:0; }
+.ui-lab-app .ui-lab-app-overlay { z-index:1300; }
+.ui-lab-app .ui-lab-detail-dialog { grid-area:1 / 1; }
+.ui-lab-app .ui-lab-app-overlay>.kp-modal-backdrop { background:transparent; }

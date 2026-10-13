@@ -1,0 +1,65 @@
+@import "./tokens.css";
+.kp-item-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 46px;
+  flex-wrap: wrap;
+  padding: 3px 0;
+  border-bottom: 1px solid #f0d3e71a;
+}
+.kp-item-main {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 9px 3px;
+}
+.kp-item-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  line-height: 1.3;
+}
+.kp-refine-toggle {
+  border: 0;
+  background: transparent;
+  color: #eac6da;
+  border-radius: 7px;
+  padding: 7px 6px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 12px !important;
+  white-space: nowrap;
+}
+.kp-refine-toggle:hover {
+  background: #f0d3e710;
+}
+.kp-refine-toggle > span:first-child {
+  font-size: 17px;
+  line-height: 1;
+}
+.kp-refined-dot {
+  width: 5px;
+  height: 5px;
+  background: #ba819d;
+  border-radius: 50%;
+  display: inline-block;
+}
+@media (max-width: 680px) {
+  .kp-item-main {
+    gap: 5px;
+    padding: 3px 2px 0;
+  }
+  .kp-item-name {
+    font-size: 13px;
+  }
+  .kp-refine-toggle {
+    font-size: 11px !important;
+    padding: 6px 3px;
+  }
+}
