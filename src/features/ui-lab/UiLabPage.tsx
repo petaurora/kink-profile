@@ -158,7 +158,7 @@ function UiLabContent() {
     {area!=="Catalog"&&<LabSaveSummary/>}
     {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>navigate(area)}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
     <h1 id="ui-lab-page-heading" ref={pageHeading} tabIndex={-1} className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
-    {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":area==="Learn"?"Read, reflect, and explore ideas without recording personal preferences.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
+    {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":area==="Learn"?"A library for curiosity, questions, and safer exploration.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
     {area==="Catalog"&&<div className="ui-lab-catalog">
 
       {!workspace&&<>
