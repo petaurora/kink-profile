@@ -11,7 +11,7 @@ it("lists fourteen stable summaries and loads full Markdown only for a requested
   const service=createUiLabServices({latencyMs:0}).services.education!;
   const summary=await settle(service.listArticles());
   if(!("value" in summary))throw new Error("Education list failed");
-  expect(summary.value).toHaveLength(14);
+  expect(summary.value).toHaveLength(15);
   expect(summary.value.map(x=>x.id)).toContain("edu-collars");
   expect(summary.value.find(x=>x.id==="edu-impact")).toMatchObject({slug:"impact-play-safety",section:"Practices & safety",readingMinutes:7});
   expect(summary.value.find(x=>x.id==="edu-breath-safety")).toMatchObject({
