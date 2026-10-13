@@ -12,10 +12,14 @@ import { useLabRecords, useLabViewState } from "./LabRecords";
 import { preferenceChoices, PreferenceReference } from "./PreferenceVocabulary";
 
 import { useLabCatalog, type Item } from "./LabCatalog";
+import { approvedV2Slice } from "../../catalog-v2/approvedSlice";
+import { reviewedCatalogExpansion } from "../../catalog-v2/reviewedExpansion";
 import { getItemSearchMatch, normalizeSearch, searchMatchExplanation } from "../../services/search";
 const choices=preferenceChoices;
 export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,subject,compact=false,collection="kinks"}:{collection?:"kinks"|"rewards";initialItem?:string;initialGroup?:string;initialValue?:string;subject?:string;compact?:boolean;onClose?:()=>void}){
  const {data,items,catalogSeeds,classifications:classification}=useLabCatalog();
+ const curatedIds=new Set([...approvedV2Slice.items,...reviewedCatalogExpansion.items].map(item=>item.id));
+ const illustrativeCount=items.filter(item=>!curatedIds.has(item.id)).length;
  const searchId=useId(), resultsId=useId(), categoryPrefix=useId();
  const panelId=(name:string)=>categoryPrefix+"-"+encodeURIComponent(name);
  const isRewards=collection==="rewards";
@@ -133,7 +137,7 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  }
  return <section className="cc" ref={root} aria-label="Interactive inline Catalog prototype">
 
-  {!compact&&<div className="cc-demo cc-demo-compact"><span>{items.length} sample Items · Session only · Local service saves</span><label><input type="checkbox" checked={failNext} onChange={e=>setFailNext(e.target.checked)}/> Test save failure</label></div>}
+  {!compact&&<div className="cc-demo cc-demo-compact"><span>{curatedIds.size} reviewed Items + {illustrativeCount} illustrative placeholders · Catalog V2 migration incomplete · Session-only saves</span><label><input type="checkbox" checked={failNext} onChange={e=>setFailNext(e.target.checked)}/> Test save failure</label></div>}
   {Object.values(saves).includes("failed")&&<div className="cc-error-summary" role="status"><span>{Object.values(saves).filter(v=>v==="failed").length} changes not saved · Latest edits kept</span><button onClick={()=>Object.keys(saves).filter(k=>saves[k]==="failed").forEach(retry)}>Retry all</button><button onClick={()=>revealIssue(Object.keys(saves).find(k=>saves[k]==="failed")!)}>Review issues</button></div>}
   <div className="cc-browser">{!compact&&<><label className="cc-search-label" htmlFor={searchId}>Search Items</label><SearchRow><SearchField mode="input" inputId={searchId} placeholder="Search Items…" ariaLabel={isRewards?"Search Items in rewards and punishments":"Search Items in kinks"} value={query} onChange={setQuery} onClear={clearSearch} resultsId={resultsId} /><SearchFilterButton active={sortBy!=="default"||effectiveGroupBy!=="none"} groupingAvailable={groupingAvailable} expanded={orderOpen} onClick={()=>setOrderOpen(true)}/></SearchRow>
    {isRewards&&<SearchChips label="Reward and punishment filters" options={[{id:"mine",label:"Mine",active:mine,onClick:()=>setMine(!mine)},{id:"reward",label:"Reward",active:reward,onClick:()=>setReward(!reward)},{id:"punishment",label:"Punishment",active:punishment,onClick:()=>setPunishment(!punishment)},{id:"answers",opensDialog:true,expanded:filtersOpen,label:states.length?"Answers · "+states.length:"Answers",active:states.length>0,onClick:()=>setFiltersOpen(true)}]} clear={hasFilters?clearFilters:undefined}/>}
