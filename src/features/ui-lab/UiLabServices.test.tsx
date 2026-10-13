@@ -57,9 +57,30 @@ describe("service-backed UI Lab",()=>{
   });
 });
 
-it("keeps the inline ca search explainable from the visible Item names",async()=>{
+it("puts name matches first and explains supporting-text hits in the inline Catalog",async()=>{
   const adapter=createUiLabServices({latencyMs:0});mount(adapter);await advance();openKinks();
   const input=container.querySelector<HTMLInputElement>('[aria-label="Search Items in kinks"]')!;
   act(()=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")!.set!.call(input,"ca");input.dispatchEvent(new Event("input",{bubbles:true}));});await advance(275);
-  expect([...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'))).toEqual(["aftercare"]);
+  expect([...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'))).toEqual(["aftercare","permission-rituals"]);
+  expect(container.querySelector('[data-item-id="aftercare"] .kp-item-supporting-text')).toBeNull();
+  expect(container.querySelector('[data-item-id="permission-rituals"] .kp-item-supporting-text')?.textContent).toContain("Matched description: “Ceremonial or practical");
+  click(button("Sort and group results"));click(button("Name: Z–A"));click(button("Done"));
+  expect([...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'))).toEqual(["permission-rituals","aftercare"]);
+  click(button("Clear search"));expect(container.querySelector('.kp-item-supporting-text')).toBeNull();
+});
+
+it("uses best matches for an R/P query while keeping alphabetical browsing and explicit sorting",async()=>{
+  const data=structuredClone(labReferenceData);data.items.find(item=>item.id==="praise")!.description="Permission can accompany praise.";
+  const adapter=createUiLabServices({latencyMs:0,referenceData:data});mount(adapter);await advance();click(button("Catalog"));
+  click([...container.querySelectorAll<HTMLButtonElement>("button")].find(node=>node.querySelector("strong")?.textContent==="Rewards & Punishments")!);
+  const rows=()=>[...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'));
+  const names=rows().map(id=>data.items.find(item=>item.id===id)!.name);
+  expect(names).toEqual([...names].sort((a,b)=>a.localeCompare(b)));
+  const input=container.querySelector<HTMLInputElement>('[aria-label="Search Items in rewards and punishments"]')!;
+  act(()=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")!.set!.call(input,"permission");input.dispatchEvent(new Event("input",{bubbles:true}));});await advance(275);
+  expect(rows()[0]).toBe("permission-rituals");expect(rows()).toContain("praise");
+  click(button("Sort and group results"));
+  const best=[...container.querySelectorAll<HTMLButtonElement>("button")].find(node=>node.textContent?.startsWith("Best matches"))!;
+  expect(best.getAttribute("aria-pressed")).toBe("true");click(button("Name: Z–A"));click(button("Done"));
+  expect(rows()[0]).toBe("privileges");
 });

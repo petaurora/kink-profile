@@ -53,6 +53,8 @@ durable write, cross-device sync, permission or consent.
 
 Global Search indexes the same sample Item/modifier records as local lists, plus
 illustrative concepts. Context changes suggestions, without applying a type filter.
+All indexed text is searchable, including short metadata substrings. Exact names,
+name prefixes and other name matches rank ahead of supporting-text matches.
 Queries process after a 200 ms debounce. Relevance order provides Best matches,
 then nonempty Item/Modifier/Concept sections without repeating target IDs. Type
 chips filter; the options sheet sorts only. Clear resets query and type filters,
@@ -78,5 +80,7 @@ initial explicit records through AppServicesProvider. LabRecordsProvider is the
 single mutable UI coordinator for ratings, concept preferences and experience;
 its writes use the typed async adapter. Standalone component tests use the same
 sample fixtures/local adapter without interpreting a failed API read as success.
-Short Catalog queries match visible names, with longer hidden-metadata matches
-restricted to word prefixes. See [Application Services](app-services.md).
+Inline Catalog queries search names, descriptions, categories and modifiers.
+Default search order puts name matches first, with small matching-field excerpts
+under supporting-text results. Clearing search restores ordinary browsing;
+explicit alphabetical sorting remains available. See [Application Services](app-services.md).

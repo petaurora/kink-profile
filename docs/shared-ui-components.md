@@ -22,7 +22,7 @@ been migrated to the experimental treatments merely because the code is shared.
 | `SheetHeader` | Shared title, context and accessible close target | Title/context and any header accessory |
 | `PreferenceControl` / `PreferenceSheet` | Controlled value, arrow focus and explicit commit; optional controlled help and Clear | Rating vocabulary, independently keyed values, persistence and retry |
 | `InlineSaveStatus` | Reserved status slot; idle/saving/saved/failed presentation | Truthful persistence state and Retry implementation |
-| `ItemRow` | Compact identity, indicator, preference and Refine slots | Item data, optional modifiers, aggregate save status and classification indicators |
+| `ItemRow` | Compact identity, optional supporting text, indicator, preference and Refine slots | Item data, search-match explanation, optional modifiers, aggregate save status and classification indicators |
 | `DisclosureSection` | Controlled disclosure with a stable panel ID | Expanded state and panel content; opening never records preference |
 | `ToastProvider` / `useToasts` | One queue/viewport at the application boundary | Meaningful notifications and genuine recovery/Undo actions |
 | `ToastViewport` / `useToastQueue` | Lower-level controlled viewport and queue primitives | Mount only one viewport per chosen notification scope |

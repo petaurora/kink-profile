@@ -96,8 +96,18 @@ relationship/tool records and live collaboration are outside this slice.
 
 ## Search matching
 
-Names support partial-word searches. Hidden description, category and modifier
-metadata participates only for terms of at least three characters and matches
-word prefixes, not arbitrary substrings. Thus `ca` finds Aftercare through its
-visible name but does not match Permission Rituals through the word `practical`.
-Longer queries such as Leather can still discover a parent Item's modifiers.
+Catalog lists search Item names, descriptions, categories and modifier text,
+including short substrings. Default query ordering ranks exact names, name
+prefixes and other all-term name matches ahead of supporting-text matches.
+For example, `ca` shows Aftercare before Permission Rituals; the latter has small
+subtext explaining the matching description containing `practical`. Mixed
+name/metadata queries also explain the supporting fields needed for the match.
+Empty queries retain the browsing order (alphabetical in R/P), and explicit
+A–Z/Z–A sorting and category grouping remain presentation choices.
+
+Global search searches all indexed text for Item, exact modifier and concept
+targets, including descriptions, categories, modifier context, linked concepts
+and related Item names. It uses the same name relevance tiers for Best matches,
+then retains the existing type sections and optional alphabetical sorting.
+Transport IDs are not searchable text. Global search and an inline Catalog list
+share normalization and ranking rules, but remain distinct result experiences.

@@ -1,5 +1,5 @@
 import type { CatalogReferenceData, CatalogItem } from "../../services/contracts";
-import { matchesNamedSearch, normalizeSearch } from "../../services/search";
+import { getItemSearchMatch, normalizeSearch } from "../../services/search";
 import { useOptionalServiceData } from "../../services/AppServicesProvider";
 import { labReferenceData, labInitialPreferences } from "./services/fixtures";
 export type Item={id:string;name:string;category:string;description?:string;groups:{name:string;values:string[]}[]};
@@ -8,5 +8,5 @@ export function toLabConcepts(data:CatalogReferenceData){return data.concepts.ma
 export const items=toLabItems(labReferenceData);
 export const catalogSeeds=Object.fromEntries([...new Set(items.map(item=>item.category))].map(category=>[category,items.filter(item=>item.category===category).map(item=>item.name)]));
 export const normalizedSearch=normalizeSearch;
-export function matchesCatalogSearch(item:Item,query:string){return matchesNamedSearch(item.name,[item.description||"",item.category,...item.groups.flatMap(group=>[group.name,...group.values])].join(" "),query);}
+export function matchesCatalogSearch(item:Item,query:string){return getItemSearchMatch(item,query)!==null;}
 export function useLabCatalog(){const loaded=useOptionalServiceData();const data=loaded?.referenceData??labReferenceData;return {data,items:toLabItems(data),concepts:toLabConcepts(data),classifications:(loaded?.snapshot??labInitialPreferences).classifications,catalogSeeds:Object.fromEntries([...new Set(data.items.map(item=>item.category))].map(category=>[category,[]]))};}

@@ -31,6 +31,11 @@ it('opens unrestricted and global clear resets the type and query with input foc
   mount();expect(button('All').getAttribute('aria-pressed')).toBe('true');query('leather');await flush();click(button('Modifiers'));click(button('Clear search'));
   expect(button('All').getAttribute('aria-pressed')).toBe('true');expect((document.activeElement as HTMLInputElement).id).toBe('lab-global-query');expect((document.activeElement as HTMLInputElement).value).toBe('');
 });
+it('searches all indexed text globally and puts a matching Item name ahead of metadata hits',async()=>{
+  mount();query('ca');await flush();
+  expect(document.querySelector('[data-search-result]')?.getAttribute('data-search-result')).toBe('item:aftercare');
+  expect(document.querySelector('[data-search-result="item:permission-rituals"]')).not.toBeNull();
+});
 it('debounces processing and keeps Sort separate from result type filters',async()=>{
   const search=vi.fn(async(q:string)=>searchCatalog(q));mount(search);query('collars');await flush(199);expect(search).not.toHaveBeenCalled();await flush(1);expect(search).toHaveBeenCalledWith('collars',expect.objectContaining({signal:expect.any(AbortSignal)}));
   click(button('Sort results'));expect(document.body.textContent).not.toContain('Group by');

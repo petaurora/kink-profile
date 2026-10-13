@@ -56,10 +56,9 @@ describe("UI Lab adapter contract",()=>{
   });
 });
 
-it("matches short Item queries against visible names rather than hidden description substrings",async()=>{
+it("ranks Item names ahead of short supporting-text matches",async()=>{
   const {services}=createUiLabServices();
-  expect(await settle(services.search.search({text:"ca",type:"Items"}))).toMatchObject({value:[{name:"Aftercare"}]});
-  const result=await settle(services.search.search({text:"ca",type:"Items"}));if("value" in result)expect(result.value.some(item=>item.name==="Permission Rituals")).toBe(false);
+  expect(await settle(services.search.search({text:"ca",type:"Items"}))).toMatchObject({value:[{name:"Aftercare"},{name:"Permission Rituals"}]});
 });
 it("accepts every canonical preference state without changing its meaning",async()=>{
   const {services}=createUiLabServices();
