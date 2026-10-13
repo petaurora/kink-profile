@@ -21,3 +21,11 @@ This is the first **migration-backed vertical slice**, stacked on PR #276. It do
 5. Add durable versioned storage and API adapter only when data semantics are stable.
 
 Source of truth: Catalog refinement Notion document and GitHub issue #255.
+
+## Reviewed expansion — PR #291
+
+`reviewedExpansion.ts` provides additional approved Items from Batch 1 (#256), Batch 17 (#272, including superseding 2026-10-08 corrections) and Batch 18 (#274). The Lab's replaceable reference-service fixture serves the expanded, curated subset and prefers approved group definitions over corresponding illustrative rows. Non-exclusive discovery themes are also added.
+
+The executable migration ledger currently covers 23 directly specified Batch 1 source IDs plus the Collars mapping. Unresolved destinations include posture collar (needs the fully reconciled Collars type model) and stocks/pillory (the furniture Item-vs-family boundary remains unsettled). The source-to-ID mapping for Batch 17 and 18 must be reconciled against generated V1 artifacts before imports are allowed. Other reviewed batches have not yet been encoded. Deferred Batch 7 remains outside migration.
+
+This is an incremental, additive UI integration. It does **not** replace all original Lab fixtures, carry out stored-profile data migration, or declare the full Catalog V2 model complete. Run CI and preview checks on this branch and reconcile the remaining ledgers before considering promotion to canonical production reference data.
