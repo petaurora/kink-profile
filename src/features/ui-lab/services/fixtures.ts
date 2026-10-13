@@ -1,3 +1,4 @@
+import { additionalReviewedCatalog } from "../../../catalog-v2/additionalReviewed";
 import { reviewedCatalogExpansion } from "../../../catalog-v2/reviewedExpansion";
 import { approvedV2Slice } from "../../../catalog-v2/approvedSlice";
 import { replaceReferenceCatalog } from "../../../catalog-v2/toAppReference";
@@ -133,10 +134,17 @@ const illustrativeReferenceData: CatalogReferenceData = {
     ...["Collars","Aftercare","Primal Play","Sensory Play","Service","Roleplay","Praise","Protocol","Temperature Play","Pet Play"].map(name => ({id:"subject-"+ids[name],name,description:"Explore related Catalog Items and refine your preferences."})),
   ].map(subject => ({...subject,itemIds:catalogItems.filter(item => item.category === subject.name || item.name === subject.name).map(item => item.id)})),
 };
+/** Default V2 reference data is curated-only. Illustrative fixtures are never merged into the real browse list. */
+const curatedBase:CatalogReferenceData = {items:[],subjects:[],concepts:illustrativeReferenceData.concepts};
 export const labReferenceData: CatalogReferenceData = replaceReferenceCatalog(
-  replaceReferenceCatalog(illustrativeReferenceData, approvedV2Slice),
-  reviewedCatalogExpansion,
+  replaceReferenceCatalog(
+    replaceReferenceCatalog(curatedBase, approvedV2Slice),
+    reviewedCatalogExpansion,
+  ),
+  additionalReviewedCatalog,
 );
+/** For isolated component or search tests that expressly require the old demo dataset. */
+export { illustrativeReferenceData };
 // Stable, explicitly illustrative classifications; no inference from general ratings.
 export const labInitialPreferences: PreferenceSnapshot = {
   ratings: {},
