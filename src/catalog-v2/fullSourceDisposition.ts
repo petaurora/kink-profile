@@ -78,3 +78,32 @@ export function planLosslessV1Migration(
   );
   return {...result, retainedLegacyRatings};
 }
+
+/** Durable archive payload for the future database migration.
+ * Only un-applied original preferences are archived. Neither exclusions nor
+ * uncertain mappings are translated into new V2 preferences.
+ * This function is pure: callers must persist the returned payload; it does
+ * not imply any existing browser data has already been archived.
+ */
+export type LegacyPreferenceArchive = {
+  schemaVersion:1;
+  source:"kink-catalog-v1";
+  status:"awaiting-db-reconciliation";
+  ratings:Record<string,PreferenceRating>;
+  reasons:Record<string,string>;
+};
+export function buildLegacyPreferenceArchive(
+  original:Record<string,PreferenceRating>,
+  catalog:CatalogV2,
+  existing:Record<string,PreferenceRating> = {},
+):{ migratedRatings:Record<string,PreferenceRating>; archive:LegacyPreferenceArchive; report:MigrationReport } {
+  const {retainedLegacyRatings,...report}=planLosslessV1Migration(original,catalog,existing);
+  const reasons=Object.fromEntries([
+    ...report.unresolved.map(({sourceId,reason})=>[sourceId,reason]),
+    ...report.conflicts.map(({sourceId})=>[sourceId,"Conflicting existing V2 preference"]),
+  ]);
+  return {migratedRatings:report.ratings,archive:{
+    schemaVersion:1,source:"kink-catalog-v1",status:"awaiting-db-reconciliation",
+    ratings:retainedLegacyRatings,reasons,
+  },report};
+}
