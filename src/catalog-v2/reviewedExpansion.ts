@@ -27,7 +27,7 @@ const bondage = [
  make("Restraint Gear",["bondage","equipment"],[group("Material",["Leather","Metal"]),group("Type",["Under-Bed Restraint System","Bondage Mitts","Armbinder"])]),
 ];
 const control = [
- make("Orgasm Control",["orgasm-control"],[group("Direction",["Controlling","Being Controlled"]),group("Method",["Permission Required","Denial","Countdown / Release Cue"])]),
+ make("Orgasm Control",["orgasm-control"],[group("Direction",["Controlling","Being Controlled"]),group("Method",["Permission Required","Denial","Countdown","Release Cue"])]),
  ...["Edging","Ruined Orgasm","Multiple / Repeated Orgasm","Overstimulation","Post-Orgasm Stimulation"].map(n=>make(n,["orgasm-control"],[group("Role",role)])),
  make("Forced Orgasm",["orgasm-control"],[group("Role",pair)]),
  make("Chastity",["orgasm-control","equipment"],[group("Material",["Metal","Plastic","Silicone","Other"])]),
