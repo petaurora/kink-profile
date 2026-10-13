@@ -22,6 +22,7 @@ const topicOptions:{id:EducationSection | "all";label:string}[] = [
   {id:"Kinks, roles, and motivation",label:"Kinks & roles"},
   {id:"Relationship structures",label:"Relationships"},
   {id:"Collars, symbols, and rituals",label:"Collars & symbols"},
+  {id:"Practices & safety",label:"Practices & safety"},
 ];
 const starters=["edu-bd","edu-ds","edu-sm"];
 
