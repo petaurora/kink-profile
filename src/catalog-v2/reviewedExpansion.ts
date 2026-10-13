@@ -44,9 +44,9 @@ export const reviewedCatalogExpansion: CatalogV2 = {
  ],
 };
 /** Batch 1 IDs as explicitly written in #256. Unsupported composite rows remain unassigned. */
-export const reviewedBatch1Decisions:MigrationDecision[] = [
+export const reviewedBatch1Decisions:MigrationDecision[] = [...([
  ["rope-bondage","rope-bondage"],["predicament-bondage","predicament-bondage"],["cuffs","cuffs"]
-].map(([sourceId,targetItemId])=>({sourceId,targetItemId,outcome:"item" as const})).concat([
+].map(([sourceId,targetItemId])=>({sourceId,targetItemId,outcome:"item" as const})) as MigrationDecision[]), ...([
  ["shibari-kinbaku","rope-bondage","style","shibari-kinbaku"],
  ["rope-suspension","suspension-bondage","method","rope"],
  ["partial-suspension","suspension-bondage","support","partial"],
@@ -67,4 +67,4 @@ export const reviewedBatch1Decisions:MigrationDecision[] = [
  ["cage-confinement","confinement","environment-method","cage"],
  ["small-space-confinement","confinement","space","small-enclosed"],
  ["body-bag-bondage","encasement","method","body-bag"],
- ].map(([sourceId,targetItemId,groupId,valueId])=>({sourceId,targetItemId,groupId,valueId,outcome:"refinement" as const})));
+ ].map(([sourceId,targetItemId,groupId,valueId])=>({sourceId,targetItemId,groupId,valueId,outcome:"refinement" as const})))];
