@@ -27,7 +27,7 @@ describe("Education article footers",()=>{
     expect(body).toContain("Editorial status: draft.");
   });
   it("preserves paragraphs beginning with bold labels and bold phrases",()=>{
-    const markdown="## Redness, Welts, Bruises, and Marking\\n\\n**Redness** can result from temporary skin irritation.\\n\\n**Welts** are raised areas.\\n\\n**Bruises** occur when damaged blood vessels leak blood.\\n\\nMarking can be meaningful or unwelcome. **A bruise is evidence of tissue injury, not proof of skill.**";
+    const markdown="## Redness, Welts, Bruises, and Marking\n\n**Redness** can result from temporary skin irritation.\n\n**Welts** are raised areas.\n\n**Bruises** occur when damaged blood vessels leak blood.\n\nMarking can be meaningful or unwelcome. **A bruise is evidence of tissue injury, not proof of skill.**";
     const html=renderToStaticMarkup(EducationMarkdown({markdown}));
     expect(html).toContain("temporary skin irritation");
     expect(html).toContain("Welts</strong> are raised areas.");
