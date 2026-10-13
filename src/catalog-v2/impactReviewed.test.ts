@@ -14,7 +14,11 @@ describe("Batch 3 impact review parity (#258)",()=>{
   expect(find("floggers")?.groups.find(g=>g.id==="tip-style")?.values.map(v=>v.id)).toEqual(["plain-untied","knotted","weighted"]);
   expect(find("canes")?.groups.map(g=>g.id)).toEqual(["material","thickness"]);
   expect(find("canes")?.groups.find(g=>g.id==="thickness")?.values.map(v=>v.id)).toEqual(["thin","medium","thick"]);
-  expect(find("crops")?.groups.map(g=>g.id)).toEqual(["material","tip-style"]);
+  expect(find("paddles")?.groups.map(g=>g.id)).toEqual(["material","construction","surface-inlay"]);
+  expect(find("paddles")?.groups.find(g=>g.id==="construction")?.values.map(v=>v.id)).toContain("perforated-holes");
+  expect(find("paddles")?.groups.find(g=>g.id==="surface-inlay")?.values.map(v=>v.id)).toContain("spiked-studded");
+  expect(find("crops")?.groups.map(g=>g.id)).toEqual(["material","style","tip-style"]);
+  expect(find("crops")?.groups.find(g=>g.id==="style")?.values.map(v=>v.id)).toEqual(["riding-crop","jumping-bat","dressage-whip","lunge-whip"]);
   expect(find("whips")?.groups.find(g=>g.id==="type")?.values.map(v=>v.id)).toEqual(["single-tail","dragon-tail","cat-o-nine-tails","sjambok"]);
   expect(find("other-implements")?.groups.find(g=>g.id==="type")?.values.map(v=>v.id)).toEqual(["wooden-spoon","hairbrush","impact-jack-thumper"]);
   expect(find("impact-play")?.groups.find(g=>g.id==="method-practice")?.values.map(v=>v.id)).toContain("paddling");
