@@ -24,7 +24,7 @@ const collections: Record<string,CatalogV2Item[]>={
  psychological:[
  item("Humiliation Play","psychological",[g("Modality",["Verbal","Task / Behavioral","Presentation / Exposure","Evaluative"]),g("Context",["Private","Witnessed / Consenting Audience","Public-style Fantasy"])]),
  item("Degradation","psychological",[g("Modality",["Verbal","Behavioral / Treatment","Symbolic / Status"]),g("Target / Focus",["Role / Status","Sexuality / Sexual Behavior","Intelligence / Competence","Behavior / Conduct"]),g("Tone / Style",["Mocking / Sarcastic","Stern / Critical","Harsh / Direct","Cold / Clinical","Dismissive"])]),
- item("Objectification","psychological",[g("Framing",["Use-object Fantasy","Functional Use","Sexual Use","Decorative / Display","Ownership / Property","Personhood Reduction / Thing-language","Dollification"])]),
+ item("Objectification","psychological",[g("Framing",["Use-object Fantasy","Functional Use","Sexual Use","Decorative / Display","Property Framing","Personhood Reduction / Thing-language"]),g("Form / Role",["Dollification"])]),
  item("Embarrassment Play","psychological",[g("Context",["Private","Witnessed / Consenting Audience"]),g("Form",["Silly / Awkward Tasks","Attention / Focus","Performance / Social Awkwardness","Teasing"])]),
  item("Name-calling","psychological",[g("Type",["Degrading","Sexual","Affectionate","Role-specific","Objectifying","Status-related"])]),
  item("Mockery","psychological",[g("Tone / Style",["Playful / Teasing","Mocking / Sarcastic","Stern / Critical","Harsh / Direct"])]),
@@ -41,7 +41,7 @@ const collections: Record<string,CatalogV2Item[]>={
  item("Mind Control / Conditioning Fantasy","roleplay",[g("Type",["Mind Control","Brainwashing / Conditioning","Psychological Control / Influence"])]),
  item("Consensual Blackmail / Leverage Play","roleplay",[g("Form",["Blackmail / Leverage","Controlled Disclosure"])]),
  item("Free Use","roleplay",[g("Context",["Public-style Simulation / Fake Public-use Fantasy"])]),
- ...["Ageplay","ABDL","Bimbofication","Inflation Fantasy","Abandonment Play Fantasy","Furry / Anthro Fantasy","Vore Fantasy","Omegaverse Fantasy","Corruption Kink","Isolation Fantasy","Sleep Play / Consensual Somnophilia"].map(n=>item(n,"roleplay"))
+ ...["Ageplay","ABDL","Bimbofication","Inflation Fantasy","Abandonment Play Fantasy","Furry / Anthropomorphic Fantasy","Vore Fantasy","Omegaverse Fantasy","Corruption Kink","Isolation Fantasy","Sleep Play / Consensual Somnophilia"].map(n=>item(n,"roleplay"))
  ],
  power:[
  ...["Low Protocol","High Protocol"].map(n=>item(n,"power",[g("Practice",["Speech / Communication","Eye Contact","Etiquette","Check-ins / Reporting","Messaging","Online Interaction","Communication Restriction / Silence"])])),
