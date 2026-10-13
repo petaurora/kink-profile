@@ -2,31 +2,31 @@
 # Review evidence DOES NOT imply executed migration. Empty evidence means not exact-matched to supported review table formats; it does not imply the decision is unmade.
 # Only explicit table evidence; avoid semantic inference or automatic migration based on labels.
 source_id	source_label	original_category	review_evidence_state	review_issue_ids	reviewed_outcomes
-rope-bondage	Rope bondage	Bondage & Restraint	needs_manual_review		
-shibari-kinbaku	Shibari / kinbaku	Bondage & Restraint	needs_manual_review		
-rope-suspension	Rope suspension	Bondage & Restraint	needs_manual_review		
-partial-suspension	Partial suspension	Bondage & Restraint	needs_manual_review		
-predicament-bondage	Predicament bondage	Bondage & Restraint	needs_manual_review		
-mummification	Mummification	Bondage & Restraint	needs_manual_review		
-cuffs	Cuffs	Bondage & Restraint	needs_manual_review		
-leather-restraints	Leather restraints	Bondage & Restraint	needs_manual_review		
-metal-restraints	Metal restraints	Bondage & Restraint	needs_manual_review		
-spread-eagle-restraint	Spread-eagle restraint	Bondage & Restraint	needs_manual_review		
-hogtie	Hogtie	Bondage & Restraint	needs_manual_review		
-frogtie	Frogtie	Bondage & Restraint	needs_manual_review		
-chair-bondage	Chair bondage	Bondage & Restraint	needs_manual_review		
-bed-bondage	Bed bondage	Bondage & Restraint	needs_manual_review		
-under-bed-restraint-system	Under-bed restraint system	Bondage & Restraint	needs_manual_review		
-bondage-mitts	Bondage mitts	Bondage & Restraint	needs_manual_review		
-armbinder	Armbinder	Bondage & Restraint	needs_manual_review		
-elbow-bondage	Elbow bondage	Bondage & Restraint	needs_manual_review		
-thumb-cuffs	Thumb cuffs	Bondage & Restraint	needs_manual_review		
-collar-to-wrist-restraint	Collar-to-wrist restraint	Bondage & Restraint	needs_manual_review		
-posture-collar	Posture collar	Bondage & Restraint	needs_manual_review		
-stocks-pillory	Stocks / pillory	Bondage & Restraint	needs_manual_review		
-cage-confinement	Cage confinement	Bondage & Restraint	needs_manual_review		
-small-space-confinement	Small-space confinement	Bondage & Restraint	needs_manual_review		
-body-bag-bondage	Body bag bondage	Bondage & Restraint	needs_manual_review		
+rope-bondage	Rope bondage	Bondage & Restraint	review_table_evidence	#256	Rope bondage / Keep as Item / Rope Bondage
+shibari-kinbaku	Shibari / kinbaku	Bondage & Restraint	review_table_evidence	#256	Shibari / kinbaku / Become refinement / Rope Bondage → style = shibari/kinbaku
+rope-suspension	Rope suspension	Bondage & Restraint	review_table_evidence	#256	Rope suspension / Merge into Item + refinement / Suspension Bondage → method = rope
+partial-suspension	Partial suspension	Bondage & Restraint	review_table_evidence	#256	Partial suspension / Become refinement / Suspension Bondage → support = partial
+predicament-bondage	Predicament bondage	Bondage & Restraint	review_table_evidence	#256	Predicament bondage / Keep as Item / Predicament Bondage
+mummification	Mummification	Bondage & Restraint	review_table_evidence	#256	Mummification / Merge into Item + refinement / Encasement → method = mummification
+cuffs	Cuffs	Bondage & Restraint	review_table_evidence	#256	Cuffs / Keep as Item / Cuffs
+leather-restraints	Leather restraints	Bondage & Restraint	review_table_evidence	#256	Leather restraints / Become refinement / Restraint Gear → material = leather
+metal-restraints	Metal restraints	Bondage & Restraint	review_table_evidence	#256	Metal restraints / Become refinement / Restraint Gear → material = metal
+spread-eagle-restraint	Spread-eagle restraint	Bondage & Restraint	review_table_evidence	#256	Spread-eagle restraint / Become refinement / Bondage → configuration = spread eagle
+hogtie	Hogtie	Bondage & Restraint	review_table_evidence	#256	Hogtie / Become refinement / Bondage → configuration = hogtie
+frogtie	Frogtie	Bondage & Restraint	review_table_evidence	#256	Frogtie / Become refinement / Bondage → configuration = frogtie
+chair-bondage	Chair bondage	Bondage & Restraint	review_table_evidence	#256	Chair bondage / Become refinement / Bondage → anchor/context = chair
+bed-bondage	Bed bondage	Bondage & Restraint	review_table_evidence	#256	Bed bondage / Become refinement / Bondage → anchor/context = bed
+under-bed-restraint-system	Under-bed restraint system	Bondage & Restraint	review_table_evidence	#256	Under-bed restraint system / Become refinement / Restraint Gear → type = under-bed restraint system
+bondage-mitts	Bondage mitts	Bondage & Restraint	review_table_evidence	#256	Bondage mitts / Become refinement / Restraint Gear → type = bondage mitts
+armbinder	Armbinder	Bondage & Restraint	review_table_evidence	#256	Armbinder / Become refinement / Restraint Gear → type = armbinder
+elbow-bondage	Elbow bondage	Bondage & Restraint	review_table_evidence	#256	Elbow bondage / Become refinement / Bondage → configuration/body area = elbows
+thumb-cuffs	Thumb cuffs	Bondage & Restraint	review_table_evidence	#256	Thumb cuffs / Become refinement / Cuffs → type = thumb cuffs
+collar-to-wrist-restraint	Collar-to-wrist restraint	Bondage & Restraint	review_table_evidence	#256	Collar-to-wrist restraint / Become refinement / Bondage → configuration = collar-to-wrist
+posture-collar	Posture collar	Bondage & Restraint	review_table_evidence	#256	Posture collar / Move to another Item family / Collars → type = posture
+stocks-pillory	Stocks / pillory	Bondage & Restraint	review_table_evidence	#256	Stocks / pillory / Move to another Item family / Restraint Furniture / Structures → type = stocks/pillory
+cage-confinement	Cage confinement	Bondage & Restraint	review_table_evidence	#256	Cage confinement / Become refinement / Confinement → environment/method = cage
+small-space-confinement	Small-space confinement	Bondage & Restraint	review_table_evidence	#256	Small-space confinement / Become refinement / Confinement → space = small/enclosed
+body-bag-bondage	Body bag bondage	Bondage & Restraint	review_table_evidence	#256	Body bag bondage / Become refinement / Encasement → method = body bag
 hand-spanking	Hand spanking	Impact Play	exact_review_table_match	#258	Item: Spanking / Slapping
 paddling	Paddling	Impact Play	exact_review_table_match	#258	Impact Play → method = paddling; related equipment Item Paddles
 flogging	Flogging	Impact Play	exact_review_table_match	#258	Impact Play → method = flogging; related equipment Item Floggers
@@ -156,11 +156,11 @@ soft-submission	Soft submission	Power Exchange & Roles	exact_review_table_match	
 disciplined-submission	Disciplined submission	Power Exchange & Roles	exact_review_table_match	#263	Directional dynamic-style preference: Disciplined / Accountability-Focused Submission
 devotional-submission	Devotional submission	Power Exchange & Roles	exact_review_table_match	#263	Directional dynamic-style preference: Devotional Submission
 worship-kink	Worship kink	Power Exchange & Roles	exact_review_table_match	#263	Item: Worship → Giving / Receiving
-collaring	Collaring	Collars, Symbols & Marking	needs_manual_review		
-day-collar	Day collar	Collars, Symbols & Marking	needs_manual_review		
-play-collar	Play collar	Collars, Symbols & Marking	needs_manual_review		
-leash-play	Leash play	Collars, Symbols & Marking	needs_manual_review		
-harness-play	Harness play	Collars, Symbols & Marking	needs_manual_review		
+collaring	Collaring	Collars, Symbols & Marking	review_table_evidence	#257	Keep as Item / Collaring
+day-collar	Day collar	Collars, Symbols & Marking	review_table_evidence	#257	Become refinement / Collars → use/context = day/everyday
+play-collar	Play collar	Collars, Symbols & Marking	review_table_evidence	#257	Become refinement / Collars → use/context = play/scene
+leash-play	Leash play	Collars, Symbols & Marking	review_table_evidence	#257	Keep separate Item / related / Leash Play; relate to Collars + Pet Play
+harness-play	Harness play	Collars, Symbols & Marking	review_table_evidence	#257	Move to equipment review / Harnesses / Harness Play; not a Collars subtype
 temporary-marking	Temporary marking	Collars, Symbols & Marking	needs_manual_review		
 hickeys-love-bites	Hickeys / love bites	Collars, Symbols & Marking	needs_manual_review		
 bruise-marking	Bruise marking	Collars, Symbols & Marking	needs_manual_review		
@@ -277,7 +277,7 @@ forced-masculinization-fantasy	Forced-masculinization fantasy	Clothing, Gear & F
 clothing-control	Clothing control	Clothing, Gear & Fetishwear	needs_manual_review		
 underwear-control	Underwear control	Clothing, Gear & Fetishwear	needs_manual_review		
 nudity-control	Nudity control	Clothing, Gear & Fetishwear	needs_manual_review		
-choker-fetish	Choker fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+choker-fetish	Choker fetish	Clothing, Gear & Fetishwear	review_table_evidence	#257	Defer to clothing/fetishwear batch / May relate to Collars/neckwear but is not automatically merged
 fishnet-fetish	Fishnet fetish	Clothing, Gear & Fetishwear	needs_manual_review		
 pvc-vinyl-fetish	PVC / vinyl fetish	Clothing, Gear & Fetishwear	needs_manual_review		
 denim-fetish	Denim fetish	Clothing, Gear & Fetishwear	needs_manual_review		
@@ -499,7 +499,7 @@ free-use-fantasy	Free-use fantasy	Protocol, Bondage & D/s Details	exact_review_t
 traffic-light-check-in-system	Traffic-light check-in system	Protocol, Bondage & D/s Details	exact_review_table_match	#264	Defer; safety/check-in system, not resolved as catalog preference here
 scene-negotiation-kink	Scene negotiation kink	Protocol, Bondage & D/s Details	exact_review_table_match	#264	Defer to Miscellaneous & Meta-Kink
 d-s-contract-ritual	D/s contract ritual	Protocol, Bondage & D/s Details	exact_review_table_match	#264	Item: D/s Contract Ritual
-public-witnessed-collaring-ceremony	Public / witnessed collaring ceremony	Protocol, Bondage & D/s Details	needs_manual_review		
+public-witnessed-collaring-ceremony	Public / witnessed collaring ceremony	Protocol, Bondage & D/s Details	review_table_evidence	#257	Become refinement / Collaring → format/context = witnessed/community
 erotic-hypnosis-hypnokink	Erotic hypnosis / hypnokink	Psychological, Verbal & Emotional	needs_manual_review		
 mind-control-roleplay	Mind-control roleplay	Psychological, Verbal & Emotional	exact_review_table_match	#260	Mind Control / Conditioning Fantasy → type = mind control
 brainwashing-fantasy	Brainwashing fantasy	Psychological, Verbal & Emotional	exact_review_table_match	#260	Mind Control / Conditioning Fantasy → type = brainwashing/conditioning
@@ -552,4 +552,4 @@ knotting-fantasy	Knotting fantasy	Surreal, Transformation & Fictional Fantasy	ex
 daily-praise-dynamic	Daily praise dynamic	Relational & Lifestyle Dynamics	exact_review_table_match	#261	Exclude
 morning-night-protocol	Morning / night protocol	Relational & Lifestyle Dynamics	needs_manual_review		
 daily-rules-tasks	Daily rules & tasks	Relational & Lifestyle Dynamics	needs_manual_review		
-devotion-worship-dynamic	Devotion & worship dynamic	Relational & Lifestyle Dynamics	needs_manual_review		
+devotion-worship-dynamic	Devotion & worship dynamic	Relational & Lifestyle Dynamics	needs_manual_review
