@@ -46,7 +46,26 @@ export type SearchResult = {
   score?:number;
 };
 export type SearchQuery = { text: string; type?: SearchResult["type"]; sort?: "default" | "az" | "za" };
+/** Stable Education identity is not a file path or display title. The UI only consumes this service contract. */
+export type EducationSection = "Understanding BDSM" | "Consent and scenes" | "Kinks, roles, and motivation" | "Relationship structures" | "Collars, symbols, and rituals";
+export type EducationLink = {
+  target: { kind:"article"|"catalog-item"|"concept"; id:string };
+  relation: "further-reading"|"discusses"|"explains";
+};
+export type EducationArticleSummary = {
+  id:string; slug:string; title:string; description:string; section:EducationSection;
+  level:"Beginner"|"Beginner–Intermediate"; readingMinutes:number; version:string;
+  links:EducationLink[];
+};
+export type EducationArticle = EducationArticleSummary & { markdown:string };
+export interface EducationService {
+  listArticles(options?:RequestOptions):Promise<EducationArticleSummary[]>;
+  getArticle(id:string, options?:RequestOptions):Promise<EducationArticle|null>;
+}
+
 export interface AppServices {
+  /** Optional until all injected adapters implement the Education capability. No silent fixture fallback. */
+  education?: EducationService;
   catalog: { getReferenceData(options?: RequestOptions): Promise<CatalogReferenceData> };
   search: { search(query: SearchQuery, options?: RequestOptions): Promise<SearchResult[]> };
   preferences: {
