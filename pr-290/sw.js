@@ -2,7 +2,7 @@ const CACHE_PREFIX = "kink-profile-pr-290";
 const CACHE_NAME = `kink-profile-pr-290-static-v1`;
 const SCOPE_PATH = "/kink-profile/pr-290/";
 const APP_SHELL = "/kink-profile/pr-290/index.html";
-const PRECACHE_URLS = ["/kink-profile/pr-290/","/kink-profile/pr-290/index.html","/kink-profile/pr-290/manifest.webmanifest","/kink-profile/pr-290/icons/pwa-192.png","/kink-profile/pr-290/icons/pwa-512.png","/kink-profile/pr-290/icons/pwa-maskable-512.png","/kink-profile/pr-290/icons/apple-touch-icon.png","/kink-profile/pr-290/assets/index-siIKCr2p.css","/kink-profile/pr-290/assets/UiLabPage-9kI4Jfqr.css","/kink-profile/pr-290/assets/index-C81XV24G.js","/kink-profile/pr-290/assets/UiLabPage-Be3_w7FW.js"];
+const PRECACHE_URLS = ["/kink-profile/pr-290/","/kink-profile/pr-290/index.html","/kink-profile/pr-290/manifest.webmanifest","/kink-profile/pr-290/icons/pwa-192.png","/kink-profile/pr-290/icons/pwa-512.png","/kink-profile/pr-290/icons/pwa-maskable-512.png","/kink-profile/pr-290/icons/apple-touch-icon.png","/kink-profile/pr-290/assets/index-siIKCr2p.css","/kink-profile/pr-290/assets/UiLabPage-hEcrQvEf.css","/kink-profile/pr-290/assets/index-uoipBPQ0.js","/kink-profile/pr-290/assets/UiLabPage-DTAw3sFh.js"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
