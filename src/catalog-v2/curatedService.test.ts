@@ -14,6 +14,9 @@ describe("curated V2 service source",()=>{
   expect(labReferenceData.items.some(x=>x.id==="authority-exchange")).toBe(false);
   expect(illustrativeReferenceData.items.some(x=>x.id==="authority-exchange")).toBe(true);
  });
+ it("keeps non-exclusive canonical theme memberships through the async service DTO",()=>{
+  expect(labReferenceData.items.find(x=>x.id==="collars")?.themeIds).toEqual(["power-exchange","equipment"]);
+ });
  it("retains independent ratings and does not synthesize Context and Role modifiers",()=>{
   expect(labReferenceData.items.find(x=>x.id==="stocks-pillory")?.groups.map(g=>g.id)).toEqual(["style-form"]);
   expect(labReferenceData.items.find(x=>x.id==="chastity")?.groups.map(g=>g.name)).toEqual(["Material"]);
