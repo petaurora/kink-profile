@@ -81,6 +81,15 @@ export const verifiedReviewBatchDecisions: MigrationDecision[]=[
  direct("alpha-beta-omega-omegaverse-fantasy","omegaverse-fantasy"),
  direct("sleep-play-consensual-somnophilia"),
  modifier("fake-public-use-fantasy","free-use","context","public-style-simulation-fake-public-use-fantasy"),
+ // #263: Pet Roleplay activity versus Owner/Pet dynamic are separate preferences
+ direct("pet-play","pet-roleplay"),
+ ...[["puppy-play","puppy"],["kitten-play","kitten"],["pony-play","pony"],["bunny-play","bunny"],["fox-play","fox"]].map(([id,value])=>modifier(id,"pet-roleplay","species-role",value)),
+ direct("pet-training"),direct("leash-walking","leash-play"),
+ modifier("feeding-bowl-roleplay","pet-roleplay","expression","feeding-bowl"),
+ modifier("crawling-all-fours-play","pet-roleplay","expression","crawling-all-fours"),
+ modifier("tails-ears-gear","pet-roleplay","expression","tails-ears"),
+ review("pet-bed-crate-roleplay","Two approved modifier values (pet bed and crate); cannot infer preferred one"),
+ review("pet-punishment","Deferred to Rewards & Punishments (#263)"),
  // #266 primal
  ...["primal-play","chase-play","struggle-play","growling-animalistic-vocalization","scenting"].map(id=>direct(id)),
  modifier("primal-hunter","primal-play","role","hunter-predator"),
