@@ -25,12 +25,17 @@ it("lists thirteen stable summaries and loads full Markdown only for a requested
   for(const id of ["edu-impact-tools","edu-impact-anatomy","edu-impact-marks"]){
     const deep=await settle(service.getArticle(id));
     if(!("value" in deep)||!deep.value)throw new Error("Missing Impact deep dive "+id);
+    expect(deep.value.readingMinutes).toBeGreaterThanOrEqual(5);
     expect(deep.value.readingMinutes).toBeLessThanOrEqual(10);
-    const approximateWords=deep.value.markdown.trim().split(/\\s+/).length;
-    expect(approximateWords, `Article ${id} exceeds 10 min at 200 wpm`).toBeLessThanOrEqual(2000);
+    const approximateWords=deep.value.markdown.trim().split(/\s+/).length;
+    expect(approximateWords, `Article ${id} is too short for a 5-minute standalone guide`).toBeGreaterThanOrEqual(1000);
+    expect(approximateWords, `Article ${id} exceeds the 15-minute editorial maximum`).toBeLessThanOrEqual(3000);
+    expect(approximateWords, `Article ${id} misses the 5–10 minute preferred range`).toBeLessThanOrEqual(2000);
     expect(impact.value?.links.some(link=>link.target.kind==="article"&&link.target.id===id)).toBe(true);
   }
-  expect(impact.value?.markdown.trim().split(/\\s+/).length).toBeLessThanOrEqual(2000);
+  const overviewWords=impact.value?.markdown.trim().split(/\s+/).length??0;
+  expect(overviewWords).toBeGreaterThanOrEqual(1000);
+  expect(overviewWords).toBeLessThanOrEqual(2000);
   expect(await settle(service.getArticle("edu-nonexistent"))).toEqual({value:null});
 });
 it("honors abort, surfaces failures, and does not rewrite preference evidence on reads",async()=>{
