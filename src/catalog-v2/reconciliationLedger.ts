@@ -36,7 +36,7 @@ export const reconciliationExpectations: readonly ReviewExpectation[] = [
 
  {sourceIssue:259,itemId:"humiliation-play",decision:"approved",groups:{"modality":["verbal","task-behavioral","presentation-exposure","evaluative"],"context":["private","witnessed-consenting-audience","public-style-fantasy"]}},
  {sourceIssue:259,itemId:"degradation",decision:"approved",groups:{"modality":["verbal","behavioral-treatment","symbolic-status"]}},
- {sourceIssue:259,itemId:"objectification",decision:"approved",groups:{"framing":["use-object-fantasy","functional-use","sexual-use","decorative-display","ownership-property","dollification"]}},
+ {sourceIssue:259,itemId:"objectification",decision:"approved",groups:{"framing":["use-object-fantasy","functional-use","sexual-use","decorative-display","property-framing"],"form-role":["dollification"]}},
  {sourceIssue:259,itemId:"rating-evaluation",decision:"approved",groups:{"style":["praise","critique","teasing","degradation","neutral-clinical"],"format":["numerical-scored","qualitative"]}},
  {sourceIssue:259,itemId:"human-furniture",decision:"approved",groups:{"role-function":["stool","footrest","table","display-stand"]}},
  {sourceIssue:259,itemId:"body-writing",decision:"approved",groups:{"content-type":["ownership","praise","humiliation","instructions","decorative","evaluative-scoring"]}},
