@@ -22,7 +22,16 @@ const collections: Record<string,CatalogV2Item[]>={
  ...["Rhythmic Impact","Counting Impacts","Impact Warm-up","Impact Endurance","Bastinado","Florentine Flogging"].map(n=>item(n,"impact"))
  ],
  psychological:[
- ...["Humiliation","Degradation","Objectification","Embarrassment Play","Name-calling","Mockery","Rating / Evaluation","Small Penis Humiliation","Human Furniture","Body Writing"].map(n=>item(n,"psychological"))
+ item("Humiliation Play","psychological",[g("Modality",["Verbal","Task / Behavioral","Presentation / Exposure","Evaluative"]),g("Context",["Private","Witnessed / Consenting Audience","Public-style Fantasy"])]),
+ item("Degradation","psychological",[g("Modality",["Verbal","Behavioral / Treatment","Symbolic / Status"]),g("Target / Focus",["Role / Status","Sexuality / Sexual Behavior","Intelligence / Competence","Behavior / Conduct"]),g("Tone / Style",["Mocking / Sarcastic","Stern / Critical","Harsh / Direct","Cold / Clinical","Dismissive"])]),
+ item("Objectification","psychological",[g("Framing",["Use-object Fantasy","Functional Use","Sexual Use","Decorative / Display","Ownership / Property","Personhood Reduction / Thing-language","Dollification"])]),
+ item("Embarrassment Play","psychological",[g("Context",["Private","Witnessed / Consenting Audience"]),g("Form",["Silly / Awkward Tasks","Attention / Focus","Performance / Social Awkwardness","Teasing"])]),
+ item("Name-calling","psychological",[g("Type",["Degrading","Sexual","Affectionate","Role-specific","Objectifying","Status-related"])]),
+ item("Mockery","psychological",[g("Tone / Style",["Playful / Teasing","Mocking / Sarcastic","Stern / Critical","Harsh / Direct"])]),
+ item("Rating / Evaluation","psychological",[g("Target",["Performance / Task","Genitals","Body / Body Part","Appearance","Behavior","Sexual Performance","Skill / Ability"]),g("Style",["Praise","Critique","Teasing","Degradation","Neutral / Clinical"]),g("Format",["Numerical / Scored","Qualitative"])]),
+ item("Small-penis Humiliation (SPH)","psychological"),
+ item("Human Furniture","psychological",[g("Role / Function",["Stool","Footrest","Table","Display Stand"]),g("Framing",["Service","Objectification","Protocol","Humiliation","Aesthetic / Display"])]),
+ item("Body Writing","psychological",[g("Medium / Tool",["Marker","Pen","Lipstick","Paint"]),g("Visibility",["Hidden","Partially Visible","Displayed"]),g("Content Type",["Ownership","Praise","Humiliation","Instructions","Decorative","Evaluative / Scoring"])]),
  ],
  roleplay:[
  item("Roleplay","roleplay",[g("Scenario",["Teacher / Student","Boss / Employee","Doctor / Patient","Guard / Prisoner","Interrogation","Stranger / First Meeting","Royalty / Servant","Knight / Captive","Villain / Hero","Trainer / Trainee","Owner / Property","Historical","Photographer / Model","Delivery Person","Celebrity / Fan","Practical Sex-ed / Teaching","Cheating / Forbidden Attraction","Rescue","Adult Taboo-family-role Fantasy"]),g("Medium / Context",["VR / Virtual World"])]),
