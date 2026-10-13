@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ModalLayer } from "../../components/ui/ModalLayer";
 import { SearchField } from "../../components/ui/SearchField";
 import { SearchChips, SearchFilterButton, SearchRow, SortGroupSheet, type SortBy } from "../../components/ui/SearchControls";
@@ -6,14 +6,21 @@ import { CatalogComposite } from "./CatalogComposite";
 import { ConceptDetail } from "./ConceptDetail";
 import { searchCatalog, searchSections, type SearchResult } from "./CatalogSearch";
 
+import type { RequestOptions } from "../../services/contracts";
+import { useOptionalServices } from "../../services/AppServicesProvider";
+import { useLabCatalog } from "./LabCatalog";
+import { toLabResult } from "./CatalogSearch";
 import "./globalSearch.css";
 
 const localSearch = async (query: string) => searchCatalog(query);
-export function GlobalCatalogSearch({ open, onClose, origin, sort, onSort, orderOpen, onOrderOpen, search = localSearch }: {
+export function GlobalCatalogSearch({ open, onClose, origin, sort, onSort, orderOpen, onOrderOpen, search:providedSearch }: {
   open: boolean; onClose: () => void; origin: string; sort: SortBy; onSort: (sort: SortBy) => void;
   orderOpen: boolean; onOrderOpen: (open: boolean) => void;
-  search?: (query: string) => Promise<SearchResult[]>;
+  search?: (query: string,options?:RequestOptions) => Promise<SearchResult[]>;
 }) {
+  const services=useOptionalServices();const {data}=useLabCatalog();
+  const serviceSearch=useCallback(async(query:string,options?:RequestOptions)=>services?(await services.search.search({text:query},options)).map(result=>toLabResult(result,data)):localSearch(query),[services,data]);
+  const search=providedSearch??serviceSearch;
   const resultsId=useId();
   const [query, setQuery] = useState("");
   const [type, setType] = useState("All");
@@ -26,14 +33,15 @@ export function GlobalCatalogSearch({ open, onClose, origin, sort, onSort, order
   const scroll = useRef<HTMLDivElement>(null);
   const lastScroll = useRef(0);
   useEffect(() => {
-    let active = true;
+    let active = true;const controller=new AbortController();
+    if(!open)return;
     if (!query.trim()) { setResults([]); setError(false); setLoading(false); setProcessedQuery(""); return; }
     const timer = setTimeout(() => {
       setLoading(true); setError(false);
-      search(query).then(next => { if(active){setResults(next);setProcessedQuery(query);setError(false);} }, () => { if(active)setError(true); }).finally(() => { if(active)setLoading(false); });
+      search(query,{signal:controller.signal}).then(next => { if(active){setResults(next);setProcessedQuery(query);setError(false);} }, () => { if(active)setError(true); }).finally(() => { if(active)setLoading(false); });
     },200);
-    return () => { active=false; clearTimeout(timer); };
-  },[query,retry,search]);
+    return () => { active=false; clearTimeout(timer); controller.abort(); };
+  },[query,retry,search,open]);
   const clear = () => { setQuery(""); setType("All"); document.getElementById("lab-global-query")?.focus(); };
   const sections = searchSections(results,type,sort);
   const count = results.filter(result=>type==="All"||result.type===type).length;

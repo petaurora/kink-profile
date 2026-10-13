@@ -22,11 +22,13 @@ Unchecked Tried means no affirmative record. Comfort stores semantic string valu
 independently of Tried and preference. Changes retain session revisions and edit
 timestamps; these are not dates of participation. Tried offers Undo.
 
-## Simulated save and recovery
+## Local service save and recovery
 
-The latest edit wins per target. The provider retains pending operations across
-feature mounts, cancels obsolete timers and confirms only the latest simulated
-operation. Saving becomes Saved after 850 ms; Saved clears after 1.25 seconds.
+The latest edit wins per target. The record provider retains pending operations
+across feature mounts and writes through the async application services. Writes
+serialize per target and obsolete waiting edits coalesce. Only the latest confirmed
+operation becomes Saved; Saved clears after 1.25 seconds. The local adapter uses
+850 ms save latency.
 The test-failure checkbox fails the next rating operation and retains its value.
 Failures remain visible until retried or replaced with a newer edit.
 
@@ -44,13 +46,15 @@ editing is deferred.
 ## Storage boundary
 
 All new records and revisions are memory-only. Reloading or leaving the mounted
-Lab ends the session. The simulated persistence indicators do not establish a
+Lab ends the session. The local in-memory service confirmations do not establish a
 durable write, cross-device sync, permission or consent.
 
 ## Global search and result handoff
 
 Global Search indexes the same sample Item/modifier records as local lists, plus
 illustrative concepts. Context changes suggestions, without applying a type filter.
+All indexed text is searchable, including short metadata substrings. Exact names,
+name prefixes and other name matches rank ahead of supporting-text matches.
 Queries process after a 200 ms debounce. Relevance order provides Best matches,
 then nonempty Item/Modifier/Concept sections without repeating target IDs. Type
 chips filter; the options sheet sorts only. Clear resets query and type filters,
@@ -68,3 +72,15 @@ newer results. A failed update retains previous successful results with an expli
 label and Retry; no fabricated network delay is added to the local index.
 Queries are not written to local/session storage or tracked as preference evidence.
 No autocomplete, aliases, automatic Recently Viewed or production index is implied.
+
+## Application service ownership
+
+The Lab receives reference data, subjects, concepts, search, classifications and
+initial explicit records through AppServicesProvider. LabRecordsProvider is the
+single mutable UI coordinator for ratings, concept preferences and experience;
+its writes use the typed async adapter. Standalone component tests use the same
+sample fixtures/local adapter without interpreting a failed API read as success.
+Inline Catalog queries search names, descriptions, categories and modifiers.
+Default search order puts name matches first, with small matching-field excerpts
+under supporting-text results. Clearing search restores ordinary browsing;
+explicit alphabetical sorting remains available. See [Application Services](app-services.md).

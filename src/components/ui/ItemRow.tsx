@@ -5,6 +5,7 @@ import "./itemRow.css";
 export function ItemRow({
   name,
   itemId,
+  supportingText,
   indicators,
   preference,
   onRefine,
@@ -13,6 +14,7 @@ export function ItemRow({
 }: {
   name: string;
   itemId: string;
+  supportingText?: string;
   indicators?: ReactNode;
   preference: ReactNode;
   onRefine?: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -39,6 +41,7 @@ export function ItemRow({
             {refineStatus ? <span className={`kp-refine-status kp-refine-status--${refineStatus}`} aria-hidden="true">{refineStatus === "failed" ? "!" : "◌"}</span> : refined && <span className="kp-refined-dot" aria-hidden="true" />}
           </button>
         )}
+        {supportingText && <small className="kp-item-supporting-text">{supportingText}</small>}
       </div>
     </article>
   );

@@ -125,6 +125,7 @@ describe("accessibility regressions", () => {
   });
   it("announces navigation through the new heading and current destination; global search announces results", async () => {
     mount(<UiLabPage/>);
+    await act(async()=>{await new Promise(resolve=>setTimeout(resolve,220));});
     click(button("Catalog"));
     const heading = document.querySelector("h1")!;
     expect(document.activeElement).toBe(heading);

@@ -1,4 +1,5 @@
-export const preferenceChoices = ["Love", "Like", "Curious", "Unsure", "Not Interested", "Hard Limit", "Not Applicable"];
+import { preferenceRatings } from "../../services/contracts";
+export const preferenceChoices = preferenceRatings;
 const meanings = [
   "Strong enthusiasm, personal importance, or both; experience is not required.",
   "A positive personal preference; experience is not required.",

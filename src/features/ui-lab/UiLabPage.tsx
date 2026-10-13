@@ -9,8 +9,12 @@ import { SearchRow } from "../../components/ui/SearchControls";
 import "./uiLab.css";
 import { GlobalCatalogSearch } from "./GlobalCatalogSearch";
 import { ConceptDetail } from "./ConceptDetail";
-import { concepts } from "./CatalogSearch";
+
 import { LabRecordsProvider, LabSaveSummary } from "./LabRecords";
+import { AppServicesProvider } from "../../services/AppServicesProvider";
+import type { AppServices } from "../../services/contracts";
+import { createUiLabServices } from "./services/createUiLabServices";
+import { useLabCatalog } from "./LabCatalog";
 
 type Area = "Home" | "Catalog" | "Profile" | "Discover" | "Tools";
 const areas: Area[] = ["Home","Catalog","Profile","Discover","Tools"];
@@ -29,26 +33,23 @@ const cards: Record<Area,[string,string][]> = {
   Profile:[["Your profile","Roles, themes and preference evidence"],["Relationships","Connections and linked profiles"],["Sharing & permissions","Decide what others can see"],["Identity & expression","Your own words and presentation"]],
   Tools:[["Scene Builder","Plan scenes and save drafts"],["Agreements & rituals","Create and maintain shared practices"],["Randomizers & recipes","Get practical inspiration"],["Compare profiles","Compare only with permission"]]
 };
-const featuredSubjects = [
- {name:"Power Exchange",description:"Explore authority, rituals and the ways people negotiate control.",symbol:"◇",tone:"power"},
- {name:"Sensation & Intensity",description:"Discover textures, pressure and different kinds of sensation.",symbol:"✧",tone:"sensation"},
- {name:"Restraint & Control",description:"Explore restriction, restraint and intentional boundaries.",symbol:"⌁",tone:"restraint"},
- {name:"Connection & Expression",description:"Explore affection, praise and ways of expressing connection.",symbol:"♡",tone:"connection"}
-] as const;
-const subjectNames=featuredSubjects.map(s=>s.name);
-const extraSubjects=["Collars","Aftercare","Primal Play","Sensory Play","Service","Roleplay","Praise","Protocols","Temperature Play","Pet Play"];
-function dailyFeatured(){const day=Math.floor(new Date().setHours(0,0,0,0)/86400000);const first=((day%featuredSubjects.length)+featuredSubjects.length)%featuredSubjects.length;return [featuredSubjects[first],featuredSubjects[(first+2)%featuredSubjects.length]];}
-export function UiLabPage() {
- return <ToastProvider><LabRecordsProvider><UiLabContent/></LabRecordsProvider></ToastProvider>;
+function dailyFeatured(subjects:{name:string;description:string;symbol:string;tone:string}[]){if(!subjects.length)return [];const day=Math.floor(new Date().setHours(0,0,0,0)/86400000);const first=((day%subjects.length)+subjects.length)%subjects.length;return [subjects[first],subjects[(first+2)%subjects.length]].filter((subject,index,list)=>list.findIndex(x=>x.name===subject.name)===index);}
+export function UiLabPage({services}:{services?:AppServices}={}) {
+ const [adapter]=useState(createUiLabServices);
+ return <AppServicesProvider services={services??adapter.services}><ToastProvider><LabRecordsProvider diagnostics={services?undefined:adapter}><UiLabContent/></LabRecordsProvider></ToastProvider></AppServicesProvider>;
 }
 function UiLabContent() {
+ const {concepts,data}=useLabCatalog();
+ const featuredSubjects=data.subjects.filter(subject=>subject.featured).map(subject=>({...subject,...subject.featured!}));
+ const subjectNames=featuredSubjects.map(subject=>subject.name);
+ const extraSubjects=data.subjects.filter(subject=>!subject.featured).map(subject=>subject.name);
  const pageHeading = useRef<HTMLHeadingElement>(null);
  const contentId = useId();
  const searchResultsId = useId();
  const hasNavigated = useRef(false);
  const [area,setArea]=useState<Area>("Home");
  const [subjectsExpanded,setSubjectsExpanded]=useState(false);
- const [featured,setFeatured]=useState(dailyFeatured);
+ const [featured,setFeatured]=useState(()=>dailyFeatured(featuredSubjects));
  const [selectedSubject,setSelectedSubject]=useState<string|null>(null);
  const [exploreSubject,setExploreSubject]=useState<string|null>(null);
  const [domain,setDomain]=useState("All");
@@ -96,7 +97,7 @@ function UiLabContent() {
  const resetPageScroll=()=>{window.scrollTo({top:0,left:0,behavior:"instant"});requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"instant"}));};
  const navigate=(next:Area)=>{
    resetPageScroll();
-   setArea(next);setWorkspace("");setSelectedSubject(null);setExploreSubject(null);if(next==="Catalog")setFeatured(dailyFeatured());setDetail(null);setDomain("All");setMenuOpen(false);
+   setArea(next);setWorkspace("");setSelectedSubject(null);setExploreSubject(null);if(next==="Catalog")setFeatured(dailyFeatured(featuredSubjects));setDetail(null);setDomain("All");setMenuOpen(false);
  };
  const choose=(name:string)=>{resetPageScroll();setArea("Catalog");setSelectedSubject(null);setExploreSubject(null);setWorkspace(name);setMode("Explore");setDetail(null);};
  const openSubject=(name:string)=>{resetPageScroll();setArea("Catalog");setSelectedSubject(name);setWorkspace("Subject Overview");setDetail(null);};
@@ -184,7 +185,7 @@ function UiLabContent() {
       {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Illustrative classifications for testing filters · Classification editing in Refine comes later.</p><CatalogComposite collection="rewards" /></>}    </div>}
     {area==="Discover"&&<div className="ui-lab-app-modes" role="group" aria-label="Discovery mode">{["Learn","React","Play"].map(m=><button key={m} className={mode===m?"active":""} aria-pressed={mode===m} onClick={()=>setMode(m)}>{m}</button>)}</div>}
     {area!=="Catalog"&&<div className="ui-lab-app-grid">{(workspace?[[workspace,"Your working space and saved drafts."],...cards[area].filter(x=>x[0]!==workspace)]:cards[area]).map(([title,description],i)=><button className={"ui-lab-app-tile "+(i===0?"featured":"")} key={title} onClick={()=>setDetail(title)}><span className="ui-lab-app-tile-icon" aria-hidden="true">{["✧","♡","◇","✦"][i%4]}</span><strong>{title}</strong><small>{description}</small><span className="ui-lab-app-tile-arrow" aria-hidden="true">↗</span></button>)}</div>}
-    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">Experimental shell · Illustrative content only · No preferences are saved here</p>}
+    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">Experimental shell · Illustrative content only · Preferences last for this Lab session</p>}
     <button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}>{toastLabOpen?"− Hide":"✦ Open"} Toast Playground</button>
     {toastLabOpen&&<ToastPlayground/>}
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}}><code>{color}</code></div>)}</div><a href="#/hub">Return to production app</a></section>}
