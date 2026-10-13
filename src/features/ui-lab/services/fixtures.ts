@@ -1,3 +1,4 @@
+import { approvedV2Slice } from "../../../catalog-v2/approvedSlice";
 import type { CatalogReferenceData, PreferenceSnapshot } from "../../../services/contracts";
 
 // Illustrative Lab fixtures only. IDs are explicit and are not production taxonomy IDs.
@@ -115,7 +116,7 @@ const catalogItems = Object.entries(catalogSeeds).flatMap(([category, names]) =>
   })),
 })));
 export const labReferenceData: CatalogReferenceData = {
-  items: catalogItems,
+  items: catalogItems.map(item => {\n    const canonical = approvedV2Slice.items.find(v2 => v2.id === item.id);\n    return canonical ? { ...item, name: canonical.name, description: canonical.description, groups: canonical.groups } : item;\n  }),
   concepts: [
     {id:"ownership",name:"Ownership",description:"A negotiated concept of belonging or authority. Meaning depends on explicit agreements.",relatedItemIds:["collars","protocol"]},
     {id:"leather",name:"Leather",description:"A material and a broader cultural concept. An item’s Leather modifier has its own independent meaning and rating.",relatedItemIds:["collars"]},
