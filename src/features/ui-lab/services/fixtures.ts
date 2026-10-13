@@ -1,5 +1,6 @@
 import { reviewedCatalogExpansion } from "../../../catalog-v2/reviewedExpansion";
 import { approvedV2Slice } from "../../../catalog-v2/approvedSlice";
+import { replaceReferenceCatalog } from "../../../catalog-v2/toAppReference";
 import type { CatalogReferenceData, PreferenceSnapshot } from "../../../services/contracts";
 
 // Illustrative Lab fixtures only. IDs are explicit and are not production taxonomy IDs.
@@ -116,16 +117,8 @@ const catalogItems = Object.entries(catalogSeeds).flatMap(([category, names]) =>
     values: group.values.map(name => ({id: ids[name], name, ...(name === "Leather" ? {conceptId: "leather"} : {})})),
   })),
 })));
-export const labReferenceData: CatalogReferenceData = {
-  items: [...catalogItems.map(item => {
-    const canonical = [...approvedV2Slice.items, ...reviewedCatalogExpansion.items].find(v2 => v2.id === item.id);
-    return canonical ? { ...item, name: canonical.name, description: canonical.description, groups: canonical.groups } : item;
-  }), ...reviewedCatalogExpansion.items.filter(v2 => !catalogItems.some(item => item.id === v2.id)).map(v2 => ({
-    id: v2.id, name: v2.name,
-    category: reviewedCatalogExpansion.themes.find(theme => v2.themeIds.includes(theme.id))?.name ?? "Catalog V2",
-    description: v2.description, groups: v2.groups,
-    collections: v2.collections ?? ["kinks" as const],
-  }))],
+const illustrativeReferenceData: CatalogReferenceData = {
+  items: catalogItems,
   concepts: [
     {id:"ownership",name:"Ownership",description:"A negotiated concept of belonging or authority. Meaning depends on explicit agreements.",relatedItemIds:["collars","protocol"]},
     {id:"leather",name:"Leather",description:"A material and a broader cultural concept. An item’s Leather modifier has its own independent meaning and rating.",relatedItemIds:["collars"]},
@@ -133,7 +126,6 @@ export const labReferenceData: CatalogReferenceData = {
     {id:"trust",name:"Trust",description:"Confidence developed through communication, reliability and respected boundaries.",relatedItemIds:["aftercare","protocol"]},
   ],
   subjects: [
-    ...reviewedCatalogExpansion.themes.map(theme => ({id:theme.id,name:theme.name,description:theme.description,itemIds:theme.itemIds})),
     {id:"power-exchange",name:"Power Exchange",description:"Explore authority, rituals and the ways people negotiate control.",featured:{symbol:"◇",tone:"power"}},
     {id:"sensation-intensity",name:"Sensation & Intensity",description:"Discover textures, pressure and different kinds of sensation.",featured:{symbol:"✧",tone:"sensation"}},
     {id:"restraint-control",name:"Restraint & Control",description:"Explore restriction, restraint and intentional boundaries.",featured:{symbol:"⌁",tone:"restraint"}},
@@ -141,6 +133,10 @@ export const labReferenceData: CatalogReferenceData = {
     ...["Collars","Aftercare","Primal Play","Sensory Play","Service","Roleplay","Praise","Protocol","Temperature Play","Pet Play"].map(name => ({id:"subject-"+ids[name],name,description:"Explore related Catalog Items and refine your preferences."})),
   ].map(subject => ({...subject,itemIds:"itemIds" in subject ? subject.itemIds : catalogItems.filter(item => item.category === subject.name || item.name === subject.name).map(item => item.id)})),
 };
+export const labReferenceData: CatalogReferenceData = replaceReferenceCatalog(
+  replaceReferenceCatalog(illustrativeReferenceData, approvedV2Slice),
+  reviewedCatalogExpansion,
+);
 // Stable, explicitly illustrative classifications; no inference from general ratings.
 export const labInitialPreferences: PreferenceSnapshot = {
   ratings: {},
