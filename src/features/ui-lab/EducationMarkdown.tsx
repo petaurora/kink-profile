@@ -21,7 +21,10 @@ function textLine(line:string){return line.replace(/^\s+/,"").trim();}
 /** Metadata is presented separately; the first horizontal rule begins the article body. */
 export function articleBody(markdown:string){
   const boundary=markdown.indexOf("\n---\n");
-  return boundary>=0?markdown.slice(boundary+5).trim():markdown.replace(/^# [^\n]+\n/,"").trim();
+  const body=boundary>=0?markdown.slice(boundary+5).trim():markdown.replace(/^# [^\n]+\n/,"").trim();
+  // The reader provides curated links, so do not render the draft's old suggestion list twice.
+  // Keep Further Reading references and external sources.
+  return body.replace(/\n---\s*\n\s*### Continue Learning\s*\n[\s\S]*?(?=\n### Further Reading|\s*$)/i,"\n").trim();
 }
 export function articleContentNote(markdown:string){
   return markdown.match(/^\*\*Content note:\*\*\s*(.+)$/m)?.[1] ?? null;
