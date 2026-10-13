@@ -20,9 +20,9 @@ been migrated to the experimental treatments merely because the code is shared.
 | `SortGroupSheet` | Separate controlled sort/group sections; grouping is optional | Sort order, grouping availability, labels and defaults |
 | `ModalLayer` | Backdrop/Escape dismissal; nested focus containment/restoration; coordinated body scroll lock | Open state, title/label, content, visual variant and recovery policy |
 | `SheetHeader` | Shared title, context and accessible close target | Title/context and any header accessory |
-| `PreferenceControl` / `PreferenceSheet` | Controlled value, optional Clear/help and selector; explicit editing | Rating vocabulary, independently keyed values, persistence and retry |
+| `PreferenceControl` / `PreferenceSheet` | Controlled value, arrow focus and explicit commit; optional controlled help and Clear | Rating vocabulary, independently keyed values, persistence and retry |
 | `InlineSaveStatus` | Reserved status slot; idle/saving/saved/failed presentation | Truthful persistence state and Retry implementation |
-| `ItemRow` | Compact identity, indicator, preference and Refine slots | Item data, optional modifiers and classification indicators |
+| `ItemRow` | Compact identity, indicator, preference and Refine slots | Item data, optional modifiers, aggregate save status and classification indicators |
 | `DisclosureSection` | Controlled disclosure with a stable panel ID | Expanded state and panel content; opening never records preference |
 | `ToastProvider` / `useToasts` | One queue/viewport at the application boundary | Meaningful notifications and genuine recovery/Undo actions |
 | `ToastViewport` / `useToastQueue` | Lower-level controlled viewport and queue primitives | Mount only one viewport per chosen notification scope |
@@ -55,11 +55,13 @@ been migrated to the experimental treatments merely because the code is shared.
 
 ## Current limits
 
-The UI Lab still owns illustrative data and an 850 ms simulated save. It does not
-persist preferences, implement a server save coordinator, durable recovery/offline
-sync, or risk-based destructive confirmations. `InlineSaveStatus` presents state;
-passing `saved` requires real confirmation from a caller. UI Lab “saved” messages
-are simulation feedback under its explicit no-persistence notice.
+The UI Lab owns illustrative data and an 850 ms simulated save. Its record provider
+retains independently keyed edits, timestamps, revisions and pending saves across
+feature navigation within the mounted Lab session. Reloading or leaving the Lab
+discards them. It does not persist preferences, implement a server coordinator,
+durable recovery/offline sync, or risk-based destructive confirmations. `InlineSaveStatus` presents state;
+passing `saved` requires confirmation of the caller’s latest operation. UI Lab “saved” messages
+are simulation feedback under its explicit session-only notice.
 
 Do not treat the component inventory as completion of every approved feedback
 workshop decision. Container morph animation, full-page recovery, session recovery,

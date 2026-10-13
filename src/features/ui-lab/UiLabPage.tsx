@@ -7,6 +7,7 @@ import { ModalLayer } from "../../components/ui/ModalLayer";
 import { ToastProvider } from "../../components/ui/ToastProvider";
 import { SearchRow } from "../../components/ui/SearchControls";
 import "./uiLab.css";
+import { LabRecordsProvider, LabSaveSummary } from "./LabRecords";
 
 type Area = "Home" | "Catalog" | "Profile" | "Discover" | "Tools";
 const areas: Area[] = ["Home","Catalog","Profile","Discover","Tools"];
@@ -35,7 +36,7 @@ const subjectNames=featuredSubjects.map(s=>s.name);
 const extraSubjects=["Collars","Aftercare","Primal Play","Sensory Play","Service","Roleplay","Praise","Protocols","Temperature Play","Pet Play"];
 function dailyFeatured(){const day=Math.floor(new Date().setHours(0,0,0,0)/86400000);const first=((day%featuredSubjects.length)+featuredSubjects.length)%featuredSubjects.length;return [featuredSubjects[first],featuredSubjects[(first+2)%featuredSubjects.length]];}
 export function UiLabPage() {
- return <ToastProvider><UiLabContent/></ToastProvider>;
+ return <ToastProvider><LabRecordsProvider><UiLabContent/></LabRecordsProvider></ToastProvider>;
 }
 function UiLabContent() {
  const [area,setArea]=useState<Area>("Home");
@@ -159,6 +160,7 @@ function UiLabContent() {
     <SortGroupSheet open={catalogOrderOpen} onClose={()=>setCatalogOrderOpen(false)} sort={catalogSort} onSort={setCatalogSort} showGrouping={false} defaultSortLabel="Best matches" />
    </div></ModalLayer>
    <main className="ui-lab-app-content">
+    {area!=="Catalog"&&<LabSaveSummary/>}
     {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>{resetPageScroll();setWorkspace("");setSelectedSubject(null);setExploreSubject(null);setDetail(null)}}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
     <h1 className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
     {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
