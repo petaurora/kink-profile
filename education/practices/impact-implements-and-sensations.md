@@ -3,7 +3,7 @@
 *How material, shape, contact area, and personal perception influence thud, sting, and the experience of impact play.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 7 minutes  
+**Estimated reading time:** 8 minutes  
 **Topics:** Impact Play · Implements · Thud · Sting · Sensory Preferences · Equipment Safety
 
 **Content note:** Discusses pain, impact implements, potential bruising and skin injury. This is an educational comparison, not a technique or purchasing guide.
