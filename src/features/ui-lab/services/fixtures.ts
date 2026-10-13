@@ -117,7 +117,7 @@ const catalogItems = Object.entries(catalogSeeds).flatMap(([category, names]) =>
   })),
 })));
 export const labReferenceData: CatalogReferenceData = {
-  items: [...catalogItems.map(item => {\n    const canonical = approvedV2Slice.items.find(v2 => v2.id === item.id);\n    return canonical ? { ...item, name: canonical.name, description: canonical.description, groups: canonical.groups } : item;\n  }), ...reviewedCatalogExpansion.items.filter(v2 => !catalogItems.some(item => item.id === v2.id)).map(v2 => ({
+  items: [...catalogItems.map(item => {\n    const canonical = [...approvedV2Slice.items, ...reviewedCatalogExpansion.items].find(v2 => v2.id === item.id);\n    return canonical ? { ...item, name: canonical.name, description: canonical.description, groups: canonical.groups } : item;\n  }), ...reviewedCatalogExpansion.items.filter(v2 => !catalogItems.some(item => item.id === v2.id)).map(v2 => ({
     id: v2.id, name: v2.name,
     category: reviewedCatalogExpansion.themes.find(theme => v2.themeIds.includes(theme.id))?.name ?? "Catalog V2",
     description: v2.description, groups: v2.groups,
