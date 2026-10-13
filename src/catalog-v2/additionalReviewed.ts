@@ -7,7 +7,7 @@ const groupOf=(name:string,theme:string, groups:CatalogV2Group[]=[])=>(item(name
 const collections: Record<string,CatalogV2Item[]>={
  equipment:[
  item("Collaring","equipment"),item("Gags","equipment", [g("Type",["Ball","Bit","Ring","Tape-style","Medical / Dental","Muzzle"])]),
- item("Straitjackets","equipment"),item("Restraint Gear","equipment",[g("Type",["Armbinder","Bondage Mitts","Under-bed System","Spreader Bar","Yoke","Head Harness"])]),item("Restraint Furniture / Structures","equipment",[g("Type",["A-frame","Berkley Horse","Bondage Bench","Bondage Frame","Bondage Stool","Bondage Table","Bondage Wheel","Bondage Rack","Sawhorse","Massage / Restraint Table"])]),
+ item("Straitjackets","equipment"),item("Restraint Gear","equipment",[g("Material",["Leather","Metal"]),g("Type",["Armbinder","Bondage Mitts","Under-Bed Restraint System","Spreader Bar","Yoke","Head Harness"])]),item("Restraint Furniture / Structures","equipment",[g("Type",["A-frame","Berkley Horse","Bondage Bench","Bondage Frame","Bondage Stool","Bondage Table","Bondage Wheel","Bondage Rack","Sawhorse","Massage / Restraint Table"])]),
  item("Stocks / Pillory","equipment",[g("Style / Form",["Stocks","Pillory"])]),item("Saint Andrew's Cross","equipment",[g("Mounting",["Wall-mounted","Freestanding"])])
  ],
  impact:[
