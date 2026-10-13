@@ -11,8 +11,15 @@ const collections: Record<string,CatalogV2Item[]>={
  item("Stocks / Pillory","equipment"),item("Saint Andrew's Cross","equipment")
  ],
  impact:[
- item("Impact Play","impact",[g("Sensation",["Thuddy","Stingy"]),g("Target / Body Area",[])]),
- ...["Spanking / Slapping","Paddles","Floggers","Canes","Whips","Other Implements","Rhythmic Impact","Counting Impacts","Impact Warm-up","Impact Endurance","Bastinado","Florentine Flogging"].map(n=>item(n,"impact"))
+ item("Impact Play","impact",[g("Method / Practice",["Paddling","Flogging","Caning","Strapping","Crop Play","Slapper / Tawse Play","Whipping"]),g("Sensation",["Thuddy","Stingy"])]),
+ item("Spanking / Slapping","impact"),
+ item("Paddles","impact",[g("Material",["Rubber / Silicone"])]),
+ item("Floggers","impact"),
+ item("Canes","impact"),
+ item("Whips","impact",[g("Type",["Single-tail","Dragon-tail","Cat-o'-nine-tails","Sjambok"])]),
+ item("Crops","impact"),
+ item("Other Implements","impact",[g("Type",["Wooden Spoon","Hairbrush","Impact Jack / Thumper"])]),
+ ...["Rhythmic Impact","Counting Impacts","Impact Warm-up","Impact Endurance","Bastinado","Florentine Flogging"].map(n=>item(n,"impact"))
  ],
  psychological:[
  ...["Humiliation","Degradation","Objectification","Embarrassment Play","Name-calling","Mockery","Rating / Evaluation","Small Penis Humiliation","Human Furniture","Body Writing"].map(n=>item(n,"psychological"))
