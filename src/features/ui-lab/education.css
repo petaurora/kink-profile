@@ -72,3 +72,12 @@
 @media (max-width: 700px) {
   .lab-education-prose { font-size: 15px; line-height: 1.7; }
 }
+
+/* Practice articles may contain safety comparison tables; scroll within the page on small screens. */
+.lab-education-table-scroll { max-width: 100%; overflow-x: auto; margin: 18px 0 26px; border: 1px solid #f0d3e73c; border-radius: 10px; }
+.lab-education-table-scroll:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 3px; }
+.lab-education-table-scroll table { border-collapse: collapse; width: 100%; min-width: 550px; font-size: 14px; line-height: 1.55; }
+.lab-education-table-scroll th { font-weight: 700; color: #ffe5f2; background: #292342; }
+.lab-education-table-scroll td { color: #e9d6e4; }
+.lab-education-table-scroll th, .lab-education-table-scroll td { text-align: left; vertical-align: top; border-bottom: 1px solid #f0d3e72c; padding: 12px 14px; }
+.lab-education-table-scroll tr:last-child td { border-bottom: 0; }
