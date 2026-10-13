@@ -153,3 +153,12 @@ Item/modifier/concept IDs against the loaded reference universe, including direc
 links; query text stays out of URLs. Profile record labels use that same loaded
 data. Home/cards, primary/full-menu navigation, breadcrumbs and tool links all
 invoke registered Lab or existing application routes.
+
+
+## Education reader vertical slice
+
+The **Learn** destination now exposes a read-only article landing with title/description search, thematic sections, stable article-ID links, and a safe accessible Markdown reading view. The related-reading section uses explicit article-to-article references. The same links work as direct routes: `#/ui-lab/learn/article?id=edu-collars`.
+
+All data arrives through the optional async `AppServices.education` read contract; the local adapter consumes the nine Markdown files already merged to main. The reader distinguishes initial load, an unavailable adapter, a failed request with Retry, and unknown article IDs. No mock content is substituted on adapter failure.
+
+No article view creates profile evidence, reading progress, consent, or a Discover activity. Catalog/Concept typed links are metadata-only while canonical cross-domain relationship rules remain under design. Article publication, editorial review, API deployment, learning paths and personalization are out of scope.
