@@ -27,6 +27,15 @@ describe("complete, loss-auditable V1 source disposition",()=>{
   const tracked=new Set([...report.applied,...report.unresolved.map(x=>x.sourceId),...report.conflicts.map(x=>x.sourceId)]);
   expect(tracked.size).toBe(551);
  });
+ it("all approved executable targets exist in the canonical V2 model",()=>{
+  const rejected:string[]=[];
+  for(const decision of verifiedMigrationDecisions){
+   if(decision.outcome==="review"||decision.outcome==="exclude")continue;
+   const report=migrateV1Ratings({[decision.sourceId]:"Like"},[decision],catalog);
+   if(report.unresolved.length||report.conflicts.length||report.applied.length!==1)rejected.push(`${decision.sourceId}: ${report.unresolved.map(x=>x.reason).join(", ")}`);
+  }
+  expect(rejected).toEqual([]);
+ });
  it("preserves existing preferences on collisions and reports their source",()=>{
   const source=verifiedMigrationDecisions.find(d=>d.outcome==="item");
   expect(source).toBeDefined();
