@@ -87,7 +87,9 @@ export function EducationMarkdown({markdown}:{markdown:string}){
       nodes.push(<blockquote key={start}>{inline(quotes.join(" "))}</blockquote>);continue;
     }
     const start=i,words:string[]=[];
-    while(i<lines.length&&lines[i].trim()&&!/^(#{1,4})\s|---+$|[-*]\s+|\d+\.\s+|>/.test(lines[i].trim())){
+    // Anchor the entire block-boundary expression: inline **bold** followed by a space
+    // must not be mistaken for a list marker and silently skip its paragraph.
+    while(i<lines.length&&lines[i].trim()&&!/^(?:#{1,4}\s+|---+$|[-*]\s+|\d+\.\s+|>)/.test(lines[i].trim())){
       words.push(textLine(lines[i]));i++;
     }
     if(words.length)nodes.push(<p key={start}>{inline(words.join(" "))}</p>);
