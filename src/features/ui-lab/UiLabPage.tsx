@@ -153,7 +153,7 @@ function UiLabContent() {
    </ModalLayer>
    <GlobalCatalogSearch open={catalogSearchOpen} onClose={()=>{closeLayer("overlay");setCatalogOrderOpen(false)}} origin={searchOrigin} sort={catalogSort} onSort={setCatalogSort} orderOpen={catalogOrderOpen} onOrderOpen={setCatalogOrderOpen} targetId={params.get("target")||""} onTargetChange={id=>id?openLayer("target",id):closeLayer("target")}/>
    {conceptId&&<ConceptDetail id={conceptId} onClose={()=>closeLayer("concept")}/>}
-   <main id={contentId} className="ui-lab-app-content" aria-labelledby="ui-lab-page-heading">
+   <main id={contentId} className={"ui-lab-app-content"+(area==="Learn"?" lab-education-page":"")} aria-labelledby="ui-lab-page-heading">
     {unknown&&<p role="alert">This Lab destination is unavailable. <button onClick={()=>navigate("Home")}>Return Home</button></p>}
     {area!=="Catalog"&&<LabSaveSummary/>}
     {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>navigate(area)}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
