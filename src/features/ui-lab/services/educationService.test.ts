@@ -17,7 +17,7 @@ it("lists fourteen stable summaries and loads full Markdown only for a requested
   expect(summary.value.find(x=>x.id==="edu-breath-safety")).toMatchObject({
     slug:"breath-play-choking-and-strangulation",
     section:"Practices & safety",
-    readingMinutes:12,
+    readingMinutes:14,
   });
   expect(summary.value.every(x=>!("markdown" in x))).toBe(true);
   const detail=await settle(service.getArticle("edu-collars"));
@@ -44,8 +44,11 @@ it("lists fourteen stable summaries and loads full Markdown only for a requested
   const breath=await settle(service.getArticle("edu-breath-safety"));
   if(!("value" in breath)||!breath.value)throw new Error("Breath safety article not available");
   expect(breath.value.markdown.toLowerCase()).toContain("there is no reliably safe way to strangle");
+  expect(breath.value.markdown).toContain("### Suffocation: Restricted Access to Breath Without Neck Compression");
+  expect(breath.value.markdown).toContain("## 3. Is Suffocation the \"Safest\" Form of Breath Play?");
   expect(breath.value.markdown).toContain("### Emergency Signs");
   expect(breath.value.markdown).toContain("## 7. Exploring the Fantasy Without Restricting Breathing");
+  expect(breath.value.markdown).toContain("| Suffocation |");
   expect(breath.value.markdown).toContain("### Further Reading");
   expect(breath.value.links.some(link=>link.target.kind==="article"&&link.target.id==="edu-safewords")).toBe(true);
   const breathWords=breath.value.markdown.trim().split(/\s+/).length;
