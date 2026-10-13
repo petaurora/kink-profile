@@ -3,7 +3,7 @@
 *What mindspaces mean, how they feel, why they can overlap, and how they may change over time.*
 
 **Level:** Beginner  
-**Estimated reading time:** 9 minutes  
+**Estimated reading time:** 11 minutes  
 **Topics:** Mindspaces · Headspaces · Identity · Roles · Emotional States · Self-Understanding · Communication
 
 **Content note:** This article discusses vulnerability, younger-feeling headspaces, emotional regulation, and power-exchange contexts without graphic material.
