@@ -152,7 +152,7 @@ const featuredSubjectGroups = [
 ];
 export const labReferenceData: CatalogReferenceData = {
   ...curatedReferenceData,
-  subjects:[...curatedReferenceData.subjects, ...featuredSubjectGroups.map(({themeIds,...subject})=>({
+  subjects:[...curatedReferenceData.subjects.filter(s=>!featuredSubjectGroups.some(featured=>featured.id===s.id)), ...featuredSubjectGroups.map(({themeIds,...subject})=>({
     ...subject,
     itemIds:[...new Set(curatedReferenceData.subjects.filter(theme=>themeIds.includes(theme.id)).flatMap(theme=>theme.itemIds))].filter(id=>curatedReferenceData.items.some(item=>item.id===id)),
   }))],
