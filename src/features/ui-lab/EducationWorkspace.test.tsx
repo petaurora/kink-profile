@@ -10,7 +10,8 @@ import { labPath, parseLabRoute } from "./LabNavigation";
 let root:Root,container:HTMLDivElement,navigate:NavigateFunction;
 function Driver(){const location=useLocation();navigate=useNavigate();return <output>{location.pathname+location.search}</output>;}
 const click=(element:HTMLElement)=>act(()=>{element.focus();element.click();});
-const flush=async(ms=0)=>{await act(async()=>{await vi.advanceTimersByTimeAsync(ms);});};
+// Provider hydration mounts the Education hook in a later React commit; flush both async stages.
+const flush=async(ms=0)=>{for(let pass=0;pass<4;pass++)await act(async()=>{await vi.advanceTimersByTimeAsync(ms);await Promise.resolve();});};
 function mount(path="/ui-lab/learn",adapter=createUiLabServices({latencyMs:0})){
   act(()=>root.render(<MemoryRouter initialEntries={[path]}><UiLabPage services={adapter.services}/><Driver/></MemoryRouter>));
   return adapter;
