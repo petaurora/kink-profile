@@ -8,12 +8,14 @@ export function DisclosureSection({
   open,
   onToggle,
   children,
+  status,
 }: {
   title: string;
   description?: string;
   open: boolean;
   onToggle: () => void;
   children: ReactNode;
+  status?: "saving" | "failed";
 }) {
   const id = useId();
   return (
@@ -23,13 +25,14 @@ export function DisclosureSection({
         className="kp-disclosure-trigger"
         aria-expanded={open}
         aria-controls={id}
+        aria-label={status === "failed" ? `${title}: Save failed. Reveal issue` : undefined}
         onClick={onToggle}
       >
         <span>
           {title}
           {description && <small>{description}</small>}
         </span>
-        <span aria-hidden="true">{open ? "⌃" : "⌄"}</span>
+        <span>{status && <span className="kp-group-status" role="status" aria-label={status === "failed" ? "Save failed" : "Saving"}>{status === "failed" ? "!" : "◌"}</span>}<span aria-hidden="true">{open ? "⌃" : "⌄"}</span></span>
       </button>
       <div id={id} hidden={!open}>
         {open && children}

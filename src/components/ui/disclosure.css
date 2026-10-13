@@ -22,3 +22,6 @@
   font-weight: 400;
   margin-top: 3px;
 }
+
+.kp-disclosure-trigger { min-height: 44px; }
+.kp-group-status { margin-right: 10px; color: #ffd4de; }
