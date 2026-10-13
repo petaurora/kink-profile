@@ -11,6 +11,7 @@ import { ViewErrorBoundary } from "../../components/ui/ViewErrorBoundary";
 import { DiscoverSessionProvider } from "./DiscoverSession";
 import { DiscoverWorkspace } from "./DiscoverWorkspace";
 import { LabOverview } from "./LabOverview";
+import { EducationWorkspace } from "./EducationWorkspace";
 import { labPath, parseLabRoute, primaryAreas, type LabArea, type PrimaryArea } from "./LabNavigation";
 import "./uiLab.css";
 import "./labFoundations.css";
