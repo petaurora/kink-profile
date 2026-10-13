@@ -3,7 +3,7 @@
 *Understanding redness, welts, bruises, aftercare, and why a visible mark is not a measure of safety or success.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 7 minutes  
+**Estimated reading time:** 8 minutes  
 **Topics:** Impact Play · Marking · Bruising · Aftercare · Tissue Injury · Medical Warning Signs
 
 **Content note:** Discusses bruises, broken skin, infection, and potentially serious injury. This guide is educational, not a diagnosis or substitute for medical assessment.
