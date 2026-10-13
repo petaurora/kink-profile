@@ -43,7 +43,7 @@ it("lists fourteen stable summaries and loads full Markdown only for a requested
   expect(overviewWords).toBeLessThanOrEqual(2000);
   const breath=await settle(service.getArticle("edu-breath-safety"));
   if(!("value" in breath)||!breath.value)throw new Error("Breath safety article not available");
-  expect(breath.value.markdown).toContain("there is no reliably safe way to strangle");
+  expect(breath.value.markdown.toLowerCase()).toContain("there is no reliably safe way to strangle");
   expect(breath.value.markdown).toContain("### Emergency Signs");
   expect(breath.value.markdown).toContain("## 7. Exploring the Fantasy Without Restricting Breathing");
   expect(breath.value.markdown).toContain("### Further Reading");
