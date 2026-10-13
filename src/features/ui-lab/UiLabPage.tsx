@@ -158,7 +158,7 @@ function UiLabContent() {
     {area!=="Catalog"&&<LabSaveSummary/>}
     {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>navigate(area)}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
     <h1 id="ui-lab-page-heading" ref={pageHeading} tabIndex={-1} className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
-    {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
+    {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":area==="Learn"?"Read, reflect, and explore ideas without recording personal preferences.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
     {area==="Catalog"&&<div className="ui-lab-catalog">
 
       {!workspace&&<>
@@ -180,7 +180,7 @@ function UiLabContent() {
     {area==="Discover"&&<DiscoverWorkspace view={workspace} attemptId={params.get("attempt")||undefined} go={go}/>}
     {area==="Learn"&&<EducationWorkspace view={workspace} articleId={params.get("id")||""} go={go}/>}
     {area!=="Catalog"&&area!=="Discover"&&area!=="Learn"&&<LabOverview area={area} workspace={workspace} go={go} shortcuts={shortcuts} onShortcuts={setShortcuts}/>}
-    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">Experimental UI · Illustrative content · Records and activity notes last for this mounted Lab session</p>}
+    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">{area==="Learn"?"Experimental reader · Editorial drafts pending review · Reading does not save preferences":"Experimental UI · Illustrative content · Records and activity notes last for this mounted Lab session"}</p>}
     <button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}>{toastLabOpen?"− Hide":"✦ Open"} Toast Playground</button>
     {toastLabOpen&&<ToastPlayground/>}
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}}><code>{color}</code></div>)}</div><a href="#/hub">Return to production app</a></section>}
