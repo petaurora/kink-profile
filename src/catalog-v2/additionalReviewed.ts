@@ -35,7 +35,11 @@ const collections: Record<string,CatalogV2Item[]>={
  ...["Ageplay","ABDL","Bimbofication","Inflation Fantasy","Abandonment Play Fantasy","Furry / Anthro Fantasy","Vore Fantasy","Omegaverse Fantasy","Corruption Kink","Isolation Fantasy","Sleep Play / Consensual Somnophilia"].map(n=>item(n,"roleplay"))
  ],
  power:[
- ...["Low Protocol","High Protocol","Command Play","Permission / Decision Control","Service","Automated Tasking / System Control","Verbal / Mental Restraint"].map(n=>item(n,"power")),
+ ...["Low Protocol","High Protocol"].map(n=>item(n,"power",[g("Practice",["Speech / Communication","Eye Contact","Etiquette","Check-ins / Reporting","Messaging","Online Interaction","Communication Restriction / Silence"])])),
+ item("Task Assignment","power",[g("Mode",["Assigning Tasks","Receiving Tasks"]),g("Structure",["Timed","Precision / Exactness"])]),
+ item("Permission / Decision Control","power",[g("Domain",["Bathroom","Outings / Location","Social Plans","Spending","Appearance / Presentation","Devices / Apps","Schedule / Time","Online Presentation","Online Interaction","Communication","Interpersonal Behavior"])]),
+ item("Service","power",[g("Type",["Domestic Service","Personal Assistant Service","Bootblacking","Foot Service","Food / Drink Service","Fetching","Chauffeur Service"])]),
+ ...["Obedience","Command Play","D/s Contract Ritual","Honorifics / Titles","Inspection","Presentation","Automated Tasking","System Control","Verbal / Mental Restraint"].map(n=>item(n,"power")),
  item("Position Training","power",[g("Form",["Kneeling","Standing / Display","Hands Behind Back","Waiting Positions"])]),
  ],
  pet:[
