@@ -2,6 +2,7 @@ import { legacyCatalogIds } from "./legacyCatalogIds";
 import { approvedV1ToV2Slice } from "./approvedSlice";
 import { reviewedBatch1Decisions } from "./reviewedExpansion";
 import { verifiedImpactDecisions, verifiedSourceDecisions } from "./verifiedSourceDecisions";
+import { verifiedReviewBatchDecisions } from "./verifiedReviewBatchDecisions";
 import type { MigrationDecision } from "./migration";
 
 /** Exact source coverage with honest, explicit dispositions.
@@ -23,7 +24,7 @@ export const approvedExclusionsAndDeferrals: MigrationDecision[] = [
 export const verifiedMigrationDecisions: MigrationDecision[] = [
   ...approvedV1ToV2Slice, ...reviewedBatch1Decisions,
   ...verifiedSourceDecisions, ...verifiedImpactDecisions,
-  ...approvedExclusionsAndDeferrals,
+  ...approvedExclusionsAndDeferrals, ...verifiedReviewBatchDecisions,
 ];
 const approved = new Map<string, MigrationDecision>();
 for (const decision of verifiedMigrationDecisions) {
