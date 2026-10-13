@@ -34,11 +34,16 @@ describe("service-backed Education",()=>{
     const storage=vi.spyOn(Storage.prototype,"setItem");
     mount();await flush(300);
     expect(container.textContent).toContain("9 articles");
+    expect(container.querySelector(".kp-search-field--input")).not.toBeNull();
+    expect(container.querySelector(".kp-search-filter-trigger")).not.toBeNull();
+    expect(container.querySelector(".lab-education-starters")).not.toBeNull();
     const collars=[...container.querySelectorAll<HTMLButtonElement>(".lab-education-grid button")].find(b=>b.textContent?.includes("Collars & Collaring"))!;
     expect(collars).toBeTruthy();click(collars);await flush(300);
     expect(container.querySelector("output")?.textContent).toBe(original);
     expect(container.querySelector(".lab-education-prose")?.textContent).toContain("Different Types of Collars");
     expect(container.textContent).toContain("Continue learning");
+    expect(container.querySelectorAll(".lab-education-related")).toHaveLength(1);
+    expect([...container.querySelectorAll(".lab-education-related button")].every(node=>!node.textContent?.includes("Collars & Collaring"))).toBe(true);
     expect(storage).not.toHaveBeenCalled();
     act(()=>navigate(-1));await flush(300);
     expect(container.querySelector("output")?.textContent).toBe("/ui-lab/learn");
