@@ -58,3 +58,12 @@
 
 @media(max-width:680px){.cc .kp-item-main:has(.cc-rp-indicators){flex:1 1 100%}}
 @media(max-width:680px){.cc .kp-item-row:has(.cc-rp-indicators)>.kp-rating-wrap{margin-left:auto}}
+
+.cc-error-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 12px; border: 1px solid #ffbdcb66; border-radius: 10px; margin-bottom: 12px; }
+.cc-error-summary button, .cc-experience button { background: transparent; border: 1px solid #f0d3e74a; color: #f0d3e7; padding: 10px; border-radius: 8px; min-height: 44px; }
+.cc-experience { padding: 12px 3px; font-size: 13px; }
+.cc-experience p { color: #c6b1ca; line-height: 1.5; }
+.cc-experience fieldset { border: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.cc-experience legend { margin-bottom: 8px; }
+.cc-experience button[aria-pressed=true] { background: #520e25; }
+.cc-value-highlight { background: #f0d3e714; outline: 1px solid #f0d3e755; }

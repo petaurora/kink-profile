@@ -9,6 +9,7 @@ export function ItemRow({
   preference,
   onRefine,
   refined = false,
+  refineStatus,
 }: {
   name: string;
   itemId: string;
@@ -16,6 +17,7 @@ export function ItemRow({
   preference: ReactNode;
   onRefine?: (event: MouseEvent<HTMLButtonElement>) => void;
   refined?: boolean;
+  refineStatus?: "saving" | "failed";
 }) {
   return (
     <article className="kp-ui kp-item" data-item-id={itemId}>
@@ -30,10 +32,11 @@ export function ItemRow({
             type="button"
             className="kp-refine-toggle"
             aria-haspopup="dialog"
+            aria-label={refineStatus === "failed" ? `${name}: Modifier save failed. Reveal issue` : refineStatus === "saving" ? `${name}: Saving modifiers. Refine` : undefined}
             onClick={onRefine}
           >
             <span aria-hidden="true">+</span> Refine
-            {refined && <span className="kp-refined-dot" aria-hidden="true" />}
+            {refineStatus ? <span className={`kp-refine-status kp-refine-status--${refineStatus}`} aria-hidden="true">{refineStatus === "failed" ? "!" : "◌"}</span> : refined && <span className="kp-refined-dot" aria-hidden="true" />}
           </button>
         )}
       </div>
