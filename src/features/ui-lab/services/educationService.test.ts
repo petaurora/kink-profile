@@ -7,13 +7,18 @@ async function settle<T>(promise:Promise<T>){
   const result=promise.then(value=>({value}),error=>({error}));
   await vi.runAllTimersAsync();return result;
 }
-it("lists thirteen stable summaries and loads full Markdown only for a requested article",async()=>{
+it("lists fourteen stable summaries and loads full Markdown only for a requested article",async()=>{
   const service=createUiLabServices({latencyMs:0}).services.education!;
   const summary=await settle(service.listArticles());
   if(!("value" in summary))throw new Error("Education list failed");
-  expect(summary.value).toHaveLength(13);
+  expect(summary.value).toHaveLength(14);
   expect(summary.value.map(x=>x.id)).toContain("edu-collars");
   expect(summary.value.find(x=>x.id==="edu-impact")).toMatchObject({slug:"impact-play-safety",section:"Practices & safety",readingMinutes:7});
+  expect(summary.value.find(x=>x.id==="edu-breath-safety")).toMatchObject({
+    slug:"breath-play-choking-and-strangulation",
+    section:"Practices & safety",
+    readingMinutes:12,
+  });
   expect(summary.value.every(x=>!("markdown" in x))).toBe(true);
   const detail=await settle(service.getArticle("edu-collars"));
   if(!("value" in detail))throw new Error("Education detail failed");
@@ -36,6 +41,16 @@ it("lists thirteen stable summaries and loads full Markdown only for a requested
   const overviewWords=impact.value?.markdown.trim().split(/\s+/).length??0;
   expect(overviewWords).toBeGreaterThanOrEqual(1000);
   expect(overviewWords).toBeLessThanOrEqual(2000);
+  const breath=await settle(service.getArticle("edu-breath-safety"));
+  if(!("value" in breath)||!breath.value)throw new Error("Breath safety article not available");
+  expect(breath.value.markdown).toContain("there is no reliably safe way to strangle");
+  expect(breath.value.markdown).toContain("### Emergency Signs");
+  expect(breath.value.markdown).toContain("## 7. Exploring the Fantasy Without Restricting Breathing");
+  expect(breath.value.markdown).toContain("### Further Reading");
+  expect(breath.value.links.some(link=>link.target.kind==="article"&&link.target.id==="edu-safewords")).toBe(true);
+  const breathWords=breath.value.markdown.trim().split(/\s+/).length;
+  expect(breathWords).toBeGreaterThanOrEqual(1000);
+  expect(breathWords).toBeLessThanOrEqual(3000);
   expect(await settle(service.getArticle("edu-nonexistent"))).toEqual({value:null});
 });
 it("honors abort, surfaces failures, and does not rewrite preference evidence on reads",async()=>{
