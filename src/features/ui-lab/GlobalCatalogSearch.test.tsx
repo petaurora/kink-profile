@@ -27,6 +27,14 @@ it('indexes the same Catalog records with normalized multiword matching and no d
   const all=searchCatalog('ownership');expect(all.some(record=>record.type==='Concepts')).toBe(true);expect(all.some(record=>record.type==='Items')).toBe(true);
   const sections=searchSections(all,'All','default');const ids=sections.flatMap(section=>section.rows.map(row=>row.id));expect(new Set(ids).size).toBe(ids.length);expect(sections[0].label).toBe('Best matches');
 });
+it('opens a modifier found through its approved alias without recording preference evidence',async()=>{
+ mount();query('penis gag');await flush();
+ click(document.querySelector<HTMLElement>('[data-search-result="modifier:gags:type:phallic"]')!);await flush(20);
+ expect(button('Form / Design9 options⌃').getAttribute('aria-expanded')).toBe('true');
+ expect(button('Phallic: Not rated. Change rating')).toBe(document.activeElement);
+ expect(document.querySelector('.cc-value-highlight')?.textContent).toContain('Phallic');
+ expect(document.querySelector('output')?.textContent).not.toContain('Love');
+});
 it('opens unrestricted and global clear resets the type and query with input focus',async()=>{
   mount();expect(button('All').getAttribute('aria-pressed')).toBe('true');query('leather');await flush();click(button('Modifiers'));click(button('Clear search'));
   expect(button('All').getAttribute('aria-pressed')).toBe('true');expect((document.activeElement as HTMLInputElement).id).toBe('lab-global-query');expect((document.activeElement as HTMLInputElement).value).toBe('');

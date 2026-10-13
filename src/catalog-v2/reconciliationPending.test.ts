@@ -6,6 +6,7 @@ import { validateCatalogV2 } from "./model";
 const pending: readonly [number,string,string][]=[
  [258,"impact-play","target-body-area"],[258,"impact-play","intensity"],
  [259,"humiliation-play","target-focus"],[259,"humiliation-play","tone-style"],[259,"humiliation-play","intensity"],
+ [259,"embarrassment-play","intensity"],
  [269,"texture-play","body-part"],
  [270,"pinching","body-part"],[270,"scratching","body-part"],[270,"biting","body-part"],
  [270,"clamp-clip-play","body-part"],[270,"wartenberg-wheel","body-part"],[270,"suction-play","body-part"],
@@ -19,6 +20,7 @@ describe("approved but pending value vocabularies",()=>{
    expect(model?.pendingGroupIds).toContain(groupId);
    expect(model?.groups.some(g=>g.id===groupId)).toBe(false);
    expect(labReferenceData.items.find(i=>i.id===itemId)?.groups.some(g=>g.id===groupId)).toBe(false);
+   expect(labReferenceData.items.find(i=>i.id===itemId)?.pendingGroupIds).toContain(groupId);
   });
  }
 });

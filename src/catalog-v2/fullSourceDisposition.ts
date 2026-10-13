@@ -19,6 +19,7 @@ export const approvedExclusionsAndDeferrals: MigrationDecision[] = [
  {sourceId:"praise-kink",outcome:"review",reason:"Core Praise intentionally deferred to Rewards & Punishments (#261/#262)"},
  ...["good-girl-good-boy-praise","competence-praise","pet-praise","praise-ritual","daily-praise-dynamic"].map(sourceId=>({sourceId,outcome:"exclude" as const,reason:"Granular Praise variants expressly excluded by #261"})),
  {sourceId:"training-dynamic",outcome:"exclude",reason:"Training Dynamic excluded as standalone Item (#263)"},
+ {sourceId:"rough-body-handling",outcome:"exclude",reason:"Rough Body Handling explicitly removed by final #270 correction"},
  {sourceId:"kneeling-endurance",outcome:"exclude",reason:"Kneeling Endurance explicitly excluded (#265)"},
  {sourceId:"tease-and-denial",outcome:"exclude",reason:"Composite Tease and Denial excluded from V2 (#272)"},
  {sourceId:"magic-wand-stimulation",outcome:"exclude",reason:"Standalone Magic-Wand Stimulation removed (#274)"},
@@ -100,7 +101,9 @@ export function buildLegacyPreferenceArchive(
   const {retainedLegacyRatings,...report}=planLosslessV1Migration(original,catalog,existing);
   const reasons=Object.fromEntries([
     ...report.unresolved.map(({sourceId,reason})=>[sourceId,reason]),
-    ...report.conflicts.map(({sourceId})=>[sourceId,"Conflicting existing V2 preference"]),
+    ...report.conflicts.map(({sourceId,reason})=>[sourceId,reason === "incoming-sources"
+      ? "Conflicting original V1 preferences share one V2 target; all sources retained for deliberate resolution"
+      : "Conflicting existing V2 preference"]),
   ]);
   return {migratedRatings:report.ratings,archive:{
     schemaVersion:1,source:"kink-catalog-v1",status:"awaiting-db-reconciliation",

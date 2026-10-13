@@ -1,12 +1,26 @@
 import type { CatalogV2, CatalogV2Item, CatalogV2Group } from "./model";
-/** Approved selections from #257–#271. This is NOT a comprehensive V1 migration ledger. */
+import {modifierTemplate} from "./modifierTemplates";
+/** Final approved selections from #257–#271, including #268's approval comment. */
 const slug=(x:string)=>x.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 const g=(name:string, values:string[]):CatalogV2Group=>({id:slug(name),name,values:values.map(name=>({id:slug(name),name}))});
 const item=(name:string,themeId:string,groups:CatalogV2Group[]=[]):CatalogV2Item=>({id:slug(name),name,themeIds:[themeId],groups:groups.filter(group=>group.values.length>0),pendingGroupIds:groups.filter(group=>group.values.length===0).map(group=>group.id),collections:["kinks"]});
 const groupOf=(name:string,theme:string, groups:CatalogV2Group[]=[])=>(item(name,theme,groups));
 const collections: Record<string,CatalogV2Item[]>={
  equipment:[
- item("Collaring","equipment"),item("Gags","equipment", [g("Type",["Ball","Bit","Ring","Tape-style","Medical / Dental","Muzzle"])]),
+ {...item("Collaring","equipment",[g("Format / Context",["Witnessed / Community"])]),description:"The consensual act, ritual or relationship meaning of giving or receiving a collar, distinct from liking collars as objects."},
+ {...item("Gags","equipment",[
+  // Preserve existing type/value IDs when clarifying approved display labels.
+  {id:"type",name:"Form / Design",values:[
+   {id:"ball",name:"Ball"},{id:"bit",name:"Bit"},{id:"ring",name:"Ring / Open-frame"},
+   {id:"tape-style",name:"Tape / Mouth-covering Style"},{id:"medical-dental",name:"Medical / Dental"},
+   {id:"funnel",name:"Funnel"},{id:"mouthguard-style",name:"Mouthguard-style"},
+   {id:"muzzle",name:"Muzzle"},{id:"phallic",name:"Phallic",aliases:["Penis Gag"]}
+  ]},
+  g("Effect / Mouth State",["Speech Restriction / Muffling","Mouth Held Open","Mouth Occupied / Filled","Mouth Covered","Jaw / Mouth-position Control"]),
+  g("Features / Mechanism",["Inflatable / Adjustable Pressure","Locking / Secured","Strap / Harness Configuration","Attachment Points"]),
+  g("Material",["Silicone / Rubber","Leather","Metal","Fabric / Tape-like Materials"]),
+  g("Context / Association",["Bondage / Restraint","Medical / Clinical","Pet / Muzzle Roleplay","Humiliation / Objectification","Aesthetic / Fantasy-only Presentation"])
+ ]),description:"Mouth-restraint equipment and gagging methods, refined by design, effect, construction, material and explicitly chosen context."},
  item("Straitjackets","equipment"),item("Restraint Gear","equipment",[g("Material",["Leather","Metal"]),g("Type",["Armbinder","Bondage Mitts","Under-Bed Restraint System","Spreader Bar","Yoke","Head Harness"])]),item("Restraint Furniture / Structures","equipment",[g("Type",["A-frame","Berkley Horse","Bondage Bench","Bondage Frame","Bondage Stool","Bondage Table","Bondage Wheel","Bondage Rack","Sawhorse","Massage / Restraint Table"])]),
  item("Stocks / Pillory","equipment",[g("Style / Form",["Stocks","Pillory"])]),item("Saint Andrew's Cross","equipment",[g("Mounting",["Wall-mounted","Freestanding"])])
  ],
@@ -23,11 +37,11 @@ const collections: Record<string,CatalogV2Item[]>={
  ],
  psychological:[
  item("Humiliation Play","psychological",[g("Modality",["Verbal","Task / Behavioral","Presentation / Exposure","Evaluative"]),g("Context",["Private","Witnessed / Consenting Audience","Public-style Fantasy"]),g("Target / Focus",[]),g("Tone / Style",[]),g("Intensity",[])]),
- item("Degradation","psychological",[g("Modality",["Verbal","Behavioral / Treatment","Symbolic / Status"]),g("Target / Focus",["Role / Status","Sexuality / Sexual Behavior","Intelligence / Competence","Behavior / Conduct"]),g("Tone / Style",["Mocking / Sarcastic","Stern / Critical","Harsh / Direct","Cold / Clinical","Dismissive"]),g("Intensity",[])]),
+ item("Degradation","psychological",[g("Modality",["Verbal","Behavioral / Treatment","Symbolic / Status"]),modifierTemplate("psychologicalTarget",{include:["role-status","sexuality-sexual-behavior","intelligence-competence","behavior-conduct"]}),modifierTemplate("psychologicalTone",{include:["mocking-sarcastic","stern-critical","harsh-direct","cold-clinical","dismissive"]}),g("Intensity",[])]),
  item("Objectification","psychological",[g("Framing",["Use-object Fantasy","Functional Use","Sexual Use","Decorative / Display","Property Framing","Personhood Reduction / Thing-language"]),g("Form / Role",["Dollification"])]),
- item("Embarrassment Play","psychological",[g("Context",["Private","Witnessed / Consenting Audience"]),g("Form",["Silly / Awkward Tasks","Attention / Focus","Performance / Social Awkwardness","Teasing"])]),
+ item("Embarrassment Play","psychological",[g("Context",["Private","Witnessed / Consenting Audience"]),g("Form",["Silly / Awkward Tasks","Attention / Focus","Performance / Social Awkwardness","Teasing"]),g("Intensity",[])]),
  item("Name-calling","psychological",[g("Type",["Degrading","Sexual","Affectionate","Role-specific","Objectifying","Status-related"])]),
- item("Mockery","psychological",[g("Tone / Style",["Playful / Teasing","Mocking / Sarcastic","Stern / Critical","Harsh / Direct"])]),
+ item("Mockery","psychological",[modifierTemplate("psychologicalTone",{include:["playful-teasing","mocking-sarcastic","stern-critical","harsh-direct"]})]),
  item("Rating / Evaluation","psychological",[g("Target",["Performance / Task","Genitals","Body / Body Part","Appearance","Behavior","Sexual Performance","Skill / Ability"]),g("Style",["Praise","Critique","Teasing","Degradation","Neutral / Clinical"]),g("Format",["Numerical / Scored","Qualitative"])]),
  item("Small-penis Humiliation (SPH)","psychological"),
  item("Human Furniture","psychological",[g("Role / Function",["Stool","Footrest","Table","Display Stand"]),g("Framing",["Service","Objectification","Protocol","Humiliation","Aesthetic / Display"]),g("Duration",[]),g("Stillness / Endurance",[]),g("Visibility / Context",[])]),
@@ -44,7 +58,7 @@ const collections: Record<string,CatalogV2Item[]>={
  ...["Ageplay","ABDL","Bimbofication","Inflation Fantasy","Abandonment Play Fantasy","Furry / Anthropomorphic Fantasy","Vore Fantasy","Omegaverse Fantasy","Corruption Kink","Isolation Fantasy","Sleep Play / Consensual Somnophilia"].map(n=>item(n,"roleplay"))
  ],
  power:[
- ...["Low Protocol","High Protocol"].map(n=>item(n,"power",[g("Practice",["Speech / Communication","Eye Contact","Etiquette","Check-ins / Reporting","Messaging","Online Interaction","Communication Restriction / Silence"])])),
+ ...["Low Protocol","High Protocol"].map(n=>item(n,"power",[modifierTemplate("protocolPractice")])),
  item("Task Assignment","power",[g("Mode",["Assigning Tasks","Receiving Tasks"]),g("Structure",["Timed","Precision / Exactness"])]),
  item("Permission / Decision Control","power",[g("Domain",["Bathroom","Outings / Location","Social Plans","Spending","Appearance / Presentation","Devices / Apps","Schedule / Time","Online Presentation","Online Interaction","Communication","Interpersonal Behavior"])]),
  item("Service","power",[g("Type",["Domestic Service","Personal Assistant Service","Bootblacking","Foot Service","Food / Drink Service","Fetching","Chauffeur Service"])]),
@@ -60,7 +74,6 @@ const collections: Record<string,CatalogV2Item[]>={
  item("Ownership","dynamics",[g("Direction",["Owning","Being Owned"]),g("Expression",["Ritual / Symbolic Expression"])]),
  item("Total Power Exchange (TPE)","dynamics",[g("Scope",["24/7","Temporary / Bounded"])]),
  item("Brat Tamer / Brat Dynamic","dynamics",[g("Role",["Tamer","Brat"])]),
- item("Worship","dynamics",[g("Direction",["Giving","Receiving"])]),
  item("Findom Dynamic","dynamics",[g("Role",["Financial Dominant","Financial Submissive"])]),
  ],
  pet:[
@@ -73,8 +86,11 @@ const collections: Record<string,CatalogV2Item[]>={
  item("Growling / Animalistic Vocalization","primal"),item("Scenting","primal")
  ],
  exhibition:[
- ...["Exhibitionism","Voyeurism"].map(n=>item(n,"exhibition",[g("Context / Medium",["Partner","Consenting Audience","Photography","Video Recording","Live / Remote Camera"])])),
+ ...["Exhibitionism","Voyeurism"].map(n=>item(n,"exhibition",[modifierTemplate("observationMedium")])),
  item("Mirror Play","exhibition"),item("Public-Risk Fantasy","exhibition")
+ ],
+ marking:[
+ {...item("Marking","marking",[g("Type",["Hickeys","Bruise Marking","Stamps / Temporary Tattoos","Other Temporary Marks"])]),description:"The bodily mark itself is part of the desired consensual experience; this is distinct from the practice of writing on the body."}
  ],
  sensory:[
  item("Sensory Deprivation","sensory",[g("Sense",["Sight","Hearing","Multi-sensory"]),g("Method",["Blindfold","Headphones","Earplugs"])]),
@@ -84,7 +100,7 @@ const collections: Record<string,CatalogV2Item[]>={
  item("Tickling","sensory",[g("Intensity / Framing",["Tickle Torture"])]),item("ASMR","sensory")
  ],
  pain:[
- ...["Masochism","Sadism"].map(n=>item(n,"pain",[g("Experience",["Endurance / Sustained Pain","Pain Processing / Response"])])),
+ ...["Masochism","Sadism"].map(n=>item(n,"pain",[modifierTemplate("painExperience")])),
  item("Pinching","pain",[g("Body Part",[])]),
  item("Scratching","pain",[g("Method",["Fingernails","Claw / Rake Tools"]),g("Body Part",[])]),
  item("Biting","pain",[g("Body Part",[])]),item("Hair Pulling","pain"),
@@ -97,7 +113,7 @@ const collections: Record<string,CatalogV2Item[]>={
  ]
 };
 const names:Record<string,string>={
-dynamics:"Power Exchange & Roles",equipment:"Equipment & Objects",impact:"Impact Play",psychological:"Humiliation, Degradation & Expression",roleplay:"Fantasy & Roleplay",power:"Power Exchange & Protocol",pet:"Pet Roleplay",primal:"Primal Play",exhibition:"Exhibitionism & Voyeurism",sensory:"Sensory Play",pain:"Pain & Sensation",electrical:"Electrical Specialty"
+dynamics:"Power Exchange & Roles",equipment:"Equipment & Objects",impact:"Impact Play",psychological:"Humiliation, Degradation & Expression",roleplay:"Fantasy & Roleplay",power:"Power Exchange & Protocol",pet:"Pet Roleplay",primal:"Primal Play",exhibition:"Exhibitionism & Voyeurism",marking:"Marking & Expression",sensory:"Sensory Play",pain:"Pain & Sensation",electrical:"Electrical Specialty"
 };
 export const additionalReviewedCatalog:CatalogV2={
  schemaVersion:2,

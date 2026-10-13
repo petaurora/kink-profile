@@ -9,6 +9,8 @@ export type ReviewExpectation = {
  groups?: Record<string, readonly string[]>;
  decision: "approved" | "inferred";
  note?: string;
+ /** Exact final section/comment; later corrections take precedence over old tables. */
+ sourceSection?: string;
 };
 export const reconciliationExpectations: readonly ReviewExpectation[] = [
  {sourceIssue:256,itemId:"rope-bondage",decision:"approved",groups:{"style":["shibari-kinbaku"]}},
@@ -45,7 +47,15 @@ export const reconciliationExpectations: readonly ReviewExpectation[] = [
  {sourceIssue:263,itemId:"owner-pet-dynamic",decision:"approved",groups:{"role":["owner-handler","pet"]}},
  {sourceIssue:263,itemId:"ownership",decision:"approved",groups:{"direction":["owning","being-owned"]}},
  {sourceIssue:263,itemId:"total-power-exchange-tpe",decision:"approved",groups:{"scope":["24-7","temporary-bounded"]}},
- {sourceIssue:263,itemId:"worship",decision:"approved",groups:{"direction":["giving","receiving"]}},
+ {sourceIssue:268,itemId:"marking",decision:"approved",sourceSection:"issuecomment-5982685387: Approval — 2026-10-04",groups:{"type":["hickeys","bruise-marking","stamps-temporary-tattoos","other-temporary-marks"]}},
+ {sourceIssue:257,itemId:"gags",decision:"approved",sourceSection:"Gags approval — 2026-09-26",groups:{
+  "type":["ball","bit","ring","tape-style","medical-dental","funnel","mouthguard-style","muzzle","phallic"],
+  "effect-mouth-state":["speech-restriction-muffling","mouth-held-open","mouth-occupied-filled","mouth-covered","jaw-mouth-position-control"],
+  "features-mechanism":["inflatable-adjustable-pressure","locking-secured","strap-harness-configuration","attachment-points"],
+  "material":["silicone-rubber","leather","metal","fabric-tape-like-materials"],
+  "context-association":["bondage-restraint","medical-clinical","pet-muzzle-roleplay","humiliation-objectification","aesthetic-fantasy-only-presentation"]
+ }},
+ {sourceIssue:257,itemId:"collaring",decision:"approved",sourceSection:"Collars approval and V1 / nearby-row decisions",groups:{"format-context":["witnessed-community"]}},
  {sourceIssue:272,itemId:"orgasm-control",decision:"approved",groups:{"direction":["controlling","being-controlled"],"method":["permission-required","denial","countdown","release-cue"]}},
  {sourceIssue:257,itemId:"restraint-gear",decision:"approved",groups:{"type":["armbinder","bondage-mitts","under-bed-restraint-system","spreader-bar","yoke","head-harness"]}},
  {sourceIssue:257,itemId:"saint-andrew-s-cross",decision:"approved",groups:{"mounting":["wall-mounted","freestanding"]}},

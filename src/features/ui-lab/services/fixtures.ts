@@ -1,6 +1,5 @@
-import { additionalReviewedCatalog } from "../../../catalog-v2/additionalReviewed";
-import { reviewedCatalogExpansion } from "../../../catalog-v2/reviewedExpansion";
-import { approvedV2Slice } from "../../../catalog-v2/approvedSlice";
+import {curatedCatalog} from "../../../catalog-v2/curatedCatalog";
+import {curatedConcepts} from "../../../catalog-v2/referenceMetadata";
 import { replaceReferenceCatalog } from "../../../catalog-v2/toAppReference";
 import type { CatalogReferenceData, PreferenceSnapshot } from "../../../services/contracts";
 
@@ -135,17 +134,11 @@ const illustrativeReferenceData: CatalogReferenceData = {
   ].map(subject => ({...subject,itemIds:catalogItems.filter(item => item.category === subject.name || item.name === subject.name).map(item => item.id)})),
 };
 /** Default V2 reference data is curated-only. Illustrative fixtures are never merged into the real browse list. */
-const curatedBase:CatalogReferenceData = {items:[],subjects:[],concepts:illustrativeReferenceData.concepts};
-const curatedReferenceData: CatalogReferenceData = replaceReferenceCatalog(
-  replaceReferenceCatalog(
-    replaceReferenceCatalog(curatedBase, approvedV2Slice),
-    reviewedCatalogExpansion,
-  ),
-  additionalReviewedCatalog,
-);
+const curatedBase:CatalogReferenceData = {items:[],subjects:[],concepts:curatedConcepts(curatedCatalog)};
+const curatedReferenceData = replaceReferenceCatalog(curatedBase,curatedCatalog);
 // Featured discovery subjects are service-owned curated unions, not stale demo category matches.
 const featuredSubjectGroups = [
-  {id:"power-exchange",name:"Power Exchange",description:"Explore negotiated authority, devotion, and protocol.",featured:{symbol:"◇",tone:"power"},themeIds:["power-exchange","power"]},
+  {id:"power-exchange",name:"Power Exchange",description:"Explore negotiated authority, devotion, and protocol.",featured:{symbol:"◇",tone:"power"},themeIds:["power-exchange","power","dynamics"]},
   {id:"sensation-intensity",name:"Sensation & Intensity",description:"Explore impact, temperature, sensation and intensity.",featured:{symbol:"✧",tone:"sensation"},themeIds:["impact","sensory","pain","electrical"]},
   {id:"restraint-control",name:"Restraint & Control",description:"Explore physical restriction, equipment and negotiated control.",featured:{symbol:"⌁",tone:"restraint"},themeIds:["bondage","equipment"]},
   {id:"connection-expression",name:"Connection & Expression",description:"Explore pet, primal and expressive connections.",featured:{symbol:"♡",tone:"connection"},themeIds:["pet","primal","exhibition"]},

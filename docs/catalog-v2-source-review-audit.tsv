@@ -1,4 +1,4 @@
-# V1 source catalog audit evidence — generated from GitHub review issue tables, 2026-10-13
+# V1 source audit evidence — historical review tables plus explicit final-section/comment corrections, 2026-10-13
 # Review evidence DOES NOT imply executed migration. Empty evidence means not exact-matched to supported review table formats; it does not imply the decision is unmade.
 # Only explicit table evidence; avoid semantic inference or automatic migration based on labels.
 source_id	source_label	original_category	review_evidence_state	review_issue_ids	reviewed_outcomes
@@ -57,7 +57,7 @@ wax-play	Wax play	Pain & Sensation	needs_manual_review
 cupping	Cupping	Pain & Sensation	needs_manual_review		
 suction-play	Suction play	Pain & Sensation	needs_manual_review		
 abrasive-texture-play	Abrasive texture play	Pain & Sensation	needs_manual_review		
-rough-body-handling	Rough body handling	Pain & Sensation	needs_manual_review		
+rough-body-handling	Rough body handling	Pain & Sensation	final_decision_evidence	#270 — Final correction: Biting and Rough Body Handling	Exclude: Rough Body Handling removed
 pressure-play	Pressure play	Pain & Sensation	needs_manual_review		
 pain-endurance	Pain endurance	Pain & Sensation	needs_manual_review		
 pain-processing	Pain processing	Pain & Sensation	needs_manual_review		
@@ -155,17 +155,17 @@ gentle-dominance	Gentle dominance	Power Exchange & Roles	review_table_evidence	#
 soft-submission	Soft submission	Power Exchange & Roles	review_table_evidence	#263	Directional dynamic-style preference: Soft / Affectionate Submission
 disciplined-submission	Disciplined submission	Power Exchange & Roles	review_table_evidence	#263	Directional dynamic-style preference: Disciplined / Accountability-Focused Submission
 devotional-submission	Devotional submission	Power Exchange & Roles	review_table_evidence	#263	Directional dynamic-style preference: Devotional Submission
-worship-kink	Worship kink	Power Exchange & Roles	review_table_evidence	#263	Item: Worship → Giving / Receiving
+worship-kink	Worship kink	Power Exchange & Roles	final_decision_evidence	#263 — final Worship placement APPROVED correction	Split/defer relational reverence to Devotion & Worship Dynamic and bodily reverence to Body Worship; generic Worship removed
 collaring	Collaring	Collars, Symbols & Marking	review_table_evidence	#257	Keep as Item / Collaring
 day-collar	Day collar	Collars, Symbols & Marking	review_table_evidence	#257	Become refinement / Collars → use/context = day/everyday
 play-collar	Play collar	Collars, Symbols & Marking	review_table_evidence	#257	Become refinement / Collars → use/context = play/scene
 leash-play	Leash play	Collars, Symbols & Marking	review_table_evidence	#257	Keep separate Item / related / Leash Play; relate to Collars + Pet Play
 harness-play	Harness play	Collars, Symbols & Marking	review_table_evidence	#257	Move to equipment review / Harnesses / Harness Play; not a Collars subtype
-temporary-marking	Temporary marking	Collars, Symbols & Marking	needs_manual_review		
-hickeys-love-bites	Hickeys / love bites	Collars, Symbols & Marking	needs_manual_review		
-bruise-marking	Bruise marking	Collars, Symbols & Marking	needs_manual_review		
-writing-on-skin	Writing on skin	Collars, Symbols & Marking	needs_manual_review		
-stamps-temporary-tattoos	Stamps / temporary tattoos	Collars, Symbols & Marking	needs_manual_review		
+temporary-marking	Temporary marking	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Merge into Item: Marking
+hickeys-love-bites	Hickeys / love bites	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Marking → Type → Hickeys
+bruise-marking	Bruise marking	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Marking → Type → Bruise marking
+writing-on-skin	Writing on skin	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Merge into Item: Body Writing
+stamps-temporary-tattoos	Stamps / temporary tattoos	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Marking → Type → Stamps / temporary tattoos
 body-writing	Body writing	Collars, Symbols & Marking	review_table_evidence	#259	Item: Body Writing
 praise-kink	Praise kink	Praise, Degradation & Humiliation	review_table_evidence	#261	Deferred: Rewards & Punishments taxonomy
 good-girl-good-boy-praise	Good-girl / good-boy praise	Praise, Degradation & Humiliation	review_table_evidence	#261	Exclude
@@ -486,11 +486,11 @@ bit-gag	Bit gag	Protocol, Bondage & D/s Details	needs_manual_review
 ring-gag	Ring gag	Protocol, Bondage & D/s Details	needs_manual_review		
 tape-gag-fantasy	Tape gag fantasy	Protocol, Bondage & D/s Details	needs_manual_review		
 medical-dental-gag	Medical / dental gag	Protocol, Bondage & D/s Details	needs_manual_review		
-spreader-bar	Spreader bar	Protocol, Bondage & D/s Details	needs_manual_review		
+spreader-bar	Spreader bar	Protocol, Bondage & D/s Details	final_decision_evidence	#257 — Restraint Gear approval	Restraint Gear → Type → Spreader bar
 straitjacket-restraint	Straitjacket restraint	Protocol, Bondage & D/s Details	needs_manual_review		
 wall-cross-restraint	Wall / cross restraint	Protocol, Bondage & D/s Details	needs_manual_review		
 encasement-bondage	Encasement bondage	Protocol, Bondage & D/s Details	needs_manual_review		
-verbal-don-t-move-bondage	Verbal 'don't move' bondage	Protocol, Bondage & D/s Details	review_table_evidence	#264	Defer to Endurance & Positioning / stillness review
+verbal-don-t-move-bondage	Verbal 'don't move' bondage	Protocol, Bondage & D/s Details	final_decision_evidence	#265 — Verbal / Mental Restraint APPROVED	Item: Verbal / Mental Restraint
 bathroom-permission-protocol	Bathroom-permission protocol	Protocol, Bondage & D/s Details	review_table_evidence	#264	Permission / Decision Control → Bathroom
 hand-feeding	Hand-feeding	Protocol, Bondage & D/s Details	review_table_evidence	#264	Deferred
 human-furniture	Human furniture	Protocol, Bondage & D/s Details	review_table_evidence	#259	Item: Human Furniture

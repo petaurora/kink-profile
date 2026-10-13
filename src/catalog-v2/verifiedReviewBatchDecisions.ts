@@ -27,7 +27,7 @@ export const verifiedReviewBatchDecisions: MigrationDecision[]=[
  review("soft-submission","Approved directional style; original source does not distinguish embodying versus experiencing"),
  review("disciplined-submission","Approved directional style; original source does not distinguish embodying versus experiencing"),
  review("devotional-submission","Approved directional style; original source does not distinguish embodying versus experiencing"),
- review("worship-kink","Approved directional Worship Item; original source lacks giving/receiving orientation"),
+ review("worship-kink","Final #263 Worship placement correction splits relational reverence (Devotion & Worship Dynamic) from Body Worship; preserve original meaning pending later-family reconciliation"),
  modifier("ownership-ritual","ownership","expression","ritual-symbolic-expression"),
  review("owner-property-dynamic","Split Ownership and Objectification/property framing; do not duplicate preference"),
  ...["daddy-babygirl-dynamic","mommy-little-dynamic","caretaker-little-dynamic"].map(id=>review(id,"Caregiver/Little-Middle dynamic: original role preference unspecified")),

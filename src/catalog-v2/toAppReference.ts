@@ -11,7 +11,11 @@ export function toAppCatalogItems(catalog: CatalogV2, existing: CatalogItem[] = 
    const previous=byId.get(v2.id);
    const category=catalog.themes.find(theme=>v2.themeIds.includes(theme.id))?.name ?? previous?.category ?? "Catalog V2";
    byId.set(v2.id,{
-     id:v2.id,name:v2.name,description:v2.description,category,themeIds:[...v2.themeIds],
+     id:v2.id,name:v2.name,description:v2.description ?? previous?.description,category,
+     themeIds:[...new Set([...(previous?.themeIds ?? []),...v2.themeIds])],
+     aliases:[...new Set([...(previous?.aliases ?? []),...(v2.aliases ?? [])])],
+     relatedItemIds:[...new Set([...(previous?.relatedItemIds ?? []),...(v2.relatedItemIds ?? [])])],
+     pendingGroupIds:[...new Set([...(previous?.pendingGroupIds ?? []),...(v2.pendingGroupIds ?? [])])].filter(id=>!v2.groups.some(group=>group.id===id)),
      groups:v2.groups.map(g=>({id:g.id,name:g.name,values:g.values.map(v=>({...v}))})),
      collections:v2.collections ?? previous?.collections ?? ["kinks"],
    });
@@ -27,5 +31,14 @@ export function replaceReferenceCatalog(base:CatalogReferenceData, catalog:Catal
   if(index>=0) subjects[index]={...subjects[index],...subject};
   else subjects.push(subject);
  }
- return {...base,items,subjects};
+ // Canonical Item membership owns the inverse subject index. This prevents a
+ // later slice's Equipment definition from deleting earlier members.
+ const composedSubjects=subjects.map(subject=>({...subject,itemIds:[...new Set([
+   ...subject.itemIds.filter(id=>{
+     const item=items.find(item=>item.id===id);
+     return item && (!item.themeIds || item.themeIds.includes(subject.id));
+   }),
+   ...items.filter(item=>item.themeIds?.includes(subject.id)).map(item=>item.id),
+ ])]}));
+ return {...base,items,subjects:composedSubjects};
 }

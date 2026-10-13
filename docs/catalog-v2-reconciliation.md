@@ -1,64 +1,75 @@
-# Catalog V2 reconciliation checkpoint
+# Catalog V2 source reconciliation contract
 
-Status: **active audit; not merge-ready**. Review source: final approved decisions from GitHub #256–#274, with later corrections superseding earlier proposals. Execution: draft PR #293 stacked on #291. Source of V1 identity: `reference/catalog/kink-catalog.tsv` (551 records).
+## Decision authority
 
-## Interpretation
+Catalog definitions follow the **latest explicit approval or correction**, including
+issue comments. An old source table is evidence of history, not proof that its outcome
+remains current. Source identity comes from `reference/catalog/kink-catalog.tsv`;
+its 551 original records are distinct from staged research additions.
 
-- **Model parity** means implemented canonical Items and option groups align with the approved final review; it does not mean source ratings migrated.
-- **Source coverage** means every V1 ID has an explicit decision and valid destination, or a recorded deferred/excluded outcome. No final source-coverage gate is passing yet.
-- **Inferred** (user-authorized October equipment expansions) is separate from **approved** (batch review) and **proposed** (not approved).
-- Shared global refinement vocabulary, non-exclusive themes through the UI, and persisted preference migration are separate implementation requirements.
+- #255 owns the conceptual model and approved batch summaries.
+- #256–#272 and #274 own detailed decisions. Batch 7 (#262) is intentionally deferred.
+- #268 comment **5982685387** approves Marking and its four refinements. Batch 13 is
+  approved; it does not need a new workshop.
+- #263's final Worship placement correction supersedes the earlier generic Item.
+  Relational and body-worship meanings remain separate later-family destinations.
+- #273 indexes the historical approvals and final Batch 17/18 corrections.
+- October 13 equipment additions are user-authorized inferred vocabulary, distinct
+  from earlier batch-approved values.
 
-## Batch-by-batch working ledger
+## What the executable contracts prove
 
-| Batch | Issue | Modeling checkpoint | Remaining gap |
-| --- | --- | --- | --- |
-| 1 Bondage | #256 | Canonical core families and refinements modeled | Full V1 mapping review, cross-family collision validation |
-| 2 Collars / Equipment | #257 | Collars five groups, Gags, Cuffs, gear and furniture including graduated standalone Items | Complete approved specialized modifier groups and V1 migration |
-| 3 Impact | #258 | Core practice/equipment Items; approved method/sensation; newly inferred equipment options tracked separately | Source mapping for staged concepts; shared target/intensity vocabulary |
-| 4 Psychological | #259 | Core Items, modality/context/style and many explicit values modeled | Reusable target/tone applicability, intensity, duration/body area, complete source mapping |
-| 5 Fantasy / Roleplay | #260 | Roleplay/CNC scenarios and fantasy distinctions restored | Source ledger, canonical synonyms/aliases, future Size Difference review |
-| 6 Praise | #261 | Excluded granular variants; base Praise placement intentionally deferred | Resolve in Batch 7; do not silently reintroduce |
-| 7 Rewards / Punishments | #262 | **Intentionally deferred** | Separate domain review |
-| 8 Power exchange | #263 | Role orientations, named dynamics, independently scoped direction/role/scope preferences restored | V1 mappings, cross-domain relationships, reusable direction registry |
-| 9 Protocol / Service | #264 | Low/High, permission, task, service refinements and independent Items restored | V1 mappings, future Rule Builder boundary |
-| 10 Positioning | #265 | Position Training and Verbal/Mental Restraint modeled | V1 exclude/defer outcomes; vocabulary expansion |
-| 11 Primal | #266 | Primal, Chase, Struggle, Biting, Scenting identities modeled | V1 migration ledger |
-| 12 Exhibition / Voyeurism | #267 | Directionally independent Items with shared media vocabulary | V1 migration ledger and compatibility |
-| 13 Marking | #268 | **Not approved**; working hypothesis only | Explicit decision required before canonical modeling |
-| 14 Sensory | #269 | Core Items and explicit temperature/texture/deprivation modifiers modeled | Shared Body Part vocabulary and cross-family moves |
-| 15 Pain / Sensation | #270 | Core Items and explicit methods/experience values modeled | Shared Body Part vocabulary and exclusion/defer mapping |
-| 16 Electrical | #271 | Device/method and response modeled | Shared Body Part vocabulary and staged source mapping |
-| 17 Orgasm / Arousal | #272 | Item and role/material structure present; Countdown and Release Cue separately modeled | V1 source migration and conflict review |
-| 18 Sexual Activities | #274 | Approved Item/Role list present | V1/staged source migration, aliases and no-modifier boundary checks |
+| Contract | Proof | Limit |
+| --- | --- | --- |
+| `approvedBatchInventory.ts` | Transcribed finalized standalone Item inventory | Presence alone does not establish modifier or source migration parity |
+| `reconciliationLedger.ts` | Issue/section-linked Item/group/value expectations | A growing subset, not an extraction of all historical prose |
+| `reconciliationExclusions.test.ts` | Superseded/excluded/deferred Items remain absent, including generic Worship | Deferred families are not finalized here |
+| `pendingGroupIds` | Approved dimensions are retained through services without invented options | Options and per-Item applicability may still need decisions |
+| `curatedCatalog.ts` | One composed reference universe; non-exclusive membership authority | Current display category remains a single projection |
+| `auditCorrections.test.ts` | Final corrections, inverse membership, aliases, concepts and independent ratings | Automated checks do not replace full visual review |
+| `fullSourceDisposition.ts` | Exactly one explicit disposition per original V1 source ID; valid executable targets | Review/exclude entries are accounted for, not migrated |
+| `migrationConflicts.test.ts` | Conflicting incoming sources cannot choose a target by input order | Deliberate resolution remains required |
+| `legacyProfileArchive.ts` | Full original profile and directional evidence preserved in pure preparation | No persistent import/export or atomic storage write |
 
-## Controls already in place
+## Implemented batch structures
 
-- `approvedBatchInventory.ts` and its test enforce the complete transcribed standalone Item list for every finalized batch (1–5, 8–12, 14–18); deferred batches 6/7 and unapproved Batch 13 are kept separate.\n- `reconciliationLedger.ts` and `reconciliationLedger.test.ts` enforce a growing issue-linked subset of Item/group/value expectations.\n- `reconciliationPending.test.ts` enforces approved-but-unresolved dimension IDs through `pendingGroupIds` in the canonical model, without populating unreviewed value options or displaying empty UI groups.\n- `reconciliationExclusions.test.ts` prevents explicitly excluded, deferred and superseded standalones from returning to the Catalog.
-- `sourceCoverage.test.ts` validates the 551-ID source snapshot and explicitly unresolved rows, but **does not prove the approved corpus has been fully migrated**.
-- `docs/catalog-v2-source-review-audit.tsv` aligns 551 source IDs with exact-match evidence from the currently supported GitHub review-table layouts (206 evidence matches, 345 not yet located); blank evidence requires human/format reconciliation and is **not** a declaration that no decision exists.
-- `curatedService.test.ts` prevents the 48 illustrative Items from leaking into the default V2 Catalog.
+| Batch | Source | Current reference structure |
+| --- | --- | --- |
+| 1 Bondage | #256 | Core families, configuration, method/support and Equipment memberships |
+| 2 Equipment | #257 | Five Collars groups; complete approved Gags groups; witnessed Collaring; Gear/furniture types and standalone graduates |
+| 3 Impact | #258 | Practice/equipment Items, method/sensation and October 13 equipment options; target/intensity pending |
+| 4 Psychological | #259 | Core Items, restored groups and shared target/tone definitions; applicability/intensity and some temporal/body dimensions pending |
+| 5 Fantasy/Roleplay | #260 | Roleplay/CNC scenarios, medium context and named fantasy distinctions |
+| 6 Praise | #261 | Granular variants excluded; core placement deferred |
+| 7 R/P | #262 | Intentionally deferred |
+| 8 Power/Pet | #263 | Orientations, named dynamics, directions/roles/scope, Pet Roleplay/Training; generic Worship excluded |
+| 9 Protocol/Service | #264 | Low/High shared practices, task mode/structure, permission domains, service types and automation |
+| 10 Positioning | #265 | Position Training forms and Verbal/Mental Restraint; Kneeling Endurance excluded |
+| 11 Primal | #266 | Core identities/roles/methods and Biting discovery relation |
+| 12 Exhibition/Voyeurism | #267 | Independent directional parents sharing medium/context definitions |
+| 13 Marking | #268 approval comment | Marking with Hickeys, Bruise marking, Stamps/temporary tattoos and Other temporary marks; Body Writing remains separate |
+| 14 Sensory | #269 | Deprivation, texture, temperature and tickling groups; Texture Body Part pending |
+| 15 Pain | #270 | Shared Masochism/Sadism experience, methods/tools and standalone Wartenberg; Body Part pending |
+| 16 Electrical | #271 | Device/method and tickle/twitch response; Body Part pending |
+| 17 Orgasm | #272 | Independent role/material/method structure, separate Countdown and Release Cue |
+| 18 Sexual Activities | #274 | Approved Item/Role/no-modifier distinctions |
 
-## Merge blockers
+## Source evidence and archive semantics
 
-1. Complete final approved Item and modifier parity for all finalized batches.
-2. Resolve duplicate source identity and Item collisions; preserve approved stable modifier IDs.
-3. Finish complete source-ID -> V2 target/exclude/defer/review migration with collisions and explicit user-data handling.
-4. Resolve Body Part registry and unfinished per-Item applicability; do not insert fictitious ratings or options.
-5. Define source-of-truth reusable vocabulary, relationship and multi-theme contracts; ensure UI only uses services.
-6. Pass CI and preview; audit mobile Refine, featured subjects, and actual persistent preference compatibility.
-7. Get design approval on genuinely open Batch 7 and Batch 13 decisions in their own workshops.
+`docs/catalog-v2-source-review-audit.tsv` preserves row-level source evidence.
+Selected rows are corrected with later final-section/comment provenance. Other
+historical table matches still need supersession review; blank table evidence does
+not mean a decision never existed. The executable disposition ledger owns migration
+behavior, rather than this research evidence file.
 
-Do **not** merge #293 as a completed Catalog V2 migration based solely on CI success.
+Review/deferred, excluded and conflicted sources may remain in a separate read-only
+legacy archive until database integration. This adopted direction removes any
+requirement to resolve all old taxonomy before initial V2 use. Original evidence
+must remain interpretable; no automatic multi-target duplication or invented rating
+is allowed. Complete original-profile preparation preserves directional values,
+timestamps and ranking data, while scalar migration only considers explicit overall
+ratings. Real storage/import/export remains a separate production-cutover gate.
 
-## Exhaustive disposition milestone — October 13, 2026
-
-`src/catalog-v2/fullSourceDisposition.ts` now creates an **exactly one decision per V1 source ID** ledger from the 551 original IDs. Verified Item/refinement/exclude decisions override the default explicit `review` disposition. The remaining `review` IDs are **not mapped**, and any original ratings attached to them must remain unresolved and must not be copied to guessed targets. The corresponding test enforces 551 unique accounted-for sources and that collisions preserve existing ratings. Source-linked exclusions and deferrals from approved review batches are tracked explicitly.
-
-**This is an audit completeness gate, not migration completion.** The product may not advertise 551 migrated ratings until each pending source is resolved, and the resulting mapping and persisted-data compatibility have been validated.
-
-## Approved product decision: archive unresolved V1 preferences (2026-10-13)
-
-Unresolved, excluded, deferred, and conflicted V1 preference ratings may be preserved in a **separate, read-only legacy archive** during the initial Catalog V2 rollout. They do not require immediate full catalog mapping, and they do not appear as V2 ratings. Full cleanup/reconciliation belongs in subsequent database integration. Keep the original source ID, preference value, and disposition/conflict reason, with source/schema metadata. Never silently discard, infer, or overwrite them.
-
-`buildLegacyPreferenceArchive` currently returns a pure, versioned archive payload and a separate V2 migration preview. **The payload is not persisted automatically**: saving/migrating browser preferences, crash-safe storage, Collars pilot import, and subsequent DB data transfer still require explicit implementation and verification prior to any destructive migration. Archive disposition now reduces the taxonomy-completeness merge blocker; it does not eliminate the data-preservation gate.
+See [Catalog V2 reference and migration](catalog-v2-implementation.md) for the current
+model, services and archive contracts. Issue #292 and PR #293 own implementation
+acceptance, remaining vocabulary work and review status; this document is not a roadmap.

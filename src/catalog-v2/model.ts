@@ -1,5 +1,5 @@
 /** Catalog V2: independently rateable Items, non-exclusive themes and scoped refinements. */
-export type CatalogV2Value = { id: string; name: string; conceptId?: string };
+export type CatalogV2Value = { id: string; name: string; aliases?: string[]; conceptId?: string };
 export type CatalogV2Group = { id: string; name: string; values: CatalogV2Value[] };
 export type CatalogV2Item = {
   id: string; name: string; description?: string;
@@ -11,6 +11,29 @@ export type CatalogV2Item = {
 };
 export type CatalogV2Theme = { id: string; name: string; description: string; itemIds: string[] };
 export type CatalogV2 = { schemaVersion: 2; items: CatalogV2Item[]; themes: CatalogV2Theme[] };
+
+/** Later slices replace an Item's reviewed refinements; memberships compose.
+ * The inverse theme index is derived from that one membership authority.
+ */
+export function composeCatalogV2(...slices:CatalogV2[]):CatalogV2 {
+  const items=new Map<string,CatalogV2Item>(), themes=new Map<string,CatalogV2Theme>();
+  for(const slice of slices) {
+    for(const theme of slice.themes)themes.set(theme.id,theme);
+    for(const item of slice.items) {
+      const previous=items.get(item.id);
+      items.set(item.id,{
+        ...item,
+        themeIds:[...new Set([...(previous?.themeIds ?? []),...item.themeIds])],
+        aliases:[...new Set([...(previous?.aliases ?? []),...(item.aliases ?? [])])],
+        relatedItemIds:[...new Set([...(previous?.relatedItemIds ?? []),...(item.relatedItemIds ?? [])])],
+        pendingGroupIds:[...new Set([...(previous?.pendingGroupIds ?? []),...(item.pendingGroupIds ?? [])])].filter(id=>!item.groups.some(group=>group.id===id)),
+      });
+    }
+  }
+  return {schemaVersion:2,items:[...items.values()],themes:[...themes.values()].map(theme=>({
+    ...theme,itemIds:[...items.values()].filter(item=>item.themeIds.includes(theme.id)).map(item=>item.id),
+  }))};
+}
 export type CatalogV2Target =
   | { kind: "item"; itemId: string }
   | { kind: "modifier"; itemId: string; groupId: string; valueId: string };
