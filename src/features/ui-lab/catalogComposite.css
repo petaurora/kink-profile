@@ -85,3 +85,9 @@
 .cc-rp-popover, .cc-rp-indicator-anchor:last-child .cc-rp-popover {
   left: 0; right: auto; max-width: 100%;
 }
+
+/* Refine sheet: one predictable touch-scroll container. Avoid competing nested scrollers. */
+.cc-refine-sheet.kp-modal-panel{display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:contain;min-height:0;max-height:calc(100dvh - 16px)}
+.cc-refine-sheet.kp-modal-panel>.kp-sheet-header{flex:0 0 auto}
+.cc-refine-sheet.kp-modal-panel>.cc-refine-content{flex:1 1 auto;min-height:0;max-height:none;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior-y:contain;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+@media(max-width:680px){.cc-refine-sheet.kp-modal-panel{height:min(80dvh,780px);max-height:calc(100dvh - 12px)}}
