@@ -24,11 +24,23 @@ export function articleBody(markdown:string){
   const body=boundary>=0?markdown.slice(boundary+5).trim():markdown.replace(/^# [^\n]+\n/,"").trim();
   // The reader provides curated links, so do not render the draft's old suggestion list twice.
   // Keep Further Reading references and external sources.
-  return body.replace(/\n---\s*\n\s*### Continue Learning\s*\n[\s\S]*?(?=\n### Further Reading|\s*$)/i,"\n").trim();
+  return body
+    .replace(/\n---\s*\n\s*### Continue Learning\s*\n[\s\S]*?(?=\n### Further Reading|\s*$)/i,"\n")
+    .replace(/\n## Related Learning\s*\n[\s\S]*?(?=\n---\s*\n|$)/i,"\n")
+    .trim();
 }
 export function articleContentNote(markdown:string){
   return markdown.match(/^\*\*Content note:\*\*\s*(.+)$/m)?.[1] ?? null;
 }
+/** The editorial practice guides use ordinary GFM pipe tables. Never render raw HTML. */
+function cells(line:string){ return line.trim().replace(/^\|/,"").replace(/\|$/,"").split("|").map(x=>x.trim()); }
+function isTableStart(lines:string[],index:number){
+  const row=lines[index]?.trim()??"",rule=lines[index+1]?.trim()??"";
+  return row.startsWith("|") && rule.startsWith("|") &&
+    cells(rule).length===cells(row).length &&
+    cells(rule).every(cell=>/^:?-{3,}:?$/.test(cell));
+}
+
 export function EducationMarkdown({markdown}:{markdown:string}){
   const lines=markdown.replace(/\r\n?/g,"\n").split("\n");
   const nodes:ReactNode[]=[];
@@ -45,6 +57,20 @@ export function EducationMarkdown({markdown}:{markdown:string}){
       else if(level===3)nodes.push(<h3 id={id} key={i}>{inline(heading[2])}</h3>);
       else nodes.push(<h4 id={id} key={i}>{inline(heading[2])}</h4>);
       i++;continue;
+    }
+    if(isTableStart(lines,i)){
+      const start=i,head=cells(lines[i]);i+=2;
+      const rows:string[][]=[];
+      while(i<lines.length&&lines[i].trim().startsWith("|")){
+        const row=cells(lines[i]);if(row.length!==head.length)break;
+        rows.push(row);i++;
+      }
+      nodes.push(<div key={start} className="lab-education-table-scroll" role="region"
+        aria-label="Article comparison table" tabIndex={0}>
+        <table><thead><tr>{head.map((cell,j)=><th scope="col" key={j}>{inline(cell)}</th>)}</tr></thead>
+          <tbody>{rows.map((row,j)=><tr key={j}>{row.map((cell,k)=><td key={k}>{inline(cell)}</td>)}</tr>)}</tbody>
+        </table></div>);
+      continue;
     }
     const ul=/^[-*]\s+/.test(line),ol=/^\d+\.\s+/.test(line);
     if(ul||ol){
