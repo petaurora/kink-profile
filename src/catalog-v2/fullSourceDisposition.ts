@@ -4,7 +4,9 @@ import { approvedV1ToV2Slice } from "./approvedSlice";
 import { reviewedBatch1Decisions } from "./reviewedExpansion";
 import { verifiedImpactDecisions, verifiedSourceDecisions } from "./verifiedSourceDecisions";
 import { verifiedReviewBatchDecisions } from "./verifiedReviewBatchDecisions";
-import type { MigrationDecision } from "./migration";
+import { migrateV1Ratings, type MigrationDecision, type MigrationReport } from "./migration";
+import type { PreferenceRating } from "../services/contracts";
+import type { CatalogV2 } from "./model";
 
 /** Exact source coverage with honest, explicit dispositions.
  * REVIEW IS NOT MIGRATION: uncurated source IDs cannot create a V2 rating.
@@ -58,3 +60,21 @@ export const sourceDispositionCounts = {
   pending:fullSourceDisposition.filter(d=>d.outcome==="review").length,
   excluded:fullSourceDisposition.filter(d=>d.outcome==="exclude").length,
 } as const;
+
+/** Pure preview; does not mutate local storage or commit V2 ratings.
+ * Every source rating not safely applied stays in retainedLegacyRatings, including
+ * exclusions, deferrals, and collisions. The future persistence adapter MUST
+ * commit this sidecar atomically with the migrated V2 ratings after confirmation.
+ */
+export function planLosslessV1Migration(
+  original: Record<string, PreferenceRating>,
+  catalog: CatalogV2,
+  existing: Record<string, PreferenceRating> = {},
+): MigrationReport & { retainedLegacyRatings: Record<string, PreferenceRating> } {
+  const result = migrateV1Ratings(original, fullSourceDisposition, catalog, existing);
+  const applied = new Set(result.applied);
+  const retainedLegacyRatings = Object.fromEntries(
+    Object.entries(original).filter(([sourceId])=>!applied.has(sourceId)),
+  );
+  return {...result, retainedLegacyRatings};
+}
