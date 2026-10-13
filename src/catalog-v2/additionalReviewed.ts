@@ -2,7 +2,7 @@ import type { CatalogV2, CatalogV2Item, CatalogV2Group } from "./model";
 /** Approved selections from #257–#271. This is NOT a comprehensive V1 migration ledger. */
 const slug=(x:string)=>x.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 const g=(name:string, values:string[]):CatalogV2Group=>({id:slug(name),name,values:values.map(name=>({id:slug(name),name}))});
-const item=(name:string,themeId:string,groups:CatalogV2Group[]=[]):CatalogV2Item=>({id:slug(name),name,themeIds:[themeId],groups:groups.filter(group=>group.values.length>0),collections:["kinks"]});
+const item=(name:string,themeId:string,groups:CatalogV2Group[]=[]):CatalogV2Item=>({id:slug(name),name,themeIds:[themeId],groups:groups.filter(group=>group.values.length>0),pendingGroupIds:groups.filter(group=>group.values.length===0).map(group=>group.id),collections:["kinks"]});
 const groupOf=(name:string,theme:string, groups:CatalogV2Group[]=[])=>(item(name,theme,groups));
 const collections: Record<string,CatalogV2Item[]>={
  equipment:[
@@ -11,8 +11,8 @@ const collections: Record<string,CatalogV2Item[]>={
  item("Stocks / Pillory","equipment",[g("Style / Form",["Stocks","Pillory"])]),item("Saint Andrew's Cross","equipment",[g("Mounting",["Wall-mounted","Freestanding"])])
  ],
  impact:[
- item("Impact Play","impact",[g("Method / Practice",["Paddling","Flogging","Caning","Strapping","Crop Play","Slapper / Tawse Play","Whipping"]),g("Sensation",["Thuddy","Stingy"])]),
- item("Spanking / Slapping","impact"),
+ item("Impact Play","impact",[g("Method / Practice",["Paddling","Flogging","Caning","Strapping","Crop Play","Slapper / Tawse Play","Whipping"]),g("Sensation",["Thuddy","Stingy"]),g("Target / Body Area",[]),g("Intensity",[])]),
+ item("Spanking / Slapping","impact",[g("Target / Body Area",[]),g("Intensity",[])]),
  item("Paddles","impact",[g("Material",["Leather","Wood","Rubber / Silicone","Acrylic / Plastic","Metal"]),g("Construction",["Solid","Perforated / Holes","Padded"]),g("Surface / Inlay",["Smooth","Decorative Inlay / Pattern","Raised Texture","Spiked / Studded"])]),
  item("Floggers","impact",[g("Material",["Leather","Suede","Rubber / Silicone","Synthetic / Vegan Leather","Rope / Cord"]),g("Thickness",["Thin Falls","Medium Falls","Thick Falls"]),g("Tip Style",["Plain / Untied","Knotted","Weighted"])]),
  item("Canes","impact",[g("Material",["Rattan","Bamboo","Wood","Synthetic / Plastic"]),g("Thickness",["Thin","Medium","Thick"])]),
@@ -22,16 +22,16 @@ const collections: Record<string,CatalogV2Item[]>={
  ...["Rhythmic Impact","Counting Impacts","Impact Warm-up","Impact Endurance","Bastinado","Florentine Flogging"].map(n=>item(n,"impact"))
  ],
  psychological:[
- item("Humiliation Play","psychological",[g("Modality",["Verbal","Task / Behavioral","Presentation / Exposure","Evaluative"]),g("Context",["Private","Witnessed / Consenting Audience","Public-style Fantasy"])]),
- item("Degradation","psychological",[g("Modality",["Verbal","Behavioral / Treatment","Symbolic / Status"]),g("Target / Focus",["Role / Status","Sexuality / Sexual Behavior","Intelligence / Competence","Behavior / Conduct"]),g("Tone / Style",["Mocking / Sarcastic","Stern / Critical","Harsh / Direct","Cold / Clinical","Dismissive"])]),
+ item("Humiliation Play","psychological",[g("Modality",["Verbal","Task / Behavioral","Presentation / Exposure","Evaluative"]),g("Context",["Private","Witnessed / Consenting Audience","Public-style Fantasy"]),g("Target / Focus",[]),g("Tone / Style",[]),g("Intensity",[])]),
+ item("Degradation","psychological",[g("Modality",["Verbal","Behavioral / Treatment","Symbolic / Status"]),g("Target / Focus",["Role / Status","Sexuality / Sexual Behavior","Intelligence / Competence","Behavior / Conduct"]),g("Tone / Style",["Mocking / Sarcastic","Stern / Critical","Harsh / Direct","Cold / Clinical","Dismissive"]),g("Intensity",[])]),
  item("Objectification","psychological",[g("Framing",["Use-object Fantasy","Functional Use","Sexual Use","Decorative / Display","Property Framing","Personhood Reduction / Thing-language"]),g("Form / Role",["Dollification"])]),
  item("Embarrassment Play","psychological",[g("Context",["Private","Witnessed / Consenting Audience"]),g("Form",["Silly / Awkward Tasks","Attention / Focus","Performance / Social Awkwardness","Teasing"])]),
  item("Name-calling","psychological",[g("Type",["Degrading","Sexual","Affectionate","Role-specific","Objectifying","Status-related"])]),
  item("Mockery","psychological",[g("Tone / Style",["Playful / Teasing","Mocking / Sarcastic","Stern / Critical","Harsh / Direct"])]),
  item("Rating / Evaluation","psychological",[g("Target",["Performance / Task","Genitals","Body / Body Part","Appearance","Behavior","Sexual Performance","Skill / Ability"]),g("Style",["Praise","Critique","Teasing","Degradation","Neutral / Clinical"]),g("Format",["Numerical / Scored","Qualitative"])]),
  item("Small-penis Humiliation (SPH)","psychological"),
- item("Human Furniture","psychological",[g("Role / Function",["Stool","Footrest","Table","Display Stand"]),g("Framing",["Service","Objectification","Protocol","Humiliation","Aesthetic / Display"])]),
- item("Body Writing","psychological",[g("Medium / Tool",["Marker","Pen","Lipstick","Paint"]),g("Visibility",["Hidden","Partially Visible","Displayed"]),g("Content Type",["Ownership","Praise","Humiliation","Instructions","Decorative","Evaluative / Scoring"])]),
+ item("Human Furniture","psychological",[g("Role / Function",["Stool","Footrest","Table","Display Stand"]),g("Framing",["Service","Objectification","Protocol","Humiliation","Aesthetic / Display"]),g("Duration",[]),g("Stillness / Endurance",[]),g("Visibility / Context",[])]),
+ item("Body Writing","psychological",[g("Medium / Tool",["Marker","Pen","Lipstick","Paint"]),g("Visibility",["Hidden","Partially Visible","Displayed"]),g("Content Type",["Ownership","Praise","Humiliation","Instructions","Decorative","Evaluative / Scoring"]),g("Body Part",[]),g("Permanence",[])]),
  ],
  roleplay:[
  item("Roleplay","roleplay",[g("Scenario",["Teacher / Student","Boss / Employee","Doctor / Patient","Guard / Prisoner","Interrogation","Stranger / First Meeting","Royalty / Servant","Knight / Captive","Villain / Hero","Trainer / Trainee","Owner / Property","Historical","Photographer / Model","Delivery Person","Celebrity / Fan","Practical Sex-ed / Teaching","Cheating / Forbidden Attraction","Rescue","Adult Taboo-family-role Fantasy"]),g("Medium / Context",["VR / Virtual World"])]),
