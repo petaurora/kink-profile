@@ -1,5 +1,5 @@
 import { describe,expect,it } from "vitest";
-import { fullSourceDisposition,sourceDispositionCounts,verifiedMigrationDecisions } from "./fullSourceDisposition";
+import { fullSourceDisposition,sourceDispositionCounts,verifiedMigrationDecisions,planLosslessV1Migration } from "./fullSourceDisposition";
 import { legacyCatalogIds } from "./legacyCatalogIds";
 import { migrateV1Ratings } from "./migration";
 import { approvedV2Slice } from "./approvedSlice";
@@ -35,6 +35,22 @@ describe("complete, loss-auditable V1 source disposition",()=>{
    if(report.unresolved.length||report.conflicts.length||report.applied.length!==1)rejected.push(`${decision.sourceId}: ${report.unresolved.map(x=>x.reason).join(", ")}`);
   }
   expect(rejected).toEqual([]);
+ });
+ it("keeps all unapplied legacy ratings, including excluded and conflicting IDs, in a sidecar",()=>{
+  const original=Object.fromEntries(legacyCatalogIds.map(id=>[id,"Like" as const]));
+  const plan=planLosslessV1Migration(original,catalog);
+  const applied=new Set(plan.applied);
+  expect(Object.keys(plan.retainedLegacyRatings).length+applied.size).toBe(551);
+  for(const sourceId of legacyCatalogIds)
+   expect(applied.has(sourceId)||Object.hasOwn(plan.retainedLegacyRatings,sourceId)).toBe(true);
+  expect(plan.retainedLegacyRatings["praise-kink"]).toBe("Like");
+  const direct=verifiedMigrationDecisions.find(d=>d.outcome==="item");
+  if(direct?.outcome==="item"){
+   const key=JSON.stringify(["item",direct.targetItemId]);
+   const conflict=planLosslessV1Migration({[direct.sourceId]:"Not Interested"},catalog,{[key]:"Love"});
+   expect(conflict.ratings[key]).toBe("Love");
+   expect(conflict.retainedLegacyRatings[direct.sourceId]).toBe("Not Interested");
+  }
  });
  it("preserves existing preferences on collisions and reports their source",()=>{
   const source=verifiedMigrationDecisions.find(d=>d.outcome==="item");
