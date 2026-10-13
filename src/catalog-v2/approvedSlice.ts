@@ -37,7 +37,5 @@ export const approvedV2Slice: CatalogV2 = {
     ],
   }],
 };
-/** Entries here are demonstrably direct; other V1 rows require curator review. */
-export const approvedV1ToV2Slice: MigrationDecision[] = [
-  { sourceId: "collars", outcome: "item", targetItemId: "collars" },
-];
+/** Original V1 corpus has no `collars` row; do not invent a source identity. */
+export const approvedV1ToV2Slice: MigrationDecision[] = [];
