@@ -10,6 +10,7 @@ const suggestions=[
   {id:"reflection",title:reflection.title,reason:"Optional reflection · Your notes stay separate from profile records.",icon:"✧"},
   {id:"catalog-subjects",title:"Explore Catalog subjects",reason:"General exploration · Browse by subject at your own pace.",area:"Catalog" as const,workspace:"",icon:"◇"},
   {id:"concepts",title:"Explore concepts",reason:"General learning · Understand meanings without recording a preference.",area:"Catalog" as const,workspace:"Concept Explorer",icon:"♡"},
+  {id:"education-articles",title:"Read education articles",reason:"Beginner guides · Reading never changes your profile.",area:"Learn" as const,workspace:"",icon:"✧"},
 ];
 export function ContinueActivities({go,card=false,title="Continue"}:{go:Go;card?:boolean;title?:string}) {
   const {attempts}=useDiscoverSession();
