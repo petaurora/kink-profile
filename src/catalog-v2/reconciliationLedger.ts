@@ -23,7 +23,8 @@ export const reconciliationExpectations: readonly ReviewExpectation[] = [
  {sourceIssue:263,itemId:"ownership",decision:"approved",groups:{"direction":["owning","being-owned"]}},
  {sourceIssue:263,itemId:"total-power-exchange-tpe",decision:"approved",groups:{"scope":["24-7","temporary-bounded"]}},
  {sourceIssue:263,itemId:"worship",decision:"approved",groups:{"direction":["giving","receiving"]}},
- {sourceIssue:257,itemId:"restraint-gear",decision:"approved",groups:{"type":["armbinder","bondage-mitts","under-bed-system","spreader-bar","yoke","head-harness"]}},
+ {sourceIssue:272,itemId:"orgasm-control",decision:"approved",groups:{"direction":["controlling","being-controlled"],"method":["permission-required","denial","countdown","release-cue"]}},
+ {sourceIssue:257,itemId:"restraint-gear",decision:"approved",groups:{"type":["armbinder","bondage-mitts","under-bed-restraint-system","spreader-bar","yoke","head-harness"]}},
  {sourceIssue:257,itemId:"saint-andrew-s-cross",decision:"approved",groups:{"mounting":["wall-mounted","freestanding"]}},
 
  {sourceIssue:264,itemId:"low-protocol",decision:"approved",groups:{"practice":["speech-communication","eye-contact","etiquette","check-ins-reporting","messaging","online-interaction","communication-restriction-silence"]}},
