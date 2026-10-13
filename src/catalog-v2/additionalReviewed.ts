@@ -51,6 +51,18 @@ const collections: Record<string,CatalogV2Item[]>={
  ...["Obedience","Command Play","D/s Contract Ritual","Honorifics / Titles","Inspection","Presentation","Automated Tasking","System Control","Verbal / Mental Restraint"].map(n=>item(n,"power")),
  item("Position Training","power",[g("Form",["Kneeling","Standing / Display","Hands Behind Back","Waiting Positions"])]),
  ],
+ dynamics:[
+ ...["Dominance","Submission","Switching"].map(n=>item(n,"dynamics")),
+ ...["Protective Dominance","Gentle Dominance","Soft / Affectionate Submission","Disciplined / Accountability-Focused Submission","Devotional Submission"].map(n=>item(n,"dynamics",[g("Direction",["Giving / Embodying","Receiving / Experiencing"])])),
+ item("Master / Slave Dynamic","dynamics",[g("Role",["Master","Slave"])]),
+ item("Caregiver / Little-Middle Dynamic","dynamics",[g("Role",["Caregiver","Little","Middle"])]),
+ item("Owner / Pet Dynamic","dynamics",[g("Role",["Owner / Handler","Pet"])]),
+ item("Ownership","dynamics",[g("Direction",["Owning","Being Owned"]),g("Expression",["Ritual / Symbolic Expression"])]),
+ item("Total Power Exchange (TPE)","dynamics",[g("Scope",["24/7","Temporary / Bounded"])]),
+ item("Brat Tamer / Brat Dynamic","dynamics",[g("Role",["Tamer","Brat"])]),
+ item("Worship","dynamics",[g("Direction",["Giving","Receiving"])]),
+ item("Findom Dynamic","dynamics",[g("Role",["Financial Dominant","Financial Submissive"])]),
+ ],
  pet:[
  item("Pet Roleplay","pet",[g("Species / Role",["Puppy","Kitten","Pony","Bunny","Fox"]),g("Expression",["Feeding Bowl","Crawling / All-fours","Pet Bed","Crate / Kennel","Tails / Ears"])]),
  item("Pet Training","pet",[g("Method",["Verbal Commands / Cues","Tricks","Routines","Clicker Training"])]),item("Leash Play","pet")
@@ -85,7 +97,7 @@ const collections: Record<string,CatalogV2Item[]>={
  ]
 };
 const names:Record<string,string>={
-equipment:"Equipment & Objects",impact:"Impact Play",psychological:"Humiliation, Degradation & Expression",roleplay:"Fantasy & Roleplay",power:"Power Exchange & Protocol",pet:"Pet Roleplay",primal:"Primal Play",exhibition:"Exhibitionism & Voyeurism",sensory:"Sensory Play",pain:"Pain & Sensation",electrical:"Electrical Specialty"
+dynamics:"Power Exchange & Roles",equipment:"Equipment & Objects",impact:"Impact Play",psychological:"Humiliation, Degradation & Expression",roleplay:"Fantasy & Roleplay",power:"Power Exchange & Protocol",pet:"Pet Roleplay",primal:"Primal Play",exhibition:"Exhibitionism & Voyeurism",sensory:"Sensory Play",pain:"Pain & Sensation",electrical:"Electrical Specialty"
 };
 export const additionalReviewedCatalog:CatalogV2={
  schemaVersion:2,
