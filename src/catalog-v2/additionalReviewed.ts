@@ -28,7 +28,8 @@ const collections: Record<string,CatalogV2Item[]>={
  ...["Roleplay","Consensual Non-Consent","Ageplay","ABDL","Creature / Nonhuman Fantasy","Transformation Fantasy","Bimbofication","Inflation Fantasy","Abandonment Play Fantasy","Furry / Anthro Fantasy","Vore Fantasy","Omegaverse","Corruption Fantasy","Isolation Fantasy"].map(n=>item(n,"roleplay"))
  ],
  power:[
- ...["Low Protocol","High Protocol","Command Play","Permission / Decision Control","Service","Automated Tasking / System Control","Position Training","Verbal / Mental Restraint"].map(n=>item(n,"power")),
+ ...["Low Protocol","High Protocol","Command Play","Permission / Decision Control","Service","Automated Tasking / System Control","Verbal / Mental Restraint"].map(n=>item(n,"power")),
+ item("Position Training","power",[g("Form",["Kneeling","Standing / Display","Hands Behind Back","Waiting Positions"])]),
  ],
  pet:[
  item("Pet Roleplay","pet",[g("Species / Role",["Puppy","Kitten","Pony","Bunny","Fox"]),g("Expression",["Feeding Bowl","Crawling / All-fours","Pet Bed","Crate / Kennel","Tails / Ears"])]),
