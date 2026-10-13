@@ -7,7 +7,7 @@ async function settle<T>(promise:Promise<T>){
   const result=promise.then(value=>({value}),error=>({error}));
   await vi.runAllTimersAsync();return result;
 }
-it("lists fourteen stable summaries and loads full Markdown only for a requested article",async()=>{
+it("lists fifteen stable summaries and loads full Markdown only for a requested article",async()=>{
   const service=createUiLabServices({latencyMs:0}).services.education!;
   const summary=await settle(service.listArticles());
   if(!("value" in summary))throw new Error("Education list failed");
