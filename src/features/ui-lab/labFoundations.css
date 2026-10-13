@@ -35,3 +35,5 @@
 .lab-home-cards .lab-text-link { min-height: 44px; padding: 8px 0; border: 0; background: transparent; color: #f0d3e7; text-decoration: underline; }
 .lab-home-cards .lab-shortcuts { width: 100%; }
 .lab-home-cards .lab-shortcuts button { min-height: 44px; color: #f0d3e7; }
+.lab-home-cards .lab-shortcuts button { background: #21214b; border: 1px solid #f0d3e74a; border-radius: 9px; padding: 10px 14px; cursor: pointer; }
+.lab-home-cards button:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 3px; }
