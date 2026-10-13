@@ -34,9 +34,9 @@ Status: **active audit; not merge-ready**. Review source: final approved decisio
 
 ## Controls already in place
 
-- `reconciliationLedger.ts` and `reconciliationLedger.test.ts` enforce a growing issue-linked subset of Item/group/value expectations.
+- `approvedBatchInventory.ts` and its test enforce the complete transcribed standalone Item list for every finalized batch (1–5, 8–12, 14–18); deferred batches 6/7 and unapproved Batch 13 are kept separate.\n- `reconciliationLedger.ts` and `reconciliationLedger.test.ts` enforce a growing issue-linked subset of Item/group/value expectations.\n- `reconciliationPending.test.ts` enforces approved-but-unresolved dimension IDs through `pendingGroupIds` in the canonical model, without populating unreviewed value options or displaying empty UI groups.\n- `reconciliationExclusions.test.ts` prevents explicitly excluded, deferred and superseded standalones from returning to the Catalog.
 - `sourceCoverage.test.ts` validates the 551-ID source snapshot and explicitly unresolved rows, but **does not prove the approved corpus has been fully migrated**.
-- `docs/catalog-v2-source-review-audit.tsv` aligns 551 source IDs with exact-match evidence from the currently supported GitHub review-table layouts; blank evidence requires human/format reconciliation and is **not** a declaration that no decision exists.
+- `docs/catalog-v2-source-review-audit.tsv` aligns 551 source IDs with exact-match evidence from the currently supported GitHub review-table layouts (206 evidence matches, 345 not yet located); blank evidence requires human/format reconciliation and is **not** a declaration that no decision exists.
 - `curatedService.test.ts` prevents the 48 illustrative Items from leaking into the default V2 Catalog.
 
 ## Merge blockers
