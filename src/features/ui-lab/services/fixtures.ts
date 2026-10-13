@@ -131,7 +131,7 @@ const illustrativeReferenceData: CatalogReferenceData = {
     {id:"restraint-control",name:"Restraint & Control",description:"Explore restriction, restraint and intentional boundaries.",featured:{symbol:"⌁",tone:"restraint"}},
     {id:"connection-expression",name:"Connection & Expression",description:"Explore affection, praise and ways of expressing connection.",featured:{symbol:"♡",tone:"connection"}},
     ...["Collars","Aftercare","Primal Play","Sensory Play","Service","Roleplay","Praise","Protocol","Temperature Play","Pet Play"].map(name => ({id:"subject-"+ids[name],name,description:"Explore related Catalog Items and refine your preferences."})),
-  ].map(subject => ({...subject,itemIds:"itemIds" in subject ? subject.itemIds : catalogItems.filter(item => item.category === subject.name || item.name === subject.name).map(item => item.id)})),
+  ].map(subject => ({...subject,itemIds:catalogItems.filter(item => item.category === subject.name || item.name === subject.name).map(item => item.id)})),
 };
 export const labReferenceData: CatalogReferenceData = replaceReferenceCatalog(
   replaceReferenceCatalog(illustrativeReferenceData, approvedV2Slice),
