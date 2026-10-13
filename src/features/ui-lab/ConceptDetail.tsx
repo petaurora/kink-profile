@@ -2,11 +2,12 @@ import { useState } from "react";
 import { ModalLayer } from "../../components/ui/ModalLayer";
 import { PreferenceControl, PreferenceSheet, SheetHeader } from "../../components/ui/PreferenceControl";
 import { useToasts } from "../../components/ui/ToastProvider";
-import { concepts } from "./CatalogSearch";
+import { useLabCatalog } from "./LabCatalog";
 import { useLabRecords } from "./LabRecords";
 import { preferenceChoices, PreferenceReference } from "./PreferenceVocabulary";
 
 export function ConceptDetail({ id, onClose }: { id: string; onClose: () => void }) {
+  const {concepts}=useLabCatalog();
   const concept = concepts.find(record => record.id === id);
   const [editing, setEditing] = useState(false);
   const records = useLabRecords();

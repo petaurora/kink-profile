@@ -2,7 +2,7 @@ import { ToastPlayground } from "./ToastPlayground";
 import { CatalogComposite } from "./CatalogComposite";
 import { SearchField } from "../../components/ui/SearchField";
 import { SearchFilterButton, type SortBy } from "../../components/ui/SearchControls";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { ModalLayer } from "../../components/ui/ModalLayer";
 import { ToastProvider } from "../../components/ui/ToastProvider";
 import { SearchRow } from "../../components/ui/SearchControls";
@@ -16,7 +16,10 @@ import "./uiLab.css";
 import "./labFoundations.css";
 import { GlobalCatalogSearch } from "./GlobalCatalogSearch";
 import { ConceptDetail } from "./ConceptDetail";
-import { concepts } from "./CatalogSearch";
+import type { AppServices } from "../../services/contracts";
+import { AppServicesProvider } from "../../services/AppServicesProvider";
+import { createUiLabServices } from "./services/createUiLabServices";
+import { useLabCatalog } from "./LabCatalog";
 import { LabRecordsProvider, LabSaveSummary } from "./LabRecords";
 
 type Area=PrimaryArea;
@@ -29,31 +32,28 @@ const iconPaths: Record<Area, React.ReactNode> = {
  Tools:<><path d="M14.8 6.2a5.3 5.3 0 0 0-6.7 6.7L3 18l3 3 5.1-5.1a5.3 5.3 0 0 0 6.7-6.7l-3.4 3.4-3-3 3.4-3.4Z"/></>
 };
 function NavIcon({area}:{area:Area}){return <svg className="ui-lab-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{iconPaths[area]}</svg>}
-const featuredSubjects = [
- {name:"Power Exchange",description:"Explore authority, rituals and the ways people negotiate control.",symbol:"◇",tone:"power"},
- {name:"Sensation & Intensity",description:"Discover textures, pressure and different kinds of sensation.",symbol:"✧",tone:"sensation"},
- {name:"Restraint & Control",description:"Explore restriction, restraint and intentional boundaries.",symbol:"⌁",tone:"restraint"},
- {name:"Connection & Expression",description:"Explore affection, praise and ways of expressing connection.",symbol:"♡",tone:"connection"}
-] as const;
-const subjectNames=featuredSubjects.map(s=>s.name);
-const extraSubjects=["Collars","Aftercare","Primal Play","Sensory Play","Service","Roleplay","Praise","Protocols","Temperature Play","Pet Play"];
-function dailyFeatured(){const day=Math.floor(new Date().setHours(0,0,0,0)/86400000);const first=((day%featuredSubjects.length)+featuredSubjects.length)%featuredSubjects.length;return [featuredSubjects[first],featuredSubjects[(first+2)%featuredSubjects.length]];}
-export function UiLabPage() {
+function dailyFeatured(subjects:{name:string;description:string;symbol:string;tone:string}[]){if(!subjects.length)return [];const day=Math.floor(new Date().setHours(0,0,0,0)/86400000);const first=((day%subjects.length)+subjects.length)%subjects.length;return [subjects[first],subjects[(first+2)%subjects.length]].filter((subject,index,list)=>list.findIndex(x=>x.name===subject.name)===index);}
+export function UiLabPage({services}:{services?:AppServices}={}) {
  const location=useLocation();const routerNavigate=useNavigate();
- return <ToastProvider><LabRecordsProvider><DiscoverSessionProvider><ViewErrorBoundary resetKey={location.pathname} onHome={()=>routerNavigate(labPath("Home"))}><UiLabContent/></ViewErrorBoundary></DiscoverSessionProvider></LabRecordsProvider></ToastProvider>;
+ const [adapter]=useState(createUiLabServices);
+ return <AppServicesProvider services={services??adapter.services}><ToastProvider><LabRecordsProvider diagnostics={services?undefined:adapter}><DiscoverSessionProvider><ViewErrorBoundary resetKey={location.pathname} onHome={()=>routerNavigate(labPath("Home"))}><UiLabContent/></ViewErrorBoundary></DiscoverSessionProvider></LabRecordsProvider></ToastProvider></AppServicesProvider>;
 }
 function UiLabContent() {
+ const {data,concepts}=useLabCatalog();
+ const featuredSubjects=useMemo(()=>data.subjects.filter(subject=>subject.featured).map(subject=>({...subject,...subject.featured!})),[data]);
+ const subjectNames=featuredSubjects.map(subject=>subject.name);
+ const extraSubjects=data.subjects.filter(subject=>!subject.featured).map(subject=>subject.name);
  const pageHeading=useRef<HTMLHeadingElement>(null);const contentId=useId();const hasNavigated=useRef(false);
  const location=useLocation();const routerNavigate=useNavigate();
  const {area,workspace,params,unknown}=parseLabRoute(location.pathname,location.search);
  const selectedSubject=workspace==="Subject Overview"?params.get("subject"):null;
  const exploreSubject=workspace==="Explore All"?params.get("subject"):null;
- const catalogSearchOpen=params.get("overlay")==="search";
+ const catalogSearchOpen=params.get("overlay")==="search"||params.has("target");
  const conceptId=params.get("concept");
  const [collapsedRail,setCollapsedRail]=useState(false);
  const [shortcuts,setShortcuts]=useState<LabArea[]>(["Catalog","Discover","Tools"]);
  const [subjectsExpanded,setSubjectsExpanded]=useState(false);
- const [featured,setFeatured]=useState(dailyFeatured);
+ const [featured,setFeatured]=useState(()=>dailyFeatured(featuredSubjects));
  const [showLab,setShowLab]=useState(false);
  const [toastLabOpen,setToastLabOpen]=useState(false);
  const [catalogSort,setCatalogSort]=useState<SortBy>("default");
@@ -99,7 +99,7 @@ function UiLabContent() {
  const choose=(name:string)=>go("Catalog",name);
  const openSubject=(name:string)=>go("Catalog","Subject Overview",{subject:name});
  const exploreRelated=()=>go("Catalog","Explore All",selectedSubject?{subject:selectedSubject}:undefined);
- useEffect(()=>{if(area==="Catalog")setFeatured(dailyFeatured());},[area]);
+ useEffect(()=>{if(area==="Catalog")setFeatured(dailyFeatured(featuredSubjects));},[area,featuredSubjects]);
  const activeChild=(parent:Area)=>parent===area?(workspace||"Overview"):null;
  const openDrawer=()=>{if(modalActive())return;setExpandedMenu(area!=="Home"&&areas.includes(area as PrimaryArea)?area as PrimaryArea:null);setMenuOpen(true);};
  const heading=(selectedSubject||workspace)||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools.",Creations:"Creations",Learn:"Learn",Relationships:"Relationships",Settings:"Settings"} as Record<LabArea,string>)[area];
@@ -170,7 +170,7 @@ function UiLabContent() {
         <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}><span><strong>Explore All</strong><small>Browse the complete Catalog</small></span><span aria-hidden="true">→</span></button>
         <section className="ui-lab-more-subjects"><h2>More subjects</h2><div className="ui-lab-subject-chips">{[...subjectNames.filter(name=>!featured.some(f=>f.name===name)),...extraSubjects].slice(0,subjectsExpanded?undefined:6).map(name=><button type="button" key={name} onClick={()=>openSubject(name)}>{name}</button>)}</div><button className="ui-lab-subject-more" aria-expanded={subjectsExpanded} onClick={()=>setSubjectsExpanded(v=>!v)}>{subjectsExpanded?"Show Less ↑":"Show More ↓"}</button></section>
       </>}
-      {workspace==="Subject Overview"&&selectedSubject&&<section className="ui-lab-subject-overview"><p>{featuredSubjects.find(x=>x.name===selectedSubject)?.description||"Explore related Catalog Items and refine your preferences."}</p><div className="ui-lab-subject-related-head"><h2>Related Items</h2><button onClick={exploreRelated}>View All Related Items →</button></div><CatalogComposite compact subject={selectedSubject} initialItem={undefined}/></section>}
+      {workspace==="Subject Overview"&&selectedSubject&&<section className="ui-lab-subject-overview"><p>{data.subjects.find(x=>x.name===selectedSubject)?.description||"Explore related Catalog Items and refine your preferences."}</p><div className="ui-lab-subject-related-head"><h2>Related Items</h2><button onClick={exploreRelated}>View All Related Items →</button></div><CatalogComposite compact subject={selectedSubject} initialItem={undefined}/></section>}
       {workspace==="Explore All"&&<>{exploreSubject&&<div className="ui-lab-subject-filter-note"><span>Exploring: {exploreSubject}</span><button onClick={()=>go("Catalog","Explore All")}>Clear subject ×</button></div>}<CatalogComposite key={exploreSubject||"all"} subject={exploreSubject||undefined} />
       </>}
       {workspace==="Concept Explorer"&&<><SearchRow><SearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><SearchFilterButton active={catalogSort!=="default"} groupingAvailable={false} onClick={()=>openCatalogSearch("Concept Explorer",true)}/></SearchRow><div className="ui-lab-catalog-items">{concepts.map(item=><button key={item.id} onClick={()=>openLayer("concept",item.id)}>{item.name}<span>›</span></button>)}</div></>}

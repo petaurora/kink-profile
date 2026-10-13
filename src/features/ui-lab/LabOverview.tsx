@@ -3,13 +3,14 @@ import { DisclosureSection } from "../../components/ui/DisclosureSection";
 import { compareRoute, profileRoute, rewardsToolsRandomizerRoute, rewardsToolsRecipesRoute, sceneBuilderRoute, settingsRoute } from "../../app/routes";
 import { ContinueActivities } from "./DiscoverWorkspace";
 import { useLabRecords } from "./LabRecords";
-import { items } from "./LabCatalog";
+import { useLabCatalog } from "./LabCatalog";
 import type { LabArea } from "./LabNavigation";
 import { LabCard } from "./LabCard";
 
 type Go=(area:LabArea,workspace?:string,params?:Record<string,string>)=>void;
 export function LabOverview({area,workspace,go,shortcuts,onShortcuts}:{area:LabArea;workspace:string;go:Go;shortcuts:LabArea[];onShortcuts:(areas:LabArea[])=>void}) {
   const records=useLabRecords();
+  const {items}=useLabCatalog();
   const [editing,setEditing]=useState(false);
   const entries=Object.entries(records.values).filter(([,value])=>value!==undefined);
   if(area==="Home")return <div className="ui-lab-app-grid lab-card-grid lab-home-cards">

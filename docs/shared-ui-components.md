@@ -22,7 +22,7 @@ been migrated to the experimental treatments merely because the code is shared.
 | `SheetHeader` | Shared title, context and accessible close target | Title/context and any header accessory |
 | `PreferenceControl` / `PreferenceSheet` | Controlled value, arrow focus and explicit commit; optional controlled help and Clear | Rating vocabulary, independently keyed values, persistence and retry |
 | `InlineSaveStatus` | Reserved status slot; idle/saving/saved/failed presentation | Truthful persistence state and Retry implementation |
-| `ItemRow` | Compact identity, indicator, preference and Refine slots | Item data, optional modifiers, aggregate save status and classification indicators |
+| `ItemRow` | Compact identity, optional supporting text, indicator, preference and Refine slots | Item data, search-match explanation, optional modifiers, aggregate save status and classification indicators |
 | `DisclosureSection` | Controlled disclosure with a stable panel ID | Expanded state and panel content; opening never records preference |
 | `ToastProvider` / `useToasts` | One queue/viewport at the application boundary | Meaningful notifications and genuine recovery/Undo actions |
 | `ConfirmationDialog` | Explicit confirm/cancel modal with shared focus and close mechanics | Action scope, copy, confirmation policy and actual mutation |
@@ -63,13 +63,13 @@ and corner arrows are decorative. It owns no records, routing or save behavior.
 
 ## Current limits
 
-The UI Lab owns illustrative data and an 850 ms simulated save. Its record provider
-retains independently keyed edits, timestamps, revisions and pending saves across
-feature navigation within the mounted Lab session. Reloading or leaving the Lab
-discards them. It does not persist preferences, implement a server coordinator,
-durable recovery/offline sync, or risk-based destructive confirmations. `InlineSaveStatus` presents state;
-passing `saved` requires confirmation of the caller’s latest operation. UI Lab “saved” messages
-are simulation feedback under its explicit session-only notice.
+The UI Lab receives illustrative data through [application services](app-services.md).
+Its single record provider retains independently keyed edits, timestamps, revisions
+and pending async writes across feature navigation. Local service confirmation is
+memory-only; reloading or leaving the Lab discards the default sample session.
+Durable storage, server concurrency, offline recovery and risk-based destructive
+confirmations remain separate work. `InlineSaveStatus` presents state; passing
+`saved` requires confirmation of the caller's latest service operation.
 
 Do not treat the component inventory as completion of every approved feedback
 workshop decision. Container morph animation, durable session recovery, production error-boundary

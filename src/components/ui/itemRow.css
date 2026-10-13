@@ -22,6 +22,7 @@
   font-size: 14px;
   line-height: 1.3;
 }
+.kp-item-supporting-text { flex: 0 1 100%; min-width: 0; padding: 0 3px 8px; color: var(--kp-muted, #b7adc5); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
 .kp-refine-toggle {
   border: 0;
   background: transparent;

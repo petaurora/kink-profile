@@ -235,3 +235,11 @@ When changing application architecture:
 5. Preserve storage and import/export compatibility unless a deliberate migration is part of the same change.
 6. Move ownership when it becomes clearer; do not perform folder churn solely for visual neatness.
 7. Update this document when the implemented architecture contract changes materially.
+
+## UI Lab application services
+
+The isolated v2 shell uses AppServicesProvider for async reference/search reads
+and initial records. LabRecordsProvider remains its sole mutable record coordinator
+and sends preference/concept/experience edits through typed services, preserving
+independent fields, guarded Undo and recovery. The local adapter confirms changes
+in memory; production routes/storage remain separate. See [Application Services](app-services.md).

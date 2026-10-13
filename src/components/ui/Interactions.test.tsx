@@ -213,7 +213,7 @@ describe("controlled preferences, disclosure and search", () => {
     click(button("Collars overall: Not rated. Change rating"));
     click(button("Like"));
     expect(button("Collars overall: Like. Change rating")).toBeTruthy();
-    const row = document.querySelector('[data-item-id="Power Exchange:0"]')!;
+    const row = document.querySelector('[data-item-id="collars"]')!;
     click(
       [...row.querySelectorAll<HTMLButtonElement>("button")].find((element) =>
         element.textContent?.includes("Refine"),
@@ -234,7 +234,7 @@ describe("controlled preferences, disclosure and search", () => {
     expect(document.querySelector('[aria-label="Refine Collars"]')).toBeNull();
     expect(button("Collars overall: Like. Change rating")).toBeTruthy();
   });
-  it("keeps a failed latest rating recoverable with contextual Retry", () => {
+  it("keeps a failed latest rating recoverable with contextual Retry", async () => {
     vi.useFakeTimers();
     mount(
       <ToastProvider>
@@ -244,10 +244,10 @@ describe("controlled preferences, disclosure and search", () => {
     click(document.querySelector('input[type="checkbox"]')!);
     click(button("Collars overall: Not rated. Change rating"));
     click(button("Love"));
-    act(() => vi.advanceTimersByTime(850));
+    await act(async () => {await vi.advanceTimersByTimeAsync(850);});
     expect(button("Collars overall: Love. Change rating")).toBeTruthy();
     click(button("Retry saving Collars overall"));
-    act(() => vi.advanceTimersByTime(850));
+    await act(async () => {await vi.advanceTimersByTimeAsync(850);});
     expect(
       document.querySelector('[aria-label="Retry saving Collars overall"]'),
     ).toBeNull();

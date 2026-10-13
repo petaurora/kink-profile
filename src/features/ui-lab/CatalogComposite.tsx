@@ -11,10 +11,12 @@ import { ItemExperience } from "./ItemExperience";
 import { useLabRecords, useLabViewState } from "./LabRecords";
 import { preferenceChoices, PreferenceReference } from "./PreferenceVocabulary";
 
-import { items, catalogSeeds, matchesCatalogSearch, type Item } from "./LabCatalog";
+import { useLabCatalog, type Item } from "./LabCatalog";
+import { getItemSearchMatch, normalizeSearch, searchMatchExplanation } from "../../services/search";
 const choices=preferenceChoices;
 export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,subject,compact=false,collection="kinks"}:{collection?:"kinks"|"rewards";initialItem?:string;initialGroup?:string;initialValue?:string;subject?:string;compact?:boolean;onClose?:()=>void}){
- const searchId=useId(),resultsId=useId(),categoryPrefix=useId();
+ const {data,items,catalogSeeds,classifications:classification}=useLabCatalog();
+ const searchId=useId(), resultsId=useId(), categoryPrefix=useId();
  const panelId=(name:string)=>categoryPrefix+"-"+encodeURIComponent(name);
  const isRewards=collection==="rewards";
  const viewScope=`${collection}:${subject||"all"}:${compact?"compact":"list"}`;
@@ -22,12 +24,13 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  const [states,setStates]=useLabViewState<string[]>(viewScope,"answers",[]),[filtersOpen,setFiltersOpen]=useState(false);
  const [indicatorInfo,setIndicatorInfo]=useState<{id:string;kind:"reward"|"punishment"}|null>(null);
  const indicatorOrigin=useRef<HTMLButtonElement|null>(null);
- const [classification]=useState(()=>Object.fromEntries(items.map((x,i)=>[x.id,{reward:["yes","no","unanswered","no"][i%4],punishment:["unanswered","yes","no","no","yes"][i%5]}])));
- const [sortBy,setSortBy]=useLabViewState<SortBy>(viewScope,"sort",isRewards?"az":"default");
+ const [sortBy,setSortBy]=useLabViewState<SortBy>(viewScope,"sort","default");
  const [groupBy,setGroupBy]=useLabViewState<GroupBy>(viewScope,"group","none");
  const [orderOpen,setOrderOpen]=useState(false);
  const [query,setQuery]=useLabViewState(viewScope,"query","");
  const [debouncedQuery,setDebouncedQuery]=useState(query);
+ const searching=Boolean(normalizeSearch(debouncedQuery));
+ const effectiveSort=!searching&&isRewards&&sortBy==="default"?"az":sortBy;
  const clearSearch=()=>{setQuery("");setDebouncedQuery("")};
  const [refining,setRefining]=useState<string|null>(null);
  const [closedCategories,setClosedCategories]=useState<Record<string,boolean>>({});
@@ -94,15 +97,16 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  const hasFilters=mine||reward||punishment||states.length>0;
  const clearFilters=()=>{setMine(false);setReward(false);setPunishment(false);setStates([])};
  const nativeRewards=new Set(["Praise","Privileges","Protocol","Permission Rituals","Rules","Training","Teasing","Anticipation"]);
+ const searchMatches=new Map(items.map(item=>[item.id,getItemSearchMatch(item,debouncedQuery)]));
  const matching=items.filter(x=>{
- if(!isRewards)return (!subject||x.category===subject||x.name===subject)&&matchesCatalogSearch(x,debouncedQuery);
- const cl=classification[x.id];
+ if(!isRewards)return (!subject||data.subjects.find(s=>s.name===subject)?.itemIds.includes(x.id)||x.name===subject)&&searchMatches.get(x.id)!==null;
+ const cl=classification[x.id]??{reward:"unanswered",punishment:"unanswered"};
  if(!nativeRewards.has(x.name)&&cl.reward!=="yes"&&cl.punishment!=="yes")return false;
  if(mine&&cl.reward!=="yes"&&cl.punishment!=="yes")return false;
  const dims=reward||punishment?[...(reward?["reward" as const]:[]),...(punishment?["punishment" as const]:[])]:(["reward","punishment"] as const);
  if((reward||punishment||states.length>0)&&!dims.some(d=>states.length?states.includes(cl[d]):cl[d]==="yes"))return false;
- return matchesCatalogSearch(x,debouncedQuery);
- }).sort((a,b)=>sortBy==="az"?a.name.localeCompare(b.name):sortBy==="za"?b.name.localeCompare(a.name):isRewards?a.name.localeCompare(b.name):0);
+ return searchMatches.get(x.id)!==null;
+ }).sort((a,b)=>effectiveSort==="az"?a.name.localeCompare(b.name):effectiveSort==="za"?b.name.localeCompare(a.name):searching?(searchMatches.get(b.id)?.score??0)-(searchMatches.get(a.id)?.score??0)||a.name.localeCompare(b.name):0);
  // Grouping matters only when this result set contains multiple categories.
  const groupingAvailable=!compact&&!subject&&new Set(matching.map(x=>x.category)).size>1;
  const effectiveGroupBy=groupingAvailable?groupBy:"none";
@@ -115,7 +119,8 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
   const ratedModifier=Object.keys(ratings).some(k=>k.startsWith(x.id+":")&&k!==overall&&ratings[k]!==undefined);
   const refineStatus=modifierKeys.some(k=>saves[k]==="failed")?"failed":modifierKeys.some(k=>saves[k]==="saving")?"saving":undefined;
   return <ItemRow key={x.id} name={x.name} itemId={x.id}
-   indicators={isRewards&&<span className="cc-rp-indicators">{(["reward","punishment"] as const).map(kind=>{const state=classification[x.id][kind];const open=indicatorInfo?.id===x.id&&indicatorInfo.kind===kind;const label=kind==="reward"?"Reward":"Punishment";const stateLabel=state==="yes"?"Yes":state==="no"?"No":"Unanswered";return <span className="cc-rp-indicator-anchor" key={kind}><button type="button" className={"cc-rp-indicator cc-rp-state-"+state} aria-label={x.name+": "+label+" — "+stateLabel+". Show explanation"} aria-expanded={open} aria-controls={panelId(x.id+kind)} onClick={e=>{indicatorOrigin.current=e.currentTarget;setIndicatorInfo(open?null:{id:x.id,kind})}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==="reward"?<><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-7 0-7-7-3-7 2.5 0 3 4 3 7Zm0 0c7 0 7-7 3-7-2.5 0-3 4-3 7Z"/></>:<><path d="m13 4 7 7M10 7l7 7M4 20l10-10M2 22l4-4M14 2l8 8"/></>}</svg><span aria-hidden="true">{state==="yes"?"✓":state==="no"?"✕":"?"}</span></button><span id={panelId(x.id+kind)} hidden={!open} className="cc-rp-popover" role="note" aria-label={label+" classification for "+x.name}><strong>{label} · {stateLabel}</strong><span>{state==="yes"?"You've classified this Item as a "+label.toLowerCase()+".":state==="no"?"You've marked this Item as not a "+label.toLowerCase()+".":"You haven't answered whether this Item is a "+label.toLowerCase()+"."}</span><button type="button" onClick={()=>{setIndicatorInfo(null);indicatorOrigin.current?.focus()}}>Close</button></span></span>})}</span>}
+   supportingText={searchMatchExplanation(searchMatches.get(x.id)??null,debouncedQuery)}
+   indicators={isRewards&&<span className="cc-rp-indicators">{(["reward","punishment"] as const).map(kind=>{const state=classification[x.id]?.[kind]??"unanswered";const open=indicatorInfo?.id===x.id&&indicatorInfo.kind===kind;const label=kind==="reward"?"Reward":"Punishment";const stateLabel=state==="yes"?"Yes":state==="no"?"No":"Unanswered";return <span className="cc-rp-indicator-anchor" key={kind}><button type="button" className={"cc-rp-indicator cc-rp-state-"+state} aria-label={x.name+": "+label+" — "+stateLabel+". Show explanation"} aria-expanded={open} aria-controls={panelId(x.id+kind)} onClick={e=>{indicatorOrigin.current=e.currentTarget;setIndicatorInfo(open?null:{id:x.id,kind})}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==="reward"?<><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-7 0-7-7-3-7 2.5 0 3 4 3 7Zm0 0c7 0 7-7 3-7-2.5 0-3 4-3 7Z"/></>:<><path d="m13 4 7 7M10 7l7 7M4 20l10-10M2 22l4-4M14 2l8 8"/></>}</svg><span aria-hidden="true">{state==="yes"?"✓":state==="no"?"✕":"?"}</span></button><span id={panelId(x.id+kind)} hidden={!open} className="cc-rp-popover" role="note" aria-label={label+" classification for "+x.name}><strong>{label} · {stateLabel}</strong><span>{state==="yes"?"You've classified this Item as a "+label.toLowerCase()+".":state==="no"?"You've marked this Item as not a "+label.toLowerCase()+".":"You haven't answered whether this Item is a "+label.toLowerCase()+"."}</span><button type="button" onClick={()=>{setIndicatorInfo(null);indicatorOrigin.current?.focus()}}>Close</button></span></span>})}</span>}
    preference={ratingButton(overall,x.name+" overall",x.name)}
    onRefine={hasModifiers?()=>openRefine(x.id):undefined} refined={ratedModifier} refineStatus={refineStatus}/>;
  }
@@ -128,9 +133,9 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  }
  return <section className="cc" ref={root} aria-label="Interactive inline Catalog prototype">
 
-  {!compact&&<div className="cc-demo cc-demo-compact"><span>{items.length} sample Items · Session only · Saves simulated</span><label><input type="checkbox" checked={failNext} onChange={e=>setFailNext(e.target.checked)}/> Test save failure</label></div>}
+  {!compact&&<div className="cc-demo cc-demo-compact"><span>{items.length} sample Items · Session only · Local service saves</span><label><input type="checkbox" checked={failNext} onChange={e=>setFailNext(e.target.checked)}/> Test save failure</label></div>}
   {Object.values(saves).includes("failed")&&<div className="cc-error-summary" role="status"><span>{Object.values(saves).filter(v=>v==="failed").length} changes not saved · Latest edits kept</span><button onClick={()=>Object.keys(saves).filter(k=>saves[k]==="failed").forEach(retry)}>Retry all</button><button onClick={()=>revealIssue(Object.keys(saves).find(k=>saves[k]==="failed")!)}>Review issues</button></div>}
-  <div className="cc-browser">{!compact&&<><label className="cc-search-label" htmlFor={searchId}>Search Items</label><SearchRow><SearchField mode="input" inputId={searchId} placeholder="Search Items…" ariaLabel={isRewards?"Search Items in rewards and punishments":"Search Items in kinks"} value={query} onChange={setQuery} onClear={clearSearch} resultsId={resultsId} /><SearchFilterButton active={sortBy!==(isRewards?"az":"default")||effectiveGroupBy!=="none"} groupingAvailable={groupingAvailable} expanded={orderOpen} onClick={()=>setOrderOpen(true)}/></SearchRow>
+  <div className="cc-browser">{!compact&&<><label className="cc-search-label" htmlFor={searchId}>Search Items</label><SearchRow><SearchField mode="input" inputId={searchId} placeholder="Search Items…" ariaLabel={isRewards?"Search Items in rewards and punishments":"Search Items in kinks"} value={query} onChange={setQuery} onClear={clearSearch} resultsId={resultsId} /><SearchFilterButton active={sortBy!=="default"||effectiveGroupBy!=="none"} groupingAvailable={groupingAvailable} expanded={orderOpen} onClick={()=>setOrderOpen(true)}/></SearchRow>
    {isRewards&&<SearchChips label="Reward and punishment filters" options={[{id:"mine",label:"Mine",active:mine,onClick:()=>setMine(!mine)},{id:"reward",label:"Reward",active:reward,onClick:()=>setReward(!reward)},{id:"punishment",label:"Punishment",active:punishment,onClick:()=>setPunishment(!punishment)},{id:"answers",opensDialog:true,expanded:filtersOpen,label:states.length?"Answers · "+states.length:"Answers",active:states.length>0,onClick:()=>setFiltersOpen(true)}]} clear={hasFilters?clearFilters:undefined}/>}
     <div className="cc-toolbar cc-toolbar--compact"><span aria-live="polite" aria-atomic="true">{matching.length} {matching.length===1?"Item":"Items"}</span></div>
    </>}<div className="cc-sections" id={resultsId} aria-busy={query!==debouncedQuery}>{sections.filter(([,list])=>list.length).map(([heading,list])=><section key={heading} className="cc-section">{heading!=="All Items"&&<h2 className="cc-category-heading"><button className="cc-section-title" aria-controls={panelId(heading)} aria-expanded={!closedCategories[heading]} onClick={()=>setClosedCategories(p=>({...p,[heading]:!p[heading]}))}><span>{heading==="All Items"?"":heading} <small>{heading==="All Items"?"":list.length+" Items"}</small></span><span aria-hidden="true">{closedCategories[heading]?"⌄":"⌃"}</span></button></h2>}<div id={panelId(heading)} hidden={!!closedCategories[heading]} className="cc-section-items">{!closedCategories[heading]&&list.map(renderItem)}</div></section>)}{matching.length===0&&<div className="cc-empty" ><p>No matching Items. Try another search or adjust filters.</p><div className="cc-empty-actions">{query&&<button type="button" onClick={clearSearch}>Clear search</button>}{isRewards&&hasFilters&&<button type="button" onClick={clearFilters}>Clear filters</button>}</div></div>}</div>
@@ -141,7 +146,7 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
    <SearchChips label="Classification answer states" options={([["unanswered","? Unanswered"],["no","✕ No"],["yes","✓ Yes"]] as const).map(([value,label])=>({id:value,label,active:states.includes(value),onClick:()=>setStates(prev=>prev.includes(value)?prev.filter(v=>v!==value):[...prev,value])}))}/>
    <p className="cc-rp-count">{matching.length} matching Items</p>
   </ModalLayer>
-  <SortGroupSheet open={orderOpen} onClose={()=>setOrderOpen(false)} sort={sortBy} onSort={setSortBy} group={effectiveGroupBy} onGroup={setGroupBy} showGrouping={groupingAvailable} defaultSortLabel="Catalog order" showDefault={!isRewards}/>
+  <SortGroupSheet open={orderOpen} onClose={()=>setOrderOpen(false)} sort={effectiveSort} onSort={setSortBy} group={effectiveGroupBy} onGroup={setGroupBy} showGrouping={groupingAvailable} defaultSortLabel={searching?"Best matches":"Catalog order"} showDefault={!isRewards||searching}/>
    <ModalLayer open={!!refinedItem} onClose={closeRefine} label={"Refine "+(refinedItem?.name||"")} closeLabel="Close refinement" className={selector?"cc-refine-underlay":""} panelClassName="cc-refine-sheet">
     {refinedItem&&<><SheetHeader title={refinedItem.name} context="REFINE ITEM" onClose={closeRefine} closeLabel="Close refinement"><div className="cc-refine-overall">{ratingButton(refinedItem.id+":overall",refinedItem.name+" overall",refinedItem.name)}</div></SheetHeader>{modifierContent(refinedItem)}</>}
    </ModalLayer>
