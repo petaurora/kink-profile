@@ -34,3 +34,5 @@ export function searchSections(results: SearchResult[], type: string, sort: "def
     ...["Items", "Modifiers", "Concepts"].map(label => ({ label, rows: filtered.filter(result => result.type === label && !ids.has(result.id)) })),
   ].filter(section => section.rows.length);
 }
+
+export const findSearchResult = (id: string) => index.find(result => result.id === id);

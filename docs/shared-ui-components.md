@@ -25,6 +25,8 @@ been migrated to the experimental treatments merely because the code is shared.
 | `ItemRow` | Compact identity, indicator, preference and Refine slots | Item data, optional modifiers, aggregate save status and classification indicators |
 | `DisclosureSection` | Controlled disclosure with a stable panel ID | Expanded state and panel content; opening never records preference |
 | `ToastProvider` / `useToasts` | One queue/viewport at the application boundary | Meaningful notifications and genuine recovery/Undo actions |
+| `ConfirmationDialog` | Explicit confirm/cancel modal with shared focus and close mechanics | Action scope, copy, confirmation policy and actual mutation |
+| `ViewErrorBoundary` | View retry and reset on navigation | Place session ownership outside the boundary; recovery destination |
 | `ToastViewport` / `useToastQueue` | Lower-level controlled viewport and queue primitives | Mount only one viewport per chosen notification scope |
 
 ## Interaction contracts
@@ -64,8 +66,9 @@ passing `saved` requires confirmation of the caller’s latest operation. UI Lab
 are simulation feedback under its explicit session-only notice.
 
 Do not treat the component inventory as completion of every approved feedback
-workshop decision. Container morph animation, full-page recovery, session recovery,
-production error boundaries and capability gates remain separate work.
+workshop decision. Container morph animation, durable session recovery, production error-boundary
+migration and real connected-capability enforcement remain separate work. The Lab
+uses a recoverable view boundary and explicit unavailable-capability states.
 
 ## Validation
 

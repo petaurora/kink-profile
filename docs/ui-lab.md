@@ -1,6 +1,6 @@
 # UI Lab
 
-`#/ui-lab` composes the experimental responsive shell and shared controls. It uses
+`#/ui-lab` and its registered nested routes compose the experimental responsive shell and shared controls. It uses
 illustrative Catalog records. Production Catalog routes and durable profile data
 remain separate.
 
@@ -68,3 +68,45 @@ newer results. A failed update retains previous successful results with an expli
 label and Retry; no fabricated network delay is added to the local index.
 Queries are not written to local/session storage or tracked as preference evidence.
 No autocomplete, aliases, automatic Recently Viewed or production index is implied.
+
+## Routed shell and feature foundations
+
+The Lab is lazy-loaded outside the production AppShell. Its destination registry
+contains Home, Catalog, Profile, Discover, Tools, Creations, Learn, Relationships
+and Settings. Primary navigation stays consistent across the desktop rail and
+mobile bar. Desktop supports compact/labeled rail modes; the full menu exposes all
+destinations. Nested pages have a clickable parent breadcrumb and one title.
+Unknown Lab destinations show a recoverable message within the Lab.
+
+Search and result layers have navigation entries. Browser Back returns first from
+result to Search and then to the exact underlying workspace. Query text stays in
+memory and is excluded from URLs/history state. Direct result URLs identify only
+the target and open it without creating a rating. Local list queries, classification
+filters and ordering also survive feature navigation as session view state, separate
+from profile records. Fresh Refine group-collapse rules are unchanged.
+
+Home shows only deliberately started unfinished activities (at most three Resume
+links) and explicit records, plus editable session shortcuts. Profile lists only
+explicit session records. Tools and Creations deliberately link existing app tools;
+Learn offers concept exploration. Relationships and sharing expose honest capability
+boundaries rather than fabricated people, accounts, permissions or drafts.
+The Lab view recovery boundary retries a failed view or returns Home without
+remounting the session providers. This does not alter the production error boundary.
+
+## Discover
+
+General suggestions carry reasons, not fabricated personalized claims. Dismissal
+uses stable content IDs throughout the Lab session. Manage Suggestions restores
+individual content; reset-all requires confirmation and changes only dismissals.
+
+The illustrative reflection activity establishes the focused workflow and saved
+activity lifecycle: deliberate start, optional prompts, retained draft notes and
+prompt position, Save and exit, Resume, and explicit Finish. Completion creates a
+read-only snapshot. Repeat starts a separate attempt linked to the original, using
+the current supported activity version; earlier answers stay unchanged. Saved
+activities can be removed with confirmation. Completion/repetition never writes
+Catalog ratings, Tried or Comfort. This content is not a validated assessment.
+
+These activities, dismissals and shortcuts remain memory-only. This implements the
+UI basis; durable retention, account sync, activity publication/version withdrawal,
+Recently Explored and production recommendation ranking are not implemented.

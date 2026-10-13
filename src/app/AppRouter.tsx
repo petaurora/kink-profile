@@ -19,7 +19,7 @@ import { RewardsToolsRoute } from "../features/rewards/RewardsToolsRoute";
 import { SceneBuilderRoute } from "../features/scenes/SceneBuilderRoute";
 import { SettingsRoute } from "../features/settings/SettingsRoute";
 import { AppShell } from "./AppShell";
-import { UiLabPage } from "../features/ui-lab/UiLabPage";
+import { lazy, Suspense } from "react";
 import {
   catalogRewardsRankingRoute,
   catalogRewardsRoute,
@@ -42,6 +42,10 @@ import {
   unknownRouteFallbackPath,
 } from "./routes";
 
+const UiLabPage = lazy(() =>
+  import("../features/ui-lab/UiLabPage").then((module) => ({ default: module.UiLabPage })),
+);
+
 function LegacyCatalogRedirect() {
   const location = useLocation();
   return <Navigate to={`${catalogRoute.path}${location.search}`} replace />;
@@ -60,7 +64,14 @@ function KinkCatalogEntryRoute() {
 export function RoutedApplication() {
   return (
     <Routes>
-      <Route path="/ui-lab" element={<UiLabPage />} />
+      <Route
+        path="/ui-lab/*"
+        element={
+          <Suspense fallback={<main role="status">Loading UI Lab…</main>}>
+            <UiLabPage />
+          </Suspense>
+        }
+      />
       <Route element={<AppShell />}>
         <Route path={hubRoute.path} element={<HubPage />} />
         <Route path={profileRoute.path} element={<ProfileRoute />} />

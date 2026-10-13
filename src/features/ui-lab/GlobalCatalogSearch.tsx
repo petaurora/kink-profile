@@ -4,14 +4,15 @@ import { SearchField } from "../../components/ui/SearchField";
 import { SearchChips, SearchFilterButton, SearchRow, SortGroupSheet, type SortBy } from "../../components/ui/SearchControls";
 import { CatalogComposite } from "./CatalogComposite";
 import { ConceptDetail } from "./ConceptDetail";
-import { searchCatalog, searchSections, type SearchResult } from "./CatalogSearch";
+import { findSearchResult, searchCatalog, searchSections, type SearchResult } from "./CatalogSearch";
 
 import "./globalSearch.css";
 
 const localSearch = async (query: string) => searchCatalog(query);
-export function GlobalCatalogSearch({ open, onClose, origin, sort, onSort, orderOpen, onOrderOpen, search = localSearch }: {
+export function GlobalCatalogSearch({ open, onClose, origin, sort, onSort, orderOpen, onOrderOpen, search = localSearch, targetId, onTargetChange }: {
   open: boolean; onClose: () => void; origin: string; sort: SortBy; onSort: (sort: SortBy) => void;
   orderOpen: boolean; onOrderOpen: (open: boolean) => void;
+  targetId?: string; onTargetChange?: (id: string | null) => void;
   search?: (query: string) => Promise<SearchResult[]>;
 }) {
   const [query, setQuery] = useState("");
@@ -33,11 +34,12 @@ export function GlobalCatalogSearch({ open, onClose, origin, sort, onSort, order
     },200);
     return () => { active=false; clearTimeout(timer); };
   },[query,retry,search]);
+  useEffect(()=>{if(targetId!==undefined)setTarget(findSearchResult(targetId)||null);},[targetId]);
   const clear = () => { setQuery(""); setType("All"); document.getElementById("lab-global-query")?.focus(); };
   const sections = searchSections(results,type,sort);
   const count = results.filter(result=>type==="All"||result.type===type).length;
-  const closeTarget = () => { setTarget(null); requestAnimationFrame(()=>{if(scroll.current)scroll.current.scrollTop=lastScroll.current}); };
-  const select = (result: SearchResult) => { lastScroll.current=scroll.current?.scrollTop||0;setTarget(result); };
+  const closeTarget = () => { setTarget(null); onTargetChange?.(null); requestAnimationFrame(()=>{if(scroll.current)scroll.current.scrollTop=lastScroll.current}); };
+  const select = (result: SearchResult) => { lastScroll.current=scroll.current?.scrollTop||0;setTarget(result); onTargetChange?.(result.id); };
   return <ModalLayer open={open} onClose={()=>{onOrderOpen(false);onClose();}} label="Global catalog search" closeLabel="Close search" className="ui-lab-search-overlay" backdropClassName="ui-lab-search-backdrop" panelClassName="ui-lab-search-dialog">
     <div className="ui-lab-search-page">
       <div className="ui-lab-search-modal-header"><span>Search</span><button type="button" className="ui-lab-search-close" aria-label="Close search" onClick={onClose}>×</button></div>

@@ -1,0 +1,3 @@
+@import "./tokens.css";
+.kp-view-recovery { padding: 24px; min-height: 100dvh; background: #101240; color: var(--kp-pink); }
+.kp-view-recovery button { min-height: 44px; padding: 10px 14px; margin-right: 10px; background: #21214b; color: var(--kp-pink); border: 1px solid #f0d3e74a; border-radius: 8px; }
