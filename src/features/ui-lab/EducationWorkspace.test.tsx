@@ -33,10 +33,11 @@ describe("service-backed Education",()=>{
     expect(parseLabRoute(original.split("?")[0],"?id=edu-collars").unknown).toBe(false);
     const storage=vi.spyOn(Storage.prototype,"setItem");
     mount();await flush(300);
-    expect(container.textContent).toContain("9 articles");
+    expect(container.textContent).toContain("10 articles");
     expect(container.querySelector(".kp-search-field--input")).not.toBeNull();
     expect(container.querySelector(".kp-search-filter-trigger")).not.toBeNull();
     expect(container.querySelector(".lab-education-starters")).not.toBeNull();
+    expect(container.textContent).toContain("Impact Play: Technique");
     const collars=[...container.querySelectorAll<HTMLButtonElement>(".lab-education-grid button")].find(b=>b.textContent?.includes("Collars & Collaring"))!;
     expect(collars).toBeTruthy();click(collars);await flush(300);
     expect(container.querySelector("output")?.textContent).toBe(original);
@@ -66,7 +67,15 @@ describe("service-backed Education",()=>{
     expect(container.querySelector('[role="alert"]')?.textContent).toContain("Unable to load the Education library");
     const retry=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent==="Retry loading articles")!;
     click(retry);await flush(300);
-    expect(container.textContent).toContain("9 articles");
+    expect(container.textContent).toContain("10 articles");
+  });
+
+  it("opens the Impact Play practice article from a stable deep link with its table and related reading",async()=>{
+    mount("/ui-lab/learn/article?id=edu-impact");await flush(300);
+    expect(container.querySelector(".lab-education-article-header")?.textContent).toContain("Impact Play: Technique");
+    expect(container.querySelector(".lab-education-table-scroll table")).not.toBeNull();
+    expect(container.querySelector(".lab-education-table-scroll th")?.textContent).toBe("Implement");
+    expect(container.querySelectorAll(".lab-education-related")).toHaveLength(1);
   });
 
   it("handles unavailable deep-linked articles without inventing content",async()=>{
