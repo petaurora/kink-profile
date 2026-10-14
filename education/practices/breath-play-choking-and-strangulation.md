@@ -3,7 +3,7 @@
 *Three commonly confused terms, different medical mechanisms, and safer ways to explore the underlying fantasy.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 14 minutes  
+**Estimated reading time:** 15 minutes  
 **Topics:** Breath Play · Choking · Strangulation · Suffocation · Consent · Risk Awareness · Harm Reduction
 
 **Content note:** This article discusses oxygen deprivation, suffocation, airway obstruction, neck compression, brain injury, loss of consciousness, accidental death, and coercion. The safety information remains essential regardless of content preferences. It does not provide instructions for restricting breathing or blood flow.
