@@ -52,6 +52,24 @@ Do I want structure, feedback, playful drama, accountability, or a mixture? How 
 
 For foundations, read *Negotiating a Scene*, *Total Power Exchange*, and *Consent Under Ongoing Authority*.
 
+## A Case Study: The Missed Check-In
+
+Suppose two partners agreed to a daily message. One misses it because a meeting runs late. The other experiences disappointment and immediately calls for punishment. Several questions have been skipped: Was the rule intended to provide reassurance? Was the missed message intentional? Was an exception discussed? Does the proposed response solve the original problem?
+
+A correction might involve clarifying the schedule and adding a fallback, such as a quick note when possible. Discipline might mean a broader practice of improving consistency. A theatrical consequence might only be appropriate if it is separately negotiated and genuinely welcome. These are different solutions to different goals.
+
+## Consent to Consequences Must Be Specific
+
+A vague promise to accept “whatever punishment is deserved” leaves significant ambiguity. People can agree on types of consequences, exclusions, conditions, and a method of stopping, but none of those agreements can override a later refusal. Specific expectations protect both parties from interpreting frustration as permission.
+
+When the consequence carries physical or psychological risk, ordinary relationship rules are not adequate preparation. Do not improvise painful activities or humiliating treatment during anger. A cool-down and an out-of-role conversation are often more responsible than immediate escalation.
+
+## Distinguish Repair From Submission
+
+Someone may apologize because they understand the impact of their behavior, not because they accept a hierarchy. Conversely, a person can follow a rule perfectly while the relationship remains unresolved. Repair requires recognition of harm and changed behavior, not merely a scripted apology or a completed consequence.
+
+Ask whether the system leaves space for both partners to name needs. The person setting rules can also misunderstand, behave unfairly, or need to apologize. Accountability is mutual even when practical authority is not symmetrical.
+
 ---
 
 **Editorial status:** Draft pending source verification, sensitivity review, accessibility review, and publication approval. Community concepts are not clinical diagnoses. Reading creates no evidence of consent or preference.
