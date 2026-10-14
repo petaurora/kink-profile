@@ -58,6 +58,24 @@ What emotion appears first when I imagine my partner with someone else? What nee
 
 Related guides include *Negotiating a Scene*, *Red Flags vs Incompatibility*, *Aftercare, Reconnection & Drop*, and *Consent Under Ongoing Authority*.
 
+## A Case Study: Happiness and Disconnection Together
+
+Imagine someone genuinely enjoys watching their partner connect with another person. During the encounter they feel excited and pleased for everyone involved. Afterward, their partner is distracted, and they feel unexpectedly lonely. That does not invalidate the earlier enjoyment. Two emotional experiences can be real at once.
+
+They might discuss how to reconnect after group experiences without accusing anyone of intentional neglect. Perhaps they need a short private check-in, a signal when attention has shifted, or simply a clearer expectation about what happens after play. Another person might prefer quiet solitude. The specific plan should reflect the participants involved, not a universal rule for “healthy nonmonogamy.”
+
+## Third Parties Are People, Not Extensions of a Couple
+
+A couple might have years of shared rituals and agreement about authority. A new participant may not understand or want those dynamics. Their consent is independent and deserves equal attention. They must be able to decline activities, request privacy, or leave without being treated as a disruption to an established relationship.
+
+Avoid assigning a visitor a role, expecting aftercare labor, or sharing their personal details without explicit permission. A person can enjoy being included in an encounter without agreeing to become part of a couple's relationship structure.
+
+## Emotional Safety Without Emotional Policing
+
+It can be tempting to set a rule that nobody will feel jealous, or that everyone must display compersion. Emotions cannot be reliably commanded into existence. What can be negotiated is how people communicate, behave, support one another, and handle disagreements.
+
+Encourage honest disclosures without making someone responsible for instantly resolving another person's feelings. If distress persists, consider slowing down, changing agreements, or seeking an independent perspective. Continuing to expand participation while someone feels unheard may create more harm than connection.
+
 ---
 
 **Editorial status:** Draft. Requires fact-checking, source/provenance review, sensitivity and accessibility review before publication. Reading does not imply consent, identity, or personal preference.
