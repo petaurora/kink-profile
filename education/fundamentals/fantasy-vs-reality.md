@@ -52,6 +52,24 @@ Which part of a fantasy is actually appealing? Is it the physical act, the antic
 
 See *Kinks Are Not Roles*, *Kink Without Dominance or Submission*, and *Negotiating a Scene* for adjacent concepts.
 
+## A Case Study: Sharing Without Inviting
+
+Suppose someone tells their partner about an elaborate fantasy. The partner excitedly begins planning to recreate it. The storyteller feels uncomfortable, not because the fantasy has changed, but because sharing was meant as intimacy rather than an action request.
+
+Before problem-solving, ask “Do you want me to listen, imagine with you, or discuss an actual possibility?” That one distinction can make future disclosure safer. It also gives each person permission to find something exciting in conversation without making a real-world commitment.
+
+## Fantasy Can Be Selective
+
+A fictional scene may be appealing because the reader knows it is safely contained by a story. The imagined character's reaction, the dramatic atmosphere, or the possibility of an unexpected outcome can be the actual point. Replicating the physical behavior while removing the fictional framing may not preserve the appeal.
+
+Likewise, an interest in one fictional theme does not imply endorsement of all behavior represented within it. People can engage critically with difficult stories and still hold clear real-life values. Avoid treating fantasy content as a personality test.
+
+## Pressure to Explore Is Still Pressure
+
+Statements such as “But you said you wanted this” can turn honest fantasy-sharing into coercion. Consent belongs to the present moment and specific agreed circumstances; a prior conversation is not a promise. Someone may change their mind after researching risks, seeing equipment, meeting another participant, or simply thinking differently.
+
+If exploration feels uncertain, remaining at the level of conversation, fiction, or no action at all is valid. Partners can also discover that what they enjoyed was the imaginative collaboration rather than the activity itself. That insight is a successful outcome, not a failure to be adventurous.
+
 ---
 
 **Editorial status:** Draft pending source verification, sensitivity review, accessibility review, and publication approval. Community concepts are not clinical diagnoses. Reading creates no evidence of consent or preference.
