@@ -3,7 +3,7 @@
 *Comparing safety slogans, informed choice, and individual responsibility without treating acronyms as guarantees.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 5 minutes  
+**Estimated reading time:** 6 minutes  
 **Topics:** Culture · Ethics · Community · Consent
 
 **Content note:** Discusses sensitive personal experiences, stigma, and boundaries. Information is educational, not individual clinical or legal advice.
