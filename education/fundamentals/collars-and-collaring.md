@@ -3,7 +3,7 @@
 *Exploring what a collar can symbolize, how collaring works, and why the meaning belongs to the person wearing it and the people involved.*
 
 **Level:** Beginner  
-**Estimated reading time:** 11 minutes  
+**Estimated reading time:** 19 minutes  
 **Topics:** BDSM Fundamentals · Collars · Collaring · Relationship Symbols · Power Exchange · Consent · Personal Expression
 
 **Content note:** This article discusses consensual ownership symbolism, submission, relationship commitment, collar use during play, and neck-related safety concerns. It does not provide restraint instructions.
