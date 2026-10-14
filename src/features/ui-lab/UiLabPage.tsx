@@ -28,7 +28,7 @@ declare const __KP_BUILD_SHA__: string;
 type Area=PrimaryArea;
 const areas=primaryAreas;
 const navigationIcons: Record<Area, keyof typeof appIcons> = {
- Home: "home", Catalog: "catalog", Profile: "profile", Discover: "search", Tools: "tools"
+ Home: "home", Catalog: "catalog", Profile: "profile", Discover: "discover", Tools: "tools"
 };
 function NavIcon({area}:{area:Area}) {
  const Icon = appIcons[navigationIcons[area]];
