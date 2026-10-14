@@ -1,3 +1,4 @@
+import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
 import { ToastPlayground } from "./ToastPlayground";
 import { CatalogComposite } from "./CatalogComposite";
 import { SearchField } from "../../components/ui/SearchField";
@@ -26,14 +27,13 @@ import { LabRecordsProvider, LabSaveSummary } from "./LabRecords";
 declare const __KP_BUILD_SHA__: string;
 type Area=PrimaryArea;
 const areas=primaryAreas;
-const iconPaths: Record<Area, React.ReactNode> = {
- Home:<><path d="m3.5 10 8.5-7 8.5 7"/><path d="M5.5 9v11h13V9M10 20v-6h4v6"/></>,
- Catalog:<><path d="M12 6.5c-2.8-1.6-5.7-1.7-9-1v13c3.3-.7 6.2-.6 9 1 2.8-1.6 5.7-1.7 9-1v-13c-3.3-.7-6.2-.6-9 1Z"/><path d="M12 6.5v13"/></>,
- Profile:<><circle cx="12" cy="8" r="3.5"/><path d="M5 20v-1.5a7 7 0 0 1 14 0V20"/></>,
- Discover:<><path d="m12 2 1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2ZM19 17l.8 2.2L22 20l-2.2.8L19 23l-.8-2.2L16 20l2.2-.8L19 17Z"/></>,
- Tools:<><path d="M14.8 6.2a5.3 5.3 0 0 0-6.7 6.7L3 18l3 3 5.1-5.1a5.3 5.3 0 0 0 6.7-6.7l-3.4 3.4-3-3 3.4-3.4Z"/></>
+const navigationIcons: Record<Area, keyof typeof appIcons> = {
+ Home: "home", Catalog: "catalog", Profile: "profile", Discover: "search", Tools: "tools"
 };
-function NavIcon({area}:{area:Area}){return <svg className="ui-lab-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{iconPaths[area]}</svg>}
+function NavIcon({area}:{area:Area}) {
+ const Icon = appIcons[navigationIcons[area]];
+ return <Icon className="ui-lab-nav-icon" {...appIconDefaults} aria-hidden="true" />;
+}
 function dailyFeatured(subjects:{name:string;description:string;symbol:string;tone:string}[]){if(!subjects.length)return [];const day=Math.floor(new Date().setHours(0,0,0,0)/86400000);const first=((day%subjects.length)+subjects.length)%subjects.length;return [subjects[first],subjects[(first+2)%subjects.length]].filter((subject,index,list)=>list.findIndex(x=>x.name===subject.name)===index);}
 export function UiLabPage({services}:{services?:AppServices}={}) {
  const location=useLocation();const routerNavigate=useNavigate();
@@ -125,7 +125,7 @@ function UiLabContent() {
       <button type="button" className="ui-lab-header-action" aria-label="Search" onClick={()=>openCatalogSearch(area)}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.5 4.5"/></svg>
       </button>
-      <button type="button" className="ui-lab-header-action" aria-label="Profile and settings" onClick={()=>navigate("Profile")}>♡</button>
+      <button type="button" className="ui-lab-header-action" aria-label="Profile and settings" onClick={()=>navigate("Profile")}><appIcons.profile {...appIconDefaults} aria-hidden="true" /></button>
     </div>
    </header>
    <ModalLayer open={menuOpen} onClose={()=>setMenuOpen(false)} label="Full navigation menu" closeLabel="Close navigation menu" id="ui-lab-full-menu" className="ui-lab-menu-layer" backdropClassName="ui-lab-menu-backdrop" panelClassName="ui-lab-menu-drawer">
@@ -143,7 +143,7 @@ function UiLabContent() {
        <div className="ui-lab-menu-divider"/>
        <p className="ui-lab-menu-eyebrow">MORE TO EXPLORE</p>
        <div className="ui-lab-menu-links">
-         {(["Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-menu-link-icon" aria-hidden="true">{["◇","✧","♡"][i]}</span><span>{item}</span></button>)}
+         {(["Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-menu-link-icon" aria-hidden="true">{(() => { const Icon = [appIcons.collection, appIcons.education, appIcons.shared][i]; return <Icon {...appIconDefaults} />; })()}</span><span>{item}</span></button>)}
        </div>
        <div className="ui-lab-menu-bottom">
          <button type="button" className="ui-lab-menu-settings" aria-current={area==="Settings"?"page":undefined} onClick={()=>navigate("Settings")}>
