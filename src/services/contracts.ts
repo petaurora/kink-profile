@@ -4,12 +4,18 @@ export const preferenceRatings = ["Love", "Like", "Curious", "Unsure", "Not Inte
 export type PreferenceRating = typeof preferenceRatings[number];
 export type ClassificationAnswer = "yes" | "no" | "unanswered";
 export type Classification = { reward: ClassificationAnswer; punishment: ClassificationAnswer };
-export type ModifierValue = { id: string; name: string; conceptId?: string };
+export type ModifierValue = { id: string; name: string; aliases?:string[]; conceptId?: string };
 export type ModifierGroup = { id: string; name: string; values: ModifierValue[] };
 export type CatalogItem = {
   id: string;
   name: string;
   category: string;
+  /** Non-exclusive canonical browse memberships; category is only a legacy display label. */
+  themeIds?: string[];
+  aliases?:string[];
+  relatedItemIds?:string[];
+  /** Approved dimensions whose final options/applicability are still in review. */
+  pendingGroupIds?:string[];
   description?: string;
   groups: ModifierGroup[];
   collections: ("kinks" | "rewards")[];

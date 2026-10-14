@@ -7,8 +7,9 @@ describe("Catalog V2 canonical slice and migration", () => {
     expect(validateCatalogV2(approvedV2Slice)).toEqual([]);
     expect(approvedV2Slice.items[0].themeIds).toHaveLength(2);
   });
-  it("migrates approved overall without deriving from modifiers", () => {
-    const migrated = migrateV1Ratings({ collars: "Love" }, approvedV1ToV2Slice, approvedV2Slice);
+  it("migrates a synthetic overall without deriving from modifiers", () => {
+    const decisions = [{sourceId:"synthetic-collar-source",outcome:"item" as const,targetItemId:"collars"}];
+    const migrated = migrateV1Ratings({ "synthetic-collar-source": "Love" }, decisions, approvedV2Slice);
     expect(migrated.ratings[v2RatingKey({kind:"item",itemId:"collars"})]).toBe("Love");
     expect(Object.keys(migrated.ratings)).toHaveLength(1);
   });
@@ -16,9 +17,10 @@ describe("Catalog V2 canonical slice and migration", () => {
     const migrated = migrateV1Ratings({ unknown: "Like" }, approvedV1ToV2Slice, approvedV2Slice);
     expect(migrated.unresolved).toEqual([{ sourceId: "unknown", reason: "No approved migration decision" }]);
   });
-  it("does not silently overwrite conflicting ratings", () => {
+  it("does not silently overwrite conflicting synthetic ratings", () => {
     const key = v2RatingKey({kind:"item",itemId:"collars"});
-    const migrated = migrateV1Ratings({ collars:"Like" }, approvedV1ToV2Slice, approvedV2Slice, {[key]:"Love"});
+    const decisions = [{sourceId:"synthetic-collar-source",outcome:"item" as const,targetItemId:"collars"}];
+    const migrated = migrateV1Ratings({ "synthetic-collar-source":"Like" }, decisions, approvedV2Slice, {[key]:"Love"});
     expect(migrated.ratings[key]).toBe("Love");
     expect(migrated.conflicts).toHaveLength(1);
   });

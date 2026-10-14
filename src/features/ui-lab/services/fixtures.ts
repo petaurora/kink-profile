@@ -1,5 +1,5 @@
-import { reviewedCatalogExpansion } from "../../../catalog-v2/reviewedExpansion";
-import { approvedV2Slice } from "../../../catalog-v2/approvedSlice";
+import {curatedCatalog} from "../../../catalog-v2/curatedCatalog";
+import {curatedConcepts} from "../../../catalog-v2/referenceMetadata";
 import { replaceReferenceCatalog } from "../../../catalog-v2/toAppReference";
 import type { CatalogReferenceData, PreferenceSnapshot } from "../../../services/contracts";
 
@@ -133,10 +133,25 @@ const illustrativeReferenceData: CatalogReferenceData = {
     ...["Collars","Aftercare","Primal Play","Sensory Play","Service","Roleplay","Praise","Protocol","Temperature Play","Pet Play"].map(name => ({id:"subject-"+ids[name],name,description:"Explore related Catalog Items and refine your preferences."})),
   ].map(subject => ({...subject,itemIds:catalogItems.filter(item => item.category === subject.name || item.name === subject.name).map(item => item.id)})),
 };
-export const labReferenceData: CatalogReferenceData = replaceReferenceCatalog(
-  replaceReferenceCatalog(illustrativeReferenceData, approvedV2Slice),
-  reviewedCatalogExpansion,
-);
+/** Default V2 reference data is curated-only. Illustrative fixtures are never merged into the real browse list. */
+const curatedBase:CatalogReferenceData = {items:[],subjects:[],concepts:curatedConcepts(curatedCatalog)};
+const curatedReferenceData = replaceReferenceCatalog(curatedBase,curatedCatalog);
+// Featured discovery subjects are service-owned curated unions, not stale demo category matches.
+const featuredSubjectGroups = [
+  {id:"power-exchange",name:"Power Exchange",description:"Explore negotiated authority, devotion, and protocol.",featured:{symbol:"◇",tone:"power"},themeIds:["power-exchange","power","dynamics"]},
+  {id:"sensation-intensity",name:"Sensation & Intensity",description:"Explore impact, temperature, sensation and intensity.",featured:{symbol:"✧",tone:"sensation"},themeIds:["impact","sensory","pain","electrical"]},
+  {id:"restraint-control",name:"Restraint & Control",description:"Explore physical restriction, equipment and negotiated control.",featured:{symbol:"⌁",tone:"restraint"},themeIds:["bondage","equipment"]},
+  {id:"connection-expression",name:"Connection & Expression",description:"Explore pet, primal and expressive connections.",featured:{symbol:"♡",tone:"connection"},themeIds:["pet","primal","exhibition"]},
+];
+export const labReferenceData: CatalogReferenceData = {
+  ...curatedReferenceData,
+  subjects:[...curatedReferenceData.subjects.filter(s=>!featuredSubjectGroups.some(featured=>featured.id===s.id)), ...featuredSubjectGroups.map(({themeIds,...subject})=>({
+    ...subject,
+    itemIds:[...new Set(curatedReferenceData.subjects.filter(theme=>themeIds.includes(theme.id)).flatMap(theme=>theme.itemIds))].filter(id=>curatedReferenceData.items.some(item=>item.id===id)),
+  }))],
+};
+/** For isolated component or search tests that expressly require the old demo dataset. */
+export { illustrativeReferenceData };
 // Stable, explicitly illustrative classifications; no inference from general ratings.
 export const labInitialPreferences: PreferenceSnapshot = {
   ratings: {},

@@ -1,31 +1,116 @@
-# Catalog V2 implementation and migration
+# Catalog V2 reference and migration contract
 
-This is the first **migration-backed vertical slice**, stacked on PR #276. It does **not** claim that the entire V1 catalog has been curated or migrated.
+Catalog V2 supplies the default reference data for the V2 app shell at `#/ui-lab`.
+It is separate from the existing production V1 catalog and browser profile storage.
+The local V2 preference adapter confirms writes in memory; it does not import or
+replace a stored V1 profile.
 
-## Canonical model
+## Canonical reference data
 
-`src/catalog-v2/model.ts` defines independently rateable Items, item-scoped modifier definitions, non-exclusive browse themes, aliases and related Item references. Item IDs are stable; group/value IDs are scoped within their Item. The existing service rating tuple key remains the persistence identity. Parent Item ratings are explicit; they are **not inferred** from refinement ratings.
+`src/catalog-v2/curatedCatalog.ts` composes the reviewed definitions from
+`approvedSlice.ts`, `reviewedExpansion.ts` and `additionalReviewed.ts`.
+Later definitions replace an Item's modifier groups; non-exclusive theme memberships
+compose across slices. Theme member lists are derived from the composed Items.
+There is one definition per stable Item ID and no default illustrative seed union.
 
-`src/catalog-v2/approvedSlice.ts` contains one reviewable example, Collars, with two non-exclusive themes. Other sample Lab Items stay illustrative until curation has an approved ledger entry.
+`model.ts` defines independently rateable Items, structural modifier groups,
+rateable values, non-exclusive themes, aliases and related-Item references.
+`pendingGroupIds` records approved dimensions whose precise options or applicability
+are still unfinished. Pending dimensions are metadata, not empty rateable groups.
 
-## Migration contract
+The default data implements the final approved batch inventory, including Marking
+from issue #268's approval comment. Generic Worship is omitted according to #263's
+later correction. Praise placement remains deferred to the intentionally deferred
+Rewards/Punishments review. October 13 equipment extensions are user-authorized
+inferred vocabulary, separate from the original batch approvals.
 
-`migration.ts` operates on a snapshot; it does not mutate the input or auto-write to localStorage/server. Outcomes: item, refinement, merge/alias, exclude and review. Missing mappings, invalid targets and conflicting decisions remain in the audit report. Two legacy ratings mapping to the same target with different values do not overwrite one another. Explicit approval is required before applying an imported snapshot to an account.
+## Identity, reuse and discovery
 
-### Next integration steps
+Item/modifier ratings use stable tuple keys:
+`["item", itemId]` and `["modifier", itemId, groupId, valueId]`.
+Display labels are not transport keys. The expanded Gags design retains the previous
+`type`, `ball`, `bit`, `ring`, `tape-style`, `medical-dental` and `muzzle` IDs
+despite display clarifications.
 
-1. Assemble the full V1 row-level ledger from approved batch decisions; keep deferred Batch 7 and disputed rows unresolved.
-2. Complete final Collars groups against #257 (the current slice deliberately retains only the approved UI Lab groups, not an invented full group set).
-3. Replace remaining Lab fixture rows with curated V2 Items and expose non-exclusive browse themes in the UI.
-4. Add an explicit import review/confirmation flow and compatibility export; test old stored data and rollback.
-5. Add durable versioned storage and API adapter only when data semantics are stable.
+`modifierTemplates.ts` supplies shared protocol, pain-experience, observation and
+psychological target/tone definitions with fresh Item-local instances. An Item may
+choose a subset and contextual label without changing sibling definitions or ratings.
+Humiliation's eight-target/seven-tone applicability is approved; the shared vocabulary itself
+has already been recorded by #259.
 
-Source of truth: Catalog refinement Notion document and GitHub issue #255.
+`referenceMetadata.ts` supplies reviewed aliases and related-Item references.
+Selectively shared material concepts such as Leather and Metal retain canonical
+identity across equipment, while each Item-specific value remains separately rateable.
+A general concept preference never sets an Item or modifier preference.
 
-## Reviewed expansion — PR #291
+`toAppReference.ts` transports memberships, aliases, related IDs, pending dimensions
+and value aliases through `CatalogReferenceData`. Global search can resolve an alias
+to its exact Item/modifier target. Local search also explains supporting alias matches.
+Name matches retain precedence. Featured Power Exchange includes orientations,
+named dynamics and protocol Items; subjects do not duplicate rating targets.
 
-`reviewedExpansion.ts` provides additional approved Items from Batch 1 (#256), Batch 17 (#272, including superseding 2026-10-08 corrections) and Batch 18 (#274). The Lab's replaceable reference-service fixture serves the expanded, curated subset and prefers approved group definitions over corresponding illustrative rows. Non-exclusive discovery themes are also added.
+Most older source definitions still derive IDs from authored names. Changing those
+names requires deliberately retaining their IDs or supplying a reviewed replacement;
+the current helpers are not a complete immutable internal-ID/redirect system.
 
-The executable migration ledger currently covers 23 directly specified Batch 1 source IDs plus the Collars mapping. Unresolved destinations include posture collar (needs the fully reconciled Collars type model) and stocks/pillory (the furniture Item-vs-family boundary remains unsettled). The source-to-ID mapping for Batch 17 and 18 must be reconciled against generated V1 artifacts before imports are allowed. Other reviewed batches have not yet been encoded. Deferred Batch 7 remains outside migration.
+## Migration preview
 
-This is an incremental, additive UI integration. It does **not** replace all original Lab fixtures, carry out stored-profile data migration, or declare the full Catalog V2 model complete. Run CI and preview checks on this branch and reconcile the remaining ledgers before considering promotion to canonical production reference data.
+`fullSourceDisposition.ts` gives every one of the 551 original V1 source IDs one
+explicit Item/refinement/merge/alias/exclude/review disposition. Exact source identity
+is validated against the original TSV; no fuzzy name matching creates preferences.
+The ledger describes the original active corpus, not every staged research candidate.
+
+`migrateV1Ratings` accepts an explicit scalar snapshot, validates destinations and
+groups incoming sources by target before assigning ratings:
+
+- Equal incoming values may coalesce into one target; all applied source IDs are reported.
+- Different incoming values leave an empty target unanswered and report every competing
+  source as an `incoming-sources` conflict. Object iteration order cannot select a winner.
+- A preexisting V2 rating remains unchanged. A conflict with it is distinguished from
+  competing V1 sources.
+- Missing/ambiguous mappings, invalid destinations, excluded and deferred sources
+  remain reported rather than creating guessed ratings.
+- Explicit parent ratings are never recomputed from modifiers.
+
+`planLosslessV1Migration` retains every unapplied scalar source rating.
+`buildLegacyPreferenceArchive` returns schema-v1 archived scalar values with exact
+source IDs and reasons, including all sides of an incoming-source collision.
+These functions are pure and do not commit preferences or delete sources.
+
+## Complete original-profile archive preparation
+
+`legacyProfileArchive.ts` accepts the actual V1 `CatalogProfileState`.
+Its schema-v2 archive retains a deep copy of the **entire original profile**, including
+overall/giving/receiving preferences, update timestamps, comparisons and ranking history.
+It normalizes only explicitly recorded overall values for the approved scalar preview.
+It never uses V1's receiving/giving fallback to infer another rating.
+
+Original directional records remain in the complete archive with contextual reasons
+until their exact V2 destinations are reviewed. Even safely previewed overall records
+remain interpretable in the original source snapshot. The snapshot is archival
+provenance, not a second canonical V2 preference store.
+
+The adopted rollout direction allows unresolved, excluded, deferred and conflicted
+records to remain read-only in an archive until database integration. It does not require
+all source concepts to be mapped now. A persistent importer must still provide deliberate
+review, crash-safe/atomic storage, compatibility export/restore and old Collars-pilot
+handling before any destructive cutover. None of these preparation functions is an
+automatic storage migration.
+
+## Verification and scope
+
+The approved inventory, positive/negative/pending parity and composed-reference tests
+cover final decision corrections, valid targets, memberships, aliases, exact modifier
+handoff, independent ratings and order-independent conflicts. Source-ID accounting
+and passing CI are not claims of complete production migration or finished modifier
+vocabularies. The old V1 catalog, Signal mappings, ranking/profile integration,
+Scene Builder and persisted browser state continue through their existing contracts.
+
+Engineering acceptance and outstanding work are owned by issue #292 and PR #293,
+stacked on #291 and #276. Product decisions remain in the catalog/architecture workspace.
+
+## October 14 modifier approval reconciliation
+
+The approved 13-value Body Area vocabulary is active for Impact Play, Spanking / Slapping, Body Writing, Texture Play, Pinching, Scratching, Biting, Clamp / Clip Play, Wartenberg Wheel, Suction Play, and Electrical Play. Impact items retain their `target-body-area` group identity; other former `body-part` placeholders now use `body-area`. All preferences remain scoped by Item and group/value identity; no propagation.
+
+Shared Intensity values are Light, Moderate, and Intense, active for Impact Play, Spanking / Slapping, Humiliation Play, Degradation, and Embarrassment Play. Humiliation Play uses the final approved eight targets and seven tones (without Specific Body Part or overlapping Presentation / Appearance). Human Furniture has Brief/Sustained/Extended Duration and Private/Witnessed Visibility, with Stillness / Endurance removed. Body Writing Permanence was explicitly rejected and removed, not deferred. No unreviewed options are inferred. Source records and legacy backups remain unchanged; real archive import/persistence and full visual acceptance are separate gates.

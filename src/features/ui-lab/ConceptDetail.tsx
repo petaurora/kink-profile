@@ -17,9 +17,9 @@ export function ConceptDetail({ id, onClose }: { id: string; onClose: () => void
   return <ModalLayer open onClose={onClose} label={`Concept: ${concept.name}`} closeLabel="Back to search or concepts">
     <SheetHeader title={concept.name} context="CONCEPT EXPLORER" onClose={onClose} closeLabel="Back to search or concepts"/>
     <p>{concept.description}</p>
-    <p>Related sample Items: {concept.related.join(", ")}.</p>
+    {concept.related.length>0&&<p>Related Items: {concept.related.join(", ")}.</p>}
     <PreferenceControl label={`${concept.name} concept`} value={records.values[target] as string | undefined} saveState={records.saves[target]} onRetry={()=>records.retry(target)} onActivate={()=>setEditing(true)}/>
-    <p className="ui-lab-app-note">Concept preferences and item-specific modifier ratings remain independent. Illustrative content · Session only.</p>
+    <p className="ui-lab-app-note">Concept preferences and item-specific modifier ratings remain independent.</p>
     <PreferenceSheet open={editing} onClose={()=>setEditing(false)} label={`${concept.name} concept`} context="GENERAL CONCEPT" value={records.values[target] as string | undefined} options={preferenceChoices} help={<PreferenceReference/>} helpOpen={records.helpOpen} onHelpOpenChange={records.setHelpOpen} onChange={value=>{
       const previous = records.values[target]; const version = records.commit(target,value);
       if(value===undefined&&previous!==undefined)notify({message:"Rating cleared",kind:"info",actionLabel:"Undo",duration:5000,onAction:()=>{if(!records.restore(target,version,previous))notify({message:"A newer edit was kept",kind:"info"})}});

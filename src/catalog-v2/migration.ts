@@ -12,7 +12,13 @@ export type MigrationReport = {
   ratings: Record<string, PreferenceRating>;
   applied: string[];
   unresolved: { sourceId: string; reason: string }[];
-  conflicts: { sourceId: string; targetKey: string; existing: PreferenceRating; incoming: PreferenceRating }[];
+  conflicts: {
+    sourceId: string; targetKey: string; incoming: PreferenceRating;
+    reason: "incoming-sources" | "existing-v2";
+    existing?: PreferenceRating;
+    /** Every incoming source involved in a contested target, in stable ID order. */
+    sourceIds: string[];
+  }[];
 };
 
 export function migrateV1Ratings(
@@ -25,7 +31,8 @@ export function migrateV1Ratings(
   const unresolved: MigrationReport["unresolved"] = [], conflicts: MigrationReport["conflicts"] = [];
   const bySource = new Map<string, MigrationDecision[]>();
   for (const d of decisions) bySource.set(d.sourceId, [...(bySource.get(d.sourceId) ?? []), d]);
-  for (const [sourceId, incoming] of Object.entries(legacyRatings)) {
+  const byTarget = new Map<string, {sourceId:string; incoming:PreferenceRating}[]>();
+  for (const [sourceId, incoming] of Object.entries(legacyRatings).sort(([a],[b])=>a.localeCompare(b))) {
     const candidates = bySource.get(sourceId) ?? [];
     if (candidates.length !== 1) { unresolved.push({ sourceId, reason: candidates.length ? "Conflicting migration decisions" : "No approved migration decision" }); continue; }
     const d = candidates[0];
@@ -42,11 +49,26 @@ export function migrateV1Ratings(
       target = { kind: "modifier", itemId: item.id, groupId: d.groupId, valueId: d.valueId };
     } else target = { kind: "item", itemId: item.id };
     const key = v2RatingKey(target);
-    if (ratings[key] !== undefined && ratings[key] !== incoming) {
-      conflicts.push({ sourceId, targetKey: key, existing: ratings[key], incoming }); continue;
+    byTarget.set(key,[...(byTarget.get(key) ?? []),{sourceId,incoming}]);
+  }
+  // Inspect all incoming evidence before assigning a merged target. Input object
+  // order must never choose a preference or weaken a source Hard Limit.
+  for (const [targetKey, sources] of byTarget) {
+    const sourceIds=sources.map(source=>source.sourceId);
+    if (new Set(sources.map(source=>source.incoming)).size > 1) {
+      for (const {sourceId,incoming} of sources) conflicts.push({
+        sourceId,targetKey,incoming,reason:"incoming-sources",sourceIds,
+        ...(existing[targetKey] !== undefined ? {existing:existing[targetKey]} : {}),
+      });
+      continue;
     }
-    ratings[key] = incoming;
-    applied.push(sourceId);
+    const incoming=sources[0].incoming;
+    if (existing[targetKey] !== undefined && existing[targetKey] !== incoming) {
+      for (const {sourceId} of sources) conflicts.push({sourceId,targetKey,existing:existing[targetKey],incoming,reason:"existing-v2",sourceIds});
+      continue;
+    }
+    ratings[targetKey] = incoming;
+    applied.push(...sourceIds);
   }
   return { ratings, applied, unresolved, conflicts };
 }

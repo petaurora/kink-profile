@@ -7,10 +7,11 @@ import { UiLabPage } from "./UiLabPage";
 import { labPath, parseLabRoute } from "./LabNavigation";
 import { ViewErrorBoundary } from "../../components/ui/ViewErrorBoundary";
 import { compareRoute, rewardsToolsRandomizerRoute, rewardsToolsRecipesRoute, sceneBuilderRoute } from "../../app/routes";
-import { createUiLabServices } from "./services/createUiLabServices";
-import { labReferenceData } from "./services/fixtures";
+import { createUiLabServices as makeUiLabServices } from "./services/createUiLabServices";
+import { illustrativeReferenceData as labReferenceData } from "./services/fixtures";
 import { ratingKey, type AppServices } from "../../services/contracts";
 
+const createUiLabServices = (options:Parameters<typeof makeUiLabServices>[0]={}) => makeUiLabServices({...options,referenceData:options.referenceData??labReferenceData});
 let root:Root;let container:HTMLDivElement;let navigate:NavigateFunction;
 const button=(label:string)=>{const el=[...document.querySelectorAll<HTMLButtonElement>('button')].find(el=>el.getAttribute('aria-label')===label||el.textContent===label);if(!el)throw new Error(`Missing: ${label}`);return el;};
 const click=(el:HTMLElement)=>act(()=>{el.focus();el.click()});

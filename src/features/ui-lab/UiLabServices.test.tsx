@@ -3,9 +3,10 @@ import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { UiLabPage } from "./UiLabPage";
-import { createUiLabServices } from "./services/createUiLabServices";
+import { createUiLabServices as makeUiLabServices } from "./services/createUiLabServices";
 import { MemoryRouter } from "react-router-dom";
-import { labReferenceData } from "./services/fixtures";
+import { illustrativeReferenceData as labReferenceData } from "./services/fixtures";
+const createUiLabServices = (options:Parameters<typeof makeUiLabServices>[0]={}) => makeUiLabServices({...options,referenceData:options.referenceData??labReferenceData});
 let root:Root,container:HTMLDivElement;
 beforeEach(()=>{
   vi.useFakeTimers();vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT",true);

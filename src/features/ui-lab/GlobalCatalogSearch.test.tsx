@@ -27,14 +27,22 @@ it('indexes the same Catalog records with normalized multiword matching and no d
   const all=searchCatalog('ownership');expect(all.some(record=>record.type==='Concepts')).toBe(true);expect(all.some(record=>record.type==='Items')).toBe(true);
   const sections=searchSections(all,'All','default');const ids=sections.flatMap(section=>section.rows.map(row=>row.id));expect(new Set(ids).size).toBe(ids.length);expect(sections[0].label).toBe('Best matches');
 });
+it('opens a modifier found through its approved alias without recording preference evidence',async()=>{
+ mount();query('penis gag');await flush();
+ click(document.querySelector<HTMLElement>('[data-search-result="modifier:gags:type:phallic"]')!);await flush(20);
+ expect(button('Form / Design9 options⌃').getAttribute('aria-expanded')).toBe('true');
+ expect(button('Phallic: Not rated. Change rating')).toBe(document.activeElement);
+ expect(document.querySelector('.cc-value-highlight')?.textContent).toContain('Phallic');
+ expect(document.querySelector('output')?.textContent).not.toContain('Love');
+});
 it('opens unrestricted and global clear resets the type and query with input focus',async()=>{
   mount();expect(button('All').getAttribute('aria-pressed')).toBe('true');query('leather');await flush();click(button('Modifiers'));click(button('Clear search'));
   expect(button('All').getAttribute('aria-pressed')).toBe('true');expect((document.activeElement as HTMLInputElement).id).toBe('lab-global-query');expect((document.activeElement as HTMLInputElement).value).toBe('');
 });
 it('searches all indexed text globally and puts a matching Item name ahead of metadata hits',async()=>{
   mount();query('ca');await flush();
-  expect(document.querySelector('[data-search-result="item:aftercare"]')).not.toBeNull();
-  expect(document.querySelector('[data-search-result="item:permission-rituals"]')).not.toBeNull();
+  expect(document.querySelector('[data-search-result="item:canes"]')).not.toBeNull();
+  expect(document.querySelector('[data-search-result="modifier:confinement:environment-method:cage"]')).not.toBeNull();
 });
 it('debounces processing and keeps Sort separate from result type filters',async()=>{
   const search=vi.fn(async(q:string)=>searchCatalog(q));mount(search);query('collars');await flush(199);expect(search).not.toHaveBeenCalled();await flush(1);expect(search).toHaveBeenCalledWith('collars',expect.objectContaining({signal:expect.any(AbortSignal)}));

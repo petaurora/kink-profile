@@ -21,13 +21,17 @@ export function getSearchMatch(name: string, fields: SearchField[], query: strin
 }
 type SearchableItem = {
   name: string; category: string; description?: string;
-  groups: { name: string; values: readonly (string | { name: string })[] }[];
+  aliases?:string[]; modifierAliases?:string[];
+  groups: { name: string; values: readonly (string | { name: string; aliases?:string[] })[] }[];
 };
 export function getItemSearchMatch(item: SearchableItem, query: string) {
   return getSearchMatch(item.name, [
     { label: "description", text: item.description ?? "" },
     { label: "category", text: item.category },
+    { label: "aliases", text: (item.aliases ?? []).join(", ") },
+    { label: "modifier aliases", text: (item.modifierAliases ?? []).join(", ") },
     ...item.groups.map(group => ({ label: "modifiers", text: `${group.name}: ${group.values.map(value => typeof value === "string" ? value : value.name).join(", ")}` })),
+    ...item.groups.flatMap(group=>group.values.flatMap(value=>typeof value==="string"||!value.aliases?.length?[]:[{label:"modifier aliases",text:value.aliases.join(", ")}])) ,
   ], query);
 }
 /** Keep a short excerpt around the matching words, rather than exposing an opaque hit. */
@@ -55,6 +59,7 @@ export function searchReferenceData(data: CatalogReferenceData, query: SearchQue
         {label:"item",text:item.name}, {label:"modifier group",text:group.name},
         {label:"category",text:item.category}, {label:"description",text:item.description ?? ""},
         {label:"concept",text:concept ? `${concept.name} ${concept.description}` : ""},
+        {label:"aliases",text:[...(value.aliases ?? []),...(item.aliases ?? [])].join(", ")},
       ], query.text);
       if (match) {
         results.push({id:`modifier:${item.id}:${group.id}:${value.id}`, name:value.name, type:"Modifiers", path:`${item.name} → ${group.name}`, target:{itemId:item.id,groupId:group.id,valueId:value.id},score:match.score});
