@@ -10,7 +10,11 @@ import {
   IconGift,
   IconHeart,
   IconHome,
-  IconQuestionMark,
+  IconClipboardList,
+  IconCategory,
+  IconWand,
+  IconPuzzle,
+  IconArrowsExchange,
   IconSparkles,
   IconTool,
   IconUser,
@@ -74,7 +78,7 @@ const toolsOptions: LauncherOption[] = [
   {
     id: "scenes",
     label: "Scenes",
-    Icon: IconSparkles,
+    Icon: IconPuzzle,
     left: "54%",
     top: "60px",
     target: sceneBuilderRoute.path,
@@ -90,7 +94,7 @@ const toolsOptions: LauncherOption[] = [
   {
     id: "compare",
     label: "Compare",
-    Icon: IconUsers,
+    Icon: IconArrowsExchange,
     left: "88%",
     top: "72px",
     target: compareRoute.path,
@@ -442,7 +446,7 @@ export function MobilePrimaryNav() {
           onClick={() => go(quizHomeRoute.path)}
         >
           <span className="mobile-primary-nav-icon-wrap">
-            <IconQuestionMark size={23} stroke={2} aria-hidden="true" />
+            <IconClipboardList size={23} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Quiz</span>
         </button>
@@ -465,7 +469,7 @@ export function MobilePrimaryNav() {
           }}
         >
           <span className="mobile-primary-nav-icon-wrap">
-            <IconBook2 size={23} stroke={2} aria-hidden="true" />
+            <IconCategory size={23} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Catalog</span>
         </button>
@@ -477,7 +481,7 @@ export function MobilePrimaryNav() {
           onClick={() => go("/")}
         >
           <span className="mobile-primary-nav-hub-button">
-            <IconHome size={27} stroke={2} aria-hidden="true" />
+            <IconHome size={27} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Hub</span>
         </button>
@@ -489,7 +493,7 @@ export function MobilePrimaryNav() {
           onClick={() => go("/profile")}
         >
           <span className="mobile-primary-nav-icon-wrap">
-            <IconUser size={23} stroke={2} aria-hidden="true" />
+            <IconUser size={23} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Profile</span>
         </button>
@@ -512,7 +516,7 @@ export function MobilePrimaryNav() {
           }}
         >
           <span className="mobile-primary-nav-icon-wrap">
-            <IconTool size={23} stroke={2} aria-hidden="true" />
+            <IconWand size={23} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Tools</span>
         </button>
