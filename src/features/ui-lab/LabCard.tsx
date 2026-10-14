@@ -2,7 +2,7 @@ import { useId, type ReactNode } from "react";
 
 /** Shared workspace card. Secondary controls stay outside the navigation button. */
 export function LabCard({title,description,icon,featured=false,onClick,href,children,className="",status,actionLabel}: {
-  title:string; description?:string; icon:string; featured?:boolean;
+  title:string; description?:string; icon:ReactNode; featured?:boolean;
   onClick?:()=>void; href?:string; children?:ReactNode; className?:string;
   status?:string; actionLabel?:string;
 }) {
