@@ -1,3 +1,4 @@
+import { appIcons } from "../../components/ui/appIcons";
 import {
   IconAdjustmentsHeart,
   IconBolt,
@@ -99,7 +100,7 @@ export function QuizCard({
 
       <span className="quiz-list-action" aria-hidden="true">
         <span>{action}</span>
-        {!isUnavailable && <span className="quiz-list-chevron">›</span>}
+        {!isUnavailable && <span className="quiz-list-chevron"><appIcons.details size={18} stroke={1.65} /></span>}
       </span>
 
       {(state === "in-progress" || state === "retake-in-progress") && (
