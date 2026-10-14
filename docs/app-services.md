@@ -111,3 +111,21 @@ and related Item names. It uses the same name relevance tiers for Best matches,
 then retains the existing type sections and optional alphabetical sorting.
 Transport IDs are not searchable text. Global search and an inline Catalog list
 share normalization and ranking rules, but remain distinct result experiences.
+
+
+## Education read contract (UI Lab)
+
+`AppServices.education` is an optional capability so older injected adapters remain compatible while the feature is introduced. Implementations expose:
+
+- `listArticles(options?)` — async metadata summaries for the Learn library, **without** article Markdown bodies;
+- `getArticle(stableId, options?)` — async full article details and raw Markdown, or `null` for unknown/retired IDs.
+
+Both calls accept `AbortSignal`; transport failures are surfaced with actionable retry states. The UI never silently swaps in example content if an injected API adapter has not implemented Education or an API request fails.
+
+`EducationArticleSummary` contains stable `id` independent of `slug`, title, description, section, reading level, estimated minutes, editorial version, and typed links. A link distinguishes further-reading article references from concept/Catalog references; it is **not** preference evidence, user identity, consent, or permission. Related article navigation is enabled now; cross-domain links remain metadata until their canonical reference mappings are approved. The reader treats Markdown as text and constructs safe React elements, without untrusted HTML injection.
+
+The local adapter loads Markdown from `education/**/*.md` (including `fundamentals/` and `practices/`) at build time, then exposes only records registered in the curated stable-ID manifest `src/features/ui-lab/services/educationFixtures.ts`. As of October 13, the manifest includes fourteen articles, including a choking/strangulation risk and harm-reduction guide, a shorter Impact Play overview (`edu-impact`) and three topic-specific companions with curated reading links. Adding a file alone is not enough: each published/available article must have an explicit stable identity, section, metadata and editorial review. The contents are copied from the already merged source library because this stacked feature branch starts at #276's earlier base rather than current main; identical paths/blobs reconcile when main and the UI branch merge.
+
+**API migration:** implement this read interface in a remote adapter, validate/normalize server DTOs and links at the boundary, honor cancellation and error states, and inject it at the composition root. No article components need to change. HTTP routes, authentication, storage, editorial publication gating, cache invalidation, moderation, and sync are intentionally deferred. The current article versions are editorial drafts and require review before publication.
+
+Reading, searching, or following an article does not update Profile, Catalog, Tried/Comfort, or Discover attempts. There is no per-user reading history or automatic recommendation evidence in this slice.

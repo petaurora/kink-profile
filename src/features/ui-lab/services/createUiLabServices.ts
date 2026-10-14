@@ -1,8 +1,9 @@
 import { preferenceRatings, ratingKey, ServiceError, type AppServices, type CatalogReferenceData, type PreferenceSnapshot, type PreferenceTarget, type RequestOptions } from "../../../services/contracts";
 import { searchReferenceData } from "../../../services/search";
 import { labInitialPreferences, labReferenceData } from "./fixtures";
+import { localEducationArticles, toEducationSummaries } from "./educationFixtures";
 
-export type LabOperation = "catalog" | "search" | "preferences" | "save";
+export type LabOperation = "catalog" | "search" | "preferences" | "save" | "education";
 export type UiLabAdapter = { services: AppServices; failNext(operation: LabOperation): void };
 /** Every factory call owns an isolated session. No fetch, production storage or accounts. */
 export function createUiLabServices({ latencyMs = 180, saveLatencyMs = 850, referenceData = labReferenceData, initialPreferences = labInitialPreferences }: {
@@ -36,6 +37,10 @@ export function createUiLabServices({ latencyMs = 180, saveLatencyMs = 850, refe
     failNext(operation) { failures.add(operation); },
     services: {
       catalog: {getReferenceData: options => request("catalog", () => data, options)},
+      education: {
+        listArticles: options => request("education", () => toEducationSummaries(localEducationArticles), options),
+        getArticle: (id, options) => request("education", () => localEducationArticles.find(article => article.id === id) ?? null, options),
+      },
       search: {search: (query, options) => request("search", () => searchReferenceData(data, query), options)},
       preferences: {
         getSnapshot: options => request("preferences", () => snapshot, options),
