@@ -1,3 +1,4 @@
+import { appIcons } from "./appIcons";
 import { useRef } from "react";
 import "./search.css";
 
@@ -21,21 +22,7 @@ export type SearchFieldProps =
     };
 
 function SearchIcon() {
-  return (
-    <svg
-      className="kp-search-field__icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="10.8" cy="10.8" r="6.8" />
-      <path d="m16 16 5 5" />
-    </svg>
-  );
+  return <appIcons.search className="kp-search-field__icon" size={24} stroke={1.65} aria-hidden="true" />;
 }
 
 /**
