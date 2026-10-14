@@ -58,6 +58,24 @@ Am I asking or persuading? What would I feel if the answer were no? Can I acknow
 
 See *Negotiating a Scene*, *When You Don't Know What You Want*, and *Fantasy vs Reality* for related perspectives.
 
+## A Case Study: Wanting More Frequent Play
+
+One partner would love to have scenes more often. The other enjoys their current frequency and feels exhausted by work. If the first frames the request as “You never make time for me,” the discussion may quickly become about guilt rather than mutual desire. A more constructive beginning identifies the underlying need: “I miss having dedicated time to connect. Could we talk about what would feel good for both of us?”
+
+The answer might be more time together without additional kink, a shorter ritual, or no change at all. None of these outcomes entitles someone to pressure the other until they agree to the original proposal. A caring conversation keeps the relationship bigger than any one activity.
+
+## Distinguish Negotiation From Bargaining Away a Limit
+
+Partners can negotiate preferences, scheduling, and mutually welcome alternatives. But a hard limit isn't an opening bid. “What would you accept instead?” can become coercive when someone already said they do not want that category of experience.
+
+Consider whether a proposed compromise is actually welcome to the person being asked. If not, it isn't a compromise in the meaningful sense. Also recognize that one's own boundaries matter: nobody must agree to a relationship structure that does not suit them. The possible outcome of an honest conversation may be discovering a genuine mismatch.
+
+## How to Receive a No Well
+
+A simple response such as “Thank you for telling me; I won't push it” can reduce pressure and make future honesty more likely. If you feel disappointed, acknowledge it without asking your partner to manage the emotion for you. You can discuss your own feelings later with appropriate support while maintaining the boundary.
+
+Do not keep asking the same question in slightly different forms, enlist friends to persuade the person, or frame agreement as proof of love. If you sincerely do not understand a boundary, ask permission to discuss the concept rather than demanding a justification. Sometimes the respectful response is simply to stop asking.
+
 ---
 
 **Editorial status:** Draft. Requires fact-checking, source/provenance review, sensitivity and accessibility review before publication. Reading does not imply consent, identity, or personal preference.
