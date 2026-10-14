@@ -33,6 +33,6 @@ describe("Education editorial integrity", () => {
   });
 
   it("has no overlength articles remaining after restructuring", () => {
-    expect(localEducationArticles.filter(a => a.markdown.trim().split(/\\s+/).length > 3000)).toEqual([]);
+    expect(localEducationArticles.filter(a => a.markdown.trim().split(/\s+/).length > 3000)).toEqual([]);
   });
 });
