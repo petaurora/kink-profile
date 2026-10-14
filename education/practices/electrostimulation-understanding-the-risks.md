@@ -3,7 +3,7 @@
 *Electrical injury, device uncertainty, contraindications, and emergency readiness.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 6 minutes  
+**Estimated reading time:** 7 minutes  
 **Topics:** Practices · Equipment · Safety · Consent
 
 **Content note:** Discusses physical injury, medical warning signs, and consent. This is a risk-awareness overview, not an instructional guide.
