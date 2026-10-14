@@ -11,11 +11,17 @@ const markdownFiles = import.meta.glob<string>("../../../../education/**/*.md", 
 
 type Seed = {
   id:string; slug:string; description:string; section:EducationSection;
-  folder:"fundamentals"|"practices";
+  folder:"fundamentals"|"practices"|"relationships";
   level:EducationArticleSummary["level"]; minutes:number; related?:string[];
   subjects?:EducationLink[];
 };
 const seeds:Seed[] = [
+  {id:"edu-aftercare",slug:"aftercare-reconnection-and-drop",folder:"relationships",description:"Aftercare, relational reconnection, delayed drop, and responding to different needs.",section:"Relationship structures",level:"Beginner–Intermediate",minutes:7,related:["edu-negotiation","edu-safewords","edu-mindspaces"]},
+  {id:"edu-sensory",slug:"sensory-processing-in-kink",folder:"fundamentals",description:"Sensory seeking, avoidance, predictability, overload, and changing preferences.",section:"Kinks, roles, and motivation",level:"Beginner–Intermediate",minutes:6,related:["edu-mindspaces","edu-sm","edu-impact-tools"]},
+  {id:"edu-service",slug:"service-as-love-or-power-exchange",folder:"relationships",description:"Understanding service as care, chosen structure, devotion, or practical work.",section:"Relationship structures",level:"Beginner–Intermediate",minutes:6,related:["edu-ds","edu-roles","edu-tpe"]},
+  {id:"edu-continuing-consent",slug:"consent-under-ongoing-authority",folder:"relationships",description:"Scope, changing agreements, refusal, and accountability within ongoing authority.",section:"Relationship structures",level:"Beginner–Intermediate",minutes:7,related:["edu-tpe","edu-ds","edu-negotiation","edu-aftercare"]},
+  {id:"edu-restraint-anatomy",slug:"restraint-safety-and-anatomy",folder:"practices",description:"Anatomical risks, warning signs, monitoring limits, and emergency readiness for restraint.",section:"Practices & safety",level:"Beginner–Intermediate",minutes:7,related:["edu-bd","edu-safewords","edu-breath-safety"]},
+
   {id:"edu-bd",slug:"bondage-and-discipline",folder:"fundamentals",description:"Restraint, structure, and the meaning of chosen limits.",section:"Understanding BDSM",level:"Beginner",minutes:8,related:["edu-ds","edu-safewords"],subjects:[{target:{kind:"concept",id:"movement-restriction"},relation:"explains"}]},
   {id:"edu-ds",slug:"dominance-and-submission",folder:"fundamentals",description:"Consent, chosen authority, surrender, and trust.",section:"Understanding BDSM",level:"Beginner",minutes:9,related:["edu-roles","edu-tpe"]},
   {id:"edu-sm",slug:"sadism-and-masochism",folder:"fundamentals",description:"Understanding sensation, intensity, and consensual pain.",section:"Understanding BDSM",level:"Beginner",minutes:10,related:["edu-safewords","edu-negotiation","edu-impact"]},
