@@ -3,7 +3,7 @@
 *Exploring consensual authority, chosen surrender, trust, and the many ways people experience power exchange.*
 
 **Level:** Beginner  
-**Estimated reading time:** 9 minutes  
+**Estimated reading time:** 16 minutes  
 **Topics:** BDSM Fundamentals · Dominance · Submission · Power Exchange · Consent · Relationship Dynamics
 
 **Content note:** This article discusses consensual power exchange, authority, vulnerability, psychological control, and potentially unhealthy relationship dynamics without graphic descriptions.
