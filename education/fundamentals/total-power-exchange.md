@@ -3,7 +3,7 @@
 *Exploring ongoing authority, chosen surrender, responsibility, and the difference between a relationship structure and unrestricted control.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 17 minutes  
+**Estimated reading time:** 15 minutes  
 **Topics:** BDSM Fundamentals · Total Power Exchange · 24/7 D/s · Authority Transfer · Consent · Relationship Structures
 
 **Content note:** This article discusses ongoing power exchange, authority over daily decisions, relationship vulnerability, coercion, financial control, and emotional safety. It is educational, not legal or mental health advice.
@@ -359,19 +359,7 @@ People should be able to access independent support and legal or professional ad
 
 ## 12. Contracts, Collars, and Ownership Language
 
-Some TPE partners use written contracts, collars, formal ceremonies, or ownership terminology.
-
-These can symbolize dedication, identity, and the emotional seriousness of an agreement.
-
-But symbols and documents do not create legal ownership of another human being.
-
-A personal BDSM contract generally should not be treated as transferring fundamental rights, making future consent irrevocable, or replacing the law governing medical decisions, finances, marriage, or children.
-
-A contract can still be useful as a communication tool.
-
-It might document what the relationship means to both people, which responsibilities are included, what remains outside the dynamic, and how to renegotiate or end it.
-
-The purpose should be mutual clarity, not the illusion that one person has surrendered the right to change their mind.
+A contract, collar, or ownership phrase can symbolize a shared commitment without removing someone's autonomy or creating unlimited consent. Their meanings require explicit agreement. See *Collars & Collaring* and *Ownership, Belonging & Being Claimed* for the symbolism.
 
 ## 13. Does TPE Have to Be Sexual?
 
@@ -389,64 +377,8 @@ There is no universal package of activities that comes with the label.
 
 ## 14. Is TPE Something People Should Work Toward?
 
-TPE is not a graduation from "beginner BDSM."
-
-It is a particular kind of relationship agreement with significant practical and emotional implications.
-
-Some people may find it deeply meaningful.
-
-Others may prefer scene-based power exchange, limited standing protocols, a collaborative relationship without ongoing hierarchy, or no D/s at all.
-
-None is inherently more committed or mature.
-
-Because broad authority may affect money, health, relationships, and routines, it is sensible to understand one's own preferences and observe a partner's respect for boundaries over time before making extensive arrangements.
-
-There is no need to surrender more authority merely to prove trust.
-
-### Questions Worth Exploring
-
-- Do I want an ongoing authority relationship, or do I mainly enjoy particular scenes?
-- Which specific decisions would I enjoy giving or accepting responsibility for?
-- Which areas should remain entirely outside the dynamic?
-- How will either person raise concerns without being treated as disobedient?
-- What support and independence would we retain?
-- How would we handle illness, work changes, separation, or a relationship ending?
-- Does this structure make room for both people's growth and changing needs?
-- Would I still want it if neither of us used the words "total" or "owner"?
-
-These questions may be more useful than trying to determine whether a relationship is sufficiently intense to earn a label.
+TPE is not a promotion from other forms of kink. Some people prefer scene-specific exchange, mutual collaboration, or no power exchange; none is less committed or authentic. Choose an arrangement because it fits, not to meet a community expectation.
 
 ## Final Thoughts: Total Does Not Mean Beyond Consent
 
-Total Power Exchange is often described using powerful language: ownership, surrender, obedience, control.
-
-For the people who choose it, those words may carry profound personal significance.
-
-But a relationship is not made consensual by a title or ceremony.
-
-It remains consensual through the participants' genuine ability to understand, question, change, and leave the agreement.
-
-The most meaningful part of TPE may be neither the number of rules nor the breadth of a person's authority.
-
-It may be the deliberate choice to build a life in which trust and responsibility are expressed through an unusual relationship structure.
-
-**No one can give away their right to withdraw consent. What they can choose is how much responsibility and authority to share while that choice remains theirs.**
-
----
-
-### Continue Learning
-
-- **Dominance & Submission: Understanding the D and S of BDSM:** The foundations of consensual authority.
-- **Negotiating a Scene:** How to discuss activities, boundaries, and responsibilities.
-- **Safewords:** Why stop signals support—but never replace—ongoing consent.
-- **Kinks Are Not Roles:** The difference between activities, positions, authority, and motivation.
-- **Kink Without Dominance or Submission:** Exploring kink without a power-exchange relationship.
-- **Rules, Protocols & Rituals:** Making expectations clear within ongoing dynamics.
-- **Consent and Coercion:** Recognizing when a power arrangement stops being voluntary.
-
-### Further Reading
-
-- [National Coalition for Sexual Freedom — Consent Counts](https://ncsfreedom.org/key-programs-2/consent-counts/)
-- [TASHRA — Edges of Consent: 24/7 Relationships and Complex Consent](https://www.tashra.org/event/edges-of-consent/)
-- [Casey & Sagarin — Authority Transfer Relationships: Illuminating a Consensual Inegalitarian Relationship Form (2025)](https://pubmed.ncbi.nlm.nih.gov/41162821/)
-- [Cascalheira, Thomson & Wignall — A Phenomenological Study of 24/7 BDSM and Negotiating Consent](https://research.brighton.ac.uk/en/publications/a-certain-evolution-a-phenomenological-study-of-247-bdsm-and-nego/)
+“Total” describes the breadth of a chosen dynamic, never the removal of a person's basic rights. Accountability, outside support, continuing consent, and the freedom to renegotiate remain essential. Read *Consent Under Ongoing Authority* for more on long-running agreements.
