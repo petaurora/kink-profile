@@ -3,7 +3,7 @@
 *Why restraints require attention to anatomy, positioning, communication, and emergency response—not just consent.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 7 minutes  
+**Estimated reading time:** 6 minutes  
 **Topics:** Restraint · Nerves · Circulation · Positioning · Emergency Safety
 
 **Content note:** Discusses possible nerve damage, breathing impairment, falls, joint injuries, and medical emergencies. Not a how-to guide for applying restraints. **Clinical and technical safety review required before publication.**
