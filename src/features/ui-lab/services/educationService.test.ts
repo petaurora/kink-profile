@@ -17,7 +17,7 @@ it("lists all registered stable summaries and loads full Markdown only for a req
   expect(summary.value.find(x=>x.id==="edu-breath-safety")).toMatchObject({
     slug:"breath-play-choking-and-strangulation",
     section:"Practices & safety",
-    readingMinutes:14,
+    readingMinutes:15,
   });
   expect(summary.value.every(x=>!("markdown" in x))).toBe(true);
   const detail=await settle(service.getArticle("edu-collars"));
