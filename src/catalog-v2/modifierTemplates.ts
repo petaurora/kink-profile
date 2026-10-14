@@ -19,9 +19,12 @@ export const modifierTemplates: Record<string,CatalogV2Group> = {
   {id:"photography",name:"Photography"},{id:"video-recording",name:"Video Recording"},
   {id:"live-remote-camera",name:"Live / Remote Camera"}
  ]},
+ // Shared Body Area and Intensity vocabularies approved Oct 14; preferences remain Item-scoped.
+ bodyArea:{id:"body-area",name:"Body Area",values:[{"id":"face","name":"Face"},{"id":"neck-shoulders","name":"Neck / Shoulders"},{"id":"arms-hands","name":"Arms / Hands"},{"id":"chest-breasts","name":"Chest / Breasts"},{"id":"nipples","name":"Nipples"},{"id":"abdomen","name":"Abdomen"},{"id":"back","name":"Back"},{"id":"buttocks","name":"Buttocks"},{"id":"thighs","name":"Thighs"},{"id":"legs-feet","name":"Legs / Feet"},{"id":"vulva-clitoris-vagina","name":"Vulva / Clitoris / Vagina"},{"id":"penis-testicles","name":"Penis / Testicles"},{"id":"anus-perineum","name":"Anus / Perineum"}]},
+ intensity:{id:"intensity",name:"Intensity",values:[{id:"light",name:"Light"},{id:"moderate",name:"Moderate"},{id:"intense",name:"Intense"}]},
  // #259 supplies these vocabularies; each Item's applicability is separate.
  psychologicalTarget:{id:"target-focus",name:"Target / Focus",values:[
-  {id:"body-appearance",name:"Body / Appearance"},{id:"specific-body-part",name:"Specific Body Part"},
+  {id:"body-appearance",name:"Body / Appearance"},
   {id:"genitals-sexual-anatomy",name:"Genitals / Sexual Anatomy"},
   {id:"sexuality-sexual-behavior",name:"Sexuality / Sexual Behavior"},
   {id:"intelligence-competence",name:"Intelligence / Competence"},
