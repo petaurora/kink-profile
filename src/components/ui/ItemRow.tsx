@@ -1,3 +1,4 @@
+import { appIcons } from "./appIcons";
 import type { ReactNode, MouseEvent } from "react";
 import "./itemRow.css";
 
@@ -37,7 +38,7 @@ export function ItemRow({
             aria-label={refineStatus === "failed" ? `${name}: Modifier save failed. Reveal issue` : refineStatus === "saving" ? `${name}: Saving modifiers. Refine` : `Refine ${name}${refined ? ". Has rated modifiers" : ""}`}
             onClick={onRefine}
           >
-            <span aria-hidden="true">+</span> Refine
+            <appIcons.refine size={17} stroke={1.65} aria-hidden="true" /> Refine
             {refineStatus ? <span className={`kp-refine-status kp-refine-status--${refineStatus}`} aria-hidden="true">{refineStatus === "failed" ? "!" : "◌"}</span> : refined && <span className="kp-refined-dot" aria-hidden="true" />}
           </button>
         )}
