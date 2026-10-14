@@ -46,6 +46,18 @@ Instead of asking “Are we doing RACK?”, try: What can go wrong? Which facts 
 
 Frameworks are most useful when they invite critical thought. They are least useful when invoked as proof of superiority, immunity from criticism, or automatic permission to take risks on another person's behalf.
 
+## A Worked Example: “We Both Agreed”
+
+Imagine partners are discussing a practice they know carries injury risk. One says, “We're following RACK, so it is fine if we both want it.” That misses the central work of risk awareness. The partners still need to understand the specific mechanism of harm, whether an emergency could occur before someone can signal distress, and whether either person lacks relevant information. They may decide the activity is not appropriate despite shared enthusiasm.
+
+Now suppose one participant later raises a concern. Invoking personal responsibility to dismiss it contradicts the purpose of informed consent. The person directing an activity retains responsibility for their actions; consent never excuses ignoring a stop or concealing a known hazard.
+
+## How Frameworks Can Be Misused
+
+Slogans can become identity badges: one group claims that its acronym is enlightened while another supposedly misunderstands safety. This creates unnecessary rivalry and may obscure practical shortcomings. Instead of trusting the label, look at whether someone can explain risks clearly, answer questions without defensiveness, and respect a choice not to participate.
+
+An experienced educator may prefer a framework because it better describes uncertainty. Their confidence is not a substitute for evidence, and no acronym guarantees that training or safety information is current. Frameworks should make people more thoughtful, not less willing to ask difficult questions.
+
 ## Putting the Ideas Into Practice
 
 Good community education should offer better questions, not a test people must pass to count as knowledgeable or authentic. When discussing an unfamiliar perspective, start by identifying what you already know, what you are assuming, and which details require a first-person explanation. Avoid treating the most visible people in a group as representatives of everyone.
