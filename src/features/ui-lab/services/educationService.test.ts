@@ -7,11 +7,11 @@ async function settle<T>(promise:Promise<T>){
   const result=promise.then(value=>({value}),error=>({error}));
   await vi.runAllTimersAsync();return result;
 }
-it("lists fifteen stable summaries and loads full Markdown only for a requested article",async()=>{
+it("lists all registered stable summaries and loads full Markdown only for a requested article",async()=>{
   const service=createUiLabServices({latencyMs:0}).services.education!;
   const summary=await settle(service.listArticles());
   if(!("value" in summary))throw new Error("Education list failed");
-  expect(summary.value).toHaveLength(15);
+  expect(summary.value).toHaveLength(42);
   expect(summary.value.map(x=>x.id)).toContain("edu-collars");
   expect(summary.value.find(x=>x.id==="edu-impact")).toMatchObject({slug:"impact-play-safety",section:"Practices & safety",readingMinutes:7});
   expect(summary.value.find(x=>x.id==="edu-breath-safety")).toMatchObject({
