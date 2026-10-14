@@ -3,7 +3,7 @@
 *Accountability, safety, trust, and the limits of apologies after boundaries are crossed.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 5 minutes  
+**Estimated reading time:** 6 minutes  
 **Topics:** Communication · Consent · Relationships · Self-understanding
 
 **Content note:** Discusses potentially difficult relationship experiences, consent, and emotional well-being.
