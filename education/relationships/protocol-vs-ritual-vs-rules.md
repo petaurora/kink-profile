@@ -52,6 +52,24 @@ Which behaviors are meaningful because they are repeated, and which because they
 
 Continue with *Service as a Love Language or Power Exchange*, *Total Power Exchange*, and *Consent Under Ongoing Authority*.
 
+## A Case Study: The Leaving-Home Routine
+
+Imagine partners who share a short routine before leaving for a social event. They confirm practical information, exchange a meaningful phrase, and briefly acknowledge any scene-related boundaries that may apply later. A writer might call the whole thing “a protocol,” but the parts do different work.
+
+The practical confirmation reduces confusion. The phrase is a ritual of connection. An agreement about what is and is not allowed during the evening is a rule or boundary. Separating them helps the partners know what to preserve when time is short. They might skip elaborate ceremony while still confirming critical boundaries.
+
+## The Cost of Too Much Structure
+
+Structure can be satisfying until it becomes administrative work. A protocol with many steps may create anxiety about forgetting one. A ritual may lose emotional meaning if it is measured by perfect execution. A rule may become obsolete as circumstances change.
+
+A helpful design test asks: What would happen if this were skipped once? If the answer is merely “we would miss a lovely moment,” perhaps it belongs as an invitation rather than an enforceable rule. If the answer involves genuine safety, the process should be explicit, accessible, and easy to execute even under stress.
+
+## Make Exceptions Part of the Design
+
+Consider health, travel, work calls, fatigue, sensory overload, and the presence of people outside the relationship. An accessible protocol can use a shortened form or pause state. A meaningful ritual can be postponed. A rule may need a mutually agreed exception.
+
+Most importantly, no structural label makes a behavior permanently mandatory. A protocol can be revised, a rule can end, and a ritual can become simply a fond memory without invalidating what it once represented.
+
 ---
 
 **Editorial status:** Draft pending source verification, sensitivity review, accessibility review, and publication approval. Community concepts are not clinical diagnoses. Reading creates no evidence of consent or preference.
