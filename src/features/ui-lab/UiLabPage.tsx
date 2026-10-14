@@ -123,13 +123,13 @@ function UiLabContent() {
     <button type="button" className="ui-lab-app-logo" onClick={()=>navigate("Home")} aria-label="Kink Profile, go to Home"><span className="ui-lab-brand-mark" aria-hidden="true">♡</span><span>Kink Profile</span></button>
     <div className="ui-lab-header-actions">
       <button type="button" className="ui-lab-header-action" aria-label="Search" onClick={()=>openCatalogSearch(area)}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.5 4.5"/></svg>
+        <appIcons.search {...appIconDefaults} aria-hidden="true" />
       </button>
       <button type="button" className="ui-lab-header-action" aria-label="Profile and settings" onClick={()=>navigate("Profile")}><appIcons.profile {...appIconDefaults} aria-hidden="true" /></button>
     </div>
    </header>
    <ModalLayer open={menuOpen} onClose={()=>setMenuOpen(false)} label="Full navigation menu" closeLabel="Close navigation menu" id="ui-lab-full-menu" className="ui-lab-menu-layer" backdropClassName="ui-lab-menu-backdrop" panelClassName="ui-lab-menu-drawer">
-       <div className="ui-lab-menu-heading"><span className="ui-lab-menu-title"><span aria-hidden="true">♡</span> Kink Profile</span><button type="button" className="ui-lab-menu-close" aria-label="Close menu" onClick={()=>setMenuOpen(false)}>×</button></div>
+       <div className="ui-lab-menu-heading"><span className="ui-lab-menu-title"><span aria-hidden="true">♡</span> Kink Profile</span><button type="button" className="ui-lab-menu-close" aria-label="Close menu" onClick={()=>setMenuOpen(false)}><appIcons.close {...appIconDefaults} aria-hidden="true" /></button></div>
        <p className="ui-lab-menu-eyebrow">YOUR SPACE</p>
        <nav aria-label="All destinations" className="ui-lab-menu-links">
          {areas.map(item=><div className="ui-lab-menu-group" key={item}>
