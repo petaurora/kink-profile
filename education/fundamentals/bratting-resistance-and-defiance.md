@@ -52,6 +52,24 @@ What part of resistance feels appealing: humor, pursuit, attention, agency, or a
 
 Continue with *Safewords*, *Negotiating a Scene*, and *Kinks Are Not Roles*.
 
+## A Case Study: One Phrase, Two Meanings
+
+Imagine a couple who often exchange playful “you can't make me” comments. During an otherwise familiar interaction, one partner says the phrase sharply and turns away. The other assumes the game has intensified. But the speaker is overwhelmed and actually wants to stop.
+
+The safer response is not to interpret tone more confidently; it is to check. “Are we still playing?” can protect trust. Partners may establish a clearly understood out-of-role phrase, but they must also honor everyday expressions of refusal and signs that someone cannot comfortably continue.
+
+## A Brat Is Not a Problem to Fix
+
+Some people enjoy challenge as a mutually invented game; others use playful provocation to ask for attention in a form they find easier than direct requests. None of that obligates a dominant partner to “tame” them or to provide the specific response expected. The responding partner also has preferences and boundaries.
+
+Good interactions leave room for a calm “I'm not up for that today.” That answer can be disappointing without being a rejection of the person. Creating alternatives—gentle teasing, shared humor, or a different form of attention—can prevent roles from becoming rigid demands.
+
+## When Play Becomes Conflict
+
+Repeatedly provoking someone after they have asked to stop is not made consensual by the word *bratting*. Nor is punishing an ordinary disagreement simply a continuation of a scene. Everyone involved should be able to identify when play has ended.
+
+If partners feel caught in a pattern of escalation, discuss it outside the dynamic. What signals were misread? Is anyone relying on resistance to get a need met that could be stated openly? Does the response feel affectionate or frightening? The point is not to eliminate playfulness but to ensure the playful meaning remains shared.
+
 ---
 
 **Editorial status:** Draft pending source verification, sensitivity review, accessibility review, and publication approval. Community concepts are not clinical diagnoses. Reading creates no evidence of consent or preference.
