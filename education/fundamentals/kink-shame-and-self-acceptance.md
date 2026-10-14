@@ -46,6 +46,18 @@ Self-acceptance might mean privately acknowledging a fantasy, learning to discus
 
 A helpful question is not “How do I become a real kink person?” but “What relationship to these interests feels thoughtful, safe, and genuinely mine?” The answer may be quiet, changing, or different from what other people expect.
 
+## A Worked Example: Discovering a Label
+
+Someone reads about a role and feels an immediate sense of recognition. They may be excited to have language for an experience they had not understood, yet uneasy about what other people might assume. Rather than rushing to adopt the role publicly, they can explore privately, compare descriptions, and keep what fits.
+
+Another person may recognize an interest but dislike the associated community label. That does not make their experience invalid. Language is a tool for understanding and communication, not a demand for allegiance to a fixed category.
+
+## Acceptance and Privacy Can Coexist
+
+Public disclosure is sometimes treated as the final step of self-acceptance, but the risks differ by person and environment. Relationships, employment, family context, location, and personal safety can influence what someone chooses to share. Privacy may be an affirmative boundary rather than a symptom of shame.
+
+It is possible to feel comfortable with an interest while choosing never to discuss it beyond trusted partners. Conversely, someone may be active in a community and still struggle with internalized judgment. Visible participation and internal acceptance are separate dimensions of experience.
+
 ## Putting the Ideas Into Practice
 
 Good community education should offer better questions, not a test people must pass to count as knowledgeable or authentic. When discussing an unfamiliar perspective, start by identifying what you already know, what you are assuming, and which details require a first-person explanation. Avoid treating the most visible people in a group as representatives of everyone.
