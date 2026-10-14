@@ -37,8 +37,8 @@ its 551 original records are distinct from staged research additions.
 | --- | --- | --- |
 | 1 Bondage | #256 | Core families, configuration, method/support and Equipment memberships |
 | 2 Equipment | #257 | Five Collars groups; complete approved Gags groups; witnessed Collaring; Gear/furniture types and standalone graduates |
-| 3 Impact | #258 | Practice/equipment Items, method/sensation and October 13 equipment options; target/intensity pending |
-| 4 Psychological | #259 | Core Items, restored groups and shared target/tone definitions; applicability/intensity and some temporal/body dimensions pending |
+| 3 Impact | #258 | Practice/equipment Items, method/sensation and October 13 equipment options; approved 13-value Body Area and three-level Intensity refinements |
+| 4 Psychological | #259 | Core Items, restored groups and shared target/tone definitions; Humiliation target/tone and intensity approved; Human Furniture duration/visibility approved; Body Writing permanence rejected |
 | 5 Fantasy/Roleplay | #260 | Roleplay/CNC scenarios, medium context and named fantasy distinctions |
 | 6 Praise | #261 | Granular variants excluded; core placement deferred |
 | 7 R/P | #262 | Intentionally deferred |
@@ -48,9 +48,9 @@ its 551 original records are distinct from staged research additions.
 | 11 Primal | #266 | Core identities/roles/methods and Biting discovery relation |
 | 12 Exhibition/Voyeurism | #267 | Independent directional parents sharing medium/context definitions |
 | 13 Marking | #268 approval comment | Marking with Hickeys, Bruise marking, Stamps/temporary tattoos and Other temporary marks; Body Writing remains separate |
-| 14 Sensory | #269 | Deprivation, texture, temperature and tickling groups; Texture Body Part pending |
-| 15 Pain | #270 | Shared Masochism/Sadism experience, methods/tools and standalone Wartenberg; Body Part pending |
-| 16 Electrical | #271 | Device/method and tickle/twitch response; Body Part pending |
+| 14 Sensory | #269 | Deprivation, texture, temperature and tickling groups; Texture Play 13-value Body Area approved |
+| 15 Pain | #270 | Shared Masochism/Sadism experience, methods/tools and standalone Wartenberg; all reviewed pain Items use approved 13-value Body Area |
+| 16 Electrical | #271 | Device/method and tickle/twitch response; approved 13-value Body Area |
 | 17 Orgasm | #272 | Independent role/material/method structure, separate Countdown and Release Cue |
 | 18 Sexual Activities | #274 | Approved Item/Role/no-modifier distinctions |
 
@@ -73,3 +73,9 @@ ratings. Real storage/import/export remains a separate production-cutover gate.
 See [Catalog V2 reference and migration](catalog-v2-implementation.md) for the current
 model, services and archive contracts. Issue #292 and PR #293 own implementation
 acceptance, remaining vocabulary work and review status; this document is not a roadmap.
+
+## October 14 modifier approval reconciliation
+
+The approved 13-value Body Area vocabulary is active for Impact Play, Spanking / Slapping, Body Writing, Texture Play, Pinching, Scratching, Biting, Clamp / Clip Play, Wartenberg Wheel, Suction Play, and Electrical Play. Impact items retain their `target-body-area` group identity; other former `body-part` placeholders now use `body-area`. All preferences remain scoped by Item and group/value identity; no propagation.
+
+Shared Intensity values are Light, Moderate, and Intense, active for Impact Play, Spanking / Slapping, Humiliation Play, Degradation, and Embarrassment Play. Humiliation Play uses the final approved eight targets and seven tones (without Specific Body Part or overlapping Presentation / Appearance). Human Furniture has Brief/Sustained/Extended Duration and Private/Witnessed Visibility, with Stillness / Endurance removed. Body Writing Permanence was explicitly rejected and removed, not deferred. No unreviewed options are inferred. Source records and legacy backups remain unchanged; real archive import/persistence and full visual acceptance are separate gates.
