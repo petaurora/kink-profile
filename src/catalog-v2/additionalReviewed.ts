@@ -25,8 +25,8 @@ const collections: Record<string,CatalogV2Item[]>={
  item("Stocks / Pillory","equipment",[g("Style / Form",["Stocks","Pillory"])]),item("Saint Andrew's Cross","equipment",[g("Mounting",["Wall-mounted","Freestanding"])])
  ],
  impact:[
- item("Impact Play","impact",[g("Method / Practice",["Paddling","Flogging","Caning","Strapping","Crop Play","Slapper / Tawse Play","Whipping"]),g("Sensation",["Thuddy","Stingy"]),g("Target / Body Area",[]),g("Intensity",[])]),
- item("Spanking / Slapping","impact",[g("Target / Body Area",[]),g("Intensity",[])]),
+ item("Impact Play","impact",[g("Method / Practice",["Paddling","Flogging","Caning","Strapping","Crop Play","Slapper / Tawse Play","Whipping"]),g("Sensation",["Thuddy","Stingy"]),{...modifierTemplate("bodyArea"),id:"target-body-area",name:"Target / Body Area"},modifierTemplate("intensity")]),
+ item("Spanking / Slapping","impact",[{...modifierTemplate("bodyArea"),id:"target-body-area",name:"Target / Body Area"},modifierTemplate("intensity")]),
  item("Paddles","impact",[g("Material",["Leather","Wood","Rubber / Silicone","Acrylic / Plastic","Metal"]),g("Construction",["Solid","Perforated / Holes","Padded"]),g("Surface / Inlay",["Smooth","Decorative Inlay / Pattern","Raised Texture","Spiked / Studded"])]),
  item("Floggers","impact",[g("Material",["Leather","Suede","Rubber / Silicone","Synthetic / Vegan Leather","Rope / Cord"]),g("Thickness",["Thin Falls","Medium Falls","Thick Falls"]),g("Tip Style",["Plain / Untied","Knotted","Weighted"])]),
  item("Canes","impact",[g("Material",["Rattan","Bamboo","Wood","Synthetic / Plastic"]),g("Thickness",["Thin","Medium","Thick"])]),
@@ -36,16 +36,16 @@ const collections: Record<string,CatalogV2Item[]>={
  ...["Rhythmic Impact","Counting Impacts","Impact Warm-up","Impact Endurance","Bastinado","Florentine Flogging"].map(n=>item(n,"impact"))
  ],
  psychological:[
- item("Humiliation Play","psychological",[g("Modality",["Verbal","Task / Behavioral","Presentation / Exposure","Evaluative"]),g("Context",["Private","Witnessed / Consenting Audience","Public-style Fantasy"]),g("Target / Focus",[]),g("Tone / Style",[]),g("Intensity",[])]),
- item("Degradation","psychological",[g("Modality",["Verbal","Behavioral / Treatment","Symbolic / Status"]),modifierTemplate("psychologicalTarget",{include:["role-status","sexuality-sexual-behavior","intelligence-competence","behavior-conduct"]}),modifierTemplate("psychologicalTone",{include:["mocking-sarcastic","stern-critical","harsh-direct","cold-clinical","dismissive"]}),g("Intensity",[])]),
+ item("Humiliation Play","psychological",[g("Modality",["Verbal","Task / Behavioral","Presentation / Exposure","Evaluative"]),g("Context",["Private","Witnessed / Consenting Audience","Public-style Fantasy"]),modifierTemplate("psychologicalTarget",{include:["body-appearance","genitals-sexual-anatomy","sexuality-sexual-behavior","intelligence-competence","skill-performance","behavior-conduct","role-status","neediness-desperation"]}),modifierTemplate("psychologicalTone"),modifierTemplate("intensity")]),
+ item("Degradation","psychological",[g("Modality",["Verbal","Behavioral / Treatment","Symbolic / Status"]),modifierTemplate("psychologicalTarget",{include:["role-status","sexuality-sexual-behavior","intelligence-competence","behavior-conduct"]}),modifierTemplate("psychologicalTone",{include:["mocking-sarcastic","stern-critical","harsh-direct","cold-clinical","dismissive"]}),modifierTemplate("intensity")]),
  item("Objectification","psychological",[g("Framing",["Use-object Fantasy","Functional Use","Sexual Use","Decorative / Display","Property Framing","Personhood Reduction / Thing-language"]),g("Form / Role",["Dollification"])]),
- item("Embarrassment Play","psychological",[g("Context",["Private","Witnessed / Consenting Audience"]),g("Form",["Silly / Awkward Tasks","Attention / Focus","Performance / Social Awkwardness","Teasing"]),g("Intensity",[])]),
+ item("Embarrassment Play","psychological",[g("Context",["Private","Witnessed / Consenting Audience"]),g("Form",["Silly / Awkward Tasks","Attention / Focus","Performance / Social Awkwardness","Teasing"]),modifierTemplate("intensity")]),
  item("Name-calling","psychological",[g("Type",["Degrading","Sexual","Affectionate","Role-specific","Objectifying","Status-related"])]),
  item("Mockery","psychological",[modifierTemplate("psychologicalTone",{include:["playful-teasing","mocking-sarcastic","stern-critical","harsh-direct"]})]),
  item("Rating / Evaluation","psychological",[g("Target",["Performance / Task","Genitals","Body / Body Part","Appearance","Behavior","Sexual Performance","Skill / Ability"]),g("Style",["Praise","Critique","Teasing","Degradation","Neutral / Clinical"]),g("Format",["Numerical / Scored","Qualitative"])]),
  item("Small-penis Humiliation (SPH)","psychological"),
- item("Human Furniture","psychological",[g("Role / Function",["Stool","Footrest","Table","Display Stand"]),g("Framing",["Service","Objectification","Protocol","Humiliation","Aesthetic / Display"]),g("Duration",[]),g("Stillness / Endurance",[]),g("Visibility / Context",[])]),
- item("Body Writing","psychological",[g("Medium / Tool",["Marker","Pen","Lipstick","Paint"]),g("Visibility",["Hidden","Partially Visible","Displayed"]),g("Content Type",["Ownership","Praise","Humiliation","Instructions","Decorative","Evaluative / Scoring"]),g("Body Part",[]),g("Permanence",[])]),
+ item("Human Furniture","psychological",[g("Role / Function",["Stool","Footrest","Table","Display Stand"]),g("Framing",["Service","Objectification","Protocol","Humiliation","Aesthetic / Display"]),g("Duration",["Brief","Sustained","Extended"]),g("Visibility / Context",["Private","Witnessed / Consenting Audience"])]),
+ item("Body Writing","psychological",[g("Medium / Tool",["Marker","Pen","Lipstick","Paint"]),g("Visibility",["Hidden","Partially Visible","Displayed"]),g("Content Type",["Ownership","Praise","Humiliation","Instructions","Decorative","Evaluative / Scoring"]),modifierTemplate("bodyArea")]),
  ],
  roleplay:[
  item("Roleplay","roleplay",[g("Scenario",["Teacher / Student","Boss / Employee","Doctor / Patient","Guard / Prisoner","Interrogation","Stranger / First Meeting","Royalty / Servant","Knight / Captive","Villain / Hero","Trainer / Trainee","Owner / Property","Historical","Photographer / Model","Delivery Person","Celebrity / Fan","Practical Sex-ed / Teaching","Cheating / Forbidden Attraction","Rescue","Adult Taboo-family-role Fantasy"]),g("Medium / Context",["VR / Virtual World"])]),
@@ -95,21 +95,21 @@ const collections: Record<string,CatalogV2Item[]>={
  sensory:[
  item("Sensory Deprivation","sensory",[g("Sense",["Sight","Hearing","Multi-sensory"]),g("Method",["Blindfold","Headphones","Earplugs"])]),
  item("Sensory Overload","sensory"),
- item("Texture Play","sensory",[g("Material / Method",["Feather","Soft Fur / Faux Fur","Silk / Satin","Abrasive / Rough Texture"]),g("Body Part",[])]),
+ item("Texture Play","sensory",[g("Material / Method",["Feather","Soft Fur / Faux Fur","Silk / Satin","Abrasive / Rough Texture"]),modifierTemplate("bodyArea")]),
  item("Temperature Play","sensory",[g("Temperature",["Cold","Warm","Contrast"]),g("Method",["Water","Ice","Wax"])]),
  item("Tickling","sensory",[g("Intensity / Framing",["Tickle Torture"])]),item("ASMR","sensory")
  ],
  pain:[
  ...["Masochism","Sadism"].map(n=>item(n,"pain",[modifierTemplate("painExperience")])),
- item("Pinching","pain",[g("Body Part",[])]),
- item("Scratching","pain",[g("Method",["Fingernails","Claw / Rake Tools"]),g("Body Part",[])]),
- item("Biting","pain",[g("Body Part",[])]),item("Hair Pulling","pain"),
- item("Clamp / Clip Play","pain",[g("Tool / Type",["Clothespins","Clamps","Other Clips / Clamps"]),g("Body Part",[])]),
- item("Wartenberg Wheel","pain",[g("Body Part",[])]),
- item("Suction Play","pain",[g("Method",["Cupping","Other Suction Methods"]),g("Body Part",[])])
+ item("Pinching","pain",[modifierTemplate("bodyArea")]),
+ item("Scratching","pain",[g("Method",["Fingernails","Claw / Rake Tools"]),modifierTemplate("bodyArea")]),
+ item("Biting","pain",[modifierTemplate("bodyArea")]),item("Hair Pulling","pain"),
+ item("Clamp / Clip Play","pain",[g("Tool / Type",["Clothespins","Clamps","Other Clips / Clamps"]),modifierTemplate("bodyArea")]),
+ item("Wartenberg Wheel","pain",[modifierTemplate("bodyArea")]),
+ item("Suction Play","pain",[g("Method",["Cupping","Other Suction Methods"]),modifierTemplate("bodyArea")])
  ],
  electrical:[
- item("Electrical Play","electrical",[g("Device / Method",["TENS-style","Violet Wand","Contact Zapper","Electric Pinwheel"]),g("Sensation / Response",["Tickle / Twitch Response"]),g("Body Part",[])])
+ item("Electrical Play","electrical",[g("Device / Method",["TENS-style","Violet Wand","Contact Zapper","Electric Pinwheel"]),g("Sensation / Response",["Tickle / Twitch Response"]),modifierTemplate("bodyArea")])
  ]
 };
 const names:Record<string,string>={
