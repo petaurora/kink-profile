@@ -48,6 +48,18 @@ An experience may strengthen communication, give language to a desire, or help s
 
 A respectful question is “What did this mean to you?” rather than “What did this fix in you?” People are allowed to enjoy kink simply because they like it, not because it is helping them recover from something.
 
+## A Worked Example: Feeling Better After a Scene
+
+Suppose someone feels calm after an emotionally significant scene and describes it as “therapeutic.” Their account may be entirely sincere. They may have experienced closeness, attentiveness, relief, or the comfort of being understood. That experience deserves respect.
+
+The problem comes if a partner concludes that more intense scenes will necessarily relieve future anxiety, or that distress during play should be endured because it is part of healing. Neither conclusion follows from the original experience. Supportive intimacy and clinical treatment operate under different obligations, even when both may influence how someone feels.
+
+## What a Kink-Aware Clinician Can Offer
+
+A kink-aware professional need not share or celebrate every preference. Their role is to approach clients without automatic stigma, understand consensual context, assess actual concerns, and apply appropriate professional standards. Someone may seek help for anxiety, conflict, depression, or trauma while also having consensual kink relationships that are not the source of those difficulties.
+
+If a professional treats an identity as inherently pathological, it may be reasonable to seek another qualified opinion. Equally, a clinician should not overlook coercion or injury simply because participants call an experience consensual. Both unwarranted stigma and uncritical endorsement can undermine care.
+
 ## Putting the Ideas Into Practice
 
 Good community education should offer better questions, not a test people must pass to count as knowledgeable or authentic. When discussing an unfamiliar perspective, start by identifying what you already know, what you are assuming, and which details require a first-person explanation. Avoid treating the most visible people in a group as representatives of everyone.
