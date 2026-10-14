@@ -3,7 +3,7 @@
 *A beginner's guide to discussing activities, roles, limits, safety, and the experience you want to create together.*
 
 **Level:** Beginner  
-**Estimated reading time:** 11 minutes  
+**Estimated reading time:** 12 minutes  
 **Topics:** BDSM Fundamentals · Scene Negotiation · Consent · Limits · Communication · Aftercare
 
 **Content note:** This article discusses physical and psychological kink activities, boundaries, consent, and potential risks without graphic instructions.
