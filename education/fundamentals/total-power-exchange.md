@@ -3,7 +3,7 @@
 *Exploring ongoing authority, chosen surrender, responsibility, and the difference between a relationship structure and unrestricted control.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 12 minutes  
+**Estimated reading time:** 17 minutes  
 **Topics:** BDSM Fundamentals · Total Power Exchange · 24/7 D/s · Authority Transfer · Consent · Relationship Structures
 
 **Content note:** This article discusses ongoing power exchange, authority over daily decisions, relationship vulnerability, coercion, financial control, and emotional safety. It is educational, not legal or mental health advice.
