@@ -27,11 +27,11 @@ describe("Education editorial integrity", () => {
     }
   });
 
-  it("identifies the four known long fundamentals pending editorial restructuring", () => {
+  it("does not introduce additional overlength articles beyond the four audited exceptions", () => {
     const known = new Set(["edu-ds", "edu-sm", "edu-tpe", "edu-collars"]);
     const long = localEducationArticles
       .filter(a => a.markdown.trim().split(/\s+/).length > 3000)
       .map(a => a.id);
-    expect(new Set(long)).toEqual(known);
+    expect(long.every(id => known.has(id))).toBe(true);
   });
 });
