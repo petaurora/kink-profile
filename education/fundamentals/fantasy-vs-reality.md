@@ -3,7 +3,7 @@
 *An educational exploration of fantasy vs reality: desire without obligation within consensual kink and relationships.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 5 minutes  
+**Estimated reading time:** 6 minutes  
 **Topics:** Fantasy vs Reality ·  Desire Without Obligation · Communication · Consent
 
 **Content note:** Discusses negotiated boundaries and sensitive relationship experiences. Experiences and terminology vary across individuals.
