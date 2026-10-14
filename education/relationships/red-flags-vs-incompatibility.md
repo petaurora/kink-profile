@@ -3,7 +3,7 @@
 *An educational exploration of red flags vs incompatibility: recognizing the difference within consensual kink and relationships.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 5 minutes  
+**Estimated reading time:** 6 minutes  
 **Topics:** Red Flags vs Incompatibility ·  Recognizing the Difference · Communication · Consent
 
 **Content note:** Discusses negotiated boundaries and sensitive relationship experiences. Experiences and terminology vary across individuals.
