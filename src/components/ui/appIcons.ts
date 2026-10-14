@@ -8,7 +8,7 @@ import {
   IconHistory, IconHome, IconInfoCircle, IconLink, IconLock, IconMinus,
   IconPencil, IconPlus, IconPuzzle, IconRefresh, IconSearch, IconSettings,
   IconShieldCheck, IconSortAscending, IconTrash, IconUser, IconUsers,
-  IconWand, IconWorld, IconX, IconAlertTriangle, IconDeviceFloppy,
+  IconWand, IconWorld, IconX, IconAlertTriangle, IconDeviceFloppy, IconSparkles,
 } from "@tabler/icons-react";
 
 /**
@@ -21,6 +21,7 @@ export const appIcons = {
   catalog: IconCategory,
   profile: IconUser,
   tools: IconWand,
+  discover: IconSparkles,
   quiz: IconClipboardList,
   education: IconBook2,
   scenes: IconPuzzle,
