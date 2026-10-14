@@ -58,6 +58,24 @@ What boundary was understood before the event? What actually occurred? Has the p
 
 If answers are unclear, slowing down is legitimate. See *Red Flags vs Incompatibility*, *Consent Under Ongoing Authority*, and *Aftercare, Reconnection & Drop* for related but distinct questions.
 
+## A Case Study: The Stop Signal That Was Missed
+
+Imagine a participant uses an agreed stop signal, but the other person continues briefly before recognizing it. The affected person feels shaken. The person who continued may be horrified or defensive. A useful first step is not debating whether the delay was understandable. It is stopping, checking immediate safety, listening to the affected person, and giving them control over what happens next.
+
+Later, the partners might examine whether the activity can be made safer, whether communication methods were unsuitable, or whether the activity should stop altogether. There is no obligation to try again. A new signal alone does not prove that the original problem has been resolved.
+
+## Why Explanations Can Sound Like Excuses
+
+An explanation can matter for prevention, yet its timing and framing determine whether it helps. “I misunderstood the sound because of the music, and I will not use that setup again” is different from “You should have spoken louder.” The first acknowledges responsibility for future safeguards; the second shifts the burden onto the harmed person.
+
+A repair conversation should not require the person affected to reassure the other that they are a good partner. It is possible to acknowledge the other person's distress separately without making it the center of the response. Some concerns are best discussed after everyone has had time to stabilize.
+
+## Repair Is Optional, Safety Is Not
+
+Sometimes partners agree to continue with clearer boundaries. Other times the safest path is distance or ending the relationship. Neither outcome can be imposed as the only mature response. The person harmed does not have to participate in a reconciliation ritual, accept a gift, or keep the incident private to protect the dynamic's reputation.
+
+A person who caused harm can take responsibility even if forgiveness never comes. They can stop the behavior, seek appropriate support or education, and respect the other person's decision not to continue. That is accountability independent of whether the relationship resumes.
+
 ---
 
 **Editorial status:** Draft. Requires fact-checking, source/provenance review, sensitivity and accessibility review before publication. Reading does not imply consent, identity, or personal preference.
