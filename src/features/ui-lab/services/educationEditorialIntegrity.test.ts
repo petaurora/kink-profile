@@ -10,6 +10,8 @@ describe("Education editorial integrity", () => {
     for (const a of localEducationArticles) {
       expect(a.markdown).toMatch(/^# .+/);
       expect(a.markdown).toContain("**Content note:**");
+      const headingCount = (a.markdown.match(/^# /gm) ?? []).length;
+      expect(headingCount, `${a.id}: one article title`).toBe(1);
       for (const link of a.links) {
         if (link.target.kind === "article") {
           expect(link.target.id).not.toBe(a.id);
@@ -24,14 +26,13 @@ describe("Education editorial integrity", () => {
       const words = article.markdown.trim().split(/\s+/).length;
       const expectedMinutes = Math.ceil(words / 200);
       expect(article.readingMinutes, `${article.id}: ${words} words`).toBe(expectedMinutes);
+      expect(words, `${article.id} below 5-minute standalone minimum`).toBeGreaterThanOrEqual(1000);
+      expect(words, `${article.id} exceeds 15-minute ceiling`).toBeLessThanOrEqual(3000);
+      expect(article.markdown).toContain(`**Estimated reading time:** ${expectedMinutes} minutes`);
     }
   });
 
-  it("does not introduce additional overlength articles beyond the four audited exceptions", () => {
-    const known = new Set(["edu-ds", "edu-sm", "edu-tpe", "edu-collars"]);
-    const long = localEducationArticles
-      .filter(a => a.markdown.trim().split(/\s+/).length > 3000)
-      .map(a => a.id);
-    expect(long.every(id => known.has(id))).toBe(true);
+  it("has no overlength articles remaining after restructuring", () => {
+    expect(localEducationArticles.filter(a => a.markdown.trim().split(/\\s+/).length > 3000)).toEqual([]);
   });
 });
