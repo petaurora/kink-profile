@@ -58,6 +58,24 @@ What do I already know about my boundaries? Which part of a topic is uncertain�
 
 Read *Fantasy vs Reality*, *Negotiating a Scene*, and *Consent Under Ongoing Authority*. Understanding uncertainty is a useful outcome even when nothing new gets added to a relationship.
 
+## A Conversation That Leaves Room for Maybe
+
+Consider two partners discussing a new form of roleplay. One says, “I might like the emotional dynamic, but I dislike surprises.” Rather than treating that as approval, the other asks which elements should remain predictable. They talk about language, atmosphere, and boundaries without scheduling anything. Several days later, the first person decides they only want to keep it as a fantasy.
+
+That conversation has succeeded: the partners understand one another better, and no one had to perform uncertainty as enthusiasm. If they revisit the topic later, they can begin from a more precise shared understanding rather than repeating vague questions.
+
+## The Difference Between Reflection and Rumination
+
+Exploring preferences can be enjoyable, but endlessly checking whether a desire is “real” can become exhausting. People do not need to prove internal consistency before they can state a boundary. If a conversation becomes repetitive or stressful, agree to leave the subject alone for a while.
+
+It can help to identify a practical next step, such as reading neutral safety information, writing down questions, or deciding not to revisit the activity unless someone independently brings it up. Avoid treating every moment of uncertainty as a problem requiring resolution tonight. A person's autonomy includes the right to remain undecided.
+
+## Keeping Notes Without Turning Them Into Obligations
+
+In a shared profile, labels such as “curious,” “maybe,” or “unexplored” can preserve uncertainty. They should not automatically unlock permissions, adjust a partner's authority, or imply an agreement for future play. The meaning and privacy of such notes need to be clear to everyone using the system.
+
+An older preference should also be easy to revise. People sometimes need the freedom to say “That was what I thought then; this is what I want now.” Good documentation supports communication without becoming evidence against the person who created it.
+
 ---
 
 **Editorial status:** Draft. Requires fact-checking, source/provenance review, sensitivity and accessibility review before publication. Reading does not imply consent, identity, or personal preference.
