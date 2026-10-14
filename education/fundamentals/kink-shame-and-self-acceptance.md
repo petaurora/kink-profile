@@ -3,7 +3,7 @@
 *Understanding stigma, privacy, identity, and the freedom to choose whether or how to explore.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 5 minutes  
+**Estimated reading time:** 6 minutes  
 **Topics:** Culture · Ethics · Community · Consent
 
 **Content note:** Discusses sensitive personal experiences, stigma, and boundaries. Information is educational, not individual clinical or legal advice.
