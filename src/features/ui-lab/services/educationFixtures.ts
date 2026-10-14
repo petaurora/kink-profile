@@ -16,6 +16,11 @@ type Seed = {
   subjects?:EducationLink[];
 };
 const seeds:Seed[] = [
+  {id:"edu-uncertainty",slug:"when-you-dont-know-what-you-want",folder:"relationships",description:"Communicating uncertainty, partial preferences, and changing decisions without pressure.",section:"Relationship structures",level:"Beginner–Intermediate",minutes:5,related:["edu-negotiation","edu-fantasy-reality","edu-continuing-consent"]},
+  {id:"edu-boundary-repair",slug:"repair-after-a-boundary-violation",folder:"relationships",description:"Accountability, safety, trust, and the limits of apologies after boundaries are crossed.",section:"Relationship structures",level:"Beginner–Intermediate",minutes:5,related:["edu-red-flags","edu-continuing-consent","edu-aftercare"]},
+  {id:"edu-asking-more",slug:"asking-for-more-without-pressure",folder:"relationships",description:"Express desires clearly while keeping refusal easy, safe, and meaningful.",section:"Relationship structures",level:"Beginner–Intermediate",minutes:5,related:["edu-negotiation","edu-uncertainty","edu-fantasy-reality"]},
+  {id:"edu-multiple-partner-emotions",slug:"jealousy-compersion-and-multiple-partners",folder:"relationships",description:"Navigating difficult and positive emotions in consensual multi-partner kink contexts.",section:"Relationship structures",level:"Beginner–Intermediate",minutes:5,related:["edu-negotiation","edu-red-flags","edu-aftercare","edu-continuing-consent"]},
+
   {id:"edu-ownership",slug:"ownership-belonging-and-being-claimed",folder:"relationships",description:"Ownership belonging and being claimed.",section:"Relationship structures",level:"Beginner–Intermediate",minutes:5,related:["edu-collars","edu-tpe","edu-continuing-consent"]},
   {id:"edu-discipline",slug:"punishment-discipline-and-correction",folder:"relationships",description:"Punishment discipline and correction.",section:"Relationship structures",level:"Beginner–Intermediate",minutes:5,related:["edu-tpe","edu-negotiation","edu-continuing-consent"]},
   {id:"edu-bratting",slug:"bratting-resistance-and-defiance",folder:"fundamentals",description:"Bratting resistance and defiance.",section:"Kinks, roles, and motivation",level:"Beginner–Intermediate",minutes:5,related:["edu-roles","edu-negotiation","edu-safewords","edu-continuing-consent"]},
