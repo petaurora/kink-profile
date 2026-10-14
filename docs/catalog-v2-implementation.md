@@ -35,7 +35,7 @@ despite display clarifications.
 `modifierTemplates.ts` supplies shared protocol, pain-experience, observation and
 psychological target/tone definitions with fresh Item-local instances. An Item may
 choose a subset and contextual label without changing sibling definitions or ratings.
-Humiliation's target/tone applicability remains pending; the shared vocabulary itself
+Humiliation's eight-target/seven-tone applicability is approved; the shared vocabulary itself
 has already been recorded by #259.
 
 `referenceMetadata.ts` supplies reviewed aliases and related-Item references.
@@ -108,3 +108,9 @@ Scene Builder and persisted browser state continue through their existing contra
 
 Engineering acceptance and outstanding work are owned by issue #292 and PR #293,
 stacked on #291 and #276. Product decisions remain in the catalog/architecture workspace.
+
+## October 14 modifier approval reconciliation
+
+The approved 13-value Body Area vocabulary is active for Impact Play, Spanking / Slapping, Body Writing, Texture Play, Pinching, Scratching, Biting, Clamp / Clip Play, Wartenberg Wheel, Suction Play, and Electrical Play. Impact items retain their `target-body-area` group identity; other former `body-part` placeholders now use `body-area`. All preferences remain scoped by Item and group/value identity; no propagation.
+
+Shared Intensity values are Light, Moderate, and Intense, active for Impact Play, Spanking / Slapping, Humiliation Play, Degradation, and Embarrassment Play. Humiliation Play uses the final approved eight targets and seven tones (without Specific Body Part or overlapping Presentation / Appearance). Human Furniture has Brief/Sustained/Extended Duration and Private/Witnessed Visibility, with Stillness / Endurance removed. Body Writing Permanence was explicitly rejected and removed, not deferred. No unreviewed options are inferred. Source records and legacy backups remain unchanged; real archive import/persistence and full visual acceptance are separate gates.
