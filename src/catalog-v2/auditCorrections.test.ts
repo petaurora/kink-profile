@@ -9,6 +9,52 @@ import {validateCatalogV2} from "./model";
 import {modifierTemplate,modifierTemplates} from "./modifierTemplates";
 
 describe("final approvals and composed Catalog reference (#293 audit)",()=>{
+ it("exposes the approved consolidated Body Area vocabulary across each reviewed Item",()=>{
+  const expected=["face","neck-shoulders","arms-hands","chest-breasts","nipples","abdomen","back","buttocks","thighs","legs-feet","vulva-clitoris-vagina","penis-testicles","anus-perineum"];
+  for(const id of ["impact-play","spanking-slapping","body-writing","texture-play","pinching","scratching","biting","clamp-clip-play","wartenberg-wheel","suction-play","electrical-play"]){
+   const item=curatedCatalog.items.find(i=>i.id===id)!;
+   const group=item.groups.find(g=>g.id==="body-area" || g.id==="target-body-area");
+   expect(group?.values.map(v=>v.id),id).toEqual(expected);
+   expect(item.pendingGroupIds ?? [],id).not.toContain(group?.id);
+  }
+ });
+ it("implements approved three-level Intensity independently on all five reviewed Items",()=>{
+  for(const id of ["impact-play","spanking-slapping","humiliation-play","degradation","embarrassment-play"]){
+   const item=curatedCatalog.items.find(i=>i.id===id)!;
+   expect(item.groups.find(g=>g.id==="intensity")?.values.map(v=>v.id),id).toEqual(["light","moderate","intense"]);
+   expect(item.pendingGroupIds ?? [],id).not.toContain("intensity");
+  }
+ });
+ it("honors final Humiliation, Human Furniture, and Body Writing corrections",()=>{
+  const humiliation=curatedCatalog.items.find(i=>i.id==="humiliation-play")!;
+  expect(humiliation.groups.find(g=>g.id==="target-focus")?.values.map(v=>v.id)).toEqual([
+   "body-appearance","genitals-sexual-anatomy","sexuality-sexual-behavior","intelligence-competence","skill-performance","behavior-conduct","role-status","neediness-desperation"]);
+  expect(humiliation.groups.find(g=>g.id==="tone-style")?.values).toHaveLength(7);
+  expect(humiliation.groups.flatMap(g=>g.values).some(v=>v.id==="specific-body-part")).toBe(false);
+  const furniture=curatedCatalog.items.find(i=>i.id==="human-furniture")!;
+  expect(furniture.groups.find(g=>g.id==="duration")?.values.map(v=>v.id)).toEqual(["brief","sustained","extended"]);
+  expect(furniture.groups.find(g=>g.id==="visibility-context")?.values.map(v=>v.id)).toEqual(["private","witnessed-consenting-audience"]);
+  expect([...furniture.groups.map(g=>g.id),...(furniture.pendingGroupIds ?? [])]).not.toContain("stillness-endurance");
+  const writing=curatedCatalog.items.find(i=>i.id==="body-writing")!;
+  expect([...writing.groups.map(g=>g.id),...(writing.pendingGroupIds ?? [])]).not.toContain("permanence");
+  expect(writing.groups.find(g=>g.id==="body-area")?.values).toHaveLength(13);
+ });
+ it("scopes shared Body Area and Intensity ratings without auto-propagating to Items or siblings",async()=>{
+  const {services}=createUiLabServices({latencyMs:0,saveLatencyMs:0});
+  const first={kind:"modifier" as const,itemId:"pinching",groupId:"body-area",valueId:"nipples"};
+  const second={kind:"modifier" as const,itemId:"suction-play",groupId:"body-area",valueId:"nipples"};
+  const intensity={kind:"modifier" as const,itemId:"impact-play",groupId:"intensity",valueId:"moderate"};
+  await services.preferences.setRating(first,"Love");
+  await services.preferences.setRating(second,"Hard Limit");
+  await services.preferences.setRating(intensity,"Like");
+  const ratings=(await services.preferences.getSnapshot()).ratings;
+  expect(ratings[ratingKey(first)]).toBe("Love");
+  expect(ratings[ratingKey(second)]).toBe("Hard Limit");
+  expect(ratings[ratingKey(intensity)]).toBe("Like");
+  expect(ratings[ratingKey({kind:"item",itemId:"pinching"})]).toBeUndefined();
+  expect(ratings[ratingKey({kind:"modifier",itemId:"impact-play",groupId:"intensity",valueId:"light"})]).toBeUndefined();
+ });
+
  it("models the approved Marking comment while removing superseded Worship",()=>{
   expect(labReferenceData.items.find(i=>i.id==="marking")?.groups).toEqual([
    {id:"type",name:"Type",values:[
