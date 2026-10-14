@@ -46,6 +46,18 @@ Neurodivergent adults should not be infantilized or assumed incapable of complex
 
 A useful discussion asks which accommodations increase independent choice and enjoyment. Sometimes that means fewer sensory inputs, more time, or clearer expectations; sometimes it means leaving an enjoyable routine untouched. A person's own account of their experience is the starting point.
 
+## A Worked Example: Instructions That Are Too Vague
+
+One partner enjoys being given clear tasks. The other says, “Be good today,” intending it as affectionate encouragement. The first person becomes anxious because “good” has no clear endpoint. They might prefer an instruction with observable steps, or simply a statement that this phrase carries no task expectation.
+
+The resulting conversation should not frame their need for clarity as excessive rigidity. Nor should the other partner be required to turn every affectionate moment into a formal assignment. They can agree on when language is playful, when it establishes an expectation, and how to ask for clarification.
+
+## Support Without Infantilization
+
+An adult may need written instructions, reduced sensory load, extra processing time, or support communicating during stressful moments. These are accommodations, not evidence that they have relinquished decision-making authority. Some neurodivergent people want highly structured dynamics; others find those structures incompatible with their needs.
+
+Pay attention to whether the arrangement increases the person's own agency. A useful accommodation makes it easier to understand choices and express boundaries. An unhelpful one allows somebody else to substitute assumptions about a diagnosis for the person's actual wishes.
+
 ## Putting the Ideas Into Practice
 
 Good community education should offer better questions, not a test people must pass to count as knowledgeable or authentic. When discussing an unfamiliar perspective, start by identifying what you already know, what you are assuming, and which details require a first-person explanation. Avoid treating the most visible people in a group as representatives of everyone.
