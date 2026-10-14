@@ -54,6 +54,24 @@ Ask: Are our needs simply different? Can I disagree without fear? Does my partne
 
 See *Consent Under Ongoing Authority*, *Negotiating a Scene*, and *Aftercare, Reconnection & Drop* for further context.
 
+## A Case Study: Two People Want Different Privacy Levels
+
+One partner wants to display their dynamic publicly; the other wants it kept private. If both respect the other's choice, they have a negotiation or compatibility issue. They might reserve certain symbols for private spaces or decide they cannot meet each other's needs.
+
+Now imagine one partner threatens to reveal private information unless the other complies. That is no longer a simple mismatch. The behavior uses exposure as leverage and raises a serious safety concern. The subject may be the same—privacy—but the treatment of autonomy changes everything.
+
+## Why Patterns and Power Matter
+
+Isolated awkward phrasing is not identical to a sustained pattern of intimidation. Yet a single severe incident can be serious enough to seek help immediately. Look at what happens when someone states a boundary, asks for clarification, or wants to slow down. Can they do so without fearing punishment outside their chosen play?
+
+Economic dependence, housing, access to transportation, disability-related support, and social isolation can limit meaningful choices. Someone might appear to agree while facing costs they cannot safely refuse. Those realities deserve attention even if partners call their relationship consensual.
+
+## Advice Should Not Become a Verdict
+
+Friends and online communities sometimes label every mismatch a red flag, or excuse clear coercion as just “how dominance works.” Neither shortcut is adequate. People can be incompatible without being malicious, and abuse can coexist with affection or enjoyable scenes.
+
+If you are assessing your own circumstances, consider reaching out to a qualified support resource rather than relying entirely on the person whose behavior concerns you. You are allowed to choose distance or end a dynamic without producing a perfectly categorized explanation. Your comfort and safety matter regardless of whether anyone else agrees on a label.
+
 ---
 
 **Editorial status:** Draft pending source verification, sensitivity review, accessibility review, and publication approval. Community concepts are not clinical diagnoses. Reading creates no evidence of consent or preference.
