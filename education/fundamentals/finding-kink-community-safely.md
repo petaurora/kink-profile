@@ -46,6 +46,18 @@ Warning signs include retaliating against refusal, discouraging outside friendsh
 
 Look for transparent rules and a reporting process that does not rely solely on the person accused. Organizational responses vary, and reporting may not always feel safe. People may choose independent support instead. A community should not require silence to protect its reputation.
 
+## A Worked Example: The First Meetup
+
+A newcomer attends a social event to meet people and learn. Another attendee insists they must demonstrate an interest in play to be taken seriously. The newcomer is allowed to decline without explaining their private history or preferences. A healthy organizer should support that autonomy rather than treating pressure as part of initiation.
+
+A newcomer may also discover that a group is warm but inaccessible, or that its privacy rules do not meet their needs. Leaving is not a failure. Community exploration can involve trying different social settings, reading published policies, and deciding what feels comfortable without becoming more visible than one wishes.
+
+## Disagreement and Accountability in Groups
+
+Communities are made up of people who will sometimes disagree about etiquette, education, or interpretation of a scene. A transparent reporting process should distinguish ordinary conflict from alleged violations, while still taking safety seriously. Confidentiality, lack of retaliation, and routes that do not depend entirely on a popular organizer are valuable features.
+
+No event can promise a risk-free environment. A group that openly discusses limitations, updates policies, and responds respectfully to concerns may provide more useful evidence of its culture than one that claims its members are all vetted and therefore safe.
+
 ## Putting the Ideas Into Practice
 
 Good community education should offer better questions, not a test people must pass to count as knowledgeable or authentic. When discussing an unfamiliar perspective, start by identifying what you already know, what you are assuming, and which details require a first-person explanation. Avoid treating the most visible people in a group as representatives of everyone.
