@@ -3,7 +3,7 @@
 *Exploring sensation, intensity, pleasure, vulnerability, and the many ways people experience consensual pain.*
 
 **Level:** Beginner  
-**Estimated reading time:** 10 minutes  
+**Estimated reading time:** 19 minutes  
 **Topics:** BDSM Fundamentals · Sadism · Masochism · Sensation Play · Consent · Risk Awareness
 
 **Content note:** This article discusses consensual pain, physical and psychological intensity, humiliation, and potential injury. It does not contain graphic descriptions or technical instructions.
