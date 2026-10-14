@@ -6,7 +6,6 @@ import {
   useState,
 } from "react";
 import {
-  IconBook2,
   IconGift,
   IconHeart,
   IconHome,
@@ -15,10 +14,7 @@ import {
   IconWand,
   IconPuzzle,
   IconArrowsExchange,
-  IconSparkles,
-  IconTool,
   IconUser,
-  IconUsers,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
