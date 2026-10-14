@@ -3,7 +3,7 @@
 *Exploring consensual authority, chosen surrender, trust, and the many ways people experience power exchange.*
 
 **Level:** Beginner  
-**Estimated reading time:** 16 minutes  
+**Estimated reading time:** 15 minutes  
 **Topics:** BDSM Fundamentals · Dominance · Submission · Power Exchange · Consent · Relationship Dynamics
 
 **Content note:** This article discusses consensual power exchange, authority, vulnerability, psychological control, and potentially unhealthy relationship dynamics without graphic descriptions.
@@ -319,29 +319,7 @@ Neither interpretation is more authentic.
 
 ## 6. Dominance Is Not the Same as Topping
 
-Another important distinction concerns the terms *top* and *bottom*.
-
-These generally describe what someone does within an activity, rather than their relationship to authority.
-
-A **top** typically performs or directs an activity.
-
-A **bottom** typically receives or experiences it.
-
-A **Dominant** occupies an agreed role of authority.
-
-A **submissive** voluntarily accepts agreed authority.
-
-These roles often overlap, but they do not have to.
-
-For example, a submissive might perform an activity on a Dominant at the Dominant's direction.
-
-In that situation, the submissive could be the activity top while the Dominant remains the person directing the power exchange.
-
-Similarly, two people may enjoy topping and bottoming together without any Dominance or Submission.
-
-Understanding the distinction helps separate physical activity from relational authority.
-
-Someone's preferred position during an activity does not automatically tell you how they want to experience power.
+Dominance describes an authority dynamic; topping describes taking an active role in an activity. They can overlap, but neither implies the other. Similarly, submitting and bottoming are different dimensions. Read *Kinks Are Not Roles* for the full distinction.
 
 ## 7. Consent, Negotiation, and Responsibility
 
@@ -498,37 +476,4 @@ The depth of an experience is not measured by how much autonomy someone agrees t
 
 ## Final Thoughts: The Power of Choosing
 
-Dominance and Submission are sometimes reduced to a simple exchange: one person controls, and the other obeys.
-
-But that description misses much of what makes consensual power exchange meaningful.
-
-Dominance can involve leadership, creativity, attentiveness, and responsibility.
-
-Submission can involve trust, dedication, responsiveness, vulnerability, and chosen surrender.
-
-Both depend on people understanding one another well enough to negotiate experiences they genuinely want.
-
-For some, these dynamics provide excitement.
-
-For others, they offer structure, intimacy, self-expression, or the experience of being deeply known.
-
-And for many, the meaning changes over time.
-
-The question is not how much authority one person can acquire or how much independence another can surrender.
-
-It is what two or more people intentionally create when they decide to explore authority together.
-
-**The defining feature of consensual power exchange is not that one person has power and another has none. It is that everyone retains the power to choose whether, how, and for how long the exchange continues.**
-
----
-
-### Continue Learning
-
-- **Bondage & Discipline: Understanding the B and D of BDSM:** The distinction between physical restraint and behavioral structure.
-- **Understanding Sadism & Masochism:** How consensual intensity and sensation differ from authority.
-- **BDSM Consent & Negotiation:** Creating informed and ongoing agreements.
-- **Power Exchange Beyond the Bedroom:** Everyday rituals, authority, and relationship structures.
-- **Dominance Styles:** Exploring directive, nurturing, primal, and protocol-oriented leadership.
-- **Submission Styles:** Understanding service, devotion, obedience, resistance, and surrender.
-- **Rules, Protocols & Rituals:** Giving agreed relationship structures practical meaning.
-- **Recognizing Coercion:** Distinguishing consensual power exchange from unhealthy control.
+Dominance and submission are not ranks of human worth. Their meaning comes from informed, continuing choice and the responsibility both people bring to the relationship. *Consent Under Ongoing Authority* explores how those agreements remain revisable.
