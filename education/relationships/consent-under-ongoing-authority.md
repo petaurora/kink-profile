@@ -3,7 +3,7 @@
 *What consent means when authority extends beyond a single scene.*
 
 **Level:** Beginner–Intermediate  
-**Estimated reading time:** 7 minutes  
+**Estimated reading time:** 6 minutes  
 **Topics:** Consent · Authority · TPE · Renegotiation · Boundaries
 
 **Content note:** Discusses coercion, boundary violations, unequal power, and impaired capacity.
