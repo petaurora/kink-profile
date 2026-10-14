@@ -23,6 +23,7 @@ import { createUiLabServices } from "./services/createUiLabServices";
 import { useLabCatalog } from "./LabCatalog";
 import { LabRecordsProvider, LabSaveSummary } from "./LabRecords";
 
+declare const __KP_BUILD_SHA__: string;
 type Area=PrimaryArea;
 const areas=primaryAreas;
 const iconPaths: Record<Area, React.ReactNode> = {
@@ -112,6 +113,7 @@ function UiLabContent() {
    <div className="ui-lab-app-brand">♡ <strong>Kink Profile</strong><small>UI LAB</small></div>
    {areas.map(item=><button key={item} type="button" aria-label={item} aria-current={area===item?"page":undefined} className={area===item?"active":""} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span><span className="lab-rail-label">{item}</span></button>)}
    <button className="ui-lab-app-rail-lab" aria-expanded={showLab} onClick={()=>setShowLab(!showLab)}>⚙ Design lab</button>
+   <div className="ui-lab-rail-version" aria-label={`App version ${__KP_BUILD_SHA__}`} title={`Build commit ${__KP_BUILD_SHA__}`}><span className="lab-rail-label">Build </span><code>{__KP_BUILD_SHA__}</code></div>
   </nav>
   <div className="ui-lab-app-frame">
    <header className="ui-lab-app-header">

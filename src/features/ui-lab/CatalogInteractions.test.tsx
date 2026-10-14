@@ -16,8 +16,8 @@ const button = (label: string) => {
 const click = (el: HTMLElement) => act(() => { el.focus(); el.click(); });
 const key = (value: string) => act(() => document.activeElement?.dispatchEvent(new KeyboardEvent("keydown", { key: value, bubbles: true })));
 const advance = async (ms: number) => act(async () => {await vi.advanceTimersByTimeAsync(ms);});
-function mount(collection: "kinks" | "rewards" = "kinks") {
-  act(() => root.render(<ToastProvider><LabRecordsProvider><CatalogComposite collection={collection}/></LabRecordsProvider></ToastProvider>));
+function mount(collection: "kinks" | "rewards" = "kinks",subject?:string) {
+  act(() => root.render(<ToastProvider><LabRecordsProvider><CatalogComposite collection={collection} subject={subject}/></LabRecordsProvider></ToastProvider>));
 }
 function refine() {
   const row = document.querySelector('[data-item-id="collars"]')!;
@@ -32,6 +32,18 @@ beforeEach(() => {
   container = document.createElement("div"); document.body.append(container); root = createRoot(container);
 });
 afterEach(() => { act(() => root.unmount()); container.remove(); vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); });
+
+it("renders preserved Equipment members and the approved Marking modifiers",()=>{
+ mount("kinks","Equipment & Objects");
+ for(const id of ["collars","cuffs","chastity"])expect(document.querySelector(`[data-item-id="${id}"]`)).not.toBeNull();
+ mount("kinks","Marking & Expression");
+ expect(document.querySelector('[data-item-id="worship"]')).toBeNull();
+ const row=document.querySelector('[data-item-id="marking"]')!;
+ click([...row.querySelectorAll<HTMLButtonElement>("button")].find(el=>el.textContent?.includes("Refine"))!);
+ click(button("Type4 options⌄"));
+ for(const label of ["Hickeys","Bruise Marking","Stamps / Temporary Tattoos","Other Temporary Marks"])
+  expect(button(label+": Not rated. Change rating")).toBeTruthy();
+});
 
 it("uses canonical choices, explicit keyboard commit and session help", async () => {
   mount(); click(button("Collars overall: Not rated. Change rating"));

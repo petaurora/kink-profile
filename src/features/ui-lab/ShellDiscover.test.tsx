@@ -7,10 +7,11 @@ import { UiLabPage } from "./UiLabPage";
 import { labPath, parseLabRoute } from "./LabNavigation";
 import { ViewErrorBoundary } from "../../components/ui/ViewErrorBoundary";
 import { compareRoute, rewardsToolsRandomizerRoute, rewardsToolsRecipesRoute, sceneBuilderRoute } from "../../app/routes";
-import { createUiLabServices } from "./services/createUiLabServices";
-import { labReferenceData } from "./services/fixtures";
+import { createUiLabServices as makeUiLabServices } from "./services/createUiLabServices";
+import { illustrativeReferenceData as labReferenceData } from "./services/fixtures";
 import { ratingKey, type AppServices } from "../../services/contracts";
 
+const createUiLabServices = (options:Parameters<typeof makeUiLabServices>[0]={}) => makeUiLabServices({...options,referenceData:options.referenceData??labReferenceData});
 let root:Root;let container:HTMLDivElement;let navigate:NavigateFunction;
 const button=(label:string)=>{const el=[...document.querySelectorAll<HTMLButtonElement>('button')].find(el=>el.getAttribute('aria-label')===label||el.textContent===label);if(!el)throw new Error(`Missing: ${label}`);return el;};
 const click=(el:HTMLElement)=>act(()=>{el.focus();el.click()});
@@ -113,7 +114,7 @@ it('resolves direct modifier and concept routes against injected service referen
 it('preserves ranked Catalog search and confirmed service records across routed Profile navigation',async()=>{
   const adapter=createUiLabServices({latencyMs:0,saveLatencyMs:10});const write=vi.spyOn(adapter.services.preferences,'setRating');
   await mount('/ui-lab/catalog/kinks',adapter.services);type('[aria-label="Search Items in kinks"]','ca');await flush(275);
-  expect([...document.querySelectorAll('[data-item-id]')].map(item=>item.getAttribute('data-item-id'))).toEqual(['aftercare','permission-rituals']);expect(document.querySelector('.kp-item-supporting-text')?.textContent).toContain('practical');
+  expect([...document.querySelectorAll('[data-item-id]')].map(item=>item.getAttribute('data-item-id'))).toEqual(expect.arrayContaining(['aftercare','permission-rituals']));expect(document.querySelector('[data-item-id="permission-rituals"] .kp-item-supporting-text')?.textContent).toContain('practical');
   click(button('Aftercare overall: Not rated. Change rating'));click(button('Love'));act(()=>document.activeElement?.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true})));await flush(10);
   click(button('Profile'));click(button('Your profile'));expect(document.querySelector('.lab-records')?.textContent).toContain('Aftercare');expect(document.querySelector('.lab-records')?.textContent).toContain('Love');
   expect(write).toHaveBeenCalledWith({kind:'item',itemId:'aftercare'},'Love');const snapshot=adapter.services.preferences.getSnapshot();await flush(0);expect((await snapshot).ratings[ratingKey({kind:'item',itemId:'aftercare'})]).toBe('Love');

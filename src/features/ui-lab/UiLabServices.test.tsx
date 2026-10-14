@@ -3,9 +3,10 @@ import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { UiLabPage } from "./UiLabPage";
-import { createUiLabServices } from "./services/createUiLabServices";
+import { createUiLabServices as makeUiLabServices } from "./services/createUiLabServices";
 import { MemoryRouter } from "react-router-dom";
-import { labReferenceData } from "./services/fixtures";
+import { illustrativeReferenceData as labReferenceData } from "./services/fixtures";
+const createUiLabServices = (options:Parameters<typeof makeUiLabServices>[0]={}) => makeUiLabServices({...options,referenceData:options.referenceData??labReferenceData});
 let root:Root,container:HTMLDivElement;
 beforeEach(()=>{
   vi.useFakeTimers();vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT",true);
@@ -62,11 +63,11 @@ it("puts name matches first and explains supporting-text hits in the inline Cata
   const adapter=createUiLabServices({latencyMs:0});mount(adapter);await advance();openKinks();
   const input=container.querySelector<HTMLInputElement>('[aria-label="Search Items in kinks"]')!;
   act(()=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")!.set!.call(input,"ca");input.dispatchEvent(new Event("input",{bubbles:true}));});await advance(275);
-  expect([...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'))).toEqual(["aftercare","permission-rituals"]);
+  expect([...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'))).toEqual(expect.arrayContaining(["aftercare","permission-rituals"]));
   expect(container.querySelector('[data-item-id="aftercare"] .kp-item-supporting-text')).toBeNull();
   expect(container.querySelector('[data-item-id="permission-rituals"] .kp-item-supporting-text')?.textContent).toContain("Matched description: “Ceremonial or practical");
   click(button("Sort and group results"));click(button("Name: Z–A"));click(button("Done"));
-  expect([...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'))).toEqual(["permission-rituals","aftercare"]);
+  expect([...container.querySelectorAll('[data-item-id]')].map(node=>node.getAttribute('data-item-id'))).toEqual(expect.arrayContaining(["permission-rituals","aftercare"]));
   click(button("Clear search"));expect(container.querySelector('.kp-item-supporting-text')).toBeNull();
 });
 

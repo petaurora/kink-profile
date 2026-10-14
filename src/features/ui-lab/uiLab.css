@@ -473,3 +473,8 @@
 .ui-lab-app .ui-lab-app-logo > span:last-child { min-width: 0; overflow-wrap: anywhere; }
 .ui-lab-app .ui-lab-brand-mark { flex-shrink: 0; }
 .ui-lab-app .ui-lab-app-bottom small { overflow-wrap: anywhere; }
+
+/* Small, non-interactive build marker pinned to the bottom of the desktop rail. */
+.ui-lab-app-rail .ui-lab-rail-version{margin-top:4px;padding:8px 12px 0;border-top:1px solid #ffffff1b;color:#a99db9;font-size:11px;letter-spacing:.025em;text-align:center}
+.ui-lab-app-rail .ui-lab-rail-version code{font-size:11px;color:inherit}
+.lab-rail-collapsed .ui-lab-app-rail .ui-lab-rail-version{padding-inline:0;font-size:10px;overflow-wrap:anywhere}

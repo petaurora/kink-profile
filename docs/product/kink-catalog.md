@@ -53,6 +53,12 @@ Those systems consume catalog identity and/or catalog results through their own 
 
 ## Source data ownership
 
+The V2 app shell at `#/ui-lab` has a separate composed Catalog reference model
+served through application services. Its current model and pure migration/archive
+preparation are described in [Catalog V2](../catalog-v2-implementation.md).
+It does not replace the V1 runtime/persistence contract below or automatically
+import stored profiles.
+
 ### Runtime catalog source
 
 The human-editable catalog lives under `reference/catalog/`.

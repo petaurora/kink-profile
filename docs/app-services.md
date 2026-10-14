@@ -1,7 +1,7 @@
 # Application services
 
-The experimental UI Lab uses asynchronous services for the data it currently
-renders. `src/services/contracts.ts` is the application-facing boundary;
+The V2 app shell uses asynchronous services for its curated Catalog reference data
+and isolated session preferences. `src/services/contracts.ts` is the application-facing boundary;
 `src/features/ui-lab/services` contains the sample implementation and fixtures.
 These contracts describe the current Lab slice, not an approved production
 Catalog V2 schema or HTTP endpoint specification.
@@ -50,8 +50,13 @@ do not share a rating with other Items or change their parent Item's rating.
 Categories/groups are not rateable. The rating vocabulary is Love, Like, Curious, Unsure, Not Interested, Hard Limit
 and Not Applicable. Unknown remains absent and is not an explicit rating. Clearing removes only the targeted record.
 
-These IDs belong to illustrative Lab data. Do not import Lab preferences into the
-production catalog or treat fixture categories as final taxonomy decisions.
+Default Catalog IDs come from the composed reviewed V2 definitions; explicit
+illustrative fixtures remain available to isolated tests. Theme memberships,
+aliases, related Item IDs and pending refinement dimensions survive this boundary.
+Value aliases resolve to the original tuple target rather than creating a second
+rating. The single `category` field is a legacy display projection. See
+[Catalog V2](catalog-v2-implementation.md). Do not import session preferences into
+production or treat session classification examples as personal evidence.
 
 ## Async lifecycle and recovery
 

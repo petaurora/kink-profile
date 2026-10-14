@@ -63,7 +63,8 @@ and corner arrows are decorative. It owns no records, routing or save behavior.
 
 ## Current limits
 
-The UI Lab receives illustrative data through [application services](app-services.md).
+The UI Lab receives curated Catalog reference data and isolated session preferences
+through [application services](app-services.md).
 Its single record provider retains independently keyed edits, timestamps, revisions
 and pending async writes across feature navigation. Local service confirmation is
 memory-only; reloading or leaving the Lab discards the default sample session.
