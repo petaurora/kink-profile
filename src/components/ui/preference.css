@@ -8,7 +8,6 @@
 }
 .kp-rating:hover,
 .kp-rating:focus-visible {
-  background: #f0d3e70d;
   color: var(--kp-pink);
 }
 .kp-save-status {
@@ -97,20 +96,19 @@
 .kp-rating, .kp-retry, .kp-preference-help, .kp-preference-clear { min-height: 44px; }
 .kp-sheet-header > div { min-width: 0; overflow-wrap: anywhere; }
 
-/* The visual chip stays compact inside a full-size interactive target. */
+/* Every rating is an unboxed label inside a full-size interactive target. */
 .kp-preference-chip {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   max-width: 100%; min-height: 28px; box-sizing: border-box;
-  padding: 4px 9px; border: 1px solid var(--kp-control-border);
-  border-radius: 999px; background: #f0d3e70a; color: #ddc7da;
+  padding: 4px 0; border: 0; border-radius: 0; background: transparent;
+  color: var(--kp-pink);
   font-size: 12px; line-height: 1.3; vertical-align: middle;
 }
 .kp-preference-chip > span { min-width: 0; overflow-wrap: anywhere; }
-.kp-preference-chip[data-preference] { background: #520e254d; color: #f0d3e7; }
-.kp-preference-chip:not([data-preference]) { border: 0; border-radius: 0; background: transparent; padding: 4px 0; color: var(--kp-muted, #b7adc5); }
-.kp-preference-chip[data-preference="Hard Limit"] { border-color: #efb9d0; background: #520e25; font-weight: 650; }
+.kp-preference-chip:not([data-preference]) { color: var(--kp-muted, #b7adc5); }
+.kp-preference-chip[data-preference="Hard Limit"] { font-weight: 650; }
 .kp-rating { appearance: none; border: 1px solid transparent; border-radius: 8px; background: transparent; color: inherit; display: inline-flex; align-items: center; justify-content: flex-end; min-height: 44px; min-width: 44px; padding: 2px 3px; }
-.kp-rating:hover .kp-preference-chip[data-preference], .kp-rating[aria-expanded="true"] .kp-preference-chip[data-preference] { border-color: #f0d3e7; background: #520e2570; }
+.kp-rating:hover .kp-preference-chip > span { text-decoration: underline; text-underline-offset: 3px; }
 .kp-rating:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 2px; }
 
 /* Anchored dialog at every width; a narrow viewport never turns it into a sheet. */

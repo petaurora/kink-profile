@@ -17,7 +17,7 @@ export function isPreferenceRating(value: unknown): value is PreferenceRating {
   return typeof value === "string" && Object.hasOwn(preferenceIconMeanings, value);
 }
 
-/** A display-only chip; editable surfaces opt in through PreferenceControl. */
+/** A display-only, unboxed rating; editable surfaces opt in through PreferenceControl. */
 export function PreferenceChip({ value }: { value?: string }) {
   const rated = isPreferenceRating(value);
   return <span className="kp-preference-chip" data-preference={rated ? value : undefined}>
