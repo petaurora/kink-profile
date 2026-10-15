@@ -39,6 +39,13 @@ it('opens unrestricted and global clear resets the type and query with input foc
   mount();expect(button('All').getAttribute('aria-pressed')).toBe('true');query('leather');await flush();click(button('Modifiers'));click(button('Clear search'));
   expect(button('All').getAttribute('aria-pressed')).toBe('true');expect((document.activeElement as HTMLInputElement).id).toBe('lab-global-query');expect((document.activeElement as HTMLInputElement).value).toBe('');
 });
+it('clears the result-type filter without discarding the current search',async()=>{
+  mount();query('leather');await flush();click(button('Modifiers'));
+  click(button('Clear'));
+  expect(button('All').getAttribute('aria-pressed')).toBe('true');
+  expect((document.querySelector('#lab-global-query') as HTMLInputElement).value).toBe('leather');
+  expect(document.querySelector('[data-search-result="modifier:collars:material:leather"]')).not.toBeNull();
+});
 it('searches all indexed text globally and puts a matching Item name ahead of metadata hits',async()=>{
   mount();query('ca');await flush();
   expect(document.querySelector('[data-search-result="item:canes"]')).not.toBeNull();
