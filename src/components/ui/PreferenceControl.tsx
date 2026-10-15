@@ -1,3 +1,4 @@
+import { appIcons } from "./appIcons";
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { ModalLayer } from "./ModalLayer";
 import "./preference.css";
@@ -217,7 +218,7 @@ export function SheetHeader({
         {children}
       </div>
       <button type="button" onClick={onClose} aria-label={closeLabel}>
-        ×
+        <appIcons.close size={20} stroke={1.65} aria-hidden="true" />
       </button>
     </div>
   );
