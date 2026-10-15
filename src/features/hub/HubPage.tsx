@@ -196,7 +196,7 @@ export function HubPage() {
               <strong>Notice me</strong>
               See the patterns your current profile is reflecting back.
             </span>
-            <IconArrowRight
+            <appIcons.next
               className="hub-home-door-arrow"
               size={18}
               aria-hidden="true"
@@ -211,7 +211,7 @@ export function HubPage() {
             key={doorId}
             onClick={() => navigate(compareRoute.path)}
           >
-            <IconUsers
+            <appIcons.shared
               className="hub-home-door-icon"
               size={26}
               stroke={1.55}
@@ -221,7 +221,7 @@ export function HubPage() {
               <strong>Look at us</strong>
               Put two profiles beside each other without erasing either person.
             </span>
-            <IconArrowRight
+            <appIcons.next
               className="hub-home-door-arrow"
               size={18}
               aria-hidden="true"
@@ -246,7 +246,7 @@ export function HubPage() {
               <strong>Give me something to do</strong>
               Turn what you already know into something playful right now.
             </span>
-            <IconArrowRight
+            <appIcons.next
               className="hub-home-door-arrow"
               size={18}
               aria-hidden="true"
@@ -271,7 +271,7 @@ export function HubPage() {
               <strong>I learned something</strong>
               Update a preference instead of treating your profile like a completed test.
             </span>
-            <IconArrowRight
+            <appIcons.next
               className="hub-home-door-arrow"
               size={18}
               aria-hidden="true"
@@ -429,7 +429,7 @@ export function HubPage() {
                         onClick={() => navigate(catalogRoute.path)}
                       >
                         Refine your catalog
-                        <IconArrowRight
+                        <appIcons.next
                           size={18}
                           stroke={1.8}
                           aria-hidden="true"
