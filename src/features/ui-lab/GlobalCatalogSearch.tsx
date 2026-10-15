@@ -1,3 +1,4 @@
+import { AppIcon } from "../../components/ui/AppIcon";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ModalLayer } from "../../components/ui/ModalLayer";
 import { SearchField } from "../../components/ui/SearchField";
@@ -53,7 +54,7 @@ export function GlobalCatalogSearch({ open, onClose, origin, sort, onSort, order
   const select = (result: SearchResult) => { lastScroll.current=scroll.current?.scrollTop||0;setTarget(result); onTargetChange?.(result.id); };
   return <ModalLayer open={open} onClose={()=>{onOrderOpen(false);onClose();}} label="Global catalog search" closeLabel="Close search" className="ui-lab-search-overlay" backdropClassName="ui-lab-search-backdrop" panelClassName="ui-lab-search-dialog">
     <div className="ui-lab-search-page">
-      <div className="ui-lab-search-modal-header"><span>Search</span><button type="button" className="ui-lab-search-close" aria-label="Close search" onClick={onClose}>×</button></div>
+      <div className="ui-lab-search-modal-header"><span>Search</span><button type="button" className="ui-lab-search-close" aria-label="Close search" title="Close search" onClick={onClose}><AppIcon name="close" /></button></div>
       <div className="lab-search-sticky"><SearchRow><SearchField mode="input" autoFocus inputId="lab-global-query" ariaLabel="Search catalog" resultsId={resultsId} placeholder="Search catalog…" value={query} onChange={setQuery} onClear={clear}/><SearchFilterButton active={sort!=="default"} groupingAvailable={false} expanded={orderOpen} onClick={()=>onOrderOpen(true)}/></SearchRow>
         <SearchChips label="Search result types" options={["All","Items","Modifiers","Concepts"].map(label=>({id:label,label,active:type===label,onClick:()=>setType(label)}))} clear={type!=="All"?()=>setType("All"):undefined}/>
       </div>
@@ -61,7 +62,7 @@ export function GlobalCatalogSearch({ open, onClose, origin, sort, onSort, order
       {loading&&<div className="lab-search-loading" role="status" aria-label="Searching"/>}
       {error&&<div role="status" className="cc-error-summary"><span>{results.length?"Previous results · Search update failed":"Search failed"}</span><button type="button" onClick={()=>setRetry(value=>value+1)}>Retry search</button></div>}
       {query.trim()&&<p className="ui-lab-search-label" role="status" aria-atomic="true">{resultsAreCurrent ? `${count} matches` : showPreviousResults ? `${count} previous-query matches · ${error ? "Update failed" : "Updating results"}` : "Searching…"}</p>}
-      <div className="ui-lab-search-results lab-search-scroll" id={resultsId} ref={scroll} aria-busy={loading} onTouchMove={()=>document.getElementById("lab-global-query")?.blur()} onWheel={()=>document.getElementById("lab-global-query")?.blur()}>{sections.map(section=><section className="lab-search-results-section" key={section.label}><h3 className="lab-search-results-heading">{section.label}</h3>{section.rows.map(result=><button key={result.id} data-search-result={result.id} onClick={()=>select(result)}><span><strong>{result.name}</strong><small>{result.path} · {result.type}</small></span><span aria-hidden="true">›</span></button>)}</section>)}{query.trim()&&processedQuery===query&&!loading&&!error&&!count&&<p>No matches. Try another term or type.</p>}</div>
+      <div className="ui-lab-search-results lab-search-scroll" id={resultsId} ref={scroll} aria-busy={loading} onTouchMove={()=>document.getElementById("lab-global-query")?.blur()} onWheel={()=>document.getElementById("lab-global-query")?.blur()}>{sections.map(section=><section className="lab-search-results-section" key={section.label}><h3 className="lab-search-results-heading">{section.label}</h3>{section.rows.map(result=><button key={result.id} data-search-result={result.id} onClick={()=>select(result)}><span><strong>{result.name}</strong><small>{result.path} · {result.type}</small></span><AppIcon name="details" size={18} /></button>)}</section>)}{query.trim()&&processedQuery===query&&!loading&&!error&&!count&&<p>No matches. Try another term or type.</p>}</div>
       <p className="ui-lab-app-note">Catalog search · Search queries stay in this session only.</p>
       <SortGroupSheet open={orderOpen} onClose={()=>onOrderOpen(false)} sort={sort} onSort={onSort} showGrouping={false} defaultSortLabel="Best matches"/>
       {target?.type==="Concepts"&&<ConceptDetail id={target.conceptId!} onClose={closeTarget}/>}

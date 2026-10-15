@@ -124,6 +124,7 @@ button.kp-search-field--launch:focus-visible {
   min-width: 0;
 }
 .kp-search-filter-trigger {
+  position: relative;
   appearance: none;
   display: inline-flex;
   flex: none;
@@ -139,6 +140,7 @@ button.kp-search-field--launch:focus-visible {
   color: #cbb4ca;
   cursor: pointer;
 }
+.kp-search-order-state { position: absolute; right: 3px; bottom: 3px; }
 .kp-search-filter-trigger:hover,
 .kp-search-filter-trigger.is-active {
   border-color: #f0d3e7a6;

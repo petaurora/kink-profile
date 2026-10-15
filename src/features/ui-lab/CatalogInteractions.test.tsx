@@ -52,10 +52,10 @@ it("uses canonical choices, explicit keyboard commit and session help", async ()
   key("ArrowDown"); expect(document.activeElement).toBe(button("Like"));
   expect(button("Like").getAttribute("aria-pressed")).toBe("false");
   expect(document.body.textContent).not.toContain("Dislike");
-  click(button("What do these mean? +")); expect(document.body.textContent).toContain("Potential personal interest in participating");
+  click(button("What do these mean?")); expect(document.body.textContent).toContain("Potential personal interest in participating");
   click(button("Unsure"));
   click(button("Collars overall: Unsure. Change rating"));
-  expect(button("What do these mean? −").getAttribute("aria-expanded")).toBe("true");
+  expect(button("What do these mean?").getAttribute("aria-expanded")).toBe("true");
   key("Escape"); expect(button("Collars overall: Unsure. Change rating")).toBeTruthy();
   click(button("Collars overall: Unsure. Change rating")); key("Tab"); key("Home"); key("Enter"); expect(button("Collars overall: Love. Change rating")).toBeTruthy();
 });

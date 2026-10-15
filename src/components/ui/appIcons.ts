@@ -1,7 +1,6 @@
-import type { ComponentType } from "react";
 import {
   IconAdjustmentsHorizontal, IconArrowBackUp, IconArrowLeft, IconArrowRight,
-  IconArrowsExchange, IconBell, IconBook2, IconBookmark, IconCalendar,
+  IconArrowsExchange, IconBell, IconBook, IconBookmark, IconCalendar,
   IconCategory, IconCheck, IconChevronDown, IconChevronRight,
   IconCircleX, IconClipboardList, IconDots, IconExternalLink,
   IconEye, IconEyeOff, IconFilter, IconFolder, IconHeart, IconHelpCircle,
@@ -9,6 +8,9 @@ import {
   IconPencil, IconPlus, IconPuzzle, IconRefresh, IconSearch, IconSettings,
   IconShieldCheck, IconSortAscending, IconTrash, IconUser, IconUsers,
   IconWand, IconWorld, IconX, IconAlertTriangle, IconDeviceFloppy, IconSparkles,
+  IconChevronLeft, IconStack2, IconRestore, IconReload, IconSquarePlus,
+  IconShare, IconFileSearch, IconPin, IconGripVertical, IconMasksTheater,
+  IconMenu2, IconLoader2,
 } from "@tabler/icons-react";
 
 /**
@@ -23,12 +25,13 @@ export const appIcons = {
   tools: IconWand,
   discover: IconSparkles,
   quiz: IconClipboardList,
-  education: IconBook2,
+  education: IconBook, // Book2 is a closed cover; Education uses an open book.
   scenes: IconPuzzle,
   compare: IconArrowsExchange,
   search: IconSearch,
   filter: IconFilter,
   sort: IconSortAscending,
+  group: IconStack2,
   refine: IconAdjustmentsHorizontal,
   edit: IconPencil,
   save: IconDeviceFloppy,
@@ -41,7 +44,10 @@ export const appIcons = {
   expand: IconChevronDown,
   details: IconChevronRight,
   undo: IconArrowBackUp,
-  reset: IconRefresh,
+  reset: IconRestore,
+  refresh: IconReload,
+  sync: IconRefresh,
+  duplicate: IconSquarePlus,
   more: IconDots,
   close: IconX,
   confirm: IconCheck,
@@ -53,6 +59,8 @@ export const appIcons = {
   next: IconArrowRight,
   external: IconExternalLink,
   copyLink: IconLink,
+  share: IconShare,
+  preview: IconFileSearch,
   hide: IconEyeOff,
   show: IconEye,
   private: IconLock,
@@ -63,7 +71,14 @@ export const appIcons = {
   notifications: IconBell,
   calendar: IconCalendar,
   history: IconHistory,
-} as const satisfies Record<string, ComponentType<any>>;
+  pin: IconPin,
+  reorder: IconGripVertical,
+  roleplay: IconMasksTheater,
+  menu: IconMenu2,
+  collapseSidebar: IconChevronLeft,
+  expandSidebar: IconChevronRight,
+  pending: IconLoader2,
+} as const satisfies Record<string, typeof IconSearch>;
 
 export type AppIconMeaning = keyof typeof appIcons;
 export const appIconDefaults = { size: 22, stroke: 1.65 } as const;

@@ -1,3 +1,4 @@
+import { AppIcon } from "./AppIcon";
 import { appIcons } from "./appIcons";
 import { useRef } from "react";
 import "./search.css";
@@ -71,21 +72,13 @@ export function SearchField(props: SearchFieldProps) {
           type="button"
           className="kp-search-field__clear"
           aria-label="Clear search"
+          title="Clear search"
           onClick={() => {
             props.onClear();
             inputRef.current?.focus();
           }}
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <path d="M6 6 18 18M18 6 6 18" />
-          </svg>
+          <AppIcon name="close" size={18} />
         </button>
       )}
     </div>

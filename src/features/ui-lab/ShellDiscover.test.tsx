@@ -13,7 +13,7 @@ import { ratingKey, type AppServices } from "../../services/contracts";
 
 const createUiLabServices = (options:Parameters<typeof makeUiLabServices>[0]={}) => makeUiLabServices({...options,referenceData:options.referenceData??labReferenceData});
 let root:Root;let container:HTMLDivElement;let navigate:NavigateFunction;
-const button=(label:string)=>{const el=[...document.querySelectorAll<HTMLButtonElement>('button')].find(el=>el.getAttribute('aria-label')===label||el.textContent?.replace(/[⌃⌄]/g, "")===label.replace(/[⌃⌄]/g, ""));if(!el)throw new Error(`Missing: ${label}`);return el;};
+const button=(label:string)=>{const el=[...document.querySelectorAll<HTMLButtonElement>('button')].find(el=>el.getAttribute('aria-label')===label||el.textContent?.replace(/[⌃⌄]/g, "").trim()===label.replace(/[⌃⌄]/g, "").trim());if(!el)throw new Error(`Missing: ${label}`);return el;};
 const click=(el:HTMLElement)=>act(()=>{el.focus();el.click()});
 const flush=async(ms=220)=>act(async()=>{await vi.advanceTimersByTimeAsync(ms)});
 const route=()=>document.querySelector('output')!.textContent!;
@@ -57,7 +57,7 @@ it('dismisses content by ID, restores individually and confirms reset without lo
 it('resumes real drafts, preserves completed snapshots and repeats as a separate attempt without profile writes',async()=>{
   await mount('/ui-lab/home');expect(document.body.textContent).toContain('No unfinished activities');click(button('Discover'));
   click(button('Open Reflect on your interests'));const firstRoute=route();
-  type('#lab-reflection-answer','A deliberate note');click(button('Next prompt'));click(button('Save and exit'));click(button('Home'));expect(button('Resume')).toBeTruthy();click(button('Resume'));expect(document.body.textContent).toContain('Optional prompt 2 of 3');click(button('Next prompt'));click(button('Finish reflection'));expect(document.body.textContent).toContain('A deliberate note');
+  type('#lab-reflection-answer','A deliberate note');click(button('Next prompt'));click(button('Exit reflection'));click(button('Home'));expect(button('Resume')).toBeTruthy();click(button('Resume'));expect(document.body.textContent).toContain('Optional prompt 2 of 3');click(button('Next prompt'));click(button('Finish reflection'));expect(document.body.textContent).toContain('A deliberate note');
   click(button('Repeat with latest version'));expect(route()).not.toBe(firstRoute);type('#lab-reflection-answer','A new note');act(()=>navigate(firstRoute));expect(document.body.textContent).toContain('A deliberate note');expect(document.body.textContent).not.toContain('A new note');expect(document.querySelector('textarea')).toBeNull();click(button('Profile'));expect(document.body.textContent).toContain('No explicit records yet');
 });
 it('keeps Home shortcuts explicitly controlled across destinations',async()=>{

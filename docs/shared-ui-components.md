@@ -31,6 +31,40 @@ been migrated to the experimental treatments merely because the code is shared.
 
 ## Interaction contracts
 
+### Icon meanings and labels
+
+`appIcons.ts` owns canonical destinations and shared action assignments. Use the
+semantic key rather than choosing another library glyph in a feature. `AppIcon`
+renders a decorative, nonfocusable SVG with inherited color and a 1.65 outline
+stroke; optional inline spacing supports labeled actions. Explicit CSS/style
+color overrides remain possible. The containing control owns its accessible name.
+
+| Meaning | Assignment / boundary |
+| --- | --- |
+| Home, Quiz, Catalog, Profile, Tools | Home, Clipboard List, Category, User, Wand |
+| Scenes, Compare, Education, Roleplay | Puzzle, Exchange Arrows, Open Book, Theater Masks |
+| Search, Filter, Sort, Group, Refine | Magnifier, Funnel, Sorting Arrows, Stacked Layers, Sliders |
+| Edit, Save, Add, Remove, Delete | Pencil, Disk, Plus, Minus, Trash; Remove preserves the source record |
+| Affinity, Bookmark, Collection | Heart, Bookmark, Folder; these are independent of preference editing and saving |
+| Undo, Reset, Refresh, Sync | Curved Back Arrow, Counterclockwise Restore, Clockwise Reload, Paired Circular Arrows |
+| Duplicate, Copy Link, Share | Square Plus, Chain Link, Share Nodes; these describe different effects |
+| Show/Hide, Preview | Eye/Eye Off, Document Search; visual concealment changes no access permissions |
+| Private, Shared, Public, Verified security | Lock, Users, Globe, Shield Check; use only for the actual audience/protection state |
+
+Registry availability does not introduce an action or prove the corresponding
+backend capability exists. Custom Kinks/domain/relationship artwork remains
+outside the registry until approved production SVGs are available. Discover's
+sparkles and existing domain illustrations remain provisional.
+
+Familiar icon-only actions retain accessible names, discoverable titles, focus
+and touch targets. Ambiguous, consequential and destructive actions retain visible
+labels. Disclosure uses a stateful chevron rather than Add/Remove; internal detail
+links use a right chevron rather than the external-link mark. Active result-order
+controls show a check and expose an accessible description in addition to color.
+Filter chips and Sort/Group options retain separate behavior; no unsupported
+filter/group controls are added to a view. Reflection notes already update as
+typed, so leaving uses `Exit reflection`, without a misleading manual Save action.
+
 The feature-level `src/features/ui-lab/LabCard.tsx` composes the existing workspace
 tile styles for Home, Profile, Discover and Tools. It supplies a navigation button
 or link, or a section containing separately operable controls. Descriptions and

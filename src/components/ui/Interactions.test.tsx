@@ -197,7 +197,7 @@ describe("controlled preferences, disclosure and search", () => {
         help="Preference, not experience."
       />,
     );
-    click(button("What do these mean? +"));
+    click(button("What do these mean?"));
     expect(document.body.textContent).toContain("Preference, not experience.");
     expect(change).not.toHaveBeenCalled();
     click(button("Clear rating"));
