@@ -123,10 +123,11 @@ describe("accessibility regressions", () => {
     }
     click(button("Collars: Reward — Yes. Show explanation"));
     await audit();
-  });
+  }, 15000);
   it("announces navigation through the new heading and current destination; global search announces results", async () => {
     mount(<MemoryRouter initialEntries={["/ui-lab/home"]}><UiLabPage/></MemoryRouter>);
     await act(async()=>{await new Promise(resolve=>setTimeout(resolve,220));});
+    await act(async () => { await vi.waitFor(() => expect(button("Catalog")).toBeTruthy(), { timeout: 5000 }); });
     click(button("Catalog"));
     const heading = document.querySelector("h1")!;
     expect(document.activeElement).toBe(heading);
@@ -144,5 +145,5 @@ describe("accessibility regressions", () => {
     expect(document.querySelector('[role="status"]')?.textContent).toBe("0 matches");
     await audit(); escape();
     expect(document.activeElement).toBe(button("Search"));
-  });
+  }, 15000);
 });

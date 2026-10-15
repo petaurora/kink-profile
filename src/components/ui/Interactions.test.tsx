@@ -22,7 +22,7 @@ function button(label: string) {
   ].find(
     (element) =>
       element.getAttribute("aria-label") === label ||
-      element.textContent === label,
+      element.textContent?.replace(/[⌃⌄]/g, "") === label.replace(/[⌃⌄]/g, ""),
   );
   if (!match) throw new Error(`Missing button: ${label}`);
   return match;

@@ -1,3 +1,4 @@
+import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
 import { useCallback, useMemo, useState } from "react";
 import { useAppServices } from "../../services/AppServicesProvider";
 import { useServiceQuery } from "../../services/useServiceQuery";
@@ -30,7 +31,7 @@ function ArticleTiles({matches,go,featuredId,showMatch=false}:{
   matches:EducationMatch[];go:Go;featuredId?:string;showMatch?:boolean;
 }){
   return <div className="lab-education-grid">{matches.map(({article,matchedField})=>
-    <LabCard key={article.id} title={article.title} icon="✧" description={article.description}
+    <LabCard key={article.id} title={article.title} icon={<appIcons.education {...appIconDefaults} />} description={article.description}
       featured={article.id===featuredId}
       status={article.level+" · "+article.readingMinutes+" min read"+(showMatch&&matchedField!=="title"?" · "+(matchedField==="description"?"Description match":"Topic match"):"")}
       onClick={()=>go("Learn","Article",{id:article.id})}/>)}</div>;

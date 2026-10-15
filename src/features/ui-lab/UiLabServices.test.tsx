@@ -18,7 +18,7 @@ beforeEach(()=>{
   container=document.createElement("div");document.body.append(container);root=createRoot(container);
 });
 afterEach(()=>{act(()=>root.unmount());container.remove();vi.restoreAllMocks();vi.unstubAllGlobals();vi.useRealTimers();});
-function button(label:string){const found=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.getAttribute("aria-label")===label||b.textContent===label);if(!found)throw new Error("Missing button: "+label);return found;}
+function button(label:string){const found=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.getAttribute("aria-label")===label||b.textContent?.replace(/[⌃⌄]/g, "")===label.replace(/[⌃⌄]/g, ""));if(!found)throw new Error("Missing button: "+label);return found;}
 function click(element:HTMLElement){act(()=>{element.focus();element.click();});}
 async function advance(ms=0){await act(async()=>{await vi.advanceTimersByTimeAsync(ms);});}
 function mount(adapter:ReturnType<typeof createUiLabServices>){act(()=>root.render(<MemoryRouter initialEntries={["/ui-lab/home"]}><UiLabPage services={adapter.services}/></MemoryRouter>));}

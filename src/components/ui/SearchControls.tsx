@@ -1,3 +1,4 @@
+import { appIcons } from "./appIcons";
 import { useId, type ReactNode } from "react";
 import { ModalLayer } from "./ModalLayer";
 import "./search.css";
@@ -41,21 +42,7 @@ export function SearchFilterButton({
       aria-expanded={expanded}
       onClick={onClick}
     >
-      <svg
-        viewBox="0 0 24 24"
-        width="22"
-        height="22"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M4 7h16M7 12h10M10 17h4" />
-        <circle cx="8" cy="7" r="2" fill="var(--kp-search-bg, #17183f)" />
-        <circle cx="15" cy="12" r="2" fill="var(--kp-search-bg, #17183f)" />
-      </svg>
+      <appIcons.sort size={22} stroke={1.65} aria-hidden="true" />
     </button>
   );
 }

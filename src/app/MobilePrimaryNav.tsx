@@ -1,3 +1,4 @@
+import { appIcons } from "../components/ui/appIcons";
 import {
   type KeyboardEvent as ReactKeyboardEvent,
   useEffect,
@@ -8,13 +9,6 @@ import {
 import {
   IconGift,
   IconHeart,
-  IconHome,
-  IconClipboardList,
-  IconCategory,
-  IconWand,
-  IconPuzzle,
-  IconArrowsExchange,
-  IconUser,
 } from "@tabler/icons-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -74,7 +68,7 @@ const toolsOptions: LauncherOption[] = [
   {
     id: "scenes",
     label: "Scenes",
-    Icon: IconPuzzle,
+    Icon: appIcons.scenes,
     left: "54%",
     top: "60px",
     target: sceneBuilderRoute.path,
@@ -90,7 +84,7 @@ const toolsOptions: LauncherOption[] = [
   {
     id: "compare",
     label: "Compare",
-    Icon: IconArrowsExchange,
+    Icon: appIcons.compare,
     left: "88%",
     top: "72px",
     target: compareRoute.path,
@@ -442,7 +436,7 @@ export function MobilePrimaryNav() {
           onClick={() => go(quizHomeRoute.path)}
         >
           <span className="mobile-primary-nav-icon-wrap">
-            <IconClipboardList size={23} stroke={1.65} aria-hidden="true" />
+            <appIcons.quiz size={23} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Quiz</span>
         </button>
@@ -465,7 +459,7 @@ export function MobilePrimaryNav() {
           }}
         >
           <span className="mobile-primary-nav-icon-wrap">
-            <IconCategory size={23} stroke={1.65} aria-hidden="true" />
+            <appIcons.catalog size={23} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Catalog</span>
         </button>
@@ -477,7 +471,7 @@ export function MobilePrimaryNav() {
           onClick={() => go("/")}
         >
           <span className="mobile-primary-nav-hub-button">
-            <IconHome size={27} stroke={1.65} aria-hidden="true" />
+            <appIcons.home size={27} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Hub</span>
         </button>
@@ -489,7 +483,7 @@ export function MobilePrimaryNav() {
           onClick={() => go("/profile")}
         >
           <span className="mobile-primary-nav-icon-wrap">
-            <IconUser size={23} stroke={1.65} aria-hidden="true" />
+            <appIcons.profile size={23} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Profile</span>
         </button>
@@ -512,7 +506,7 @@ export function MobilePrimaryNav() {
           }}
         >
           <span className="mobile-primary-nav-icon-wrap">
-            <IconWand size={23} stroke={1.65} aria-hidden="true" />
+            <appIcons.tools size={23} stroke={1.65} aria-hidden="true" />
           </span>
           <span className="mobile-primary-nav-label">Tools</span>
         </button>
