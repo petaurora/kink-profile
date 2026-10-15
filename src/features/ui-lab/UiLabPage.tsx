@@ -104,7 +104,7 @@ function UiLabContent() {
  useEffect(()=>{if(area==="Catalog")setFeatured(dailyFeatured(featuredSubjects));},[area,featuredSubjects]);
  const activeChild=(parent:Area)=>parent===area?(workspace||"Overview"):null;
  const openDrawer=()=>{if(modalActive())return;setExpandedMenu(area!=="Home"&&areas.includes(area as PrimaryArea)?area as PrimaryArea:null);setMenuOpen(true);};
- const heading=(selectedSubject||workspace)||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools.",Creations:"Creations",Learn:"Learn",Relationships:"Relationships",Settings:"Settings"} as Record<LabArea,string>)[area];
+ const heading=(workspace==="Article"?"Learn article":selectedSubject||workspace)||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools.",Creations:"Creations",Learn:"Learn",Relationships:"Relationships",Settings:"Settings"} as Record<LabArea,string>)[area];
  useEffect(()=>{if(hasNavigated.current)pageHeading.current?.focus();hasNavigated.current=true;},[area,workspace,selectedSubject]);
  useEffect(()=>{const previous=document.title;document.title=`${heading} · Kink Profile`;return()=>{document.title=previous};},[heading]);
  return <div className={"ui-lab ui-lab-app"+(collapsedRail?" lab-rail-collapsed":"")} onTouchStart={onGestureStart} onTouchEnd={onGestureEnd}>
@@ -125,7 +125,7 @@ function UiLabContent() {
       <button type="button" className="ui-lab-header-action" aria-label="Search" onClick={()=>openCatalogSearch(area)}>
         <appIcons.search {...appIconDefaults} aria-hidden="true" />
       </button>
-      <button type="button" className="ui-lab-header-action" aria-label="Profile and settings" onClick={()=>navigate("Profile")}><appIcons.profile {...appIconDefaults} aria-hidden="true" /></button>
+      <button type="button" className="ui-lab-header-action" aria-label="Open profile" onClick={()=>navigate("Profile")}><appIcons.profile {...appIconDefaults} aria-hidden="true" /></button>
     </div>
    </header>
    <ModalLayer open={menuOpen} onClose={()=>setMenuOpen(false)} label="Full navigation menu" closeLabel="Close navigation menu" id="ui-lab-full-menu" className="ui-lab-menu-layer" backdropClassName="ui-lab-menu-backdrop" panelClassName="ui-lab-menu-drawer">
@@ -178,7 +178,7 @@ function UiLabContent() {
       </>}
       {workspace==="Concept Explorer"&&<><SearchRow><SearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><SearchFilterButton active={catalogSort!=="default"} groupingAvailable={false} onClick={()=>openCatalogSearch("Concept Explorer",true)}/></SearchRow><div className="ui-lab-catalog-items">{concepts.map(item=><button key={item.id} onClick={()=>openLayer("concept",item.id)}>{item.name}<span>›</span></button>)}</div></>}
       {workspace==="Kinks"&&<CatalogComposite />}
-      {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Illustrative classifications for testing filters · Classification editing in Refine comes later.</p><CatalogComposite collection="rewards" /></>}    </div>}
+      {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Reward and punishment classifications are currently read-only here.</p><CatalogComposite collection="rewards" /></>}    </div>}
     {area==="Discover"&&<DiscoverWorkspace view={workspace} attemptId={params.get("attempt")||undefined} go={go}/>}
     {area==="Learn"&&<EducationWorkspace view={workspace} articleId={params.get("id")||""} go={go}/>}
     {area!=="Catalog"&&area!=="Discover"&&area!=="Learn"&&<LabOverview area={area} workspace={workspace} go={go} shortcuts={shortcuts} onShortcuts={setShortcuts}/>}

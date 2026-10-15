@@ -50,6 +50,22 @@ describe("service-backed Education",()=>{
     expect(container.querySelector("output")?.textContent).toBe("/ui-lab/learn");
   });
 
+  it("restores library search context and scroll after reading an article",async()=>{
+    mount();await flush(300);
+    const input=container.querySelector<HTMLInputElement>("#lab-education-search")!;
+    act(()=>{
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value")!.set!.call(input,"collars");
+      input.dispatchEvent(new Event("input",{bubbles:true}));
+    });
+    Object.defineProperty(window,"scrollY",{configurable:true,value:420});
+    const article=[...container.querySelectorAll<HTMLButtonElement>(".lab-education-grid button")].find(b=>b.textContent?.includes("Collars & Collaring"))!;
+    expect(article).toBeTruthy();click(article);await flush(300);
+    const back=[...container.querySelectorAll<HTMLButtonElement>("button")].find(b=>b.textContent?.includes("All articles"))!;
+    click(back);await flush(300);
+    expect((container.querySelector("#lab-education-search") as HTMLInputElement).value).toBe("collars");
+    expect(window.scrollTo).toHaveBeenCalledWith({top:420,left:0,behavior:"instant"});
+  });
+
   it("searches across article titles and descriptions without reading preference state",async()=>{
     mount();await flush(300);
     const input=container.querySelector<HTMLInputElement>("#lab-education-search")!;

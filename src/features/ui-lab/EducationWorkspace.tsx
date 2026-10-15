@@ -1,5 +1,5 @@
 import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAppServices } from "../../services/AppServicesProvider";
 import { useServiceQuery } from "../../services/useServiceQuery";
 import { SearchField } from "../../components/ui/SearchField";
@@ -44,6 +44,21 @@ export function EducationWorkspace({view,articleId,go}:{view:string;articleId:st
   const [topic,setTopic]=useState<EducationSection | "all">("all");
   const [sort,setSort]=useState<SortBy>("default");
   const [sortOpen,setSortOpen]=useState(false);
+  const libraryScroll=useRef<number | null>(null);
+  const previousView=useRef(view);
+  const openArticle=useCallback((id:string)=>{
+    libraryScroll.current=window.scrollY;
+    go("Learn","Article",{id});
+  },[go]);
+  useEffect(()=>{
+    const returning=previousView.current==="Article"&&view!=="Article";
+    previousView.current=view;
+    if(!returning||libraryScroll.current===null)return;
+    const position=libraryScroll.current;
+    libraryScroll.current=null;
+    const frame=requestAnimationFrame(()=>window.scrollTo({top:position,left:0,behavior:"instant"}));
+    return ()=>cancelAnimationFrame(frame);
+  },[view]);
   const listRequest=useCallback((options:RequestOptions)=>education
     ? education.listArticles(options)
     : Promise.resolve([]),[education]);
@@ -124,19 +139,19 @@ export function EducationWorkspace({view,articleId,go}:{view:string;articleId:st
         {(topic!=="all"||searching)&&<button type="button" onClick={()=>{setQuery("");setTopic("all");setSort("default");}}>Show all articles</button>}</div>}
       {results.length>0&&filteredView&&<section className="lab-education-section" aria-label="Article results">
         <h2>{searching?"Search results":topic!=="all"?topic:"All articles"}</h2>
-        <ArticleTiles matches={results} go={go} showMatch={searching}/>
+        <ArticleTiles matches={results} go={(_,__,params)=>openArticle(params?.id??"")} showMatch={searching}/>
       </section>}
       {results.length>0&&!filteredView&&<>
         <section className="lab-education-section lab-education-starters" aria-labelledby="lab-education-start-heading">
           <div className="lab-education-section-heading"><h2 id="lab-education-start-heading">Start with the essentials</h2><span>Three introductions to BDSM</span></div>
-          <ArticleTiles matches={intro} go={go} featuredId="edu-bd"/>
+          <ArticleTiles matches={intro} go={(_,__,params)=>openArticle(params?.id??"")} featuredId="edu-bd"/>
         </section>
         <section className="lab-education-more" aria-labelledby="lab-education-more-heading">
           <h2 id="lab-education-more-heading">Explore more</h2>
           {sections.filter(section=>more.some(({article})=>article.section===section)).map(section=>
             <section className="lab-education-section" key={section}>
               <h3>{section}</h3>
-              <ArticleTiles matches={more.filter(({article})=>article.section===section)} go={go}/>
+              <ArticleTiles matches={more.filter(({article})=>article.section===section)} go={(_,__,params)=>openArticle(params?.id??"")}/>
             </section>)}
         </section>
       </>}

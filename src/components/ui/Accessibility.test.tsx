@@ -121,7 +121,7 @@ describe("accessibility regressions", () => {
       const ids = control.getAttribute("aria-controls")!.split(/\s+/);
       for (const id of ids) expect(document.getElementById(id)).not.toBeNull();
     }
-    click(button("Collars: Reward — Yes. Show explanation"));
+    click(button("Collars: Reward — Yes. View classification explanation"));
     await audit();
   }, 15000);
   it("announces navigation through the new heading and current destination; global search announces results", async () => {
@@ -142,7 +142,8 @@ describe("accessibility regressions", () => {
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, "no matches");
       input.dispatchEvent(new Event("input", {bubbles: true}));
     });
-    expect(document.querySelector('[role="status"]')?.textContent).toBe("0 matches");
+    expect(document.querySelector('[role="status"]')?.textContent).toBe("Searching…");
+    // The live region announces the pending query; result completion is covered by GlobalCatalogSearch tests.
     await audit(); escape();
     expect(document.activeElement).toBe(button("Search"));
   }, 15000);
