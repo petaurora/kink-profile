@@ -67,9 +67,18 @@ it('rejects stale request results after a newer query completes',async()=>{
   mount(search);query('old');await flush();query('collars');await flush();
   await act(async()=>oldResolve(searchCatalog('trust')));expect(document.querySelector('[data-search-result="item:collars"]')).not.toBeNull();expect(document.querySelector('[data-search-result="concept:trust"]')).toBeNull();
 });
+it('labels old results while a different query is pending instead of claiming new matches',async()=>{
+  let resolveNext:(rows:SearchResult[])=>void=()=>{};
+  const search=vi.fn((q:string)=>q==='trust'?new Promise<SearchResult[]>(resolve=>{resolveNext=resolve}):Promise.resolve(searchCatalog(q)));
+  mount(search);query('collars');await flush();query('trust');
+  expect(document.body.textContent).toContain('previous-query matches · Updating results');
+  expect(document.body.textContent).not.toContain('0 matches');
+  await flush();await act(async()=>resolveNext(searchCatalog('trust')));
+  expect(document.body.textContent).not.toContain('previous-query matches');
+});
 it('retains previous successful results on failure and retries the latest query',async()=>{
   let fail=true;const search=vi.fn(async(q:string)=>{if(q==='trust'&&fail)throw new Error('test failure');return searchCatalog(q)});
-  mount(search);query('collars');await flush();query('trust');await flush();expect(document.body.textContent).toContain('Previous results · Search update failed');expect(document.querySelector('[data-search-result="item:collars"]')).not.toBeNull();
+  mount(search);query('collars');await flush();query('trust');await flush();expect(document.body.textContent).toContain('Previous results · Search update failed');expect(document.body.textContent).toContain('previous-query matches · Update failed');expect(document.querySelector('[data-search-result="item:collars"]')).not.toBeNull();
   fail=false;click(button('Retry search'));await flush();expect(document.querySelector('[data-search-result="concept:trust"]')).not.toBeNull();
 });
 it('retains active search state on close/reopen without writing browser storage',async()=>{
