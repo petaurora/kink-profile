@@ -1,3 +1,4 @@
+import { AppIcon } from "../../components/ui/AppIcon";
 import { DisclosureSection } from "../../components/ui/DisclosureSection";
 import { InlineSaveStatus } from "../../components/ui/PreferenceControl";
 import { useToasts } from "../../components/ui/ToastProvider";
@@ -25,10 +26,10 @@ export function ItemExperience({ itemId, name, open, onToggle, records }: {
         notify({ message: checked ? "Tried recorded" : "Tried marker cleared", kind: "info", actionLabel: "Undo", duration: 5000, onAction: () => {
           if (!records.restore(triedTarget, version, previous)) notify({ message: "A newer edit was kept", kind: "info" });
         }});
-      }}/> Tried</label>
+      }}/> <AppIcon name="tried" size={17} inline />Tried</label>
       <InlineSaveStatus state={records.saves[triedTarget]} label={`${name} Tried`}/>
       <p>Unchecked means no affirmative record. Recording time is the edit time, not the activity date.</p>
-      <fieldset><legend>Comfort</legend>{comfortOptions.map(([value, label]) => <button key={value} type="button" aria-pressed={records.values[comfortTarget] === value} onClick={() => records.commit(comfortTarget, value)}>{label}</button>)}
+      <fieldset><legend><AppIcon name="comfort" size={17} inline />Comfort</legend>{comfortOptions.map(([value, label]) => <button key={value} type="button" aria-pressed={records.values[comfortTarget] === value} onClick={() => records.commit(comfortTarget, value)}>{label}</button>)}
         {records.values[comfortTarget] && <button type="button" onClick={() => records.commit(comfortTarget, undefined)}>Clear comfort</button>}
       </fieldset>
       <InlineSaveStatus state={records.saves[comfortTarget]} label={`${name} Comfort`}/>

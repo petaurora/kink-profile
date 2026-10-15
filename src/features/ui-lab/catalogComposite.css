@@ -112,3 +112,11 @@
     padding-right: max(8px, env(safe-area-inset-right, 0px));
   }
 }
+
+/* Compact chips retain their natural label width; modifier names can wrap. */
+.cc-value > [data-field-id], .kp-item-row > [data-field-id] { flex: 0 0 auto; }
+/* Keep the overall chip right-aligned below the Item title, apart from Close. */
+.cc-refine-sheet > .kp-sheet-header { position: relative; display: block; }
+.cc-refine-sheet > .kp-sheet-header > div { width: 100%; }
+.cc-refine-sheet > .kp-sheet-header h3 { padding-right: 54px; }
+.cc-refine-sheet > .kp-sheet-header > button { position: absolute; top: 0; right: 0; }

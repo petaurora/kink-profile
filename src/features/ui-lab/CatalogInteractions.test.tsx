@@ -52,10 +52,10 @@ it("uses canonical choices, explicit keyboard commit and session help", async ()
   key("ArrowDown"); expect(document.activeElement).toBe(button("Like"));
   expect(button("Like").getAttribute("aria-pressed")).toBe("false");
   expect(document.body.textContent).not.toContain("Dislike");
-  click(button("What do these mean?")); expect(document.body.textContent).toContain("Potential personal interest in participating");
+  click(button("What do these ratings mean?")); expect(document.body.textContent).toContain("Potential personal interest in participating");
   click(button("Unsure"));
   click(button("Collars overall: Unsure. Change rating"));
-  expect(button("What do these mean?").getAttribute("aria-expanded")).toBe("true");
+  expect(button("What do these ratings mean?").getAttribute("aria-expanded")).toBe("true");
   key("Escape"); expect(button("Collars overall: Unsure. Change rating")).toBeTruthy();
   click(button("Collars overall: Unsure. Change rating")); key("Tab"); key("Home"); key("Enter"); expect(button("Collars overall: Love. Change rating")).toBeTruthy();
 });
@@ -68,6 +68,27 @@ it("clears with genuine exact-value Undo while a previous save is pending", asyn
   expect(button("Collars overall: Curious. Change rating")).toBeTruthy();
   expect([...document.querySelectorAll('[role="status"]')].find(node=>node.textContent==="Collars overall: Saved")??null).not.toBeNull();
   await advance(1250); expect([...document.querySelectorAll('[role="status"]')].find(node=>node.textContent==="Collars overall: Saved")??null).toBeNull();
+});
+
+it("opens a seven-choice picker without evidence and dismisses the current rating without a duplicate revision", () => {
+  function History() { return <output data-revisions>{useLabRecords().revisions.length}</output>; }
+  act(() => root.render(<ToastProvider><LabRecordsProvider><CatalogComposite/><History/></LabRecordsProvider></ToastProvider>));
+  const revisions = () => document.querySelector('[data-revisions]')?.textContent;
+  click(button("Collars overall: Not rated. Change rating"));
+  expect(revisions()).toBe("0");
+  expect(document.querySelectorAll('.kp-preference-options button')).toHaveLength(7);
+  expect(document.querySelector('.kp-preference-options')?.textContent).not.toContain("Not rated");
+  key("Tab"); key("ArrowDown");
+  expect(revisions()).toBe("0");
+  key("Enter"); expect(revisions()).toBe("1");
+  const chip = button("Collars overall: Like. Change rating");
+  click(chip); click(document.querySelector<HTMLButtonElement>('.kp-preference-options button[aria-pressed="true"]')!);
+  expect(revisions()).toBe("1");
+  expect(document.querySelector('.kp-preference-popover')).toBeNull();
+  expect(document.activeElement).toBe(chip);
+  click(chip); key("Tab"); key("Enter");
+  expect(revisions()).toBe("1");
+  expect(document.activeElement).toBe(chip);
 });
 
 it("an older Undo never overwrites a newer explicit edit", async () => {

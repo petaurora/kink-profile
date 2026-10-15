@@ -1,7 +1,9 @@
 import { AppIcon } from "./AppIcon";
 import { appIcons } from "./appIcons";
-import { useEffect, useId, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useId, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { ModalLayer } from "./ModalLayer";
+import { PreferenceChip, isPreferenceRating, preferenceIconMeanings } from "./PreferenceChip";
+import { useAnchoredPanel } from "./useAnchoredPanel";
 import "./preference.css";
 
 export type SaveState = "idle" | "saving" | "saved" | "failed";
@@ -46,12 +48,14 @@ export function PreferenceControl({
   onActivate,
   saveState,
   onRetry,
+  expanded = false,
 }: {
   value?: string;
   label: string;
   onActivate: (event: MouseEvent<HTMLButtonElement>) => void;
   saveState?: SaveState;
   onRetry?: () => void;
+  expanded?: boolean;
 }) {
   return (
     <span className="kp-ui kp-rating-wrap">
@@ -59,13 +63,14 @@ export function PreferenceControl({
         type="button"
         className="kp-rating"
         aria-haspopup="dialog"
+        aria-expanded={expanded}
         aria-label={`${label}: ${value || "Not rated"}. Change rating`}
         onClick={(event) => {
           event.stopPropagation();
           onActivate(event);
         }}
       >
-        {value || "Not rated"}
+        <PreferenceChip value={value} />
       </button>
       <InlineSaveStatus state={saveState} label={label} onRetry={onRetry} />
     </span>
@@ -85,6 +90,7 @@ export function PreferenceSheet({
   helpOpen,
   onHelpOpenChange,
   className = "",
+  anchor,
 }: {
   open: boolean;
   onClose: () => void;
@@ -97,6 +103,7 @@ export function PreferenceSheet({
   helpOpen?: boolean;
   onHelpOpenChange?: (open: boolean) => void;
   className?: string;
+  anchor?: HTMLElement | null;
 }) {
   const titleId = useId();
   const helpId = useId();
@@ -104,7 +111,20 @@ export function PreferenceSheet({
   const expanded = helpOpen ?? showHelp;
   const [focusIndex, setFocusIndex] = useState(Math.max(0, options.indexOf(value || "")));
   const choicesRef = useRef<HTMLDivElement>(null);
+  const revealedSelection = useRef<string | null>(null);
+  const position = useAnchoredPanel(open, anchor);
   useEffect(() => setFocusIndex(Math.max(0, options.indexOf(value || ""))), [label, open, value, options]);
+  useLayoutEffect(() => {
+    if (!open) { revealedSelection.current = null; return; }
+    if (position.panelStyle.visibility !== "visible" || revealedSelection.current === label) return;
+    const selected = choicesRef.current?.querySelector<HTMLElement>('[aria-pressed="true"]');
+    const scroll = choicesRef.current?.parentElement;
+    if (!selected || !scroll) return;
+    revealedSelection.current = label;
+    const row = selected.getBoundingClientRect(), viewport = scroll.getBoundingClientRect();
+    if (row.bottom > viewport.bottom) scroll.scrollTop += row.bottom - viewport.bottom;
+    else if (row.top < viewport.top) scroll.scrollTop -= viewport.top - row.top;
+  }, [open, label, position.panelStyle]);
   const close = () => {
     onClose();
   };
@@ -114,7 +134,10 @@ export function PreferenceSheet({
       onClose={close}
       labelledBy={titleId}
       closeLabel="Close rating selector"
-      className={className}
+      className={`kp-preference-popover ${className}`}
+      panelClassName="kp-preference-panel"
+      panelRef={position.panelRef}
+      panelStyle={position.panelStyle}
     >
       <SheetHeader
         title={label}
@@ -130,10 +153,11 @@ export function PreferenceSheet({
         }}
       />
       <span className="kp-keyboard-hint">Arrow keys move focus; Enter or Space chooses. Escape cancels.</span>
+      <div className="kp-preference-scroll">
       <div className="kp-preference-options" role="group" aria-label="Rating choices" ref={choicesRef} onKeyDown={event => {
         if ((event.key === "Enter" || event.key === " ") && event.target instanceof HTMLButtonElement) {
           event.preventDefault();
-          onChange(options[focusIndex]);
+          if (options[focusIndex] !== value) onChange(options[focusIndex]);
           close();
           return;
         }
@@ -150,14 +174,16 @@ export function PreferenceSheet({
             type="button"
             className={value === option ? "chosen" : ""}
             aria-pressed={value === option}
+            aria-label={option}
             tabIndex={index === focusIndex ? 0 : -1}
             onFocus={() => setFocusIndex(index)}
             onClick={() => {
-              onChange(option);
+              if (option !== value) onChange(option);
               close();
             }}
           >
-            {option}
+            {isPreferenceRating(option) && <AppIcon name={preferenceIconMeanings[option]} size={20} />}
+            <span className="kp-preference-option-label">{option}</span>
             {value === option && <AppIcon name="confirm" size={18} />}
           </button>
         ))}
@@ -167,16 +193,17 @@ export function PreferenceSheet({
           <button
             type="button"
             className="kp-preference-help"
-            aria-label="What do these mean?"
+            aria-label="What do these ratings mean?"
             aria-expanded={expanded}
             aria-controls={helpId}
             onClick={() => { setShowHelp(!expanded); onHelpOpenChange?.(!expanded); }}
           >
-            <AppIcon name="help" size={18} inline />What do these mean? <AppIcon name="expand" size={16} style={{transform: expanded ? "rotate(180deg)" : undefined}} />
+            <AppIcon name="help" size={18} inline />What do these ratings mean? <AppIcon name="expand" size={16} style={{transform: expanded ? "rotate(180deg)" : undefined}} />
           </button>
             <div className="kp-preference-explanation" id={helpId} hidden={!expanded}>{help}</div>
         </>
       )}
+      </div>
       {value && (
         <button
           type="button"
@@ -201,6 +228,7 @@ export function SheetHeader({
   closeLabel = "Close",
   children,
   onTitleKeyDown,
+  icon,
 }: {
   title: string;
   titleId?: string;
@@ -209,13 +237,14 @@ export function SheetHeader({
   closeLabel?: string;
   children?: React.ReactNode;
   onTitleKeyDown?: (event: KeyboardEvent<HTMLHeadingElement>) => void;
+  icon?: ReactNode;
 }) {
   return (
     <div className="kp-sheet-header">
       <div>
         {context && <small>{context}</small>}
         <h3 id={titleId} data-dialog-initial-focus tabIndex={-1} onKeyDown={onTitleKeyDown}>
-          {title}
+          {icon}{title}
         </h3>
         {children}
       </div>

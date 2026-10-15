@@ -11,6 +11,13 @@ import {
   IconChevronLeft, IconStack2, IconRestore, IconReload, IconSquarePlus,
   IconShare, IconFileSearch, IconPin, IconGripVertical, IconMasksTheater,
   IconMenu2, IconLoader2,
+  IconHeartFilled, IconMoodSmile, IconBulb, IconMoodConfused, IconHeartOff,
+  IconShieldX, IconCircleOff, IconCircleDashed, IconSquareDot, IconBrackets,
+  IconTag, IconActivity, IconTool, IconColorSwatch, IconBodyScan, IconShape,
+  IconArrowUpRight, IconArrowDownLeft, IconArrowsLeftRight, IconShield,
+  IconShieldHalf, IconShieldExclamation, IconCircleCheck, IconHeartHandshake,
+  IconGitCompare, IconUserCheck, IconLayoutGrid, IconNotebook, IconTags,
+  IconSquareCheck, IconGauge,
 } from "@tabler/icons-react";
 
 /**
@@ -78,7 +85,50 @@ export const appIcons = {
   collapseSidebar: IconChevronLeft,
   expandSidebar: IconChevronRight,
   pending: IconLoader2,
+  preferenceLove: IconHeartFilled,
+  preferenceLike: IconMoodSmile,
+  preferenceCurious: IconBulb,
+  preferenceUnsure: IconMoodConfused,
+  preferenceNotInterested: IconHeartOff,
+  preferenceHardLimit: IconShieldX,
+  preferenceNotApplicable: IconCircleOff,
+  unrated: IconCircleDashed,
+  catalogItem: IconSquareDot,
+  modifierGroup: IconBrackets,
+  modifierValue: IconTag,
+  catalogCategory: IconLayoutGrid,
+  catalogSubject: IconShape, // Approved provisional library equivalent.
+  catalogConcept: IconNotebook,
+  alias: IconTags,
+  applicability: IconSquareCheck,
+  activity: IconActivity,
+  equipment: IconTool,
+  material: IconColorSwatch,
+  bodyArea: IconBodyScan, // Approved provisional library equivalent.
+  giving: IconArrowUpRight,
+  receiving: IconArrowDownLeft,
+  both: IconArrowsLeftRight,
+  riskNeutral: IconShield,
+  riskHalf: IconShieldHalf,
+  riskElevated: IconShieldExclamation,
+  intensity: IconGauge,
+  tried: IconCircleCheck,
+  comfort: IconHeartHandshake,
+  inferred: IconSparkles,
+  pairwise: IconGitCompare,
+  directEvidence: IconUserCheck,
 } as const satisfies Record<string, typeof IconSearch>;
 
 export type AppIconMeaning = keyof typeof appIcons;
 export const appIconDefaults = { size: 22, stroke: 1.65 } as const;
+
+/** Broad symbols retain all seven verbatim labels; none signifies safety or consent. */
+export const catalogRiskIconMeanings = {
+  Low: "riskNeutral",
+  "Low-Moderate": "riskNeutral",
+  Moderate: "riskHalf",
+  "Moderate-High": "riskHalf",
+  High: "riskElevated",
+  Variable: "riskElevated",
+  "Low-Variable": "riskHalf",
+} as const satisfies Record<string, AppIconMeaning>;

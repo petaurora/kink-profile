@@ -3,6 +3,9 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  useCallback,
+  type CSSProperties,
+  type Ref,
   type ReactNode,
 } from "react";
 import "./modal.css";
@@ -142,6 +145,8 @@ type ModalLayerProps = {
   panelClassName?: string;
   backdropClassName?: string;
   id?: string;
+  panelStyle?: CSSProperties;
+  panelRef?: Ref<HTMLElement>;
 } & (
   { label: string; labelledBy?: never } | { label?: never; labelledBy: string }
 );
@@ -160,6 +165,8 @@ function ModalSurface({
   panelClassName = "",
   backdropClassName = "",
   id,
+  panelStyle,
+  panelRef: forwardedPanelRef,
 }: Omit<ModalLayerProps, "open">) {
   // Capture before descendants commit autofocus; the surface mounts only on open.
   const [returnFocus] = useState(() =>
@@ -169,6 +176,11 @@ function ModalSurface({
       : null,
   );
   const panelRef = useRef<HTMLElement>(null);
+  const setPanelRef = useCallback((element: HTMLElement | null) => {
+    panelRef.current = element;
+    if (typeof forwardedPanelRef === "function") forwardedPanelRef(element);
+    else if (forwardedPanelRef) forwardedPanelRef.current = element;
+  }, [forwardedPanelRef]);
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
   useEffect(() => {
@@ -236,7 +248,8 @@ function ModalSurface({
         onClick={onClose}
       />
       <section
-        ref={panelRef}
+        ref={setPanelRef}
+        style={panelStyle}
         id={id}
         className={`kp-modal-panel ${panelClassName}`}
         role="dialog"
