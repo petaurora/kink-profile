@@ -55,7 +55,7 @@ export function GlobalCatalogSearch({ open, onClose, origin, sort, onSort, order
     <div className="ui-lab-search-page">
       <div className="ui-lab-search-modal-header"><span>Search</span><button type="button" className="ui-lab-search-close" aria-label="Close search" onClick={onClose}>×</button></div>
       <div className="lab-search-sticky"><SearchRow><SearchField mode="input" autoFocus inputId="lab-global-query" ariaLabel="Search catalog" resultsId={resultsId} placeholder="Search catalog…" value={query} onChange={setQuery} onClear={clear}/><SearchFilterButton active={sort!=="default"} groupingAvailable={false} expanded={orderOpen} onClick={()=>onOrderOpen(true)}/></SearchRow>
-        <SearchChips label="Search result types" options={["All","Items","Modifiers","Concepts"].map(label=>({id:label,label,active:type===label,onClick:()=>setType(label)}))} clear={type!=="All"?clear:undefined}/>
+        <SearchChips label="Search result types" options={["All","Items","Modifiers","Concepts"].map(label=>({id:label,label,active:type===label,onClick:()=>setType(label)}))} clear={type!=="All"?()=>setType("All"):undefined}/>
       </div>
       {!query.trim()&&<><p className="ui-lab-search-label">STARTING FROM {origin.toUpperCase()}</p><p className="ui-lab-search-hint">Search Catalog Items, modifiers and concepts. Choose a type to narrow results.</p><p className="ui-lab-search-label">SUGGESTED SEARCHES</p><div className="ui-lab-search-suggestions">{["Collars","Leather","Ownership"].map(term=><button key={term} onClick={()=>setQuery(term)}>{term} ↗</button>)}</div></>}
       {loading&&<div className="lab-search-loading" role="status" aria-label="Searching"/>}
