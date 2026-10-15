@@ -1,7 +1,6 @@
+import { appIcons } from "../../components/ui/appIcons";
 import {
-  IconArrowRight,
   IconArrowsExchange,
-  IconBook2,
   IconChecklist,
   IconDice5,
   IconFlame,
@@ -13,7 +12,6 @@ import {
   IconPaw,
   IconRefresh,
   IconSparkles,
-  IconUsers,
 } from "@tabler/icons-react";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -371,7 +369,7 @@ export function HubPage() {
                   onClick={() => navigate(profileRoute.path)}
                 >
                   See what your profile says
-                  <IconArrowRight size={18} stroke={1.8} aria-hidden="true" />
+                  <appIcons.next size={18} stroke={1.8} aria-hidden="true" />
                 </button>
               </article>
             )}
@@ -403,7 +401,7 @@ export function HubPage() {
                       onClick={() => navigate(quizRoutePath(resumableQuiz.quiz.id))}
                     >
                       Keep going
-                      <IconArrowRight size={18} stroke={1.8} aria-hidden="true" />
+                      <appIcons.next size={18} stroke={1.8} aria-hidden="true" />
                     </button>
                   </article>
                 )}
@@ -412,7 +410,7 @@ export function HubPage() {
                   latestPreference && (
                     <article className="hub-home-now">
                       <span className="hub-home-now-icon" aria-hidden="true">
-                        <IconBook2 size={23} stroke={1.65} />
+                        <appIcons.education size={23} stroke={1.65} />
                       </span>
                       <div>
                         <p className="eyebrow">Changed your mind?</p>
@@ -482,7 +480,7 @@ export function HubPage() {
                     onClick={() => navigate(rewardsToolsRandomizerRoute.path)}
                   >
                     Open the randomizer
-                    <IconArrowRight size={18} stroke={1.8} aria-hidden="true" />
+                    <appIcons.next size={18} stroke={1.8} aria-hidden="true" />
                   </button>
                 </article>
               </div>
