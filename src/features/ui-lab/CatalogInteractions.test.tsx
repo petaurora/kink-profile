@@ -9,7 +9,7 @@ import { ToastProvider } from "../../components/ui/ToastProvider";
 let root: Root;
 let container: HTMLDivElement;
 const button = (label: string) => {
-  const match = [...document.querySelectorAll<HTMLButtonElement>("button")].find(el => el.getAttribute("aria-label") === label || el.textContent === label);
+  const match = [...document.querySelectorAll<HTMLButtonElement>("button")].find(el => el.getAttribute("aria-label") === label || el.textContent?.replace(/[⌃⌄]/g, "") === label.replace(/[⌃⌄]/g, ""));
   if (!match) throw new Error(`Missing button: ${label}`);
   return match;
 };
