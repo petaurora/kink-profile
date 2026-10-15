@@ -9,7 +9,7 @@ import { ToastProvider } from "../../components/ui/ToastProvider";
 import type { SortBy } from "../../components/ui/SearchControls";
 
 let root: Root; let container: HTMLDivElement;
-const button=(label:string)=>{const el=[...document.querySelectorAll<HTMLButtonElement>('button')].find(el=>el.getAttribute('aria-label')===label||el.textContent===label);if(!el)throw new Error(`Missing: ${label}`);return el;};
+const button=(label:string)=>{const el=[...document.querySelectorAll<HTMLButtonElement>('button')].find(el=>el.getAttribute('aria-label')===label||el.textContent?.replace(/[⌃⌄]/g, "")===label.replace(/[⌃⌄]/g, ""));if(!el)throw new Error(`Missing: ${label}`);return el;};
 const click=(el:HTMLElement)=>act(()=>{el.focus();el.click()});
 const key=(key:string)=>act(()=>document.activeElement?.dispatchEvent(new KeyboardEvent('keydown',{key,bubbles:true})));
 const flush=async(ms=200)=>act(async()=>{vi.advanceTimersByTime(ms);await Promise.resolve()});
