@@ -75,7 +75,7 @@ function UiLabContent() {
   Home:[],
   Catalog:["Overview","Explore All","Kinks","Rewards & Punishments","Concept Explorer"],
   Profile:["Overview","My Profile","Preferences","Sharing & Permissions","Identity & Expression"],
-  Discover:["Overview","Learn","React","Play"],
+  Discover:["Overview","React","Play"],
   Tools:["Overview","Scene Builder","Agreements & Rituals","Randomizers & Recipes","Compare Profiles"]
  };
  const openMenuChild=(parent:Area,child:string)=>go(parent,child==="Overview"?"":child);
@@ -125,7 +125,7 @@ function UiLabContent() {
       <button type="button" className="ui-lab-header-action" aria-label="Search" onClick={()=>openCatalogSearch(area)}>
         <appIcons.search {...appIconDefaults} aria-hidden="true" />
       </button>
-      <button type="button" className="ui-lab-header-action" aria-label="Profile and settings" onClick={()=>navigate("Profile")}><appIcons.profile {...appIconDefaults} aria-hidden="true" /></button>
+      <button type="button" className="ui-lab-header-action" aria-label="Open profile" onClick={()=>navigate("Profile")}><appIcons.profile {...appIconDefaults} aria-hidden="true" /></button>
     </div>
    </header>
    <ModalLayer open={menuOpen} onClose={()=>setMenuOpen(false)} label="Full navigation menu" closeLabel="Close navigation menu" id="ui-lab-full-menu" className="ui-lab-menu-layer" backdropClassName="ui-lab-menu-backdrop" panelClassName="ui-lab-menu-drawer">
