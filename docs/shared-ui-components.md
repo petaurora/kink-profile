@@ -21,7 +21,7 @@ been migrated to the experimental treatments merely because the code is shared.
 | `ModalLayer` | Backdrop/Escape dismissal; nested focus containment/restoration; coordinated body scroll lock | Open state, title/label, content, visual variant and recovery policy |
 | `SheetHeader` | Shared title, context and accessible close target | Title/context and any header accessory |
 | `PreferenceChip` | Unboxed display-only icon and complete rating label; plain Not rated for absence | Current explicit value; no edit action or inferred preference |
-| `PreferenceControl` / `PreferenceSheet` | Editable unboxed rating and anchored vertical rating dialog; explicit commit, controlled help and Clear | Target/anchor, independent values, persistence and retry |
+| `PreferenceControl` / `PreferenceSheet` | Editable unboxed rating and responsive floating rating dialog; explicit commit, controlled help and Clear | Target/anchor, independent values, persistence and retry |
 | `InlineSaveStatus` | Reserved status slot; idle/saving/saved/failed presentation | Truthful persistence state and Retry implementation |
 | `ItemRow` | Wrapping identity, optional supporting text and indicators, grouped preference/Refine actions | Item data, search-match explanation, optional modifiers, aggregate save status and classification indicators |
 | `DisclosureSection` | Controlled disclosure with a stable panel ID | Expanded state and panel content; opening never records preference |
@@ -91,13 +91,16 @@ and is never an eighth picker option or persisted preference. `PreferenceChip` i
 `PreferenceControl` button with a separate 44px target and contextual name. No
 inferred, ranking or experience value is promoted to a direct preference chip.
 
-`PreferenceSheet` retains its API name but now renders an anchored floating dialog
-on every viewport, including mobile. Its modal semantics are backed by actual
-background isolation, focus containment and outside/Escape cancellation from
-`ModalLayer`. It never silently becomes a bottom sheet. `useAnchoredPanel` flips
-and shifts the panel inside the visual viewport, responds to resize/scroll/zoom,
-and constrains an internal scrolling area. The header and Clear action remain
-available while the choices/help scroll.
+`PreferenceSheet` retains its API name and renders a floating dialog. At phone
+widths (680px and below) it is centered in the visual viewport, independent of
+which rating opened it or the parent sheet's scroll position. On desktop it
+anchors to the trigger, flipping/shifting as needed. Both use a stable 340×560px
+frame, capped by the visible viewport with 12px margins; selection, title length,
+Clear availability and expanded help never resize it. `useAnchoredPanel` responds
+to resize/scroll/zoom. The header and Clear action stay available while choices
+and help scroll internally, and the selected option is revealed on open or
+viewport changes. `ModalLayer` supplies background isolation, focus containment,
+outside/Escape cancellation and trigger focus restoration.
 
 Seven icon-and-label rows follow canonical order. The selected row has a fine
 outline and check; keyboard focus has its own independent ring. Initial focus
