@@ -13,7 +13,7 @@ import { ratingKey, type AppServices } from "../../services/contracts";
 
 const createUiLabServices = (options:Parameters<typeof makeUiLabServices>[0]={}) => makeUiLabServices({...options,referenceData:options.referenceData??labReferenceData});
 let root:Root;let container:HTMLDivElement;let navigate:NavigateFunction;
-const button=(label:string)=>{const el=[...document.querySelectorAll<HTMLButtonElement>('button')].find(el=>el.getAttribute('aria-label')===label||el.textContent===label);if(!el)throw new Error(`Missing: ${label}`);return el;};
+const button=(label:string)=>{const el=[...document.querySelectorAll<HTMLButtonElement>('button')].find(el=>el.getAttribute('aria-label')===label||el.textContent?.replace(/[⌃⌄]/g, "")===label.replace(/[⌃⌄]/g, ""));if(!el)throw new Error(`Missing: ${label}`);return el;};
 const click=(el:HTMLElement)=>act(()=>{el.focus();el.click()});
 const flush=async(ms=220)=>act(async()=>{await vi.advanceTimersByTimeAsync(ms)});
 const route=()=>document.querySelector('output')!.textContent!;
