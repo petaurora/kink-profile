@@ -75,7 +75,7 @@ function UiLabContent() {
   Home:[],
   Catalog:["Overview","Explore All","Kinks","Rewards & Punishments","Concept Explorer"],
   Profile:["Overview","My Profile","Preferences","Sharing & Permissions","Identity & Expression"],
-  Discover:["Overview","React","Play"],
+  Discover:["Overview","Learn","React","Play"],
   Tools:["Overview","Scene Builder","Agreements & Rituals","Randomizers & Recipes","Compare Profiles"]
  };
  const openMenuChild=(parent:Area,child:string)=>go(parent,child==="Overview"?"":child);
