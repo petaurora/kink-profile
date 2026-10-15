@@ -1,39 +1,54 @@
 @import "./tokens.css";
 .kp-item-row {
   display: flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 46px;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 0 7px;
+  min-height: 46px;
   padding: 3px 0;
   border-bottom: 1px solid #f0d3e71a;
 }
 .kp-item-main {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 9px;
-  flex: 1 1 auto;
-  min-width: 0;
+  flex: 1 1 12ch;
+  font-size: 14px;
+  min-width: auto;
+  max-width: 100%;
   padding: 9px 3px;
 }
+.kp-item-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(80px, max-content);
+  align-items: start;
+  gap: 7px;
+  flex: 0 1 auto;
+  max-width: 100%;
+  margin-left: auto;
+}
+.kp-item-actions > :first-child { grid-column: 1; min-width: 0; }
+.kp-item-actions .kp-rating-wrap { max-width: 100%; flex-wrap: wrap; }
+.kp-item-actions .kp-rating { max-width: 100%; }
 .kp-item-name {
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   font-size: 14px;
   line-height: 1.3;
 }
-.kp-item-supporting-text { flex: 0 1 100%; min-width: 0; padding: 0 3px 8px; color: var(--kp-muted, #b7adc5); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
+.kp-item-supporting-text { flex: 1 1 100%; min-width: 0; padding: 0 3px 8px; color: var(--kp-muted, #b7adc5); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
 .kp-refine-toggle {
   border: 0;
   background: transparent;
   color: #eac6da;
   border-radius: 7px;
-  padding: 7px 6px;
+  padding: 7px 3px;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
   font-size: 12px !important;
   white-space: nowrap;
 }
@@ -55,6 +70,7 @@
   .kp-item-main {
     gap: 5px;
     padding: 3px 2px 0;
+    font-size: 13px;
   }
   .kp-item-name {
     font-size: 13px;

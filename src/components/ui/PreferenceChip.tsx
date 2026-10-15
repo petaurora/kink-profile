@@ -21,7 +21,7 @@ export function isPreferenceRating(value: unknown): value is PreferenceRating {
 export function PreferenceChip({ value }: { value?: string }) {
   const rated = isPreferenceRating(value);
   return <span className="kp-preference-chip" data-preference={rated ? value : undefined}>
-    <AppIcon name={rated ? preferenceIconMeanings[value] : "unrated"} size={16} />
+    {rated && <AppIcon name={preferenceIconMeanings[value]} size={16} />}
     <span>{value || "Not rated"}</span>
   </span>;
 }
