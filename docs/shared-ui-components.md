@@ -123,21 +123,23 @@ uses `SheetHeader.titleAccessory` for a smaller, unboxed rating beside the Item
 heading, without an extra field label. The accessory is a sibling of the heading,
 so its button keeps its own accessible name. It wraps below long titles without
 crowding Close. A smaller, unboxed Experienced toggle sits directly beneath. Its
-label stays visible; the canonical Check appears only when marked. About experience
+label stays visible; the confirmation badge appears only when marked. About experience
 holds the marker explanation and edit time in the scrolling content. Comfort UI is
 deferred; its service records and independent semantics remain intact.
 
 Catalog vocabulary is also registered centrally: Item Square Dot, Modifier Group
 Brackets, Modifier Value Tag, Category Layout Grid, Subject Shape (provisional),
 Concept Notebook, Alias Tags and Applicability Square Check. Experience
-meanings include Tried Circle Check and Comfort Heart Handshake. Refine presents
-the existing `tried` field as Experienced using a native toggle button with a stable
+meanings include Tried confirmation badge (Tabler Rosette Discount Check) and Comfort
+Heart Handshake. The badge marks self-reported experience, not verification or
+skill. Refine presents the existing `tried` field as Experienced using a native
+toggle button with a stable
 contextual name, `aria-pressed`, Enter/Space support, a 44px target and the shared
 visible keyboard-focus ring. Both states omit borders and fills; a second activation
 clears the marker. Comfort Heart Handshake remains registered for
 future use.
 `InlineSaveStatus.showSavedIcon` defaults to true. Experienced sets it to false
-to avoid duplicating its selected-state Check; live save announcements, the saving
+to avoid duplicating its selected-state badge; live save announcements, the saving
 indicator and failure/Retry feedback remain available.
 Activity, Equipment, Material, Body Area, participation direction, provenance,
 intensity and risk glyphs are available to callers without inventing missing

@@ -21,8 +21,8 @@ Refine places the smaller, unboxed overall rating beside the Item title, with no
 separate Preference or Overall rating label. It opens the shared rating picker;
 long names let the rating wrap as a unit while keeping Close available. A small,
 unboxed Experienced toggle sits directly underneath, retaining its label and adding
-a Check only when marked. Every Item can open Refine, including Items without
-modifiers. Compact Catalog rows keep only preference and Refine.
+a confirmation badge only when marked. Every Item can open Refine, including Items
+without modifiers. Compact Catalog rows keep only preference and Refine.
 
 Unmarked Experienced means no affirmative record. It edits the existing `tried`
 field without renaming or migrating data, and remains independent of preference,
@@ -32,7 +32,7 @@ content. Edit timestamps are not dates of participation; opening controls or
 disclosures creates no record. The native toggle button exposes its stable,
 contextual name and `aria-pressed` state, supports Enter/Space and retains a visible
 keyboard-focus ring and a 44px target. Activating it again clears the marker.
-Successful saves are announced without a second visible Check; the toggle's Check
+Successful saves are announced without a second visible icon; the toggle's badge
 always means marked, never merely saved. Saving and failure/Retry remain visible.
 
 Comfort UI is deferred in Refine. Existing semantic values (`uncomfortable`,

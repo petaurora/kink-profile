@@ -15,7 +15,7 @@ import {
   IconShieldX, IconCircleOff, IconCircleDashed, IconSquareDot, IconBrackets,
   IconTag, IconActivity, IconTool, IconColorSwatch, IconBodyScan, IconShape,
   IconArrowUpRight, IconArrowDownLeft, IconArrowsLeftRight, IconShield,
-  IconShieldHalf, IconShieldExclamation, IconCircleCheck, IconHeartHandshake,
+  IconShieldHalf, IconShieldExclamation, IconRosetteDiscountCheck, IconHeartHandshake,
   IconGitCompare, IconUserCheck, IconLayoutGrid, IconNotebook, IconTags,
   IconSquareCheck, IconGauge,
 } from "@tabler/icons-react";
@@ -112,7 +112,7 @@ export const appIcons = {
   riskHalf: IconShieldHalf,
   riskElevated: IconShieldExclamation,
   intensity: IconGauge,
-  tried: IconCircleCheck,
+  tried: IconRosetteDiscountCheck,
   comfort: IconHeartHandshake,
   inferred: IconSparkles,
   pairwise: IconGitCompare,

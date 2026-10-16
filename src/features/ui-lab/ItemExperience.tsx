@@ -19,7 +19,7 @@ export function ItemExperience({ itemId, name, records, onRetry }: {
         notify({ message: checked ? "Marked as experienced" : "Experience mark cleared", kind: "info", actionLabel: "Undo", duration: 5000, onAction: () => {
           if (!records.restore(triedTarget, version, previous)) notify({ message: "A newer edit was kept", kind: "info" });
         }});
-      }}>{experienced && <AppIcon name="confirm" size={16}/>}<span>Experienced</span></button>
+      }}>{experienced && <AppIcon name="tried" size={16}/>}<span>Experienced</span></button>
       <InlineSaveStatus state={records.saves[triedTarget]} label={`${name} experience`} showSavedIcon={false} onRetry={() => onRetry(triedTarget)}/>
   </div>;
 }
