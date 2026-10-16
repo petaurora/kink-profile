@@ -88,17 +88,17 @@ it("uses best matches for an R/P query while keeping alphabetical browsing and e
 });
 
 
-it("retries Tried with focus recovery and preserves deferred Comfort records", async () => {
+it("retries Experienced with focus recovery and preserves deferred Comfort records", async () => {
   const adapter=createUiLabServices({latencyMs:0,saveLatencyMs:10,initialPreferences:{ratings:{},classifications:{},experience:{collars:{comfort:"somewhat_comfortable"}}}});
   mount(adapter); await advance(); openKinks(); click(button("Refine Collars"));
   expect(container.querySelector('.cc-refine-sheet')?.textContent).not.toContain("Comfort");
-  const tried=container.querySelector<HTMLInputElement>('.cc-tried input')!;
-  expect(tried.checked).toBe(false);
+  const tried=button("Collars: Experienced");
+  expect(tried.getAttribute("aria-pressed")).toBe("false");
   adapter.failNext("save"); click(tried); await advance(10);
   click(button("Close refinement")); click(button("Review issues")); await advance();
-  expect(document.activeElement).toBe(button("Retry saving Collars Tried"));
-  click(button("Retry saving Collars Tried")); await advance(10);
-  expect(document.activeElement).toBe(container.querySelector('.cc-tried input'));
+  expect(document.activeElement).toBe(button("Retry saving Collars experience"));
+  click(button("Retry saving Collars experience")); await advance(10);
+  expect(document.activeElement).toBe(container.querySelector('.cc-experienced-toggle'));
   const rating=container.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-rating')!;
   adapter.failNext("save"); click(rating); click(button("Love")); await advance(10);
   click(container.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-retry')!); await advance(10);

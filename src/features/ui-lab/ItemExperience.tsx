@@ -4,22 +4,23 @@ import { InlineSaveStatus } from "../../components/ui/PreferenceControl";
 import { useToasts } from "../../components/ui/ToastProvider";
 import type { Records } from "./LabRecords";
 
-/** Optional Tried marker; Comfort UI is deferred without deleting its records. */
+/** Experienced edits the existing Tried marker; Comfort UI remains deferred. */
 export function ItemExperience({ itemId, name, records, onRetry }: {
   itemId: string; name: string; records: Records; onRetry: (target: string) => void;
 }) {
   const { notify } = useToasts();
   const triedTarget = `experience:${itemId}:tried`;
-  return <div className="cc-tried" data-field-id={triedTarget}>
-      <label><span className="cc-tried-checkbox"><input type="checkbox" checked={records.values[triedTarget] === true} onChange={event => {
+  const experienced = records.values[triedTarget] === true;
+  return <div className="cc-experienced" data-field-id={triedTarget}>
+      <button type="button" className="cc-experienced-toggle" aria-label={`${name}: Experienced`} aria-pressed={experienced} onClick={() => {
         const previous = records.values[triedTarget];
-        const checked = event.target.checked;
+        const checked = !experienced;
         const version = records.commit(triedTarget, checked ? true : undefined);
-        notify({ message: checked ? "Tried recorded" : "Tried marker cleared", kind: "info", actionLabel: "Undo", duration: 5000, onAction: () => {
+        notify({ message: checked ? "Marked as experienced" : "Experience mark cleared", kind: "info", actionLabel: "Undo", duration: 5000, onAction: () => {
           if (!records.restore(triedTarget, version, previous)) notify({ message: "A newer edit was kept", kind: "info" });
         }});
-      }}/><span className="cc-tried-box" aria-hidden="true"><AppIcon name="confirm" size={14}/></span></span>Tried</label>
-      <InlineSaveStatus state={records.saves[triedTarget]} label={`${name} Tried`} onRetry={() => onRetry(triedTarget)}/>
+      }}>{experienced && <AppIcon name="confirm" size={16}/>}<span>Experienced</span></button>
+      <InlineSaveStatus state={records.saves[triedTarget]} label={`${name} experience`} onRetry={() => onRetry(triedTarget)}/>
   </div>;
 }
 
@@ -29,8 +30,8 @@ export function ItemExperienceDetails({ itemId, open, onToggle, records }: {
   const latestEdit = records.revisions.filter(event => event.target === `experience:${itemId}:tried`).at(-1);
   return <DisclosureSection title="About experience" open={open} onToggle={onToggle}>
     <div className="cc-experience-details">
-      <p>Tried is optional. Unchecked means no affirmative record.</p>
-      <p>Your rating is independent of whether you have tried this.</p>
+      <p>Experienced is optional. Leaving it unmarked means no affirmative record.</p>
+      <p>Your rating is independent of whether you have experienced this.</p>
       <p>Recording time is the edit time, not the activity date.</p>
       {latestEdit && <p>Last recorded edit: <time dateTime={latestEdit.recordedAt}>{new Date(latestEdit.recordedAt).toLocaleString()}</time></p>}
     </div>

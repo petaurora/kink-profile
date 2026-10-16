@@ -115,16 +115,23 @@ it("reveals failed modifiers from the collapsed parent and retries the current v
   expect(document.querySelector('[aria-label="Collars: Modifier save failed. Reveal issue"]')).toBeNull();
 });
 
-it("keeps the title rating and Tried independent and makes Tried reversible", () => {
+it("keeps Experienced independent of rating and makes its unboxed toggle reversible", () => {
   mount(); rate("Collars overall: Not rated. Change rating", "Hard Limit"); refine();
-  const tried = document.querySelector<HTMLInputElement>('.cc-tried input')!;
-  expect(tried.checked).toBe(false); click(tried);
+  const tried = button("Collars: Experienced");
+  expect(tried.getAttribute("aria-pressed")).toBe("false");
+  expect(tried.textContent).toBe("Experienced");
+  expect(document.querySelector('.cc-refine-sheet input[type="checkbox"]')).toBeNull();
+  tried.focus(); expect(recorded().revisions).toHaveLength(1);
+  click(tried);
+  expect(tried.getAttribute("aria-pressed")).toBe("true");
+  expect(tried.textContent).toBe("Experienced");
+  expect(tried.querySelector(".kp-icon")).not.toBeNull();
   expect(recorded().values["collars:overall"]).toBe("Hard Limit");
-  click(button("Undo")); expect(tried.checked).toBe(false);
+  click(button("Undo")); expect(tried.getAttribute("aria-pressed")).toBe("false");
   const rating = document.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-rating')!;
   click(rating); click(button("Like"));
   expect(recorded().values["collars:overall"]).toBe("Like");
-  expect(tried.checked).toBe(false);
+  expect(tried.getAttribute("aria-pressed")).toBe("false");
   expect(document.activeElement).toBe(rating);
 });
 
@@ -146,14 +153,14 @@ it("opens no-modifier Refine and its title picker without creating records throu
   expect(document.activeElement).toBe(trigger);
 });
 
-it("restores a cleared Tried marker and protects a newer edit from an older Undo", async () => {
+it("restores a cleared Experienced marker and protects a newer edit from an older Undo", async () => {
   mount(); refine();
-  const tried = document.querySelector<HTMLInputElement>('.cc-tried input')!;
+  const tried = button("Collars: Experienced");
   click(tried); click(button("Dismiss notification")); await advance(150);
-  click(tried); expect(tried.checked).toBe(false);
-  click(button("Undo")); expect(tried.checked).toBe(true); await advance(150);
+  click(tried); expect(tried.getAttribute("aria-pressed")).toBe("false");
+  click(button("Undo")); expect(tried.getAttribute("aria-pressed")).toBe("true"); await advance(150);
   click(tried); click(tried); click(button("Undo"));
-  expect(tried.checked).toBe(true);
+  expect(tried.getAttribute("aria-pressed")).toBe("true");
   expect(recorded().values["collars:overall"]).toBeUndefined();
 });
 

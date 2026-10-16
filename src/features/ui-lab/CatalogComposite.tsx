@@ -53,7 +53,7 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  useEffect(()=>{if(!issueTarget)return;const frame=requestAnimationFrame(()=>{
   const field=findField(issueTarget);
   field?.scrollIntoView({block:"nearest"});
-  (field?.querySelector<HTMLButtonElement>('.kp-retry') || field?.querySelector<HTMLElement>('.kp-rating, input[type="checkbox"]'))?.focus();
+  (field?.querySelector<HTMLButtonElement>('.kp-retry') || field?.querySelector<HTMLElement>('.kp-rating, .cc-experienced-toggle'))?.focus();
  });return()=>cancelAnimationFrame(frame)},[issueTarget,refining,groupsOpen]);
 
 
@@ -94,7 +94,7 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  function retry(id:string){
   const focused=document.activeElement?.getAttribute("aria-label")?.startsWith("Retry saving");
   records.retry(id);
-  if(focused)requestAnimationFrame(()=>findField(id)?.querySelector<HTMLElement>('.kp-rating, input[type="checkbox"]')?.focus());
+  if(focused)requestAnimationFrame(()=>findField(id)?.querySelector<HTMLElement>('.kp-rating, .cc-experienced-toggle')?.focus());
  }
  function ratingButton(id:string,label:string,parent:string){
   return <span data-field-id={id}><PreferenceControl value={ratings[id]} label={label} saveState={saves[id]} onRetry={()=>retry(id)} expanded={selector?.id===id} onActivate={event=>setSelector({id,label,parent,anchor:event.currentTarget})}/></span>;

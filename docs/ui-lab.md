@@ -19,16 +19,19 @@ overwriting a newer explicit edit.
 
 Refine places the smaller, unboxed overall rating beside the Item title, with no
 separate Preference or Overall rating label. It opens the shared rating picker;
-long names let the rating wrap as a unit while keeping Close available. Themed
-Tried sits directly underneath. Every Item can open Refine, including Items without
+long names let the rating wrap as a unit while keeping Close available. A small,
+unboxed Experienced toggle sits directly underneath, retaining its label and adding
+a Check only when marked. Every Item can open Refine, including Items without
 modifiers. Compact Catalog rows keep only preference and Refine.
 
-Unchecked Tried means no affirmative record. Tried is independent of preference,
+Unmarked Experienced means no affirmative record. It edits the existing `tried`
+field without renaming or migrating data, and remains independent of preference,
 offers version-safe Undo and shows save feedback with Retry. Explanation and the
 latest Tried edit remain in the optional About experience disclosure in scrolling
 content. Edit timestamps are not dates of participation; opening controls or
-disclosures creates no record. The checkbox retains native input semantics with
-app-themed unchecked, checked and focus states.
+disclosures creates no record. The native toggle button exposes its stable,
+contextual name and `aria-pressed` state, supports Enter/Space and retains a visible
+keyboard-focus ring and a 44px target. Activating it again clears the marker.
 
 Comfort UI is deferred in Refine. Existing semantic values (`uncomfortable`,
 `somewhat_comfortable`, `comfortable`) and service support remain intact; navigating

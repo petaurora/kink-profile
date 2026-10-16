@@ -115,18 +115,7 @@
 .cc-refine-rating .kp-rating { max-width: 100%; text-align: left; }
 .cc-refine-rating .kp-preference-chip { justify-content: flex-start; }
 .cc-refine-rating .kp-preference-chip > span { overflow-wrap: normal; }
-.cc-tried { display: flex; align-items: center; gap: 6px; margin-top: 2px; font-size: 13px; }
-.cc-tried label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
-.cc-tried-checkbox { position: relative; display: inline-flex; flex: none; width: 18px; height: 18px; }
-.cc-tried-checkbox input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
-.cc-tried-box { display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 100%; border: 1.5px solid var(--kp-control-border); border-radius: 4px; background: var(--kp-navy); color: var(--kp-navy); pointer-events: none; }
-.cc-tried-box .kp-icon { visibility: hidden; }
-.cc-tried label:hover .cc-tried-box { border-color: var(--kp-pink); }
-.cc-tried-checkbox input:checked + .cc-tried-box { border-color: var(--kp-pink); background: var(--kp-pink); }
-.cc-tried-checkbox input:checked + .cc-tried-box .kp-icon { visibility: visible; }
-.cc-tried-checkbox input:focus-visible + .cc-tried-box { outline: 2px solid var(--kp-pink); outline-offset: 3px; }
-@media (forced-colors: active) {
-  .cc-tried-checkbox input { opacity: 1; }
-  .cc-tried-box { display: none; }
-}
+.cc-experienced { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 2px; font-size: 13px; }
+.cc-experienced-toggle { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; margin-left: -3px; padding: 0 3px; border: 0; border-radius: 3px; background: transparent; color: var(--kp-muted); font: inherit; text-align: left; cursor: pointer; }
+.cc-experienced-toggle[aria-pressed="true"], .cc-experienced-toggle:hover { color: var(--kp-pink); }
 .cc-experience-details { padding: 4px 3px 12px; color: #c6b1ca; font-size: 13px; line-height: 1.5; }

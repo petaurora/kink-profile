@@ -122,17 +122,19 @@ functional controls and Experience meanings retain their contextual roles. Refin
 uses `SheetHeader.titleAccessory` for a smaller, unboxed rating beside the Item
 heading, without an extra field label. The accessory is a sibling of the heading,
 so its button keeps its own accessible name. It wraps below long titles without
-crowding Close. The themed Tried checkbox sits directly beneath. About experience
-holds Tried explanation and edit time in the scrolling content. Comfort UI is
+crowding Close. A smaller, unboxed Experienced toggle sits directly beneath. Its
+label stays visible; the canonical Check appears only when marked. About experience
+holds the marker explanation and edit time in the scrolling content. Comfort UI is
 deferred; its service records and independent semantics remain intact.
 
 Catalog vocabulary is also registered centrally: Item Square Dot, Modifier Group
 Brackets, Modifier Value Tag, Category Layout Grid, Subject Shape (provisional),
 Concept Notebook, Alias Tags and Applicability Square Check. Experience
-meanings include Tried Circle Check and Comfort Heart Handshake. The Refine Tried
-checkbox uses app tokens for both states and a canonical Check when checked,
-with a visible keyboard-focus ring. It retains a native input and uses native
-rendering in forced-colors mode. Comfort Heart Handshake remains registered for
+meanings include Tried Circle Check and Comfort Heart Handshake. Refine presents
+the existing `tried` field as Experienced using a native toggle button with a stable
+contextual name, `aria-pressed`, Enter/Space support, a 44px target and the shared
+visible keyboard-focus ring. Both states omit borders and fills; a second activation
+clears the marker. Comfort Heart Handshake remains registered for
 future use.
 Activity, Equipment, Material, Body Area, participation direction, provenance,
 intensity and risk glyphs are available to callers without inventing missing
