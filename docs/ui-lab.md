@@ -17,8 +17,9 @@ focus without editing; Enter/Space explicitly commits; Escape cancels. Clear
 offers Undo for the exact preceding value. Version checks keep an older Undo from
 overwriting a newer explicit edit.
 
-Refine places explicitly labeled Preference and Comfort controls below the Item
-title, with an independent Tried checkbox nearby. Comfort shows its value or
+Refine places explicitly labeled Overall rating (preference) and Comfort controls
+below the Item title, with an independent Tried checkbox nearby. The checkbox
+retains native input semantics with app-themed unchecked, checked and focus states. Comfort shows its value or
 `Not set` and uses the shared floating picker for Uncomfortable, Somewhat Comfortable
 and Comfortable. Every Item can open Refine, including Items without modifiers.
 Compact Catalog rows keep only preference and Refine.

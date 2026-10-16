@@ -119,7 +119,7 @@ Supporting search text spans the row below.
 Refine uses text for the Item title, Modifier Group headings and Modifier Value
 labels; the structural icons are omitted to reduce repetition. Rating-state icons,
 functional controls and Experience meanings retain their contextual roles. The
-Refine header places explicitly labeled Preference and Comfort fields together,
+Refine header places explicitly labeled Overall rating and Comfort fields together,
 with Tried as an independent checkbox nearby. Fields wrap safely on narrow screens.
 About experience holds explanation and edit time in the scrolling content. Comfort
 uses the same stable picker with three plain text choices, a selected check, and
@@ -129,7 +129,9 @@ Catalog vocabulary is also registered centrally: Item Square Dot, Modifier Group
 Brackets, Modifier Value Tag, Category Layout Grid, Subject Shape (provisional),
 Concept Notebook, Alias Tags and Applicability Square Check. Experience
 meanings include Tried Circle Check and Comfort Heart Handshake. The Refine Tried
-checkbox supplies its own checked state without a redundant glyph; a set Comfort
+checkbox uses app tokens for both states and a canonical Check when checked,
+with a visible keyboard-focus ring. It retains a native input and uses native
+rendering in forced-colors mode. A set Comfort
 value uses Heart Handshake with its full label.
 Activity, Equipment, Material, Body Area, participation direction, provenance,
 intensity and risk glyphs are available to callers without inventing missing

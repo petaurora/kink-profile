@@ -25,7 +25,7 @@ export function ItemExperience({ itemId, name, preference, records, onComfortAct
   const comfortTarget = `experience:${itemId}:comfort`;
   const comfort = comfortLabel(records.values[comfortTarget]);
   return <div className="cc-refine-summary">
-    <div className="cc-refine-field"><span className="cc-refine-field-label">Preference</span>{preference}</div>
+    <div className="cc-refine-field"><span className="cc-refine-field-label">Overall rating</span>{preference}</div>
     <div className="cc-refine-field"><span className="cc-refine-field-label">Comfort</span>
       <span data-field-id={comfortTarget} className="kp-rating-wrap">
         <button type="button" className="kp-rating cc-comfort-value" data-empty={!comfort || undefined} aria-haspopup="dialog" aria-expanded={comfortExpanded}
@@ -36,14 +36,14 @@ export function ItemExperience({ itemId, name, preference, records, onComfortAct
       </span>
     </div>
     <div className="cc-tried" data-field-id={triedTarget}>
-      <label><input type="checkbox" checked={records.values[triedTarget] === true} onChange={event => {
+      <label><span className="cc-tried-checkbox"><input type="checkbox" checked={records.values[triedTarget] === true} onChange={event => {
         const previous = records.values[triedTarget];
         const checked = event.target.checked;
         const version = records.commit(triedTarget, checked ? true : undefined);
         notify({ message: checked ? "Tried recorded" : "Tried marker cleared", kind: "info", actionLabel: "Undo", duration: 5000, onAction: () => {
           if (!records.restore(triedTarget, version, previous)) notify({ message: "A newer edit was kept", kind: "info" });
         }});
-      }}/>Tried</label>
+      }}/><span className="cc-tried-box" aria-hidden="true"><AppIcon name="confirm" size={14}/></span></span>Tried</label>
       <InlineSaveStatus state={records.saves[triedTarget]} label={`${name} Tried`} onRetry={() => onRetry(triedTarget)}/>
     </div>
   </div>;
