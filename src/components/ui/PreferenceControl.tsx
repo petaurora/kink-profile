@@ -91,6 +91,8 @@ export function PreferenceSheet({
   onHelpOpenChange,
   className = "",
   anchor,
+  optionsLabel = "Rating choices",
+  clearLabel = "Clear rating",
 }: {
   open: boolean;
   onClose: () => void;
@@ -104,6 +106,8 @@ export function PreferenceSheet({
   onHelpOpenChange?: (open: boolean) => void;
   className?: string;
   anchor?: HTMLElement | null;
+  optionsLabel?: string;
+  clearLabel?: string;
 }) {
   const titleId = useId();
   const helpId = useId();
@@ -151,7 +155,7 @@ export function PreferenceSheet({
       />
       <span className="kp-keyboard-hint">Arrow keys move focus; Enter or Space chooses. Escape cancels.</span>
       <div className="kp-preference-scroll">
-      <div className="kp-preference-options" role="group" aria-label="Rating choices" ref={choicesRef} onKeyDown={event => {
+      <div className="kp-preference-options" role="group" aria-label={optionsLabel} ref={choicesRef} onKeyDown={event => {
         if ((event.key === "Enter" || event.key === " ") && event.target instanceof HTMLButtonElement) {
           event.preventDefault();
           if (options[focusIndex] !== value) onChange(options[focusIndex]);
@@ -210,7 +214,7 @@ export function PreferenceSheet({
             close();
           }}
         >
-          Clear rating
+          {clearLabel}
         </button>
       )}
     </ModalLayer>

@@ -17,10 +17,18 @@ focus without editing; Enter/Space explicitly commits; Escape cancels. Clear
 offers Undo for the exact preceding value. Version checks keep an older Undo from
 overwriting a newer explicit edit.
 
-Tried and three-value Comfort live in an optional item Experience disclosure.
-Unchecked Tried means no affirmative record. Comfort stores semantic string values,
-independently of Tried and preference. Changes retain session revisions and edit
-timestamps; these are not dates of participation. Tried offers Undo.
+Refine places explicitly labeled Preference and Comfort controls below the Item
+title, with an independent Tried checkbox nearby. Comfort shows its value or
+`Not set` and uses the shared floating picker for Uncomfortable, Somewhat Comfortable
+and Comfortable. Every Item can open Refine, including Items without modifiers.
+Compact Catalog rows keep only preference and Refine.
+
+Unchecked Tried means no affirmative record. Comfort stores semantic string values
+(`uncomfortable`, `somewhat_comfortable`, `comfortable`), independently of Tried and
+preference. Tried changes and Clear comfort offer version-safe Undo. Each field
+shows save feedback and Retry. Explanation and the latest recorded edit remain in
+the optional About experience disclosure in scrolling content. Edit timestamps are
+not dates of participation; opening controls or disclosures creates no record.
 
 ## Local service save and recovery
 

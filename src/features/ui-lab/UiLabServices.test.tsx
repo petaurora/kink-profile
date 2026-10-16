@@ -86,3 +86,25 @@ it("uses best matches for an R/P query while keeping alphabetical browsing and e
   expect(best.getAttribute("aria-pressed")).toBe("true");click(button("Name: Z–A"));click(button("Done"));
   expect(rows()[0]).toBe("privileges");
 });
+
+
+it("retries independent header experience fields and returns focus to their controls", async () => {
+  const adapter=createUiLabServices({latencyMs:0,saveLatencyMs:10});
+  mount(adapter); await advance(); openKinks(); click(button("Refine Collars"));
+  adapter.failNext("save");
+  click(button("Collars Comfort: Not set. Change comfort")); click(button("Somewhat Comfortable")); await advance(10);
+  expect(button("Collars Comfort: Somewhat Comfortable. Change comfort")).toBeTruthy();
+  click(button("Retry saving Collars Comfort")); await advance(10);
+  expect(document.activeElement).toBe(button("Collars Comfort: Somewhat Comfortable. Change comfort"));
+  const tried=container.querySelector<HTMLInputElement>('.cc-tried input')!;
+  expect(tried.checked).toBe(false);
+  adapter.failNext("save"); click(tried); await advance(10);
+  click(button("Close refinement")); click(button("Review issues")); await advance();
+  expect(document.activeElement).toBe(button("Retry saving Collars Tried"));
+  click(button("Retry saving Collars Tried")); await advance(10);
+  expect(document.activeElement).toBe(container.querySelector('.cc-tried input'));
+  const snapshotPromise=adapter.services.preferences.getSnapshot(); await advance();
+  const snapshot=await snapshotPromise;
+  expect(snapshot.experience?.collars).toEqual({tried:true,comfort:"somewhat_comfortable"});
+  expect(snapshot.ratings["item:collars"]).toBeUndefined();
+});

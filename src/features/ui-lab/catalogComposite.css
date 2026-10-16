@@ -12,13 +12,10 @@
 /* Keep the lab-only controls secondary to the actual browse experience. */
 .cc-demo-compact{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:6px 0 12px;margin:0;background:transparent;border:0;font-size:12px;opacity:.76}.cc-demo-compact label{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.cc-demo-compact input{width:15px;height:15px}.cc-demo-compact+ .cc-browser{margin-top:0}
 
-.cc-refine-overall{display:flex;align-items:center;gap:12px;margin-top:10px;font-size:13px;color:#d8bbd0}.cc-refine-overall .kp-rating{color:#f0d3e7;font-weight:600;min-height:38px}.cc-refine-sheet .kp-sheet-header{align-items:flex-start}
-
-/* Overall rating in Refine uses the same quiet text affordance as modifier rows. */
-.cc-refine-overall{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 0;color:#d8bbd0;font-size:13px}.cc-refine-overall .kp-rating-wrap{min-width:0}.cc-refine-overall .kp-rating{font-size:13px!important;font-weight:400;color:#c6b1ca;min-height:36px;min-width:0;padding:5px 3px;background:transparent;border:1px solid transparent;border-radius:5px;text-align:right;white-space:nowrap}.cc-refine-overall .kp-rating:hover{color:#f0d3e7}.cc-refine-overall .kp-rating:focus-visible{outline:2px solid #f0d3e7;outline-offset:2px}
+.cc-refine-sheet .kp-sheet-header{align-items:flex-start}
 
 /* Refine maintains a stable viewport-relative sheet height regardless of group disclosure. */
-.cc-refine-sheet{height:min(80dvh,760px);max-height:calc(100dvh - 24px);display:flex;flex-direction:column;overflow:hidden}.cc-refine-sheet>.kp-sheet-header{flex:0 0 auto}.cc-refine-sheet>.cc-refine-content{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto}.cc-refine-underlay{z-index:1100;pointer-events:none}.cc-refine-underlay .kp-modal-backdrop{pointer-events:none}.cc-rating-over-refine{z-index:1110}.cc-rating-over-refine .kp-modal-backdrop{background:#07082085}@media(max-width:680px){.cc-refine-sheet{height:70dvh;max-height:calc(100dvh - 12px)}.cc-refine-sheet>.cc-refine-content{max-height:none}}.cc-refine-overall{justify-content:flex-end;margin-top:0}.cc-refine-overall .kp-rating{min-height:32px}
+.cc-refine-sheet{height:min(80dvh,760px);max-height:calc(100dvh - 24px);display:flex;flex-direction:column;overflow:hidden}.cc-refine-sheet>.kp-sheet-header{flex:0 0 auto}.cc-refine-sheet>.cc-refine-content{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto}.cc-refine-underlay{z-index:1100;pointer-events:none}.cc-refine-underlay .kp-modal-backdrop{pointer-events:none}.cc-rating-over-refine{z-index:1110}.cc-rating-over-refine .kp-modal-backdrop{background:#07082085}@media(max-width:680px){.cc-refine-sheet{height:70dvh;max-height:calc(100dvh - 12px)}.cc-refine-sheet>.cc-refine-content{max-height:none}}
 
 /* Single-choice browse filters reuse the rating sheet on mobile. */
 .cc-sheet-trigger{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;max-width:100%;padding:8px 12px;background:#211d4b;border:1px solid #f0d3e740;border-radius:8px;color:#f0d3e7;text-align:left;font-size:12px!important}.cc-sheet-trigger span{flex:none;color:#cdb5ca}.cc-browse-layer .cc-options{grid-template-columns:1fr}.cc-browse-layer .kp-sheet-header h3{margin:0 0 18px}.cc-browse-layer .cc-selector{overflow-y:auto}
@@ -58,12 +55,7 @@
 
 
 .cc-error-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 12px; border: 1px solid #ffbdcb66; border-radius: 10px; margin-bottom: 12px; }
-.cc-error-summary button, .cc-experience button { background: transparent; border: 1px solid #f0d3e74a; color: #f0d3e7; padding: 10px; border-radius: 8px; min-height: 44px; }
-.cc-experience { padding: 12px 3px; font-size: 13px; }
-.cc-experience p { color: #c6b1ca; line-height: 1.5; }
-.cc-experience fieldset { border: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.cc-experience legend { margin-bottom: 8px; }
-.cc-experience button[aria-pressed=true] { background: #520e25; }
+.cc-error-summary button { background: transparent; border: 1px solid #f0d3e74a; color: #f0d3e7; padding: 10px; border-radius: 8px; min-height: 44px; }
 .cc-value-highlight { background: #f0d3e714; outline: 1px solid #f0d3e755; }
 /* Hidden disclosures must stay hidden despite explicit flex layout. */
 .cc-rp-popover[hidden] { display: none; }
@@ -71,8 +63,7 @@
 .cc-category-heading[hidden], .cc-section-items[hidden] { display: none; }
 .cc .cc-demo-compact { opacity: 1; }
 .cc-demo-compact label { min-height: 44px; white-space: normal; }
-.cc .cc-refine-overall .kp-rating, .cc .cc-rp-indicator,
-.cc-rp-popover button { min-width: 44px; min-height: 44px; }
+.cc .cc-rp-indicator, .cc-rp-popover button { min-width: 44px; min-height: 44px; }
 .cc-refine-sheet .kp-rating { min-height: 44px; }
 .cc-refine-sheet { overflow-y: auto; }
 .cc-refine-sheet > .cc-refine-content { flex-shrink: 0; }
@@ -113,8 +104,27 @@
 
 /* Ratings retain their natural label width; modifier names can wrap. */
 .cc-value > [data-field-id] { flex: 0 0 auto; }
-/* Keep the overall rating right-aligned below the Item title, apart from Close. */
+/* Keep labeled fields below the Item title, apart from Close. */
 .cc-refine-sheet > .kp-sheet-header { position: relative; display: block; }
 .cc-refine-sheet > .kp-sheet-header > div { width: 100%; }
 .cc-refine-sheet > .kp-sheet-header h3 { padding-right: 54px; }
 .cc-refine-sheet > .kp-sheet-header > button { position: absolute; top: 0; right: 0; }
+
+/* Preference and Comfort are independent, labeled controls; explanations scroll below. */
+.cc-refine-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 14px; margin-top: 12px; }
+.cc-refine-field { min-width: 0; }
+.cc-refine-field-label { display: block; font-size: 11px; color: #c6b1ca; }
+.cc-refine-field .kp-rating-wrap { display: flex; justify-content: flex-start; gap: 4px; max-width: 100%; }
+.cc-refine-field .kp-rating-wrap:has(.kp-retry) { flex-wrap: wrap; }
+.cc-refine-field .kp-save-status { flex: none; }
+.cc-refine-field .kp-rating { justify-content: flex-start; max-width: 100%; text-align: left; font-size: 12px; white-space: normal; }
+.cc-refine-field .kp-preference-chip { justify-content: flex-start; }
+.cc-refine-field .kp-preference-chip > span { overflow-wrap: normal; }
+.cc-comfort-value { gap: 6px; color: #f0d3e7; line-height: 1.3; }
+.cc-comfort-value > span { min-width: 0; }
+.cc-comfort-value[data-empty] { color: #b7adc5; }
+.cc-comfort-value:hover > span { text-decoration: underline; text-underline-offset: 3px; }
+.cc-tried { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.cc-tried label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
+.cc-tried input { width: 16px; height: 16px; margin: 0; accent-color: #b87fa3; }
+.cc-experience-details { padding: 4px 3px 12px; color: #c6b1ca; font-size: 13px; line-height: 1.5; }

@@ -112,18 +112,25 @@ revision. Clear remains a separate action with version-safe Undo. Optional
 ratings remain independent; Modifier Groups have no ratings.
 
 Item names have a flexible area with a readable basis. Rating and Refine actions
-stay together and move below the name as a unit when space is tight. The Refine
-slot is reserved even on rows without modifiers so rating controls stay aligned.
+stay together and move below the name as a unit when space is tight. Every Item offers Refine, including Items without modifiers, because item-level
+experience applies independently of modifiers.
 Supporting search text spans the row below.
 
 Refine uses text for the Item title, Modifier Group headings and Modifier Value
 labels; the structural icons are omitted to reduce repetition. Rating-state icons,
-functional controls and Experience meanings retain their contextual roles.
+functional controls and Experience meanings retain their contextual roles. The
+Refine header places explicitly labeled Preference and Comfort fields together,
+with Tried as an independent checkbox nearby. Fields wrap safely on narrow screens.
+About experience holds explanation and edit time in the scrolling content. Comfort
+uses the same stable picker with three plain text choices, a selected check, and
+caller-provided `optionsLabel` and `clearLabel`; no preference-state mapping applies.
 
 Catalog vocabulary is also registered centrally: Item Square Dot, Modifier Group
 Brackets, Modifier Value Tag, Category Layout Grid, Subject Shape (provisional),
-Concept Notebook, Alias Tags and Applicability Square Check. Existing Experience
-controls use Tried Circle Check and Comfort Heart Handshake, with full labels.
+Concept Notebook, Alias Tags and Applicability Square Check. Experience
+meanings include Tried Circle Check and Comfort Heart Handshake. The Refine Tried
+checkbox supplies its own checked state without a redundant glyph; a set Comfort
+value uses Heart Handshake with its full label.
 Activity, Equipment, Material, Body Area, participation direction, provenance,
 intensity and risk glyphs are available to callers without inventing missing
 metadata or additional UI. Body Scan is the approved provisional Body Area glyph.
