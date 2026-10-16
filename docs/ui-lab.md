@@ -17,19 +17,22 @@ focus without editing; Enter/Space explicitly commits; Escape cancels. Clear
 offers Undo for the exact preceding value. Version checks keep an older Undo from
 overwriting a newer explicit edit.
 
-Refine places explicitly labeled Overall rating (preference) and Comfort controls
-below the Item title, with an independent Tried checkbox nearby. The checkbox
-retains native input semantics with app-themed unchecked, checked and focus states. Comfort shows its value or
-`Not set` and uses the shared floating picker for Uncomfortable, Somewhat Comfortable
-and Comfortable. Every Item can open Refine, including Items without modifiers.
-Compact Catalog rows keep only preference and Refine.
+Refine places the smaller, unboxed overall rating beside the Item title, with no
+separate Preference or Overall rating label. It opens the shared rating picker;
+long names let the rating wrap as a unit while keeping Close available. Themed
+Tried sits directly underneath. Every Item can open Refine, including Items without
+modifiers. Compact Catalog rows keep only preference and Refine.
 
-Unchecked Tried means no affirmative record. Comfort stores semantic string values
-(`uncomfortable`, `somewhat_comfortable`, `comfortable`), independently of Tried and
-preference. Tried changes and Clear comfort offer version-safe Undo. Each field
-shows save feedback and Retry. Explanation and the latest recorded edit remain in
-the optional About experience disclosure in scrolling content. Edit timestamps are
-not dates of participation; opening controls or disclosures creates no record.
+Unchecked Tried means no affirmative record. Tried is independent of preference,
+offers version-safe Undo and shows save feedback with Retry. Explanation and the
+latest Tried edit remain in the optional About experience disclosure in scrolling
+content. Edit timestamps are not dates of participation; opening controls or
+disclosures creates no record. The checkbox retains native input semantics with
+app-themed unchecked, checked and focus states.
+
+Comfort UI is deferred in Refine. Existing semantic values (`uncomfortable`,
+`somewhat_comfortable`, `comfortable`) and service support remain intact; navigating
+or editing preference/Tried does not clear those records.
 
 ## Local service save and recovery
 

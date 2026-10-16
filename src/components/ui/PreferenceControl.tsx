@@ -91,8 +91,6 @@ export function PreferenceSheet({
   onHelpOpenChange,
   className = "",
   anchor,
-  optionsLabel = "Rating choices",
-  clearLabel = "Clear rating",
 }: {
   open: boolean;
   onClose: () => void;
@@ -106,8 +104,6 @@ export function PreferenceSheet({
   onHelpOpenChange?: (open: boolean) => void;
   className?: string;
   anchor?: HTMLElement | null;
-  optionsLabel?: string;
-  clearLabel?: string;
 }) {
   const titleId = useId();
   const helpId = useId();
@@ -155,7 +151,7 @@ export function PreferenceSheet({
       />
       <span className="kp-keyboard-hint">Arrow keys move focus; Enter or Space chooses. Escape cancels.</span>
       <div className="kp-preference-scroll">
-      <div className="kp-preference-options" role="group" aria-label={optionsLabel} ref={choicesRef} onKeyDown={event => {
+      <div className="kp-preference-options" role="group" aria-label="Rating choices" ref={choicesRef} onKeyDown={event => {
         if ((event.key === "Enter" || event.key === " ") && event.target instanceof HTMLButtonElement) {
           event.preventDefault();
           if (options[focusIndex] !== value) onChange(options[focusIndex]);
@@ -214,7 +210,7 @@ export function PreferenceSheet({
             close();
           }}
         >
-          {clearLabel}
+          Clear rating
         </button>
       )}
     </ModalLayer>
@@ -230,6 +226,7 @@ export function SheetHeader({
   children,
   onTitleKeyDown,
   icon,
+  titleAccessory,
 }: {
   title: string;
   titleId?: string;
@@ -239,14 +236,16 @@ export function SheetHeader({
   children?: React.ReactNode;
   onTitleKeyDown?: (event: KeyboardEvent<HTMLHeadingElement>) => void;
   icon?: ReactNode;
+  titleAccessory?: ReactNode;
 }) {
+  const heading = <h3 id={titleId} data-dialog-initial-focus tabIndex={-1} onKeyDown={onTitleKeyDown}>
+    {icon}{title}
+  </h3>;
   return (
     <div className="kp-sheet-header">
       <div>
         {context && <small>{context}</small>}
-        <h3 id={titleId} data-dialog-initial-focus tabIndex={-1} onKeyDown={onTitleKeyDown}>
-          {icon}{title}
-        </h3>
+        {titleAccessory ? <div className="kp-sheet-title-row">{heading}{titleAccessory}</div> : heading}
         {children}
       </div>
       <button type="button" onClick={onClose} aria-label={closeLabel} title={closeLabel}>

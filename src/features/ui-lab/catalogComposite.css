@@ -104,27 +104,18 @@
 
 /* Ratings retain their natural label width; modifier names can wrap. */
 .cc-value > [data-field-id] { flex: 0 0 auto; }
-/* Keep labeled fields below the Item title, apart from Close. */
+/* The smaller rating sits beside the title; long names wrap without crowding Close. */
 .cc-refine-sheet > .kp-sheet-header { position: relative; display: block; }
 .cc-refine-sheet > .kp-sheet-header > div { width: 100%; }
-.cc-refine-sheet > .kp-sheet-header h3 { padding-right: 54px; }
 .cc-refine-sheet > .kp-sheet-header > button { position: absolute; top: 0; right: 0; }
-
-/* Preference and Comfort are independent, labeled controls; explanations scroll below. */
-.cc-refine-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 14px; margin-top: 12px; }
-.cc-refine-field { min-width: 0; }
-.cc-refine-field-label { display: block; font-size: 11px; color: #c6b1ca; }
-.cc-refine-field .kp-rating-wrap { display: flex; justify-content: flex-start; gap: 4px; max-width: 100%; }
-.cc-refine-field .kp-rating-wrap:has(.kp-retry) { flex-wrap: wrap; }
-.cc-refine-field .kp-save-status { flex: none; }
-.cc-refine-field .kp-rating { justify-content: flex-start; max-width: 100%; text-align: left; font-size: 12px; white-space: normal; }
-.cc-refine-field .kp-preference-chip { justify-content: flex-start; }
-.cc-refine-field .kp-preference-chip > span { overflow-wrap: normal; }
-.cc-comfort-value { gap: 6px; color: #f0d3e7; line-height: 1.3; }
-.cc-comfort-value > span { min-width: 0; }
-.cc-comfort-value[data-empty] { color: #b7adc5; }
-.cc-comfort-value:hover > span { text-decoration: underline; text-underline-offset: 3px; }
-.cc-tried { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.cc-refine-sheet .kp-sheet-title-row { padding-right: 54px; }
+.cc-refine-sheet .kp-sheet-title-row > h3 { flex: 0 1 auto; min-width: 0; max-width: 100%; margin: 0; overflow-wrap: break-word; }
+.cc-refine-rating { display: inline-flex; flex: 0 1 auto; min-width: 0; max-width: 100%; }
+.cc-refine-rating .kp-rating-wrap { justify-content: flex-start; flex-wrap: wrap; gap: 4px; max-width: 100%; }
+.cc-refine-rating .kp-rating { max-width: 100%; text-align: left; }
+.cc-refine-rating .kp-preference-chip { justify-content: flex-start; }
+.cc-refine-rating .kp-preference-chip > span { overflow-wrap: normal; }
+.cc-tried { display: flex; align-items: center; gap: 6px; margin-top: 2px; font-size: 13px; }
 .cc-tried label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
 .cc-tried-checkbox { position: relative; display: inline-flex; flex: none; width: 18px; height: 18px; }
 .cc-tried-checkbox input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }

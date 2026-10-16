@@ -115,50 +115,45 @@ it("reveals failed modifiers from the collapsed parent and retries the current v
   expect(document.querySelector('[aria-label="Collars: Modifier save failed. Reveal issue"]')).toBeNull();
 });
 
-it("keeps header Tried and Comfort independent of preference and makes Tried reversible", async () => {
+it("keeps the title rating and Tried independent and makes Tried reversible", () => {
   mount(); rate("Collars overall: Not rated. Change rating", "Hard Limit"); refine();
-  rate("Collars Comfort: Not set. Change comfort", "Comfortable");
   const tried = document.querySelector<HTMLInputElement>('.cc-tried input')!;
   expect(tried.checked).toBe(false); click(tried);
-  expect(recorded().values["experience:collars:comfort"]).toBe("comfortable");
+  expect(recorded().values["collars:overall"]).toBe("Hard Limit");
   click(button("Undo")); expect(tried.checked).toBe(false);
-  expect(recorded().values["experience:collars:comfort"]).toBe("comfortable");
-  expect(button("Collars Comfort: Comfortable. Change comfort")).toBeTruthy();
-  expect(button("Collars overall: Hard Limit. Change rating")).toBeTruthy();
+  const rating = document.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-rating')!;
+  click(rating); click(button("Like"));
+  expect(recorded().values["collars:overall"]).toBe("Like");
+  expect(tried.checked).toBe(false);
+  expect(document.activeElement).toBe(rating);
 });
 
-it("opens experience for Items without modifiers and records only deliberate Comfort changes", () => {
+it("opens no-modifier Refine and its title picker without creating records through navigation", () => {
   mount(); click(button("Refine Predicament Bondage"));
-  const trigger = button("Predicament Bondage Comfort: Not set. Change comfort");
+  const trigger = document.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-rating')!;
   click(button("About experience"));
   expect(recorded().revisions).toHaveLength(0);
-  click(trigger);
-  expect(document.querySelector('.kp-preference-options')?.getAttribute("aria-label")).toBe("Comfort choices");
-  expect([...document.querySelectorAll('.kp-preference-options button')].map(el => el.textContent)).toEqual(["Uncomfortable", "Somewhat Comfortable", "Comfortable"]);
-  expect(document.querySelector('.kp-preference-help')).toBeNull();
-  key("Tab"); key("ArrowDown");
+  expect(document.querySelector('.cc-refine-sheet')?.textContent).not.toContain("Comfort");
+  click(trigger); key("Tab"); key("ArrowDown");
   expect(recorded().revisions).toHaveLength(0);
   key("Escape"); expect(document.activeElement).toBe(trigger);
-  click(trigger); click(button("Somewhat Comfortable"));
-  expect(recorded().values["experience:predicament-bondage:comfort"]).toBe("somewhat_comfortable");
-  const current = button("Predicament Bondage Comfort: Somewhat Comfortable. Change comfort");
-  click(current); click(button("Somewhat Comfortable"));
+  click(trigger); click(button("Unsure"));
+  expect(recorded().values["predicament-bondage:overall"]).toBe("Unsure");
+  click(trigger); click(button("Unsure"));
   expect(recorded().revisions).toHaveLength(1);
-  click(current); key("Tab"); key("Enter");
+  click(trigger); key("Tab"); key("Enter");
   expect(recorded().revisions).toHaveLength(1);
-  expect(document.activeElement).toBe(current);
+  expect(document.activeElement).toBe(trigger);
 });
 
-it("restores the exact cleared Comfort and protects a newer edit from an older Undo", async () => {
-  mount(); refine(); rate("Collars Comfort: Not set. Change comfort", "Somewhat Comfortable");
-  click(button("Collars Comfort: Somewhat Comfortable. Change comfort")); click(button("Clear comfort"));
-  expect(button("Collars Comfort: Not set. Change comfort")).toBeTruthy();
-  click(button("Undo")); await advance(1700);
-  expect(recorded().values["experience:collars:comfort"]).toBe("somewhat_comfortable");
-  click(button("Collars Comfort: Somewhat Comfortable. Change comfort")); click(button("Clear comfort"));
-  rate("Collars Comfort: Not set. Change comfort", "Uncomfortable"); click(button("Undo"));
-  expect(recorded().values["experience:collars:comfort"]).toBe("uncomfortable");
-  expect(document.querySelector<HTMLInputElement>('.cc-tried input')!.checked).toBe(false);
+it("restores a cleared Tried marker and protects a newer edit from an older Undo", async () => {
+  mount(); refine();
+  const tried = document.querySelector<HTMLInputElement>('.cc-tried input')!;
+  click(tried); click(button("Dismiss notification")); await advance(150);
+  click(tried); expect(tried.checked).toBe(false);
+  click(button("Undo")); expect(tried.checked).toBe(true); await advance(150);
+  click(tried); click(tried); click(button("Undo"));
+  expect(tried.checked).toBe(true);
   expect(recorded().values["collars:overall"]).toBeUndefined();
 });
 

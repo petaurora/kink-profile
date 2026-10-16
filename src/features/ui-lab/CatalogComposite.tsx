@@ -8,7 +8,7 @@ import { ItemRow } from "../../components/ui/ItemRow";
 import { DisclosureSection } from "../../components/ui/DisclosureSection";
 import { SearchField } from "../../components/ui/SearchField";
 import { SearchRow, SearchFilterButton, SearchChips, SortGroupSheet, type SortBy, type GroupBy } from "../../components/ui/SearchControls";
-import { ItemExperience, ItemExperienceDetails, comfortChoices, comfortLabel, comfortValue } from "./ItemExperience";
+import { ItemExperience, ItemExperienceDetails } from "./ItemExperience";
 import { useLabRecords, useLabViewState } from "./LabRecords";
 import { preferenceChoices, PreferenceReference } from "./PreferenceVocabulary";
 
@@ -42,7 +42,7 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  const [experienceOpen,setExperienceOpen]=useState(false);
  const [highlightTarget,setHighlightTarget]=useState<string|null>(null);
  const [issueTarget,setIssueTarget]=useState<string|null>(null);
- const [selector,setSelector]=useState<{kind:"preference"|"comfort";id:string;label:string;parent:string;anchor:HTMLElement}|null>(null);
+ const [selector,setSelector]=useState<{id:string;label:string;parent:string;anchor:HTMLElement}|null>(null);
 
  const [failNext,setFailNext]=useState(false);
  const toastQueue=useToasts();
@@ -51,7 +51,7 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  useEffect(()=>{setClosedCategories({})},[debouncedQuery,groupBy,sortBy]);
  useEffect(()=>{if(isRewards)root.current?.scrollIntoView({block:"start"})},[isRewards,debouncedQuery,mine,reward,punishment,states]);
  useEffect(()=>{if(!issueTarget)return;const frame=requestAnimationFrame(()=>{
-  const field=[...document.querySelectorAll<HTMLElement>('[data-field-id]')].find(el=>el.dataset.fieldId===issueTarget);
+  const field=findField(issueTarget);
   field?.scrollIntoView({block:"nearest"});
   (field?.querySelector<HTMLButtonElement>('.kp-retry') || field?.querySelector<HTMLElement>('.kp-rating, input[type="checkbox"]'))?.focus();
  });return()=>cancelAnimationFrame(frame)},[issueTarget,refining,groupsOpen]);
@@ -70,12 +70,16 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  useEffect(()=>{
   if(!highlightTarget)return;
   const frame=requestAnimationFrame(()=>{
-   const field=[...document.querySelectorAll<HTMLElement>('[data-field-id]')].find(el=>el.dataset.fieldId===highlightTarget);
+   const field=findField(highlightTarget);
    field?.scrollIntoView({block:"nearest"});field?.querySelector<HTMLButtonElement>('.kp-rating')?.focus();
   });
   const timer=setTimeout(()=>setHighlightTarget(null),1800);
   return()=>{cancelAnimationFrame(frame);clearTimeout(timer)};
  },[highlightTarget,refining]);
+ function findField(id:string){
+  const fields=[...(root.current?.querySelectorAll<HTMLElement>('[data-field-id]')??[])].filter(el=>el.dataset.fieldId===id);
+  return fields.find(field=>field.closest(".cc-refine-sheet"))??fields[0];
+ }
  function openRefine(id:string){setGroupsOpen({});setExperienceOpen(false);setIssueTarget(null);setRefining(id);const error=Object.keys(saves).find(k=>(k.startsWith(id+":")||k.startsWith(`experience:${id}:`))&&saves[k]==="failed");if(error)revealIssue(error)}
  function revealIssue(target:string){const item=items.find(x=>target.startsWith(x.id+":")||target.startsWith(`experience:${x.id}:`));if(!item)return;setRefining(item.id);const group=item.groups.find(g=>target.startsWith(item.id+":"+g.name+":"));if(group)setGroupsOpen(previous=>({...previous,[item.id+":"+group.name]:true}));setIssueTarget(target)}
  function closeRefine(){setRefining(null);onClose?.()}
@@ -87,20 +91,13 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
    if(!records.restore(id,version,previous))notify({message:"A newer edit was kept",kind:"info"});
   }});
  }
- function commitComfort(id:string,label:string|undefined){
-  const previous=records.values[id];const value=comfortValue(label);
-  const version=records.commit(id,value);
-  if(value===undefined&&previous!==undefined)notify({message:"Comfort cleared",kind:"info",actionLabel:"Undo",duration:5000,onAction:()=>{
-   if(!records.restore(id,version,previous))notify({message:"A newer edit was kept",kind:"info"});
-  }});
- }
  function retry(id:string){
   const focused=document.activeElement?.getAttribute("aria-label")?.startsWith("Retry saving");
   records.retry(id);
-  if(focused)requestAnimationFrame(()=>[...document.querySelectorAll<HTMLElement>('[data-field-id]')].find(el=>el.dataset.fieldId===id)?.querySelector<HTMLElement>('.kp-rating, input[type="checkbox"]')?.focus());
+  if(focused)requestAnimationFrame(()=>findField(id)?.querySelector<HTMLElement>('.kp-rating, input[type="checkbox"]')?.focus());
  }
  function ratingButton(id:string,label:string,parent:string){
-  return <span data-field-id={id}><PreferenceControl value={ratings[id]} label={label} saveState={saves[id]} onRetry={()=>retry(id)} expanded={selector?.id===id} onActivate={event=>setSelector({kind:"preference",id,label,parent,anchor:event.currentTarget})}/></span>;
+  return <span data-field-id={id}><PreferenceControl value={ratings[id]} label={label} saveState={saves[id]} onRetry={()=>retry(id)} expanded={selector?.id===id} onActivate={event=>setSelector({id,label,parent,anchor:event.currentTarget})}/></span>;
  }
  const hasFilters=mine||reward||punishment||states.length>0;
  const clearFilters=()=>{setMine(false);setReward(false);setPunishment(false);setStates([])};
@@ -155,9 +152,10 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
   </ModalLayer>
   <SortGroupSheet open={orderOpen} onClose={()=>setOrderOpen(false)} sort={effectiveSort} onSort={setSortBy} group={effectiveGroupBy} onGroup={setGroupBy} showGrouping={groupingAvailable} defaultSortLabel={searching?"Best matches":"Catalog order"} showDefault={!isRewards||searching}/>
    <ModalLayer open={!!refinedItem} onClose={closeRefine} label={"Refine "+(refinedItem?.name||"")} closeLabel="Close refinement" className={selector?"cc-refine-underlay":""} panelClassName="cc-refine-sheet">
-    {refinedItem&&<><SheetHeader title={refinedItem.name} context="REFINE ITEM" onClose={closeRefine} closeLabel="Close refinement"><ItemExperience itemId={refinedItem.id} name={refinedItem.name} preference={ratingButton(refinedItem.id+":overall",refinedItem.name+" overall",refinedItem.name)} records={records} onRetry={retry} comfortExpanded={selector?.id===`experience:${refinedItem.id}:comfort`} onComfortActivate={event=>setSelector({kind:"comfort",id:`experience:${refinedItem.id}:comfort`,label:"Comfort",parent:refinedItem.name,anchor:event.currentTarget})}/></SheetHeader>{modifierContent(refinedItem)}</>}
+    {refinedItem&&<><SheetHeader title={refinedItem.name} titleAccessory={<span className="cc-refine-rating">{ratingButton(refinedItem.id+":overall",refinedItem.name+" overall",refinedItem.name)}</span>} onClose={closeRefine} closeLabel="Close refinement"><ItemExperience itemId={refinedItem.id} name={refinedItem.name} records={records} onRetry={retry}/></SheetHeader>{modifierContent(refinedItem)}</>}
    </ModalLayer>
-   {selector&&<PreferenceSheet open anchor={selector.anchor} onClose={closeSelector} label={selector.label} context={selector.parent} value={selector.kind==="comfort"?comfortLabel(records.values[selector.id]):ratings[selector.id]} options={selector.kind==="comfort"?comfortChoices:choices} optionsLabel={selector.kind==="comfort"?"Comfort choices":"Rating choices"} clearLabel={selector.kind==="comfort"?"Clear comfort":"Clear rating"} onChange={value=>selector.kind==="comfort"?commitComfort(selector.id,value):commit(selector.id,value)} help={selector.kind==="preference"?<PreferenceReference/>:undefined} helpOpen={records.helpOpen} onHelpOpenChange={records.setHelpOpen} className={refinedItem?"cc-rating-over-refine":""}/>}
+   {selector&&<PreferenceSheet open anchor={selector.anchor} onClose={closeSelector} label={selector.label} context={selector.parent} value={ratings[selector.id]} options={choices} onChange={value=>commit(selector.id,value)} help={<PreferenceReference/>} helpOpen={records.helpOpen} onHelpOpenChange={records.setHelpOpen} className={refinedItem?"cc-rating-over-refine":""}/>}
+
 
  </section>
 }
