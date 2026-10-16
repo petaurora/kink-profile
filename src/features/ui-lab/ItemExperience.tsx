@@ -20,7 +20,7 @@ export function ItemExperience({ itemId, name, records, onRetry }: {
           if (!records.restore(triedTarget, version, previous)) notify({ message: "A newer edit was kept", kind: "info" });
         }});
       }}>{experienced && <AppIcon name="confirm" size={16}/>}<span>Experienced</span></button>
-      <InlineSaveStatus state={records.saves[triedTarget]} label={`${name} experience`} onRetry={() => onRetry(triedTarget)}/>
+      <InlineSaveStatus state={records.saves[triedTarget]} label={`${name} experience`} showSavedIcon={false} onRetry={() => onRetry(triedTarget)}/>
   </div>;
 }
 

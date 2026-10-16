@@ -136,6 +136,9 @@ contextual name, `aria-pressed`, Enter/Space support, a 44px target and the shar
 visible keyboard-focus ring. Both states omit borders and fills; a second activation
 clears the marker. Comfort Heart Handshake remains registered for
 future use.
+`InlineSaveStatus.showSavedIcon` defaults to true. Experienced sets it to false
+to avoid duplicating its selected-state Check; live save announcements, the saving
+indicator and failure/Retry feedback remain available.
 Activity, Equipment, Material, Body Area, participation direction, provenance,
 intensity and risk glyphs are available to callers without inventing missing
 metadata or additional UI. Body Scan is the approved provisional Body Area glyph.

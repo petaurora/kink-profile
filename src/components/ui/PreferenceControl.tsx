@@ -13,10 +13,12 @@ export function InlineSaveStatus({
   state = "idle",
   label,
   onRetry,
+  showSavedIcon = true,
 }: {
   state?: SaveState;
   label: string;
   onRetry?: () => void;
+  showSavedIcon?: boolean;
 }) {
   const message = state === "saving" ? `${label}: Saving` : state === "saved" ? `${label}: Saved` : state === "failed" ? `${label}: Not saved` : "";
   return (
@@ -35,7 +37,7 @@ export function InlineSaveStatus({
           <AppIcon name="error" size={15} />
         )) : (
       <span aria-hidden="true">
-        {state === "saving" ? <AppIcon name="pending" size={15} /> : state === "saved" ? <AppIcon name="confirm" size={15} /> : null}
+        {state === "saving" ? <AppIcon name="pending" size={15} /> : state === "saved" && showSavedIcon ? <AppIcon name="confirm" size={15} /> : null}
       </span>
       )}
     </span>

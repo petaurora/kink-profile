@@ -32,6 +32,8 @@ content. Edit timestamps are not dates of participation; opening controls or
 disclosures creates no record. The native toggle button exposes its stable,
 contextual name and `aria-pressed` state, supports Enter/Space and retains a visible
 keyboard-focus ring and a 44px target. Activating it again clears the marker.
+Successful saves are announced without a second visible Check; the toggle's Check
+always means marked, never merely saved. Saving and failure/Retry remain visible.
 
 Comfort UI is deferred in Refine. Existing semantic values (`uncomfortable`,
 `somewhat_comfortable`, `comfortable`) and service support remain intact; navigating

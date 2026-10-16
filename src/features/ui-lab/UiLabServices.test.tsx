@@ -99,6 +99,9 @@ it("retries Experienced with focus recovery and preserves deferred Comfort recor
   expect(document.activeElement).toBe(button("Retry saving Collars experience"));
   click(button("Retry saving Collars experience")); await advance(10);
   expect(document.activeElement).toBe(container.querySelector('.cc-experienced-toggle'));
+  expect(container.querySelectorAll('.cc-experienced .kp-icon')).toHaveLength(1);
+  expect(container.querySelector('.cc-experienced [role="status"]')?.textContent).toBe("Collars experience: Saved");
+  expect(container.querySelector('.cc-experienced .kp-save-status .kp-icon')).toBeNull();
   const rating=container.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-rating')!;
   adapter.failNext("save"); click(rating); click(button("Love")); await advance(10);
   click(container.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-retry')!); await advance(10);
@@ -106,4 +109,9 @@ it("retries Experienced with focus recovery and preserves deferred Comfort recor
   const snapshotPromise=adapter.services.preferences.getSnapshot(); await advance();
   const snapshot=await snapshotPromise;
   expect(snapshot.experience?.collars).toEqual({tried:true,comfort:"somewhat_comfortable"});
+  const currentToggle=button("Collars: Experienced");
+  click(currentToggle); await advance(10);
+  expect(currentToggle.getAttribute("aria-pressed")).toBe("false");
+  expect(container.querySelectorAll('.cc-experienced .kp-icon')).toHaveLength(0);
+  expect(container.querySelector('.cc-experienced [role="status"]')?.textContent).toBe("Collars experience: Saved");
 });
