@@ -282,3 +282,18 @@ it("gives mobile quiz navigation a single primary Next action and secondary revi
   click([...nav.querySelectorAll<HTMLButtonElement>("button")].find(button=>button.classList.contains("lab-quiz-review-link"))!);
   expect(container.querySelector(".lab-quiz-run-meta")?.textContent).toContain("1 /");
 });
+
+it("uses the approved warm response labels with unchanged numeric 0–4 answer persistence", () => {
+  resize(390);
+  mount(labPath("Quizzes", "Question", { id: quiz.id }));
+  const expected = ["Nope", "A little", "Somewhat", "A lot", "Absolutely"];
+  const buttons = [...container.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")];
+  expect(buttons).toHaveLength(5);
+  expect(buttons.map(button => button.querySelectorAll("span")[1]?.textContent)).toEqual(expected);
+  expect(buttons.map(button => Number(button.querySelector(".lab-quiz-option-number")?.textContent)))
+    .toEqual([0, 1, 2, 3, 4]);
+  click(buttons[4]);
+  const answers = loadProfile().quizzes[quiz.id]?.answers;
+  expect(answers).toEqual({ [quiz.questionIds[0]]: 4 });
+  expect(container.querySelector('[role="progressbar"]')?.getAttribute("aria-valuenow")).toBe("1");
+});
