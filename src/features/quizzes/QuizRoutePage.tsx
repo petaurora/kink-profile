@@ -761,13 +761,6 @@ function ResolvedQuizRoute({
     navigate(quizRoutePath(quiz.id));
   };
 
-  const resetQuiz = () => {
-    const nextQuizzes = { ...profile.quizzes };
-    delete nextQuizzes[quiz.id];
-    saveNextProfile({ ...profile, quizzes: nextQuizzes });
-    navigate(quizHomeRoute.path);
-  };
-
   if (mode === "results" && !canViewResults) {
     return <Navigate to={quizRoutePath(quiz.id)} replace />;
   }
@@ -936,11 +929,6 @@ function ResolvedQuizRoute({
           <ResultsBody quiz={quiz} scores={scores} />
           <ResultsNextSteps />
 
-          <div className="results-actions">
-            <button className="secondary compact" onClick={resetQuiz}>
-              Reset this quiz
-            </button>
-          </div>
         </section>
       )}
     </main>
