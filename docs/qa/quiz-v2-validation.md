@@ -18,8 +18,8 @@
 ### 1. Responsive visual / touch
 - Check a narrow phone (~320 CSS px), a typical phone (~375–390px), tablet (~768px), desktop (~1024px), and a wide desktop (~1440px). Also inspect 200% browser zoom and landscape orientation.
 - Verify all four Quiz Home cards remain legible and distinct; long title/description lines wrap naturally with no clipped actions, horizontal scroll, or squeezed response labels.
-- On mobile, verify **one** question at a time with five full-width, selectable answers; buttons Back, Review unanswered, Save & exit, Next question do not overlap the V2 bottom nav or bottom safe area.
-- On desktop, verify **three** separate independently answerable cards (except final partial group); progress, back/next, review, chart breakdown, and next-step destinations remain readable.
+- On mobile, verify **one** question at a time with five full-width, selectable answers; Back and Save & exit buttons do not overlap the V2 bottom nav or bottom safe area.
+- On desktop, verify **three** separate independently answerable cards (except final partial group); in-card progress, Back and gated Next, chart breakdown, and next-step destinations remain readable.
 - On questions near the bottom of long pages, verify programmatic focus scrolls the next heading **below the sticky header**, without jumping beyond it or hiding choices. Recheck with keyboard open, orientation changes, and Android system text scaling.
 - On Results, verify compact summary + radar first; full breakdown expands without layout overflow; Profile / another quiz / Learn remain equally weighted.
 
@@ -39,8 +39,8 @@
 
 ### 4. Data integrity / privacy
 - Use a non-production test profile; record a copy/backup before tests. Ensure four existing quizzes and current question IDs/scales remain unchanged.
-- Start a new quiz, skip questions via Next, and verify no saved zero/answer for missing questions. The progressbar must count only selected answers, not visited items.
-- Answer out of order, Save & exit, reload; Continue must target the earliest unanswered question even if on a middle card of a desktop three-question group.
+- Start a new quiz and verify there is **no** move-ahead or Review unanswered action. The in-card progressbar must count only explicitly saved responses; an unanswered question stays unknown rather than becoming zero.
+- Answer sequentially, Save & exit, reload; Continue must target the earliest unanswered question even when legacy stored drafts contain gaps or the first unanswered falls in the middle of a desktop three-question group.
 - Complete a quiz and record result; start a retake, answer one or two questions, close/reload/return to Results. Last completed answers/results remain authoritative, while retake draft is preserved separately.
 - Finish the retake; only after all questions are answered should the authoritative result change. No reset, delete-history, discard-draft, or start-over control should appear on Quiz Home, runner, or Results.
 - Confirm mere navigation, focus, chart expansion, or entering Learn does not write catalog ratings, consent, role claims, or session-only Lab demo records.
@@ -63,3 +63,12 @@ For each manual gate, record date, environment/device/browser and assistive-tech
 - **V-04 — Exposed Lab-only copy:** condensed landing introduction, replaced storage explanation with user-facing save guidance, and hide the UI Lab's generic experimental disclaimer/Toast Playground control only while browsing Quizzes. **Recheck both Quiz Home and question/results after fresh preview load.**
 
 These are **implemented candidate corrections**, not a device-validation PASS. The screenshots are evidence of the *previous* problem state. The original four manual validation gates remain OPEN until the updated preview has been inspected with actual browser/device observations.
+
+## Second Android screenshot review — October 16, 2026
+
+- **V-05 / focused heading appearance:** user confirmed first question card now scrolls into view. The large h2 selection-like focus outline was visually distracting, so it is removed while the h2 remains programmatically focused. Manual check that keyboard focus remains visible on response buttons and navigation controls.
+- **V-06 / response confirmation:** the user wants a selected row with a checkmark before the next question appears, with a brief visual transition (~260ms); reduced-motion skips the delay. Answer should persist as soon as it is chosen, even if the user navigates away before transition finishes. Test that no double answer is accepted during confirmation and no stale transition fires after unmount.
+- **V-07 / visible progress:** a custom thin gradient progress line now sits along the *top of every question card*, matching V2 shell divider styling. Test saved-answer count, animated fill, one accessible progressbar per desktop batch, scroll alignment and 320px layout.
+- **V-08 / sequential flow supersedes skip-ahead:** no phone Next question, no Review unanswered, no skip hint. Desktop Next questions remains disabled until every displayed question is answered. Back and Save & exit remain usable. Earlier Decision 9 D skip approval is expressly superseded by this later user preference, while no-implicit-zero and resume guards remain.
+
+**Status:** implemented candidate changes on PR #300, requiring current-head CI and further real-phone + AT review before any manual gate can pass. All four Decision 11 gates remain blocking and PR remains draft.
