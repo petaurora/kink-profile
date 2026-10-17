@@ -72,3 +72,8 @@ These are **implemented candidate corrections**, not a device-validation PASS. T
 - **V-08 / sequential flow supersedes skip-ahead:** no phone Next question, no Review unanswered, no skip hint. Desktop Next questions remains disabled until every displayed question is answered. Back and Save & exit remain usable. Earlier Decision 9 D skip approval is expressly superseded by this later user preference, while no-implicit-zero and resume guards remain.
 
 **Status:** implemented candidate changes on PR #300, requiring current-head CI and further real-phone + AT review before any manual gate can pass. All four Decision 11 gates remain blocking and PR remains draft.
+
+### Progress divider end-cap refinement — October 16, 2026
+- User's latest Android screenshot confirmed the question card, selected-answer checkmark and answered-progress readout work visually. The new divider had an abrupt left start while only the right empty track faded out.
+- Both the filled bar **and** unfilled track now share a symmetric 18px edge fade via the same CSS mask on the track. This keeps the left and right appearance consistent at all progress values without changing data, width calculation, transition duration or screen-reader progress semantics.
+- **Manual recheck OPEN:** on Android phone, examine the left and right ends at zero, one answer, roughly half answered, and completed; verify that the first small nonzero fill is still legible and progress doesn't appear clipped. No Decision 11 gate is closed by CSS/CI alone.
