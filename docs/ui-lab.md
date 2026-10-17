@@ -109,6 +109,8 @@ remounting the session providers. This does not alter the production error bound
 
 **Decision 5 — D, Layered results.** The results page leads with an At-a-glance summary of the strongest measured signals plus one compact radar preview. A native keyboard-accessible disclosure labeled Explore the full breakdown reveals alternative chart views and the existing expandable per-signal ranked results. The preview is not a new profile score: both views use existing section-local scoring, and dimensions without evidence are omitted rather than rendered as 0. The prior completed result remains authoritative while an unfinished retake is in progress.
 
+**Decision 6 — D, Equal post-results choices.** Results provide three matching, non-featured next-step cards: View Profile (`/profile`), Explore another quiz (`/quizzes`), and Learn (`/ui-lab/learn`). Each route is a deliberate navigation-only action, with no automatic enrollment, preference recording, or promotion of a supposedly optimal next step. The Learn destination opens the experimental education reader and signals that status accurately. Retake and Reset remain separate result-management actions. The three equal cards are laid out responsively and remain keyboard accessible.
+
 The current Quiz Home and runner are the existing application route, not a fully V2-integrated Quiz workspace. Restart/review lifecycle UX, post-results navigation, and long-term service integration remain workshop decisions. Approved decisions and current validation status are documented in the Notion Quiz UX workshop.
 
 ## Discover
