@@ -20,7 +20,7 @@
 .ui-lab .lab-quiz-run-header{display:grid;gap:8px;padding:14px 0}
 .ui-lab .lab-quiz-run-meta{display:flex;justify-content:space-between;gap:14px;font-size:13px;letter-spacing:.03em;color:#eac2db;font-weight:750}
 .ui-lab .lab-quiz-run-header>p{font-size:12px;color:#aaa0ba;margin:0}
-.ui-lab .lab-quiz-question-stack{display:grid;gap:14px}
+.ui-lab .lab-quiz-question-stack{display:grid;gap:14px;overflow-anchor:none}
 .ui-lab .lab-quiz-question,.ui-lab .lab-quiz-panel{min-width:0;background:#1b1a39;border:1px solid #59415f;border-radius:18px;padding:24px}
 .ui-lab .lab-quiz-question-meta,.ui-lab .lab-quiz-panel-kicker{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#e6aacd;font-weight:800}
 .ui-lab .lab-quiz-question h2{margin:14px 0 22px;font-size:clamp(20px,3vw,26px);line-height:1.3;letter-spacing:-.02em;color:#f7e8f1}
@@ -94,7 +94,9 @@
 .ui-lab .lab-quiz-question {
   position: relative;
   scroll-margin-block-start: calc(80px + env(safe-area-inset-top, 0px));
-  animation: lab-quiz-enter .22s ease-out both;
+  /* Enter with opacity only: moving the card while scrollIntoView aligns it
+     caused a visible bounce on Android browsers. */
+  animation: lab-quiz-enter .24s ease-out both;
 }
 .ui-lab .lab-quiz-card-progress {
   position: absolute;
@@ -189,8 +191,8 @@
   to { transform: scale(1); opacity: 1; }
 }
 @keyframes lab-quiz-enter {
-  from { opacity: .7; transform: translateY(9px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: .8; }
+  to { opacity: 1; }
 }
 @media(max-width:700px) {
   .ui-lab .lab-quiz-intro { margin: 0 0 4px; }
