@@ -281,3 +281,26 @@ it("uses the approved warm response labels with unchanged numeric 0–4 answer p
   expect(answers).toEqual({ [quiz.questionIds[0]]: 4 });
   expect(container.querySelector('[role="progressbar"]')?.getAttribute("aria-valuenow")).toBe("1");
 });
+
+
+it("shares the KPI progress-gradient skin between quiz landing and question cards", () => {
+  const profile = createEmptyProfile();
+  profile.quizzes[quiz.id] = {
+    quizVersion: quiz.version,
+    answers: { [quiz.questionIds[0]]: 2 },
+  };
+  saveProfile(profile);
+  resize(390);
+  mount();
+  const landing = container.querySelector<HTMLElement>(".lab-quiz-progress-track")!;
+  expect(landing).not.toBeNull();
+  expect(landing.classList.contains("kp-progress-track")).toBe(true);
+  expect(landing.querySelector<HTMLElement>("span")?.style.width)
+    .toBe(`${100 / quiz.questionIds.length}%`);
+  click(container.querySelector<HTMLButtonElement>(`[aria-label^="${quiz.title}: Continue"]`)!);
+  const current = container.querySelector<HTMLElement>(".lab-quiz-card-progress")!;
+  expect(current.classList.contains("kp-progress-track")).toBe(true);
+  expect(current.getAttribute("aria-valuenow")).toBe("1");
+  expect(current.querySelector<HTMLElement>("span")?.style.width)
+    .toBe(`${100 / quiz.questionIds.length}%`);
+});
