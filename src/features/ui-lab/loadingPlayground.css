@@ -15,6 +15,6 @@
 .kp-loading-playground-grid > div { min-height: 230px; display: flex; flex-direction: column; gap: 24px; justify-content: start; align-items: center; padding: 16px; background: #101240; border: 1px solid #655173; border-radius: 14px; }
 .kp-loading-playground-grid > div > p { align-self: stretch; font-size: 12px; color: #c9adca; margin: 0; }
 .kp-loading-playground-note { color: #ccb9cd; font-size: 12px; line-height: 1.6; margin: 18px 0 0; }
-.kp-loading-playground.is-paused .kp-loading-symbol { animation-play-state: paused; }
+.kp-loading-playground.is-paused .kp-loading-rotor { animation-play-state: paused; }
 @media (max-width: 700px) { .kp-loading-playground-grid { grid-template-columns: 1fr; } .kp-loading-playground-grid > div { min-height: 155px; } }
-@media (prefers-reduced-motion: reduce) { .kp-loading-playground .kp-loading-symbol { animation: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) { .kp-loading-playground .kp-loading-rotor { animation: none; } }

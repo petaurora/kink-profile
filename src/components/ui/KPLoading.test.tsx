@@ -9,6 +9,7 @@ describe("KPLoading temporary SVG", () => {
     expect(html).toContain('aria-label="Loading results…"');
     expect(html).toContain('aria-hidden="true"');
     expect(html).toContain('viewBox="0 0 100 100"');
+    expect(html).toContain('kp-loading-rotor');
     expect(html).toContain('Loading results…');
     expect(html).toContain('56px');
   });

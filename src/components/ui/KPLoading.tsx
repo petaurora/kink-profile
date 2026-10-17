@@ -28,6 +28,7 @@ export function KPLoading({
       aria-live="polite"
       aria-label={label}
     >
+      <span className="kp-loading-rotor" aria-hidden="true">
       <svg className="kp-loading-symbol" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
         <g fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="50" cy="50" r="40" />
@@ -41,6 +42,7 @@ export function KPLoading({
           <circle cx="51" cy="30" r="4.7" transform="rotate(240 50 50)" />
         </g>
       </svg>
+      </span>
       {!compact && <span className="kp-loading-label" aria-hidden="true">{label}</span>}
     </div>
   );
