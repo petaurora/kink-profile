@@ -97,6 +97,10 @@ boundaries rather than fabricated people, accounts, permissions or drafts.
 The Lab view recovery boundary retries a failed view or returns Home without
 remounting the session providers. This does not alter the production error boundary.
 
+## Quiz continuity bridge (pending V2 UX workshop)
+
+Discover exposes the current Quizzes as a persistent, non-dismissible feature card, and the full menu includes Discover → Quizzes. Both open the existing `#/quizzes` route, retaining the established quiz question banks, scoring, retakes and browser-local quiz state. This is an access bridge, **not** a V2 Quiz renderer or a final information-architecture decision. The five approved V2 primary areas are unchanged. Leaving the Lab unmounts its session-only record/activity state, which is not copied into quiz/profile storage. Quiz-specific layout, handoff, status, navigation and result UX remain to be decided separately.
+
 ## Discover
 
 General suggestions carry reasons, not fabricated personalized claims. Dismissal
