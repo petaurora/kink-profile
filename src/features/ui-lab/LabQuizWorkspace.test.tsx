@@ -32,6 +32,7 @@ function mount(path = labPath("Quizzes")) {
       <Routes>
         <Route path="/ui-lab/*" element={<LabTestPage />} />
         <Route path="/ui-lab/profile" element={<main>Profile landing</main>} />
+        <Route path="/profile" element={<main>Saved Profile destination</main>} />
         <Route path="/ui-lab/learn" element={<main>Learning landing</main>} />
       </Routes>
     </MemoryRouter>,
@@ -125,6 +126,21 @@ it("keeps a previous result authoritative during an incomplete retake and offers
   const before = JSON.stringify(loadProfile().quizzes[quiz.id]);
   click(links[1]);
   expect(path()).toBe("/ui-lab/quizzes");
+  expect(JSON.stringify(loadProfile().quizzes[quiz.id])).toBe(before);
+});
+
+it("opens the authoritative saved Profile instead of the temporary Lab demo Profile", () => {
+  const profile = createEmptyProfile();
+  profile.quizzes[quiz.id] = {
+    quizVersion: quiz.version,
+    answers: Object.fromEntries(quiz.questionIds.map(id => [id,3])),
+    completedAt: "2026-10-15T12:00:00Z",
+  };
+  saveProfile(profile);
+  const before = JSON.stringify(loadProfile().quizzes[quiz.id]);
+  mount(labPath("Quizzes","Results",{id:quiz.id}));
+  click(container.querySelector<HTMLButtonElement>('[data-quiz-next-step="profile"]')!);
+  expect(container.textContent).toContain("Saved Profile destination");
   expect(JSON.stringify(loadProfile().quizzes[quiz.id])).toBe(before);
 });
 
