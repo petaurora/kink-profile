@@ -107,7 +107,9 @@ remounting the session providers. This does not alter the production error bound
 
 **Decision 4 — A, Seamless resume.** Continue and Continue retake navigate directly into the existing quiz runner without a chooser. The initial position comes from the **earliest unanswered question in the persisted attempt**. A desktop batch displays the group containing that question and focuses its heading, including when the earliest unanswered question is the middle card. A mobile run focuses that single question. Previous completed results remain authoritative while an unfinished retake saves separately; the landing's completed count includes that established result.
 
-The current Quiz Home and runner are the existing application route, not a fully V2-integrated Quiz workspace. Results page redesign, restart/review UX, and long-term service integration remain workshop decisions. Approved decisions and current validation status are documented in the Notion Quiz UX workshop.
+**Decision 5 — D, Layered results.** The results page leads with an At-a-glance summary of the strongest measured signals plus one compact radar preview. A native keyboard-accessible disclosure labeled Explore the full breakdown reveals alternative chart views and the existing expandable per-signal ranked results. The preview is not a new profile score: both views use existing section-local scoring, and dimensions without evidence are omitted rather than rendered as 0. The prior completed result remains authoritative while an unfinished retake is in progress.
+
+The current Quiz Home and runner are the existing application route, not a fully V2-integrated Quiz workspace. Restart/review lifecycle UX, post-results navigation, and long-term service integration remain workshop decisions. Approved decisions and current validation status are documented in the Notion Quiz UX workshop.
 
 ## Discover
 
