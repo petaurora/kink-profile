@@ -181,7 +181,7 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
       transitionTimer.current = null;
       setConfirmingQuestion(null);
       advance();
-    }, 260);
+    }, 390);
   }
   return (
     <section ref={container} className="lab-quiz-runner" aria-label={quiz.title}>
