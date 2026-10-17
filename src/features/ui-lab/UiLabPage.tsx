@@ -112,7 +112,7 @@ function UiLabContent() {
    : workspace === "Results" ? selectedQuiz ? selectedQuiz.title+" results" : "Quiz results"
    : "Explore quizzes."
    : (workspace==="Article"?"Learn article":selectedSubject||workspace)||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools.",Creations:"Creations",Learn:"Learn",Relationships:"Relationships",Settings:"Settings",Quizzes:"Explore quizzes."} as Record<LabArea,string>)[area];
- useEffect(()=>{if(hasNavigated.current)pageHeading.current?.focus();hasNavigated.current=true;},[area,workspace,selectedSubject]);
+ useEffect(()=>{if(hasNavigated.current && !(area==="Quizzes" && workspace==="Question"))pageHeading.current?.focus();hasNavigated.current=true;},[area,workspace,selectedSubject]);
  useEffect(()=>{const previous=document.title;document.title=`${heading} · Kink Profile`;return()=>{document.title=previous};},[heading]);
  return <div className={"ui-lab ui-lab-app"+(collapsedRail?" lab-rail-collapsed":"")} onTouchStart={onGestureStart} onTouchEnd={onGestureEnd}>
   <a className="ui-lab-skip-link" href={`#${contentId}`} onClick={event=>{event.preventDefault();pageHeading.current?.focus();pageHeading.current?.scrollIntoView({block:"start"})}}>Skip to content</a>
