@@ -1,4 +1,5 @@
 import { AppIcon } from "../../components/ui/AppIcon";
+import { LabQuizWorkspace } from "./LabQuizWorkspace";
 import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
 import { ToastPlayground } from "./ToastPlayground";
 import { CatalogComposite } from "./CatalogComposite";
@@ -14,6 +15,7 @@ import { DiscoverSessionProvider } from "./DiscoverSession";
 import { DiscoverWorkspace } from "./DiscoverWorkspace";
 import { LabOverview } from "./LabOverview";
 import { EducationWorkspace } from "./EducationWorkspace";
+import { quizzes } from "../../data/quizzes";
 import { labPath, parseLabRoute, primaryAreas, type LabArea, type PrimaryArea } from "./LabNavigation";
 import "./uiLab.css";
 import "./labFoundations.css";
@@ -105,8 +107,13 @@ function UiLabContent() {
  useEffect(()=>{if(area==="Catalog")setFeatured(dailyFeatured(featuredSubjects));},[area,featuredSubjects]);
  const activeChild=(parent:Area)=>parent===area?(workspace||"Overview"):null;
  const openDrawer=()=>{if(modalActive())return;setExpandedMenu(area!=="Home"&&areas.includes(area as PrimaryArea)?area as PrimaryArea:null);setMenuOpen(true);};
- const heading=(workspace==="Article"?"Learn article":selectedSubject||workspace)||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools.",Creations:"Creations",Learn:"Learn",Relationships:"Relationships",Settings:"Settings"} as Record<LabArea,string>)[area];
- useEffect(()=>{if(hasNavigated.current)pageHeading.current?.focus();hasNavigated.current=true;},[area,workspace,selectedSubject]);
+ const selectedQuiz = area === "Quizzes" ? quizzes.find(q=>q.id===params.get("id")) : undefined;
+ const heading = area === "Quizzes"
+   ? workspace === "Question" ? selectedQuiz?.title || "Quiz questions"
+   : workspace === "Results" ? selectedQuiz ? selectedQuiz.title+" results" : "Quiz results"
+   : "Explore quizzes."
+   : (workspace==="Article"?"Learn article":selectedSubject||workspace)||({Home:"Your space.",Discover:"Discover yourself.",Catalog:"Explore the catalog.",Profile:"Your profile.",Tools:"Your tools.",Creations:"Creations",Learn:"Learn",Relationships:"Relationships",Settings:"Settings",Quizzes:"Explore quizzes."} as Record<LabArea,string>)[area];
+ useEffect(()=>{if(hasNavigated.current && !(area==="Quizzes" && workspace==="Question"))pageHeading.current?.focus();hasNavigated.current=true;},[area,workspace,selectedSubject]);
  useEffect(()=>{const previous=document.title;document.title=`${heading} · Kink Profile`;return()=>{document.title=previous};},[heading]);
  return <div className={"ui-lab ui-lab-app"+(collapsedRail?" lab-rail-collapsed":"")} onTouchStart={onGestureStart} onTouchEnd={onGestureEnd}>
   <a className="ui-lab-skip-link" href={`#${contentId}`} onClick={event=>{event.preventDefault();pageHeading.current?.focus();pageHeading.current?.scrollIntoView({block:"start"})}}>Skip to content</a>
@@ -144,7 +151,7 @@ function UiLabContent() {
        <div className="ui-lab-menu-divider"/>
        <p className="ui-lab-menu-eyebrow">MORE TO EXPLORE</p>
        <div className="ui-lab-menu-links">
-         {(["Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-menu-link-icon" aria-hidden="true">{(() => { const Icon = [appIcons.collection, appIcons.education, appIcons.shared][i]; return <Icon {...appIconDefaults} />; })()}</span><span>{item}</span></button>)}
+         {(["Quizzes","Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-menu-link-icon" aria-hidden="true">{(() => { const Icon = [appIcons.quiz, appIcons.collection, appIcons.education, appIcons.shared][i]; return <Icon {...appIconDefaults} />; })()}</span><span>{item}</span></button>)}
        </div>
        <div className="ui-lab-menu-bottom">
          <button type="button" className="ui-lab-menu-settings" aria-current={area==="Settings"?"page":undefined} onClick={()=>navigate("Settings")}>
@@ -158,10 +165,10 @@ function UiLabContent() {
    {conceptId&&<ConceptDetail id={conceptId} onClose={()=>closeLayer("concept")}/>}
    <main id={contentId} className={"ui-lab-app-content"+(area==="Learn"?" lab-education-page":"")} aria-labelledby="ui-lab-page-heading">
     {unknown&&<p role="alert">This Lab destination is unavailable. <button onClick={()=>navigate("Home")}>Return Home</button></p>}
-    {area!=="Catalog"&&<LabSaveSummary/>}
+    {area!=="Catalog"&&area!=="Quizzes"&&<LabSaveSummary/>}
     {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>navigate(area)}>{area}</button><span aria-hidden="true"><AppIcon name="details" size={18} /></span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
     <h1 id="ui-lab-page-heading" ref={pageHeading} tabIndex={-1} className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
-    {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":area==="Learn"?"A library for curiosity, questions, and safer exploration.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
+    {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":area==="Learn"?"A library for curiosity, questions, and safer exploration.":area==="Quizzes"?"Explore four quizzes about dynamics, roles and experiences at your own pace.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
     {area==="Catalog"&&<div className="ui-lab-catalog">
 
       {!workspace&&<>
@@ -182,10 +189,11 @@ function UiLabContent() {
       {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Reward and punishment classifications are currently read-only here.</p><CatalogComposite collection="rewards" /></>}    </div>}
     {area==="Discover"&&<DiscoverWorkspace view={workspace} attemptId={params.get("attempt")||undefined} go={go}/>}
     {area==="Learn"&&<EducationWorkspace view={workspace} articleId={params.get("id")||""} go={go}/>}
-    {area!=="Catalog"&&area!=="Discover"&&area!=="Learn"&&<LabOverview area={area} workspace={workspace} go={go} shortcuts={shortcuts} onShortcuts={setShortcuts}/>}
-    {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">{area==="Learn"?"Experimental reader · Editorial drafts pending review · Reading does not save preferences":"Experimental UI · Illustrative content · Records and activity notes last for this mounted Lab session"}</p>}
-    <button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}><AppIcon name="expand" size={18} inline style={{transform:toastLabOpen?"rotate(180deg)":undefined}} />{toastLabOpen?"Hide":"Open"} Toast Playground</button>
-    {toastLabOpen&&<ToastPlayground/>}
+    {area==="Quizzes"&&<LabQuizWorkspace key={workspace+":"+(params.get("id")||"")} view={workspace} quizId={params.get("id")} go={go}/>}
+    {area!=="Catalog"&&area!=="Discover"&&area!=="Learn"&&area!=="Quizzes"&&<LabOverview area={area} workspace={workspace} go={go} shortcuts={shortcuts} onShortcuts={setShortcuts}/>}
+    {area!=="Quizzes"&&!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">{area==="Learn"?"Experimental reader · Editorial drafts pending review · Reading does not save preferences":"Experimental UI · Illustrative content · Records and activity notes last for this mounted Lab session"}</p>}
+    {area!=="Quizzes"&&<button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}><AppIcon name="expand" size={18} inline style={{transform:toastLabOpen?"rotate(180deg)":undefined}} />{toastLabOpen?"Hide":"Open"} Toast Playground</button>}
+    {area!=="Quizzes"&&toastLabOpen&&<ToastPlayground/>}
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}}><code>{color}</code></div>)}</div><a href="#/hub">Return to production app</a></section>}
    </main>
 
