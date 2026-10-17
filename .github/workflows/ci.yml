@@ -12,6 +12,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate workflow YAML
+        run: |
+          ruby - <<'RUBY'
+          require "yaml"
+          Dir.glob(".github/workflows/*.{yml,yaml}").each do |file|
+            YAML.parse_file(file)
+            puts "Validated #{file}"
+          end
+          RUBY
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
