@@ -97,9 +97,17 @@ boundaries rather than fabricated people, accounts, permissions or drafts.
 The Lab view recovery boundary retries a failed view or returns Home without
 remounting the session providers. This does not alter the production error boundary.
 
-## Quiz continuity bridge (pending V2 UX workshop)
+## Quizzes bridge and approved UX decisions — PR #300
 
-Discover exposes the current Quizzes as a persistent, non-dismissible feature card, and the full menu includes Discover → Quizzes. Both open the existing `#/quizzes` route, retaining the established quiz question banks, scoring, retakes and browser-local quiz state. This is an access bridge, **not** a V2 Quiz renderer or a final information-architecture decision. The five approved V2 primary areas are unchanged. Leaving the Lab unmounts its session-only record/activity state, which is not copied into quiz/profile storage. Quiz-specific layout, handoff, status, navigation and result UX remain to be decided separately.
+**Decision 1 — D, Hybrid access.** Quizzes keep one canonical `#/quizzes` route, linked from a permanent Discover card, secondary Home and Profile links, and a direct full-menu destination. The five V2 primary areas remain unchanged. Leaving the Lab unmounts its session-only records; the production quiz storage is independent and browser-local.
+
+**Decision 2 — B, Four visual cards.** All four quizzes appear as visual cards on the Quiz landing (two columns on larger screens, one per row on mobile). Each card derives progress and its action from the real quiz lifecycle, including unfinished retakes.
+
+**Decision 3 — B+D, Focused responsive runner.** Mobile shows a single centered question; wider viewports show a three-question batch of independently answerable focused cards. The existing five response choices, quiz question IDs, scoring and persistence contract do not change. Back, progress, and Save & exit stay available. Batch navigation never writes an implicit answer.
+
+**Decision 4 — A, Seamless resume.** Continue and Continue retake navigate directly into the existing quiz runner without a chooser. The initial position comes from the **earliest unanswered question in the persisted attempt**. A desktop batch displays the group containing that question and focuses its heading, including when the earliest unanswered question is the middle card. A mobile run focuses that single question. Previous completed results remain authoritative while an unfinished retake saves separately; the landing's completed count includes that established result.
+
+The current Quiz Home and runner are the existing application route, not a fully V2-integrated Quiz workspace. Results page redesign, restart/review UX, and long-term service integration remain workshop decisions. Approved decisions and current validation status are documented in the Notion Quiz UX workshop.
 
 ## Discover
 
