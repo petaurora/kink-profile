@@ -1,0 +1,92 @@
+/* Serendipitous Discover Lab: compact, mobile-first; no engagement/feed styling. */
+.lab-serendipity-entry{
+  display:flex;align-items:center;gap:14px;width:100%;min-height:76px;margin:2px 0 20px;
+  padding:15px 17px;text-align:left;border:1px solid #a36a90;border-radius:16px;
+  background:linear-gradient(112deg,#47203d,#211d41 70%);color:#f0d3e7;
+}
+.lab-serendipity-entry-mark{font-size:31px;color:#f8c9e1;line-height:1}
+.lab-serendipity-entry>span:nth-child(2){display:flex;flex-direction:column;gap:4px;flex:1}
+.lab-serendipity-entry strong{font-size:16px}
+.lab-serendipity-entry small{color:#dec0d5;font-size:12px;line-height:1.5}
+.lab-serendipity-arrow{color:#ebbfda;font-size:20px}
+.lab-serendipity-ambient{margin:23px 0 8px;max-width:690px}
+.lab-serendipity-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;color:#eac6dc}
+.lab-serendipity-heading h2{font-size:17px;margin:0}.lab-serendipity-heading>span{font-size:22px}
+.lab-serendipity-card{border:1px solid #916b8b;border-radius:17px;background:linear-gradient(120deg,#292342,#1a1b39);overflow:hidden}
+.lab-serendipity-card-main{position:relative;display:flex;flex-direction:column;gap:10px;width:100%;text-align:left;border:0;background:transparent;color:#f0d3e7;padding:20px 48px 10px 20px}
+.lab-serendipity-card-main strong{font-size:17px;line-height:1.4}
+.lab-serendipity-card-main>span:nth-of-type(2){font-size:13px;line-height:1.65;color:#dfcadb}
+.lab-serendipity-kicker{color:#e8b0d1;font-size:10px;font-weight:700;letter-spacing:.11em}
+.lab-serendipity-card-main small{font-size:11px;color:#cdb6cf}
+.lab-serendipity-card-main .lab-serendipity-arrow{position:absolute;right:18px;top:18px}
+.lab-serendipity-hide{background:transparent;border:0;color:#d9b5cc;padding:11px 19px 13px;font-size:12px;text-decoration:underline}
+.lab-serendipity-empty{font-size:13px;color:#c6b8cb;line-height:1.6}
+.lab-serendipity-experience{max-width:740px;display:flex;flex-direction:column;gap:19px;padding-bottom:15px}
+.lab-serendipity-back{align-self:flex-start;background:transparent;color:#f0d3e7;border:0;padding:12px 2px}
+.lab-serendipity-intro{display:flex;align-items:center;gap:12px;color:#dbbad3}
+.lab-serendipity-intro span{font-size:24px}.lab-serendipity-intro p{font-size:13px;margin:0;line-height:1.6}
+.lab-serendipity-preview{border:1px solid #936781;background:linear-gradient(145deg,#412038,#202043 80%);padding:clamp(19px,4vw,30px);border-radius:20px}
+.lab-serendipity-preview h2{font-size:clamp(22px,4vw,31px);line-height:1.3;margin:9px 0 15px;color:#ffe3f0}
+.lab-serendipity-teaser{font-size:15px;line-height:1.75;color:#efd2e4}
+.lab-serendipity-concept{font-size:13px;line-height:1.7;color:#d7bfce;border-top:1px solid #f0d3e738;padding-top:15px}
+.lab-serendipity-provenance{font-size:11px;color:#c8abc2;margin-bottom:0}
+.lab-serendipity-paths h3,.lab-serendipity-connections h3,.lab-serendipity-themes h3{font-size:16px;color:#f0d3e7;margin:0 0 11px}
+.lab-serendipity-paths,.lab-serendipity-connections,.lab-serendipity-themes{display:flex;flex-direction:column;gap:8px}
+.lab-serendipity-paths>button,.lab-serendipity-connection{display:flex;gap:13px;align-items:center;width:100%;min-height:66px;text-align:left;padding:12px 15px;border:1px solid #806385;border-radius:13px;color:#f0d3e7;background:#211e40}
+.lab-serendipity-paths button>span,.lab-serendipity-connection>span:first-child{display:flex;flex-direction:column;gap:5px;flex:1}
+.lab-serendipity-paths strong,.lab-serendipity-connection strong{font-size:14px}
+.lab-serendipity-paths small,.lab-serendipity-connection small{font-size:12px;line-height:1.5;color:#c7b3ca}
+.lab-serendipity-connections>p{color:#cfb9cc;font-size:12px;line-height:1.7;margin:0 0 4px}
+.lab-serendipity-controls{display:flex;flex-wrap:wrap;gap:10px}
+.lab-serendipity-controls button,.lab-serendipity-empty-state button{min-height:44px;padding:11px 15px;border:1px solid #a0789b;background:#292044;border-radius:11px;color:#f0d3e7}
+.lab-serendipity-controls .lab-serendipity-next{background:#520e25;border-color:#bb799f}
+.lab-serendipity-themes{padding:17px 0;border-top:1px solid #f0d3e728}
+.lab-serendipity-themes h3 small{font-size:11px;font-weight:400;color:#c4b2c8}
+.lab-serendipity-chips{display:flex;flex-wrap:wrap;gap:8px}
+.lab-serendipity-chips button{border:1px solid #806385;border-radius:30px;color:#f0d3e7;background:#211e40;padding:10px 14px;min-height:44px;font-size:12px}
+.lab-serendipity-chips button[aria-pressed="true"]{background:#662747;border-color:#ebb5d5}
+.lab-serendipity-themes>p{font-size:12px;line-height:1.6;color:#cebacd}
+.lab-serendipity-empty-state{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:20px;border:1px solid #806385;border-radius:16px}
+.lab-serendipity-empty-state h2{font-size:20px;margin:0}
+.lab-serendipity-empty-state p{font-size:13px;line-height:1.7;color:#cebacd}
+@media(max-width:700px){
+  .lab-serendipity-entry{min-height:70px;margin-bottom:16px}
+  .lab-serendipity-ambient{margin-top:20px}
+  .lab-serendipity-card-main{padding:17px 43px 8px 17px}
+  .lab-serendipity-paths>button{min-height:60px}
+}
+
+/* Second-pass mobile UX: curiosity first, details only after an explicit choice. */
+.lab-serendipity-experience{gap:13px}
+.lab-serendipity-preview--teaser{display:flex;flex-direction:column;gap:15px;padding:clamp(23px,5vw,32px)}
+.lab-serendipity-preview--teaser .lab-serendipity-kicker{margin:0;color:#e9bed8}
+.lab-serendipity-preview--teaser h2{margin:0;font-size:clamp(23px,5vw,31px);max-width:24ch}
+.lab-serendipity-preview--teaser .lab-serendipity-teaser{margin:0;max-width:45ch;font-size:15px}
+.lab-serendipity-preview-foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px 12px;
+  margin-top:2px;padding-top:13px;border-top:1px solid #f0d3e726;color:#e0b6d0;font-size:12px}
+.lab-serendipity-preview-foot small{font-size:11px;color:#c6aaca}
+.lab-serendipity-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lab-serendipity-choices button{min-width:0;min-height:83px;padding:13px 10px;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  border:1px solid #986f90;border-radius:14px;background:#221f40;color:#f0d3e7;
+  text-align:center;line-height:1.3}
+.lab-serendipity-choices button>span{font-size:21px;line-height:1;color:#f7cfdf}
+.lab-serendipity-choices button strong{font-size:13px;font-weight:650}
+.lab-serendipity-choices .lab-serendipity-explore{
+  border-color:#c887ab;background:linear-gradient(145deg,#672844,#45213b)}
+.lab-serendipity-choices .lab-serendipity-next{background:#26213f}
+.lab-serendipity-secondary{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.lab-serendipity-secondary button{min-height:44px;padding:10px 2px;background:transparent;border:0;
+  color:#d8bfd2;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.lab-serendipity-connection small{line-height:1.6}
+.lab-serendipity-connection .lab-serendipity-evidence{color:#d0aac6;font-size:11px}
+.lab-serendipity-preview--detail{margin-bottom:5px}
+.lab-serendipity-endnote{font-size:12px;color:#baa8bf;line-height:1.6;margin:4px 0 0}
+@media (max-width:390px){
+ .lab-serendipity-preview--teaser{padding:21px 18px}
+ .lab-serendipity-choices button{min-height:78px}
+ .lab-serendipity-choices button strong{font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){
+ .lab-serendipity-experience *{scroll-behavior:auto;animation:none;transition:none}
+}

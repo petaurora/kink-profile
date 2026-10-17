@@ -76,7 +76,7 @@ function UiLabContent() {
   Home:[],
   Catalog:["Overview","Explore All","Kinks","Rewards & Punishments","Concept Explorer"],
   Profile:["Overview","My Profile","Preferences","Sharing & Permissions","Identity & Expression"],
-  Discover:["Overview","Learn","React","Play"],
+  Discover:["Overview","Surprise Me","Learn","React","Play"],
   Tools:["Overview","Scene Builder","Agreements & Rituals","Randomizers & Recipes","Compare Profiles"]
  };
  const openMenuChild=(parent:Area,child:string)=>go(parent,child==="Overview"?"":child);
@@ -180,7 +180,7 @@ function UiLabContent() {
       {workspace==="Concept Explorer"&&<><SearchRow><SearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><SearchFilterButton active={catalogSort!=="default"} groupingAvailable={false} onClick={()=>openCatalogSearch("Concept Explorer",true)}/></SearchRow><div className="ui-lab-catalog-items">{concepts.map(item=><button key={item.id} onClick={()=>openLayer("concept",item.id)}><span><AppIcon name="catalogConcept" size={17} inline />{item.name}</span><AppIcon name="details" size={18} /></button>)}</div></>}
       {workspace==="Kinks"&&<CatalogComposite />}
       {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Reward and punishment classifications are currently read-only here.</p><CatalogComposite collection="rewards" /></>}    </div>}
-    {area==="Discover"&&<DiscoverWorkspace view={workspace} attemptId={params.get("attempt")||undefined} go={go}/>}
+    {area==="Discover"&&<DiscoverWorkspace view={workspace} attemptId={params.get("attempt")||undefined} topicId={params.get("topic")||undefined} stage={params.get("stage")||undefined} origin={params.get("origin")||undefined} go={go}/>}
     {area==="Learn"&&<EducationWorkspace view={workspace} articleId={params.get("id")||""} go={go}/>}
     {area!=="Catalog"&&area!=="Discover"&&area!=="Learn"&&<LabOverview area={area} workspace={workspace} go={go} shortcuts={shortcuts} onShortcuts={setShortcuts}/>}
     {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">{area==="Learn"?"Experimental reader · Editorial drafts pending review · Reading does not save preferences":"Experimental UI · Illustrative content · Records and activity notes last for this mounted Lab session"}</p>}
