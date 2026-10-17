@@ -64,9 +64,9 @@ jobs:
             fi
 
             body="${marker}
-## 🌐 Preview removed
+          ## 🌐 Preview removed
 
-The GitHub Pages preview for **PR #${number}** has been cleaned up because the PR is closed. ✅"
+          The GitHub Pages preview for **PR #${number}** has been cleaned up because the PR is closed. ✅"
 
             updated=false
             for attempt in 1 2 3; do
