@@ -1,0 +1,223 @@
+/* Native V2 Quiz workspace. Scoped to the Lab shell: no legacy app-shell styles. */
+.ui-lab .lab-quiz-landing,.ui-lab .lab-quiz-runner,.ui-lab .lab-quiz-results{display:grid;gap:20px;color:var(--lab-pink)}
+.ui-lab .lab-quiz-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:4px 0 10px}
+.ui-lab .lab-quiz-intro p,.ui-lab .lab-quiz-results-intro p{max-width:58ch;margin:0;color:#c2b6cf;line-height:1.55;font-size:14px}
+.ui-lab .lab-quiz-progress-label{flex-shrink:0;font-size:12px;color:#f0b8d6;font-weight:700}
+.ui-lab .lab-quiz-grid,.ui-lab .lab-quiz-results-overview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ui-lab .lab-quiz-card{position:relative;display:flex;flex-direction:column;gap:13px;min-width:0;min-height:230px;padding:22px;text-align:left;background:#1b1a39;border:1px solid #59415f;border-radius:18px;color:#f5dce9;transition:border-color .14s ease,transform .14s ease}
+.ui-lab .lab-quiz-card:hover{background:#252040;border-color:#95617c;transform:translateY(-1px)}
+.ui-lab .lab-quiz-card:disabled{opacity:.5;cursor:not-allowed}
+.ui-lab .lab-quiz-card-top{display:flex;justify-content:space-between;color:#eab1d0;align-items:center}
+.ui-lab .lab-quiz-card-glyph{display:grid;place-items:center;background:#520e25;border-radius:13px;width:44px;height:44px}
+.ui-lab .lab-quiz-card-name{font-weight:800;font-size:19px;line-height:1.2}
+.ui-lab .lab-quiz-card-description{font-size:13px;line-height:1.5;color:#c2b6cf;flex:1}
+.ui-lab .lab-quiz-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;color:#c2b6cf}
+.ui-lab .lab-quiz-card-bottom strong{flex-shrink:0;font-size:12px;color:#f0d3e7}
+.ui-lab .lab-quiz-progress-track{height:6px;border-radius:99px;background:var(--kp-progress-track);overflow:hidden}
+.ui-lab .lab-quiz-progress-track>span{display:block;height:100%;background:linear-gradient(90deg,var(--kp-progress-fill-start),var(--kp-progress-fill-mid) 75%,var(--kp-progress-fill-end));border-radius:99px;transition:width .32s ease}
+.ui-lab .lab-quiz-storage-note{font-size:12px;color:#ada1be;line-height:1.5}
+.ui-lab .lab-quiz-runner{max-width:930px;margin-inline:auto;width:100%}
+.ui-lab .lab-quiz-run-header{display:grid;gap:8px;padding:14px 0}
+.ui-lab .lab-quiz-run-meta{display:flex;justify-content:space-between;gap:14px;font-size:13px;letter-spacing:.03em;color:#eac2db;font-weight:750}
+.ui-lab .lab-quiz-run-header>p{font-size:12px;color:#aaa0ba;margin:0}
+.ui-lab .lab-quiz-question-stack{display:grid;gap:14px;overflow-anchor:none}
+.ui-lab .lab-quiz-question,.ui-lab .lab-quiz-panel{min-width:0;background:#1b1a39;border:1px solid #59415f;border-radius:18px;padding:24px}
+.ui-lab .lab-quiz-question-meta,.ui-lab .lab-quiz-panel-kicker{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#e6aacd;font-weight:800}
+.ui-lab .lab-quiz-question h2{margin:14px 0 22px;font-size:clamp(20px,3vw,26px);line-height:1.3;letter-spacing:-.02em;color:#f7e8f1}
+/* Decision 10: keyboard and programmatic heading focus is visible and
+   remains below the sticky V2 app header. */
+.ui-lab .lab-quiz-question h2:focus {
+  /* The heading is focused programmatically for AT, not a tappable choice.
+     Don't show the bright selection-style outline around its text. */
+  outline: none;
+}
+.ui-lab .lab-quiz-question h2 {
+  scroll-margin-block-start: calc(72px + env(safe-area-inset-top, 0px));
+  scroll-margin-block-end: calc(90px + env(safe-area-inset-bottom, 0px));
+}
+.ui-lab .lab-quiz-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.ui-lab .lab-quiz-options button{display:flex;align-items:flex-start;flex-direction:column;gap:12px;min-width:0;min-height:82px;padding:12px;background:#24213d;color:#eadcec;border:1px solid #564663;border-radius:13px;text-align:left;font-size:13px;line-height:1.3}
+.ui-lab .lab-quiz-options button:hover,.ui-lab .lab-quiz-options button.selected{border-color:#df9dc2;background:#43263f}
+.ui-lab .lab-quiz-option-number{display:grid;place-items:center;border:1px solid #815576;border-radius:99px;width:24px;height:24px;color:#fad2e9;font-weight:800}
+.ui-lab .lab-quiz-run-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0}
+.ui-lab .lab-quiz-run-actions button,.ui-lab .lab-quiz-result-controls button{background:none;color:#edc5db;border:1px solid #825a78;border-radius:12px;padding:11px 16px;font-size:13px}
+.ui-lab .lab-quiz-run-actions button:disabled{opacity:.35;cursor:default}
+.ui-lab .lab-quiz-results-intro .lab-quiz-retake-note{margin-top:10px;color:#f1b9d7}
+.ui-lab .lab-quiz-panel h2{font-size:clamp(18px,2.6vw,23px);margin:9px 0 14px;color:#f0d3e7}
+.ui-lab .lab-quiz-top-list{padding:0;margin:0;list-style:none}
+.ui-lab .lab-quiz-top-list li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-top:1px solid #ffffff24;font-size:14px}
+.ui-lab .lab-quiz-top-list li span{font-weight:800}
+.ui-lab .lab-quiz-radar svg{width:min(100%,290px);display:block;margin:auto}
+.ui-lab .lab-quiz-radar-ring{fill:none;stroke:#6c5174;stroke-width:1}
+.ui-lab .lab-quiz-radar-axis{stroke:#715779;stroke-width:1}
+.ui-lab .lab-quiz-radar-shape{fill:#d796bc44;stroke:#e8a5cb;stroke-width:2}
+.ui-lab .lab-quiz-radar-dot{fill:#f0d3e7}
+.ui-lab .lab-quiz-radar p,.ui-lab .lab-quiz-no-chart{margin:4px 0 0;font-size:12px;line-height:1.5;text-align:center;color:#ac9fba}
+.ui-lab .lab-quiz-details{border:1px solid #59415f;border-radius:18px;background:#1b1a39;overflow:hidden}
+.ui-lab .lab-quiz-details>summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:18px 22px;list-style:none}
+.ui-lab .lab-quiz-details>summary::-webkit-details-marker{display:none}
+.ui-lab .lab-quiz-details>summary span{display:grid;gap:4px}
+.ui-lab .lab-quiz-details>summary small{color:#b7a9c3;font-size:12px}
+.ui-lab .lab-quiz-details-body{display:grid;gap:14px;padding:0 14px 14px}
+.ui-lab .lab-quiz-chart-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.ui-lab .lab-quiz-chart-tabs button{border:1px solid #755773;border-radius:99px;background:transparent;color:#decbdc;padding:9px 14px;font-size:12px}
+.ui-lab .lab-quiz-chart-tabs button[aria-pressed=true]{background:#520e25;color:#ffe1f0}
+.ui-lab .lab-quiz-signal{border-top:1px solid #ffffff25}
+.ui-lab .lab-quiz-signal>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;cursor:pointer}
+.ui-lab .lab-quiz-signal>summary>span:first-child{display:grid;gap:4px}
+.ui-lab .lab-quiz-signal>summary strong{font-size:14px}
+.ui-lab .lab-quiz-signal>summary small{color:#b6a6bc;font-size:11px}
+.ui-lab .lab-quiz-signal>p{color:#c1b5d0;font-size:13px;line-height:1.6}
+.ui-lab .lab-quiz-next{display:grid;gap:14px}
+.ui-lab .lab-quiz-next>div:first-child h2{font-size:21px;margin:0}
+.ui-lab .lab-quiz-next>div:first-child p{color:#b7a9c3;margin:5px 0 0;font-size:13px}
+.ui-lab .lab-quiz-next-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ui-lab .lab-quiz-next-grid button{min-width:0;min-height:154px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:11px;padding:18px;border:1px solid #59415f;background:#1b1a39;color:#f0d3e7;border-radius:17px}
+.ui-lab .lab-quiz-next-grid button:hover{background:#29213e;border-color:#a27697}
+.ui-lab .lab-quiz-next-grid button strong{font-size:14px}
+.ui-lab .lab-quiz-next-grid button span{color:#b6acc7;font-size:12px;line-height:1.5;flex:1}
+.ui-lab .lab-quiz-result-controls{display:flex;justify-content:flex-end;margin:2px 0}
+@media(max-width:700px){
+ .ui-lab .lab-quiz-grid,.ui-lab .lab-quiz-results-overview,.ui-lab .lab-quiz-next-grid{grid-template-columns:1fr;gap:12px}
+ .ui-lab .lab-quiz-intro{align-items:flex-start;flex-direction:column}
+ .ui-lab .lab-quiz-card{min-height:176px;padding:18px}
+ .ui-lab .lab-quiz-question,.ui-lab .lab-quiz-panel{padding:19px}
+ .ui-lab .lab-quiz-options{grid-template-columns:1fr}
+ .ui-lab .lab-quiz-options button{min-height:55px;flex-direction:row;align-items:center;gap:12px}
+ .ui-lab .lab-quiz-run-actions{flex-wrap:wrap;gap:8px}
+ .ui-lab .lab-quiz-next-grid button{min-height:126px}
+}
+@media(prefers-reduced-motion:reduce){.ui-lab .lab-quiz-card{transition:none}.ui-lab .lab-quiz-card:hover{transform:none}}
+
+
+/* Phone QA: focused whole question card and active progress divider. */
+.ui-lab .lab-quiz-question {
+  position: relative;
+  scroll-margin-block-start: calc(80px + env(safe-area-inset-top, 0px));
+  /* Enter with opacity only: moving the card while scrollIntoView aligns it
+     caused a visible bounce on Android browsers. */
+  animation: lab-quiz-enter .24s ease-out both;
+}
+.ui-lab .lab-quiz-card-progress {
+  position: absolute;
+  top: -1px;
+  left: 18px;
+  right: 18px;
+  height: 3px;
+  overflow: hidden;
+  /* Fade the entire divider symmetrically, not just the empty track.
+     A short fixed fade preserves visibility even at 1 / 27 answered. */
+  background: var(--kp-progress-track);
+  border-radius: 999px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--kp-progress-feather), #000 calc(100% - var(--kp-progress-feather)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--kp-progress-feather), #000 calc(100% - var(--kp-progress-feather)), transparent 100%);
+}
+.ui-lab .lab-quiz-card-progress > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--kp-progress-fill-start), var(--kp-progress-fill-mid) 75%, var(--kp-progress-fill-end));
+  box-shadow: 0 0 9px #e4a5d177;
+  transition: width .32s ease;
+}
+.ui-lab .lab-quiz-question-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ui-lab .lab-quiz-question-count {
+  font-size: 11px;
+  color: #d9bed0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.ui-lab .lab-quiz-options button {
+  position: relative;
+  transition: background .16s ease, border-color .16s ease;
+}
+.ui-lab .lab-quiz-options button.selected {
+  background: #542b49;
+  border-color: #e8a7d0;
+}
+.ui-lab .lab-quiz-options button:focus-visible,
+.ui-lab .lab-quiz-run-actions button:focus-visible {
+  outline: 2px solid #f0d3e7;
+  outline-offset: 3px;
+}
+.ui-lab .lab-quiz-option-label { flex: 1; }
+.ui-lab .lab-quiz-option-check {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: #ffe2f0;
+  background: #794268;
+  border: 1px solid #e5aacd;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 800;
+}
+.ui-lab .lab-quiz-question.is-confirming .lab-quiz-option-check {
+  animation: lab-quiz-check .22s ease-out both;
+}
+.ui-lab .lab-quiz-saved-status {
+  display: block;
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #f0c9e1;
+}
+.ui-lab .lab-quiz-run-actions .lab-quiz-action-back,
+.ui-lab .lab-quiz-run-actions .lab-quiz-action-exit {
+  background: transparent;
+  border-color: transparent;
+  color: #d9b4ce;
+}
+.ui-lab .lab-quiz-run-actions .lab-quiz-action-next {
+  background: #51223d;
+  border-color: #c586aa;
+  color: #ffdfef;
+  font-weight: 700;
+}
+.ui-lab .lab-quiz-run-actions .lab-quiz-action-next:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+@keyframes lab-quiz-check {
+  from { transform: scale(.65); opacity: .1; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes lab-quiz-enter {
+  from { opacity: .8; }
+  to { opacity: 1; }
+}
+@media(max-width:700px) {
+  .ui-lab .lab-quiz-intro { margin: 0 0 4px; }
+  .ui-lab .lab-quiz-question {
+    scroll-margin-block-start: calc(16px + env(safe-area-inset-top, 0px));
+  }
+  .ui-lab .lab-quiz-run-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    column-gap: 10px;
+    row-gap: 4px;
+  }
+  .ui-lab .lab-quiz-run-actions button {
+    min-width: 0;
+    min-height: 44px;
+    font-size: 13px;
+  }
+  .ui-lab .lab-quiz-run-actions .lab-quiz-action-back { grid-column: 1; }
+  .ui-lab .lab-quiz-run-actions .lab-quiz-action-exit { grid-column: 2; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .ui-lab .lab-quiz-question, 
+  .ui-lab .lab-quiz-question.is-confirming .lab-quiz-option-check {
+    animation: none;
+  }
+  .ui-lab .lab-quiz-card-progress > span,
+  .ui-lab .lab-quiz-options button { transition: none; }
+}
