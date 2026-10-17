@@ -25,7 +25,7 @@ describe("editorial serendipity policy", () => {
 
   it("suppresses explicit hard limits without naming the limit or inferring a preference from a skip", () => {
     const topics=eligibleDiscoveryTopics(data,{"concept:ownership:preference":"Hard Limit","collars:overall":"Hard Limit"},[]);
-    expect(topics.map(topic=>topic.id)).toEqual(["trust","metal"]);
+    expect(topics.map(topic=>topic.id)).toEqual(["trust"]); // Collars is limited, so its Metal-linked concept is suppressed too.
     expect(eligibleDiscoveryTopics(data,{},[discoveryDismissalId("trust")]).some(topic=>topic.id==="trust")).toBe(false);
     const all=eligibleDiscoveryTopics(data,{},[]);
     const next=nextDiscoveryTopic(all,["trust"],0,"Communication");
