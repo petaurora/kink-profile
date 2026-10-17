@@ -113,7 +113,7 @@ it("confirms a selected answer with a check before transitioning, while persisti
     expect(host.querySelector(".lab-quiz-options button.selected .lab-quiz-option-check")?.textContent).toBe("✓");
     expect(host.querySelector(".lab-quiz-saved-status")?.textContent).toBe("Answer saved");
     expect(host.querySelector(".lab-quiz-card-progress")?.getAttribute("aria-valuenow")).toBe("1");
-    act(()=>vi.advanceTimersByTime(259));
+    act(()=>vi.advanceTimersByTime(389));
     expect(focusIndex()).toBe("0");
     act(()=>vi.advanceTimersByTime(1));
     expect(focusIndex()).toBe("1");
