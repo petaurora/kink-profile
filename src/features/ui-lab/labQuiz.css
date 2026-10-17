@@ -121,9 +121,65 @@
   color: #ffe2f1;
   background: #35203e;
 }
+/* Phone QA: let the entire question card take the reading position, not
+   merely a heading that was technically visible at the bottom of the viewport. */
+.ui-lab .lab-quiz-question {
+  scroll-margin-block-start: calc(80px + env(safe-area-inset-top, 0px));
+}
+.ui-lab .lab-quiz-run-actions .lab-quiz-action-back,
+.ui-lab .lab-quiz-run-actions .lab-quiz-action-exit {
+  background: transparent;
+  border-color: transparent;
+  color: #d9b4ce;
+}
+.ui-lab .lab-quiz-run-actions .lab-quiz-action-next {
+  background: #51223d;
+  border-color: #c586aa;
+  color: #ffdfef;
+  font-weight: 700;
+}
+.ui-lab .lab-quiz-run-actions .lab-quiz-action-next:hover {
+  background: #64304e;
+}
+.ui-lab .lab-quiz-run-actions .lab-quiz-review-link {
+  white-space: nowrap;
+  font-weight: 500;
+}
 @media(max-width:700px) {
+  .ui-lab .lab-quiz-intro { margin: 0 0 4px; }
+  .ui-lab .lab-quiz-question {
+    scroll-margin-block-start: calc(16px + env(safe-area-inset-top, 0px));
+  }
   .ui-lab .lab-quiz-run-guidance { align-items: flex-start; }
-  .ui-lab .lab-quiz-run-actions { display: grid; grid-template-columns: 1fr 1fr; }
-  .ui-lab .lab-quiz-run-actions button { min-height: 44px; }
-  .ui-lab .lab-quiz-run-actions .lab-quiz-review-link { text-align: center; }
+  .ui-lab .lab-quiz-run-actions {
+    display: grid;
+    grid-template-columns: minmax(0, .65fr) minmax(0, 1fr) minmax(0, 1.5fr);
+    column-gap: 7px;
+    row-gap: 4px;
+    align-items: center;
+  }
+  .ui-lab .lab-quiz-run-actions button {
+    min-height: 44px;
+    min-width: 0;
+    font-size: 12px;
+    padding: 9px 5px;
+  }
+  .ui-lab .lab-quiz-run-actions .lab-quiz-action-back { grid-column: 1; }
+  .ui-lab .lab-quiz-run-actions .lab-quiz-action-exit { grid-column: 2; }
+  .ui-lab .lab-quiz-run-actions .lab-quiz-action-next {
+    grid-column: 3;
+    padding-inline: 8px;
+    white-space: nowrap;
+  }
+  .ui-lab .lab-quiz-run-actions .lab-quiz-review-link {
+    grid-column: 1 / -1;
+    justify-self: end;
+    width: auto;
+    border: 0;
+    text-align: right;
+    min-height: 44px;
+    padding: 8px 2px;
+    color: #d8a8c7;
+    background: transparent;
+  }
 }
