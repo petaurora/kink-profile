@@ -97,7 +97,7 @@ function QuizLanding({ go }: { go: Go }) {
               <span className="lab-quiz-card-description">{quiz.description}</span>
               <span className="lab-quiz-card-bottom"><span>{meta}</span><strong>{action} →</strong></span>
               {(status.state === "in-progress" || status.state === "retake-in-progress") && (
-                <span className="lab-quiz-progress-track" aria-hidden="true"><span style={{width:`${100 * status.answeredCount / status.totalQuestions}%`}} /></span>
+                <span className="lab-quiz-progress-track kp-progress-track" aria-hidden="true"><span style={{width:`${100 * status.answeredCount / status.totalQuestions}%`}} /></span>
               )}
             </button>
           );
@@ -188,7 +188,7 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
       <div className="lab-quiz-question-stack">
         {visible.map(({q,i},n) => (
           <article className={`lab-quiz-question${confirmingQuestion===q.id ? " is-confirming" : ""}`} key={q.id}>
-            <div className="lab-quiz-card-progress"
+            <div className="lab-quiz-card-progress kp-progress-track"
               {...(n===0 ? {role:"progressbar", "aria-label":"Quiz answers saved", "aria-valuenow":answered, "aria-valuemin":0, "aria-valuemax":questions.length, "aria-valuetext":`${answered} of ${questions.length} answered`} : {"aria-hidden":true})}>
               <span style={{width:`${100 * answered / questions.length}%`}} />
             </div>
