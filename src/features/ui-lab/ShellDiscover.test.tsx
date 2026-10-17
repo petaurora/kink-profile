@@ -131,7 +131,7 @@ it('keeps the existing quizzes discoverable in V2 without turning them into dism
   click(button('Dismiss Reflect on your interests'));
   expect(document.querySelector('.lab-discover-cards a[aria-label="Quizzes"]')).not.toBeNull();
   click(button('Open full menu'));
-  click(button('Discover'));
+  click([...document.querySelectorAll<HTMLButtonElement>('.ui-lab-menu-parent')].find(node=>node.textContent?.includes('Discover'))!);
   click(button('Quizzes'));
   expect(route()).toBe(quizHomeRoute.path);
 });
