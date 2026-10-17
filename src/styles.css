@@ -1,2 +1,3 @@
 @import "./styles/legacy.css";
 @import "./features/quizzes/quizUi.css";
+@import "./components/ui/progress.css";
