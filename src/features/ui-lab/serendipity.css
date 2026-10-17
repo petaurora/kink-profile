@@ -73,7 +73,11 @@
 .lab-serendipity-choices button>span{font-size:21px;line-height:1;color:#f7cfdf}
 .lab-serendipity-choices button strong{font-size:13px;font-weight:650}
 .lab-serendipity-choices .lab-serendipity-explore{
-  border-color:#c887ab;background:linear-gradient(145deg,#672844,#45213b)}
+  border-color:#a183a1;background:#29243f}
+.lab-serendipity-choices .lab-serendipity-explore>.kp-icon{color:#e4c8df;flex-shrink:0}
+.lab-serendipity-choices button:is(:hover,:focus-visible){border-color:#d5a5c5}
+.lab-serendipity-choices button:focus-visible,
+.lab-serendipity-secondary button:focus-visible{outline:2px solid #f0d3e7;outline-offset:3px}
 .lab-serendipity-choices .lab-serendipity-next{background:#26213f}
 .lab-serendipity-secondary{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .lab-serendipity-secondary button{min-height:44px;padding:10px 2px;background:transparent;border:0;
