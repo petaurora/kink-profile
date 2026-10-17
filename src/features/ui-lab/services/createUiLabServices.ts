@@ -5,5 +5,5 @@ export type LabOperation = LocalOperation;
 export type UiLabAdapter = LocalAppAdapter;
 /** Composition root for sample data; all operations live in replaceable application services. */
 export function createUiLabServices(options: Partial<Parameters<typeof createLocalAppServices>[0]> = {}): UiLabAdapter {
-  return createLocalAppServices({referenceData:labReferenceData,initialPreferences:labInitialPreferences,educationArticles:localEducationArticles,...options});
+  return createLocalAppServices({...options,referenceData:options.referenceData??labReferenceData,initialPreferences:options.initialPreferences??labInitialPreferences,educationArticles:options.educationArticles??localEducationArticles});
 }
