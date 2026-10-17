@@ -103,8 +103,12 @@
   right: 18px;
   height: 3px;
   overflow: hidden;
-  background: linear-gradient(90deg, transparent 0%, #785274 8%, #765276 92%, transparent 100%);
+  /* Fade the entire divider symmetrically, not just the empty track.
+     A short fixed fade preserves visibility even at 1 / 27 answered. */
+  background: #765276;
   border-radius: 999px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
 }
 .ui-lab .lab-quiz-card-progress > span {
   display: block;
