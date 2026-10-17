@@ -101,7 +101,7 @@ it("resumes saved progress at the first unfinished question on mobile and deskto
   resize(1100);
   expect(container.querySelector(".lab-quiz-run-meta")?.textContent).toContain("4–6 /");
   expect(container.querySelectorAll(".lab-quiz-question")).toHaveLength(3);
-  expect(loadProfile().quizzes[quiz.id]?.answers).toEqual(saved.quizzes[quiz.id].answers);
+  expect(loadProfile().quizzes[quiz.id]?.answers).toEqual(saved.quizzes[quiz.id]!.answers);
 });
 
 it("keeps a previous result authoritative during an incomplete retake and offers equal V2 destinations", () => {
