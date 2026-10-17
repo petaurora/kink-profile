@@ -97,3 +97,46 @@ it("scrolls the full mobile question card into reading position on load and auto
     else Reflect.deleteProperty(HTMLElement.prototype,"scrollIntoView");
   }
 });
+
+
+it("confirms a selected answer with a check before transitioning, while persisting immediately",()=>{
+  Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
+  const existing=Object.getOwnPropertyDescriptor(window,"matchMedia");
+  Object.defineProperty(window,"matchMedia",{configurable:true,value:()=>({matches:false})});
+  vi.useFakeTimers();
+  try {
+    renderQuiz();
+    act(()=>host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[3].click());
+    expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:3});
+    expect(focusIndex()).toBe("0");
+    expect(host.querySelector(".lab-quiz-question.is-confirming")).not.toBeNull();
+    expect(host.querySelector(".lab-quiz-options button.selected .lab-quiz-option-check")?.textContent).toBe("✓");
+    expect(host.querySelector(".lab-quiz-saved-status")?.textContent).toBe("Answer saved");
+    expect(host.querySelector(".lab-quiz-card-progress")?.getAttribute("aria-valuenow")).toBe("1");
+    act(()=>vi.advanceTimersByTime(259));
+    expect(focusIndex()).toBe("0");
+    act(()=>vi.advanceTimersByTime(1));
+    expect(focusIndex()).toBe("1");
+    expect(host.querySelector(".lab-quiz-question.is-confirming")).toBeNull();
+    expect(host.querySelector(".lab-quiz-saved-status")).toBeNull();
+  } finally {
+    vi.useRealTimers();
+    if(existing)Object.defineProperty(window,"matchMedia",existing);
+    else Reflect.deleteProperty(window,"matchMedia");
+  }
+});
+it("respects reduced motion by moving on immediately after selection",()=>{
+  Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
+  const existing=Object.getOwnPropertyDescriptor(window,"matchMedia");
+  Object.defineProperty(window,"matchMedia",{configurable:true,value:()=>({matches:true})});
+  try {
+    renderQuiz();
+    act(()=>host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[2].click());
+    expect(focusIndex()).toBe("1");
+    expect(host.querySelector(".lab-quiz-question.is-confirming")).toBeNull();
+    expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:2});
+  } finally {
+    if(existing)Object.defineProperty(window,"matchMedia",existing);
+    else Reflect.deleteProperty(window,"matchMedia");
+  }
+});
