@@ -144,3 +144,15 @@ it.each([
   expect(container.textContent).toContain(expected);
   expect(localStorage.getItem("pet-profile-v2")).toBe(before);
 });
+
+it("does not expose the obsolete legacy Reset this quiz control", () => {
+  saveCompletedQuiz();
+  mountResults();
+  expect(container.textContent).not.toContain("Reset this quiz");
+  expect([...container.querySelectorAll<HTMLButtonElement>("button")].some(
+    button => /reset|delete|discard draft/i.test(button.textContent ?? ""),
+  )).toBe(false);
+  expect([...container.querySelectorAll<HTMLButtonElement>("button")].some(
+    button => button.textContent?.includes("Retake quiz"),
+  )).toBe(true);
+});
