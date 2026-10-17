@@ -10,7 +10,7 @@ type Go=(area:LabArea,workspace?:string,params?:Record<string,string>)=>void;
 const suggestions=[
   {id:"reflection",title:reflection.title,reason:"Optional reflection · Your notes stay separate from profile records.",icon:"discover" as const},
   {id:"catalog-subjects",title:"Explore Catalog subjects",reason:"General exploration · Browse by subject at your own pace.",area:"Catalog" as const,workspace:"",icon:"catalog" as const},
-  {id:"concepts",title:"Explore concepts",reason:"General learning · Understand meanings without recording a preference.",area:"Catalog" as const,workspace:"Concept Explorer",icon:"education" as const},
+  {id:"concepts",title:"Explore concepts",reason:"General learning · Understand meanings without recording a preference.",area:"Catalog" as const,workspace:"Concept Explorer",icon:"catalogConcept" as const},
   {id:"education-articles",title:"Read education articles",reason:"Beginner guides · Reading never changes your profile.",area:"Learn" as const,workspace:"",icon:"education" as const},
 ];
 export function ContinueActivities({go,card=false,title="Continue"}:{go:Go;card?:boolean;title?:string}) {

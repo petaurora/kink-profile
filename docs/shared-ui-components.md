@@ -20,7 +20,8 @@ been migrated to the experimental treatments merely because the code is shared.
 | `SortGroupSheet` | Separate controlled sort/group sections; grouping is optional | Sort order, grouping availability, labels and defaults |
 | `ModalLayer` | Backdrop/Escape dismissal; nested focus containment/restoration; coordinated body scroll lock | Open state, title/label, content, visual variant and recovery policy |
 | `SheetHeader` | Shared title, context and accessible close target | Title/context and any header accessory |
-| `PreferenceControl` / `PreferenceSheet` | Controlled value, arrow focus and explicit commit; optional controlled help and Clear | Rating vocabulary, independently keyed values, persistence and retry |
+| `PreferenceChip` | Display-only icon and complete rating label; dashed-circle Not rated for absence | Current explicit value; no edit action or inferred preference |
+| `PreferenceControl` / `PreferenceSheet` | Editable chip and anchored vertical rating dialog; explicit commit, controlled help and Clear | Target/anchor, independent values, persistence and retry |
 | `InlineSaveStatus` | Reserved status slot; idle/saving/saved/failed presentation | Truthful persistence state and Retry implementation |
 | `ItemRow` | Compact identity, optional supporting text, indicator, preference and Refine slots | Item data, search-match explanation, optional modifiers, aggregate save status and classification indicators |
 | `DisclosureSection` | Controlled disclosure with a stable panel ID | Expanded state and panel content; opening never records preference |
@@ -64,6 +65,55 @@ controls show a check and expose an accessible description in addition to color.
 Filter chips and Sort/Group options retain separate behavior; no unsupported
 filter/group controls are added to a view. Reflection notes already update as
 typed, so leaving uses `Exit reflection`, without a misleading manual Save action.
+
+### Rating chips and the floating picker
+
+The approved rating vocabulary uses these exact Tabler glyphs. The same mapping
+appears in editable Item rows, the Item's overall chip inside Refine, independent
+Modifier Value chips, picker options and read-only Profile records.
+
+| Explicit preference | Icon |
+| --- | --- |
+| Love | Filled Heart |
+| Like | Mood Smile |
+| Curious | Bulb |
+| Unsure | Mood Confused |
+| Not Interested | Heart Off |
+| Hard Limit | Shield X, always with the full label |
+| Not Applicable | Circle Off |
+
+Dashed Circle + `Not rated` means no explicit value and is never an eighth picker
+option or persisted preference. `PreferenceChip` is a span; editing is an explicit
+`PreferenceControl` button with a separate 44px target and contextual name. No
+inferred, ranking or experience value is promoted to a direct preference chip.
+
+`PreferenceSheet` retains its API name but now renders an anchored floating dialog
+on every viewport, including mobile. Its modal semantics are backed by actual
+background isolation, focus containment and outside/Escape cancellation from
+`ModalLayer`. It never silently becomes a bottom sheet. `useAnchoredPanel` flips
+and shifts the panel inside the visual viewport, responds to resize/scroll/zoom,
+and constrains an internal scrolling area. The header and Clear action remain
+available while the choices/help scroll.
+
+Seven icon-and-label rows follow canonical order. The selected row has a fine
+outline and check; keyboard focus has its own independent ring. Initial focus
+orients on the heading, then Tab enters the choices. Arrow/Home/End only move
+focus; Enter/Space or a deliberate click selects. Activating the current value
+closes and restores trigger focus without a duplicate write, timestamp or
+revision. Clear remains a separate action with version-safe Undo. Optional
+`What do these ratings mean?` help changes no records. Item and Modifier Value
+ratings remain independent; Modifier Groups have no rating chips.
+
+Catalog vocabulary is also registered centrally: Item Square Dot, Modifier Group
+Brackets, Modifier Value Tag, Category Layout Grid, Subject Shape (provisional),
+Concept Notebook, Alias Tags and Applicability Square Check. Existing Experience
+controls use Tried Circle Check and Comfort Heart Handshake, with full labels.
+Activity, Equipment, Material, Body Area, participation direction, provenance,
+intensity and risk glyphs are available to callers without inventing missing
+metadata or additional UI. Body Scan is the approved provisional Body Area glyph.
+The seven verbatim risk labels keep their approved neutral/half/exclamation shield
+mapping in `catalogRiskIconMeanings`; Shield X belongs only to personal Hard Limit.
+Risk symbols do not imply safety, consent or personal preference.
 
 The feature-level `src/features/ui-lab/LabCard.tsx` composes the existing workspace
 tile styles for Home, Profile, Discover and Tools. It supplies a navigation button

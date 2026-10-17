@@ -50,8 +50,8 @@ describe("accessibility regressions", () => {
   it("keeps expanded rating guidance valid and its icon-only decoration out of the control name", async () => {
     mount(<PreferenceSheet open onClose={() => {}} label="Leather" options={preferenceChoices}
       onChange={() => {}} help={<PreferenceReference/>}/>);
-    click(button("What do these mean?"));
-    expect(button("What do these mean?").getAttribute("aria-expanded")).toBe("true");
+    click(button("What do these ratings mean?"));
+    expect(button("What do these ratings mean?").getAttribute("aria-expanded")).toBe("true");
     await audit();
   }, 15000);
   it("isolates background and nested sheets, including newly mounted content, then restores original attributes", async () => {
