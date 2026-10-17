@@ -117,7 +117,7 @@ it("keeps Tried and Comfort independent of rating and makes Tried reversible", a
   const tried = document.querySelector<HTMLInputElement>('.cc-experience input')!;
   expect(tried.checked).toBe(false); click(tried);
   expect(button("Comfortable").getAttribute("aria-pressed")).toBe("true");
-  expect(button("Undo")).toBeNull();
+  expect([...document.querySelectorAll<HTMLButtonElement>("button")].some(el => el.textContent?.trim() === "Undo")).toBe(false);
   // Reversible in place without a toast; unrelated comfort/rating stays put.
   click(tried); expect(tried.checked).toBe(false);
   expect(button("Comfortable").getAttribute("aria-pressed")).toBe("true");
