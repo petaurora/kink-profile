@@ -13,8 +13,8 @@
 .ui-lab .lab-quiz-card-description{font-size:13px;line-height:1.5;color:#c2b6cf;flex:1}
 .ui-lab .lab-quiz-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;color:#c2b6cf}
 .ui-lab .lab-quiz-card-bottom strong{flex-shrink:0;font-size:12px;color:#f0d3e7}
-.ui-lab .lab-quiz-progress-track{height:6px;border-radius:99px;background:#302543;overflow:hidden}
-.ui-lab .lab-quiz-progress-track>span{display:block;height:100%;background:#e4accd;border-radius:99px}
+.ui-lab .lab-quiz-progress-track{height:6px;border-radius:99px;background:var(--kp-progress-track);overflow:hidden}
+.ui-lab .lab-quiz-progress-track>span{display:block;height:100%;background:linear-gradient(90deg,var(--kp-progress-fill-start),var(--kp-progress-fill-mid) 75%,var(--kp-progress-fill-end));border-radius:99px;transition:width .32s ease}
 .ui-lab .lab-quiz-storage-note{font-size:12px;color:#ada1be;line-height:1.5}
 .ui-lab .lab-quiz-runner{max-width:930px;margin-inline:auto;width:100%}
 .ui-lab .lab-quiz-run-header{display:grid;gap:8px;padding:14px 0}
@@ -107,16 +107,16 @@
   overflow: hidden;
   /* Fade the entire divider symmetrically, not just the empty track.
      A short fixed fade preserves visibility even at 1 / 27 answered. */
-  background: #765276;
+  background: var(--kp-progress-track);
   border-radius: 999px;
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--kp-progress-feather), #000 calc(100% - var(--kp-progress-feather)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--kp-progress-feather), #000 calc(100% - var(--kp-progress-feather)), transparent 100%);
 }
 .ui-lab .lab-quiz-card-progress > span {
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #b971a4, #f0d3e7 75%, #ffe5f2);
+  background: linear-gradient(90deg, var(--kp-progress-fill-start), var(--kp-progress-fill-mid) 75%, var(--kp-progress-fill-end));
   box-shadow: 0 0 9px #e4a5d177;
   transition: width .32s ease;
 }
