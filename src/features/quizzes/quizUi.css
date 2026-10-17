@@ -945,3 +945,96 @@
 @media (prefers-reduced-motion: reduce) {
   .quiz-results-deep-dive-chevron { transition: none; }
 }
+
+
+/* Quiz UX Decision 6: three equally weighted next steps. No featured choice. */
+.quiz-results-next-steps {
+  display: grid;
+  gap: 16px;
+  margin-top: 4px;
+}
+.quiz-results-next-steps-heading h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(1.22rem, 2.4vw, 1.52rem);
+  line-height: 1.25;
+}
+.quiz-results-next-steps-heading p {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
+  font-size: .85rem;
+  line-height: 1.5;
+}
+.quiz-results-next-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.quiz-results-next-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  min-height: 184px;
+  padding: 22px;
+  color: #f5dce9;
+  text-decoration: none;
+  border: 1px solid #59415f;
+  border-radius: 18px;
+  background: #1b1a39;
+  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+.quiz-results-next-step > svg:first-child {
+  color: #eab1d0;
+  flex: 0 0 auto;
+}
+.quiz-results-next-step strong {
+  font-size: .98rem;
+  line-height: 1.25;
+}
+.quiz-results-next-step > span {
+  max-width: 31ch;
+  padding-right: 2px;
+  color: #c2b6cf;
+  font-size: .78rem;
+  line-height: 1.5;
+}
+.quiz-results-next-step-arrow {
+  position: absolute;
+  top: 22px;
+  right: 20px;
+  color: #dca9c5;
+}
+.quiz-results-next-step:hover {
+  border-color: #95617c;
+  background: #28203e;
+  transform: translateY(-1px);
+}
+.quiz-results-next-step:focus-visible {
+  outline: 2px solid #f0d3e7;
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .quiz-results-next-steps-grid {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+  .quiz-results-next-step {
+    min-height: 132px;
+    padding: 18px;
+  }
+  .quiz-results-next-step-arrow {
+    top: 18px;
+    right: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quiz-results-next-step {
+    transition: none;
+  }
+  .quiz-results-next-step:hover {
+    transform: none;
+  }
+}
