@@ -24,7 +24,17 @@
 .ui-lab .lab-quiz-question,.ui-lab .lab-quiz-panel{min-width:0;background:#1b1a39;border:1px solid #59415f;border-radius:18px;padding:24px}
 .ui-lab .lab-quiz-question-meta,.ui-lab .lab-quiz-panel-kicker{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#e6aacd;font-weight:800}
 .ui-lab .lab-quiz-question h2{margin:14px 0 22px;font-size:clamp(20px,3vw,26px);line-height:1.3;letter-spacing:-.02em;color:#f7e8f1}
-.ui-lab .lab-quiz-question h2:focus{outline:none}
+/* Decision 10: keyboard and programmatic heading focus is visible and
+   remains below the sticky V2 app header. */
+.ui-lab .lab-quiz-question h2:focus {
+  outline: 2px solid #f0d3e7;
+  outline-offset: 5px;
+  border-radius: 3px;
+}
+.ui-lab .lab-quiz-question h2 {
+  scroll-margin-block-start: calc(72px + env(safe-area-inset-top, 0px));
+  scroll-margin-block-end: calc(90px + env(safe-area-inset-bottom, 0px));
+}
 .ui-lab .lab-quiz-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .ui-lab .lab-quiz-options button{display:flex;align-items:flex-start;flex-direction:column;gap:12px;min-width:0;min-height:82px;padding:12px;background:#24213d;color:#eadcec;border:1px solid #564663;border-radius:13px;text-align:left;font-size:13px;line-height:1.3}
 .ui-lab .lab-quiz-options button:hover,.ui-lab .lab-quiz-options button.selected{border-color:#df9dc2;background:#43263f}
