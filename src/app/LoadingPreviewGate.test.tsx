@@ -39,7 +39,7 @@ it("holds an explicitly enabled loader preview until Continue is activated", () 
 });
 it("covers the PR's bare root preview link and moves it to V2 Lab after Continue", () => {
   mount("/");
-  const isPrPreview = /(?:^|\\/)pr-\\d+(?:\\/|$)/.test(import.meta.env.BASE_URL || "/");
+  const isPrPreview = /(?:^|\/)pr-\d+(?:\/|$)/.test(import.meta.env.BASE_URL || "/");
   if (isPrPreview) {
     const continueButton = element.querySelector<HTMLButtonElement>(".kp-loading-preview-continue")!;
     expect(continueButton).not.toBeNull();
@@ -51,7 +51,7 @@ it("covers the PR's bare root preview link and moves it to V2 Lab after Continue
 });
 it("does not hold ordinary production routes without an explicit preview flag", () => {
   mount("/ui-lab/home");
-  if (!/(?:^|\\/)pr-\\d+(?:\\/|$)/.test(import.meta.env.BASE_URL || "/")) {
+  if (!/(?:^|\/)pr-\d+(?:\/|$)/.test(import.meta.env.BASE_URL || "/")) {
     expect(element.textContent).toContain("Actual KP app content");
     expect(element.querySelector(".kp-loading-preview")).toBeNull();
   }
