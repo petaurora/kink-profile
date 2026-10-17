@@ -39,11 +39,13 @@ Current weighted quizzes use the same five-point response scale:
 | ---: | --- |
 | `0` | Nope |
 | `1` | A little |
-| `2` | Maybe |
-| `3` | Very into it |
-| `4` | Core to me |
+| `2` | Somewhat |
+| `3` | A lot |
+| `4` | Absolutely |
 
 Higher values consistently represent stronger affinity for the experience described by the prompt.
+
+These labels express degrees of **appeal, affinity, or resonance** with the question statement. They do not ask how frequently an experience happens or how frequently someone would want it. Desired frequency may be modeled separately if approved; changing labels does not change saved numeric responses, versions, weights, or score calculations.
 
 Questions should therefore be authored so the scale does not need hidden reverse interpretation merely to produce a desired score.
 
@@ -383,6 +385,12 @@ Version changes should be deliberate when a modification changes the interpretat
 Derived results can be recalculated from stored authoritative answers against current supported definitions where compatibility is intentional.
 
 The current Roles & Headspaces quiz is version 5 because its derived taxonomy/composition changed while retaining compatible stored answer identity.
+
+## Quiz-screen lifecycle — approved UX Decision 8 (October 16, 2026)
+
+Quiz Home, the V2 question runner, and quiz results offer **Retake** after a completed attempt and **Continue retake** while its replacement attempt is unfinished. Quiz screens do **not** offer Reset this quiz, Start Over, Discard Draft, or Delete Quiz History. The previous established result remains authoritative until a new full attempt completes, and a draft is never silently cleared.
+
+This is a quiz-screen presentation decision. Profile-level data management, backup/restore, and their broader deletion semantics are separate features covered below; these underlying capabilities are not changed by hiding quiz-specific reset buttons.
 
 ## Reset and backup lifecycle
 
