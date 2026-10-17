@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { profileRoute } from "../../app/routes";
 import { quizzes, type QuizDefinition } from "../../data/quizzes";
@@ -135,17 +135,20 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
-  useEffect(() => {
-    // On the first visit, focus the earliest unanswered question (which may
-    // be the middle card). On Back/Next, focus the newly shown question group.
-    const focusIndex = !focused.current ? resumeIndex.current
-      : pendingFocus.current ?? (wide ? start : index);
-    const heading = container.current?.querySelector<HTMLElement>(`[data-quiz-question-index="${focusIndex}"]`);
+  useLayoutEffect(() => {
+    // Decision 10: every change of displayed question has a focused heading.
+    // Resume and "Review unanswered" target the exact unanswered question,
+    // even if it is the middle card of a desktop group.
+    const focusIndex = pendingFocus.current ??
+      (!focused.current ? resumeIndex.current : wide ? start : index);
+    const heading = container.current?.querySelector<HTMLElement>(
+      `[data-quiz-question-index="${focusIndex}"]`,
+    );
     if (heading) {
       focused.current = true;
       pendingFocus.current = null;
       heading.focus({preventScroll:true});
-      heading.scrollIntoView?.({block:"nearest"});
+      heading.scrollIntoView?.({block:"nearest", behavior:"instant"});
     }
   }, [wide, index, start]);
 
@@ -195,7 +198,7 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
         {visible.map(({q,i}) => (
           <article className="lab-quiz-question" key={q.id}>
             <span className="lab-quiz-question-meta">Question {i + 1} · {quiz.shortTitle}</span>
-            <h2 tabIndex={-1} data-quiz-question-index={i}>{q.prompt}</h2>
+            <h2 tabIndex={-1} data-quiz-question-index={i} aria-label={`Question ${i + 1} of ${questions.length}: ${q.prompt}`}>{q.prompt}</h2>
             <div className="lab-quiz-options" role="group" aria-label={`Answer question ${i+1}`}>
               {answerOptions.map(option => (
                 <button key={option.value} type="button"
@@ -211,7 +214,7 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
         ))}
       </div>
       <nav className="lab-quiz-run-actions" aria-label="Quiz navigation">
-        <button type="button" disabled={index === 0} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
+        <button type="button" disabled={wide ? start === 0 : index === 0} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
         {remaining > 0 && <button type="button" className="lab-quiz-review-link" onClick={jumpToUnanswered}>
           Review unanswered ({remaining})
         </button>}
