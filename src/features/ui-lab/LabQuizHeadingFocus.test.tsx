@@ -40,7 +40,7 @@ afterEach(()=>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:originalWidth});
   vi.unstubAllGlobals();
 });
-it("focuses each new mobile heading on auto-advance, Next, Back and review",()=>{
+it("focuses each new mobile heading on answers and Back without skip controls",()=>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
   renderQuiz();
   expect(focusIndex()).toBe("0");
@@ -49,15 +49,15 @@ it("focuses each new mobile heading on auto-advance, Next, Back and review",()=>
   expect(heading.getAttribute("aria-label")).toContain("Question 1 of");
   act(()=>host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[1].click());
   expect(focusIndex()).toBe("1");
-  press("Next question");
-  expect(focusIndex()).toBe("2");
+  expect(host.querySelectorAll(".lab-quiz-options button.selected .lab-quiz-option-check")).toHaveLength(0);
   press("← Back");
-  expect(focusIndex()).toBe("1");
-  press("Review unanswered (");
-  expect(focusIndex()).toBe("1");
+  expect(focusIndex()).toBe("0");
+  expect(host.querySelector(".lab-quiz-options button.selected .lab-quiz-option-check")).not.toBeNull();
   expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:1});
+  expect(host.textContent).not.toContain("Review unanswered");
+  expect(host.textContent).not.toContain("Next question");
 });
-it("focuses the exact resumed desktop prompt and batch headings after navigation",()=>{
+it("focuses the exact resumed desktop prompt and enables new batches only after answering each card",()=>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:1100});
   const profile=createEmptyProfile();
   profile.quizzes[quiz.id]={quizVersion:quiz.version,answers:Object.fromEntries(quiz.questionIds.slice(0,4).map(id=>[id,3]))};
@@ -68,13 +68,14 @@ it("focuses the exact resumed desktop prompt and batch headings after navigation
   press("← Back");
   expect(focusIndex()).toBe("0");
   expect(host.querySelector<HTMLButtonElement>(".lab-quiz-run-actions button")?.disabled).toBe(true);
+  const next=[...host.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")]
+    .find(el=>el.textContent?.startsWith("Next questions"))!;
+  expect(next.disabled).toBe(false);
   press("Next questions");
   expect(focusIndex()).toBe("3");
-  press("Review unanswered (");
-  expect(focusIndex()).toBe("4");
+  expect(host.textContent).not.toContain("Review unanswered");
   expect(loadProfile().quizzes[quiz.id]?.answers).toEqual(profile.quizzes[quiz.id]?.answers);
 });
-
 
 it("scrolls the full mobile question card into reading position on load and auto-advance",()=>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
