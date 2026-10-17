@@ -164,6 +164,26 @@
 .ui-lab .lab-quiz-question.is-confirming .lab-quiz-option-check {
   animation: lab-quiz-check .22s ease-out both;
 }
+
+/* Mobile choice confirmation: hide the other answers without removing their
+   layout slots, so the selected row remains stationary and the card never
+   bounces or shrinks before the next question. */
+@media (max-width: 700px) {
+  .ui-lab .lab-quiz-question.is-confirming .lab-quiz-options button[data-quiz-feedback-hidden="true"] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .ui-lab .lab-quiz-question.is-confirming .lab-quiz-options button.selected:disabled,
+  .ui-lab .lab-quiz-question.is-confirming .lab-quiz-options button.selected:disabled:hover {
+    opacity: 1;
+    filter: none;
+    background: #542b49;
+    border-color: #e8a7d0;
+    color: #eadcec;
+    cursor: default;
+  }
+}
 .ui-lab .lab-quiz-saved-status {
   display: block;
   margin: 8px 0 0;
