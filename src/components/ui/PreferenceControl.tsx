@@ -117,6 +117,16 @@ export function PreferenceSheet({
   useEffect(() => setFocusIndex(Math.max(0, options.indexOf(value || ""))), [label, open, value, options]);
   useLayoutEffect(() => {
     if (!open || position.panelStyle.visibility !== "visible") return;
+    const panel = position.panelRef.current;
+    // The anchored sheet initially mounts hidden while its viewport position is
+    // measured. A browser cannot focus that hidden heading during modal mount.
+    // Retry once it is visible, without stealing focus from an active control.
+    if (panel && !panel.contains(document.activeElement)) {
+      panel.querySelector<HTMLElement>("[data-dialog-initial-focus]")?.focus();
+    }
+  }, [open, position.panelStyle.visibility]);
+  useLayoutEffect(() => {
+    if (!open || position.panelStyle.visibility !== "visible") return;
     const selected = choicesRef.current?.querySelector<HTMLElement>('[aria-pressed="true"]');
     const scroll = choicesRef.current?.parentElement;
     if (!selected || !scroll) return;

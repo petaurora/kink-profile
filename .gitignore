@@ -1,5 +1,8 @@
 node_modules
 dist
+playwright-report/
+test-results/
+blob-report/
 .DS_Store
 *.local
 .env
@@ -7,3 +10,5 @@ dist
 !.env.example
 src/data/kinkCatalog.generated.ts
 src/data/rewardPunishmentLibrary.generated.ts
+
+*.tsbuildinfo
