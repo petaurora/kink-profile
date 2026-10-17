@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { profileRoute } from "../../app/routes";
 import { quizzes, type QuizDefinition } from "../../data/quizzes";
 import { answerOptions } from "../../data/quizScale";
@@ -13,7 +13,7 @@ import {
 } from "../quizzes/quizRuntime";
 import { QuizGlyph } from "../quizzes/QuizCard";
 import { quizRadarViews, scoreQuizAnswers, type QuizSignalScore, type QuizRadarView } from "../quizzes/quizResultsModel";
-import type { LabArea } from "./LabNavigation";
+import { labPath, type LabArea } from "./LabNavigation";
 import "./labQuiz.css";
 
 type Go = (area: LabArea, workspace?: string, params?: Record<string, string>) => void;
@@ -116,6 +116,8 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
   const focused = useRef(false);
   const container = useRef<HTMLDivElement>(null);
   const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Guard synchronously before React commits disabled controls.
+  const answerTransitionLocked = useRef(false);
   const [confirmingQuestion, setConfirmingQuestion] = useState<string | null>(null);
   const questions = useMemo(() => getQuestionsForQuiz(quiz), [quiz]);
   const state = resolveQuizLifecycle(quiz, profile);
@@ -147,40 +149,52 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
   }
 
   useLayoutEffect(() => {
+    // Only the next visible question unlocks answers; re-rendering the same
+    // question after saving must not unlock its confirmation.
+    answerTransitionLocked.current = false;
     // Resume targets the first unanswered question, even within a desktop
     // batch. Later navigation focuses the heading for the newly visible card.
     const focusIndex = !focused.current ? resumeIndex.current : wide ? start : index;
     focusQuestion(focusIndex);
   }, [wide, index, start]);
 
-  if (state.state === "complete") {
-    return <p>This quiz is complete. <button type="button" onClick={() => go("Quizzes", "Results", {id:quiz.id})}>View results</button></p>;
+  // A completed deep link goes straight to results. During final-answer
+  // confirmation, retain the question until the timer navigates to results.
+  if (state.state === "complete" && confirmingQuestion === null) {
+    return <Navigate to={labPath("Quizzes", "Results", {id:quiz.id})} replace />;
   }
   function answer(questionId: string, questionIndex: number, choice: number) {
-    if (confirmingQuestion !== null) return;
+    if (confirmingQuestion !== null || answerTransitionLocked.current) return;
+    // On desktop, three answers remain editable. Mobile accepts one tap per
+    // question, including consecutive taps before React disables the buttons.
+    if (!wide) answerTransitionLocked.current = true;
     const next = answerQuizQuestion(quiz, profile, questionId, choice);
-    // Persist immediately, before visual feedback or any route transition.
-    saveProfile(next);
-    setProfile(next);
     const complete = resolveQuizLifecycle(quiz, next).state === "complete";
     const advance = () => {
       if (complete) go("Quizzes", "Results", {id:quiz.id});
       else if (!wide) setIndex(questionIndex < questions.length - 1
         ? questionIndex + 1 : initialQuestionIndex(quiz, next));
     };
-    // Respect motion settings. Automated DOM tests without matchMedia continue
-    // synchronously; real browsers display a brief checked-choice confirmation.
     const reducedMotion = typeof window.matchMedia !== "function" ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Confirm before re-rendering the saved last answer; no fallback flash.
+    if (!wide && !reducedMotion) setConfirmingQuestion(questionId);
+    // Persist immediately, independently of the visual confirmation.
+    saveProfile(next);
+    setProfile(next);
     if (wide || reducedMotion) {
       advance();
       return;
     }
-    setConfirmingQuestion(questionId);
     transitionTimer.current = setTimeout(() => {
       transitionTimer.current = null;
-      setConfirmingQuestion(null);
-      advance();
+      if (complete) {
+        // Do not clear confirmation before routing to results.
+        advance();
+      } else {
+        advance();
+        setConfirmingQuestion(null);
+      }
     }, 390);
   }
   return (
@@ -216,7 +230,7 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
       </div>
       <nav className="lab-quiz-run-actions" aria-label="Quiz navigation">
         <button type="button" className="lab-quiz-action-back" disabled={confirmingQuestion!==null || (wide ? start === 0 : index === 0)} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
-        <button type="button" className="lab-quiz-action-exit" onClick={() => go("Quizzes")}>Save & exit</button>
+        <button type="button" className="lab-quiz-action-exit" disabled={confirmingQuestion!==null} onClick={() => go("Quizzes")}>Save & exit</button>
         {wide && start + 3 < questions.length && (
           <button type="button" className="lab-quiz-action-next"
             disabled={!batchComplete || confirmingQuestion!==null}
@@ -330,9 +344,6 @@ export function LabQuizWorkspace({ view, quizId, go }: Props) {
   const profile = loadProfile();
   if (view === "Results" && !canViewQuizResults(quiz, profile)) {
     return <p role="alert">No completed results are available for this quiz yet. <button type="button" onClick={()=>go("Quizzes","Question",{id:quiz.id})}>Continue quiz</button></p>;
-  }
-  if (view === "Question" && resolveQuizLifecycle(quiz, profile).state === "complete") {
-    return <p>You've finished this quiz. <button type="button" onClick={()=>go("Quizzes","Results",{id:quiz.id})}>View results</button></p>;
   }
   return view === "Results" ? <QuizResults key={quiz.id} quiz={quiz} go={go} /> :
     view === "Question" ? <QuizQuestions key={quiz.id} quiz={quiz} go={go} /> : null;
