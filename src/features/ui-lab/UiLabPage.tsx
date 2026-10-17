@@ -3,6 +3,7 @@ import { LabQuizWorkspace } from "./LabQuizWorkspace";
 import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
 import { ToastPlayground } from "./ToastPlayground";
 import { LoadingPlayground } from "./LoadingPlayground";
+import { FeedbackPlayground } from "./FeedbackPlayground";
 import { CatalogComposite } from "./CatalogComposite";
 import { SearchField } from "../../components/ui/SearchField";
 import { SearchFilterButton, type SortBy } from "../../components/ui/SearchControls";
@@ -63,6 +64,7 @@ function UiLabContent() {
  const [showLab,setShowLab]=useState(false);
  const [toastLabOpen,setToastLabOpen]=useState(false);
  const [loadingLabOpen,setLoadingLabOpen]=useState(false);
+ const [feedbackLabOpen,setFeedbackLabOpen]=useState(false);
  const [catalogSort,setCatalogSort]=useState<SortBy>("default");
  const [catalogOrderOpen,setCatalogOrderOpen]=useState(false);
  const [searchOrigin,setSearchOrigin]=useState("Catalog");
@@ -198,6 +200,8 @@ function UiLabContent() {
     {area!=="Quizzes"&&toastLabOpen&&<ToastPlayground/>}
     {area!=="Quizzes"&&<button type="button" className="ui-lab-app-switch" onClick={()=>setLoadingLabOpen(v=>!v)} aria-expanded={loadingLabOpen} aria-controls="kp-loading-playground"><AppIcon name="expand" size={18} inline style={{transform:loadingLabOpen?"rotate(180deg)":undefined}} />{loadingLabOpen?"Hide":"Open"} Loading Playground</button>}
     {area!=="Quizzes"&&loadingLabOpen&&<LoadingPlayground/>}
+    {area!=="Quizzes"&&<button type="button" className="ui-lab-app-switch" onClick={()=>setFeedbackLabOpen(v=>!v)} aria-expanded={feedbackLabOpen}><AppIcon name="expand" size={18} inline style={{transform:feedbackLabOpen?"rotate(180deg)":undefined}} />{feedbackLabOpen?"Hide":"Open"} Progress &amp; Loading Playground</button>}
+    {area!=="Quizzes"&&feedbackLabOpen&&<FeedbackPlayground/>}
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}}><code>{color}</code></div>)}</div><a href="#/hub">Return to production app</a></section>}
    </main>
 
