@@ -259,3 +259,26 @@ it("skipping a retake prompt never edits its established result or current draft
   expect(container.querySelector(".lab-quiz-run-guidance")?.textContent)
     .toContain(`${quiz.questionIds.length - 1} unanswered`);
 });
+
+
+it("gives mobile quiz navigation a single primary Next action and secondary review path",()=>{
+  resize(390);
+  mount(labPath("Quizzes","Question",{id:quiz.id}));
+  const nav=container.querySelector<HTMLElement>(".lab-quiz-run-actions")!;
+  const buttons=[...nav.querySelectorAll<HTMLButtonElement>("button")];
+  expect(buttons.map(button=>button.className)).toEqual([
+    "lab-quiz-action-back",
+    "lab-quiz-action-exit",
+    "lab-quiz-action-next",
+    "lab-quiz-review-link",
+  ]);
+  expect(buttons[0].disabled).toBe(true);
+  expect(buttons[1].textContent).toBe("Save & exit");
+  expect(buttons[2].textContent).toContain("Next question");
+  expect(buttons[3].textContent).toContain("Review unanswered");
+  click(buttons[2]);
+  expect(container.querySelector(".lab-quiz-run-meta")?.textContent).toContain("2 /");
+  expect(loadProfile().quizzes[quiz.id]).toBeUndefined();
+  click([...nav.querySelectorAll<HTMLButtonElement>("button")].find(button=>button.classList.contains("lab-quiz-review-link"))!);
+  expect(container.querySelector(".lab-quiz-run-meta")?.textContent).toContain("1 /");
+});
