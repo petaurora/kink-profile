@@ -355,6 +355,28 @@ function RadarExplorer({ views }: { views: RadarView[] }) {
   );
 }
 
+function ResultsPreviewRadar({ views }: { views: RadarView[] }) {
+  const preview = views[0];
+  if (!preview) return null;
+  return (
+    <article className="panel quiz-results-preview-panel">
+      <div className="section-heading">
+        <p className="eyebrow">Your shape</p>
+        <h2>{preview.title}</h2>
+      </div>
+      <RadarChart
+        scores={preview.scores}
+        ariaLabel={`At-a-glance: ${preview.ariaLabel}`}
+      />
+      <p className="quiz-results-preview-note">
+        {views.length > 1
+          ? "One view of your results. Explore the full breakdown for additional perspectives."
+          : "A visual summary of the measured dimensions. Explore the full breakdown for details."}
+      </p>
+    </article>
+  );
+}
+
 function ResultsBody({ quiz, scores }: { quiz: QuizDefinition; scores: Score[] }) {
   const isHeadspaceQuiz = quiz.id === "roles-headspaces";
   const isBdQuiz = quiz.id === "bondage-discipline";
@@ -458,16 +480,32 @@ function ResultsBody({ quiz, scores }: { quiz: QuizDefinition; scores: Score[] }
 
   return (
     <>
-      <TopSignalSummary quiz={quiz} scores={scores} />
-      <RadarExplorer views={radarViews} />
-
-      <article className="panel ranked-panel results-ranked-panel">
-        <div className="section-heading">
-          <p className="eyebrow">{strongestSignalEyebrow(quiz)}</p>
-          <h2>All signals</h2>
+      <section className="quiz-results-overview" aria-label="Results at a glance">
+        <div className="quiz-results-overview-grid">
+          <TopSignalSummary quiz={quiz} scores={scores} />
+          <ResultsPreviewRadar views={radarViews} />
         </div>
-        <RankedResults scores={scores} />
-      </article>
+      </section>
+
+      <details className="quiz-results-deep-dive">
+        <summary className="quiz-results-deep-dive-toggle">
+          <span>
+            <strong>Explore the full breakdown</strong>
+            <small>All measured signals, chart views and explanations</small>
+          </span>
+          <span className="quiz-results-deep-dive-chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <div className="quiz-results-deep-dive-body">
+          <RadarExplorer views={radarViews} />
+          <article className="panel ranked-panel results-ranked-panel">
+            <div className="section-heading">
+              <p className="eyebrow">{strongestSignalEyebrow(quiz)}</p>
+              <h2>All signals</h2>
+            </div>
+            <RankedResults scores={scores} />
+          </article>
+        </div>
+      </details>
     </>
   );
 }
