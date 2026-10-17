@@ -111,6 +111,13 @@ it("confirms a selected answer with a check before transitioning, while persisti
     expect(focusIndex()).toBe("0");
     expect(host.querySelector(".lab-quiz-question.is-confirming")).not.toBeNull();
     expect([...host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")].every(button=>button.disabled)).toBe(true);
+    // Only the confirmed choice remains visible while the other slots
+    // preserve card height and cannot receive pointer/keyboard input.
+    const confirmingOptions=[...host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")];
+    expect(confirmingOptions.filter(button=>button.dataset.quizFeedbackHidden!=="true")).toHaveLength(1);
+    expect(confirmingOptions.filter(button=>button.dataset.quizFeedbackHidden==="true")).toHaveLength(4);
+    expect(confirmingOptions.filter(button=>button.getAttribute("aria-hidden")==="true")).toHaveLength(4);
+    expect(confirmingOptions[3].classList.contains("selected")).toBe(true);
     expect([...host.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")].find(button=>button.textContent==="Save & exit")?.disabled).toBe(true);
     expect(host.querySelector(".lab-quiz-options button.selected .lab-quiz-option-check")?.textContent).toBe("✓");
     expect(host.querySelector(".lab-quiz-saved-status")?.textContent).toBe("Answer saved");
@@ -194,6 +201,8 @@ it("keeps the final selected answer visible until results are ready, with no com
     expect(host.textContent).not.toContain("This quiz is complete");
     expect(host.textContent).not.toContain("You've finished this quiz");
     expect(host.querySelectorAll(".lab-quiz-options button.selected .lab-quiz-option-check")).toHaveLength(1);
+    expect(host.querySelectorAll('.lab-quiz-options button[data-quiz-feedback-hidden="true"]')).toHaveLength(4);
+    expect(host.querySelectorAll('.lab-quiz-options button:not([data-quiz-feedback-hidden="true"])')).toHaveLength(1);
     act(()=>vi.advanceTimersByTime(389));
     expect(host.querySelector(".lab-quiz-runner")).not.toBeNull();
     act(()=>vi.advanceTimersByTime(1));
