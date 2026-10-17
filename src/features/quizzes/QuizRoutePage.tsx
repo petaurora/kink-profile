@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { SegmentedControl } from "../../components/SegmentedControl";
+import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
+import { labPath } from "../ui-lab/LabNavigation";
 import { answerOptions } from "../../data/quizScale";
 import { dsSignals } from "../../data/dsQuiz";
 import {
@@ -34,6 +36,7 @@ import {
 } from "../../lib/scoring";
 import {
   quizHomeRoute,
+  profileRoute,
   quizResultsPath,
   quizRoutePath,
 } from "../../app/routes";
@@ -355,6 +358,28 @@ function RadarExplorer({ views }: { views: RadarView[] }) {
   );
 }
 
+function ResultsPreviewRadar({ views }: { views: RadarView[] }) {
+  const preview = views[0];
+  if (!preview) return null;
+  return (
+    <article className="panel quiz-results-preview-panel">
+      <div className="section-heading">
+        <p className="eyebrow">Your shape</p>
+        <h2>{preview.title}</h2>
+      </div>
+      <RadarChart
+        scores={preview.scores}
+        ariaLabel={`At-a-glance: ${preview.ariaLabel}`}
+      />
+      <p className="quiz-results-preview-note">
+        {views.length > 1
+          ? "One view of your results. Explore the full breakdown for additional perspectives."
+          : "A visual summary of the measured dimensions. Explore the full breakdown for details."}
+      </p>
+    </article>
+  );
+}
+
 function ResultsBody({ quiz, scores }: { quiz: QuizDefinition; scores: Score[] }) {
   const isHeadspaceQuiz = quiz.id === "roles-headspaces";
   const isBdQuiz = quiz.id === "bondage-discipline";
@@ -458,17 +483,84 @@ function ResultsBody({ quiz, scores }: { quiz: QuizDefinition; scores: Score[] }
 
   return (
     <>
-      <TopSignalSummary quiz={quiz} scores={scores} />
-      <RadarExplorer views={radarViews} />
-
-      <article className="panel ranked-panel results-ranked-panel">
-        <div className="section-heading">
-          <p className="eyebrow">{strongestSignalEyebrow(quiz)}</p>
-          <h2>All signals</h2>
+      <section className="quiz-results-overview" aria-label="Results at a glance">
+        <div className="quiz-results-overview-grid">
+          <TopSignalSummary quiz={quiz} scores={scores} />
+          <ResultsPreviewRadar views={radarViews} />
         </div>
-        <RankedResults scores={scores} />
-      </article>
+      </section>
+
+      <details className="quiz-results-deep-dive">
+        <summary className="quiz-results-deep-dive-toggle">
+          <span>
+            <strong>Explore the full breakdown</strong>
+            <small>All measured signals, chart views and explanations</small>
+          </span>
+          <span className="quiz-results-deep-dive-chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <div className="quiz-results-deep-dive-body">
+          <RadarExplorer views={radarViews} />
+          <article className="panel ranked-panel results-ranked-panel">
+            <div className="section-heading">
+              <p className="eyebrow">{strongestSignalEyebrow(quiz)}</p>
+              <h2>All signals</h2>
+            </div>
+            <RankedResults scores={scores} />
+          </article>
+        </div>
+      </details>
     </>
+  );
+}
+
+/** Three equally weighted, user-selected routes. Following one never edits quiz evidence. */
+function ResultsNextSteps() {
+  const destinations = [
+    {
+      id: "profile",
+      title: "View Profile",
+      description: "See how this quiz fits alongside your other profile signals.",
+      path: profileRoute.path,
+      Icon: appIcons.profile,
+    },
+    {
+      id: "quizzes",
+      title: "Explore another quiz",
+      description: "Browse all four quizzes and choose what interests you next.",
+      path: quizHomeRoute.path,
+      Icon: appIcons.quiz,
+    },
+    {
+      id: "learn",
+      title: "Learn",
+      description: "Browse general educational guides in the experimental reader.",
+      path: labPath("Learn"),
+      Icon: appIcons.education,
+    },
+  ] as const;
+
+  return (
+    <nav className="quiz-results-next-steps" aria-label="Next steps after quiz results">
+      <div className="quiz-results-next-steps-heading">
+        <h2>Where would you like to go next?</h2>
+        <p>Choose whichever feels useful. Your results stay saved.</p>
+      </div>
+      <div className="quiz-results-next-steps-grid">
+        {destinations.map(({ id, title, description, path, Icon }) => (
+          <Link
+            key={id}
+            to={path}
+            className="quiz-results-next-step"
+            data-quiz-next-step={id}
+          >
+            <Icon {...appIconDefaults} aria-hidden="true" />
+            <strong>{title}</strong>
+            <span>{description}</span>
+            <appIcons.next size={18} stroke={1.65} className="quiz-results-next-step-arrow" aria-hidden="true" />
+          </Link>
+        ))}
+      </div>
+    </nav>
   );
 }
 
@@ -550,9 +642,20 @@ function ResolvedQuizRoute({
 }) {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
-  const [questionIndex, setQuestionIndex] = useState(() =>
-    initialQuestionIndex(quiz, profile),
+  // The resume target comes from persisted attempt answers (or a retake draft),
+  // never from a temporary UI step that may have been left open on another device.
+  const resumeIndex = useRef(initialQuestionIndex(quiz, profile));
+  const [questionIndex, setQuestionIndex] = useState(resumeIndex.current);
+  const runnerRef = useRef<HTMLDivElement>(null);
+  const focusedResume = useRef(false);
+  const [desktopBatch, setDesktopBatch] = useState(() =>
+    typeof window !== "undefined" && window.innerWidth > 700,
   );
+  useEffect(() => {
+    const syncViewport = () => setDesktopBatch(window.innerWidth > 700);
+    window.addEventListener("resize", syncViewport);
+    return () => window.removeEventListener("resize", syncViewport);
+  }, []);
 
   const activeQuestions = useMemo(() => getQuestionsForQuiz(quiz), [quiz]);
   const responseOptions = useMemo(
@@ -564,10 +667,26 @@ function ResolvedQuizRoute({
   const establishedAnswers = profile.quizzes[quiz.id]?.answers ?? {};
   const answeredCount = getAnsweredCount(quiz, attemptAnswers);
   const currentQuestion = activeQuestions[questionIndex];
-  const currentAnswer = currentQuestion
-    ? attemptAnswers[currentQuestion.id]
-    : undefined;
+  const batchStart = Math.floor(questionIndex / 3) * 3;
+  const visibleQuestions = desktopBatch
+    ? activeQuestions.slice(batchStart, batchStart + 3).map((question, offset) => ({ question, index: batchStart + offset }))
+    : currentQuestion
+      ? [{ question: currentQuestion, index: questionIndex }]
+      : [];
+  const atLastBatch = batchStart + 3 >= activeQuestions.length;
   const canViewResults = canViewQuizResults(quiz, profile);
+
+  // On Continue, desktop opens the batch containing the first unanswered
+  // question; focusing that exact card avoids making users scan the batch.
+  // The same focus target is the sole question on mobile.
+  useEffect(() => {
+    if (mode !== "quiz" || focusedResume.current) return;
+    const target = runnerRef.current?.querySelector<HTMLElement>("[data-quiz-resume-target]");
+    if (!target) return;
+    focusedResume.current = true;
+    target.focus({ preventScroll: true });
+    target.scrollIntoView?.({ block: "nearest" });
+  }, [mode, desktopBatch, questionIndex]);
 
   const scores = useMemo<Score[]>(() => {
     if (quiz.id === "roles-headspaces") {
@@ -613,24 +732,25 @@ function ResolvedQuizRoute({
     setProfile(next);
   };
 
-  const answerQuestion = (value: number) => {
-    if (!currentQuestion) return;
-
-    const nextProfile = answerQuizQuestion(
-      quiz,
-      profile,
-      currentQuestion.id,
-      value,
-    );
+  const answerQuestion = (questionId: string, index: number, value: number) => {
+    const nextProfile = answerQuizQuestion(quiz, profile, questionId, value);
     saveNextProfile(nextProfile);
 
-    if (questionIndex < activeQuestions.length - 1) {
-      setQuestionIndex((index) => index + 1);
+    // Only the newly completed attempt may replace an established result;
+    // an unfinished retake must never redirect just because old results exist.
+    if (resolveQuizLifecycle(quiz, nextProfile).state === "complete") {
+      navigate(quizResultsPath(quiz.id));
       return;
     }
 
-    if (canViewQuizResults(quiz, nextProfile)) {
-      navigate(quizResultsPath(quiz.id));
+    // Desktop presents three independently answerable question cards per page.
+    // Mobile preserves the existing one-question-at-a-time advance.
+    if (!desktopBatch) {
+      setQuestionIndex(
+        index < activeQuestions.length - 1
+          ? index + 1
+          : initialQuestionIndex(quiz, nextProfile),
+      );
     }
   };
 
@@ -639,13 +759,6 @@ function ResolvedQuizRoute({
     saveNextProfile(nextProfile);
     setQuestionIndex(initialQuestionIndex(quiz, nextProfile));
     navigate(quizRoutePath(quiz.id));
-  };
-
-  const resetQuiz = () => {
-    const nextQuizzes = { ...profile.quizzes };
-    delete nextQuizzes[quiz.id];
-    saveNextProfile({ ...profile, quizzes: nextQuizzes });
-    navigate(quizHomeRoute.path);
   };
 
   if (mode === "results" && !canViewResults) {
@@ -664,8 +777,8 @@ function ResolvedQuizRoute({
     <main className="app-shell">
       {mode === "quiz" && currentQuestion ? (
         <section className="quiz-layout quiz-layout-compact">
-          <article className="question-card panel question-card-compact">
-            <header className="quiz-question-header">
+          <div ref={runnerRef} className={`quiz-run-container ${desktopBatch ? "quiz-run-batch" : "quiz-run-single"}`}>
+            <header className="quiz-question-header quiz-run-header">
               <div className="quiz-question-topline">
                 <button
                   className="text-button quiz-question-back"
@@ -680,14 +793,21 @@ function ResolvedQuizRoute({
                       : quiz.shortTitle}
                   </span>
                   <strong>
-                    {questionIndex + 1} / {activeQuestions.length}
+                    {desktopBatch
+                      ? `${batchStart + 1}–${Math.min(batchStart + 3, activeQuestions.length)} / ${activeQuestions.length}`
+                      : `${questionIndex + 1} / ${activeQuestions.length}`}
                   </strong>
                 </div>
               </div>
-
+              {desktopBatch && <h1 className="quiz-run-title">{quiz.title}</h1>}
               <div
                 className="progress-track quiz-question-progress"
-                aria-label={`${answeredCount} of ${activeQuestions.length} answered`}
+                role="progressbar"
+                aria-label="Quiz questions answered"
+                aria-valuemin={0}
+                aria-valuemax={activeQuestions.length}
+                aria-valuenow={answeredCount}
+                aria-valuetext={`${answeredCount} of ${activeQuestions.length} answered`}
               >
                 <span
                   style={{
@@ -695,7 +815,6 @@ function ResolvedQuizRoute({
                   }}
                 />
               </div>
-
               {lifecycle.state === "retake-in-progress" && (
                 <p className="quiz-question-retake-note">
                   Your previous completed result stays active until this retake
@@ -703,37 +822,47 @@ function ResolvedQuizRoute({
                 </p>
               )}
             </header>
-
-            <div className="question-meta question-context-meta">
-              <span>{questionContext(quiz)}</span>
-            </div>
-
-            <h1>{currentQuestion.prompt}</h1>
-
-            <div className="answers">
-              {responseOptions.map((option) => (
-                <button
-                  key={option.value}
-                  className={
-                    currentAnswer === option.value
-                      ? "answer selected"
-                      : "answer"
-                  }
-                  onClick={() => answerQuestion(option.value)}
+            <div className="quiz-batch-layout">
+              {visibleQuestions.map(({ question, index }) => (
+                <article
+                  className="question-card panel question-card-compact"
+                  key={question.id}
                 >
-                  <span className="answer-value">{option.value}</span>
-                  <span>{option.label}</span>
-                </button>
+                  <div className="question-meta question-context-meta">
+                    <span>{questionContext(quiz)}</span>
+                    {desktopBatch && <span>Question {index + 1}</span>}
+                  </div>
+                  {desktopBatch
+                    ? <h2 tabIndex={-1} data-quiz-resume-target={index === resumeIndex.current ? "" : undefined}>{question.prompt}</h2>
+                    : <h1 tabIndex={-1} data-quiz-resume-target={index === resumeIndex.current ? "" : undefined}>{question.prompt}</h1>}
+                  <div className="answers" role="group" aria-label={`Answer question ${index + 1}`}>
+                    {responseOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        className={
+                          attemptAnswers[question.id] === option.value
+                            ? "answer selected"
+                            : "answer"
+                        }
+                        aria-pressed={attemptAnswers[question.id] === option.value}
+                        onClick={() => answerQuestion(question.id, index, option.value)}
+                      >
+                        <span className="answer-value">{option.value}</span>
+                        <span>{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </article>
               ))}
             </div>
-
-            <div className="quiz-nav">
+            <nav className="quiz-nav quiz-run-nav" aria-label="Quiz navigation">
               <button
                 className="text-button"
-                onClick={() =>
-                  setQuestionIndex((index) => Math.max(0, index - 1))
-                }
-                disabled={questionIndex === 0}
+                onClick={() => setQuestionIndex((index) =>
+                  desktopBatch ? Math.max(0, Math.floor(index / 3) * 3 - 3) : Math.max(0, index - 1)
+                )}
+                disabled={questionIndex === 0 || (desktopBatch && batchStart === 0)}
               >
                 ← Back
               </button>
@@ -743,8 +872,20 @@ function ResolvedQuizRoute({
               >
                 Save & exit
               </button>
-            </div>
-          </article>
+              {desktopBatch && (
+                <button
+                  className="text-button"
+                  onClick={() => setQuestionIndex(
+                    atLastBatch
+                      ? initialQuestionIndex(quiz, profile)
+                      : Math.min(batchStart + 3, activeQuestions.length - 1)
+                  )}
+                >
+                  {atLastBatch ? "Review unanswered" : "Next questions →"}
+                </button>
+              )}
+            </nav>
+          </div>
         </section>
       ) : (
         <section className="results-stack results-stack-compact">
@@ -786,12 +927,8 @@ function ResolvedQuizRoute({
           </header>
 
           <ResultsBody quiz={quiz} scores={scores} />
+          <ResultsNextSteps />
 
-          <div className="results-actions">
-            <button className="secondary compact" onClick={resetQuiz}>
-              Reset this quiz
-            </button>
-          </div>
         </section>
       )}
     </main>
