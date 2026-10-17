@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { profileRoute } from "../../app/routes";
 import { quizzes, type QuizDefinition } from "../../data/quizzes";
 import { answerOptions } from "../../data/quizScale";
 import { loadProfile, saveProfile, type StoredProfile } from "../../lib/profileStorage";
@@ -193,6 +195,7 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
 }
 
 function QuizResults({ quiz, go }: { quiz:QuizDefinition; go:Go }) {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(loadProfile);
   const [activeView, setActiveView] = useState("");
   const answers = profile.quizzes[quiz.id]?.answers ?? {};
@@ -262,11 +265,11 @@ function QuizResults({ quiz, go }: { quiz:QuizDefinition; go:Go }) {
         <div><h2>Where would you like to go next?</h2><p>Choose whichever feels useful. Your results remain saved.</p></div>
         <div className="lab-quiz-next-grid">
           {([
-            {id:"profile",label:"View Profile",detail:"View your other profile evidence",area:"Profile" as const,Icon:appIcons.profile},
+            {id:"profile",label:"View Profile",detail:"View the saved profile that includes your quiz evidence",area:"Profile" as const,Icon:appIcons.profile},
             {id:"quizzes",label:"Explore another quiz",detail:"Browse all four quiz topics",area:"Quizzes" as const,Icon:appIcons.quiz},
             {id:"learn",label:"Learn",detail:"Explore educational guides",area:"Learn" as const,Icon:appIcons.education},
           ]).map(item=>
-            <button type="button" key={item.id} data-quiz-next-step={item.id} onClick={()=>go(item.area)}>
+            <button type="button" key={item.id} data-quiz-next-step={item.id} onClick={()=>item.id==="profile" ? navigate(profileRoute.path) : go(item.area)}>
               <item.Icon {...appIconDefaults} aria-hidden="true" />
               <strong>{item.label}</strong>
               <span>{item.detail}</span>
