@@ -187,3 +187,75 @@ it("never presents quiz deletion or reset actions on the native landing or runne
   click(container.querySelector<HTMLButtonElement>(`[aria-label^="${quiz.title}: Explore quiz"]`)!);
   expect(container.textContent).not.toMatch(/Reset this quiz|Delete Quiz History|Discard Draft|Start over/i);
 });
+
+
+it("permits mobile skipping with a truthful unanswered count and no invented answers", () => {
+  resize(390);
+  mount(labPath("Quizzes", "Question", { id: quiz.id }));
+  const total = quiz.questionIds.length;
+  const guidance = () => container.querySelector(".lab-quiz-run-guidance")?.textContent ?? "";
+  const next = () => [...container.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")]
+    .find(button => button.textContent?.includes("Next question"))!;
+  expect(guidance()).toContain(`0 of ${total} answered · ${total} unanswered`);
+  expect(container.querySelector('[role="progressbar"]')?.getAttribute("aria-valuenow")).toBe("0");
+  click(next());
+  click(next());
+  expect(container.querySelector(".lab-quiz-run-meta")?.textContent).toContain("3 /");
+  expect(loadProfile().quizzes[quiz.id]).toBeUndefined();
+  expect(guidance()).toContain(`${total} unanswered`);
+  const review = [...container.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")]
+    .find(button => button.textContent?.startsWith("Review unanswered ("))!;
+  click(review);
+  expect(container.querySelector(".lab-quiz-run-meta")?.textContent).toContain("1 /");
+  expect(document.activeElement).toBe(container.querySelector(".lab-quiz-question h2"));
+  click(container.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[2]);
+  expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({ [quiz.questionIds[0]]: 2 });
+  expect(guidance()).toContain(`1 of ${total} answered · ${total - 1} unanswered`);
+  expect(container.querySelector('[role="progressbar"]')?.getAttribute("aria-valuenow")).toBe("1");
+});
+
+it("desktop group navigation is free and can return focus to the earliest unanswered item", () => {
+  resize(1100);
+  mount(labPath("Quizzes", "Question", { id: quiz.id }));
+  const total = quiz.questionIds.length;
+  const actions = () => [...container.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")];
+  expect(container.querySelector(".lab-quiz-run-guidance")?.textContent).toContain("3 unanswered in this group");
+  click(actions().find(button=>button.textContent?.includes("Next questions"))!);
+  expect(container.querySelector(".lab-quiz-run-meta")?.textContent).toContain("4–6 /");
+  expect(loadProfile().quizzes[quiz.id]).toBeUndefined();
+  click(actions().find(button=>button.textContent?.startsWith("Review unanswered ("))!);
+  expect(container.querySelector(".lab-quiz-run-meta")?.textContent).toContain("1–3 /");
+  expect(document.activeElement).toBe(container.querySelector('[data-quiz-question-index="0"]'));
+  click(container.querySelectorAll<HTMLButtonElement>(".lab-quiz-question")[0].querySelectorAll("button")[3] as HTMLButtonElement);
+  expect(loadProfile().quizzes[quiz.id]?.answers[quiz.questionIds[0]]).toBe(3);
+  expect(container.querySelector(".lab-quiz-run-guidance")?.textContent).toContain(`${total-1} unanswered`);
+  click(actions().find(button=>button.textContent?.startsWith("Review unanswered ("))!);
+  expect(document.activeElement).toBe(container.querySelector('[data-quiz-question-index="1"]'));
+});
+
+it("skipping a retake prompt never edits its established result or current draft", () => {
+  resize(390);
+  const previous = Object.fromEntries(quiz.questionIds.map(id => [id, 4]));
+  const draft = { [quiz.questionIds[0]]: 1 };
+  const profile = createEmptyProfile();
+  profile.quizzes[quiz.id] = {
+    quizVersion: quiz.version,
+    completedAt: "2026-10-16T04:00:00Z",
+    answers: previous,
+    retake: {
+      quizVersion: quiz.version,
+      answers: draft,
+      startedAt: "2026-10-16T04:01:00Z",
+    },
+  };
+  saveProfile(profile);
+  mount(labPath("Quizzes", "Question", {id:quiz.id}));
+  expect(container.querySelector(".lab-quiz-run-meta")?.textContent).toContain("2 /");
+  click([...container.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")]
+    .find(button => button.textContent?.includes("Next question"))!);
+  const after = loadProfile().quizzes[quiz.id]!;
+  expect(after.answers).toEqual(previous);
+  expect(after.retake?.answers).toEqual(draft);
+  expect(container.querySelector(".lab-quiz-run-guidance")?.textContent)
+    .toContain(`${quiz.questionIds.length - 1} unanswered`);
+});
