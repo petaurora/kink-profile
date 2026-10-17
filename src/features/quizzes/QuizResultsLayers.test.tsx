@@ -48,6 +48,9 @@ function mountResults() {
       <Routes>
         <Route path="/quizzes/:quizId/results" element={<QuizRoutePage mode="results" />} />
         <Route path="/quizzes/:quizId" element={<QuizRoutePage mode="quiz" />} />
+        <Route path="/profile" element={<main>Profile destination</main>} />
+        <Route path="/quizzes" element={<main>Quiz landing destination</main>} />
+        <Route path="/ui-lab/learn" element={<main>Learning destination</main>} />
       </Routes>
     </MemoryRouter>,
   ));
@@ -106,4 +109,38 @@ it("keeps low-coverage historical results available without treating unanswered 
   expect(details.textContent).toContain("All signals");
   expect(details.textContent).toContain("Not enough information");
   expect(loadProfile().quizzes[quiz.id]?.answers).toEqual(profile.quizzes[quiz.id]?.answers);
+});
+
+it("offers Profile, another quiz and learning as equally weighted post-result choices", () => {
+  saveCompletedQuiz();
+  mountResults();
+  const group = container.querySelector('nav[aria-label="Next steps after quiz results"]')!;
+  expect(group).not.toBeNull();
+  const links = [...group.querySelectorAll<HTMLAnchorElement>("a.quiz-results-next-step")];
+  expect(links).toHaveLength(3);
+  expect(links.map(link => link.dataset.quizNextStep)).toEqual(["profile", "quizzes", "learn"]);
+  expect(links.map(link => link.textContent)).toEqual([
+    expect.stringContaining("View Profile"),
+    expect.stringContaining("Explore another quiz"),
+    expect.stringContaining("Learn"),
+  ]);
+  expect(links.map(link => link.getAttribute("href"))).toEqual(["/profile", "/quizzes", "/ui-lab/learn"]);
+  expect(group.querySelector(".featured, .primary, [aria-current]")).toBeNull();
+  expect(container.querySelector(".quiz-results-overview")).not.toBeNull();
+  expect(container.querySelector(".quiz-results-deep-dive")).not.toBeNull();
+});
+
+it.each([
+  ["profile", "Profile destination"],
+  ["quizzes", "Quiz landing destination"],
+  ["learn", "Learning destination"],
+])("navigates to the %s choice without writing any quiz evidence", (target, expected) => {
+  saveCompletedQuiz(true);
+  const before = localStorage.getItem("pet-profile-v2");
+  mountResults();
+  const link = container.querySelector<HTMLAnchorElement>(`[data-quiz-next-step="${target}"]`)!;
+  expect(link).not.toBeNull();
+  act(() => link.click());
+  expect(container.textContent).toContain(expected);
+  expect(localStorage.getItem("pet-profile-v2")).toBe(before);
 });
