@@ -147,3 +147,14 @@ it('keeps one canonical quiz route accessible from Home and Profile without extr
   click(button('Quizzes'));
   expect(route()).toBe(labPath("Quizzes"));
 });
+
+
+it('keeps the native Quiz experience free of Lab data disclaimers and Toast Playground controls',async()=>{
+  await mount('/ui-lab/quizzes');
+  expect(route()).toBe('/ui-lab/quizzes');
+  expect(document.querySelector('.lab-quiz-landing')).not.toBeNull();
+  expect(document.body.textContent).toContain('Your answers save automatically');
+  expect(document.body.textContent).not.toContain('temporary Lab records');
+  expect(document.querySelector('.ui-lab-app-note')).toBeNull();
+  expect(document.querySelector('.ui-lab-app-switch')).toBeNull();
+});
