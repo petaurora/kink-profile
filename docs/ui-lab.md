@@ -195,3 +195,7 @@ The reusable loader is mounted only while truly waiting: the UI Lab lazy-route S
 
 ### Loading preview hold + motion refinement (October 17, 2026)
 The dedicated full-screen loading **preview** (on PR preview builds automatically, or on an explicit `?loading-preview=1` UI Lab query) holds the SVG until the reviewer activates **Continue to KP**. It is a design review aid, not a new loading timeout or a blocker for production users, and regular real-load success/error handling remains automatic. An explicit 0°–360° rotation now runs at constant linear velocity over 4.8 seconds on a wrapper separate from the SVG, avoiding art and filter transform interactions. The 360°/0° seam is identical, with no ease-out, hold, or reverse. Reduced-motion users see the static mark; the Playground pause action controls the same wrapper.
+
+
+### Preview routing correction
+The preview hold now wraps the entire PR-preview router so both the GitHub preview's bare root URL and direct `#/ui-lab/...` paths show **Continue to KP**. From a bare-root preview only, Continue sends the reviewer into `#/ui-lab/home` instead of the legacy hub; direct deep links retain their intended destinations. Ordinary production without an explicit preview flag remains unaffected. For stale installed PWA/browser copies, use a fresh network URL with a one-off query string before the hash.

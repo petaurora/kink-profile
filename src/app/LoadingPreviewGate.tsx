@@ -1,27 +1,34 @@
 import { useState, type ReactNode } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { KPLoading } from "../components/ui/KPLoading";
 import "./loadingPreview.css";
 
 /**
  * Temporary review-only hold, intentionally separate from actual data loading.
- * PR preview builds use it by default; ?loading-preview=1 opts in elsewhere.
+ * PR preview builds use it by default on ALL routes; ?loading-preview=1 opts in elsewhere.
  * Production navigation never waits for user acknowledgement.
  */
 export function LoadingPreviewGate({ children }: { children: ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [continued, setContinued] = useState(false);
   const baseUrl = import.meta.env.BASE_URL || "/";
   const isPrPreview = /(?:^|\/)pr-\d+(?:\/|$)/.test(baseUrl);
   const isExplicitPreview = new URLSearchParams(location.search).get("loading-preview") === "1";
   if ((!isPrPreview && !isExplicitPreview) || continued) return <>{children}</>;
+  const onContinue = () => {
+    setContinued(true);
+    // GitHub's generic PR Preview URL opens "#/" rather than the V2 UI Lab.
+    // Point reviewers to the actual prototype; preserve explicit deep links.
+    if (isPrPreview && location.pathname === "/") navigate("/ui-lab/home", { replace: true });
+  };
   return (
     <main className="kp-loading-preview" aria-label="Loading animation preview">
       <div className="kp-loading-preview-content">
         <p className="kp-loading-preview-eyebrow">KINK PROFILE · ANIMATION PREVIEW</p>
         <KPLoading label="Loading animation preview" size={116} />
         <p className="kp-loading-preview-note">A temporary loading illustration. Take as long as you like to watch the motion.</p>
-        <button type="button" className="kp-loading-preview-continue" onClick={() => setContinued(true)}>
+        <button type="button" className="kp-loading-preview-continue" onClick={onContinue}>
           Continue to KP <span aria-hidden="true">→</span>
         </button>
       </div>

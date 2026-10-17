@@ -70,7 +70,7 @@ export function RoutedApplication() {
         path="/ui-lab/*"
         element={
           <Suspense fallback={<main className="kp-loading-route"><KPLoading label="Loading UI Lab…" size={88} /></main>}>
-            <LoadingPreviewGate><UiLabPage /></LoadingPreviewGate>
+            <UiLabPage />
           </Suspense>
         }
       />
@@ -130,7 +130,9 @@ export function RoutedApplication() {
 export default function AppRouter() {
   return (
     <HashRouter>
-      <RoutedApplication />
+      <LoadingPreviewGate>
+        <RoutedApplication />
+      </LoadingPreviewGate>
     </HashRouter>
   );
 }
