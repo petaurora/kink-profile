@@ -20,6 +20,7 @@ import { SceneBuilderRoute } from "../features/scenes/SceneBuilderRoute";
 import { SettingsRoute } from "../features/settings/SettingsRoute";
 import { AppShell } from "./AppShell";
 import { lazy, Suspense } from "react";
+import { KPLoading } from "../components/ui/KPLoading";
 import {
   catalogRewardsRankingRoute,
   catalogRewardsRoute,
@@ -67,7 +68,7 @@ export function RoutedApplication() {
       <Route
         path="/ui-lab/*"
         element={
-          <Suspense fallback={<main role="status">Loading UI Lab…</main>}>
+          <Suspense fallback={<main className="kp-loading-route"><KPLoading label="Loading UI Lab…" size={88} /></main>}>
             <UiLabPage />
           </Suspense>
         }

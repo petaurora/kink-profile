@@ -27,7 +27,7 @@ describe("service-backed UI Lab",()=>{
   it("shows loading, recovers from a failed load, and renders injected reference data",async()=>{
     const data=structuredClone(labReferenceData);data.items[0].name="Injected Item";
     const adapter=createUiLabServices({latencyMs:0,referenceData:data});adapter.failNext("catalog");
-    mount(adapter);expect(container.textContent).toContain("Loading UI Lab data");
+    mount(adapter);expect(container.textContent).toContain("Loading UI Lab data");expect(container.querySelector(".kp-loading-symbol")).not.toBeNull();
     await advance();expect(container.querySelector('[role="alert"]')).not.toBeNull();
     click(button("Retry loading UI Lab data"));await advance();openKinks();
     expect(button("Injected Item overall: Not rated. Change rating")).toBeTruthy();

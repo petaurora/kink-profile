@@ -2,11 +2,12 @@ import { createContext, useCallback, useContext, useMemo, type ReactNode } from 
 import type { AppServices, CatalogReferenceData, RequestOptions } from "./contracts";
 import type { PreferenceSnapshot } from "./contracts";
 import { useServiceQuery } from "./useServiceQuery";
+import { KPLoading } from "../components/ui/KPLoading";
 
 const ServicesContext = createContext<AppServices | null>(null);
 const DataContext = createContext<{referenceData:CatalogReferenceData;snapshot:PreferenceSnapshot} | null>(null);
 export function ServiceQueryStatus({loading,error,onRetry,label}: {loading:boolean;error?:Error;onRetry:()=>void;label:string}) {
-  if (loading) return <p role="status">Loading {label}…</p>;
+  if (loading) return <div className="kp-loading-service"><KPLoading label={"Loading " + label + "…"} size={80} /></div>;
   if (error) return <div role="alert"><p>Unable to load {label}. Your existing preferences are unchanged.</p><button type="button" onClick={onRetry}>Retry loading {label}</button></div>;
   return null;
 }
