@@ -1,3 +1,4 @@
+import { AppIcon } from "./AppIcon";
 import { appIcons } from "./appIcons";
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { ModalLayer } from "./ModalLayer";
@@ -26,13 +27,13 @@ export function InlineSaveStatus({
             onClick={onRetry}
             aria-label={`Retry saving ${label}`}
           >
-            Retry
+            <AppIcon name="refresh" size={15} inline />Retry
           </button>
         ) : (
-          <span aria-hidden="true">!</span>
+          <AppIcon name="error" size={15} />
         )) : (
       <span aria-hidden="true">
-        {state === "saving" ? "◌" : state === "saved" ? "✓" : ""}
+        {state === "saving" ? <AppIcon name="pending" size={15} /> : state === "saved" ? <AppIcon name="confirm" size={15} /> : null}
       </span>
       )}
     </span>
@@ -157,7 +158,7 @@ export function PreferenceSheet({
             }}
           >
             {option}
-            {value === option && <span aria-hidden="true"> ✓</span>}
+            {value === option && <AppIcon name="confirm" size={18} />}
           </button>
         ))}
       </div>
@@ -166,11 +167,12 @@ export function PreferenceSheet({
           <button
             type="button"
             className="kp-preference-help"
+            aria-label="What do these mean?"
             aria-expanded={expanded}
             aria-controls={helpId}
             onClick={() => { setShowHelp(!expanded); onHelpOpenChange?.(!expanded); }}
           >
-            What do these mean? {expanded ? "−" : "+"}
+            <AppIcon name="help" size={18} inline />What do these mean? <AppIcon name="expand" size={16} style={{transform: expanded ? "rotate(180deg)" : undefined}} />
           </button>
             <div className="kp-preference-explanation" id={helpId} hidden={!expanded}>{help}</div>
         </>
@@ -217,7 +219,7 @@ export function SheetHeader({
         </h3>
         {children}
       </div>
-      <button type="button" onClick={onClose} aria-label={closeLabel}>
+      <button type="button" onClick={onClose} aria-label={closeLabel} title={closeLabel}>
         <appIcons.close size={20} stroke={1.65} aria-hidden="true" />
       </button>
     </div>

@@ -1,3 +1,4 @@
+import { AppIcon } from "./AppIcon";
 import { createPortal } from "react-dom";
 import { useEffect, useRef, useState } from "react";
 import "./toast.css";
@@ -164,8 +165,9 @@ function ToastCard({
           className="kp-toast-dismiss"
           onClick={dismiss}
           aria-label="Dismiss notification"
+          title="Dismiss notification"
         >
-          ×
+          <AppIcon name="close" size={18} />
         </button>
       )}
     </div>
