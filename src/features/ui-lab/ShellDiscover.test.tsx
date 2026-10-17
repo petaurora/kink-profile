@@ -120,3 +120,41 @@ it('preserves ranked Catalog search and confirmed service records across routed 
   expect(write).toHaveBeenCalledWith({kind:'item',itemId:'aftercare'},'Love');const snapshot=adapter.services.preferences.getSnapshot();await flush(0);expect((await snapshot).ratings[ratingKey({kind:'item',itemId:'aftercare'})]).toBe('Love');
   act(()=>navigate('/ui-lab/catalog/kinks'));expect((document.querySelector('[aria-label="Search Items in kinks"]') as HTMLInputElement).value).toBe('ca');expect(button('Aftercare overall: Love. Change rating')).toBeTruthy();
 });
+
+it('keeps the existing quizzes discoverable in V2 without turning them into dismissible suggestions',async()=>{
+  await mount('/ui-lab/discover');
+  const quizzes=document.querySelector<HTMLAnchorElement>('.lab-discover-cards a[aria-label="Quizzes"]');
+  expect(quizzes?.getAttribute('href')).toBe('#'+labPath("Quizzes"));
+  click(button('Manage Suggestions'));
+  expect(document.body.textContent).not.toContain('Quizzes');
+  click(button('Discover'));
+  click(button('Dismiss Reflect on your interests'));
+  expect(document.querySelector('.lab-discover-cards a[aria-label="Quizzes"]')).not.toBeNull();
+  click(button('Open full menu'));
+  click(button('Quizzes'));
+  expect(route()).toBe(labPath("Quizzes"));
+});
+
+it('keeps one canonical quiz route accessible from Home and Profile without extra top-level tabs',async()=>{
+  await mount('/ui-lab/home');
+  expect([...document.querySelectorAll('.ui-lab-app-bottom button')]).toHaveLength(5);
+  expect(document.querySelectorAll('.lab-home-cards > .ui-lab-app-tile')).toHaveLength(4);
+  expect(document.querySelector('.lab-home-cards a[href="#'+labPath("Quizzes")+'"]')?.textContent).toContain('Explore quizzes');
+  click(button('Profile'));
+  expect(document.querySelector('.lab-profile-cards a[href="#'+labPath("Quizzes")+'"]')?.textContent).toContain('Build your profile with quizzes');
+  click(button('Open full menu'));
+  expect(document.querySelector('.ui-lab-menu-links button')?.textContent).not.toBe('Quizzes');
+  click(button('Quizzes'));
+  expect(route()).toBe(labPath("Quizzes"));
+});
+
+
+it('keeps the native Quiz experience free of Lab data disclaimers and Toast Playground controls',async()=>{
+  await mount('/ui-lab/quizzes');
+  expect(route()).toBe('/ui-lab/quizzes');
+  expect(document.querySelector('.lab-quiz-landing')).not.toBeNull();
+  expect(document.body.textContent).toContain('Your answers save automatically');
+  expect(document.body.textContent).not.toContain('temporary Lab records');
+  expect(document.querySelector('.ui-lab-app-note')).toBeNull();
+  expect(document.querySelector('.ui-lab-app-switch')).toBeNull();
+});
