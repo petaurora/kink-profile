@@ -37,7 +37,9 @@ it("opens Surprise Me immediately and hands off to canonical features without wr
   expect(document.querySelector(".lab-serendipity-preview")?.textContent).toContain("Not personalized");
   expect(document.querySelector(".lab-serendipity-paths")).toBeNull();
   expect(document.querySelector(".lab-serendipity-connections")).toBeNull();
-  expect(document.querySelector(".lab-serendipity-choices button")).not.toBeNull();
+  expect(document.querySelector(".lab-serendipity-back")).toBeNull(); // Shell breadcrumb already returns to Discover.
+  expect(document.querySelector(".lab-serendipity-explore .kp-icon")).not.toBeNull(); // Shared KP preview icon.
+  expect(document.querySelectorAll(".lab-serendipity-secondary button")).toHaveLength(2);
   click(action(".lab-serendipity-explore"));
   expect(currentPath).toMatch(/\/discover\/preview\?topic=.*&stage=details/);
   expect(document.querySelector(".lab-serendipity-paths")).not.toBeNull();
