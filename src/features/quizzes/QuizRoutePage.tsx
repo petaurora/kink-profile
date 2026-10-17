@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { SegmentedControl } from "../../components/SegmentedControl";
 import { answerOptions } from "../../data/quizScale";
@@ -550,9 +550,12 @@ function ResolvedQuizRoute({
 }) {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<StoredProfile>(() => loadProfile());
-  const [questionIndex, setQuestionIndex] = useState(() =>
-    initialQuestionIndex(quiz, profile),
-  );
+  // The resume target comes from persisted attempt answers (or a retake draft),
+  // never from a temporary UI step that may have been left open on another device.
+  const resumeIndex = useRef(initialQuestionIndex(quiz, profile));
+  const [questionIndex, setQuestionIndex] = useState(resumeIndex.current);
+  const runnerRef = useRef<HTMLDivElement>(null);
+  const focusedResume = useRef(false);
   const [desktopBatch, setDesktopBatch] = useState(() =>
     typeof window !== "undefined" && window.innerWidth > 700,
   );
@@ -580,6 +583,18 @@ function ResolvedQuizRoute({
       : [];
   const atLastBatch = batchStart + 3 >= activeQuestions.length;
   const canViewResults = canViewQuizResults(quiz, profile);
+
+  // On Continue, desktop opens the batch containing the first unanswered
+  // question; focusing that exact card avoids making users scan the batch.
+  // The same focus target is the sole question on mobile.
+  useEffect(() => {
+    if (mode !== "quiz" || focusedResume.current) return;
+    const target = runnerRef.current?.querySelector<HTMLElement>("[data-quiz-resume-target]");
+    if (!target) return;
+    focusedResume.current = true;
+    target.focus({ preventScroll: true });
+    target.scrollIntoView?.({ block: "nearest" });
+  }, [mode, desktopBatch, questionIndex]);
 
   const scores = useMemo<Score[]>(() => {
     if (quiz.id === "roles-headspaces") {
@@ -677,7 +692,7 @@ function ResolvedQuizRoute({
     <main className="app-shell">
       {mode === "quiz" && currentQuestion ? (
         <section className="quiz-layout quiz-layout-compact">
-          <div className={`quiz-run-container ${desktopBatch ? "quiz-run-batch" : "quiz-run-single"}`}>
+          <div ref={runnerRef} className={`quiz-run-container ${desktopBatch ? "quiz-run-batch" : "quiz-run-single"}`}>
             <header className="quiz-question-header quiz-run-header">
               <div className="quiz-question-topline">
                 <button
@@ -733,8 +748,8 @@ function ResolvedQuizRoute({
                     {desktopBatch && <span>Question {index + 1}</span>}
                   </div>
                   {desktopBatch
-                    ? <h2>{question.prompt}</h2>
-                    : <h1>{question.prompt}</h1>}
+                    ? <h2 tabIndex={-1} data-quiz-resume-target={index === resumeIndex.current ? "" : undefined}>{question.prompt}</h2>
+                    : <h1 tabIndex={-1} data-quiz-resume-target={index === resumeIndex.current ? "" : undefined}>{question.prompt}</h1>}
                   <div className="answers" role="group" aria-label={`Answer question ${index + 1}`}>
                     {responseOptions.map((option) => (
                       <button
