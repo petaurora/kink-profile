@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AppIcon } from "../../components/ui/AppIcon";
 import type { LabArea } from "./LabNavigation";
 import { useLabCatalog } from "./LabCatalog";
 import { useLabRecords } from "./LabRecords";
@@ -91,9 +92,10 @@ export function SerendipityExperience({ view, topicId, stage, origin, go }: {
   };
 
   return <div className="lab-serendipity-experience">
-    <button type="button" className="lab-serendipity-back" onClick={back}>
-      {detailed ? (fromSurprise ? "← Back to surprise" : "← Back to preview") : "← Back to Discover"}
-    </button>
+    {detailed && <button type="button" className="lab-serendipity-back" onClick={back}>
+      <AppIcon name="back" size={18} inline />
+      {fromSurprise ? "Back to surprise" : "Back to preview"}
+    </button>}
     {!current || !concept ? <section className="lab-serendipity-empty-state" role="status">
       <h2>No new eligible topics right now</h2>
       <p>You've reached the end of this short exploration, or the remaining suggestions are hidden. There's nothing to complete.</p>
@@ -112,7 +114,7 @@ export function SerendipityExperience({ view, topicId, stage, origin, go }: {
       </article>
       <div className="lab-serendipity-choices" aria-label="Choose what happens next">
         <button type="button" className="lab-serendipity-explore" onClick={explore}>
-          <span aria-hidden="true">↗</span><strong>Explore this</strong>
+          <AppIcon name="preview" size={24} /><strong>Explore this</strong>
         </button>
         <button type="button" className="lab-serendipity-next" onClick={another}>
           <span aria-hidden="true">✧</span><strong>Surprise me again</strong>
