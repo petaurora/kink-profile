@@ -18,12 +18,10 @@ export function ItemExperience({ itemId, name, open, onToggle, records }: {
   return <DisclosureSection title="Experience" description="Optional · Independent of preference" open={open} onToggle={onToggle}>
     <div className="cc-experience">
       <label><input type="checkbox" checked={records.values[triedTarget] === true} onChange={event => {
-        const previous = records.values[triedTarget];
-        const checked = event.target.checked;
-        const version = records.commit(triedTarget, checked ? true : undefined);
-        notify({ message: checked ? "Tried recorded" : "Tried marker cleared", kind: "info", actionLabel: "Undo", duration: 5000, onAction: () => {
-          if (!records.restore(triedTarget, version, previous)) notify({ message: "A newer edit was kept", kind: "info" });
-        }});
+        // The control itself confirms experience and can be toggled again.
+        // Keep save/retry feedback, but do not cover the refine sheet with
+        // a redundant Undo toast for this reversible state change.
+        records.commit(triedTarget, event.target.checked ? true : undefined);
       }}/> <AppIcon name="tried" size={17} inline />Tried</label>
       <InlineSaveStatus state={records.saves[triedTarget]} label={`${name} Tried`}/>
       <p>Unchecked means no affirmative record. Recording time is the edit time, not the activity date.</p>
