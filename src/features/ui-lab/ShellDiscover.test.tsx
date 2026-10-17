@@ -131,7 +131,19 @@ it('keeps the existing quizzes discoverable in V2 without turning them into dism
   click(button('Dismiss Reflect on your interests'));
   expect(document.querySelector('.lab-discover-cards a[aria-label="Quizzes"]')).not.toBeNull();
   click(button('Open full menu'));
-  click([...document.querySelectorAll<HTMLButtonElement>('.ui-lab-menu-parent')].find(node=>node.textContent?.includes('Discover'))!);
+  click(button('Quizzes'));
+  expect(route()).toBe(quizHomeRoute.path);
+});
+
+it('keeps one canonical quiz route accessible from Home and Profile without extra top-level tabs',async()=>{
+  await mount('/ui-lab/home');
+  expect([...document.querySelectorAll('.ui-lab-app-bottom button')]).toHaveLength(5);
+  expect(document.querySelectorAll('.lab-home-cards > .ui-lab-app-tile')).toHaveLength(4);
+  expect(document.querySelector('.lab-home-cards a[href="#'+quizHomeRoute.path+'"]')?.textContent).toContain('Explore quizzes');
+  click(button('Profile'));
+  expect(document.querySelector('.lab-profile-cards a[href="#'+quizHomeRoute.path+'"]')?.textContent).toContain('Build your profile with quizzes');
+  click(button('Open full menu'));
+  expect(document.querySelector('.ui-lab-menu-links button')?.textContent).not.toBe('Quizzes');
   click(button('Quizzes'));
   expect(route()).toBe(quizHomeRoute.path);
 });
