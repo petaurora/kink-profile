@@ -112,18 +112,35 @@ revision. Clear remains a separate action with version-safe Undo. Optional
 ratings remain independent; Modifier Groups have no ratings.
 
 Item names have a flexible area with a readable basis. Rating and Refine actions
-stay together and move below the name as a unit when space is tight. The Refine
-slot is reserved even on rows without modifiers so rating controls stay aligned.
+stay together and move below the name as a unit when space is tight. Every Item offers Refine, including Items without modifiers, because item-level
+experience applies independently of modifiers.
 Supporting search text spans the row below.
 
 Refine uses text for the Item title, Modifier Group headings and Modifier Value
 labels; the structural icons are omitted to reduce repetition. Rating-state icons,
-functional controls and Experience meanings retain their contextual roles.
+functional controls and Experience meanings retain their contextual roles. Refine
+uses `SheetHeader.titleAccessory` for a smaller, unboxed rating beside the Item
+heading, without an extra field label. The accessory is a sibling of the heading,
+so its button keeps its own accessible name. It wraps below long titles without
+crowding Close. A smaller, unboxed Experienced toggle sits directly beneath. Its
+label stays visible; the confirmation badge appears only when marked. About experience
+holds the marker explanation and edit time in the scrolling content. Comfort UI is
+deferred; its service records and independent semantics remain intact.
 
 Catalog vocabulary is also registered centrally: Item Square Dot, Modifier Group
 Brackets, Modifier Value Tag, Category Layout Grid, Subject Shape (provisional),
-Concept Notebook, Alias Tags and Applicability Square Check. Existing Experience
-controls use Tried Circle Check and Comfort Heart Handshake, with full labels.
+Concept Notebook, Alias Tags and Applicability Square Check. Experience
+meanings include Tried confirmation badge (Tabler Rosette Discount Check) and Comfort
+Heart Handshake. The badge marks self-reported experience, not verification or
+skill. Refine presents the existing `tried` field as Experienced using a native
+toggle button with a stable
+contextual name, `aria-pressed`, Enter/Space support, a 44px target and the shared
+visible keyboard-focus ring. Both states omit borders and fills; a second activation
+clears the marker without a toast or Undo notification. Comfort Heart Handshake remains registered for
+future use.
+`InlineSaveStatus.showSavedIcon` defaults to true. Experienced sets it to false
+to avoid duplicating its selected-state badge; live save announcements, the saving
+indicator and failure/Retry feedback remain available.
 Activity, Equipment, Material, Body Area, participation direction, provenance,
 intensity and risk glyphs are available to callers without inventing missing
 metadata or additional UI. Body Scan is the approved provisional Body Area glyph.

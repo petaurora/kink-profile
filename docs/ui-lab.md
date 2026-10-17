@@ -17,10 +17,28 @@ focus without editing; Enter/Space explicitly commits; Escape cancels. Clear
 offers Undo for the exact preceding value. Version checks keep an older Undo from
 overwriting a newer explicit edit.
 
-Tried and three-value Comfort live in an optional item Experience disclosure.
-Unchecked Tried means no affirmative record. Comfort stores semantic string values,
-independently of Tried and preference. Changes retain session revisions and edit
-timestamps; these are not dates of participation. Tried is reversible in place without a redundant Undo toast.
+Refine places the smaller, unboxed overall rating beside the Item title, with no
+separate Preference or Overall rating label. It opens the shared rating picker;
+long names let the rating wrap as a unit while keeping Close available. A small,
+unboxed Experienced toggle sits directly underneath, retaining its label and adding
+a confirmation badge only when marked. Every Item can open Refine, including Items
+without modifiers. Compact Catalog rows keep only preference and Refine.
+
+Unmarked Experienced means no affirmative record. It edits the existing `tried`
+field without renaming or migrating data, and remains independent of preference,
+is reversed by toggling again without a toast, and shows save feedback with Retry.
+Preference Clear retains version-safe Undo. Explanation and the
+latest Tried edit remain in the optional About experience disclosure in scrolling
+content. Edit timestamps are not dates of participation; opening controls or
+disclosures creates no record. The native toggle button exposes its stable,
+contextual name and `aria-pressed` state, supports Enter/Space and retains a visible
+keyboard-focus ring and a 44px target. Activating it again clears the marker.
+Successful saves are announced without a second visible icon; the toggle's badge
+always means marked, never merely saved. Saving and failure/Retry remain visible.
+
+Comfort UI is deferred in Refine. Existing semantic values (`uncomfortable`,
+`somewhat_comfortable`, `comfortable`) and service support remain intact; navigating
+or editing preference/Tried does not clear those records.
 
 ## Local service save and recovery
 

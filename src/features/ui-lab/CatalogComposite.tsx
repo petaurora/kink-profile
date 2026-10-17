@@ -8,7 +8,7 @@ import { ItemRow } from "../../components/ui/ItemRow";
 import { DisclosureSection } from "../../components/ui/DisclosureSection";
 import { SearchField } from "../../components/ui/SearchField";
 import { SearchRow, SearchFilterButton, SearchChips, SortGroupSheet, type SortBy, type GroupBy } from "../../components/ui/SearchControls";
-import { ItemExperience } from "./ItemExperience";
+import { ItemExperience, ItemExperienceDetails } from "./ItemExperience";
 import { useLabRecords, useLabViewState } from "./LabRecords";
 import { preferenceChoices, PreferenceReference } from "./PreferenceVocabulary";
 
@@ -51,9 +51,9 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  useEffect(()=>{setClosedCategories({})},[debouncedQuery,groupBy,sortBy]);
  useEffect(()=>{if(isRewards)root.current?.scrollIntoView({block:"start"})},[isRewards,debouncedQuery,mine,reward,punishment,states]);
  useEffect(()=>{if(!issueTarget)return;const frame=requestAnimationFrame(()=>{
-  const field=[...document.querySelectorAll<HTMLElement>('[data-field-id]')].find(el=>el.dataset.fieldId===issueTarget);
+  const field=findField(issueTarget);
   field?.scrollIntoView({block:"nearest"});
-  (field?.querySelector<HTMLButtonElement>('.kp-retry') || field?.querySelector<HTMLButtonElement>('.kp-rating'))?.focus();
+  (field?.querySelector<HTMLButtonElement>('.kp-retry') || field?.querySelector<HTMLElement>('.kp-rating, .cc-experienced-toggle'))?.focus();
  });return()=>cancelAnimationFrame(frame)},[issueTarget,refining,groupsOpen]);
 
 
@@ -70,14 +70,18 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  useEffect(()=>{
   if(!highlightTarget)return;
   const frame=requestAnimationFrame(()=>{
-   const field=[...document.querySelectorAll<HTMLElement>('[data-field-id]')].find(el=>el.dataset.fieldId===highlightTarget);
+   const field=findField(highlightTarget);
    field?.scrollIntoView({block:"nearest"});field?.querySelector<HTMLButtonElement>('.kp-rating')?.focus();
   });
   const timer=setTimeout(()=>setHighlightTarget(null),1800);
   return()=>{cancelAnimationFrame(frame);clearTimeout(timer)};
  },[highlightTarget,refining]);
- function openRefine(id:string){setGroupsOpen({});setExperienceOpen(false);setIssueTarget(null);setRefining(id);const error=Object.keys(saves).find(k=>k.startsWith(id+":")&&saves[k]==="failed");if(error)revealIssue(error)}
- function revealIssue(target:string){const item=items.find(x=>target.startsWith(x.id+":"));if(!item)return;setRefining(item.id);const group=item.groups.find(g=>target.startsWith(item.id+":"+g.name+":"));if(group)setGroupsOpen(previous=>({...previous,[item.id+":"+group.name]:true}));setIssueTarget(target)}
+ function findField(id:string){
+  const fields=[...(root.current?.querySelectorAll<HTMLElement>('[data-field-id]')??[])].filter(el=>el.dataset.fieldId===id);
+  return fields.find(field=>field.closest(".cc-refine-sheet"))??fields[0];
+ }
+ function openRefine(id:string){setGroupsOpen({});setExperienceOpen(false);setIssueTarget(null);setRefining(id);const error=Object.keys(saves).find(k=>(k.startsWith(id+":")||k.startsWith(`experience:${id}:`))&&saves[k]==="failed");if(error)revealIssue(error)}
+ function revealIssue(target:string){const item=items.find(x=>target.startsWith(x.id+":")||target.startsWith(`experience:${x.id}:`));if(!item)return;setRefining(item.id);const group=item.groups.find(g=>target.startsWith(item.id+":"+g.name+":"));if(group)setGroupsOpen(previous=>({...previous,[item.id+":"+group.name]:true}));setIssueTarget(target)}
  function closeRefine(){setRefining(null);onClose?.()}
  function closeSelector(){setSelector(null)}
  const notify=toastQueue.notify;
@@ -90,7 +94,7 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  function retry(id:string){
   const focused=document.activeElement?.getAttribute("aria-label")?.startsWith("Retry saving");
   records.retry(id);
-  if(focused)requestAnimationFrame(()=>[...document.querySelectorAll<HTMLElement>('[data-field-id]')].find(el=>el.dataset.fieldId===id)?.querySelector<HTMLButtonElement>('.kp-rating')?.focus());
+  if(focused)requestAnimationFrame(()=>findField(id)?.querySelector<HTMLElement>('.kp-rating, .cc-experienced-toggle')?.focus());
  }
  function ratingButton(id:string,label:string,parent:string){
   return <span data-field-id={id}><PreferenceControl value={ratings[id]} label={label} saveState={saves[id]} onRetry={()=>retry(id)} expanded={selector?.id===id} onActivate={event=>setSelector({id,label,parent,anchor:event.currentTarget})}/></span>;
@@ -115,7 +119,6 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
  useEffect(()=>{if(!indicatorInfo)return;const dismiss=(e:KeyboardEvent)=>{if(e.key==="Escape"){setIndicatorInfo(null);indicatorOrigin.current?.focus()}};const outside=(e:Event)=>{if(!root.current?.querySelector(".cc-rp-popover:not([hidden])")?.parentElement?.contains(e.target as Node))setIndicatorInfo(null)};document.addEventListener("keydown",dismiss);document.addEventListener("pointerdown",outside);document.addEventListener("focusin",outside);return()=>{document.removeEventListener("keydown",dismiss);document.removeEventListener("pointerdown",outside);document.removeEventListener("focusin",outside)}},[indicatorInfo]);
  function renderItem(x:Item){
   const overall=x.id+":overall";
-  const hasModifiers=x.groups.some(g=>g.values.length>0);
   const modifierKeys=Object.keys(saves).filter(k=>k.startsWith(x.id+":")&&k!==overall);
   const ratedModifier=Object.keys(ratings).some(k=>k.startsWith(x.id+":")&&k!==overall&&ratings[k]!==undefined);
   const refineStatus=modifierKeys.some(k=>saves[k]==="failed")?"failed":modifierKeys.some(k=>saves[k]==="saving")?"saving":undefined;
@@ -123,13 +126,13 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
    supportingText={searchMatchExplanation(searchMatches.get(x.id)??null,debouncedQuery)}
    indicators={isRewards&&<span className="cc-rp-indicators">{(["reward","punishment"] as const).map(kind=>{const state=classification[x.id]?.[kind]??"unanswered";const open=indicatorInfo?.id===x.id&&indicatorInfo.kind===kind;const label=kind==="reward"?"Reward":"Punishment";const stateLabel=state==="yes"?"Yes":state==="no"?"No":"Unanswered";return <span className="cc-rp-indicator-anchor" key={kind}><button type="button" className={"cc-rp-indicator cc-rp-state-"+state} aria-label={x.name+": "+label+" — "+stateLabel+". View classification explanation"} aria-expanded={open} aria-controls={panelId(x.id+kind)} onClick={e=>{indicatorOrigin.current=e.currentTarget;setIndicatorInfo(open?null:{id:x.id,kind})}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==="reward"?<><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-7 0-7-7-3-7 2.5 0 3 4 3 7Zm0 0c7 0 7-7 3-7-2.5 0-3 4-3 7Z"/></>:<><path d="m13 4 7 7M10 7l7 7M4 20l10-10M2 22l4-4M14 2l8 8"/></>}</svg><span aria-hidden="true">{state==="yes"?"✓":state==="no"?"✕":"?"}</span></button><span id={panelId(x.id+kind)} hidden={!open} className="cc-rp-popover" role="note" aria-label={label+" classification for "+x.name}><strong>{label} · {stateLabel}</strong><span>{state==="yes"?"You've classified this Item as a "+label.toLowerCase()+".":state==="no"?"You've marked this Item as not a "+label.toLowerCase()+".":"You haven't answered whether this Item is a "+label.toLowerCase()+"."}</span><button type="button" onClick={()=>{setIndicatorInfo(null);indicatorOrigin.current?.focus()}}>Close</button></span></span>})}</span>}
    preference={ratingButton(overall,x.name+" overall",x.name)}
-   onRefine={hasModifiers?()=>openRefine(x.id):undefined} refined={ratedModifier} refineStatus={refineStatus}/>;
+   onRefine={()=>openRefine(x.id)} refined={ratedModifier} refineStatus={refineStatus}/>;
  }
  const refinedItem=items.find(x=>x.id===refining);
  function modifierContent(x:Item){
   const errors=Object.keys(saves).filter(k=>k.startsWith(x.id+":")&&k!==x.id+":overall"&&saves[k]==="failed");
   const issueIndex=Math.max(0,errors.indexOf(issueTarget||""));
-  return <div className="cc-refine-content">{errors.length>0&&<div className="cc-error-summary" role="status"><span>Issue {issueIndex+1} of {errors.length} · Latest edits kept</span><button onClick={()=>errors.forEach(retry)}>Retry all</button>{errors.length>1&&<button onClick={()=>revealIssue(errors[(issueIndex+1)%errors.length])}>Next issue</button>}</div>}{x.groups.map(g=>{const gk=x.id+":"+g.name;const go=groupsOpen[gk]??false;const keys=g.values.map(v=>gk+":"+v);const status=keys.some(k=>saves[k]==="failed")?"failed":keys.some(k=>saves[k]==="saving")?"saving":undefined;return <DisclosureSection title={g.name} description={g.values.length+" options"} key={gk} open={go} status={status} onToggle={()=>{setGroupsOpen(p=>({...p,[gk]:!go}));if(!go&&status==="failed")revealIssue(keys.find(k=>saves[k]==="failed")!)}}><div className="cc-values">{g.values.map(v=><div className={"cc-value"+((issueTarget===gk+":"+v||highlightTarget===gk+":"+v)?" cc-value-highlight":"")} key={v} data-field-id={gk+":"+v}><span>{v}</span>{ratingButton(gk+":"+v,v,x.name+" / "+g.name)}</div>)}</div></DisclosureSection>})}<ItemExperience itemId={x.id} name={x.name} open={experienceOpen} onToggle={()=>setExperienceOpen(!experienceOpen)} records={records}/></div>
+  return <div className="cc-refine-content">{errors.length>0&&<div className="cc-error-summary" role="status"><span>Issue {issueIndex+1} of {errors.length} · Latest edits kept</span><button onClick={()=>errors.forEach(retry)}>Retry all</button>{errors.length>1&&<button onClick={()=>revealIssue(errors[(issueIndex+1)%errors.length])}>Next issue</button>}</div>}{x.groups.map(g=>{const gk=x.id+":"+g.name;const go=groupsOpen[gk]??false;const keys=g.values.map(v=>gk+":"+v);const status=keys.some(k=>saves[k]==="failed")?"failed":keys.some(k=>saves[k]==="saving")?"saving":undefined;return <DisclosureSection title={g.name} description={g.values.length+" options"} key={gk} open={go} status={status} onToggle={()=>{setGroupsOpen(p=>({...p,[gk]:!go}));if(!go&&status==="failed")revealIssue(keys.find(k=>saves[k]==="failed")!)}}><div className="cc-values">{g.values.map(v=><div className={"cc-value"+((issueTarget===gk+":"+v||highlightTarget===gk+":"+v)?" cc-value-highlight":"")} key={v} data-field-id={gk+":"+v}><span>{v}</span>{ratingButton(gk+":"+v,v,x.name+" / "+g.name)}</div>)}</div></DisclosureSection>})}<ItemExperienceDetails itemId={x.id} open={experienceOpen} onToggle={()=>setExperienceOpen(!experienceOpen)} records={records}/></div>
 
  }
  return <section className="cc" ref={root} aria-label="Interactive inline Catalog prototype">
@@ -149,9 +152,10 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
   </ModalLayer>
   <SortGroupSheet open={orderOpen} onClose={()=>setOrderOpen(false)} sort={effectiveSort} onSort={setSortBy} group={effectiveGroupBy} onGroup={setGroupBy} showGrouping={groupingAvailable} defaultSortLabel={searching?"Best matches":"Catalog order"} showDefault={!isRewards||searching}/>
    <ModalLayer open={!!refinedItem} onClose={closeRefine} label={"Refine "+(refinedItem?.name||"")} closeLabel="Close refinement" className={selector?"cc-refine-underlay":""} panelClassName="cc-refine-sheet">
-    {refinedItem&&<><SheetHeader title={refinedItem.name} context="REFINE ITEM" onClose={closeRefine} closeLabel="Close refinement"><div className="cc-refine-overall">{ratingButton(refinedItem.id+":overall",refinedItem.name+" overall",refinedItem.name)}</div></SheetHeader>{modifierContent(refinedItem)}</>}
+    {refinedItem&&<><SheetHeader title={refinedItem.name} titleAccessory={<span className="cc-refine-rating">{ratingButton(refinedItem.id+":overall",refinedItem.name+" overall",refinedItem.name)}</span>} onClose={closeRefine} closeLabel="Close refinement"><ItemExperience itemId={refinedItem.id} name={refinedItem.name} records={records} onRetry={retry}/></SheetHeader>{modifierContent(refinedItem)}</>}
    </ModalLayer>
    {selector&&<PreferenceSheet open anchor={selector.anchor} onClose={closeSelector} label={selector.label} context={selector.parent} value={ratings[selector.id]} options={choices} onChange={value=>commit(selector.id,value)} help={<PreferenceReference/>} helpOpen={records.helpOpen} onHelpOpenChange={records.setHelpOpen} className={refinedItem?"cc-rating-over-refine":""}/>}
+
 
  </section>
 }

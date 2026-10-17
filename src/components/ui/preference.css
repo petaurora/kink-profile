@@ -32,6 +32,7 @@
   align-items: start;
   gap: 10px;
 }
+.kp-sheet-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0 12px; }
 .kp-sheet-header small {
   color: #d0abc4;
   font-size: 12px;
