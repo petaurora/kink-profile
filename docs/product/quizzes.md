@@ -39,11 +39,13 @@ Current weighted quizzes use the same five-point response scale:
 | ---: | --- |
 | `0` | Nope |
 | `1` | A little |
-| `2` | Maybe |
-| `3` | Very into it |
-| `4` | Core to me |
+| `2` | Somewhat |
+| `3` | A lot |
+| `4` | Absolutely |
 
 Higher values consistently represent stronger affinity for the experience described by the prompt.
+
+These labels express degrees of **appeal, affinity, or resonance** with the question statement. They do not ask how frequently an experience happens or how frequently someone would want it. Desired frequency may be modeled separately if approved; changing labels does not change saved numeric responses, versions, weights, or score calculations.
 
 Questions should therefore be authored so the scale does not need hidden reverse interpretation merely to produce a desired score.
 
