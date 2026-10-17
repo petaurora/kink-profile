@@ -215,6 +215,8 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
               {answerOptions.map(option => (
                 <button key={option.value} type="button"
                   aria-pressed={answers[q.id] === option.value}
+                  aria-hidden={confirmingQuestion===q.id && answers[q.id] !== option.value ? true : undefined}
+                  data-quiz-feedback-hidden={confirmingQuestion===q.id && answers[q.id] !== option.value ? "true" : undefined}
                   disabled={confirmingQuestion!==null}
                   className={answers[q.id] === option.value ? "selected" : ""}
                   onClick={() => answer(q.id, i, option.value)}>
