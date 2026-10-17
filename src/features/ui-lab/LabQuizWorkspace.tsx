@@ -69,7 +69,6 @@ function QuizLanding({ go }: { go: Go }) {
   return (
     <section className="lab-quiz-landing" aria-label="Quiz selection">
       <div className="lab-quiz-intro">
-        <p>Explore dynamics, roles and experiences. Choose any quiz and return to unfinished answers whenever you want.</p>
         <span className="lab-quiz-progress-label">{completed} of {available.length} completed</span>
       </div>
       <div className="lab-quiz-grid">
@@ -104,7 +103,7 @@ function QuizLanding({ go }: { go: Go }) {
           );
         })}
       </div>
-      <p className="lab-quiz-storage-note">Quiz answers are saved to your browser-local profile. They are not temporary Lab demo records.</p>
+      <p className="lab-quiz-storage-note">Your answers save automatically. Leave and come back whenever you like.</p>
     </section>
   );
 }
@@ -135,31 +134,33 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
+  function focusQuestion(questionIndex: number) {
+    const heading = container.current?.querySelector<HTMLElement>(
+      `[data-quiz-question-index="${questionIndex}"]`,
+    );
+    if (!heading) return;
+    // Keep the semantic heading as the focus target while scrolling the whole
+    // card into view. "nearest" left the card mostly below the phone fold.
+    heading.focus({preventScroll: true});
+    const card = heading.closest<HTMLElement>(".lab-quiz-question");
+    (card ?? heading).scrollIntoView?.({block: "start", behavior: "instant"});
+    focused.current = true;
+    pendingFocus.current = null;
+  }
+
   useLayoutEffect(() => {
-    // Decision 10: every change of displayed question has a focused heading.
-    // Resume and "Review unanswered" target the exact unanswered question,
-    // even if it is the middle card of a desktop group.
+    // Exact first missing question on entry/review, first card in a new batch
+    // on normal desktop navigation, and the new question after mobile answers.
     const focusIndex = pendingFocus.current ??
       (!focused.current ? resumeIndex.current : wide ? start : index);
-    const heading = container.current?.querySelector<HTMLElement>(
-      `[data-quiz-question-index="${focusIndex}"]`,
-    );
-    if (heading) {
-      focused.current = true;
-      pendingFocus.current = null;
-      heading.focus({preventScroll:true});
-      heading.scrollIntoView?.({block:"nearest", behavior:"instant"});
-    }
+    focusQuestion(focusIndex);
   }, [wide, index, start]);
 
   function jumpToUnanswered() {
     if (firstUnanswered < 0) return;
     pendingFocus.current = firstUnanswered;
     if (index === firstUnanswered) {
-      const heading = container.current?.querySelector<HTMLElement>(`[data-quiz-question-index="${firstUnanswered}"]`);
-      heading?.focus({preventScroll:true});
-      heading?.scrollIntoView?.({block:"nearest"});
-      pendingFocus.current = null;
+      focusQuestion(firstUnanswered);
     } else {
       setIndex(firstUnanswered);
     }
@@ -214,25 +215,25 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
         ))}
       </div>
       <nav className="lab-quiz-run-actions" aria-label="Quiz navigation">
-        <button type="button" disabled={wide ? start === 0 : index === 0} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
-        {remaining > 0 && <button type="button" className="lab-quiz-review-link" onClick={jumpToUnanswered}>
-          Review unanswered ({remaining})
-        </button>}
-        <button type="button" onClick={() => go("Quizzes")}>Save & exit</button>
+        <button type="button" className="lab-quiz-action-back" disabled={wide ? start === 0 : index === 0} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
+        <button type="button" className="lab-quiz-action-exit" onClick={() => go("Quizzes")}>Save & exit</button>
         {wide ? (
-          <button type="button" onClick={() => start + 3 >= questions.length
+          <button type="button" className="lab-quiz-action-next" onClick={() => start + 3 >= questions.length
             ? jumpToUnanswered()
             : setIndex(Math.min(start + 3, questions.length - 1))}>
             {start + 3 >= questions.length ? "Review unanswered →" : "Next questions →"}
           </button>
         ) : mobileNext !== null && (
-          <button type="button" onClick={() => {
+          <button type="button" className="lab-quiz-action-next" onClick={() => {
             if (index === questions.length - 1) jumpToUnanswered();
             else setIndex(mobileNext);
           }}>
             {index === questions.length - 1 ? "Review unanswered →" : "Next question →"}
           </button>
         )}
+        {remaining > 0 && <button type="button" className="lab-quiz-review-link" onClick={jumpToUnanswered}>
+          Review unanswered ({remaining})
+        </button>}
       </nav>
     </section>
   );
