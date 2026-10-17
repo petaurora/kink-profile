@@ -1,5 +1,40 @@
 import { test, expect } from "./fixtures";
 
+test("unknown Lab destination recovers Home and shortcut edits survive shell navigation", async ({ app, page }) => {
+  await app.open("/ui-lab/synthetic-missing");
+  await expect(page.getByRole("alert")).toContainText("This Lab destination is unavailable.");
+  await page.getByRole("button", { name: "Return Home", exact: true }).click();
+  await page.getByRole("button", { name: "Edit shortcuts", exact: true }).click();
+  await page.getByRole("checkbox", { name: "Learn", exact: true }).check();
+  await page.getByRole("checkbox", { name: "Tools", exact: true }).uncheck();
+  const shortcuts = page.locator(".lab-shortcuts");
+  await shortcuts.getByRole("button", { name: "Learn", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Learn", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Kink Profile, go to Home", exact: true }).click();
+  await expect(shortcuts.getByRole("button", { name: "Learn", exact: true })).toBeVisible();
+  await expect(shortcuts.getByRole("button", { name: "Tools", exact: true })).toHaveCount(0);
+});
+
+test("rapid global searches show the latest term and empty results recover", async ({ app, page }) => {
+  await app.open();
+  await page.getByRole("button", { name: "Search", exact: true }).click();
+  const search = page.getByRole("dialog", { name: "Global catalog search", exact: true });
+  const query = search.getByRole("searchbox", { name: "Search catalog", exact: true });
+  await query.fill("Leather");
+  await query.fill("Collars");
+  await search.getByRole("button", { name: "Items", exact: true }).click();
+  const results = search.locator("[data-search-result]");
+  await expect(results.locator("strong")).toHaveText(["Collars", "Collaring"]);
+  await query.fill("synthetic-no-global-result-6329");
+  await expect(search.getByText("No matches. Try another term or type.", { exact: true })).toBeVisible();
+  await search.getByRole("button", { name: "Clear search", exact: true }).click();
+  await expect(query).toHaveValue("");
+  await expect(search.getByRole("button", { name: "All", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await search.getByRole("button", { name: "Close search", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Search", exact: true })).toBeFocused();
+  expect(await app.profile()).toBeNull();
+});
+
 test("preview gate preserves a deep link and shell navigation supports browser history", async ({ app, page }) => {
   await page.goto("./#/ui-lab/discover");
   await expect(page.getByRole("main", { name: "Loading animation preview" })).toBeVisible();

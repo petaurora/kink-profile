@@ -41,51 +41,52 @@ async function finishQuiz(page: Page, count: number, isMobile: boolean, label: s
   await expect(page.getByRole("heading", { name: "At a glance", exact: true })).toBeVisible();
 }
 
-test("complete quiz and retake preserve old results until the new attempt is fully finished", async ({ app, page, isMobile }) => {
-  test.setTimeout(180_000);
-  const quiz = quizzes.find(quiz => quiz.id === "sadism-masochism")!;
-  await app.open(`/ui-lab/quizzes/question?id=${quiz.id}`);
-  await finishQuiz(page, quiz.questionIds.length, isMobile, "Absolutely");
-  const completed = (await app.profile())!.quizzes[quiz.id]!;
-  expect(Object.keys(completed.answers)).toHaveLength(quiz.questionIds.length);
-  expect(Object.values(completed.answers)).toEqual(Array(quiz.questionIds.length).fill(4));
-  expect(completed.completedAt).toBeTruthy();
-  const oldResults = (await page.getByRole("heading", { name: "At a glance", exact: true }).locator("..").textContent())!;
-  await page.getByText("Explore the full breakdown", { exact: true }).click();
-  await expect(page.getByRole("region", { name: "All signals", exact: true })).toBeVisible();
-  expect((await app.profile())!.quizzes[quiz.id]).toEqual(completed);
+for (const quiz of quizzes.filter(quiz => quiz.contributesToOverall)) {
+  test(`${quiz.title}: completion and retake preserve old results until the new attempt is fully finished`, async ({ app, page, isMobile }) => {
+    test.setTimeout(180_000);
+    await app.open(`/ui-lab/quizzes/question?id=${quiz.id}`);
+    await finishQuiz(page, quiz.questionIds.length, isMobile, "Absolutely");
+    const completed = (await app.profile())!.quizzes[quiz.id]!;
+    expect(Object.keys(completed.answers)).toHaveLength(quiz.questionIds.length);
+    expect(Object.values(completed.answers)).toEqual(Array(quiz.questionIds.length).fill(4));
+    expect(completed.completedAt).toBeTruthy();
+    const oldResults = (await page.getByRole("heading", { name: "At a glance", exact: true }).locator("..").textContent())!;
+    await page.getByText("Explore the full breakdown", { exact: true }).click();
+    await expect(page.getByRole("region", { name: "All signals", exact: true })).toBeVisible();
+    expect((await app.profile())!.quizzes[quiz.id]).toEqual(completed);
 
-  await page.getByRole("button", { name: "Retake this quiz", exact: true }).click();
-  await page.getByRole("group", { name: "Answer question 1", exact: true }).getByRole("button", { name: /Nope/ }).click();
-  if (isMobile) await expect(page.getByRole("heading", { level: 2, name: /^Question 2 of/ })).toBeFocused();
-  await page.getByRole("button", { name: "Save & exit", exact: true }).click();
-  await page.reload();
-  await app.continuePreview();
-  await expect(page.getByRole("button", { name: `${quiz.title}: Continue retake.`, exact: false })).toBeVisible();
-  const draft = (await app.profile())!.quizzes[quiz.id]!;
-  expect(draft.answers).toEqual(completed.answers);
-  expect(draft.completedAt).toEqual(completed.completedAt);
-  expect(draft.retake?.answers).toEqual({ [quiz.questionIds[0]]: 0 });
+    await page.getByRole("button", { name: "Retake this quiz", exact: true }).click();
+    await page.getByRole("group", { name: "Answer question 1", exact: true }).getByRole("button", { name: /Nope/ }).click();
+    if (isMobile) await expect(page.getByRole("heading", { level: 2, name: /^Question 2 of/ })).toBeFocused();
+    await page.getByRole("button", { name: "Save & exit", exact: true }).click();
+    await page.reload();
+    await app.continuePreview();
+    await expect(page.getByRole("button", { name: `${quiz.title}: Continue retake.`, exact: false })).toBeVisible();
+    const draft = (await app.profile())!.quizzes[quiz.id]!;
+    expect(draft.answers).toEqual(completed.answers);
+    expect(draft.completedAt).toEqual(completed.completedAt);
+    expect(draft.retake?.answers).toEqual({ [quiz.questionIds[0]]: 0 });
 
-  // Browser deep link must show the established result while a retake exists.
-  await app.open(`/ui-lab/quizzes/results?id=${quiz.id}`);
-  await expect(page.getByText(/These remain your last completed results/)).toBeVisible();
-  await expect(page.getByRole("heading", { name: "At a glance", exact: true }).locator("..")).toHaveText(oldResults);
-  await page.getByRole("button", { name: "Continue retake", exact: true }).click();
-  await expect(page.getByRole("heading", { level: 2, name: /^Question 2 of/ })).toBeFocused();
-  // Return to question one to exercise the intra-quiz Back control as well.
-  if (isMobile) await page.getByRole("button", { name: "← Back", exact: true }).click();
-  await finishQuiz(page, quiz.questionIds.length, isMobile, "Nope");
-  const replaced = (await app.profile())!.quizzes[quiz.id]!;
-  expect(Object.values(replaced.answers)).toEqual(Array(quiz.questionIds.length).fill(0));
-  expect(replaced.retake).toBeUndefined();
-  expect(replaced.completedAt).not.toEqual(completed.completedAt);
-  await expect(page.getByRole("heading", { name: "At a glance", exact: true }).locator("..")).not.toHaveText(oldResults);
-  await page.reload();
-  await app.continuePreview();
-  await expect(page.getByRole("heading", { name: "At a glance", exact: true })).toBeVisible();
-  expect((await app.profile())!.quizzes[quiz.id]).toEqual(replaced);
-});
+    // Browser deep link must show the established result while a retake exists.
+    await app.open(`/ui-lab/quizzes/results?id=${quiz.id}`);
+    await expect(page.getByText(/These remain your last completed results/)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "At a glance", exact: true }).locator("..")).toHaveText(oldResults);
+    await page.getByRole("button", { name: "Continue retake", exact: true }).click();
+    await expect(page.getByRole("heading", { level: 2, name: /^Question 2 of/ })).toBeFocused();
+    // Return to question one to exercise the intra-quiz Back control as well.
+    if (isMobile) await page.getByRole("button", { name: "← Back", exact: true }).click();
+    await finishQuiz(page, quiz.questionIds.length, isMobile, "Nope");
+    const replaced = (await app.profile())!.quizzes[quiz.id]!;
+    expect(Object.values(replaced.answers)).toEqual(Array(quiz.questionIds.length).fill(0));
+    expect(replaced.retake).toBeUndefined();
+    expect(replaced.completedAt).not.toEqual(completed.completedAt);
+    await expect(page.getByRole("heading", { name: "At a glance", exact: true }).locator("..")).not.toHaveText(oldResults);
+    await page.reload();
+    await app.continuePreview();
+    await expect(page.getByRole("heading", { name: "At a glance", exact: true })).toBeVisible();
+    expect((await app.profile())!.quizzes[quiz.id]).toEqual(replaced);
+  });
+}
 
 test("phone confirmation locks repeated taps while retaining the selected answer", async ({ app, page, isMobile }) => {
   test.skip(!isMobile, "Desktop intentionally allows editing within a three-question group");

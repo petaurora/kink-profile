@@ -1,5 +1,6 @@
 import { test as base, expect, type Page } from "@playwright/test";
 import type { StoredProfile } from "../src/lib/profileStorage";
+import type { ProfileBackupV3 } from "../src/lib/profileBackup";
 
 export class KpApp {
   constructor(readonly page: Page) {}
@@ -11,12 +12,12 @@ export class KpApp {
     if (response) {
       await this.continuePreview();
     }
-    await expect(this.page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(this.page.getByRole("heading").first()).toBeVisible();
   }
 
   async continuePreview() {
     await this.page.getByRole("button", { name: "Continue to KP" }).click();
-    await expect(this.page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(this.page.getByRole("heading").first()).toBeVisible();
   }
 
   async menu(area: string, workspace?: string) {
@@ -37,6 +38,29 @@ export class KpApp {
   async profile(): Promise<StoredProfile | null> {
     // Read only: all writes under test go through the actual application UI.
     return this.page.evaluate(() => JSON.parse(localStorage.getItem("pet-profile-v2") || "null"));
+  }
+
+  async saveQuizDraft(quizId = "dominance-submission") {
+    await this.open(`/ui-lab/quizzes/question?id=${quizId}`);
+    await this.page.getByRole("group", { name: "Answer question 1", exact: true })
+      .getByRole("button", { name: /Absolutely/ }).click();
+    await expect(this.page.getByRole("button", { name: "Save & exit", exact: true })).toBeEnabled();
+    await this.page.getByRole("button", { name: "Save & exit", exact: true }).click();
+  }
+
+  async backup(): Promise<{ contents: Buffer; data: ProfileBackupV3 }> {
+    await this.open("/settings");
+    await this.page.getByRole("button", { name: "Download backup", exact: true }).click();
+    const downloaded = this.page.waitForEvent("download");
+    await this.page.getByRole("region", { name: "Download the complete profile.", exact: true })
+      .getByRole("button", { name: "Download backup", exact: true }).click();
+    const download = await downloaded;
+    expect(download.suggestedFilename()).toMatch(/\.json$/);
+    const stream = await download.createReadStream();
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream!) chunks.push(Buffer.from(chunk));
+    const contents = Buffer.concat(chunks);
+    return { contents, data: JSON.parse(contents.toString()) };
   }
 }
 
