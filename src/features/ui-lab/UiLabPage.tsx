@@ -76,13 +76,10 @@ function UiLabContent() {
   Home:[],
   Catalog:["Overview","Explore All","Kinks","Rewards & Punishments","Concept Explorer"],
   Profile:["Overview","My Profile","Preferences","Sharing & Permissions","Identity & Expression"],
-  Discover:["Overview","Quizzes","Learn","React","Play"],
+  Discover:["Overview","Learn","React","Play"],
   Tools:["Overview","Scene Builder","Agreements & Rituals","Randomizers & Recipes","Compare Profiles"]
  };
- const openMenuChild=(parent:Area,child:string)=>{
-  if(parent==="Discover"&&child==="Quizzes") { setMenuOpen(false); routerNavigate(quizHomeRoute.path); return; }
-  go(parent,child==="Overview"?"":child);
- };
+ const openMenuChild=(parent:Area,child:string)=>go(parent,child==="Overview"?"":child);
  const modalActive=()=>Boolean(document.querySelector(".ui-lab [aria-modal=\"true\"]:not(#ui-lab-full-menu)"));
  const onGestureStart=(event:React.TouchEvent)=>{
   if(modalActive()){gestureStart.current=null;return;}
@@ -147,7 +144,7 @@ function UiLabContent() {
        <div className="ui-lab-menu-divider"/>
        <p className="ui-lab-menu-eyebrow">MORE TO EXPLORE</p>
        <div className="ui-lab-menu-links">
-         {(["Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} aria-current={area===item?"page":undefined} onClick={()=>navigate(item)}><span className="ui-lab-menu-link-icon" aria-hidden="true">{(() => { const Icon = [appIcons.collection, appIcons.education, appIcons.shared][i]; return <Icon {...appIconDefaults} />; })()}</span><span>{item}</span></button>)}
+         {(["Quizzes","Creations","Learn","Relationships"] as const).map((item,i)=><button type="button" key={item} aria-current={item!=="Quizzes"&&area===item?"page":undefined} onClick={()=>item==="Quizzes"?(setMenuOpen(false),routerNavigate(quizHomeRoute.path)):navigate(item)}><span className="ui-lab-menu-link-icon" aria-hidden="true">{(() => { const Icon = [appIcons.quiz, appIcons.collection, appIcons.education, appIcons.shared][i]; return <Icon {...appIconDefaults} />; })()}</span><span>{item}</span></button>)}
        </div>
        <div className="ui-lab-menu-bottom">
          <button type="button" className="ui-lab-menu-settings" aria-current={area==="Settings"?"page":undefined} onClick={()=>navigate("Settings")}>
