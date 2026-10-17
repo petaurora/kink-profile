@@ -73,6 +73,7 @@ it("keeps all four quizzes distinct through routing, Save & exit, browser Back a
   }
 });
 it("reloads a sparse attempt with unknown answers and keeps existing unrelated evidence unchanged",()=>{
+  Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
   const [quiz,other]=quizzes;
   const profile=createEmptyProfile();
   profile.quizzes[other.id]={
