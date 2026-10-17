@@ -52,3 +52,14 @@ For each manual gate, record date, environment/device/browser and assistive-tech
 **Merge condition:** All four manual+automated gates documented as PASS, no blocking open findings, CI/production build/preview green on the final PR head, and owner review complete. No auto-merge and no promotion of PR #300 out of draft purely from green CI.
 
 **Open UX decisions:** Decisions 1–11 cover the approved experience. Do not invent Decision 12 for validation itself. Only reopen a substantive workshop question if real review uncovers a product trade-off not determined by the existing decisions.
+
+## Android phone screenshot audit — October 16, 2026
+
+**Review evidence supplied:** browser screenshots showing Quiz Home, the initial Bondage & Discipline question, the full five-choice question card, and the four-control mobile footer.
+
+- **V-01 — Initial question barely visible:** before fix, focusing the heading and using `scrollIntoView({block:'nearest'})` left the entire question card near the bottom of the first viewport. Changed runner to focus the semantic h2 but scroll its enclosing question **card** to the start of the viewport, with phone safe-area scroll margin. Automated tests assert the scroll target and alignment argument. **Manual phone recheck is still required** after preview deployment.
+- **V-02 — Answer-scale words feel inconsistent:** current `Nope / A little / Maybe / Very into it / Core to me` mixes uncertainty, intensity, and identity. **User wording approval is pending.** No changes to shared scoring scale labels or 0–4 values until that choice is settled.
+- **V-03 — Clunky 2x2 mobile footer:** replaced equal-weight boxed controls with an inline three-action order: understated Back, understated Save & exit, emphasized Next question; Review unanswered is a separate quiet full-width text action below them. The four controls remain keyboard reachable and at least 44px in touch height. **Manual 320–390px and accessibility recheck is required.**
+- **V-04 — Exposed Lab-only copy:** condensed landing introduction, replaced storage explanation with user-facing save guidance, and hide the UI Lab's generic experimental disclaimer/Toast Playground control only while browsing Quizzes. **Recheck both Quiz Home and question/results after fresh preview load.**
+
+These are **implemented candidate corrections**, not a device-validation PASS. The screenshots are evidence of the *previous* problem state. The original four manual validation gates remain OPEN until the updated preview has been inspected with actual browser/device observations.
