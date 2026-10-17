@@ -114,25 +114,24 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
   const [index, setIndex] = useState(resumeIndex.current);
   const [wide, setWide] = useState(() => window.innerWidth > 700);
   const focused = useRef(false);
-  const pendingFocus = useRef<number | null>(null);
   const container = useRef<HTMLDivElement>(null);
+  const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [confirmingQuestion, setConfirmingQuestion] = useState<string | null>(null);
   const questions = useMemo(() => getQuestionsForQuiz(quiz), [quiz]);
   const state = resolveQuizLifecycle(quiz, profile);
   const answers = getQuizAttemptAnswers(quiz, profile);
   const answered = getAnsweredCount(quiz, answers);
-  const remaining = questions.length - answered;
-  const firstUnanswered = questions.findIndex(question => answers[question.id] === undefined);
   const start = Math.floor(index / 3) * 3;
   const visible = wide ? questions.slice(start, start + 3).map((q, n) => ({ q, i: start + n })) :
     questions[index] ? [{q: questions[index], i: index}] : [];
-  const batchUnanswered = visible.filter(({q}) => answers[q.id] === undefined).length;
-  const mobileNext = index < questions.length - 1
-    ? index + 1
-    : firstUnanswered >= 0 && firstUnanswered !== index ? firstUnanswered : null;
+  const batchComplete = visible.length > 0 && visible.every(({q}) => answers[q.id] !== undefined);
   useEffect(() => {
     const update = () => setWide(window.innerWidth > 700);
     window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      if (transitionTimer.current !== null) clearTimeout(transitionTimer.current);
+    };
   }, []);
   function focusQuestion(questionIndex: number) {
     const heading = container.current?.querySelector<HTMLElement>(
@@ -145,95 +144,86 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
     const card = heading.closest<HTMLElement>(".lab-quiz-question");
     (card ?? heading).scrollIntoView?.({block: "start", behavior: "instant"});
     focused.current = true;
-    pendingFocus.current = null;
   }
 
   useLayoutEffect(() => {
-    // Exact first missing question on entry/review, first card in a new batch
-    // on normal desktop navigation, and the new question after mobile answers.
-    const focusIndex = pendingFocus.current ??
-      (!focused.current ? resumeIndex.current : wide ? start : index);
+    // Resume targets the first unanswered question, even within a desktop
+    // batch. Later navigation focuses the heading for the newly visible card.
+    const focusIndex = !focused.current ? resumeIndex.current : wide ? start : index;
     focusQuestion(focusIndex);
   }, [wide, index, start]);
-
-  function jumpToUnanswered() {
-    if (firstUnanswered < 0) return;
-    pendingFocus.current = firstUnanswered;
-    if (index === firstUnanswered) {
-      focusQuestion(firstUnanswered);
-    } else {
-      setIndex(firstUnanswered);
-    }
-  }
 
   if (state.state === "complete") {
     return <p>This quiz is complete. <button type="button" onClick={() => go("Quizzes", "Results", {id:quiz.id})}>View results</button></p>;
   }
   function answer(questionId: string, questionIndex: number, choice: number) {
+    if (confirmingQuestion !== null) return;
     const next = answerQuizQuestion(quiz, profile, questionId, choice);
+    // Persist immediately, before visual feedback or any route transition.
     saveProfile(next);
     setProfile(next);
-    if (resolveQuizLifecycle(quiz, next).state === "complete") {
-      go("Quizzes", "Results", {id:quiz.id});
-    } else if (!wide) {
-      setIndex(questionIndex < questions.length - 1 ? questionIndex + 1 : initialQuestionIndex(quiz, next));
+    const complete = resolveQuizLifecycle(quiz, next).state === "complete";
+    const advance = () => {
+      if (complete) go("Quizzes", "Results", {id:quiz.id});
+      else if (!wide) setIndex(questionIndex < questions.length - 1
+        ? questionIndex + 1 : initialQuestionIndex(quiz, next));
+    };
+    // Respect motion settings. Automated DOM tests without matchMedia continue
+    // synchronously; real browsers display a brief checked-choice confirmation.
+    const reducedMotion = typeof window.matchMedia !== "function" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (wide || reducedMotion) {
+      advance();
+      return;
     }
+    setConfirmingQuestion(questionId);
+    transitionTimer.current = setTimeout(() => {
+      transitionTimer.current = null;
+      setConfirmingQuestion(null);
+      advance();
+    }, 260);
   }
   return (
     <section ref={container} className="lab-quiz-runner" aria-label={quiz.title}>
-      <div className="lab-quiz-run-header">
-        <div className="lab-quiz-run-meta">
-          <span>{state.state === "retake-in-progress" ? "Retake · previous result saved" : quiz.shortTitle}</span>
-          <strong>{wide ? `${start + 1}–${Math.min(start + 3, questions.length)} / ${questions.length}` : `${index + 1} / ${questions.length}`}</strong>
-        </div>
-        <div role="progressbar" className="lab-quiz-progress-track" aria-label="Quiz answers saved" aria-valuenow={answered} aria-valuemin={0} aria-valuemax={questions.length} aria-valuetext={`${answered} of ${questions.length} answered`}>
-          <span style={{width:`${100 * answered / questions.length}%`}}/>
-        </div>
-        <div className="lab-quiz-run-guidance" role="status" aria-live="polite">
-          <span>{answered} of {questions.length} answered · {remaining} unanswered</span>
-          {wide && batchUnanswered > 0 && <span>{batchUnanswered} unanswered in this group</span>}
-        </div>
-        <p className="lab-quiz-skip-note">It's okay to move ahead. Unanswered questions stay open until you choose an answer.</p>
-      </div>
       <div className="lab-quiz-question-stack">
-        {visible.map(({q,i}) => (
-          <article className="lab-quiz-question" key={q.id}>
-            <span className="lab-quiz-question-meta">Question {i + 1} · {quiz.shortTitle}</span>
+        {visible.map(({q,i},n) => (
+          <article className={`lab-quiz-question${confirmingQuestion===q.id ? " is-confirming" : ""}`} key={q.id}>
+            <div className="lab-quiz-card-progress"
+              {...(n===0 ? {role:"progressbar", "aria-label":"Quiz answers saved", "aria-valuenow":answered, "aria-valuemin":0, "aria-valuemax":questions.length, "aria-valuetext":`${answered} of ${questions.length} answered`} : {"aria-hidden":true})}>
+              <span style={{width:`${100 * answered / questions.length}%`}} />
+            </div>
+            <div className="lab-quiz-question-top">
+              <span className="lab-quiz-question-meta">Question {i + 1} · {quiz.shortTitle}</span>
+              <span className="lab-quiz-question-count">{answered} / {questions.length} answered</span>
+            </div>
             <h2 tabIndex={-1} data-quiz-question-index={i} aria-label={`Question ${i + 1} of ${questions.length}: ${q.prompt}`}>{q.prompt}</h2>
             <div className="lab-quiz-options" role="group" aria-label={`Answer question ${i+1}`}>
               {answerOptions.map(option => (
                 <button key={option.value} type="button"
                   aria-pressed={answers[q.id] === option.value}
+                  disabled={confirmingQuestion!==null}
                   className={answers[q.id] === option.value ? "selected" : ""}
                   onClick={() => answer(q.id, i, option.value)}>
                   <span className="lab-quiz-option-number">{option.value}</span>
-                  <span>{option.label}</span>
+                  <span className="lab-quiz-option-label">{option.label}</span>
+                  {answers[q.id] === option.value && <span className="lab-quiz-option-check" aria-hidden="true">✓</span>}
                 </button>
               ))}
             </div>
+            {confirmingQuestion===q.id && <span className="lab-quiz-saved-status" role="status">Answer saved</span>}
           </article>
         ))}
       </div>
       <nav className="lab-quiz-run-actions" aria-label="Quiz navigation">
-        <button type="button" className="lab-quiz-action-back" disabled={wide ? start === 0 : index === 0} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
+        <button type="button" className="lab-quiz-action-back" disabled={confirmingQuestion!==null || (wide ? start === 0 : index === 0)} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
         <button type="button" className="lab-quiz-action-exit" onClick={() => go("Quizzes")}>Save & exit</button>
-        {wide ? (
-          <button type="button" className="lab-quiz-action-next" onClick={() => start + 3 >= questions.length
-            ? jumpToUnanswered()
-            : setIndex(Math.min(start + 3, questions.length - 1))}>
-            {start + 3 >= questions.length ? "Review unanswered →" : "Next questions →"}
-          </button>
-        ) : mobileNext !== null && (
-          <button type="button" className="lab-quiz-action-next" onClick={() => {
-            if (index === questions.length - 1) jumpToUnanswered();
-            else setIndex(mobileNext);
-          }}>
-            {index === questions.length - 1 ? "Review unanswered →" : "Next question →"}
+        {wide && start + 3 < questions.length && (
+          <button type="button" className="lab-quiz-action-next"
+            disabled={!batchComplete || confirmingQuestion!==null}
+            onClick={() => setIndex(Math.min(start+3,questions.length-1))}>
+            Next questions →
           </button>
         )}
-        {remaining > 0 && <button type="button" className="lab-quiz-review-link" onClick={jumpToUnanswered}>
-          Review unanswered ({remaining})
-        </button>}
       </nav>
     </section>
   );
