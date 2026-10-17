@@ -110,6 +110,8 @@ it("confirms a selected answer with a check before transitioning, while persisti
     expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:3});
     expect(focusIndex()).toBe("0");
     expect(host.querySelector(".lab-quiz-question.is-confirming")).not.toBeNull();
+    expect([...host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")].every(button=>button.disabled)).toBe(true);
+    expect([...host.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")].find(button=>button.textContent==="Save & exit")?.disabled).toBe(true);
     expect(host.querySelector(".lab-quiz-options button.selected .lab-quiz-option-check")?.textContent).toBe("✓");
     expect(host.querySelector(".lab-quiz-saved-status")?.textContent).toBe("Answer saved");
     expect(host.querySelector(".lab-quiz-card-progress")?.getAttribute("aria-valuenow")).toBe("1");
@@ -139,4 +141,81 @@ it("respects reduced motion by moving on immediately after selection",()=>{
     if(existing)Object.defineProperty(window,"matchMedia",existing);
     else Reflect.deleteProperty(window,"matchMedia");
   }
+});
+
+it("locks repeated mobile taps before React commits and unlocks only on the next question",()=>{
+  Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
+  const previous=Object.getOwnPropertyDescriptor(window,"matchMedia");
+  Object.defineProperty(window,"matchMedia",{configurable:true,value:()=>({matches:false})});
+  vi.useFakeTimers();
+  try {
+    renderQuiz();
+    const first=host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button");
+    // Both clicks occur before React renders disabled controls.
+    act(()=>{first[1].click();first[4].click();});
+    expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:1});
+    expect(host.querySelector(".lab-quiz-question.is-confirming")).not.toBeNull();
+    expect(first[4].disabled).toBe(true);
+    act(()=>vi.advanceTimersByTime(390));
+    expect(focusIndex()).toBe("1");
+    const next=host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button");
+    expect(next[4].disabled).toBe(false);
+    act(()=>next[4].click());
+    expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({
+      [quiz.questionIds[0]]:1,[quiz.questionIds[1]]:4,
+    });
+  } finally {
+    vi.useRealTimers();
+    if(previous)Object.defineProperty(window,"matchMedia",previous);
+    else Reflect.deleteProperty(window,"matchMedia");
+  }
+});
+
+it("keeps the final selected answer visible until results are ready, with no completion flash",()=>{
+  Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
+  const previous=Object.getOwnPropertyDescriptor(window,"matchMedia");
+  Object.defineProperty(window,"matchMedia",{configurable:true,value:()=>({matches:false})});
+  vi.useFakeTimers();
+  try {
+    const profile=createEmptyProfile();
+    profile.quizzes[quiz.id]={
+      quizVersion:quiz.version,
+      answers:Object.fromEntries(quiz.questionIds.slice(0,-1).map(id=>[id,2])),
+    };
+    saveProfile(profile);
+    renderQuiz();
+    expect(focusIndex()).toBe(String(quiz.questionIds.length-1));
+    const options=host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button");
+    act(()=>{options[3].click();options[0].click();});
+    expect(loadProfile().quizzes[quiz.id]?.answers[quiz.questionIds.at(-1)!]).toBe(3);
+    expect(host.querySelector(".lab-quiz-question.is-confirming")).not.toBeNull();
+    expect(host.querySelector(".lab-quiz-runner")).not.toBeNull();
+    expect(host.querySelector(".lab-quiz-card-progress")?.getAttribute("aria-valuenow")).toBe(String(quiz.questionIds.length));
+    expect(host.textContent).not.toContain("This quiz is complete");
+    expect(host.textContent).not.toContain("You've finished this quiz");
+    expect(host.querySelectorAll(".lab-quiz-options button.selected .lab-quiz-option-check")).toHaveLength(1);
+    act(()=>vi.advanceTimersByTime(389));
+    expect(host.querySelector(".lab-quiz-runner")).not.toBeNull();
+    act(()=>vi.advanceTimersByTime(1));
+    expect(host.querySelector(".lab-quiz-results")).not.toBeNull();
+    expect(host.querySelector(".lab-quiz-runner")).toBeNull();
+  } finally {
+    vi.useRealTimers();
+    if(previous)Object.defineProperty(window,"matchMedia",previous);
+    else Reflect.deleteProperty(window,"matchMedia");
+  }
+});
+
+it("opens results directly when a saved complete question route is revisited",()=>{
+  const profile=createEmptyProfile();
+  profile.quizzes[quiz.id]={
+    quizVersion:quiz.version,
+    completedAt:"2026-10-17T12:00:00Z",
+    answers:Object.fromEntries(quiz.questionIds.map(id=>[id,2])),
+  };
+  saveProfile(profile);
+  renderQuiz();
+  expect(host.querySelector(".lab-quiz-results")).not.toBeNull();
+  expect(host.textContent).not.toContain("This quiz is complete");
+  expect(host.textContent).not.toContain("You've finished this quiz");
 });
