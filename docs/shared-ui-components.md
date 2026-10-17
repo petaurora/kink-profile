@@ -20,10 +20,10 @@ been migrated to the experimental treatments merely because the code is shared.
 | `SortGroupSheet` | Separate controlled sort/group sections; grouping is optional | Sort order, grouping availability, labels and defaults |
 | `ModalLayer` | Backdrop/Escape dismissal; nested focus containment/restoration; coordinated body scroll lock | Open state, title/label, content, visual variant and recovery policy |
 | `SheetHeader` | Shared title, context and accessible close target | Title/context and any header accessory |
-| `PreferenceChip` | Display-only icon and complete rating label; dashed-circle Not rated for absence | Current explicit value; no edit action or inferred preference |
+| `PreferenceChip` | Display-only icon and complete rating label; plain, unboxed Not rated for absence | Current explicit value; no edit action or inferred preference |
 | `PreferenceControl` / `PreferenceSheet` | Editable chip and anchored vertical rating dialog; explicit commit, controlled help and Clear | Target/anchor, independent values, persistence and retry |
 | `InlineSaveStatus` | Reserved status slot; idle/saving/saved/failed presentation | Truthful persistence state and Retry implementation |
-| `ItemRow` | Compact identity, optional supporting text, indicator, preference and Refine slots | Item data, search-match explanation, optional modifiers, aggregate save status and classification indicators |
+| `ItemRow` | Wrapping identity, optional supporting text and indicators, grouped preference/Refine actions | Item data, search-match explanation, optional modifiers, aggregate save status and classification indicators |
 | `DisclosureSection` | Controlled disclosure with a stable panel ID | Expanded state and panel content; opening never records preference |
 | `ToastProvider` / `useToasts` | One queue/viewport at the application boundary | Meaningful notifications and genuine recovery/Undo actions |
 | `ConfirmationDialog` | Explicit confirm/cancel modal with shared focus and close mechanics | Action scope, copy, confirmation policy and actual mutation |
@@ -82,8 +82,8 @@ Modifier Value chips, picker options and read-only Profile records.
 | Hard Limit | Shield X, always with the full label |
 | Not Applicable | Circle Off |
 
-Dashed Circle + `Not rated` means no explicit value and is never an eighth picker
-option or persisted preference. `PreferenceChip` is a span; editing is an explicit
+`Not rated` is quiet, unboxed text without an icon. It means no explicit value
+and is never an eighth picker option or persisted preference. `PreferenceChip` is a span; editing is an explicit
 `PreferenceControl` button with a separate 44px target and contextual name. No
 inferred, ranking or experience value is promoted to a direct preference chip.
 
@@ -103,6 +103,15 @@ closes and restores trigger focus without a duplicate write, timestamp or
 revision. Clear remains a separate action with version-safe Undo. Optional
 `What do these ratings mean?` help changes no records. Item and Modifier Value
 ratings remain independent; Modifier Groups have no rating chips.
+
+Item names have a flexible area with a readable basis. Rating and Refine actions
+stay together and move below the name as a unit when space is tight. The Refine
+slot is reserved even on rows without modifiers so rating controls stay aligned.
+Supporting search text spans the row below.
+
+Refine uses text for the Item title, Modifier Group headings and Modifier Value
+labels; the structural icons are omitted to reduce repetition. Rating-state icons,
+functional controls and Experience meanings retain their contextual roles.
 
 Catalog vocabulary is also registered centrally: Item Square Dot, Modifier Group
 Brackets, Modifier Value Tag, Category Layout Grid, Subject Shape (provisional),

@@ -9,7 +9,6 @@
 .kp-rating:hover,
 .kp-rating:focus-visible {
   background: #f0d3e70d;
-  border-color: #f0d3e735;
   color: var(--kp-pink);
 }
 .kp-save-status {
@@ -108,9 +107,10 @@
 }
 .kp-preference-chip > span { min-width: 0; overflow-wrap: anywhere; }
 .kp-preference-chip[data-preference] { background: #520e254d; color: #f0d3e7; }
+.kp-preference-chip:not([data-preference]) { border: 0; border-radius: 0; background: transparent; padding: 4px 0; color: var(--kp-muted, #b7adc5); }
 .kp-preference-chip[data-preference="Hard Limit"] { border-color: #efb9d0; background: #520e25; font-weight: 650; }
 .kp-rating { appearance: none; border: 1px solid transparent; border-radius: 8px; background: transparent; color: inherit; display: inline-flex; align-items: center; justify-content: flex-end; min-height: 44px; min-width: 44px; padding: 2px 3px; }
-.kp-rating:hover .kp-preference-chip, .kp-rating[aria-expanded="true"] .kp-preference-chip { border-color: #f0d3e7; background: #520e2570; }
+.kp-rating:hover .kp-preference-chip[data-preference], .kp-rating[aria-expanded="true"] .kp-preference-chip[data-preference] { border-color: #f0d3e7; background: #520e2570; }
 .kp-rating:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 2px; }
 
 /* Anchored dialog at every width; a narrow viewport never turns it into a sheet. */
