@@ -96,7 +96,9 @@ it("keeps Tried and Comfort independent of rating and makes Tried reversible", a
   const tried = document.querySelector<HTMLInputElement>('.cc-experience input')!;
   expect(tried.checked).toBe(false); click(tried);
   expect(button("Comfortable").getAttribute("aria-pressed")).toBe("true");
-  click(button("Undo")); expect(tried.checked).toBe(false);
+  expect(button("Undo")).toBeNull();
+  // Reversible in place without a toast; unrelated comfort/rating stays put.
+  click(tried); expect(tried.checked).toBe(false);
   expect(button("Comfortable").getAttribute("aria-pressed")).toBe("true");
   expect(button("Collars overall: Hard Limit. Change rating")).toBeTruthy();
 });
