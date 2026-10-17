@@ -6,7 +6,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { UiLabPage } from "./UiLabPage";
 import { labPath, parseLabRoute } from "./LabNavigation";
 import { ViewErrorBoundary } from "../../components/ui/ViewErrorBoundary";
-import { compareRoute, quizHomeRoute, rewardsToolsRandomizerRoute, rewardsToolsRecipesRoute, sceneBuilderRoute } from "../../app/routes";
+import { compareRoute, rewardsToolsRandomizerRoute, rewardsToolsRecipesRoute, sceneBuilderRoute } from "../../app/routes";
 import { createUiLabServices as makeUiLabServices } from "./services/createUiLabServices";
 import { illustrativeReferenceData as labReferenceData } from "./services/fixtures";
 import { ratingKey, type AppServices } from "../../services/contracts";
@@ -124,7 +124,7 @@ it('preserves ranked Catalog search and confirmed service records across routed 
 it('keeps the existing quizzes discoverable in V2 without turning them into dismissible suggestions',async()=>{
   await mount('/ui-lab/discover');
   const quizzes=document.querySelector<HTMLAnchorElement>('.lab-discover-cards a[aria-label="Quizzes"]');
-  expect(quizzes?.getAttribute('href')).toBe('#'+quizHomeRoute.path);
+  expect(quizzes?.getAttribute('href')).toBe('#'+labPath("Quizzes"));
   click(button('Manage Suggestions'));
   expect(document.body.textContent).not.toContain('Quizzes');
   click(button('Discover'));
@@ -132,18 +132,18 @@ it('keeps the existing quizzes discoverable in V2 without turning them into dism
   expect(document.querySelector('.lab-discover-cards a[aria-label="Quizzes"]')).not.toBeNull();
   click(button('Open full menu'));
   click(button('Quizzes'));
-  expect(route()).toBe(quizHomeRoute.path);
+  expect(route()).toBe(labPath("Quizzes"));
 });
 
 it('keeps one canonical quiz route accessible from Home and Profile without extra top-level tabs',async()=>{
   await mount('/ui-lab/home');
   expect([...document.querySelectorAll('.ui-lab-app-bottom button')]).toHaveLength(5);
   expect(document.querySelectorAll('.lab-home-cards > .ui-lab-app-tile')).toHaveLength(4);
-  expect(document.querySelector('.lab-home-cards a[href="#'+quizHomeRoute.path+'"]')?.textContent).toContain('Explore quizzes');
+  expect(document.querySelector('.lab-home-cards a[href="#'+labPath("Quizzes")+'"]')?.textContent).toContain('Explore quizzes');
   click(button('Profile'));
-  expect(document.querySelector('.lab-profile-cards a[href="#'+quizHomeRoute.path+'"]')?.textContent).toContain('Build your profile with quizzes');
+  expect(document.querySelector('.lab-profile-cards a[href="#'+labPath("Quizzes")+'"]')?.textContent).toContain('Build your profile with quizzes');
   click(button('Open full menu'));
   expect(document.querySelector('.ui-lab-menu-links button')?.textContent).not.toBe('Quizzes');
   click(button('Quizzes'));
-  expect(route()).toBe(quizHomeRoute.path);
+  expect(route()).toBe(labPath("Quizzes"));
 });
