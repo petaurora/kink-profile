@@ -4,6 +4,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useParams,
 } from "react-router-dom";
 import { CatalogRoute } from "../features/catalog/CatalogRoute";
 import { shouldOpenCatalogBrowse } from "../features/catalog/catalogRouteState";
@@ -11,8 +12,7 @@ import { CompareRoute } from "../features/comparison/CompareRoute";
 import { CurationRoute } from "../features/curation/CurationRoute";
 import { HubPage } from "../features/hub/HubPage";
 import { ProfileRoute } from "../features/profile/ProfileRoute";
-import { QuizHomePage } from "../features/quizzes/QuizHomePage";
-import { QuizRoutePage } from "../features/quizzes/QuizRoutePage";
+import { labPath } from "../features/ui-lab/LabNavigation";
 import { RewardsCatalogRoute } from "../features/rewards/RewardsCatalogRoute";
 import { RewardsRoute } from "../features/rewards/RewardsRoute";
 import { RewardsToolsRoute } from "../features/rewards/RewardsToolsRoute";
@@ -63,6 +63,14 @@ function KinkCatalogEntryRoute() {
   return <Navigate to={rankingRoute.path} replace />;
 }
 
+function LegacyQuizRedirect({ view }: { view?: "Question" | "Results" }) {
+  const { quizId } = useParams();
+  return <Navigate
+    to={view ? labPath("Quizzes", view, quizId ? { id: quizId } : undefined) : labPath("Quizzes")}
+    replace
+  />;
+}
+
 export function RoutedApplication() {
   return (
     <Routes>
@@ -77,7 +85,7 @@ export function RoutedApplication() {
       <Route element={<AppShell />}>
         <Route path={hubRoute.path} element={<HubPage />} />
         <Route path={profileRoute.path} element={<ProfileRoute />} />
-        <Route path={quizHomeRoute.path} element={<QuizHomePage />} />
+        <Route path={quizHomeRoute.path} element={<LegacyQuizRedirect />} />
 
         <Route path={catalogRoute.path} element={<KinkCatalogEntryRoute />} />
         <Route path={rankingRoute.path} element={<CatalogRoute view="rank" />} />
@@ -111,11 +119,11 @@ export function RoutedApplication() {
         <Route path={settingsRoute.path} element={<SettingsRoute />} />
         <Route
           path={quizRoute.path}
-          element={<QuizRoutePage mode="quiz" />}
+          element={<LegacyQuizRedirect view="Question" />}
         />
         <Route
           path={quizResultsRoute.path}
-          element={<QuizRoutePage mode="results" />}
+          element={<LegacyQuizRedirect view="Results" />}
         />
 
         <Route
