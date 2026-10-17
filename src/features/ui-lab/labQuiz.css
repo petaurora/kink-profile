@@ -78,3 +78,42 @@
  .ui-lab .lab-quiz-next-grid button{min-height:126px}
 }
 @media(prefers-reduced-motion:reduce){.ui-lab .lab-quiz-card{transition:none}.ui-lab .lab-quiz-card:hover{transform:none}}
+
+/* Quiz UX Decision 9: subtle truthful progress, skip navigation without a modal. */
+.ui-lab .lab-quiz-run-guidance {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #e8c5da;
+}
+.ui-lab .lab-quiz-run-guidance span:last-child:not(:first-child) {
+  color: #b6a7c6;
+}
+.ui-lab .lab-quiz-run-header .lab-quiz-skip-note {
+  color: #a99db9;
+  font-size: 11px;
+  margin: 0;
+  line-height: 1.5;
+}
+.ui-lab .lab-quiz-run-actions .lab-quiz-review-link {
+  border-color: transparent;
+  background: transparent;
+  color: #e7aecf;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding-inline: 8px;
+}
+.ui-lab .lab-quiz-run-actions .lab-quiz-review-link:hover {
+  color: #ffe2f1;
+  background: #35203e;
+}
+@media(max-width:700px) {
+  .ui-lab .lab-quiz-run-guidance { align-items: flex-start; }
+  .ui-lab .lab-quiz-run-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .ui-lab .lab-quiz-run-actions button { min-height: 44px; }
+  .ui-lab .lab-quiz-run-actions .lab-quiz-review-link { text-align: center; }
+}
