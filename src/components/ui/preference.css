@@ -111,7 +111,7 @@
 .kp-rating:hover .kp-preference-chip > span { text-decoration: underline; text-underline-offset: 3px; }
 .kp-rating:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 2px; }
 
-/* Anchored dialog at every width; a narrow viewport never turns it into a sheet. */
+/* Stable floating frame: centered on phones and anchored on desktop. */
 .kp-preference-popover.kp-modal-layer { display: block; padding: 0; }
 .kp-preference-popover .kp-modal-panel.kp-preference-panel {
   position: fixed; display: flex; flex-direction: column; gap: 10px;
@@ -125,7 +125,7 @@
 .kp-preference-panel .kp-sheet-header h3 { margin-bottom: 0; font-size: 18px; }
 .kp-preference-panel .kp-sheet-header small { display: block; overflow-wrap: anywhere; }
 .kp-preference-panel .kp-keyboard-hint { flex: none; font-size: 11px; margin: 0; line-height: 1.4; }
-.kp-preference-scroll { min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-gutter: stable; padding: 3px; }
+.kp-preference-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-gutter: stable; padding: 3px; }
 .kp-preference-options { display: flex; flex-direction: column; gap: 4px; }
 .kp-preference-options button {
   display: flex; align-items: center; gap: 10px; width: 100%;

@@ -111,16 +111,13 @@ export function PreferenceSheet({
   const expanded = helpOpen ?? showHelp;
   const [focusIndex, setFocusIndex] = useState(Math.max(0, options.indexOf(value || "")));
   const choicesRef = useRef<HTMLDivElement>(null);
-  const revealedSelection = useRef<string | null>(null);
   const position = useAnchoredPanel(open, anchor);
   useEffect(() => setFocusIndex(Math.max(0, options.indexOf(value || ""))), [label, open, value, options]);
   useLayoutEffect(() => {
-    if (!open) { revealedSelection.current = null; return; }
-    if (position.panelStyle.visibility !== "visible" || revealedSelection.current === label) return;
+    if (!open || position.panelStyle.visibility !== "visible") return;
     const selected = choicesRef.current?.querySelector<HTMLElement>('[aria-pressed="true"]');
     const scroll = choicesRef.current?.parentElement;
     if (!selected || !scroll) return;
-    revealedSelection.current = label;
     const row = selected.getBoundingClientRect(), viewport = scroll.getBoundingClientRect();
     if (row.bottom > viewport.bottom) scroll.scrollTop += row.bottom - viewport.bottom;
     else if (row.top < viewport.top) scroll.scrollTop -= viewport.top - row.top;
