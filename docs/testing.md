@@ -17,6 +17,8 @@ npx playwright install --with-deps chromium webkit
 npm run test:e2e
 ```
 
+The `pretest:e2e` hook generates reference data before the test type-check, so a
+fresh checkout does not depend on a previous build or unit-test run.
 Playwright type-checks its configuration and tests, builds the application, and
 starts Vite preview on `127.0.0.1:4173`. The build uses
 `/kink-profile/pr-0/` and preview storage namespace `0`, exercising nested asset
