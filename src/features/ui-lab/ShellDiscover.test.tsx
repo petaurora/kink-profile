@@ -6,7 +6,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { UiLabPage } from "./UiLabPage";
 import { labPath, parseLabRoute } from "./LabNavigation";
 import { ViewErrorBoundary } from "../../components/ui/ViewErrorBoundary";
-import { compareRoute, rewardsToolsRandomizerRoute, rewardsToolsRecipesRoute, sceneBuilderRoute } from "../../app/routes";
+import { compareRoute, quizHomeRoute, rewardsToolsRandomizerRoute, rewardsToolsRecipesRoute, sceneBuilderRoute } from "../../app/routes";
 import { createUiLabServices as makeUiLabServices } from "./services/createUiLabServices";
 import { illustrativeReferenceData as labReferenceData } from "./services/fixtures";
 import { ratingKey, type AppServices } from "../../services/contracts";
@@ -119,4 +119,19 @@ it('preserves ranked Catalog search and confirmed service records across routed 
   click(button('Profile'));click(button('Your profile'));expect(document.querySelector('.lab-records')?.textContent).toContain('Aftercare');expect(document.querySelector('.lab-records')?.textContent).toContain('Love');
   expect(write).toHaveBeenCalledWith({kind:'item',itemId:'aftercare'},'Love');const snapshot=adapter.services.preferences.getSnapshot();await flush(0);expect((await snapshot).ratings[ratingKey({kind:'item',itemId:'aftercare'})]).toBe('Love');
   act(()=>navigate('/ui-lab/catalog/kinks'));expect((document.querySelector('[aria-label="Search Items in kinks"]') as HTMLInputElement).value).toBe('ca');expect(button('Aftercare overall: Love. Change rating')).toBeTruthy();
+});
+
+it('keeps the existing quizzes discoverable in V2 without turning them into dismissible suggestions',async()=>{
+  await mount('/ui-lab/discover');
+  const quizzes=document.querySelector<HTMLAnchorElement>('.lab-discover-cards a[aria-label="Quizzes"]');
+  expect(quizzes?.getAttribute('href')).toBe('#'+quizHomeRoute.path);
+  click(button('Manage Suggestions'));
+  expect(document.body.textContent).not.toContain('Quizzes');
+  click(button('Discover'));
+  click(button('Dismiss Reflect on your interests'));
+  expect(document.querySelector('.lab-discover-cards a[aria-label="Quizzes"]')).not.toBeNull();
+  click(button('Open full menu'));
+  click(button('Discover'));
+  click(button('Quizzes'));
+  expect(route()).toBe(quizHomeRoute.path);
 });
