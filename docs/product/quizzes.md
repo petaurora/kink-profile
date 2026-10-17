@@ -384,6 +384,12 @@ Derived results can be recalculated from stored authoritative answers against cu
 
 The current Roles & Headspaces quiz is version 5 because its derived taxonomy/composition changed while retaining compatible stored answer identity.
 
+## Quiz-screen lifecycle — approved UX Decision 8 (October 16, 2026)
+
+Quiz Home, the V2 question runner, and quiz results offer **Retake** after a completed attempt and **Continue retake** while its replacement attempt is unfinished. Quiz screens do **not** offer Reset this quiz, Start Over, Discard Draft, or Delete Quiz History. The previous established result remains authoritative until a new full attempt completes, and a draft is never silently cleared.
+
+This is a quiz-screen presentation decision. Profile-level data management, backup/restore, and their broader deletion semantics are separate features covered below; these underlying capabilities are not changed by hiding quiz-specific reset buttons.
+
 ## Reset and backup lifecycle
 
 Quiz progress is an authoritative profile source and participates in profile management:
