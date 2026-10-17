@@ -1,3 +1,4 @@
+import type { DiscoveryTheme } from "./Serendipity";
 import { createContext, useContext, useState, type ReactNode } from "react";
 
 export const reflection = {
@@ -10,6 +11,9 @@ export type Attempt = {
 };
 function useDiscoverState() {
   const [dismissed,setDismissed]=useState<string[]>([]);
+  const [seenTopics,setSeenTopics]=useState<string[]>([]);
+  const [theme,setTheme]=useState<DiscoveryTheme|null>(null);
+  const noteTopic=(id:string)=>setSeenTopics(previous=>previous.includes(id)?previous:[...previous,id]);
   const [attempts,setAttempts]=useState<Attempt[]>([]);
   const start=(previousAttemptId?:string)=>{
     const id=crypto.randomUUID();
@@ -19,7 +23,7 @@ function useDiscoverState() {
   const update=(id:string,field:string,value:string)=>setAttempts(previous=>previous.map(attempt=>attempt.id===id&&attempt.status==="draft"?{...attempt,answers:{...attempt.answers,[field]:value},updatedAt:new Date().toISOString()}:attempt));
   const complete=(id:string)=>setAttempts(previous=>previous.map(attempt=>attempt.id===id&&attempt.status==="draft"?{...attempt,status:"complete",answers:{...attempt.answers},completedAt:new Date().toISOString(),updatedAt:new Date().toISOString()}:attempt));
   const setStep=(id:string,step:number)=>setAttempts(previous=>previous.map(attempt=>attempt.id===id&&attempt.status==="draft"?{...attempt,step:Math.max(0,Math.min(reflection.prompts.length-1,step))}:attempt));
-  return {dismissed,attempts,start,update,complete,setStep,dismiss:(id:string)=>setDismissed(previous=>previous.includes(id)?previous:[...previous,id]),restore:(id:string)=>setDismissed(previous=>previous.filter(value=>value!==id)),resetDismissals:()=>setDismissed([]),remove:(id:string)=>setAttempts(previous=>previous.filter(attempt=>attempt.id!==id))};
+  return {dismissed,seenTopics,noteTopic,theme,setTheme,attempts,start,update,complete,setStep,dismiss:(id:string)=>setDismissed(previous=>previous.includes(id)?previous:[...previous,id]),restore:(id:string)=>setDismissed(previous=>previous.filter(value=>value!==id)),resetDismissals:()=>setDismissed([]),remove:(id:string)=>setAttempts(previous=>previous.filter(attempt=>attempt.id!==id))};
 }
 type Session=ReturnType<typeof useDiscoverState>;
 const DiscoverContext=createContext<Session|null>(null);
