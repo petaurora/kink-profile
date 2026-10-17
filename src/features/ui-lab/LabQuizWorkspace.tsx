@@ -136,8 +136,7 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
   }, [wide, index]);
 
   if (state.state === "complete") {
-    go("Quizzes", "Results", {id:quiz.id});
-    return null;
+    return <p>This quiz is complete. <button type="button" onClick={() => go("Quizzes", "Results", {id:quiz.id})}>View results</button></p>;
   }
   function answer(questionId: string, questionIndex: number, choice: number) {
     const next = answerQuizQuestion(quiz, profile, questionId, choice);
