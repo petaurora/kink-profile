@@ -149,3 +149,41 @@ it("keeps missing results from inventing scores or changing stored answers", () 
   expect(container.textContent).toContain("No completed results");
   expect(loadProfile().quizzes[quiz.id]).toBeUndefined();
 });
+
+it("offers Retake only and keeps completed results authoritative until the retake finishes", () => {
+  const profile = createEmptyProfile();
+  profile.quizzes[quiz.id] = {
+    quizVersion: quiz.version,
+    completedAt: "2026-10-16T04:00:00Z",
+    answers: Object.fromEntries(quiz.questionIds.map(id => [id, 3])),
+  };
+  saveProfile(profile);
+  const completed = loadProfile().quizzes[quiz.id]!;
+  mount(labPath("Quizzes", "Results", { id: quiz.id }));
+  const controls = container.querySelector<HTMLElement>(".lab-quiz-result-controls")!;
+  expect(controls).not.toBeNull();
+  const buttons = [...controls.querySelectorAll<HTMLButtonElement>("button")];
+  expect(buttons).toHaveLength(1);
+  expect(buttons[0].textContent).toBe("Retake this quiz");
+  expect(container.textContent).not.toMatch(/Reset this quiz|Delete Quiz History|Discard Draft|Start over/i);
+  click(buttons[0]);
+  expect(path()).toBe("/ui-lab/quizzes/question");
+  expect(container.querySelector(".lab-quiz-runner")).not.toBeNull();
+  const saved = loadProfile().quizzes[quiz.id]!;
+  expect(saved.answers).toEqual(completed.answers);
+  expect(saved.completedAt).toBe(completed.completedAt);
+  expect(saved.retake).toBeDefined();
+  expect(saved.retake?.answers).toEqual({});
+  click([...container.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")].find(btn => btn.textContent?.includes("Save & exit"))!);
+  expect(path()).toBe("/ui-lab/quizzes");
+  expect(container.querySelector<HTMLButtonElement>(`[aria-label^="${quiz.title}: Continue retake"]`)).not.toBeNull();
+  expect(loadProfile().quizzes[quiz.id]?.answers).toEqual(completed.answers);
+  expect(loadProfile().quizzes[quiz.id]?.retake).toBeDefined();
+});
+
+it("never presents quiz deletion or reset actions on the native landing or runner", () => {
+  mount();
+  expect(container.textContent).not.toMatch(/Reset this quiz|Delete Quiz History|Discard Draft|Start over/i);
+  click(container.querySelector<HTMLButtonElement>(`[aria-label^="${quiz.title}: Explore quiz"]`)!);
+  expect(container.textContent).not.toMatch(/Reset this quiz|Delete Quiz History|Discard Draft|Start over/i);
+});
