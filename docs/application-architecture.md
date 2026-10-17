@@ -108,7 +108,8 @@ src/
   app/          browser routing and app-wide shell/navigation
   components/   genuinely shared UI components
   features/     route- or feature-owned UI and route adapters
-  lib/          domain behavior, persistence, scoring, transformations
+  lib/          reusable domain behavior, scoring, transformations, compatibility exports
+  services/     typed async operations, shared domain commands, local adapters
   data/         canonical/generated product data and quiz definitions
   styles/       global theme and legacy compatibility styles
 ```
@@ -243,3 +244,8 @@ and initial records. LabRecordsProvider remains its sole mutable record coordina
 and sends preference/concept/experience edits through typed services, preserving
 independent fields, guarded Undo and recovery. The local adapter confirms changes
 in memory; production routes/storage remain separate. See [Application Services](app-services.md).
+
+Quiz/Discover V2 consumers also use injected async services. Production persistence
+implementations are isolated under `services/local/legacy` behind compatibility
+exports; those production consumers remain synchronous. See [backend/service
+boundaries](backend-service-boundaries.md) for the audited ownership map.
