@@ -127,13 +127,15 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
     return () => window.removeEventListener("resize", update);
   }, []);
   useEffect(() => {
-    if (focused.current) return;
-    const heading = container.current?.querySelector<HTMLElement>("[data-resume-question]");
+    // On the first visit, focus the earliest unanswered question (which may
+    // be the middle card). On Back/Next, focus the newly shown question group.
+    const focusIndex = focused.current ? (wide ? start : index) : resumeIndex.current;
+    const heading = container.current?.querySelector<HTMLElement>(`[data-quiz-question-index="${focusIndex}"]`);
     if (heading) {
       focused.current = true;
       heading.focus({preventScroll:true});
     }
-  }, [wide, index]);
+  }, [wide, index, start]);
 
   if (state.state === "complete") {
     return <p>This quiz is complete. <button type="button" onClick={() => go("Quizzes", "Results", {id:quiz.id})}>View results</button></p>;
@@ -164,7 +166,7 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
         {visible.map(({q,i}) => (
           <article className="lab-quiz-question" key={q.id}>
             <span className="lab-quiz-question-meta">Question {i + 1} · {quiz.shortTitle}</span>
-            <h2 tabIndex={-1} data-resume-question={i === resumeIndex.current ? "" : undefined}>{q.prompt}</h2>
+            <h2 tabIndex={-1} data-quiz-question-index={i}>{q.prompt}</h2>
             <div className="lab-quiz-options" role="group" aria-label={`Answer question ${i+1}`}>
               {answerOptions.map(option => (
                 <button key={option.value} type="button"
