@@ -115,7 +115,7 @@ it("reveals failed modifiers from the collapsed parent and retries the current v
   expect(document.querySelector('[aria-label="Collars: Modifier save failed. Reveal issue"]')).toBeNull();
 });
 
-it("keeps Experienced independent of rating and makes its unboxed toggle reversible", () => {
+it("keeps Experienced independent of rating and reverses its unboxed toggle without a toast", () => {
   mount(); rate("Collars overall: Not rated. Change rating", "Hard Limit"); refine();
   const tried = button("Collars: Experienced");
   expect(tried.getAttribute("aria-pressed")).toBe("false");
@@ -127,7 +127,10 @@ it("keeps Experienced independent of rating and makes its unboxed toggle reversi
   expect(tried.textContent).toBe("Experienced");
   expect(tried.querySelector(".kp-icon")).not.toBeNull();
   expect(recorded().values["collars:overall"]).toBe("Hard Limit");
-  click(button("Undo")); expect(tried.getAttribute("aria-pressed")).toBe("false");
+  expect(document.querySelector('[aria-label="Dismiss notification"]')).toBeNull();
+  click(tried); expect(tried.getAttribute("aria-pressed")).toBe("false");
+  expect(recorded().values["experience:collars:tried"]).toBeUndefined();
+  expect(document.querySelector('[aria-label="Dismiss notification"]')).toBeNull();
   const rating = document.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-rating')!;
   click(rating); click(button("Like"));
   expect(recorded().values["collars:overall"]).toBe("Like");
@@ -151,17 +154,6 @@ it("opens no-modifier Refine and its title picker without creating records throu
   click(trigger); key("Tab"); key("Enter");
   expect(recorded().revisions).toHaveLength(1);
   expect(document.activeElement).toBe(trigger);
-});
-
-it("restores a cleared Experienced marker and protects a newer edit from an older Undo", async () => {
-  mount(); refine();
-  const tried = button("Collars: Experienced");
-  click(tried); click(button("Dismiss notification")); await advance(150);
-  click(tried); expect(tried.getAttribute("aria-pressed")).toBe("false");
-  click(button("Undo")); expect(tried.getAttribute("aria-pressed")).toBe("true"); await advance(150);
-  click(tried); click(tried); click(button("Undo"));
-  expect(tried.getAttribute("aria-pressed")).toBe("true");
-  expect(recorded().values["collars:overall"]).toBeUndefined();
 });
 
 it("preserves latest pending edits and revisions across feature remounts", async () => {

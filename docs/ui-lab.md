@@ -26,7 +26,8 @@ without modifiers. Compact Catalog rows keep only preference and Refine.
 
 Unmarked Experienced means no affirmative record. It edits the existing `tried`
 field without renaming or migrating data, and remains independent of preference,
-offers version-safe Undo and shows save feedback with Retry. Explanation and the
+is reversed by toggling again without a toast, and shows save feedback with Retry.
+Preference Clear retains version-safe Undo. Explanation and the
 latest Tried edit remain in the optional About experience disclosure in scrolling
 content. Edit timestamps are not dates of participation; opening controls or
 disclosures creates no record. The native toggle button exposes its stable,

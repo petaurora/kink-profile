@@ -136,7 +136,7 @@ skill. Refine presents the existing `tried` field as Experienced using a native
 toggle button with a stable
 contextual name, `aria-pressed`, Enter/Space support, a 44px target and the shared
 visible keyboard-focus ring. Both states omit borders and fills; a second activation
-clears the marker. Comfort Heart Handshake remains registered for
+clears the marker without a toast or Undo notification. Comfort Heart Handshake remains registered for
 future use.
 `InlineSaveStatus.showSavedIcon` defaults to true. Experienced sets it to false
 to avoid duplicating its selected-state badge; live save announcements, the saving
