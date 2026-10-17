@@ -1,0 +1,161 @@
+import { AppIcon } from "../../components/ui/AppIcon";
+import { useEffect, useId, useRef, useState } from "react";
+import "./catalogComposite.css";
+import { useToasts } from "../../components/ui/ToastProvider";
+import { ModalLayer } from "../../components/ui/ModalLayer";
+import { PreferenceControl, PreferenceSheet, SheetHeader } from "../../components/ui/PreferenceControl";
+import { ItemRow } from "../../components/ui/ItemRow";
+import { DisclosureSection } from "../../components/ui/DisclosureSection";
+import { SearchField } from "../../components/ui/SearchField";
+import { SearchRow, SearchFilterButton, SearchChips, SortGroupSheet, type SortBy, type GroupBy } from "../../components/ui/SearchControls";
+import { ItemExperience, ItemExperienceDetails } from "./ItemExperience";
+import { useLabRecords, useLabViewState } from "./LabRecords";
+import { preferenceChoices, PreferenceReference } from "./PreferenceVocabulary";
+
+import { useLabCatalog, type Item } from "./LabCatalog";
+import { getItemSearchMatch, normalizeSearch, searchMatchExplanation } from "../../services/search";
+const choices=preferenceChoices;
+export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,subject,compact=false,collection="kinks"}:{collection?:"kinks"|"rewards";initialItem?:string;initialGroup?:string;initialValue?:string;subject?:string;compact?:boolean;onClose?:()=>void}){
+ const {data,items,catalogSeeds,classifications:classification}=useLabCatalog();
+ const searchId=useId(), resultsId=useId(), categoryPrefix=useId();
+ const panelId=(name:string)=>categoryPrefix+"-"+encodeURIComponent(name);
+ const isRewards=collection==="rewards";
+ const viewScope=`${collection}:${subject||"all"}:${compact?"compact":"list"}`;
+ const [mine,setMine]=useLabViewState(viewScope,"mine",false),[reward,setReward]=useLabViewState(viewScope,"reward",false),[punishment,setPunishment]=useLabViewState(viewScope,"punishment",false);
+ const [states,setStates]=useLabViewState<string[]>(viewScope,"answers",[]),[filtersOpen,setFiltersOpen]=useState(false);
+ const [indicatorInfo,setIndicatorInfo]=useState<{id:string;kind:"reward"|"punishment"}|null>(null);
+ const indicatorOrigin=useRef<HTMLButtonElement|null>(null);
+ const [sortBy,setSortBy]=useLabViewState<SortBy>(viewScope,"sort","default");
+ const [groupBy,setGroupBy]=useLabViewState<GroupBy>(viewScope,"group","none");
+ const [orderOpen,setOrderOpen]=useState(false);
+ const [query,setQuery]=useLabViewState(viewScope,"query","");
+ const [debouncedQuery,setDebouncedQuery]=useState(query);
+ const searching=Boolean(normalizeSearch(debouncedQuery));
+ const effectiveSort=!searching&&isRewards&&sortBy==="default"?"az":sortBy;
+ const clearSearch=()=>{setQuery("");setDebouncedQuery("")};
+ const [refining,setRefining]=useState<string|null>(null);
+ const [closedCategories,setClosedCategories]=useState<Record<string,boolean>>({});
+ const [groupsOpen,setGroupsOpen]=useState<Record<string,boolean>>({});
+ const records=useLabRecords();
+ const ratings=records.values as Record<string,string>;
+ const saves=records.saves;
+ const [experienceOpen,setExperienceOpen]=useState(false);
+ const [highlightTarget,setHighlightTarget]=useState<string|null>(null);
+ const [issueTarget,setIssueTarget]=useState<string|null>(null);
+ const [selector,setSelector]=useState<{id:string;label:string;parent:string;anchor:HTMLElement}|null>(null);
+
+ const [failNext,setFailNext]=useState(false);
+ const toastQueue=useToasts();
+ const root=useRef<HTMLElement>(null);
+ useEffect(()=>{const timer=setTimeout(()=>setDebouncedQuery(query),275);return()=>clearTimeout(timer)},[query]);
+ useEffect(()=>{setClosedCategories({})},[debouncedQuery,groupBy,sortBy]);
+ useEffect(()=>{if(isRewards)root.current?.scrollIntoView({block:"start"})},[isRewards,debouncedQuery,mine,reward,punishment,states]);
+ useEffect(()=>{if(!issueTarget)return;const frame=requestAnimationFrame(()=>{
+  const field=findField(issueTarget);
+  field?.scrollIntoView({block:"nearest"});
+  (field?.querySelector<HTMLButtonElement>('.kp-retry') || field?.querySelector<HTMLElement>('.kp-rating, .cc-experienced-toggle'))?.focus();
+ });return()=>cancelAnimationFrame(frame)},[issueTarget,refining,groupsOpen]);
+
+
+ useEffect(()=>{
+  if(!initialItem)return;
+  const found=items.find(x=>x.name===initialItem);
+  if(!found)return;
+  openRefine(found.id);
+  if(initialGroup&&initialValue){
+   setGroupsOpen({[found.id+":"+initialGroup]:true});setIssueTarget(null);
+   setHighlightTarget(found.id+":"+initialGroup+":"+initialValue);
+  }
+ },[initialItem,initialGroup,initialValue]);
+ useEffect(()=>{
+  if(!highlightTarget)return;
+  const frame=requestAnimationFrame(()=>{
+   const field=findField(highlightTarget);
+   field?.scrollIntoView({block:"nearest"});field?.querySelector<HTMLButtonElement>('.kp-rating')?.focus();
+  });
+  const timer=setTimeout(()=>setHighlightTarget(null),1800);
+  return()=>{cancelAnimationFrame(frame);clearTimeout(timer)};
+ },[highlightTarget,refining]);
+ function findField(id:string){
+  const fields=[...(root.current?.querySelectorAll<HTMLElement>('[data-field-id]')??[])].filter(el=>el.dataset.fieldId===id);
+  return fields.find(field=>field.closest(".cc-refine-sheet"))??fields[0];
+ }
+ function openRefine(id:string){setGroupsOpen({});setExperienceOpen(false);setIssueTarget(null);setRefining(id);const error=Object.keys(saves).find(k=>(k.startsWith(id+":")||k.startsWith(`experience:${id}:`))&&saves[k]==="failed");if(error)revealIssue(error)}
+ function revealIssue(target:string){const item=items.find(x=>target.startsWith(x.id+":")||target.startsWith(`experience:${x.id}:`));if(!item)return;setRefining(item.id);const group=item.groups.find(g=>target.startsWith(item.id+":"+g.name+":"));if(group)setGroupsOpen(previous=>({...previous,[item.id+":"+group.name]:true}));setIssueTarget(target)}
+ function closeRefine(){setRefining(null);onClose?.()}
+ function closeSelector(){setSelector(null)}
+ const notify=toastQueue.notify;
+ function commit(id:string,value:string|undefined){
+  const previous=records.values[id];const version=records.commit(id,value,failNext);setFailNext(false);
+  if(value===undefined&&previous!==undefined)notify({message:"Rating cleared",kind:"info",actionLabel:"Undo",duration:5000,onAction:()=>{
+   if(!records.restore(id,version,previous))notify({message:"A newer edit was kept",kind:"info"});
+  }});
+ }
+ function retry(id:string){
+  const focused=document.activeElement?.getAttribute("aria-label")?.startsWith("Retry saving");
+  records.retry(id);
+  if(focused)requestAnimationFrame(()=>findField(id)?.querySelector<HTMLElement>('.kp-rating, .cc-experienced-toggle')?.focus());
+ }
+ function ratingButton(id:string,label:string,parent:string){
+  return <span data-field-id={id}><PreferenceControl value={ratings[id]} label={label} saveState={saves[id]} onRetry={()=>retry(id)} expanded={selector?.id===id} onActivate={event=>setSelector({id,label,parent,anchor:event.currentTarget})}/></span>;
+ }
+ const hasFilters=mine||reward||punishment||states.length>0;
+ const clearFilters=()=>{setMine(false);setReward(false);setPunishment(false);setStates([])};
+ const nativeRewards=new Set(["Praise","Privileges","Protocol","Permission Rituals","Rules","Training","Teasing","Anticipation"]);
+ const searchMatches=new Map(items.map(item=>[item.id,getItemSearchMatch(item,debouncedQuery)]));
+ const matching=items.filter(x=>{
+ if(!isRewards)return (!subject||data.subjects.find(s=>s.name===subject)?.itemIds.includes(x.id)||x.name===subject)&&searchMatches.get(x.id)!==null;
+ const cl=classification[x.id]??{reward:"unanswered",punishment:"unanswered"};
+ if(!nativeRewards.has(x.name)&&cl.reward!=="yes"&&cl.punishment!=="yes")return false;
+ if(mine&&cl.reward!=="yes"&&cl.punishment!=="yes")return false;
+ const dims=reward||punishment?[...(reward?["reward" as const]:[]),...(punishment?["punishment" as const]:[])]:(["reward","punishment"] as const);
+ if((reward||punishment||states.length>0)&&!dims.some(d=>states.length?states.includes(cl[d]):cl[d]==="yes"))return false;
+ return searchMatches.get(x.id)!==null;
+ }).sort((a,b)=>effectiveSort==="az"?a.name.localeCompare(b.name):effectiveSort==="za"?b.name.localeCompare(a.name):searching?(searchMatches.get(b.id)?.score??0)-(searchMatches.get(a.id)?.score??0)||a.name.localeCompare(b.name):0);
+ // Grouping matters only when this result set contains multiple categories.
+ const groupingAvailable=!compact&&!subject&&new Set(matching.map(x=>x.category)).size>1;
+ const effectiveGroupBy=groupingAvailable?groupBy:"none";
+ const sections=compact||effectiveGroupBy==="none"?[["All Items",matching] as const]:Object.keys(catalogSeeds).filter(category=>matching.some(x=>x.category===category)).map(category=>[category,matching.filter(x=>x.category===category)] as const);
+ useEffect(()=>{if(!indicatorInfo)return;const dismiss=(e:KeyboardEvent)=>{if(e.key==="Escape"){setIndicatorInfo(null);indicatorOrigin.current?.focus()}};const outside=(e:Event)=>{if(!root.current?.querySelector(".cc-rp-popover:not([hidden])")?.parentElement?.contains(e.target as Node))setIndicatorInfo(null)};document.addEventListener("keydown",dismiss);document.addEventListener("pointerdown",outside);document.addEventListener("focusin",outside);return()=>{document.removeEventListener("keydown",dismiss);document.removeEventListener("pointerdown",outside);document.removeEventListener("focusin",outside)}},[indicatorInfo]);
+ function renderItem(x:Item){
+  const overall=x.id+":overall";
+  const modifierKeys=Object.keys(saves).filter(k=>k.startsWith(x.id+":")&&k!==overall);
+  const ratedModifier=Object.keys(ratings).some(k=>k.startsWith(x.id+":")&&k!==overall&&ratings[k]!==undefined);
+  const refineStatus=modifierKeys.some(k=>saves[k]==="failed")?"failed":modifierKeys.some(k=>saves[k]==="saving")?"saving":undefined;
+  return <ItemRow key={x.id} name={x.name} itemId={x.id}
+   supportingText={searchMatchExplanation(searchMatches.get(x.id)??null,debouncedQuery)}
+   indicators={isRewards&&<span className="cc-rp-indicators">{(["reward","punishment"] as const).map(kind=>{const state=classification[x.id]?.[kind]??"unanswered";const open=indicatorInfo?.id===x.id&&indicatorInfo.kind===kind;const label=kind==="reward"?"Reward":"Punishment";const stateLabel=state==="yes"?"Yes":state==="no"?"No":"Unanswered";return <span className="cc-rp-indicator-anchor" key={kind}><button type="button" className={"cc-rp-indicator cc-rp-state-"+state} aria-label={x.name+": "+label+" — "+stateLabel+". View classification explanation"} aria-expanded={open} aria-controls={panelId(x.id+kind)} onClick={e=>{indicatorOrigin.current=e.currentTarget;setIndicatorInfo(open?null:{id:x.id,kind})}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{kind==="reward"?<><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-7 0-7-7-3-7 2.5 0 3 4 3 7Zm0 0c7 0 7-7 3-7-2.5 0-3 4-3 7Z"/></>:<><path d="m13 4 7 7M10 7l7 7M4 20l10-10M2 22l4-4M14 2l8 8"/></>}</svg><span aria-hidden="true">{state==="yes"?"✓":state==="no"?"✕":"?"}</span></button><span id={panelId(x.id+kind)} hidden={!open} className="cc-rp-popover" role="note" aria-label={label+" classification for "+x.name}><strong>{label} · {stateLabel}</strong><span>{state==="yes"?"You've classified this Item as a "+label.toLowerCase()+".":state==="no"?"You've marked this Item as not a "+label.toLowerCase()+".":"You haven't answered whether this Item is a "+label.toLowerCase()+"."}</span><button type="button" onClick={()=>{setIndicatorInfo(null);indicatorOrigin.current?.focus()}}>Close</button></span></span>})}</span>}
+   preference={ratingButton(overall,x.name+" overall",x.name)}
+   onRefine={()=>openRefine(x.id)} refined={ratedModifier} refineStatus={refineStatus}/>;
+ }
+ const refinedItem=items.find(x=>x.id===refining);
+ function modifierContent(x:Item){
+  const errors=Object.keys(saves).filter(k=>k.startsWith(x.id+":")&&k!==x.id+":overall"&&saves[k]==="failed");
+  const issueIndex=Math.max(0,errors.indexOf(issueTarget||""));
+  return <div className="cc-refine-content">{errors.length>0&&<div className="cc-error-summary" role="status"><span>Issue {issueIndex+1} of {errors.length} · Latest edits kept</span><button onClick={()=>errors.forEach(retry)}>Retry all</button>{errors.length>1&&<button onClick={()=>revealIssue(errors[(issueIndex+1)%errors.length])}>Next issue</button>}</div>}{x.groups.map(g=>{const gk=x.id+":"+g.name;const go=groupsOpen[gk]??false;const keys=g.values.map(v=>gk+":"+v);const status=keys.some(k=>saves[k]==="failed")?"failed":keys.some(k=>saves[k]==="saving")?"saving":undefined;return <DisclosureSection title={g.name} description={g.values.length+" options"} key={gk} open={go} status={status} onToggle={()=>{setGroupsOpen(p=>({...p,[gk]:!go}));if(!go&&status==="failed")revealIssue(keys.find(k=>saves[k]==="failed")!)}}><div className="cc-values">{g.values.map(v=><div className={"cc-value"+((issueTarget===gk+":"+v||highlightTarget===gk+":"+v)?" cc-value-highlight":"")} key={v} data-field-id={gk+":"+v}><span>{v}</span>{ratingButton(gk+":"+v,v,x.name+" / "+g.name)}</div>)}</div></DisclosureSection>})}<ItemExperienceDetails itemId={x.id} open={experienceOpen} onToggle={()=>setExperienceOpen(!experienceOpen)} records={records}/></div>
+
+ }
+ return <section className="cc" ref={root} aria-label="Interactive inline Catalog prototype">
+
+  {!compact&&<div className="cc-demo cc-demo-compact"><span>{items.length} service Items · Catalog V2 migration incomplete · Session-only saves</span><label><input type="checkbox" checked={failNext} onChange={e=>setFailNext(e.target.checked)}/> Test save failure</label></div>}
+  {Object.values(saves).includes("failed")&&<div className="cc-error-summary" role="status"><span>{Object.values(saves).filter(v=>v==="failed").length} changes not saved · Latest edits kept</span><button onClick={()=>Object.keys(saves).filter(k=>saves[k]==="failed").forEach(retry)}>Retry all</button><button onClick={()=>revealIssue(Object.keys(saves).find(k=>saves[k]==="failed")!)}>Review issues</button></div>}
+  <div className="cc-browser">{!compact&&<><label className="cc-search-label" htmlFor={searchId}>Search Items</label><SearchRow><SearchField mode="input" inputId={searchId} placeholder="Search Items…" ariaLabel={isRewards?"Search Items in rewards and punishments":"Search Items in kinks"} value={query} onChange={setQuery} onClear={clearSearch} resultsId={resultsId} /><SearchFilterButton active={sortBy!=="default"||effectiveGroupBy!=="none"} groupingAvailable={groupingAvailable} expanded={orderOpen} onClick={()=>setOrderOpen(true)}/></SearchRow>
+   {isRewards&&<SearchChips label="Reward and punishment filters" options={[{id:"mine",label:"Mine",active:mine,onClick:()=>setMine(!mine)},{id:"reward",label:"Reward",active:reward,onClick:()=>setReward(!reward)},{id:"punishment",label:"Punishment",active:punishment,onClick:()=>setPunishment(!punishment)},{id:"answers",opensDialog:true,expanded:filtersOpen,label:states.length?"Answers · "+states.length:"Answers",active:states.length>0,onClick:()=>setFiltersOpen(true)}]} clear={hasFilters?clearFilters:undefined}/>}
+    <div className="cc-toolbar cc-toolbar--compact"><span aria-live="polite" aria-atomic="true">{matching.length} {matching.length===1?"Item":"Items"}</span></div>
+   </>}<div className="cc-sections" id={resultsId} aria-busy={query!==debouncedQuery}>{sections.filter(([,list])=>list.length).map(([heading,list])=><section key={heading} className="cc-section">{heading!=="All Items"&&<h2 className="cc-category-heading"><button className="cc-section-title" aria-controls={panelId(heading)} aria-expanded={!closedCategories[heading]} onClick={()=>setClosedCategories(p=>({...p,[heading]:!p[heading]}))}><span><AppIcon name="catalogCategory" size={16} inline />{heading==="All Items"?"":heading} <small>{heading==="All Items"?"":list.length+" Items"}</small></span><AppIcon name="expand" size={18} style={{transform:closedCategories[heading]?undefined:"rotate(180deg)"}} /></button></h2>}<div id={panelId(heading)} hidden={!!closedCategories[heading]} className="cc-section-items">{!closedCategories[heading]&&list.map(renderItem)}</div></section>)}{matching.length===0&&<div className="cc-empty" ><p>No matching Items. Try another search or adjust filters.</p><div className="cc-empty-actions">{query&&<button type="button" onClick={clearSearch}>Clear search</button>}{isRewards&&hasFilters&&<button type="button" onClick={clearFilters}>Clear filters</button>}</div></div>}</div>
+  </div>
+  <ModalLayer open={isRewards&&filtersOpen} onClose={()=>setFiltersOpen(false)} label="Answer states" closeLabel="Close answer states">
+   <SheetHeader title="Answer states" context="REWARDS & PUNISHMENTS" onClose={()=>setFiltersOpen(false)} closeLabel="Close answer states"/>
+   <p className="cc-refine-intro">Filter by your classification answers</p>
+   <SearchChips label="Classification answer states" options={([["unanswered","? Unanswered"],["no","✕ No"],["yes","✓ Yes"]] as const).map(([value,label])=>({id:value,label,active:states.includes(value),onClick:()=>setStates(prev=>prev.includes(value)?prev.filter(v=>v!==value):[...prev,value])}))}/>
+   <p className="cc-rp-count">{matching.length} matching Items</p>
+  </ModalLayer>
+  <SortGroupSheet open={orderOpen} onClose={()=>setOrderOpen(false)} sort={effectiveSort} onSort={setSortBy} group={effectiveGroupBy} onGroup={setGroupBy} showGrouping={groupingAvailable} defaultSortLabel={searching?"Best matches":"Catalog order"} showDefault={!isRewards||searching}/>
+   <ModalLayer open={!!refinedItem} onClose={closeRefine} label={"Refine "+(refinedItem?.name||"")} closeLabel="Close refinement" className={selector?"cc-refine-underlay":""} panelClassName="cc-refine-sheet">
+    {refinedItem&&<><SheetHeader title={refinedItem.name} titleAccessory={<span className="cc-refine-rating">{ratingButton(refinedItem.id+":overall",refinedItem.name+" overall",refinedItem.name)}</span>} onClose={closeRefine} closeLabel="Close refinement"><ItemExperience itemId={refinedItem.id} name={refinedItem.name} records={records} onRetry={retry}/></SheetHeader>{modifierContent(refinedItem)}</>}
+   </ModalLayer>
+   {selector&&<PreferenceSheet open anchor={selector.anchor} onClose={closeSelector} label={selector.label} context={selector.parent} value={ratings[selector.id]} options={choices} onChange={value=>commit(selector.id,value)} help={<PreferenceReference/>} helpOpen={records.helpOpen} onHelpOpenChange={records.setHelpOpen} className={refinedItem?"cc-rating-over-refine":""}/>}
+
+
+ </section>
+}

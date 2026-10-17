@@ -1,0 +1,34 @@
+/* KP progress visual system — shared across legacy and V2 screens.
+   A soft, symmetrical fade frames the bar while the fill reflects the actual
+   saved progress; the style must not imply completion or fabricate values. */
+:root {
+  --kp-progress-track: #302543;
+  --kp-progress-fill-start: #8d506e;
+  --kp-progress-fill-mid: #9d7299;
+  --kp-progress-fill-end: #7585af;
+  --kp-progress-feather: 18px;
+}
+.progress-track,
+.card-progress,
+.kp-progress-track {
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--kp-progress-track);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--kp-progress-feather), #000 calc(100% - var(--kp-progress-feather)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--kp-progress-feather), #000 calc(100% - var(--kp-progress-feather)), transparent 100%);
+}
+.progress-track > span,
+.card-progress > span,
+.kp-progress-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--kp-progress-fill-start), var(--kp-progress-fill-mid) 70%, var(--kp-progress-fill-end));
+  box-shadow: 0 0 7px rgba(157, 114, 153, .26);
+  transition: width .32s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress-track > span,
+  .card-progress > span,
+  .kp-progress-track > span { transition: none; }
+}

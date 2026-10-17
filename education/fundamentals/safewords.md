@@ -3,7 +3,7 @@
 *Understanding clear stop signals, nonverbal communication, and why consent continues after a scene begins.*
 
 **Level:** Beginner  
-**Estimated reading time:** 9 minutes  
+**Estimated reading time:** 10 minutes  
 **Topics:** BDSM Fundamentals · Safewords · Consent · Communication · Scene Safety
 
 **Content note:** This article discusses consent, distress, nonverbal communication, restraint, and emotionally intense roleplay. It does not provide instructions for dangerous activities.

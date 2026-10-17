@@ -1,3 +1,4 @@
+import { appIcons } from "../../components/ui/appIcons";
 import {
   IconAdjustmentsHeart,
   IconBolt,
@@ -80,26 +81,30 @@ export function QuizCard({
   return (
     <button
       type="button"
-      className={`quiz-list-row panel quiz-state-${state}`}
+      className={`quiz-visual-card panel quiz-state-${state}`}
       onClick={() => onOpen(quiz)}
       disabled={isUnavailable}
-      aria-label={`${quiz.title}: ${action}`}
+      aria-label={`${quiz.title}: ${action}. ${meta}`}
     >
-      <span className="quiz-icon" aria-hidden="true">
-        <QuizGlyph name={quiz.icon} />
-      </span>
-
-      <span className="quiz-list-copy">
-        {quiz.eyebrow !== "Core section" && (
-          <span className="eyebrow">{quiz.eyebrow}</span>
+      <span className="quiz-visual-card-top">
+        <span className="quiz-icon" aria-hidden="true">
+          <QuizGlyph name={quiz.icon} size={27} />
+        </span>
+        {!isUnavailable && (
+          <span className="quiz-visual-card-arrow" aria-hidden="true">
+            <appIcons.details size={19} stroke={1.65} />
+          </span>
         )}
-        <strong>{quiz.title}</strong>
-        <span className="quiz-list-meta">{meta}</span>
       </span>
 
-      <span className="quiz-list-action" aria-hidden="true">
-        <span>{action}</span>
-        {!isUnavailable && <span className="quiz-list-chevron">›</span>}
+      <span className="quiz-visual-card-copy">
+        <strong>{quiz.title}</strong>
+        <span className="quiz-visual-card-description">{quiz.description}</span>
+      </span>
+
+      <span className="quiz-visual-card-footer">
+        <span className="quiz-visual-card-status">{meta}</span>
+        <span className="quiz-visual-card-action">{action}</span>
       </span>
 
       {(state === "in-progress" || state === "retake-in-progress") && (

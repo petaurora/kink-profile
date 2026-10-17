@@ -61,7 +61,12 @@ Browser Back/Forward therefore reflects route navigation rather than a parallel 
 
 ## Application shell
 
-`src/app/AppShell.tsx` wraps every route and owns application-wide concerns that must survive route transitions:
+Reusable interaction primitives live in `src/components/ui` and own their styles
+independently of feature CSS. The isolated, lazy-loaded `#/ui-lab/*` routes consume these through
+its own `ToastProvider`; this does not migrate production shell treatments. See
+[Shared UI Components](shared-ui-components.md) for module APIs and boundaries.
+
+`src/app/AppShell.tsx` wraps production routes and owns application-wide concerns that must survive route transitions. The isolated UI Lab route renders outside it:
 
 - `ProfileSettingsProvider` and persistence of profile settings
 - the legacy profile-name bridge required by remaining compatibility surfaces
@@ -230,3 +235,11 @@ When changing application architecture:
 5. Preserve storage and import/export compatibility unless a deliberate migration is part of the same change.
 6. Move ownership when it becomes clearer; do not perform folder churn solely for visual neatness.
 7. Update this document when the implemented architecture contract changes materially.
+
+## UI Lab application services
+
+The isolated v2 shell uses AppServicesProvider for async reference/search reads
+and initial records. LabRecordsProvider remains its sole mutable record coordinator
+and sends preference/concept/experience edits through typed services, preserving
+independent fields, guarded Undo and recovery. The local adapter confirms changes
+in memory; production routes/storage remain separate. See [Application Services](app-services.md).

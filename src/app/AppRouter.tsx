@@ -4,6 +4,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useParams,
 } from "react-router-dom";
 import { CatalogRoute } from "../features/catalog/CatalogRoute";
 import { shouldOpenCatalogBrowse } from "../features/catalog/catalogRouteState";
@@ -11,14 +12,16 @@ import { CompareRoute } from "../features/comparison/CompareRoute";
 import { CurationRoute } from "../features/curation/CurationRoute";
 import { HubPage } from "../features/hub/HubPage";
 import { ProfileRoute } from "../features/profile/ProfileRoute";
-import { QuizHomePage } from "../features/quizzes/QuizHomePage";
-import { QuizRoutePage } from "../features/quizzes/QuizRoutePage";
+import { labPath } from "../features/ui-lab/LabNavigation";
 import { RewardsCatalogRoute } from "../features/rewards/RewardsCatalogRoute";
 import { RewardsRoute } from "../features/rewards/RewardsRoute";
 import { RewardsToolsRoute } from "../features/rewards/RewardsToolsRoute";
 import { SceneBuilderRoute } from "../features/scenes/SceneBuilderRoute";
 import { SettingsRoute } from "../features/settings/SettingsRoute";
 import { AppShell } from "./AppShell";
+import { lazy, Suspense } from "react";
+import { KPLoading } from "../components/ui/KPLoading";
+import { LoadingPreviewGate } from "./LoadingPreviewGate";
 import {
   catalogRewardsRankingRoute,
   catalogRewardsRoute,
@@ -41,6 +44,10 @@ import {
   unknownRouteFallbackPath,
 } from "./routes";
 
+const UiLabPage = lazy(() =>
+  import("../features/ui-lab/UiLabPage").then((module) => ({ default: module.UiLabPage })),
+);
+
 function LegacyCatalogRedirect() {
   const location = useLocation();
   return <Navigate to={`${catalogRoute.path}${location.search}`} replace />;
@@ -56,13 +63,29 @@ function KinkCatalogEntryRoute() {
   return <Navigate to={rankingRoute.path} replace />;
 }
 
+function LegacyQuizRedirect({ view }: { view?: "Question" | "Results" }) {
+  const { quizId } = useParams();
+  return <Navigate
+    to={view ? labPath("Quizzes", view, quizId ? { id: quizId } : undefined) : labPath("Quizzes")}
+    replace
+  />;
+}
+
 export function RoutedApplication() {
   return (
     <Routes>
+      <Route
+        path="/ui-lab/*"
+        element={
+          <Suspense fallback={<main className="kp-loading-route"><KPLoading label="Loading UI Lab…" size={88} /></main>}>
+            <UiLabPage />
+          </Suspense>
+        }
+      />
       <Route element={<AppShell />}>
         <Route path={hubRoute.path} element={<HubPage />} />
         <Route path={profileRoute.path} element={<ProfileRoute />} />
-        <Route path={quizHomeRoute.path} element={<QuizHomePage />} />
+        <Route path={quizHomeRoute.path} element={<LegacyQuizRedirect />} />
 
         <Route path={catalogRoute.path} element={<KinkCatalogEntryRoute />} />
         <Route path={rankingRoute.path} element={<CatalogRoute view="rank" />} />
@@ -96,11 +119,11 @@ export function RoutedApplication() {
         <Route path={settingsRoute.path} element={<SettingsRoute />} />
         <Route
           path={quizRoute.path}
-          element={<QuizRoutePage mode="quiz" />}
+          element={<LegacyQuizRedirect view="Question" />}
         />
         <Route
           path={quizResultsRoute.path}
-          element={<QuizRoutePage mode="results" />}
+          element={<LegacyQuizRedirect view="Results" />}
         />
 
         <Route
@@ -115,7 +138,9 @@ export function RoutedApplication() {
 export default function AppRouter() {
   return (
     <HashRouter>
-      <RoutedApplication />
+      <LoadingPreviewGate>
+        <RoutedApplication />
+      </LoadingPreviewGate>
     </HashRouter>
   );
 }

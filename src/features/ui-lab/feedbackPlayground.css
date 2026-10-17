@@ -1,0 +1,12 @@
+.kp-feedback-playground { margin-block: 16px 24px; padding: 20px; border: 1px solid rgba(240,211,231,.2); border-radius: 18px; background: #171631; color: #f0d3e7; }
+.kp-feedback-playground h2, .kp-feedback-playground h3 { margin: 0; }
+.kp-feedback-playground > header { display: grid; gap: 7px; margin-bottom: 18px; }
+.kp-feedback-playground p { color: #bba9c4; font-size: .83rem; line-height: 1.5; margin: 0; }
+.kp-feedback-demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.kp-feedback-demo { min-width: 0; display: grid; align-content: start; gap: 16px; padding: 20px; border-radius: 14px; background: #1d1a39; border: 1px solid rgba(240,211,231,.12); }
+.kp-feedback-demo h3 { font-size: .85rem; }
+.kp-feedback-demo label { color: #d5bed0; font-size: .8rem; }
+.kp-feedback-demo input[type="range"] { accent-color: #f0d3e7; width: 100%; }
+.kp-feedback-skeleton-row { display: flex; align-items: center; gap: 13px; }
+.kp-feedback-skeleton-row > div { display: grid; gap: 8px; flex: 1; }
+@media (max-width: 680px) { .kp-feedback-demo-grid { grid-template-columns: 1fr; } .kp-feedback-demo { padding: 16px; } }

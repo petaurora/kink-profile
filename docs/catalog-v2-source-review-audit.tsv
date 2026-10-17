@@ -1,0 +1,555 @@
+# V1 source audit evidence — historical review tables plus explicit final-section/comment corrections, 2026-10-13
+# Review evidence DOES NOT imply executed migration. Empty evidence means not exact-matched to supported review table formats; it does not imply the decision is unmade.
+# Only explicit table evidence; avoid semantic inference or automatic migration based on labels.
+source_id	source_label	original_category	review_evidence_state	review_issue_ids	reviewed_outcomes
+rope-bondage	Rope bondage	Bondage & Restraint	review_table_evidence	#256	Rope bondage / Keep as Item / Rope Bondage
+shibari-kinbaku	Shibari / kinbaku	Bondage & Restraint	review_table_evidence	#256	Shibari / kinbaku / Become refinement / Rope Bondage → style = shibari/kinbaku
+rope-suspension	Rope suspension	Bondage & Restraint	review_table_evidence	#256	Rope suspension / Merge into Item + refinement / Suspension Bondage → method = rope
+partial-suspension	Partial suspension	Bondage & Restraint	review_table_evidence	#256	Partial suspension / Become refinement / Suspension Bondage → support = partial
+predicament-bondage	Predicament bondage	Bondage & Restraint	review_table_evidence	#256	Predicament bondage / Keep as Item / Predicament Bondage
+mummification	Mummification	Bondage & Restraint	review_table_evidence	#256	Mummification / Merge into Item + refinement / Encasement → method = mummification
+cuffs	Cuffs	Bondage & Restraint	review_table_evidence	#256	Cuffs / Keep as Item / Cuffs
+leather-restraints	Leather restraints	Bondage & Restraint	review_table_evidence	#256	Leather restraints / Become refinement / Restraint Gear → material = leather
+metal-restraints	Metal restraints	Bondage & Restraint	review_table_evidence	#256	Metal restraints / Become refinement / Restraint Gear → material = metal
+spread-eagle-restraint	Spread-eagle restraint	Bondage & Restraint	review_table_evidence	#256	Spread-eagle restraint / Become refinement / Bondage → configuration = spread eagle
+hogtie	Hogtie	Bondage & Restraint	review_table_evidence	#256	Hogtie / Become refinement / Bondage → configuration = hogtie
+frogtie	Frogtie	Bondage & Restraint	review_table_evidence	#256	Frogtie / Become refinement / Bondage → configuration = frogtie
+chair-bondage	Chair bondage	Bondage & Restraint	review_table_evidence	#256	Chair bondage / Become refinement / Bondage → anchor/context = chair
+bed-bondage	Bed bondage	Bondage & Restraint	review_table_evidence	#256	Bed bondage / Become refinement / Bondage → anchor/context = bed
+under-bed-restraint-system	Under-bed restraint system	Bondage & Restraint	review_table_evidence	#256	Under-bed restraint system / Become refinement / Restraint Gear → type = under-bed restraint system
+bondage-mitts	Bondage mitts	Bondage & Restraint	review_table_evidence	#256	Bondage mitts / Become refinement / Restraint Gear → type = bondage mitts
+armbinder	Armbinder	Bondage & Restraint	review_table_evidence	#256	Armbinder / Become refinement / Restraint Gear → type = armbinder
+elbow-bondage	Elbow bondage	Bondage & Restraint	review_table_evidence	#256	Elbow bondage / Become refinement / Bondage → configuration/body area = elbows
+thumb-cuffs	Thumb cuffs	Bondage & Restraint	review_table_evidence	#256	Thumb cuffs / Become refinement / Cuffs → type = thumb cuffs
+collar-to-wrist-restraint	Collar-to-wrist restraint	Bondage & Restraint	review_table_evidence	#256	Collar-to-wrist restraint / Become refinement / Bondage → configuration = collar-to-wrist
+posture-collar	Posture collar	Bondage & Restraint	review_table_evidence	#256	Posture collar / Move to another Item family / Collars → type = posture
+stocks-pillory	Stocks / pillory	Bondage & Restraint	review_table_evidence	#256	Stocks / pillory / Move to another Item family / Restraint Furniture / Structures → type = stocks/pillory
+cage-confinement	Cage confinement	Bondage & Restraint	review_table_evidence	#256	Cage confinement / Become refinement / Confinement → environment/method = cage
+small-space-confinement	Small-space confinement	Bondage & Restraint	review_table_evidence	#256	Small-space confinement / Become refinement / Confinement → space = small/enclosed
+body-bag-bondage	Body bag bondage	Bondage & Restraint	review_table_evidence	#256	Body bag bondage / Become refinement / Encasement → method = body bag
+hand-spanking	Hand spanking	Impact Play	review_table_evidence	#258	Item: Spanking / Slapping
+paddling	Paddling	Impact Play	review_table_evidence	#258	Impact Play → method = paddling; related equipment Item Paddles
+flogging	Flogging	Impact Play	review_table_evidence	#258	Impact Play → method = flogging; related equipment Item Floggers
+caning	Caning	Impact Play	review_table_evidence	#258	Impact Play → method = caning; related equipment Item Canes
+strapping	Strapping	Impact Play	review_table_evidence	#258	Impact Play → method = strapping
+crop-play	Crop play	Impact Play	review_table_evidence	#258	Impact Play → method = crop play; related equipment Item Crops
+slapper-tawse-play	Slapper / tawse play	Impact Play	review_table_evidence	#258	Impact Play → method = slapper/tawse
+wooden-spoon-play	Wooden spoon play	Impact Play	review_table_evidence	#258	Impact Play using Other Implements → wooden spoon
+hairbrush-spanking	Hairbrush spanking	Impact Play	review_table_evidence	#258	Impact Play using Other Implements → hairbrush
+rubber-paddle	Rubber paddle	Impact Play	review_table_evidence	#258	Paddles → material = rubber/silicone
+thuddy-impact	Thuddy impact	Impact Play	review_table_evidence	#258	Impact Play → sensation = thuddy
+stingy-impact	Stingy impact	Impact Play	review_table_evidence	#258	Impact Play → sensation = stingy
+rhythmic-impact	Rhythmic impact	Impact Play	review_table_evidence	#258	Item: Rhythmic Impact
+counting-impacts	Counting impacts	Impact Play	review_table_evidence	#258	Item: Counting Impacts
+targeted-impact	Targeted impact	Impact Play	review_table_evidence	#258	Absorbed by Impact Play → target/body-area refinements
+impact-warm-up	Impact warm-up	Impact Play	review_table_evidence	#258	Item: Impact Warm-up
+impact-endurance	Impact endurance	Impact Play	review_table_evidence	#258	Item: Impact Endurance
+punishment-style-impact	Punishment-style impact	Impact Play	review_table_evidence	#258	Deferred: Rewards & Punishments taxonomy
+pinching	Pinching	Pain & Sensation	needs_manual_review		
+scratching	Scratching	Pain & Sensation	needs_manual_review		
+biting	Biting	Pain & Sensation	needs_manual_review		
+hair-pulling	Hair pulling	Pain & Sensation	needs_manual_review		
+clothespin-play	Clothespin play	Pain & Sensation	needs_manual_review		
+nipple-clamps	Nipple clamps	Pain & Sensation	needs_manual_review		
+body-clamps	Body clamps	Pain & Sensation	needs_manual_review		
+wartenberg-wheel	Wartenberg wheel	Pain & Sensation	needs_manual_review		
+wax-play	Wax play	Pain & Sensation	needs_manual_review		
+cupping	Cupping	Pain & Sensation	needs_manual_review		
+suction-play	Suction play	Pain & Sensation	needs_manual_review		
+abrasive-texture-play	Abrasive texture play	Pain & Sensation	needs_manual_review		
+rough-body-handling	Rough body handling	Pain & Sensation	final_decision_evidence	#270 — Final correction: Biting and Rough Body Handling	Exclude: Rough Body Handling removed
+pressure-play	Pressure play	Pain & Sensation	needs_manual_review		
+pain-endurance	Pain endurance	Pain & Sensation	needs_manual_review		
+pain-processing	Pain processing	Pain & Sensation	needs_manual_review		
+masochism	Masochism	Pain & Sensation	needs_manual_review		
+sadism	Sadism	Pain & Sensation	needs_manual_review		
+blindfolding	Blindfolding	Sensory Play	needs_manual_review		
+headphone-audio-isolation	Headphone / audio isolation	Sensory Play	needs_manual_review		
+earplug-sensory-reduction	Earplug sensory reduction	Sensory Play	needs_manual_review		
+sensory-deprivation	Sensory deprivation	Sensory Play	needs_manual_review		
+sensory-overload	Sensory overload	Sensory Play	needs_manual_review		
+texture-play	Texture play	Sensory Play	needs_manual_review		
+feather-play	Feather play	Sensory Play	needs_manual_review		
+soft-fur-sensation	Soft-fur sensation	Sensory Play	needs_manual_review		
+silk-satin-sensation	Silk / satin sensation	Sensory Play	needs_manual_review		
+leather-fetish-sensation	Leather fetish / sensation	Sensory Play	needs_manual_review		
+latex-fetish	Latex fetish	Sensory Play	needs_manual_review		
+rubber-fetish	Rubber fetish	Sensory Play	needs_manual_review		
+neoprene-fetish	Neoprene fetish	Sensory Play	needs_manual_review		
+compression-clothing	Compression clothing	Sensory Play	needs_manual_review		
+wet-clothing	Wet clothing	Sensory Play	needs_manual_review		
+cold-water-play	Cold water play	Sensory Play	needs_manual_review		
+warm-water-play	Warm water play	Sensory Play	needs_manual_review		
+temperature-contrast	Temperature contrast	Sensory Play	needs_manual_review		
+ice-play	Ice play	Sensory Play	needs_manual_review		
+tickling	Tickling	Sensory Play	needs_manual_review		
+tickle-torture	Tickle torture	Sensory Play	needs_manual_review		
+water-over-face-aversion-play	Water-over-face aversion play	Sensory Play	needs_manual_review		
+asmr-kink	ASMR kink	Sensory Play	needs_manual_review		
+whispering	Whispering	Sensory Play	needs_manual_review		
+music-control	Music control	Sensory Play	needs_manual_review		
+electrical-stimulation	Electrical stimulation	Electrical & Specialty	needs_manual_review		
+tens-style-sensation-play	TENS-style sensation play	Electrical & Specialty	needs_manual_review		
+violet-wand-play	Violet wand play	Electrical & Specialty	needs_manual_review		
+electro-tickle-sensation	Electro-tickle sensation	Electrical & Specialty	needs_manual_review		
+edging	Edging	Orgasm & Arousal Control	needs_manual_review		
+orgasm-denial	Orgasm denial	Orgasm & Arousal Control	needs_manual_review		
+orgasm-control	Orgasm control	Orgasm & Arousal Control	needs_manual_review		
+forced-orgasm-fantasy	Forced orgasm fantasy	Orgasm & Arousal Control	needs_manual_review		
+overstimulation	Overstimulation	Orgasm & Arousal Control	needs_manual_review		
+ruined-orgasm	Ruined orgasm	Orgasm & Arousal Control	needs_manual_review		
+tease-and-denial	Tease and denial	Orgasm & Arousal Control	needs_manual_review		
+hands-off-rule	Hands-off rule	Orgasm & Arousal Control	needs_manual_review		
+permission-to-orgasm-protocol	Permission-to-orgasm protocol	Orgasm & Arousal Control	needs_manual_review		
+countdown-to-release	Countdown-to-release	Orgasm & Arousal Control	needs_manual_review		
+chastity-device-play	Chastity device play	Orgasm & Arousal Control	needs_manual_review		
+honor-system-chastity	Honor-system chastity	Orgasm & Arousal Control	needs_manual_review		
+begging	Begging	Orgasm & Arousal Control	needs_manual_review		
+teasing	Teasing	Orgasm & Arousal Control	needs_manual_review		
+protocol	Protocol	Protocol, Obedience & Service	review_table_evidence	#264	Browse/search umbrella / alias only
+high-protocol	High protocol	Protocol, Obedience & Service	review_table_evidence	#264	Item: High Protocol
+low-protocol	Low protocol	Protocol, Obedience & Service	review_table_evidence	#264	Item: Low Protocol
+obedience	Obedience	Protocol, Obedience & Service	review_table_evidence	#264	Item: Obedience
+command-play	Command play	Protocol, Obedience & Service	review_table_evidence	#264	Item: Command Play
+permission-protocols	Permission protocols	Protocol, Obedience & Service	review_table_evidence	#264	Permission / Decision Control
+position-protocols	Position protocols	Protocol, Obedience & Service	review_table_evidence	#264	Defer to Endurance & Positioning
+kneeling-protocol	Kneeling protocol	Protocol, Obedience & Service	review_table_evidence	#264	Defer to Endurance & Positioning
+speech-protocol	Speech protocol	Protocol, Obedience & Service	review_table_evidence	#264	Shared refinement under Low Protocol + High Protocol
+honorifics-titles	Honorifics / titles	Protocol, Obedience & Service	review_table_evidence	#264	Item: Honorifics / Titles
+eye-contact-protocol	Eye-contact protocol	Protocol, Obedience & Service	review_table_evidence	#264	Shared refinement under Low Protocol + High Protocol
+posture-training	Posture training	Protocol, Obedience & Service	review_table_evidence	#264	Defer to Endurance & Positioning
+etiquette-training	Etiquette training	Protocol, Obedience & Service	review_table_evidence	#264	Shared refinement under Low Protocol + High Protocol
+inspection	Inspection	Protocol, Obedience & Service	review_table_evidence	#264	Item: Inspection
+presentation	Presentation	Protocol, Obedience & Service	review_table_evidence	#264	Item: Presentation
+service-submission	Service submission	Protocol, Obedience & Service	review_table_evidence	#264	Item: Service
+domestic-service	Domestic service	Protocol, Obedience & Service	review_table_evidence	#264	Service → Domestic service
+personal-assistant-service	Personal assistant service	Protocol, Obedience & Service	review_table_evidence	#264	Service → Personal assistant service
+bootblacking	Bootblacking	Protocol, Obedience & Service	review_table_evidence	#264	Service → Bootblacking
+foot-service	Foot service	Protocol, Obedience & Service	review_table_evidence	#264	Service → Foot service
+serving-drinks	Serving drinks	Protocol, Obedience & Service	review_table_evidence	#264	Service → Food / drink service
+serving-meals	Serving meals	Protocol, Obedience & Service	review_table_evidence	#264	Service → Food / drink service
+task-assignment	Task assignment	Protocol, Obedience & Service	review_table_evidence	#264	Item: Task Assignment
+timed-task-protocol	Timed task protocol	Protocol, Obedience & Service	review_table_evidence	#264	Task Assignment → Timed
+precision-task-protocol	Precision task protocol	Protocol, Obedience & Service	review_table_evidence	#264	Task Assignment → Precision / exactness
+fetching	Fetching	Protocol, Obedience & Service	review_table_evidence	#264	Service → Fetching
+waiting-position	Waiting position	Protocol, Obedience & Service	review_table_evidence	#264	Defer to Endurance & Positioning
+dominance	Dominance	Power Exchange & Roles	review_table_evidence	#263	Item: Dominance
+submission	Submission	Power Exchange & Roles	review_table_evidence	#263	Item: Submission
+master-slave-dynamic	Master/slave dynamic	Power Exchange & Roles	review_table_evidence	#263	Item: Master / Slave Dynamic → roles: Master, Slave
+owner-property-dynamic	Owner/property dynamic	Power Exchange & Roles	review_table_evidence	#263	Split semantics: Ownership + Objectification → property framing
+daddy-babygirl-dynamic	Daddy/babygirl dynamic	Power Exchange & Roles	review_table_evidence	#263	Caregiver / Little-Middle Dynamic; title wording excluded from taxonomy
+mommy-little-dynamic	Mommy/little dynamic	Power Exchange & Roles	review_table_evidence	#263	Caregiver / Little-Middle Dynamic; title wording excluded from taxonomy
+caretaker-little-dynamic	Caretaker/little dynamic	Power Exchange & Roles	review_table_evidence	#263	Caregiver / Little-Middle Dynamic
+pet-owner-dynamic	Pet/Owner dynamic	Power Exchange & Roles	review_table_evidence	#263	Owner / Pet Dynamic → roles: Owner/Handler, Pet
+handler-pet-dynamic	Handler/pet dynamic	Power Exchange & Roles	review_table_evidence	#263	Owner / Pet Dynamic → roles: Owner/Handler, Pet
+total-power-exchange-fantasy	Total power exchange fantasy	Power Exchange & Roles	review_table_evidence	#263	Item: Total Power Exchange (TPE)
+24-7-power-exchange	24/7 power exchange	Power Exchange & Roles	review_table_evidence	#263	TPE → scope = 24/7
+weekend-temporary-tpe	Weekend / temporary TPE	Power Exchange & Roles	review_table_evidence	#263	TPE → scope = temporary / bounded
+switching	Switching	Power Exchange & Roles	review_table_evidence	#263	Item: Switching
+bratting	Bratting	Power Exchange & Roles	review_table_evidence	#263	Brat Tamer / Brat Dynamic → role = Brat
+brat-taming	Brat taming	Power Exchange & Roles	review_table_evidence	#263	Brat Tamer / Brat Dynamic → role = Tamer
+training-dynamic	Training dynamic	Power Exchange & Roles	review_table_evidence	#263	Exclude
+ownership-ritual	Ownership ritual	Power Exchange & Roles	review_table_evidence	#263	Ownership → ritual / symbolic expression
+protective-dominance	Protective dominance	Power Exchange & Roles	review_table_evidence	#263	Directional dynamic-style preference: Protective Dominance
+gentle-dominance	Gentle dominance	Power Exchange & Roles	review_table_evidence	#263	Directional dynamic-style preference: Gentle Dominance
+soft-submission	Soft submission	Power Exchange & Roles	review_table_evidence	#263	Directional dynamic-style preference: Soft / Affectionate Submission
+disciplined-submission	Disciplined submission	Power Exchange & Roles	review_table_evidence	#263	Directional dynamic-style preference: Disciplined / Accountability-Focused Submission
+devotional-submission	Devotional submission	Power Exchange & Roles	review_table_evidence	#263	Directional dynamic-style preference: Devotional Submission
+worship-kink	Worship kink	Power Exchange & Roles	final_decision_evidence	#263 — final Worship placement APPROVED correction	Split/defer relational reverence to Devotion & Worship Dynamic and bodily reverence to Body Worship; generic Worship removed
+collaring	Collaring	Collars, Symbols & Marking	review_table_evidence	#257	Keep as Item / Collaring
+day-collar	Day collar	Collars, Symbols & Marking	review_table_evidence	#257	Become refinement / Collars → use/context = day/everyday
+play-collar	Play collar	Collars, Symbols & Marking	review_table_evidence	#257	Become refinement / Collars → use/context = play/scene
+leash-play	Leash play	Collars, Symbols & Marking	review_table_evidence	#257	Keep separate Item / related / Leash Play; relate to Collars + Pet Play
+harness-play	Harness play	Collars, Symbols & Marking	review_table_evidence	#257	Move to equipment review / Harnesses / Harness Play; not a Collars subtype
+temporary-marking	Temporary marking	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Merge into Item: Marking
+hickeys-love-bites	Hickeys / love bites	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Marking → Type → Hickeys
+bruise-marking	Bruise marking	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Marking → Type → Bruise marking
+writing-on-skin	Writing on skin	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Merge into Item: Body Writing
+stamps-temporary-tattoos	Stamps / temporary tattoos	Collars, Symbols & Marking	final_decision_evidence	#268 comment 5982685387 — Approval 2026-10-04	Marking → Type → Stamps / temporary tattoos
+body-writing	Body writing	Collars, Symbols & Marking	review_table_evidence	#259	Item: Body Writing
+praise-kink	Praise kink	Praise, Degradation & Humiliation	review_table_evidence	#261	Deferred: Rewards & Punishments taxonomy
+good-girl-good-boy-praise	Good-girl / good-boy praise	Praise, Degradation & Humiliation	review_table_evidence	#261	Exclude
+competence-praise	Competence praise	Praise, Degradation & Humiliation	review_table_evidence	#261	Exclude
+degradation	Degradation	Praise, Degradation & Humiliation	review_table_evidence	#259	Item: Degradation
+verbal-humiliation	Verbal humiliation	Praise, Degradation & Humiliation	review_table_evidence	#259	Humiliation Play → modality = verbal
+objectification	Objectification	Praise, Degradation & Humiliation	review_table_evidence	#259	Item: Objectification
+use-object-fantasy	Use-object fantasy	Praise, Degradation & Humiliation	review_table_evidence	#259	Objectification → context/fantasy = being used as an object / for another's purpose
+embarrassment-play	Embarrassment play	Praise, Degradation & Humiliation	review_table_evidence	#259	Item: Embarrassment Play
+private-humiliation	Private humiliation	Praise, Degradation & Humiliation	review_table_evidence	#259	Humiliation Play → context = private
+public-style-humiliation-fantasy	Public-style humiliation fantasy	Praise, Degradation & Humiliation	review_table_evidence	#259	Humiliation Play → context = public-style fantasy
+small-task-humiliation	Small-task humiliation	Praise, Degradation & Humiliation	review_table_evidence	#259	Embarrassment Play → task/behavior = silly / awkward / intentionally undignified
+formal-correction	Formal correction	Praise, Degradation & Humiliation	needs_manual_review		
+scolding	Scolding	Praise, Degradation & Humiliation	needs_manual_review		
+lecture-disciplinary-talk	Lecture / disciplinary talk	Praise, Degradation & Humiliation	needs_manual_review		
+corner-time	Corner time	Praise, Degradation & Humiliation	needs_manual_review		
+lines-writing-punishment	Lines / writing punishment	Praise, Degradation & Humiliation	needs_manual_review		
+name-calling	Name-calling	Praise, Degradation & Humiliation	review_table_evidence	#259	Item: Name-calling
+mockery	Mockery	Praise, Degradation & Humiliation	review_table_evidence	#259	Item: Mockery
+performance-evaluation	Performance evaluation	Praise, Degradation & Humiliation	review_table_evidence	#259	Rating / Evaluation → target = performance/task
+pet-play	Pet play	Pet & Animal Roleplay	review_table_evidence	#263	Item: Pet Roleplay
+puppy-play	Puppy play	Pet & Animal Roleplay	review_table_evidence	#263	Pet Roleplay → Puppy
+kitten-play	Kitten play	Pet & Animal Roleplay	review_table_evidence	#263	Pet Roleplay → Kitten
+pony-play	Pony play	Pet & Animal Roleplay	review_table_evidence	#263	Pet Roleplay → Pony
+bunny-play	Bunny play	Pet & Animal Roleplay	review_table_evidence	#263	Pet Roleplay → Bunny
+fox-play	Fox play	Pet & Animal Roleplay	review_table_evidence	#263	Pet Roleplay → Fox
+pet-training	Pet training	Pet & Animal Roleplay	review_table_evidence	#263	Item: Pet Training
+pet-praise	Pet praise	Pet & Animal Roleplay	review_table_evidence	#261; #263	Exclude || Exclude
+pet-punishment	Pet punishment	Pet & Animal Roleplay	review_table_evidence	#263	Deferred: Rewards & Punishments / discipline
+feeding-bowl-roleplay	Feeding bowl roleplay	Pet & Animal Roleplay	review_table_evidence	#263	Pet Roleplay → Feeding bowl
+leash-walking	Leash walking	Pet & Animal Roleplay	review_table_evidence	#263	Item: Leash Play
+crawling-all-fours-play	Crawling / all-fours play	Pet & Animal Roleplay	review_table_evidence	#263	Pet Roleplay → Crawling / all-fours
+pet-bed-crate-roleplay	Pet bed / crate roleplay	Pet & Animal Roleplay	review_table_evidence	#263	Pet Roleplay → Pet bed + Crate / kennel
+tails-ears-gear	Tails / ears gear	Pet & Animal Roleplay	review_table_evidence	#263	Pet Roleplay → Tails / ears
+primal-play	Primal play	Primal Play	review_table_evidence	#266	Item: Primal Play
+primal-hunter	Primal hunter	Primal Play	review_table_evidence	#266	Primal Play → Hunter / Predator
+primal-prey	Primal prey	Primal Play	review_table_evidence	#266	Primal Play → Prey
+chase-play	Chase play	Primal Play	review_table_evidence	#266	Item: Chase Play
+wrestling	Wrestling	Primal Play	review_table_evidence	#266	Struggle Play → Wrestling
+struggle-play	Struggle play	Primal Play	review_table_evidence	#266	Item: Struggle Play
+growling-animalistic-vocalization	Growling / animalistic vocalization	Primal Play	review_table_evidence	#266	Item: Growling / Animalistic Vocalization
+scenting	Scenting	Primal Play	review_table_evidence	#266	Item: Scenting
+biting-in-primal-play	Biting in primal play	Primal Play	review_table_evidence	#266	Item: Biting + relation to Primal Play
+pinning	Pinning	Primal Play	review_table_evidence	#266	Struggle Play → Pinning
+exhibitionism	Exhibitionism	Exhibitionism & Voyeurism	review_table_evidence	#267	Item: Exhibitionism
+voyeurism	Voyeurism	Exhibitionism & Voyeurism	review_table_evidence	#267	Item: Voyeurism
+consensual-audience-play	Consensual audience play	Exhibitionism & Voyeurism	review_table_evidence	#267	Exhibitionism / Voyeurism → Consenting audience, depending direction
+mirror-play	Mirror play	Exhibitionism & Voyeurism	review_table_evidence	#267	Item: Mirror Play
+being-watched-by-partner	Being watched by partner	Exhibitionism & Voyeurism	review_table_evidence	#267	Exhibitionism → Partner
+watching-partner-perform	Watching partner perform	Exhibitionism & Voyeurism	review_table_evidence	#267	Voyeurism → Partner
+erotic-photography	Erotic photography	Exhibitionism & Voyeurism	review_table_evidence	#267	Exhibitionism / Voyeurism → Photography
+erotic-video-recording	Erotic video recording	Exhibitionism & Voyeurism	review_table_evidence	#267	Exhibitionism / Voyeurism → Video recording
+remote-camera-play	Remote camera play	Exhibitionism & Voyeurism	review_table_evidence	#267	Exhibitionism / Voyeurism → Live / remote camera
+public-risk-fantasy	Public-risk fantasy	Exhibitionism & Voyeurism	review_table_evidence	#267	Item: Public-Risk Fantasy
+roleplay	Roleplay	Roleplay & Fantasy	review_table_evidence	#260	Item: Roleplay
+teacher-student-roleplay	Teacher/student roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = teacher/student
+boss-employee-roleplay	Boss/employee roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = boss/employee
+doctor-patient-roleplay	Doctor/patient roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = doctor/patient
+guard-prisoner-roleplay	Guard/prisoner roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = guard/prisoner
+interrogation-roleplay	Interrogation roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = interrogation
+kidnap-fantasy	Kidnap fantasy	Roleplay & Fantasy	review_table_evidence	#260	CNC → Scenario = kidnap/abduction
+stranger-roleplay	Stranger roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = stranger/first meeting
+royalty-servant-roleplay	Royalty/servant roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = royalty/servant
+knight-captive-roleplay	Knight/captive roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = knight/captive
+villain-hero-roleplay	Villain/hero roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = villain/hero
+trainer-trainee-roleplay	Trainer/trainee roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = trainer/trainee
+owner-property-roleplay	Owner/property roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = owner/property
+ageplay	Ageplay	Roleplay & Fantasy	review_table_evidence	#260	Item: Ageplay
+adult-baby-diaper-lover-abdl	Adult baby / diaper lover (ABDL)	Roleplay & Fantasy	review_table_evidence	#260	Item: ABDL
+historical-roleplay	Historical roleplay	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = historical
+fantasy-creature-roleplay	Fantasy creature roleplay	Roleplay & Fantasy	review_table_evidence	#260	Item/family: Creature / Nonhuman Fantasy
+vampire-play	Vampire play	Roleplay & Fantasy	review_table_evidence	#260	Creature / Nonhuman Fantasy → type = vampire
+monster-fantasy	Monster fantasy	Roleplay & Fantasy	review_table_evidence	#260	Creature / Nonhuman Fantasy → type = monster
+rescue-fantasy	Rescue fantasy	Roleplay & Fantasy	review_table_evidence	#260	Roleplay → Scenario = rescue
+consensual-non-consent-cnc	Consensual non-consent (CNC)	Psychological & CNC	needs_manual_review		
+resistance-play	Resistance play	Psychological & CNC	needs_manual_review		
+fear-play	Fear play	Psychological & CNC	needs_manual_review		
+threat-fantasy	Threat fantasy	Psychological & CNC	review_table_evidence	#260	CNC → Scenario = threat/coercion
+anticipation-play	Anticipation play	Psychological & CNC	needs_manual_review		
+uncertainty-play	Uncertainty play	Psychological & CNC	needs_manual_review		
+mindfuck	Mindfuck	Psychological & CNC	needs_manual_review		
+fake-out	Fake-out	Psychological & CNC	needs_manual_review		
+interrogation	Interrogation	Psychological & CNC	needs_manual_review		
+confession-play	Confession play	Psychological & CNC	needs_manual_review		
+forced-choice-game	Forced-choice game	Psychological & CNC	needs_manual_review		
+decision-denial	Decision denial	Psychological & CNC	needs_manual_review		
+decision-burden	Decision burden	Psychological & CNC	needs_manual_review		
+information-control	Information control	Psychological & CNC	needs_manual_review		
+waiting-delayed-permission	Waiting / delayed permission	Psychological & CNC	needs_manual_review		
+capture-fantasy	Capture fantasy	Psychological & CNC	review_table_evidence	#260	CNC → Scenario = capture
+ownership-language	Ownership language	Psychological & CNC	needs_manual_review		
+lingerie-fetish	Lingerie fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+stockings-fetish	Stockings fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+pantyhose-fetish	Pantyhose fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+uniform-fetish	Uniform fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+suit-fetish	Suit fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+high-heels-fetish	High heels fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+boot-fetish	Boot fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+glove-fetish	Glove fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+corset-fetish	Corset fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+mask-fetish	Mask fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+hood-fetish	Hood fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+catsuit-bodysuit-fetish	Catsuit / bodysuit fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+latex-catsuit	Latex catsuit	Clothing, Gear & Fetishwear	needs_manual_review		
+leather-gear	Leather gear	Clothing, Gear & Fetishwear	needs_manual_review		
+crossdressing	Crossdressing	Clothing, Gear & Fetishwear	needs_manual_review		
+forced-feminization-fantasy	Forced-feminization fantasy	Clothing, Gear & Fetishwear	needs_manual_review		
+forced-masculinization-fantasy	Forced-masculinization fantasy	Clothing, Gear & Fetishwear	needs_manual_review		
+clothing-control	Clothing control	Clothing, Gear & Fetishwear	needs_manual_review		
+underwear-control	Underwear control	Clothing, Gear & Fetishwear	needs_manual_review		
+nudity-control	Nudity control	Clothing, Gear & Fetishwear	needs_manual_review		
+choker-fetish	Choker fetish	Clothing, Gear & Fetishwear	review_table_evidence	#257	Defer to clothing/fetishwear batch / May relate to Collars/neckwear but is not automatically merged
+fishnet-fetish	Fishnet fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+pvc-vinyl-fetish	PVC / vinyl fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+denim-fetish	Denim fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+sportswear-fetish	Sportswear fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+foot-fetish	Foot fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+shoe-fetish	Shoe fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+leg-fetish	Leg fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+thigh-fetish	Thigh fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+hand-fetish	Hand fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+armpit-fetish	Armpit fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+hair-fetish	Hair fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+body-hair-fetish	Body-hair fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+muscle-fetish	Muscle fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+belly-fetish	Belly fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+breast-fetish	Breast fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+butt-fetish	Butt fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+neck-fetish	Neck fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+back-fetish	Back fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+voice-fetish	Voice fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+scent-fetish	Scent fetish	Body-Part & Sensory Fetishes	review_table_evidence	#266	Merge into Scenting
+glasses-fetish	Glasses fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+freckles-fetish	Freckles fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+tattoo-fetish	Tattoo fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+piercing-fetish	Piercing fetish	Body-Part & Sensory Fetishes	needs_manual_review		
+foot-worship	Foot worship	Body-Part & Sensory Fetishes	needs_manual_review		
+body-worship	Body worship	Body-Part & Sensory Fetishes	needs_manual_review		
+messy-play	Messy play	Mess & Body-Fluid Adjacent	needs_manual_review		
+food-texture-play	Food texture play	Mess & Body-Fluid Adjacent	needs_manual_review		
+sticky-sensation-play	Sticky sensation play	Mess & Body-Fluid Adjacent	needs_manual_review		
+mud-play	Mud play	Mess & Body-Fluid Adjacent	needs_manual_review		
+paint-body-paint-play	Paint / body-paint play	Mess & Body-Fluid Adjacent	needs_manual_review		
+spit-kink	Spit kink	Mess & Body-Fluid Adjacent	needs_manual_review		
+sweat-kink	Sweat kink	Mess & Body-Fluid Adjacent	needs_manual_review		
+medical-roleplay	Medical roleplay	Medical & Clinical Kinks	needs_manual_review		
+examination-roleplay	Examination roleplay	Medical & Clinical Kinks	needs_manual_review		
+clinical-restraint-aesthetic	Clinical restraint aesthetic	Medical & Clinical Kinks	needs_manual_review		
+temperature-taking-roleplay	Temperature-taking roleplay	Medical & Clinical Kinks	needs_manual_review		
+bandage-patient-roleplay	Bandage / patient roleplay	Medical & Clinical Kinks	needs_manual_review		
+needle-play	Needle play	Medical & Clinical Kinks	needs_manual_review		
+staple-piercing-play	Staple / piercing play	Medical & Clinical Kinks	needs_manual_review		
+breath-play-fantasy	Breath-play fantasy	Edge Play / High-Risk Specialty	needs_manual_review		
+choking-fantasy	Choking fantasy	Edge Play / High-Risk Specialty	needs_manual_review		
+suffocation-fantasy	Suffocation fantasy	Edge Play / High-Risk Specialty	needs_manual_review		
+knife-play	Knife play	Edge Play / High-Risk Specialty	needs_manual_review		
+blade-sensation	Blade sensation	Edge Play / High-Risk Specialty	needs_manual_review		
+fire-play	Fire play	Edge Play / High-Risk Specialty	needs_manual_review		
+scarification	Scarification	Edge Play / High-Risk Specialty	needs_manual_review		
+forced-exercise	Forced exercise	Endurance & Positioning	needs_manual_review		
+wall-sit	Wall sit	Endurance & Positioning	needs_manual_review		
+squat-hold	Squat hold	Endurance & Positioning	needs_manual_review		
+plank-hold	Plank hold	Endurance & Positioning	needs_manual_review		
+kneeling-endurance	Kneeling endurance	Endurance & Positioning	needs_manual_review		
+standing-still	Standing still	Endurance & Positioning	needs_manual_review		
+hands-behind-back-posture	Hands-behind-back posture	Endurance & Positioning	needs_manual_review		
+corner-posture	Corner posture	Endurance & Positioning	needs_manual_review		
+stress-position-play	Stress-position play	Endurance & Positioning	needs_manual_review		
+balance-challenge	Balance challenge	Endurance & Positioning	needs_manual_review		
+stillness-challenge	Stillness challenge	Endurance & Positioning	needs_manual_review		
+cognitive-task-play	Cognitive task play	Cognitive & Competence Play	needs_manual_review		
+timed-research-assignment	Timed research assignment	Cognitive & Competence Play	needs_manual_review		
+presentation-task	Presentation task	Cognitive & Competence Play	needs_manual_review		
+oral-examination	Oral examination	Cognitive & Competence Play	needs_manual_review		
+closed-book-quiz	Closed-book quiz	Cognitive & Competence Play	needs_manual_review		
+precision-writing-task	Precision writing task	Cognitive & Competence Play	needs_manual_review		
+lines-under-distraction	Lines under distraction	Cognitive & Competence Play	needs_manual_review		
+limited-question-task	Limited-question task	Cognitive & Competence Play	needs_manual_review		
+no-revision-challenge	No-revision challenge	Cognitive & Competence Play	needs_manual_review		
+good-enough-stopping-rule	Good-enough stopping rule	Cognitive & Competence Play	needs_manual_review		
+inefficient-method-rule	Inefficient-method rule	Cognitive & Competence Play	needs_manual_review		
+sequential-only-rule	Sequential-only rule	Cognitive & Competence Play	needs_manual_review		
+wait-for-next-step-protocol	Wait-for-next-step protocol	Cognitive & Competence Play	needs_manual_review		
+decision-memo	Decision memo	Cognitive & Competence Play	needs_manual_review		
+defend-the-opposite-exercise	Defend-the-opposite exercise	Cognitive & Competence Play	needs_manual_review		
+explain-it-simply-challenge	Explain-it-simply challenge	Cognitive & Competence Play	needs_manual_review		
+asymmetry-play	Asymmetry play	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+one-sock-asymmetry	One-sock asymmetry	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+clothing-asymmetry	Clothing asymmetry	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+one-sided-sensation	One-sided sensation	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+incomplete-task-play	Incomplete-task play	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+broken-symmetry-arrangement	Broken-symmetry arrangement	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+delayed-correction	Delayed correction	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+sticky-hands-delay	Sticky-hands delay	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+wet-sock-aversion	Wet-sock aversion	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+wrinkled-fabric-aversion	Wrinkled-fabric aversion	Asymmetry, Incompleteness & Irritation	needs_manual_review		
+pampering-kink	Pampering kink	Caretaking & Reward-Oriented	needs_manual_review		
+massage-as-reward	Massage as reward	Caretaking & Reward-Oriented	needs_manual_review		
+hair-brushing-grooming	Hair brushing / grooming	Caretaking & Reward-Oriented	needs_manual_review		
+bathing-washing-service	Bathing / washing service	Caretaking & Reward-Oriented	needs_manual_review		
+feeding-being-fed	Feeding / being fed	Caretaking & Reward-Oriented	needs_manual_review		
+blanket-nest-preparation	Blanket / nest preparation	Caretaking & Reward-Oriented	needs_manual_review		
+being-dressed	Being dressed	Caretaking & Reward-Oriented	needs_manual_review		
+aftercare-ritual	Aftercare ritual	Caretaking & Reward-Oriented	needs_manual_review		
+service-receiving	Service receiving	Caretaking & Reward-Oriented	needs_manual_review		
+spoiling-princess-treatment	Spoiling / princess treatment	Caretaking & Reward-Oriented	needs_manual_review		
+praise-ritual	Praise ritual	Caretaking & Reward-Oriented	review_table_evidence	#261	Exclude
+reward-ritual	Reward ritual	Caretaking & Reward-Oriented	needs_manual_review		
+rigger	Rigger	Miscellaneous & Meta-Kink	needs_manual_review		
+rope-bunny	Rope bunny	Miscellaneous & Meta-Kink	needs_manual_review		
+top	Top	Miscellaneous & Meta-Kink	needs_manual_review		
+bottom	Bottom	Miscellaneous & Meta-Kink	needs_manual_review		
+service-top	Service top	Miscellaneous & Meta-Kink	needs_manual_review		
+service-submissive	Service submissive	Miscellaneous & Meta-Kink	needs_manual_review		
+sensory-seeker	Sensory seeker	Miscellaneous & Meta-Kink	needs_manual_review		
+experimentalism	Experimentalism	Miscellaneous & Meta-Kink	needs_manual_review		
+gear-enthusiasm	Gear enthusiasm	Miscellaneous & Meta-Kink	needs_manual_review		
+scene-ritual	Scene ritual	Miscellaneous & Meta-Kink	needs_manual_review		
+safeword-ritual	Safeword ritual	Miscellaneous & Meta-Kink	needs_manual_review		
+reward-punishment-system	Reward/punishment system	Miscellaneous & Meta-Kink	needs_manual_review		
+demerit-point-system	Demerit / point system	Miscellaneous & Meta-Kink	needs_manual_review		
+randomizer-play	Randomizer play	Miscellaneous & Meta-Kink	needs_manual_review		
+wheel-of-fate-play	Wheel-of-fate play	Miscellaneous & Meta-Kink	needs_manual_review		
+rule-making	Rule-making	Miscellaneous & Meta-Kink	needs_manual_review		
+rule-following	Rule-following	Miscellaneous & Meta-Kink	needs_manual_review		
+gamification	Gamification	Miscellaneous & Meta-Kink	needs_manual_review		
+dice-chance-play	Dice / chance play	Miscellaneous & Meta-Kink	needs_manual_review		
+card-draw-play	Card-draw play	Miscellaneous & Meta-Kink	needs_manual_review		
+anal-sex	Anal sex	Sexual Activities & Techniques	needs_manual_review		
+fellatio-blowjob	Fellatio / blowjob	Sexual Activities & Techniques	needs_manual_review		
+cunnilingus	Cunnilingus	Sexual Activities & Techniques	needs_manual_review		
+deep-throat-play	Deep-throat play	Sexual Activities & Techniques	needs_manual_review		
+face-sitting	Face-sitting	Sexual Activities & Techniques	needs_manual_review		
+hand-stimulation-handjob	Hand stimulation / handjob	Sexual Activities & Techniques	needs_manual_review		
+vaginal-fingering	Vaginal fingering	Sexual Activities & Techniques	needs_manual_review		
+anal-fingering	Anal fingering	Sexual Activities & Techniques	needs_manual_review		
+vaginal-fisting	Vaginal fisting	Sexual Activities & Techniques	needs_manual_review		
+anal-fisting	Anal fisting	Sexual Activities & Techniques	needs_manual_review		
+pegging	Pegging	Sexual Activities & Techniques	needs_manual_review		
+rimming-anilingus	Rimming / anilingus	Sexual Activities & Techniques	needs_manual_review		
+69	69	Sexual Activities & Techniques	needs_manual_review		
+mutual-masturbation	Mutual masturbation	Sexual Activities & Techniques	needs_manual_review		
+partner-watched-masturbation	Partner-watched masturbation	Sexual Activities & Techniques	needs_manual_review		
+double-penetration	Double penetration	Sexual Activities & Techniques	needs_manual_review		
+strap-on-play	Strap-on play	Sexual Activities & Techniques	needs_manual_review		
+tribadism-scissoring	Tribadism / scissoring	Sexual Activities & Techniques	needs_manual_review		
+intercrural-sex	Intercrural sex	Sexual Activities & Techniques	needs_manual_review		
+frottage-grinding	Frottage / grinding	Sexual Activities & Techniques	needs_manual_review		
+sex-toy-dildo	Sex toy: dildo	Sexual Activities & Techniques	needs_manual_review		
+sex-toy-plug	Sex toy: plug	Sexual Activities & Techniques	needs_manual_review		
+sex-toy-vibrator	Sex toy: vibrator	Sexual Activities & Techniques	needs_manual_review		
+magic-wand-stimulation	Magic-wand stimulation	Sexual Activities & Techniques	needs_manual_review		
+sex-machine-play	Sex machine play	Sexual Activities & Techniques	needs_manual_review		
+sybian-style-ride-on-vibrator	Sybian-style ride-on vibrator	Sexual Activities & Techniques	needs_manual_review		
+genital-ring-play	Genital ring play	Sexual Activities & Techniques	needs_manual_review		
+cockwarming-passive-penetration	Cockwarming / passive penetration	Sexual Activities & Techniques	needs_manual_review		
+coming-on-command	Coming on command	Sexual Activities & Techniques	needs_manual_review		
+untouched-orgasm-fantasy	Untouched orgasm fantasy	Sexual Activities & Techniques	needs_manual_review		
+multiple-orgasm-play	Multiple-orgasm play	Sexual Activities & Techniques	needs_manual_review		
+car-sex-fantasy	Car sex fantasy	Sexual Contexts & Environments	needs_manual_review		
+shower-sex	Shower sex	Sexual Contexts & Environments	needs_manual_review		
+bath-pool-sex	Bath / pool sex	Sexual Contexts & Environments	needs_manual_review		
+phone-sex	Phone sex	Sexual Contexts & Environments	needs_manual_review		
+sexting	Sexting	Sexual Contexts & Environments	needs_manual_review		
+rough-sex	Rough sex	Sexual Contexts & Environments	needs_manual_review		
+gentle-sex	Gentle sex	Sexual Contexts & Environments	needs_manual_review		
+wall-sex	Wall sex	Sexual Contexts & Environments	needs_manual_review		
+sleepy-sex	Sleepy sex	Sexual Contexts & Environments	needs_manual_review		
+distracted-casual-use-sex-fantasy	Distracted / casual-use sex fantasy	Sexual Contexts & Environments	needs_manual_review		
+angry-sex-hate-sex-fantasy	Angry-sex / hate-sex fantasy	Sexual Contexts & Environments	needs_manual_review		
+clothed-sex	Clothed sex	Sexual Contexts & Environments	needs_manual_review		
+almost-getting-caught-fantasy	Almost-getting-caught fantasy	Sexual Contexts & Environments	needs_manual_review		
+striptease-erotic-dancing	Striptease / erotic dancing	Sexual Contexts & Environments	needs_manual_review		
+lap-dance	Lap dance	Sexual Contexts & Environments	needs_manual_review		
+watching-porn-together	Watching porn together	Sexual Contexts & Environments	needs_manual_review		
+cum-play	Cum play	Fluids, Excretions & Body Responses	needs_manual_review		
+facial-cum-play	Facial cum play	Fluids, Excretions & Body Responses	needs_manual_review		
+bukkake-fantasy-group-cum-play	Bukkake fantasy / group cum play	Fluids, Excretions & Body Responses	needs_manual_review		
+swallowing-semen	Swallowing semen	Fluids, Excretions & Body Responses	needs_manual_review		
+cum-swapping-snowballing	Cum swapping / snowballing	Fluids, Excretions & Body Responses	needs_manual_review		
+felching	Felching	Fluids, Excretions & Body Responses	needs_manual_review		
+drool-saliva-fetish	Drool / saliva fetish	Fluids, Excretions & Body Responses	needs_manual_review		
+lactation-milk-fetish	Lactation / milk fetish	Fluids, Excretions & Body Responses	needs_manual_review		
+menstruation-kink	Menstruation kink	Fluids, Excretions & Body Responses	needs_manual_review		
+squirting-fetish	Squirting fetish	Fluids, Excretions & Body Responses	needs_manual_review		
+tears-crying-kink	Tears / crying kink	Fluids, Excretions & Body Responses	needs_manual_review		
+urine-play-watersports	Urine play / watersports	Fluids, Excretions & Body Responses	needs_manual_review		
+scat-fetish	Scat fetish	Fluids, Excretions & Body Responses	needs_manual_review		
+vomit-emetophilia	Vomit / emetophilia	Fluids, Excretions & Body Responses	needs_manual_review		
+bladder-desperation-fantasy	Bladder-desperation fantasy	Fluids, Excretions & Body Responses	needs_manual_review		
+navel-belly-button-fetish	Navel / belly-button fetish	Body Focus, Worship & Transformation	needs_manual_review		
+pregnancy-kink	Pregnancy kink	Body Focus, Worship & Transformation	needs_manual_review		
+feedism-feederism	Feedism / feederism	Body Focus, Worship & Transformation	needs_manual_review		
+weight-gain-kink	Weight-gain kink	Body Focus, Worship & Transformation	needs_manual_review		
+size-difference-kink	Size-difference kink	Body Focus, Worship & Transformation	needs_manual_review		
+micro-macrophilia-fantasy	Micro/macrophilia fantasy	Body Focus, Worship & Transformation	needs_manual_review		
+hair-worship	Hair worship	Body Focus, Worship & Transformation	needs_manual_review		
+hair-cutting-kink	Hair-cutting kink	Body Focus, Worship & Transformation	needs_manual_review		
+shaving-grooming-kink	Shaving / grooming kink	Body Focus, Worship & Transformation	needs_manual_review		
+scar-fetish	Scar fetish	Body Focus, Worship & Transformation	needs_manual_review		
+ass-worship	Ass worship	Body Focus, Worship & Transformation	needs_manual_review		
+chest-breast-worship	Chest / breast worship	Body Focus, Worship & Transformation	needs_manual_review		
+genital-worship	Genital worship	Body Focus, Worship & Transformation	needs_manual_review		
+fertility-breeding-fantasy	Fertility / breeding fantasy	Body Focus, Worship & Transformation	needs_manual_review		
+inflation-fantasy	Inflation fantasy	Body Focus, Worship & Transformation	needs_manual_review		
+oral-fixation	Oral fixation	Body Focus, Worship & Transformation	needs_manual_review		
+nylon-fetish	Nylon fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+sneaker-fetish	Sneaker fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+jewelry-fetish	Jewelry fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+makeup-fetish	Makeup fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+underwear-panties-fetish	Underwear / panties fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+military-uniform-fetish	Military-uniform fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+medical-uniform-fetish	Medical-uniform fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+flight-attendant-service-uniform-fetish	Flight-attendant / service-uniform fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+costume-cosplay-fetish	Costume / cosplay fetish	Clothing, Gear & Fetishwear	needs_manual_review		
+ball-gag	Ball gag	Protocol, Bondage & D/s Details	needs_manual_review		
+bit-gag	Bit gag	Protocol, Bondage & D/s Details	needs_manual_review		
+ring-gag	Ring gag	Protocol, Bondage & D/s Details	needs_manual_review		
+tape-gag-fantasy	Tape gag fantasy	Protocol, Bondage & D/s Details	needs_manual_review		
+medical-dental-gag	Medical / dental gag	Protocol, Bondage & D/s Details	needs_manual_review		
+spreader-bar	Spreader bar	Protocol, Bondage & D/s Details	final_decision_evidence	#257 — Restraint Gear approval	Restraint Gear → Type → Spreader bar
+straitjacket-restraint	Straitjacket restraint	Protocol, Bondage & D/s Details	needs_manual_review		
+wall-cross-restraint	Wall / cross restraint	Protocol, Bondage & D/s Details	needs_manual_review		
+encasement-bondage	Encasement bondage	Protocol, Bondage & D/s Details	needs_manual_review		
+verbal-don-t-move-bondage	Verbal 'don't move' bondage	Protocol, Bondage & D/s Details	final_decision_evidence	#265 — Verbal / Mental Restraint APPROVED	Item: Verbal / Mental Restraint
+bathroom-permission-protocol	Bathroom-permission protocol	Protocol, Bondage & D/s Details	review_table_evidence	#264	Permission / Decision Control → Bathroom
+hand-feeding	Hand-feeding	Protocol, Bondage & D/s Details	review_table_evidence	#264	Deferred
+human-furniture	Human furniture	Protocol, Bondage & D/s Details	review_table_evidence	#259	Item: Human Furniture
+human-auction-appraisal-roleplay	Human auction / appraisal roleplay	Protocol, Bondage & D/s Details	needs_manual_review		
+free-use-fantasy	Free-use fantasy	Protocol, Bondage & D/s Details	review_table_evidence	#260	Item: Free Use
+traffic-light-check-in-system	Traffic-light check-in system	Protocol, Bondage & D/s Details	review_table_evidence	#264	Defer; safety/check-in system, not resolved as catalog preference here
+scene-negotiation-kink	Scene negotiation kink	Protocol, Bondage & D/s Details	review_table_evidence	#264	Defer to Miscellaneous & Meta-Kink
+d-s-contract-ritual	D/s contract ritual	Protocol, Bondage & D/s Details	review_table_evidence	#264	Item: D/s Contract Ritual
+public-witnessed-collaring-ceremony	Public / witnessed collaring ceremony	Protocol, Bondage & D/s Details	review_table_evidence	#257	Become refinement / Collaring → format/context = witnessed/community
+erotic-hypnosis-hypnokink	Erotic hypnosis / hypnokink	Psychological, Verbal & Emotional	needs_manual_review		
+mind-control-roleplay	Mind-control roleplay	Psychological, Verbal & Emotional	review_table_evidence	#260	Mind Control / Conditioning Fantasy → type = mind control
+brainwashing-fantasy	Brainwashing fantasy	Psychological, Verbal & Emotional	review_table_evidence	#260	Mind Control / Conditioning Fantasy → type = brainwashing/conditioning
+corruption-kink	Corruption kink	Psychological, Verbal & Emotional	review_table_evidence	#260	Item: Corruption Kink
+bimbofication	Bimbofication	Psychological, Verbal & Emotional	needs_manual_review		
+quiet-domination	Quiet domination	Psychological, Verbal & Emotional	needs_manual_review		
+language-play-verbal-kink	Language play / verbal kink	Psychological, Verbal & Emotional	needs_manual_review		
+dirty-talk	Dirty talk	Psychological, Verbal & Emotional	needs_manual_review		
+isolation-fantasy	Isolation fantasy	Psychological, Verbal & Emotional	review_table_evidence	#260	Item: Isolation Fantasy
+psychological-control-fantasy	Psychological-control fantasy	Psychological, Verbal & Emotional	review_table_evidence	#260	Mind Control / Conditioning Fantasy → type = psychological control/influence
+small-penis-humiliation-sph	Small-penis humiliation (SPH)	Psychological, Verbal & Emotional	review_table_evidence	#259	Item: Small-penis Humiliation (SPH)
+competence-kink	Competence kink	Psychological, Verbal & Emotional	needs_manual_review		
+pet-name-kink	Pet-name kink	Psychological, Verbal & Emotional	needs_manual_review		
+jealousy-play	Jealousy play	Psychological, Verbal & Emotional	needs_manual_review		
+romance-courtly-love-kink	Romance / courtly-love kink	Psychological, Verbal & Emotional	needs_manual_review		
+photographer-model-roleplay	Photographer / model roleplay	Roleplay & Scenario Kinks	review_table_evidence	#260	Roleplay → Scenario = photographer/model
+delivery-person-roleplay	Delivery-person roleplay	Roleplay & Scenario Kinks	review_table_evidence	#260	Roleplay → Scenario = delivery person
+celebrity-fan-roleplay	Celebrity / fan roleplay	Roleplay & Scenario Kinks	review_table_evidence	#260	Roleplay → Scenario = celebrity/fan
+cheating-fantasy	Cheating fantasy	Roleplay & Scenario Kinks	review_table_evidence	#260	Roleplay → Scenario = cheating/forbidden attraction
+home-invasion-fantasy	Home-invasion fantasy	Roleplay & Scenario Kinks	review_table_evidence	#260	CNC → Scenario = home invasion
+practical-sex-ed-roleplay	Practical sex-ed roleplay	Roleplay & Scenario Kinks	review_table_evidence	#260	Roleplay → Scenario = practical sex-ed/teaching
+sleep-play-consensual-somnophilia	Sleep play / consensual somnophilia	Roleplay & Scenario Kinks	review_table_evidence	#260	Item: Sleep Play / Consensual Somnophilia
+fake-public-use-fantasy	Fake public-use fantasy	Roleplay & Scenario Kinks	review_table_evidence	#260	Free Use → context/scenario = public-style simulation
+adult-incest-taboo-family-role-fantasy	Adult incest / taboo-family-role fantasy	Roleplay & Scenario Kinks	review_table_evidence	#260	Roleplay → Scenario = adult taboo-family-role
+threesome	Threesome	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+swinging-soft-swap	Swinging - soft swap	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+swinging-full-swap	Swinging - full swap	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+cuckolding	Cuckolding	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+cuckqueaning	Cuckqueaning	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+stag-vixen-dynamic	Stag / vixen dynamic	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+hotwifing	Hotwifing	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+gangbang	Gangbang	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+orgy-sex-party-interest	Orgy / sex-party interest	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+same-room-sex	Same-room sex	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+group-masturbation	Group masturbation	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+guest-star-invited-third-dynamic	Guest-star / invited-third dynamic	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+open-relationship-interest	Open-relationship interest	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+non-monogamy-multi-partner-interest	Non-monogamy / multi-partner interest	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+harem-fantasy	Harem fantasy	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+glory-hole-fantasy	Glory-hole fantasy	Group Dynamics & Consensual Non-Monogamy	needs_manual_review		
+transformation-fantasy	Transformation fantasy	Surreal, Transformation & Fictional Fantasy	review_table_evidence	#260	Item/family: Transformation Fantasy
+body-swap-fantasy	Body-swap fantasy	Surreal, Transformation & Fictional Fantasy	review_table_evidence	#260	Transformation Fantasy → type = body swap
+alien-fantasy	Alien fantasy	Surreal, Transformation & Fictional Fantasy	review_table_evidence	#260	Creature / Nonhuman Fantasy → type = alien
+tentacle-fantasy	Tentacle fantasy	Surreal, Transformation & Fictional Fantasy	review_table_evidence	#260	Creature / Nonhuman Fantasy → feature/mechanic = tentacles
+furry-anthropomorphic-fantasy	Furry / anthropomorphic fantasy	Surreal, Transformation & Fictional Fantasy	review_table_evidence	#260	Item: Furry / Anthropomorphic Fantasy
+oviposition-fantasy	Oviposition fantasy	Surreal, Transformation & Fictional Fantasy	review_table_evidence	#260	Creature / Nonhuman Fantasy → feature/mechanic = oviposition
+vore-fantasy	Vore fantasy	Surreal, Transformation & Fictional Fantasy	review_table_evidence	#260	Item: Vore Fantasy
+alpha-beta-omega-omegaverse-fantasy	Alpha / beta / omega (Omegaverse) fantasy	Surreal, Transformation & Fictional Fantasy	review_table_evidence	#260	Item: Omegaverse Fantasy
+knotting-fantasy	Knotting fantasy	Surreal, Transformation & Fictional Fantasy	review_table_evidence	#260	Creature / Nonhuman Fantasy → feature/mechanic = knotting
+daily-praise-dynamic	Daily praise dynamic	Relational & Lifestyle Dynamics	review_table_evidence	#261	Exclude
+morning-night-protocol	Morning / night protocol	Relational & Lifestyle Dynamics	needs_manual_review		
+daily-rules-tasks	Daily rules & tasks	Relational & Lifestyle Dynamics	needs_manual_review		
+devotion-worship-dynamic	Devotion & worship dynamic	Relational & Lifestyle Dynamics	needs_manual_review		

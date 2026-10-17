@@ -3,7 +3,7 @@
 *Exploring restraint, structure, freedom, and the psychology behind consensual control.*
 
 **Level:** Beginner  
-**Estimated reading time:** 8 minutes  
+**Estimated reading time:** 13 minutes  
 **Topics:** BDSM Fundamentals · Bondage · Discipline · Consent · Power Exchange
 
 **Content note:** This article discusses physical restraint, consensual punishment, and associated physical and emotional risks without graphic descriptions.

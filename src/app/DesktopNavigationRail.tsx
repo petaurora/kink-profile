@@ -1,16 +1,5 @@
-import {
-  IconBook2,
-  IconGift,
-  IconHeart,
-  IconHome,
-  IconPaw,
-  IconQuestionMark,
-  IconSettings,
-  IconSparkles,
-  IconTool,
-  IconUser,
-  IconUsers,
-} from "@tabler/icons-react";
+import { IconGift, IconHeart } from "@tabler/icons-react";
+import { AppIcon } from "../components/ui/AppIcon";
 import { useLocation, useNavigate } from "react-router-dom";
 import { desktopNavigationStateForLocation } from "./desktopNavigation";
 import {
@@ -72,9 +61,10 @@ export function DesktopNavigationRail({
         className="desktop-navigation-toggle"
         aria-label={expanded ? "Hide navigation" : "Show navigation"}
         aria-expanded={expanded}
+        title={expanded ? "Hide navigation" : "Show navigation"}
         onClick={onToggle}
       >
-        <IconPaw size={20} stroke={2} aria-hidden="true" />
+        <AppIcon name={expanded ? "collapseSidebar" : "expandSidebar"} size={20} />
       </button>
 
       {expanded ? (
@@ -90,7 +80,7 @@ export function DesktopNavigationRail({
               aria-current={state.primary === "hub" ? "page" : undefined}
               onClick={() => go(hubRoute.path)}
             >
-              <IconHome size={20} stroke={2} aria-hidden="true" />
+              <AppIcon name="home" size={20} />
               <span>Hub</span>
             </button>
 
@@ -100,7 +90,7 @@ export function DesktopNavigationRail({
               aria-current={state.primary === "quiz" ? "page" : undefined}
               onClick={() => go(quizHomeRoute.path)}
             >
-              <IconQuestionMark size={19} stroke={2} aria-hidden="true" />
+              <AppIcon name="quiz" size={19} />
               <span>Quiz</span>
             </button>
 
@@ -111,7 +101,7 @@ export function DesktopNavigationRail({
                 aria-expanded={state.primary === "catalog"}
                 onClick={() => go(catalogRoute.path)}
               >
-                <IconBook2 size={19} stroke={2} aria-hidden="true" />
+                <AppIcon name="catalog" size={19} />
                 <span>Catalog</span>
               </button>
 
@@ -152,7 +142,7 @@ export function DesktopNavigationRail({
               }
               onClick={() => go(profileRoute.path)}
             >
-              <IconUser size={19} stroke={2} aria-hidden="true" />
+              <AppIcon name="profile" size={19} />
               <span>Profile</span>
             </button>
 
@@ -163,7 +153,7 @@ export function DesktopNavigationRail({
                 aria-expanded={state.primary === "tools"}
                 onClick={() => go(sceneBuilderRoute.path)}
               >
-                <IconTool size={19} stroke={2} aria-hidden="true" />
+                <AppIcon name="tools" size={19} />
                 <span>Tools</span>
               </button>
 
@@ -175,7 +165,7 @@ export function DesktopNavigationRail({
                     aria-current={state.toolsWorkspace === "scenes" ? "page" : undefined}
                     onClick={() => go(sceneBuilderRoute.path)}
                   >
-                    <IconSparkles size={16} stroke={1.9} aria-hidden="true" />
+                    <AppIcon name="scenes" size={16} />
                     <span>Scenes</span>
                   </button>
                   <button
@@ -193,7 +183,7 @@ export function DesktopNavigationRail({
                     aria-current={state.toolsWorkspace === "compare" ? "page" : undefined}
                     onClick={() => go(compareRoute.path)}
                   >
-                    <IconUsers size={16} stroke={1.9} aria-hidden="true" />
+                    <AppIcon name="compare" size={16} />
                     <span>Compare</span>
                   </button>
                 </div>
@@ -208,7 +198,7 @@ export function DesktopNavigationRail({
               aria-current={state.settingsActive ? "page" : undefined}
               onClick={openSettings}
             >
-              <IconSettings size={19} stroke={2} aria-hidden="true" />
+              <AppIcon name="settings" size={19} />
               <span>Settings</span>
             </button>
           </div>

@@ -3,7 +3,7 @@
 *Why tying someone up, following instructions, or providing sensation does not automatically make anyone Dominant or submissive.*
 
 **Level:** Beginner  
-**Estimated reading time:** 10 minutes  
+**Estimated reading time:** 12 minutes  
 **Topics:** BDSM Fundamentals · Roles · Power Exchange · Activity Direction · Motivation · Kink Preferences
 
 **Content note:** This article discusses consensual restraint, sensation play, and authority without graphic descriptions or technical instructions.

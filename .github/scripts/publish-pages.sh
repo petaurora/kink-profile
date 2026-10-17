@@ -58,6 +58,9 @@ for (( attempt=1; attempt<=max_attempts; attempt++ )); do
   fi
 
   checkout="$work_root/gh-pages"
+  # Each retry must leave the previous checkout before deleting it. Otherwise
+  # Git cannot resolve the working directory on a subsequent clone/push.
+  cd "$work_root"
   rm -rf "$checkout"
   git clone --quiet --depth 1 --branch gh-pages "$repo_url" "$checkout"
   cd "$checkout"
