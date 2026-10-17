@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { SegmentedControl } from "../../components/SegmentedControl";
+import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
+import { labPath } from "../ui-lab/LabNavigation";
 import { answerOptions } from "../../data/quizScale";
 import { dsSignals } from "../../data/dsQuiz";
 import {
@@ -34,6 +36,7 @@ import {
 } from "../../lib/scoring";
 import {
   quizHomeRoute,
+  profileRoute,
   quizResultsPath,
   quizRoutePath,
 } from "../../app/routes";
@@ -510,6 +513,57 @@ function ResultsBody({ quiz, scores }: { quiz: QuizDefinition; scores: Score[] }
   );
 }
 
+/** Three equally weighted, user-selected routes. Following one never edits quiz evidence. */
+function ResultsNextSteps() {
+  const destinations = [
+    {
+      id: "profile",
+      title: "View Profile",
+      description: "See how this quiz fits alongside your other profile signals.",
+      path: profileRoute.path,
+      Icon: appIcons.profile,
+    },
+    {
+      id: "quizzes",
+      title: "Explore another quiz",
+      description: "Browse all four quizzes and choose what interests you next.",
+      path: quizHomeRoute.path,
+      Icon: appIcons.quiz,
+    },
+    {
+      id: "learn",
+      title: "Learn",
+      description: "Browse general educational guides in the experimental reader.",
+      path: labPath("Learn"),
+      Icon: appIcons.education,
+    },
+  ] as const;
+
+  return (
+    <nav className="quiz-results-next-steps" aria-label="Next steps after quiz results">
+      <div className="quiz-results-next-steps-heading">
+        <h2>Where would you like to go next?</h2>
+        <p>Choose whichever feels useful. Your results stay saved.</p>
+      </div>
+      <div className="quiz-results-next-steps-grid">
+        {destinations.map(({ id, title, description, path, Icon }) => (
+          <Link
+            key={id}
+            to={path}
+            className="quiz-results-next-step"
+            data-quiz-next-step={id}
+          >
+            <Icon {...appIconDefaults} aria-hidden="true" />
+            <strong>{title}</strong>
+            <span>{description}</span>
+            <appIcons.next size={18} stroke={1.65} className="quiz-results-next-step-arrow" aria-hidden="true" />
+          </Link>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
 function resultsDescription(quiz: QuizDefinition) {
   if (quiz.id === "roles-headspaces") {
     return "These role and headspace affinities can overlap. Pet, Slave, Little, Middle, Brat, Caregiver, Owner / Handler, and others can all resonate in different contexts — the result is a profile, not one assigned identity.";
@@ -880,6 +934,7 @@ function ResolvedQuizRoute({
           </header>
 
           <ResultsBody quiz={quiz} scores={scores} />
+          <ResultsNextSteps />
 
           <div className="results-actions">
             <button className="secondary compact" onClick={resetQuiz}>
