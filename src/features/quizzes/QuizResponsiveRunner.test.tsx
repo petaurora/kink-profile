@@ -6,6 +6,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { quizzes } from "../../data/quizzes";
 import { PROFILE_STORAGE_KEY, loadProfile, saveProfile, createEmptyProfile } from "../../lib/profileStorage";
 import { QuizRoutePage } from "./QuizRoutePage";
+import { QuizHomePage } from "./QuizHomePage";
 
 const quiz = quizzes.find((item) => item.id === "dominance-submission")!;
 let root: Root;
@@ -19,13 +20,13 @@ function Location() {
 function render(element: ReactNode) {
   act(() => root.render(element));
 }
-function mount() {
+function mount(path = `/quizzes/${quiz.id}`) {
   render(
-    <MemoryRouter initialEntries={[`/quizzes/${quiz.id}`]}>
+    <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/quizzes/:quizId" element={<QuizRoutePage mode="quiz" />} />
         <Route path="/quizzes/:quizId/results" element={<QuizRoutePage mode="results" />} />
-        <Route path="/quizzes" element={<div>Quiz Home</div>} />
+        <Route path="/quizzes" element={<QuizHomePage />} />
       </Routes>
       <Location />
     </MemoryRouter>,
@@ -122,4 +123,53 @@ it("keeps established completed answers authoritative while an in-progress retak
   expect(saved.answers[quiz.questionIds[0]]).toBe(3);
   expect(saved.retake?.answers[quiz.questionIds[0]]).toBe(2);
   expect(container.querySelector('[data-testid="location"]')?.textContent).toContain(`/quizzes/${quiz.id}`);
+});
+
+it("Continue opens an unfinished first attempt immediately at the earliest unanswered question on mobile", () => {
+  const profile = createEmptyProfile();
+  profile.quizzes[quiz.id] = {
+    quizVersion: quiz.version,
+    answers: Object.fromEntries([0, 1, 2, 3].map(index => [quiz.questionIds[index], 2])),
+  };
+  saveProfile(profile);
+  setViewport(390);
+  mount("/quizzes");
+  expect(container.querySelector(".quiz-home-progress")?.textContent).toContain("0 of 4 complete");
+  const continueButton = container.querySelector<HTMLButtonElement>(`button[aria-label^="${quiz.title}: Continue."]`)!;
+  expect(continueButton).not.toBeNull();
+  click(continueButton);
+  expect(container.querySelector('[data-testid="location"]')?.textContent).toBe(`/quizzes/${quiz.id}`);
+  expect(visibleCards()).toHaveLength(1);
+  expect(container.querySelector(".quiz-question-position")?.textContent).toContain("5 /");
+  expect(visibleCards()[0].textContent).toContain("Nope");
+  expect(document.activeElement).toBe(visibleCards()[0].querySelector("h1"));
+  expect(loadProfile().quizzes[quiz.id]?.answers).toEqual(profile.quizzes[quiz.id]?.answers);
+});
+
+it("Continue retake opens the batch containing the first unanswered draft response and keeps previous results", () => {
+  const previous = Object.fromEntries(quiz.questionIds.map(id => [id, 3]));
+  const draft = Object.fromEntries([0, 1, 2, 3].map(index => [quiz.questionIds[index], 1]));
+  const profile = createEmptyProfile();
+  profile.quizzes[quiz.id] = {
+    quizVersion: quiz.version,
+    answers: previous,
+    completedAt: "2026-10-15T12:00:00Z",
+    retake: { quizVersion: quiz.version, answers: draft, startedAt: "2026-10-15T15:00:00Z" },
+  };
+  saveProfile(profile);
+  setViewport(1200);
+  mount("/quizzes");
+  // The existing finished quiz still counts as complete while its retake is a draft.
+  expect(container.querySelector(".quiz-home-progress")?.textContent).toContain("1 of 4 complete");
+  const continueButton = container.querySelector<HTMLButtonElement>(`button[aria-label^="${quiz.title}: Continue retake."]`)!;
+  expect(continueButton).not.toBeNull();
+  click(continueButton);
+  expect(container.querySelector('[data-testid="location"]')?.textContent).toBe(`/quizzes/${quiz.id}`);
+  expect(container.querySelector(".quiz-question-position")?.textContent).toContain("4–6 /");
+  expect(visibleCards()).toHaveLength(3);
+  expect(document.activeElement).toBe(visibleCards()[1].querySelector("h2"));
+  expect(container.textContent).toContain("previous completed result stays active");
+  const saved = loadProfile().quizzes[quiz.id]!;
+  expect(saved.retake?.answers).toEqual(draft);
+  expect(saved.answers).toEqual(previous);
 });
