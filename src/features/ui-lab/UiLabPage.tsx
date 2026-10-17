@@ -1,3 +1,4 @@
+import { quizHomeRoute } from "../../app/routes";
 import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
 import { ToastPlayground } from "./ToastPlayground";
 import { CatalogComposite } from "./CatalogComposite";
@@ -75,10 +76,13 @@ function UiLabContent() {
   Home:[],
   Catalog:["Overview","Explore All","Kinks","Rewards & Punishments","Concept Explorer"],
   Profile:["Overview","My Profile","Preferences","Sharing & Permissions","Identity & Expression"],
-  Discover:["Overview","Learn","React","Play"],
+  Discover:["Overview","Quizzes","Learn","React","Play"],
   Tools:["Overview","Scene Builder","Agreements & Rituals","Randomizers & Recipes","Compare Profiles"]
  };
- const openMenuChild=(parent:Area,child:string)=>go(parent,child==="Overview"?"":child);
+ const openMenuChild=(parent:Area,child:string)=>{
+  if(parent==="Discover"&&child==="Quizzes") { setMenuOpen(false); routerNavigate(quizHomeRoute.path); return; }
+  go(parent,child==="Overview"?"":child);
+ };
  const modalActive=()=>Boolean(document.querySelector(".ui-lab [aria-modal=\"true\"]:not(#ui-lab-full-menu)"));
  const onGestureStart=(event:React.TouchEvent)=>{
   if(modalActive()){gestureStart.current=null;return;}
