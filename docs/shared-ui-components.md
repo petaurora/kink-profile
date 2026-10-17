@@ -28,6 +28,7 @@ been migrated to the experimental treatments merely because the code is shared.
 | `ToastProvider` / `useToasts` | One queue/viewport at the application boundary | Meaningful notifications and genuine recovery/Undo actions |
 | `ConfirmationDialog` | Explicit confirm/cancel modal with shared focus and close mechanics | Action scope, copy, confirmation policy and actual mutation |
 | `ViewErrorBoundary` | View retry and reset on navigation | Place session ownership outside the boundary; recovery destination |
+| `KPLoading` | Shared vector-based rotating placeholder, optional compact presentation, meaningful status label and reduced-motion fallback | Own the operation, show it only for actual waiting; swap commissioned artwork later without changing callers |
 | `ToastViewport` / `useToastQueue` | Lower-level controlled viewport and queue primitives | Mount only one viewport per chosen notification scope |
 
 ## Interaction contracts

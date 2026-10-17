@@ -184,3 +184,18 @@ No article view creates profile evidence, reading progress, consent, or a Discov
 
 **Shared V2 progress visual system (October 16/17):** The quiz question-card progress divider is the canonical design for **progress indicators throughout KP**: a soft rose-to-blush gradient fill, dark muted track, rounded corners and a symmetrical short feather at both ends. The shared stylesheet `src/components/ui/progress.css` owns color/feather tokens and styles standard `.progress-track`, `.card-progress` and opt-in `.kp-progress-track` elements, including legacy quiz bars. Native V2 Quiz landing and question cards both use the shared `kp-progress-track` class, so they stay visually consistent. Existing bar heights, position, saved-answer values and percentages, animation/reduced-motion rules and screen-reader semantics remain context-specific and unchanged. **Rating/score tracks** express a different measurement and are not redefined as completion progress. Device contrast and small-fill review remains a visual QA gate.
 **Catalog experience toggle polish:** The Tried/experienced state can be reversed directly by toggling the control again. Removed the redundant Undo toast only for that control; save status and error/retry UI still work. Rating-clear Undo notifications retain their distinct recovery role. Regression tests cover reversibility without the toast.
+
+
+## Temporary KP loading placeholder (October 2026)
+
+`src/components/ui/KPLoading.tsx` contains a small original three-swirl SVG placeholder inspired by the supplied concept. It does **not** embed or ship the watermarked stock image and is not the commissioned final asset. A slow continuous rotation and gentle glow are CSS-only; prefers-reduced-motion stops both animations while retaining the status label. `KPLoading` accepts `label`, `size`, `compact`, and `className`. Replace the SVG artwork later without changing consumers or loading semantics.
+
+The reusable loader is mounted only while truly waiting: the UI Lab lazy-route Suspense fallback and the initial application-service reference load. Existing errors keep their explicit Retry UI; the loader never stands for a save confirmation, success, failure, or invented percentage. The UI Lab has an expandable **Loading Playground** below the existing Toast Playground to inspect three sizes, pause animation, and review the future art-swap boundary. This is an implementation prototype and remains stacked on the V2 shell PR.
+
+
+### Loading preview hold + motion refinement (October 17, 2026)
+The dedicated full-screen loading **preview** (on PR preview builds automatically, or on an explicit `?loading-preview=1` UI Lab query) holds the SVG until the reviewer activates **Continue to KP**. It is a design review aid, not a new loading timeout or a blocker for production users, and regular real-load success/error handling remains automatic. An explicit 0°–360° rotation now runs at constant linear velocity over 4.8 seconds on a wrapper separate from the SVG, avoiding art and filter transform interactions. The 360°/0° seam is identical, with no ease-out, hold, or reverse. Reduced-motion users see the static mark; the Playground pause action controls the same wrapper.
+
+
+### Preview routing correction
+The preview hold now wraps the entire PR-preview router so both the GitHub preview's bare root URL and direct `#/ui-lab/...` paths show **Continue to KP**. From a bare-root preview only, Continue sends the reviewer into `#/ui-lab/home` instead of the legacy hub; direct deep links retain their intended destinations. Ordinary production without an explicit preview flag remains unaffected. For stale installed PWA/browser copies, use a fresh network URL with a one-off query string before the hash.

@@ -21,6 +21,7 @@ const shortName = previewPr ? `KP · PR ${previewPr}` : "Kink Profile";
 const cachePrefix = previewPr
   ? `kink-profile-pr-${previewPr}`
   : "kink-profile-production";
+const cacheVersion = previewPr && buildCommit ? buildCommit.slice(0,12) : "v1";
 
 function pwaAssetsPlugin(): Plugin {
   return {
@@ -98,7 +99,7 @@ function pwaAssetsPlugin(): Plugin {
       );
 
       const serviceWorker = `const CACHE_PREFIX = ${JSON.stringify(cachePrefix)};
-const CACHE_NAME = \`${cachePrefix}-static-v1\`;
+const CACHE_NAME = \`${cachePrefix}-static-${cacheVersion}\`;
 const SCOPE_PATH = ${JSON.stringify(base)};
 const APP_SHELL = ${JSON.stringify(`${base}index.html`)};
 const PRECACHE_URLS = ${JSON.stringify(precacheUrls)};
