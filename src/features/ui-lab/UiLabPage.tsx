@@ -1,3 +1,4 @@
+import { AppIcon } from "../../components/ui/AppIcon";
 import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
 import { ToastPlayground } from "./ToastPlayground";
 import { CatalogComposite } from "./CatalogComposite";
@@ -109,33 +110,33 @@ function UiLabContent() {
  useEffect(()=>{const previous=document.title;document.title=`${heading} · Kink Profile`;return()=>{document.title=previous};},[heading]);
  return <div className={"ui-lab ui-lab-app"+(collapsedRail?" lab-rail-collapsed":"")} onTouchStart={onGestureStart} onTouchEnd={onGestureEnd}>
   <a className="ui-lab-skip-link" href={`#${contentId}`} onClick={event=>{event.preventDefault();pageHeading.current?.focus();pageHeading.current?.scrollIntoView({block:"start"})}}>Skip to content</a>
-  <nav className="ui-lab-app-rail" aria-label="Primary navigation"><button className="lab-rail-toggle" aria-label={collapsedRail?"Expand sidebar":"Collapse sidebar"} onClick={()=>setCollapsedRail(!collapsedRail)}>{collapsedRail?"›":"‹"}</button>
+  <nav className="ui-lab-app-rail" aria-label="Primary navigation"><button className="lab-rail-toggle" aria-label={collapsedRail?"Expand sidebar":"Collapse sidebar"} title={collapsedRail?"Expand sidebar":"Collapse sidebar"} aria-expanded={!collapsedRail} onClick={()=>setCollapsedRail(!collapsedRail)}><AppIcon name={collapsedRail?"expandSidebar":"collapseSidebar"} /></button>
    <div className="ui-lab-app-brand">♡ <strong>Kink Profile</strong><small>UI LAB</small></div>
    {areas.map(item=><button key={item} type="button" aria-label={item} aria-current={area===item?"page":undefined} className={area===item?"active":""} onClick={()=>navigate(item)}><span className="ui-lab-nav-icon-wrap"><NavIcon area={item}/></span><span className="lab-rail-label">{item}</span></button>)}
-   <button className="ui-lab-app-rail-lab" aria-expanded={showLab} onClick={()=>setShowLab(!showLab)}>⚙ Design lab</button>
+   <button className="ui-lab-app-rail-lab" aria-expanded={showLab} onClick={()=>setShowLab(!showLab)}><AppIcon name="settings" size={18} inline />Design lab</button>
    <div className="ui-lab-rail-version" aria-label={`App version ${__KP_BUILD_SHA__}`} title={`Build commit ${__KP_BUILD_SHA__}`}><span className="lab-rail-label">Build </span><code>{__KP_BUILD_SHA__}</code></div>
   </nav>
   <div className="ui-lab-app-frame">
    <header className="ui-lab-app-header">
-    <button type="button" className="ui-lab-header-action" aria-label="Open full menu" aria-expanded={menuOpen} aria-controls="ui-lab-full-menu" onClick={openDrawer}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <button type="button" className="ui-lab-header-action" aria-label="Open full menu" title="Open full menu" aria-expanded={menuOpen} aria-controls="ui-lab-full-menu" onClick={openDrawer}>
+      <AppIcon name="menu" />
     </button>
     <button type="button" className="ui-lab-app-logo" onClick={()=>navigate("Home")} aria-label="Kink Profile, go to Home"><span className="ui-lab-brand-mark" aria-hidden="true">♡</span><span>Kink Profile</span></button>
     <div className="ui-lab-header-actions">
-      <button type="button" className="ui-lab-header-action" aria-label="Search" onClick={()=>openCatalogSearch(area)}>
+      <button type="button" className="ui-lab-header-action" aria-label="Search" title="Search" onClick={()=>openCatalogSearch(area)}>
         <appIcons.search {...appIconDefaults} aria-hidden="true" />
       </button>
-      <button type="button" className="ui-lab-header-action" aria-label="Open profile" onClick={()=>navigate("Profile")}><appIcons.profile {...appIconDefaults} aria-hidden="true" /></button>
+      <button type="button" className="ui-lab-header-action" aria-label="Open profile" title="Open profile" onClick={()=>navigate("Profile")}><appIcons.profile {...appIconDefaults} aria-hidden="true" /></button>
     </div>
    </header>
    <ModalLayer open={menuOpen} onClose={()=>setMenuOpen(false)} label="Full navigation menu" closeLabel="Close navigation menu" id="ui-lab-full-menu" className="ui-lab-menu-layer" backdropClassName="ui-lab-menu-backdrop" panelClassName="ui-lab-menu-drawer">
-       <div className="ui-lab-menu-heading"><span className="ui-lab-menu-title"><span aria-hidden="true">♡</span> Kink Profile</span><button type="button" className="ui-lab-menu-close" aria-label="Close menu" onClick={()=>setMenuOpen(false)}><appIcons.close {...appIconDefaults} aria-hidden="true" /></button></div>
+       <div className="ui-lab-menu-heading"><span className="ui-lab-menu-title"><span aria-hidden="true">♡</span> Kink Profile</span><button type="button" className="ui-lab-menu-close" aria-label="Close menu" title="Close menu" onClick={()=>setMenuOpen(false)}><appIcons.close {...appIconDefaults} aria-hidden="true" /></button></div>
        <p className="ui-lab-menu-eyebrow">YOUR SPACE</p>
        <nav aria-label="All destinations" className="ui-lab-menu-links">
          {areas.map(item=><div className="ui-lab-menu-group" key={item}>
           <button type="button" className={"ui-lab-menu-parent ui-lab-menu-parent-button "+(area===item?"selected":"")} aria-current={area===item&&item==="Home"?"page":undefined} aria-expanded={menuChildren[item].length?expandedMenu===item:undefined} onClick={()=>{if(!menuChildren[item].length)navigate(item);else setExpandedMenu(expandedMenu===item?null:item);}}>
            <span className="ui-lab-menu-link-icon"><NavIcon area={item}/></span><span className="ui-lab-menu-parent-label">{item}</span>
-           {menuChildren[item].length>0&&<span className={"ui-lab-menu-chevron "+(expandedMenu===item?"expanded":"")} aria-hidden="true">›</span>}
+           {menuChildren[item].length>0&&<span className={"ui-lab-menu-chevron "+(expandedMenu===item?"expanded":"")} aria-hidden="true"><AppIcon name="details" size={18} /></span>}
           </button>
           {expandedMenu===item&&menuChildren[item].length>0&&<div className="ui-lab-menu-subitems ui-lab-menu-branches">{menuChildren[item].map((child,index)=><button type="button" key={child} style={{animationDelay:index*55+"ms"}} className={"ui-lab-menu-child "+(activeChild(item)===child?"active":"")+(index===menuChildren[item].length-1?" last":"")} aria-current={activeChild(item)===child?"page":undefined} onClick={()=>openMenuChild(item,child)}><svg className="ui-lab-menu-branch" viewBox="0 0 28 40" preserveAspectRatio="none" aria-hidden="true"><path d="M2 0 V17 Q2 24 10 24 H27"/>{index!==menuChildren[item].length-1&&<path d="M2 17 V40"/>}</svg><span>{child}</span></button>)}</div>}
          </div>)}
@@ -147,7 +148,7 @@ function UiLabContent() {
        </div>
        <div className="ui-lab-menu-bottom">
          <button type="button" className="ui-lab-menu-settings" aria-current={area==="Settings"?"page":undefined} onClick={()=>navigate("Settings")}>
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06-2.8 2.8-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.07 1.55V21h-4v-.12A1.7 1.7 0 0 0 8.93 19.3a1.7 1.7 0 0 0-1.87.34L7 19.7l-2.8-2.8.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1.07H3v-4h.05A1.7 1.7 0 0 0 4.6 8.86a1.7 1.7 0 0 0-.34-1.87L4.2 6.93l2.8-2.8.06.06a1.7 1.7 0 0 0 1.87.34A1.7 1.7 0 0 0 10 2.98V3h4v-.02a1.7 1.7 0 0 0 1.07 1.55 1.7 1.7 0 0 0 1.87-.34L17 4.13l2.8 2.8-.06.06a1.7 1.7 0 0 0-.34 1.87 1.7 1.7 0 0 0 1.55 1.07H21v4h-.05A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+           <AppIcon name="settings" />
            <span>Settings</span><span aria-hidden="true" className="ui-lab-menu-settings-arrow">›</span>
          </button>
          <div className="ui-lab-menu-footer">Explore freely. Your preferences stay yours.</div>
@@ -158,32 +159,32 @@ function UiLabContent() {
    <main id={contentId} className={"ui-lab-app-content"+(area==="Learn"?" lab-education-page":"")} aria-labelledby="ui-lab-page-heading">
     {unknown&&<p role="alert">This Lab destination is unavailable. <button onClick={()=>navigate("Home")}>Return Home</button></p>}
     {area!=="Catalog"&&<LabSaveSummary/>}
-    {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>navigate(area)}>{area}</button><span aria-hidden="true">›</span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
+    {workspace?<nav className="ui-lab-breadcrumbs" aria-label="Breadcrumb"><button type="button" onClick={()=>navigate(area)}>{area}</button><span aria-hidden="true"><AppIcon name="details" size={18} /></span><span aria-current="page">{workspace}</span></nav>:<p className="ui-lab-app-kicker">{area.toUpperCase()}</p>}
     <h1 id="ui-lab-page-heading" ref={pageHeading} tabIndex={-1} className={workspace?"ui-lab-workspace-title":""}>{heading}</h1>
     {!workspace&&<p className="ui-lab-app-lede">{area==="Home"?"A home for everything you're exploring, building and becoming.":area==="Catalog"?"Browse freely. Record preferences only when you choose.":area==="Discover"?"Learn, react or play — your curiosity sets the pace.":area==="Profile"?"Your story, your preferences, and the people you choose to share with.":area==="Learn"?"A library for curiosity, questions, and safer exploration.":"Practical spaces for scenes, rituals, agreements and more."}</p>}
     {area==="Catalog"&&<div className="ui-lab-catalog">
 
       {!workspace&&<>
         <SearchRow><SearchField mode="launch" placeholder="Search the Catalog…" onActivate={()=>openCatalogSearch("Catalog")} /><SearchFilterButton active={catalogSort!=="default"} groupingAvailable={false} onClick={()=>openCatalogSearch("Catalog",true)}/></SearchRow>
-        <section className="ui-lab-collections" aria-label="Browse collections"><h2>Browse collections</h2><button onClick={()=>choose("Kinks")}><span><strong>Kinks</strong><small>Explore preferences and refinements</small></span><span aria-hidden="true">→</span></button><button onClick={()=>choose("Rewards & Punishments")}><span><strong>Rewards & Punishments</strong><small>Explore rewards, punishments and personal classifications</small></span><span aria-hidden="true">→</span></button></section>
+        <section className="ui-lab-collections" aria-label="Browse collections"><h2>Browse collections</h2><button onClick={()=>choose("Kinks")}><span><strong>Kinks</strong><small>Explore preferences and refinements</small></span><AppIcon name="details" size={20} /></button><button onClick={()=>choose("Rewards & Punishments")}><span><strong>Rewards & Punishments</strong><small>Explore rewards, punishments and personal classifications</small></span><AppIcon name="details" size={20} /></button></section>
         <section className="ui-lab-subjects-featured" aria-label="Featured subjects">
-          <div className="ui-lab-subject-section-title"><h2>Featured subjects</h2><small>Today's discoveries</small></div>
-          <div className="ui-lab-subject-feature-grid">{featured.map(subject=><button type="button" key={subject.name} className={"ui-lab-subject-feature ui-lab-subject-"+subject.tone} onClick={()=>openSubject(subject.name)}><span className="ui-lab-subject-art" aria-hidden="true">{subject.symbol}</span><span className="ui-lab-subject-feature-copy"><strong>{subject.name}</strong><small>{subject.description}</small></span><span className="ui-lab-subject-feature-arrow" aria-hidden="true">↗</span></button>)}</div>
+          <div className="ui-lab-subject-section-title"><h2><AppIcon name="catalogSubject" size={18} inline />Featured subjects</h2><small>Today's discoveries</small></div>
+          <div className="ui-lab-subject-feature-grid">{featured.map(subject=><button type="button" key={subject.name} className={"ui-lab-subject-feature ui-lab-subject-"+subject.tone} onClick={()=>openSubject(subject.name)}><span className="ui-lab-subject-art" aria-hidden="true">{subject.symbol}</span><span className="ui-lab-subject-feature-copy"><strong>{subject.name}</strong><small>{subject.description}</small></span><span className="ui-lab-subject-feature-arrow" aria-hidden="true"><AppIcon name="details" size={20} /></span></button>)}</div>
         </section>
-        <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}><span><strong>Explore All</strong><small>Browse the complete Catalog</small></span><span aria-hidden="true">→</span></button>
-        <section className="ui-lab-more-subjects"><h2>More subjects</h2><div className="ui-lab-subject-chips">{[...subjectNames.filter(name=>!featured.some(f=>f.name===name)),...extraSubjects].slice(0,subjectsExpanded?undefined:6).map(name=><button type="button" key={name} onClick={()=>openSubject(name)}>{name}</button>)}</div><button className="ui-lab-subject-more" aria-expanded={subjectsExpanded} onClick={()=>setSubjectsExpanded(v=>!v)}>{subjectsExpanded?"Show Less ↑":"Show More ↓"}</button></section>
+        <button className="ui-lab-catalog-all" onClick={()=>choose("Explore All")}><span><strong>Explore All</strong><small>Browse the complete Catalog</small></span><AppIcon name="details" size={20} /></button>
+        <section className="ui-lab-more-subjects"><h2>More subjects</h2><div className="ui-lab-subject-chips">{[...subjectNames.filter(name=>!featured.some(f=>f.name===name)),...extraSubjects].slice(0,subjectsExpanded?undefined:6).map(name=><button type="button" key={name} onClick={()=>openSubject(name)}>{name}</button>)}</div><button className="ui-lab-subject-more" aria-expanded={subjectsExpanded} onClick={()=>setSubjectsExpanded(v=>!v)}>{subjectsExpanded?"Show Less":"Show More"} <AppIcon name="expand" size={18} style={{transform:subjectsExpanded?"rotate(180deg)":undefined}} /></button></section>
       </>}
-      {workspace==="Subject Overview"&&selectedSubject&&<section className="ui-lab-subject-overview"><p>{data.subjects.find(x=>x.name===selectedSubject)?.description||"Explore related Catalog Items and refine your preferences."}</p><div className="ui-lab-subject-related-head"><h2>Related Items</h2><button onClick={exploreRelated}>View All Related Items →</button></div><CatalogComposite compact subject={selectedSubject} initialItem={undefined}/></section>}
-      {workspace==="Explore All"&&<>{exploreSubject&&<div className="ui-lab-subject-filter-note"><span>Exploring: {exploreSubject}</span><button onClick={()=>go("Catalog","Explore All")}>Clear subject ×</button></div>}<CatalogComposite key={exploreSubject||"all"} subject={exploreSubject||undefined} />
+      {workspace==="Subject Overview"&&selectedSubject&&<section className="ui-lab-subject-overview"><p>{data.subjects.find(x=>x.name===selectedSubject)?.description||"Explore related Catalog Items and refine your preferences."}</p><div className="ui-lab-subject-related-head"><h2>Related Items</h2><button onClick={exploreRelated}>View All Related Items <AppIcon name="details" size={18} /></button></div><CatalogComposite compact subject={selectedSubject} initialItem={undefined}/></section>}
+      {workspace==="Explore All"&&<>{exploreSubject&&<div className="ui-lab-subject-filter-note"><span>Exploring: {exploreSubject}</span><button onClick={()=>go("Catalog","Explore All")}>Clear subject <AppIcon name="close" size={16} /></button></div>}<CatalogComposite key={exploreSubject||"all"} subject={exploreSubject||undefined} />
       </>}
-      {workspace==="Concept Explorer"&&<><SearchRow><SearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><SearchFilterButton active={catalogSort!=="default"} groupingAvailable={false} onClick={()=>openCatalogSearch("Concept Explorer",true)}/></SearchRow><div className="ui-lab-catalog-items">{concepts.map(item=><button key={item.id} onClick={()=>openLayer("concept",item.id)}>{item.name}<span>›</span></button>)}</div></>}
+      {workspace==="Concept Explorer"&&<><SearchRow><SearchField mode="launch" placeholder="Search concepts…" onActivate={()=>openCatalogSearch("Concept Explorer")} /><SearchFilterButton active={catalogSort!=="default"} groupingAvailable={false} onClick={()=>openCatalogSearch("Concept Explorer",true)}/></SearchRow><div className="ui-lab-catalog-items">{concepts.map(item=><button key={item.id} onClick={()=>openLayer("concept",item.id)}><span><AppIcon name="catalogConcept" size={17} inline />{item.name}</span><AppIcon name="details" size={18} /></button>)}</div></>}
       {workspace==="Kinks"&&<CatalogComposite />}
       {workspace==="Rewards & Punishments"&&<><p className="ui-lab-rp-note">Reward and punishment classifications are currently read-only here.</p><CatalogComposite collection="rewards" /></>}    </div>}
     {area==="Discover"&&<DiscoverWorkspace view={workspace} attemptId={params.get("attempt")||undefined} go={go}/>}
     {area==="Learn"&&<EducationWorkspace view={workspace} articleId={params.get("id")||""} go={go}/>}
     {area!=="Catalog"&&area!=="Discover"&&area!=="Learn"&&<LabOverview area={area} workspace={workspace} go={go} shortcuts={shortcuts} onShortcuts={setShortcuts}/>}
     {!(area==="Catalog"&&workspace==="Explore All")&&<p className="ui-lab-app-note">{area==="Learn"?"Experimental reader · Editorial drafts pending review · Reading does not save preferences":"Experimental UI · Illustrative content · Records and activity notes last for this mounted Lab session"}</p>}
-    <button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}>{toastLabOpen?"− Hide":"✦ Open"} Toast Playground</button>
+    <button type="button" className="ui-lab-app-switch" onClick={()=>setToastLabOpen(v=>!v)} aria-expanded={toastLabOpen}><AppIcon name="expand" size={18} inline style={{transform:toastLabOpen?"rotate(180deg)":undefined}} />{toastLabOpen?"Hide":"Open"} Toast Playground</button>
     {toastLabOpen&&<ToastPlayground/>}
     {showLab&&<section className="ui-lab-app-design"><h2>Design lab</h2><p>This entire screen is the shell prototype, not a preview inside another page.</p><div className="ui-lab-app-swatches">{["#101240","#520E25","#F0D3E7"].map(color=><div key={color} style={{background:color}}><code>{color}</code></div>)}</div><a href="#/hub">Return to production app</a></section>}
    </main>

@@ -1,3 +1,4 @@
+import { AppIcon } from "../../components/ui/AppIcon";
 import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAppServices } from "../../services/AppServicesProvider";
@@ -93,7 +94,7 @@ export function EducationWorkspace({view,articleId,go}:{view:string;articleId:st
       related.push(target);used.add(target.id);
     }
     return <div className="lab-education-reader">
-      <button type="button" className="lab-education-back" onClick={()=>go("Learn")}>← All articles</button>
+      <button type="button" className="lab-education-back" onClick={()=>go("Learn")}><AppIcon name="back" size={18} inline />All articles</button>
       <header className="lab-education-article-header">
         <p className="lab-education-overline">{article.section} · {article.level} · {article.readingMinutes} min read</p>
         <h2>{article.title}</h2>
@@ -105,7 +106,7 @@ export function EducationWorkspace({view,articleId,go}:{view:string;articleId:st
       {related.length>0&&<section className="lab-education-related" aria-labelledby="lab-education-related-heading">
         <h2 id="lab-education-related-heading">Continue learning</h2>
         <div className="lab-education-related-links">
-          {related.map(target=><button type="button" key={target.id} onClick={()=>go("Learn","Article",{id:target.id})}>{target.title} <span aria-hidden="true">↗</span></button>)}
+          {related.map(target=><button type="button" key={target.id} onClick={()=>go("Learn","Article",{id:target.id})}>{target.title} <AppIcon name="details" size={18} /></button>)}
         </div>
       </section>}
     </div>;

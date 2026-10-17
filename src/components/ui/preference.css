@@ -6,21 +6,8 @@
   gap: 6px;
   flex-shrink: 0;
 }
-.kp-rating {
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  color: #c6b1ca;
-  min-height: 42px;
-  min-width: 80px;
-  text-align: right;
-  padding: 6px 7px;
-  font-size: 12px !important;
-}
 .kp-rating:hover,
 .kp-rating:focus-visible {
-  background: #f0d3e70d;
-  border-color: #f0d3e735;
   color: var(--kp-pink);
 }
 .kp-save-status {
@@ -45,6 +32,7 @@
   align-items: start;
   gap: 10px;
 }
+.kp-sheet-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0 12px; }
 .kp-sheet-header small {
   color: #d0abc4;
   font-size: 12px;
@@ -78,24 +66,6 @@
   background: #f0d3e71c;
   transform: scale(0.94);
 }
-.kp-preference-options {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-.kp-preference-options button {
-  border: 1px solid #f0d3e73b;
-  background: #21214b;
-  color: var(--kp-pink);
-  border-radius: 9px;
-  text-align: left;
-  padding: 12px;
-  min-height: 44px;
-}
-.kp-preference-options button.chosen {
-  background: var(--kp-burgundy);
-  border-color: #f0d3e7a8;
-}
 .kp-preference-help,
 .kp-preference-clear {
   display: block;
@@ -115,17 +85,6 @@
   font-size: 12px;
   color: #d6bfd2;
 }
-@media (max-width: 680px) {
-  .kp-rating {
-    min-width: 65px;
-    min-height: 44px;
-    padding: 5px 2px;
-    font-size: 11px !important;
-  }
-  .kp-preference-options {
-    grid-template-columns: 1fr;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .kp-sheet-header > button:active {
     transform: none;
@@ -135,7 +94,50 @@
 .kp-preference-explanation dt { font-weight: 600; margin-top: 12px; }
 .kp-preference-explanation dd { margin: 4px 0; line-height: 1.5; }
 .kp-keyboard-hint { display: block; color: #c6b1ca; font-size: 12px; margin-bottom: 12px; }
-.kp-preference-options button:focus-visible { outline: 2px solid var(--kp-pink); outline-offset: 3px; }
-.kp-preference-options button { border-color: var(--kp-control-border); }
 .kp-rating, .kp-retry, .kp-preference-help, .kp-preference-clear { min-height: 44px; }
 .kp-sheet-header > div { min-width: 0; overflow-wrap: anywhere; }
+
+/* Every rating is an unboxed label inside a full-size interactive target. */
+.kp-preference-chip {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  max-width: 100%; min-height: 28px; box-sizing: border-box;
+  padding: 4px 0; border: 0; border-radius: 0; background: transparent;
+  color: var(--kp-pink);
+  font-size: 12px; line-height: 1.3; vertical-align: middle;
+}
+.kp-preference-chip > span { min-width: 0; overflow-wrap: anywhere; }
+.kp-preference-chip:not([data-preference]) { color: var(--kp-muted, #b7adc5); }
+.kp-preference-chip[data-preference="Hard Limit"] { font-weight: 650; }
+.kp-rating { appearance: none; border: 1px solid transparent; border-radius: 8px; background: transparent; color: inherit; display: inline-flex; align-items: center; justify-content: flex-end; min-height: 44px; min-width: 44px; padding: 2px 3px; }
+.kp-rating:hover .kp-preference-chip > span { text-decoration: underline; text-underline-offset: 3px; }
+.kp-rating:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 2px; }
+
+/* Stable floating frame: centered on phones and anchored on desktop. */
+.kp-preference-popover.kp-modal-layer { display: block; padding: 0; }
+.kp-preference-popover .kp-modal-panel.kp-preference-panel {
+  position: fixed; display: flex; flex-direction: column; gap: 10px;
+  box-sizing: border-box; min-width: 0; min-height: 0; height: auto;
+  overflow: hidden; padding: 14px; border-radius: 16px;
+  background: #1a1b44; box-shadow: 0 14px 44px #0008;
+}
+.kp-preference-popover .kp-modal-backdrop,
+.kp-preference-popover.cc-rating-over-refine .kp-modal-backdrop { background: #07082030; }
+.kp-preference-panel > .kp-sheet-header { flex: none; }
+.kp-preference-panel .kp-sheet-header h3 { margin-bottom: 0; font-size: 18px; }
+.kp-preference-panel .kp-sheet-header small { display: block; overflow-wrap: anywhere; }
+.kp-preference-panel .kp-keyboard-hint { flex: none; font-size: 11px; margin: 0; line-height: 1.4; }
+.kp-preference-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-gutter: stable; padding: 3px; }
+.kp-preference-options { display: flex; flex-direction: column; gap: 4px; }
+.kp-preference-options button {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  flex: none; min-height: 44px; padding: 10px; border: 1px solid transparent;
+  background: #f0d3e705; color: var(--kp-pink); border-radius: 9px; font: inherit; font-size: 13px; text-align: left;
+}
+.kp-preference-option-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.kp-preference-options button.chosen { border-color: #efb9d0; background: #520e2559; }
+.kp-preference-options button:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 1px; }
+.kp-preference-panel .kp-preference-help { padding: 10px 0; line-height: 1.5; }
+.kp-preference-panel > .kp-preference-clear { flex: none; margin: 0; padding: 10px 0 0; min-height: 44px; }
+.kp-preference-panel .kp-preference-help:focus-visible,
+.kp-preference-panel .kp-preference-clear:focus-visible,
+.kp-preference-panel .kp-sheet-header > button:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 1px; }

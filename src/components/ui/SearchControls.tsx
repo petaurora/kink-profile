@@ -1,3 +1,4 @@
+import { AppIcon } from "./AppIcon";
 import { appIcons } from "./appIcons";
 import { useId, type ReactNode } from "react";
 import { ModalLayer } from "./ModalLayer";
@@ -37,12 +38,14 @@ export function SearchFilterButton({
         "kp-ui kp-search-filter-trigger" + (active ? " is-active" : "")
       }
       aria-label={groupingAvailable ? "Sort and group results" : "Sort results"}
+      aria-description={active ? "Custom result order applied" : undefined}
       title={groupingAvailable ? "Sort and group results" : "Sort results"}
       aria-haspopup="dialog"
       aria-expanded={expanded}
       onClick={onClick}
     >
       <appIcons.sort size={22} stroke={1.65} aria-hidden="true" />
+      {active && <AppIcon name="confirm" size={12} className="kp-search-order-state" />}
     </button>
   );
 }
@@ -70,7 +73,7 @@ export function SearchChips({
           onClick={option.onClick}
         >
           {option.label}
-          {option.active && <span className="kp-search-chip__check" aria-hidden="true">✓</span>}
+          {option.active && <span className="kp-search-chip__check" aria-hidden="true"><AppIcon name="confirm" size={14} /></span>}
         </button>
       ))}
       {clear && (
@@ -128,14 +131,15 @@ export function SortGroupSheet({
         <button
           type="button"
           aria-label="Close"
+          title="Close sort options"
           className="kp-order-close"
           onClick={onClose}
         >
-          ×
+          <AppIcon name="close" size={20} />
         </button>
       </div>
       <fieldset className="kp-order-section">
-        <legend>Sort by</legend>
+        <legend><AppIcon name="sort" size={18} inline />Sort by</legend>
         {showDefault && (
           <button
             type="button"
@@ -146,7 +150,7 @@ export function SortGroupSheet({
             onClick={() => onSort("default")}
           >
             {defaultSortLabel}
-            <span aria-hidden="true">{sort === "default" ? "✓" : ""}</span>
+            <span aria-hidden="true">{sort === "default" && <AppIcon name="confirm" size={18} />}</span>
           </button>
         )}
         {(
@@ -165,13 +169,13 @@ export function SortGroupSheet({
             onClick={() => onSort(value)}
           >
             {title}
-            <span aria-hidden="true">{sort === value ? "✓" : ""}</span>
+            <span aria-hidden="true">{sort === value && <AppIcon name="confirm" size={18} />}</span>
           </button>
         ))}
       </fieldset>
       {canGroup && (
         <fieldset className="kp-order-section">
-          <legend>Group by</legend>
+          <legend><AppIcon name="group" size={18} inline />Group by</legend>
           {(
             [
               ["none", "None"],
@@ -188,7 +192,7 @@ export function SortGroupSheet({
               onClick={() => onGroup?.(value)}
             >
               {title}
-              <span aria-hidden="true">{group === value ? "✓" : ""}</span>
+              <span aria-hidden="true">{group === value && <AppIcon name="confirm" size={18} />}</span>
             </button>
           ))}
         </fieldset>

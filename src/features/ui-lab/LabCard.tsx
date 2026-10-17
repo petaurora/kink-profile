@@ -1,3 +1,4 @@
+import { AppIcon } from "../../components/ui/AppIcon";
 import { useId, type ReactNode } from "react";
 
 /** Shared workspace card. Secondary controls stay outside the navigation button. */
@@ -13,7 +14,7 @@ export function LabCard({title,description,icon,featured=false,onClick,href,chil
     {navigates?<strong>{title}</strong>:<h2>{title}</h2>}
     {description&&<small id={descriptionId}>{description}</small>}
     {status&&<span id={descriptionId+"-status"} className="lab-card-status">{status}</span>}
-    {navigates&&<span className="ui-lab-app-tile-arrow" aria-hidden="true">↗</span>}</>;
+    {navigates&&<span className="ui-lab-app-tile-arrow" aria-hidden="true"><AppIcon name="details" size={20} /></span>}</>;
   const label={"aria-label":actionLabel??title,"aria-describedby":[description&&descriptionId,status&&descriptionId+"-status"].filter(Boolean).join(" ")||undefined};
   if(children)return <section className={classes} aria-label={title}>
     {onClick?<button type="button" className="lab-card-main" {...label} onClick={onClick}>{body}</button>:body}

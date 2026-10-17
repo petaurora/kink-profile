@@ -5,7 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import axe from "axe-core";
 import { MemoryRouter } from "react-router-dom";
 import { ModalLayer } from "./ModalLayer";
-import { InlineSaveStatus } from "./PreferenceControl";
+import { InlineSaveStatus, PreferenceSheet } from "./PreferenceControl";
+import { PreferenceReference, preferenceChoices } from "../../features/ui-lab/PreferenceVocabulary";
 import { ToastProvider, useToasts } from "./ToastProvider";
 import { ToastViewport } from "./ToastViewport";
 import { CatalogComposite } from "../../features/ui-lab/CatalogComposite";
@@ -46,6 +47,13 @@ afterEach(() => {
 });
 
 describe("accessibility regressions", () => {
+  it("keeps expanded rating guidance valid and its icon-only decoration out of the control name", async () => {
+    mount(<PreferenceSheet open onClose={() => {}} label="Leather" options={preferenceChoices}
+      onChange={() => {}} help={<PreferenceReference/>}/>);
+    click(button("What do these ratings mean?"));
+    expect(button("What do these ratings mean?").getAttribute("aria-expanded")).toBe("true");
+    await audit();
+  }, 15000);
   it("isolates background and nested sheets, including newly mounted content, then restores original attributes", async () => {
     function Harness() {
       const [open, setOpen] = useState(false), [child, setChild] = useState(false);

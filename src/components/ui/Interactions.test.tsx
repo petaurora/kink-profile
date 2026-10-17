@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ModalLayer } from "./ModalLayer";
 import { SearchField } from "./SearchField";
 import { PreferenceControl, PreferenceSheet } from "./PreferenceControl";
+import { PreferenceChip } from "./PreferenceChip";
 import { DisclosureSection } from "./DisclosureSection";
 import { ToastViewport, type ToastMessage } from "./ToastViewport";
 import { ToastProvider, useToasts } from "./ToastProvider";
@@ -183,6 +184,16 @@ describe("shared modal interactions", () => {
 });
 
 describe("controlled preferences, disclosure and search", () => {
+  it("keeps summary chips read-only with full boundary text and makes editing an explicit control", () => {
+    const activate = vi.fn();
+    mount(<PreferenceChip value="Hard Limit"/>);
+    expect(container.textContent).toBe("Hard Limit");
+    expect(container.querySelector("button, [tabindex], [role=button]")).toBeNull();
+    expect(container.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
+    mount(<PreferenceControl label="Collars" value="Hard Limit" onActivate={activate}/>);
+    click(button("Collars: Hard Limit. Change rating"));
+    expect(activate).toHaveBeenCalledOnce();
+  });
   it("opens help without changing a rating and clears only through an explicit action", () => {
     const change = vi.fn();
     mount(
@@ -197,7 +208,7 @@ describe("controlled preferences, disclosure and search", () => {
         help="Preference, not experience."
       />,
     );
-    click(button("What do these mean? +"));
+    click(button("What do these ratings mean?"));
     expect(document.body.textContent).toContain("Preference, not experience.");
     expect(change).not.toHaveBeenCalled();
     click(button("Clear rating"));

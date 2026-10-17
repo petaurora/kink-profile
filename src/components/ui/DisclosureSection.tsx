@@ -1,3 +1,4 @@
+import { AppIcon } from "./AppIcon";
 import { appIcons } from "./appIcons";
 import { useId, type ReactNode } from "react";
 import "./disclosure.css";
@@ -10,6 +11,7 @@ export function DisclosureSection({
   onToggle,
   children,
   status,
+  icon,
 }: {
   title: string;
   description?: string;
@@ -17,6 +19,7 @@ export function DisclosureSection({
   onToggle: () => void;
   children: ReactNode;
   status?: "saving" | "failed";
+  icon?: ReactNode;
 }) {
   const id = useId();
   return (
@@ -30,10 +33,10 @@ export function DisclosureSection({
         onClick={onToggle}
       >
         <span>
-          {title}
+          {icon}{title}
           {description && <small>{description}</small>}
         </span>
-        <span>{status && <span className="kp-group-status" role="status" aria-label={status === "failed" ? "Save failed" : "Saving"}>{status === "failed" ? "!" : "◌"}</span>}<span aria-hidden="true"><appIcons.expand size={18} stroke={1.65} style={{ transform: open ? "rotate(180deg)" : undefined }} /></span></span>
+        <span>{status && <span className="kp-group-status" role="status" aria-label={status === "failed" ? "Save failed" : "Saving"}><AppIcon name={status === "failed" ? "error" : "pending"} size={16} /></span>}<span aria-hidden="true"><appIcons.expand size={18} stroke={1.65} style={{ transform: open ? "rotate(180deg)" : undefined }} /></span></span>
       </button>
       <div id={id} hidden={!open}>
         {open && children}

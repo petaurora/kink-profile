@@ -1,3 +1,4 @@
+import { AppIcon } from "./AppIcon";
 import { appIcons } from "./appIcons";
 import type { ReactNode, MouseEvent } from "react";
 import "./itemRow.css";
@@ -29,19 +30,21 @@ export function ItemRow({
           <span className="kp-item-name">{name}</span>
           {indicators}
         </span>
-        {preference}
-        {onRefine && (
-          <button
-            type="button"
-            className="kp-refine-toggle"
-            aria-haspopup="dialog"
-            aria-label={refineStatus === "failed" ? `${name}: Modifier save failed. Reveal issue` : refineStatus === "saving" ? `${name}: Saving modifiers. Refine` : `Refine ${name}${refined ? ". Has rated modifiers" : ""}`}
-            onClick={onRefine}
-          >
-            <appIcons.refine size={17} stroke={1.65} aria-hidden="true" /> Refine
-            {refineStatus ? <span className={`kp-refine-status kp-refine-status--${refineStatus}`} aria-hidden="true">{refineStatus === "failed" ? "!" : "◌"}</span> : refined && <span className="kp-refined-dot" aria-hidden="true" />}
-          </button>
-        )}
+        <div className="kp-item-actions">
+          {preference}
+          {onRefine && (
+            <button
+              type="button"
+              className="kp-refine-toggle"
+              aria-haspopup="dialog"
+              aria-label={refineStatus === "failed" ? `${name}: Modifier save failed. Reveal issue` : refineStatus === "saving" ? `${name}: Saving modifiers. Refine` : `Refine ${name}${refined ? ". Has rated modifiers" : ""}`}
+              onClick={onRefine}
+            >
+              <appIcons.refine size={17} stroke={1.65} aria-hidden="true" /> Refine
+              {refineStatus ? <span className={`kp-refine-status kp-refine-status--${refineStatus}`} aria-hidden="true"><AppIcon name={refineStatus === "failed" ? "error" : "pending"} size={15} /></span> : refined && <span className="kp-refined-dot" aria-hidden="true" />}
+            </button>
+          )}
+        </div>
         {supportingText && <small className="kp-item-supporting-text">{supportingText}</small>}
       </div>
     </article>

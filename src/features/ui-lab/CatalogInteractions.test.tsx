@@ -17,8 +17,13 @@ const click = (el: HTMLElement) => act(() => { el.focus(); el.click(); });
 const key = (value: string) => act(() => document.activeElement?.dispatchEvent(new KeyboardEvent("keydown", { key: value, bubbles: true })));
 const advance = async (ms: number) => act(async () => {await vi.advanceTimersByTimeAsync(ms);});
 function mount(collection: "kinks" | "rewards" = "kinks",subject?:string) {
-  act(() => root.render(<ToastProvider><LabRecordsProvider><CatalogComposite collection={collection} subject={subject}/></LabRecordsProvider></ToastProvider>));
+  act(() => root.render(<ToastProvider><LabRecordsProvider><CatalogComposite collection={collection} subject={subject}/><RecordsProbe/></LabRecordsProvider></ToastProvider>));
 }
+function RecordsProbe() {
+  const { values, revisions } = useLabRecords();
+  return <output data-records hidden>{JSON.stringify({ values, revisions })}</output>;
+}
+const recorded = () => JSON.parse(document.querySelector("[data-records]")!.textContent!);
 function refine() {
   const row = document.querySelector('[data-item-id="collars"]')!;
   click([...row.querySelectorAll<HTMLButtonElement>("button")].find(el => el.textContent?.includes("Refine"))!);
@@ -52,10 +57,10 @@ it("uses canonical choices, explicit keyboard commit and session help", async ()
   key("ArrowDown"); expect(document.activeElement).toBe(button("Like"));
   expect(button("Like").getAttribute("aria-pressed")).toBe("false");
   expect(document.body.textContent).not.toContain("Dislike");
-  click(button("What do these mean? +")); expect(document.body.textContent).toContain("Potential personal interest in participating");
+  click(button("What do these ratings mean?")); expect(document.body.textContent).toContain("Potential personal interest in participating");
   click(button("Unsure"));
   click(button("Collars overall: Unsure. Change rating"));
-  expect(button("What do these mean? −").getAttribute("aria-expanded")).toBe("true");
+  expect(button("What do these ratings mean?").getAttribute("aria-expanded")).toBe("true");
   key("Escape"); expect(button("Collars overall: Unsure. Change rating")).toBeTruthy();
   click(button("Collars overall: Unsure. Change rating")); key("Tab"); key("Home"); key("Enter"); expect(button("Collars overall: Love. Change rating")).toBeTruthy();
 });
@@ -68,6 +73,27 @@ it("clears with genuine exact-value Undo while a previous save is pending", asyn
   expect(button("Collars overall: Curious. Change rating")).toBeTruthy();
   expect([...document.querySelectorAll('[role="status"]')].find(node=>node.textContent==="Collars overall: Saved")??null).not.toBeNull();
   await advance(1250); expect([...document.querySelectorAll('[role="status"]')].find(node=>node.textContent==="Collars overall: Saved")??null).toBeNull();
+});
+
+it("opens a seven-choice picker without evidence and dismisses the current rating without a duplicate revision", () => {
+  function History() { return <output data-revisions>{useLabRecords().revisions.length}</output>; }
+  act(() => root.render(<ToastProvider><LabRecordsProvider><CatalogComposite/><History/></LabRecordsProvider></ToastProvider>));
+  const revisions = () => document.querySelector('[data-revisions]')?.textContent;
+  click(button("Collars overall: Not rated. Change rating"));
+  expect(revisions()).toBe("0");
+  expect(document.querySelectorAll('.kp-preference-options button')).toHaveLength(7);
+  expect(document.querySelector('.kp-preference-options')?.textContent).not.toContain("Not rated");
+  key("Tab"); key("ArrowDown");
+  expect(revisions()).toBe("0");
+  key("Enter"); expect(revisions()).toBe("1");
+  const chip = button("Collars overall: Like. Change rating");
+  click(chip); click(document.querySelector<HTMLButtonElement>('.kp-preference-options button[aria-pressed="true"]')!);
+  expect(revisions()).toBe("1");
+  expect(document.querySelector('.kp-preference-popover')).toBeNull();
+  expect(document.activeElement).toBe(chip);
+  click(chip); key("Tab"); key("Enter");
+  expect(revisions()).toBe("1");
+  expect(document.activeElement).toBe(chip);
 });
 
 it("an older Undo never overwrites a newer explicit edit", async () => {
@@ -89,18 +115,45 @@ it("reveals failed modifiers from the collapsed parent and retries the current v
   expect(document.querySelector('[aria-label="Collars: Modifier save failed. Reveal issue"]')).toBeNull();
 });
 
-it("keeps Tried and Comfort independent of rating and makes Tried reversible", async () => {
+it("keeps Experienced independent of rating and reverses its unboxed toggle without a toast", () => {
   mount(); rate("Collars overall: Not rated. Change rating", "Hard Limit"); refine();
-  click(button("ExperienceOptional · Independent of preference⌄"));
-  click(button("Comfortable"));
-  const tried = document.querySelector<HTMLInputElement>('.cc-experience input')!;
-  expect(tried.checked).toBe(false); click(tried);
-  expect(button("Comfortable").getAttribute("aria-pressed")).toBe("true");
-  expect([...document.querySelectorAll<HTMLButtonElement>("button")].some(el => el.textContent?.trim() === "Undo")).toBe(false);
-  // Reversible in place without a toast; unrelated comfort/rating stays put.
-  click(tried); expect(tried.checked).toBe(false);
-  expect(button("Comfortable").getAttribute("aria-pressed")).toBe("true");
-  expect(button("Collars overall: Hard Limit. Change rating")).toBeTruthy();
+  const tried = button("Collars: Experienced");
+  expect(tried.getAttribute("aria-pressed")).toBe("false");
+  expect(tried.textContent).toBe("Experienced");
+  expect(document.querySelector('.cc-refine-sheet input[type="checkbox"]')).toBeNull();
+  tried.focus(); expect(recorded().revisions).toHaveLength(1);
+  click(tried);
+  expect(tried.getAttribute("aria-pressed")).toBe("true");
+  expect(tried.textContent).toBe("Experienced");
+  expect(tried.querySelector(".kp-icon")).not.toBeNull();
+  expect(recorded().values["collars:overall"]).toBe("Hard Limit");
+  expect(document.querySelector('[aria-label="Dismiss notification"]')).toBeNull();
+  click(tried); expect(tried.getAttribute("aria-pressed")).toBe("false");
+  expect(recorded().values["experience:collars:tried"]).toBeUndefined();
+  expect(document.querySelector('[aria-label="Dismiss notification"]')).toBeNull();
+  const rating = document.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-rating')!;
+  click(rating); click(button("Like"));
+  expect(recorded().values["collars:overall"]).toBe("Like");
+  expect(tried.getAttribute("aria-pressed")).toBe("false");
+  expect(document.activeElement).toBe(rating);
+});
+
+it("opens no-modifier Refine and its title picker without creating records through navigation", () => {
+  mount(); click(button("Refine Predicament Bondage"));
+  const trigger = document.querySelector<HTMLButtonElement>('.cc-refine-rating .kp-rating')!;
+  click(button("About experience"));
+  expect(recorded().revisions).toHaveLength(0);
+  expect(document.querySelector('.cc-refine-sheet')?.textContent).not.toContain("Comfort");
+  click(trigger); key("Tab"); key("ArrowDown");
+  expect(recorded().revisions).toHaveLength(0);
+  key("Escape"); expect(document.activeElement).toBe(trigger);
+  click(trigger); click(button("Unsure"));
+  expect(recorded().values["predicament-bondage:overall"]).toBe("Unsure");
+  click(trigger); click(button("Unsure"));
+  expect(recorded().revisions).toHaveLength(1);
+  click(trigger); key("Tab"); key("Enter");
+  expect(recorded().revisions).toHaveLength(1);
+  expect(document.activeElement).toBe(trigger);
 });
 
 it("preserves latest pending edits and revisions across feature remounts", async () => {

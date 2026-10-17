@@ -10,5 +10,5 @@ const meanings = [
   "This target genuinely does not apply in the stated context; not disinterest or inexperience.",
 ];
 export function PreferenceReference() {
-  return <dl>{preferenceChoices.map((label, index) => <div key={label}><dt>{label}</dt><dd>{meanings[index]}</dd></div>)}<p>Preference, Tried and Comfort are independent. These records do not establish consent.</p></dl>;
+  return <><dl>{preferenceChoices.map((label, index) => <div key={label}><dt>{label}</dt><dd>{meanings[index]}</dd></div>)}</dl><p>Preference, Experienced and Comfort are independent. These records do not establish consent.</p></>;
 }
