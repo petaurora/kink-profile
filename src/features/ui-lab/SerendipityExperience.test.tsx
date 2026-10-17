@@ -84,7 +84,7 @@ it("uses existing persistent session dismiss/restore with no nested navigation b
 });
 
 it("does not promote bare shared-item neighbors to unexpected conceptual connections",async()=>{
-  await mount(createUiLabServices({latencyMs:0,referenceData:illustrativeReferenceData}).services,
+  await mount(createUiLabServices({latencyMs:0}).services,
     "/ui-lab/discover/surprise?topic=metal");
   expect(document.querySelector(".lab-serendipity-connections")).toBeNull();
   click(action(".lab-serendipity-explore"));
