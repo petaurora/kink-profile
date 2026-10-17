@@ -115,14 +115,21 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
   const [index, setIndex] = useState(resumeIndex.current);
   const [wide, setWide] = useState(() => window.innerWidth > 700);
   const focused = useRef(false);
+  const pendingFocus = useRef<number | null>(null);
   const container = useRef<HTMLDivElement>(null);
   const questions = useMemo(() => getQuestionsForQuiz(quiz), [quiz]);
   const state = resolveQuizLifecycle(quiz, profile);
   const answers = getQuizAttemptAnswers(quiz, profile);
   const answered = getAnsweredCount(quiz, answers);
+  const remaining = questions.length - answered;
+  const firstUnanswered = questions.findIndex(question => answers[question.id] === undefined);
   const start = Math.floor(index / 3) * 3;
   const visible = wide ? questions.slice(start, start + 3).map((q, n) => ({ q, i: start + n })) :
     questions[index] ? [{q: questions[index], i: index}] : [];
+  const batchUnanswered = visible.filter(({q}) => answers[q.id] === undefined).length;
+  const mobileNext = index < questions.length - 1
+    ? index + 1
+    : firstUnanswered >= 0 && firstUnanswered !== index ? firstUnanswered : null;
   useEffect(() => {
     const update = () => setWide(window.innerWidth > 700);
     window.addEventListener("resize", update);
@@ -131,13 +138,29 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
   useEffect(() => {
     // On the first visit, focus the earliest unanswered question (which may
     // be the middle card). On Back/Next, focus the newly shown question group.
-    const focusIndex = focused.current ? (wide ? start : index) : resumeIndex.current;
+    const focusIndex = !focused.current ? resumeIndex.current
+      : pendingFocus.current ?? (wide ? start : index);
     const heading = container.current?.querySelector<HTMLElement>(`[data-quiz-question-index="${focusIndex}"]`);
     if (heading) {
       focused.current = true;
+      pendingFocus.current = null;
       heading.focus({preventScroll:true});
+      heading.scrollIntoView?.({block:"nearest"});
     }
   }, [wide, index, start]);
+
+  function jumpToUnanswered() {
+    if (firstUnanswered < 0) return;
+    pendingFocus.current = firstUnanswered;
+    if (index === firstUnanswered) {
+      const heading = container.current?.querySelector<HTMLElement>(`[data-quiz-question-index="${firstUnanswered}"]`);
+      heading?.focus({preventScroll:true});
+      heading?.scrollIntoView?.({block:"nearest"});
+      pendingFocus.current = null;
+    } else {
+      setIndex(firstUnanswered);
+    }
+  }
 
   if (state.state === "complete") {
     return <p>This quiz is complete. <button type="button" onClick={() => go("Quizzes", "Results", {id:quiz.id})}>View results</button></p>;
@@ -162,7 +185,11 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
         <div role="progressbar" className="lab-quiz-progress-track" aria-label="Quiz answers saved" aria-valuenow={answered} aria-valuemin={0} aria-valuemax={questions.length} aria-valuetext={`${answered} of ${questions.length} answered`}>
           <span style={{width:`${100 * answered / questions.length}%`}}/>
         </div>
-        <p>{answered} of {questions.length} answered. Your answers save as you select them.</p>
+        <div className="lab-quiz-run-guidance" role="status" aria-live="polite">
+          <span>{answered} of {questions.length} answered · {remaining} unanswered</span>
+          {wide && batchUnanswered > 0 && <span>{batchUnanswered} unanswered in this group</span>}
+        </div>
+        <p className="lab-quiz-skip-note">It's okay to move ahead. Unanswered questions stay open until you choose an answer.</p>
       </div>
       <div className="lab-quiz-question-stack">
         {visible.map(({q,i}) => (
@@ -185,10 +212,24 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
       </div>
       <nav className="lab-quiz-run-actions" aria-label="Quiz navigation">
         <button type="button" disabled={index === 0} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
-        <button type="button" onClick={() => go("Quizzes")}>Save & exit</button>
-        {wide && <button type="button" onClick={() => setIndex(start + 3 >= questions.length ? initialQuestionIndex(quiz,profile) : Math.min(start+3,questions.length-1))}>
-          {start + 3 >= questions.length ? "Review unanswered" : "Next questions →"}
+        {remaining > 0 && <button type="button" className="lab-quiz-review-link" onClick={jumpToUnanswered}>
+          Review unanswered ({remaining})
         </button>}
+        <button type="button" onClick={() => go("Quizzes")}>Save & exit</button>
+        {wide ? (
+          <button type="button" onClick={() => start + 3 >= questions.length
+            ? jumpToUnanswered()
+            : setIndex(Math.min(start + 3, questions.length - 1))}>
+            {start + 3 >= questions.length ? "Review unanswered →" : "Next questions →"}
+          </button>
+        ) : mobileNext !== null && (
+          <button type="button" onClick={() => {
+            if (index === questions.length - 1) jumpToUnanswered();
+            else setIndex(mobileNext);
+          }}>
+            {index === questions.length - 1 ? "Review unanswered →" : "Next question →"}
+          </button>
+        )}
       </nav>
     </section>
   );
