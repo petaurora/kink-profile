@@ -74,3 +74,25 @@ it("focuses the exact resumed desktop prompt and batch headings after navigation
   expect(focusIndex()).toBe("4");
   expect(loadProfile().quizzes[quiz.id]?.answers).toEqual(profile.quizzes[quiz.id]?.answers);
 });
+
+
+it("scrolls the full mobile question card into reading position on load and auto-advance",()=>{
+  Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
+  const original=HTMLElement.prototype.scrollIntoView;
+  const scroll=vi.fn();
+  Object.defineProperty(HTMLElement.prototype,"scrollIntoView",{configurable:true,value:scroll});
+  try {
+    renderQuiz();
+    const first=host.querySelector(".lab-quiz-question");
+    expect(document.activeElement).toBe(first?.querySelector("h2"));
+    expect(scroll).toHaveBeenCalledWith({block:"start",behavior:"instant"});
+    expect(scroll.mock.contexts[0]).toBe(first);
+    act(()=>host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[2].click());
+    expect(focusIndex()).toBe("1");
+    expect(scroll.mock.contexts.at(-1)).toBe(host.querySelector(".lab-quiz-question"));
+    expect(scroll.mock.calls.at(-1)?.[0]).toEqual({block:"start",behavior:"instant"});
+  } finally {
+    if(original) Object.defineProperty(HTMLElement.prototype,"scrollIntoView",{configurable:true,value:original});
+    else delete (HTMLElement.prototype as HTMLElement & {scrollIntoView?:typeof scroll}).scrollIntoView;
+  }
+});
