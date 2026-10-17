@@ -93,6 +93,6 @@ it("scrolls the full mobile question card into reading position on load and auto
     expect(scroll.mock.calls.at(-1)?.[0]).toEqual({block:"start",behavior:"instant"});
   } finally {
     if(original) Object.defineProperty(HTMLElement.prototype,"scrollIntoView",{configurable:true,value:original});
-    else delete (HTMLElement.prototype as HTMLElement & {scrollIntoView?:typeof scroll}).scrollIntoView;
+    else Reflect.deleteProperty(HTMLElement.prototype,"scrollIntoView");
   }
 });
