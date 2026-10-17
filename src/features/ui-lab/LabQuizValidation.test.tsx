@@ -85,11 +85,11 @@ it("reloads a sparse attempt with unknown answers and keeps existing unrelated e
   const unrelated=JSON.stringify(loadProfile().quizzes[other.id]);
   mount(labPath("Quizzes","Question",{id:quiz.id}));
   expect(select("[role=progressbar]").getAttribute("aria-valuenow")).toBe("0");
-  click([...host.querySelectorAll<HTMLElement>(".lab-quiz-run-actions button")]
-    .find(b=>b.textContent?.startsWith("Next question"))!);
+  expect(host.textContent).not.toMatch(/Next question|Review unanswered|move ahead/i);
   expect(getQuizAttemptAnswers(quiz,loadProfile())).toEqual({});
   click(host.querySelectorAll<HTMLElement>(".lab-quiz-options button")[1]);
-  expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[1]]:1});
+  expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:1});
+  expect(select(".lab-quiz-question h2").getAttribute("data-quiz-question-index")).toBe("1");
   expect(JSON.stringify(loadProfile().quizzes[other.id])).toBe(unrelated);
   expect(Object.keys(loadProfile().quizzes[quiz.id]?.answers??{})).toHaveLength(1);
   expect(getQuestionsForQuiz(quiz)).toHaveLength(quiz.questionIds.length);
