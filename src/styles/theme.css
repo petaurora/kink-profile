@@ -25,11 +25,12 @@
   /* Text */
   --text-primary: var(--palette-lavender);
   --text-secondary: rgba(240, 211, 231, .74);
-  --text-muted: rgba(240, 211, 231, .54);
+  --text-muted: rgba(240, 211, 231, .62);
   --text-on-accent: var(--palette-midnight);
 
   /* Interaction */
-  --accent-primary: var(--palette-orchid);
+  /* Lift the interactive orchid above dark surfaces for small-text contrast. */
+  --accent-primary: #E07BC9;
   --accent-secondary: var(--palette-amethyst);
   --accent-border: rgba(201, 73, 172, .58);
   --focus-ring: rgba(201, 73, 172, .42);

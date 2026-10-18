@@ -1,0 +1,6 @@
+{
+  "description": "Initial production gzip level-9 sizes plus approximately 10 percent headroom. Review budget changes explicitly.",
+  "javascriptGzipBytes": 589824,
+  "cssGzipBytes": 64512,
+  "largestJavascriptGzipBytes": 376832
+}

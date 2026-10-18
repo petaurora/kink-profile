@@ -74,8 +74,8 @@ it('keeps the four styled Home cards and truthful empty states with working dest
   await mount();expect(document.querySelectorAll('.lab-home-cards > .ui-lab-app-tile')).toHaveLength(4);
   expect(document.querySelector('.lab-continue-card.featured')).not.toBeNull();
   expect(document.body.textContent).toContain('No unfinished activities');
-  const profile=document.querySelector<HTMLButtonElement>('.lab-home-cards button.ui-lab-app-tile')!;await click(profile);expect(route()).toBe('/ui-lab/profile');
-  await click(button('Home'));const discover=[...document.querySelectorAll<HTMLButtonElement>('.lab-home-cards button.ui-lab-app-tile')].find(node=>node.textContent?.includes('Discover something'))!;await click(discover);expect(route()).toBe('/ui-lab/discover');
+  await click(button('Your profile at a glance'));expect(route()).toBe('/ui-lab/profile');
+  await click(button('Home'));await click(button('Discover something'));expect(route()).toBe('/ui-lab/discover');
 });
 it('labels Training records using exact item identity rather than the Ownership prefix',async()=>{
   await mount('/ui-lab/catalog/kinks');await click(button('Training overall: Not rated. Change rating'));await click(button('Love'));await click(button('Profile'));await click(button('Your profile'));

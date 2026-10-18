@@ -18,7 +18,6 @@ import type { SignalId as LegacySignalId, WeightedQuestion } from "../data/signa
 import type { CatalogProfileState } from "./catalogProfile";
 import {
   projectDirectCatalogEvidenceToSignals,
-  type DirectCatalogSignalProjection,
   type ExplicitCatalogSignalProjection,
   type PairwiseCatalogSignalProjection,
 } from "./profileEvidence";

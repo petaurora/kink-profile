@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "types": ["node"] },
+  "include": ["e2e/**/*.ts", "visual/**/*.ts", "smoke/**/*.ts", "playwright.visual.config.ts", "playwright.deployed.config.ts", "playwright.config.ts", "vitest.config.ts"]
+}

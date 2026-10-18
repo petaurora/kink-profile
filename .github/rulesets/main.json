@@ -1,0 +1,98 @@
+{
+  "name": "main: required CI",
+  "target": "branch",
+  "enforcement": "active",
+  "bypass_actors": [],
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "refs/heads/main"
+      ],
+      "exclude": []
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "dismiss_stale_reviews_on_push": true,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_approving_review_count": 0,
+        "required_review_thread_resolution": true,
+        "allowed_merge_methods": [
+          "merge",
+          "squash",
+          "rebase"
+        ]
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": true,
+        "do_not_enforce_on_create": true,
+        "required_status_checks": [
+          {
+            "context": "build",
+            "integration_id": 15368
+          },
+          {
+            "context": "Static checks",
+            "integration_id": 15368
+          },
+          {
+            "context": "Workflow lint",
+            "integration_id": 15368
+          },
+          {
+            "context": "Browser journeys and accessibility",
+            "integration_id": 15368
+          },
+          {
+            "context": "Visual regression",
+            "integration_id": 15368
+          },
+          {
+            "context": "CodeQL scan",
+            "integration_id": 15368
+          },
+          {
+            "context": "Dependency review",
+            "integration_id": 15368
+          },
+          {
+            "context": "Dependency audit",
+            "integration_id": 15368
+          },
+          {
+            "context": "Deployed preview smoke",
+            "integration_id": 15368
+          },
+          {
+            "context": "preview",
+            "integration_id": 15368
+          }
+        ]
+      }
+    },
+    {
+      "type": "code_scanning",
+      "parameters": {
+        "code_scanning_tools": [
+          {
+            "tool": "CodeQL",
+            "alerts_threshold": "errors",
+            "security_alerts_threshold": "high_or_higher"
+          }
+        ]
+      }
+    }
+  ]
+}

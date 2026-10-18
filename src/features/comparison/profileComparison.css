@@ -78,7 +78,7 @@
 
 .comparison-profile-chip > span,
 .comparison-upload-selected > div > span {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: .7rem;
   font-weight: 850;
   text-transform: uppercase;

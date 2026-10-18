@@ -600,6 +600,7 @@ export function restoreProfileBackup(
       error instanceof Error
         ? `The restore failed: ${error.message}`
         : "The restore failed while writing local profile data.",
+      { cause: error },
     );
   }
 

@@ -4,7 +4,6 @@ import {modifierTemplate} from "./modifierTemplates";
 const slug=(x:string)=>x.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 const g=(name:string, values:string[]):CatalogV2Group=>({id:slug(name),name,values:values.map(name=>({id:slug(name),name}))});
 const item=(name:string,themeId:string,groups:CatalogV2Group[]=[]):CatalogV2Item=>({id:slug(name),name,themeIds:[themeId],groups:groups.filter(group=>group.values.length>0),pendingGroupIds:groups.filter(group=>group.values.length===0).map(group=>group.id),collections:["kinks"]});
-const groupOf=(name:string,theme:string, groups:CatalogV2Group[]=[])=>(item(name,theme,groups));
 const collections: Record<string,CatalogV2Item[]>={
  equipment:[
  {...item("Collaring","equipment",[g("Format / Context",["Witnessed / Community"])]),description:"The consensual act, ritual or relationship meaning of giving or receiving a collar, distinct from liking collars as objects."},

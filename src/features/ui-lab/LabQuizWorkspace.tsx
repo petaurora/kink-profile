@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { profileRoute } from "../../app/routes";
 import { answerOptions } from "../../data/quizScale";
@@ -58,6 +58,7 @@ function NativeRadar({ view }: { view: QuizRadarView }) {
   );
 }
 function QuizLanding({ go, snapshot }: { go: Go; snapshot: QuizSnapshot }) {
+  const descriptionPrefix = useId();
   const available = snapshot.quizzes;
   const completed = available.filter(record => record.lifecycle.hasEstablishedResult).length;
   return (
@@ -79,20 +80,23 @@ function QuizLanding({ go, snapshot }: { go: Go; snapshot: QuizSnapshot }) {
                 : `${quiz.questionIds.length} questions · ~${quiz.estimatedMinutes} min`;
           const disabled = status.state === "error" || quiz.availability !== "available";
           return (
+            <section key={quiz.id} className="lab-quiz-card" data-unavailable={disabled||undefined}>
             <button
-              type="button" key={quiz.id} className="lab-quiz-card"
+              type="button" className="lab-quiz-card-main"
               aria-label={`${quiz.title}: ${action}. ${meta}`}
+              aria-describedby={`${descriptionPrefix}-${quiz.id}`}
               disabled={disabled}
               onClick={() => go("Quizzes", status.state === "complete" ? "Results" : "Question", { id: quiz.id })}
             >
               <span className="lab-quiz-card-top"><span className="lab-quiz-card-glyph"><QuizGlyph name={quiz.icon}/></span><appIcons.next aria-hidden="true" size={19}/></span>
               <span className="lab-quiz-card-name">{quiz.title}</span>
-              <span className="lab-quiz-card-description">{quiz.description}</span>
+            </button>
+              <span id={`${descriptionPrefix}-${quiz.id}`} className="lab-quiz-card-description">{quiz.description}</span>
               <span className="lab-quiz-card-bottom"><span>{meta}</span><strong>{action} →</strong></span>
               {(status.state === "in-progress" || status.state === "retake-in-progress") && (
                 <span className="lab-quiz-progress-track kp-progress-track" aria-hidden="true"><span style={{width:`${100 * status.answeredCount / status.totalQuestions}%`}} /></span>
               )}
-            </button>
+            </section>
           );
         })}
       </div>

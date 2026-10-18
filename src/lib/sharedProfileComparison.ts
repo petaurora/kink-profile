@@ -14,7 +14,6 @@ import {
   type SignalId,
 } from "../data/signals";
 import {
-  getCatalogPreference,
   isExcludedCatalogState,
   type CatalogItemPreference,
   type CatalogPreferenceState,
