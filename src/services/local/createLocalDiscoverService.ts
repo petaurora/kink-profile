@@ -19,6 +19,9 @@ export function createLocalDiscoverService(): DiscoverService {
       {id:"education-articles",title:"Read education articles",reason:"Beginner guides · Reading never changes your profile.",destination:"education"},
     ],
   };
+  // UI Lab-only, closed allowlist: an explicit discovery Hide is a separate
+  // dismissal record, never a rating or inferred profile preference.
+  const prototypeEditorialIds = new Set(["discovery:trust","discovery:ceremonial","discovery:ownership","discovery:leather","discovery:metal"]);
   const snapshot = () => structuredClone(state);
   const check = (options?: RequestOptions) => options?.signal?.throwIfAborted();
   function attempt(id: string) {
@@ -62,7 +65,7 @@ export function createLocalDiscoverService(): DiscoverService {
     async removeAttempt(id, options) { check(options); attempt(id); state.attempts = state.attempts.filter(value => value.id !== id); return snapshot(); },
     async setDismissed(id, dismissed, options) {
       check(options);
-      if (!state.suggestions.some(value => value.id === id)) throw new ServiceError("invalid-target", "This suggestion is unavailable.");
+      if (!state.suggestions.some(value => value.id === id) && !prototypeEditorialIds.has(id)) throw new ServiceError("invalid-target", "This suggestion is unavailable.");
       state.dismissed = state.dismissed.filter(value => value !== id);
       if (dismissed) state.dismissed.push(id);
       return snapshot();
