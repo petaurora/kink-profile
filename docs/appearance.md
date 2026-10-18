@@ -13,7 +13,7 @@ Midnight's light pink, `#f0d3e7`, is the shared `--brand-pink` and
 `--accent-primary` in every preset. Filled primary actions use this pink with
 dark `--text-on-accent` ink. Dark themes also use it for accent text; light
 themes retain darker accent ink for contrast. `--accent-theme` preserves each
-palette's distinct color for progress gradients and tonal surfaces. The picker
+palette's distinct color for progress gradients. The picker
 previews show the same pink accent in all five palettes.
 `data-theme` is set on the document element; nested scopes are only for the
 appearance picker's decorative previews. Geometry, feature behavior and the

@@ -102,7 +102,7 @@
 .ui-lab-app .ui-lab-app-bottom button:focus-visible,.ui-lab-app .ui-lab-app-rail button:focus-visible{outline:2px solid var(--focus-ring);outline-offset:-2px;}
 .ui-lab-app .ui-lab-app-rail button .ui-lab-nav-icon-wrap{width:28px;height:28px;}
 .ui-lab-app .ui-lab-app-rail button .ui-lab-nav-icon{width:21px;height:21px;}
-.ui-lab-app .ui-lab-app-rail button.active{background:color-mix(in srgb, var(--accent-text) 42%, transparent);border-left:3px solid var(--accent-border);}
+.ui-lab-app .ui-lab-app-rail button.active{background:color-mix(in srgb, var(--accent-text) 32%, transparent);border-left:3px solid var(--accent-border);}
 @media(prefers-reduced-motion:reduce){.ui-lab-app .ui-lab-nav-icon-wrap,.ui-lab-app .ui-lab-app-bottom button{transition:none;}}
 
 /* Refined navigation interaction and mirrored header accent. */
