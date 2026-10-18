@@ -105,7 +105,7 @@ async function runAxe() {
 it("passes automated WCAG structural checks on quiz landing and focused question runner",async()=>{
   mount();
   await runAxe();
-  click(select(".lab-quiz-card"));
+  click(select(".lab-quiz-card-main"));
   expect(select(".lab-quiz-question h2").getAttribute("tabindex")).toBe("-1");
   await runAxe();
 },15000);

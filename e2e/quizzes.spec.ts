@@ -1,6 +1,7 @@
 import { type Page } from "@playwright/test";
 import { quizzes } from "../src/data/quizzes";
 import { test, expect } from "./fixtures";
+import { auditAccessibility } from "./accessibility";
 
 // The registry supplies stable IDs/counts only. Do not call scoring, lifecycle
 // or persistence functions here: exercise those through the bundled app.
@@ -42,7 +43,7 @@ async function finishQuiz(page: Page, count: number, isMobile: boolean, label: s
 }
 
 for (const quiz of quizzes.filter(quiz => quiz.contributesToOverall)) {
-  test(`${quiz.title}: completion and retake preserve old results until the new attempt is fully finished`, async ({ app, page, isMobile }) => {
+  test(`${quiz.title}: completion and retake preserve old results until the new attempt is fully finished`, { tag: "@a11y" }, async ({ app, page, isMobile }, testInfo) => {
     test.setTimeout(180_000);
     await app.open(`/ui-lab/quizzes/question?id=${quiz.id}`);
     await finishQuiz(page, quiz.questionIds.length, isMobile, "Absolutely");
@@ -50,9 +51,11 @@ for (const quiz of quizzes.filter(quiz => quiz.contributesToOverall)) {
     expect(Object.keys(completed.answers)).toHaveLength(quiz.questionIds.length);
     expect(Object.values(completed.answers)).toEqual(Array(quiz.questionIds.length).fill(4));
     expect(completed.completedAt).toBeTruthy();
+    await auditAccessibility(page, testInfo, "quiz-completed-results");
     const oldResults = (await page.getByRole("heading", { name: "At a glance", exact: true }).locator("..").textContent())!;
     await page.getByText("Explore the full breakdown", { exact: true }).click();
     await expect(page.getByRole("region", { name: "All signals", exact: true })).toBeVisible();
+    await auditAccessibility(page, testInfo, "quiz-expanded-breakdown");
     expect((await app.profile())!.quizzes[quiz.id]).toEqual(completed);
 
     await page.getByRole("button", { name: "Retake this quiz", exact: true }).click();
@@ -70,6 +73,7 @@ for (const quiz of quizzes.filter(quiz => quiz.contributesToOverall)) {
     // Browser deep link must show the established result while a retake exists.
     await app.open(`/ui-lab/quizzes/results?id=${quiz.id}`);
     await expect(page.getByText(/These remain your last completed results/)).toBeVisible();
+    await auditAccessibility(page, testInfo, "quiz-established-results-during-retake");
     await expect(page.getByRole("heading", { name: "At a glance", exact: true }).locator("..")).toHaveText(oldResults);
     await page.getByRole("button", { name: "Continue retake", exact: true }).click();
     await expect(page.getByRole("heading", { level: 2, name: /^Question 2 of/ })).toBeFocused();
@@ -80,6 +84,7 @@ for (const quiz of quizzes.filter(quiz => quiz.contributesToOverall)) {
     expect(Object.values(replaced.answers)).toEqual(Array(quiz.questionIds.length).fill(0));
     expect(replaced.retake).toBeUndefined();
     expect(replaced.completedAt).not.toEqual(completed.completedAt);
+    await auditAccessibility(page, testInfo, "quiz-replacement-results");
     await expect(page.getByRole("heading", { name: "At a glance", exact: true }).locator("..")).not.toHaveText(oldResults);
     await page.reload();
     await app.continuePreview();

@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   e2e:
-    name: Browser journeys
+    name: Browser journeys and accessibility
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -28,7 +28,7 @@ jobs:
         run: npm ci
       - name: Install browsers
         run: npx playwright install --with-deps chromium webkit
-      - name: Run desktop and mobile journeys against bundled app
+      - name: Run browser journeys and accessibility checks against bundled app
         run: npm run test:e2e
       - name: Upload browser report and failure diagnostics
         if: always() && !cancelled()

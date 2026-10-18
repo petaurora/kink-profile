@@ -67,11 +67,12 @@ production lifecycle/scoring/persistence code must remain outside test actions.
 | Comparison | Actual exported backup upload, session-only comparison and shared Scene Builder handoff, invalid-upload recovery, original quiz data preserved |
 | Tools | Reward and punishment recipe save/reload/edit/duplicate/delete, empty randomizer pool behavior and setup handoff, scene theme/empty evidence behavior, durable Catalog preference to saved scene/copy/confirmed deletion |
 | Ranking & sharing | Pairwise choice/equal/skip reload persistence, ordering count distinct from skip history, independent explicit preferences and quizzes, actual standalone HTML export without raw answers |
+| Accessibility | Rendered axe A/AA scans with contrast, supported legacy light/dark themes, open/nested dialogs, errors/recovery, all four quiz result/retake states, keyboard-only journeys, card names/descriptions and full click area, 320px enlarged-text/reduced-motion reflow |
 
-The suite defines **52 distinct scenarios** in ten spec files. Running three
-projects produces **156 scheduled browser cases**: 155 applicable runs and one
+The suite defines **81 distinct scenarios** in eleven spec files. Running three
+projects produces **243 scheduled browser cases**: 242 applicable runs and one
 intentional desktop skip for the phone-only repeated-tap behavior. These are
-separate counts, not 156 different journeys. Use `npx playwright test --list` to
+separate counts, not 243 different journeys. Use `npx playwright test --list` to
 inspect the current inventory as the suite evolves.
 
 Browser tests supplement the source tests; they do not reimplement score math.
@@ -83,6 +84,24 @@ This is broad regression coverage, not exhaustive coverage of every route or
 combination. Ranking run archival, full curation editing, every R/P pool
 configuration, legacy backup migrations and PNG/PDF sharing exports still have
 source-level coverage without complete browser journeys.
+
+## Accessibility
+
+```bash
+npm run test:a11y
+```
+
+This selects the `@a11y` journeys, including the existing full quiz completion
+tests with result/retake scan checkpoints. The normal browser CI command runs
+these too. All detected WCAG A/AA violations fail the check; rendered contrast
+is enabled and complete axe JSON results, including incomplete findings, are
+attached to the HTML report. New page/interaction states should use the shared
+scanner rather than copying configurations or suppressing failures.
+
+The [accessibility validation protocol](qa/accessibility-validation.md) defines
+the sampled automated coverage and the separate keyboard, screen-reader, visual,
+zoom and physical-device checks. The V2 Lab's planned light theme and full human
+assistive-technology review are not certified by automation.
 
 ## CI and diagnostics
 

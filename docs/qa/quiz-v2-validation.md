@@ -28,7 +28,7 @@
 - Confirm on entry/resume and on **every** question change that the active h2 heading receives focus; check question number/total spoken accurately, and that the heading is excluded from normal forward Tab sequence (`tabIndex=-1`).
 - With TalkBack (Android) or VoiceOver (iOS/macOS), check each answer announces text and selected/unselected status; group progress is truthful; disclosure summary announces expanded/collapsed state; chart details remain accessible as text even if SVG visualization is ignored.
 - Verify non-selected and selected states do not rely on color alone, and manual contrast checks cover muted supporting text, focus outlines, selected answers, and controls on dark background. Verify reduced-motion preference does not require animation to understand changes.
-- Automated axe-core tests disable color-contrast in jsdom because there is no reliable rendered layout/contrast measurement. Do not mark contrast passed based on those tests.
+- Component axe-core tests disable color-contrast in jsdom because there is no reliable rendered layout/contrast measurement. Browser Playwright axe checks keep contrast enabled on questions and all four completed/expanded/retake result states. These scans do not close the hands-on contrast or screen-reader gate; follow the [shared accessibility validation protocol](accessibility-validation.md).
 
 ### 3. Navigation / browser history
 - Enter Quizzes from Home, Profile, Discover and full menu; verify no sixth primary tab.
