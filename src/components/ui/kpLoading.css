@@ -3,7 +3,7 @@
 /* Replaceable loading-illustration contract; artwork is deliberately temporary. */
 .kp-loading {
   --kp-loading-size: 72px;
-  --kp-loading-ink: var(--kp-pink, #f0d3e7);
+  --kp-loading-ink: var(--accent-text);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -50,7 +50,7 @@
 .kp-loading-route { min-height: 100dvh; }
 .kp-loading-service { min-height: 100dvh; }
 .kp-loading-route .kp-loading,
-.kp-loading-service .kp-loading { --kp-loading-ink: var(--text-primary); }
+.kp-loading-service .kp-loading { --kp-loading-ink: var(--accent-text); }
 @keyframes kp-loading-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

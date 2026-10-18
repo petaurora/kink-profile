@@ -72,10 +72,10 @@
   --overlay-backdrop: rgba(49,25,35,.42);
   --text-danger: #942e45;
   --text-success: #346548;
-  --kp-progress-track: #decbcf;
-  --kp-progress-fill-start: #9b5069;
-  --kp-progress-fill-mid: #946f8e;
-  --kp-progress-fill-end: #64769c;
+  --kp-progress-track: color-mix(in srgb, var(--accent-primary) 12%, var(--bg-control));
+  --kp-progress-fill-start: var(--accent-primary);
+  --kp-progress-fill-mid: color-mix(in srgb, var(--accent-primary) 78%, var(--bg-surface));
+  --kp-progress-fill-end: color-mix(in srgb, var(--accent-primary) 62%, var(--bg-surface));
 }
 [data-theme="oxblood"] {
   color-scheme: dark;
@@ -108,12 +108,15 @@
   --overlay-backdrop: rgba(10,3,7,.74);
   --text-danger: #ffb5c2;
   --text-success: #bcd1b9;
-  --kp-progress-track: #422730;
-  --kp-progress-fill-start: #9c425b;
-  --kp-progress-fill-mid: #ad7787;
-  --kp-progress-fill-end: #9d8b9d;
+  --kp-progress-track: color-mix(in srgb, var(--accent-primary) 14%, var(--bg-control));
+  --kp-progress-fill-start: var(--accent-primary);
+  --kp-progress-fill-mid: color-mix(in srgb, var(--accent-primary) 78%, var(--text-primary));
+  --kp-progress-fill-end: color-mix(in srgb, var(--accent-primary) 62%, var(--text-primary));
 }
 :root, [data-theme] {
+  --kp-progress-fill: linear-gradient(90deg, var(--kp-progress-fill-start), var(--kp-progress-fill-mid) 70%, var(--kp-progress-fill-end));
+  --kp-progress-loading-fill: linear-gradient(90deg, transparent, var(--kp-progress-fill-mid), transparent);
+  --kp-progress-glow: color-mix(in srgb, var(--kp-progress-fill-mid) 26%, transparent);
   --status-muted-bg: var(--bg-muted);
   --status-muted-text: var(--text-secondary);
   --status-progress-bg: var(--bg-control);

@@ -19,8 +19,8 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--kp-progress-fill-start), var(--kp-progress-fill-mid) 70%, var(--kp-progress-fill-end));
-  box-shadow: 0 0 7px rgba(157, 114, 153, .26);
+  background: var(--kp-progress-fill);
+  box-shadow: 0 0 7px var(--kp-progress-glow);
   transition: width .32s ease;
 }
 @media (prefers-reduced-motion: reduce) {

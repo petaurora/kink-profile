@@ -71,10 +71,10 @@ production lifecycle/scoring/persistence code must remain outside test actions.
 | Ranking & sharing | Pairwise choice/equal/skip reload persistence, ordering count distinct from skip history, independent explicit preferences and quizzes, actual standalone HTML export without raw answers |
 | Accessibility | Rendered axe A/AA scans with contrast, Midnight, Dusty Rose and Oxblood themes, open/nested dialogs, errors/recovery, all four quiz result/retake states, keyboard-only journeys, card names/descriptions and full click area, 320px enlarged-text/reduced-motion reflow |
 
-The suite defines **93 distinct scenarios** in twelve spec files. Running three
-projects produces **279 scheduled browser cases**: 278 applicable runs and one
+The suite defines **94 distinct scenarios** in twelve spec files. Running three
+projects produces **282 scheduled browser cases**: 281 applicable runs and one
 intentional desktop skip for the phone-only repeated-tap behavior. These are
-separate counts, not 279 different journeys. Use `npx playwright test --list` to
+separate counts, not 282 different journeys. Use `npx playwright test --list` to
 inspect the current inventory as the suite evolves.
 
 Appearance startup/failure tests seed only appearance keys, block only appearance

@@ -81,6 +81,59 @@ test("blocked appearance storage preserves the choice through navigation and exp
   await expect(page.getByRole("radio", { name: /Oxblood/ })).toBeChecked();
 });
 
+test("mounted progress, loading and quiz bars use the selected theme's fills and glow", async ({ app, page }) => {
+  await app.open("/ui-lab/settings");
+  await page.getByRole("button", { name: "Open Progress & Loading Playground", exact: true }).click();
+  await page.getByRole("button", { name: "Open Loading Playground", exact: true }).click();
+  const gradients: string[] = [], sweeps: string[] = [], glows: string[] = [];
+  for (const preset of presets) {
+    await page.getByRole("radio", { name: new RegExp(preset.name) }).check();
+    const sample = await page.locator(".kp-feedback-playground").evaluate(gallery => {
+      // Resolve the shared public tokens through the browser's real CSS cascade.
+      const probe = document.createElement("span");
+      probe.hidden = true; document.body.append(probe);
+      probe.style.background = "var(--kp-progress-fill)";
+      const expectedFill = getComputedStyle(probe).backgroundImage;
+      probe.style.background = "var(--kp-progress-loading-fill)";
+      const expectedSweep = getComputedStyle(probe).backgroundImage;
+      probe.style.background = "var(--kp-progress-track)";
+      const expectedTrack = getComputedStyle(probe).backgroundColor;
+      probe.style.boxShadow = "0 0 7px var(--kp-progress-glow)";
+      const expectedGlow = getComputedStyle(probe).boxShadow;
+      probe.style.color = "var(--accent-text)";
+      const expectedInk = getComputedStyle(probe).color;
+      probe.remove();
+      const bar = gallery.querySelector<HTMLElement>('.kp-step-progress [role="progressbar"]')!;
+      const fill = getComputedStyle(bar.firstElementChild!);
+      const loading = getComputedStyle(gallery.querySelector(".kp-loading-bar > span")!);
+      return {
+        expectedFill, expectedSweep, expectedTrack, expectedGlow, expectedInk,
+        fill: fill.backgroundImage, glow: fill.boxShadow, track: getComputedStyle(bar).backgroundColor,
+        sweep: loading.backgroundImage, animation: loading.animationName, width: (bar.firstElementChild as HTMLElement).style.width,
+        indicator: getComputedStyle(gallery.querySelector(".kp-loading-indicator")!).color,
+        artwork: getComputedStyle(document.querySelector(".kp-loading-playground .kp-loading")!).color,
+      };
+    });
+    expect(sample.fill).toBe(sample.expectedFill);
+    expect(sample.sweep).toBe(sample.expectedSweep);
+    expect(sample.track).toBe(sample.expectedTrack);
+    expect(sample.glow).toBe(sample.expectedGlow);
+    expect(sample.indicator).toBe(sample.expectedInk);
+    expect(sample.artwork).toBe(sample.expectedInk);
+    expect(sample.width).toBe("37.5%");
+    expect(sample.animation).toBe("kp-loading-sweep");
+    gradients.push(sample.fill); sweeps.push(sample.sweep); glows.push(sample.glow);
+    await app.open("/ui-lab/quizzes/question?id=dominance-submission");
+    const quiz = page.getByRole("progressbar", { name: "Quiz answers saved", exact: true });
+    await expect(quiz).toBeVisible();
+    expect(await quiz.locator("span").evaluate(node => getComputedStyle(node).backgroundImage)).toBe(sample.fill);
+    await app.open("/ui-lab/settings");
+  }
+  expect(new Set(gradients).size).toBe(3);
+  expect(new Set(sweeps).size).toBe(3);
+  expect(new Set(glows).size).toBe(3);
+});
+
 test("each palette keeps representative screens and rating dialog readable and within the viewport", { tag: "@a11y" }, async ({ app, page }, testInfo) => {
   test.setTimeout(180_000);
   if (testInfo.project.name !== "desktop-chromium") await page.setViewportSize({ width: 320, height: 780 });

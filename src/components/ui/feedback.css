@@ -15,7 +15,7 @@
 .kp-loading-bar { position: relative; }
 .kp-loading-bar > span {
   position: absolute; top: 0; left: 0; width: 38%; height: 100%;
-  background: linear-gradient(90deg, transparent, var(--kp-progress-fill-mid, var(--accent-text)), transparent);
+  background: var(--kp-progress-loading-fill);
   box-shadow: none;
   animation: kp-loading-sweep 1.65s linear infinite;
   transition: none;
@@ -27,7 +27,7 @@
 
 .kp-loading-indicator {
   display: inline-grid; place-items: center; flex: 0 0 auto;
-  width: 34px; height: 34px; color: var(--kp-pink, var(--text-primary));
+  width: 34px; height: 34px; color: var(--accent-text);
 }
 .kp-loading-indicator--small { width: 22px; height: 22px; }
 .kp-loading-indicator--large { width: 60px; height: 60px; }

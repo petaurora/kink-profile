@@ -12,8 +12,9 @@
   --kp-search-radius: 12px;
   --kp-search-height: 52px;
 }
+/* Base ink must not override a component skin when lazy CSS arrives later. */
+:where(.kp-ui) { color: var(--kp-pink); }
 .kp-ui {
-  color: var(--kp-pink);
   font-family: inherit;
   box-sizing: border-box;
 }

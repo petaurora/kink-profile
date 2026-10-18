@@ -11,6 +11,12 @@ tokens. Keep color decisions here rather than creating per-feature palettes.
 `data-theme` is set on the document element; nested scopes are only for the
 appearance picker's decorative previews. Geometry, feature behavior and the
 shared progress bar's gradient/feather treatment are independent of the palette.
+Dusty Rose and Oxblood derive their bar stops and glow from their semantic
+accent/surface colors; Midnight retains its approved rose/lavender/blue stops.
+Determinate bars, quiz bars and indeterminate sweeps consume the same shared
+fill tokens, and loading artwork uses the active accent text color. The shared
+base ink uses zero specificity so lazily loaded defaults cannot replace a
+component's theme color.
 
 `src/lib/appearancePresets.ts` owns stable IDs, display labels, color schemes and
 browser chrome colors. Its synchronous bootstrap script is injected in the HTML

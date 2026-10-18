@@ -21,7 +21,7 @@
 .ui-lab .lab-quiz-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:11px;color:var(--text-secondary)}
 .ui-lab .lab-quiz-card-bottom strong{flex-shrink:0;font-size:12px;color:var(--text-primary)}
 .ui-lab .lab-quiz-progress-track{height:6px;border-radius:99px;background:var(--kp-progress-track);overflow:hidden}
-.ui-lab .lab-quiz-progress-track>span{display:block;height:100%;background:linear-gradient(90deg,var(--kp-progress-fill-start),var(--kp-progress-fill-mid) 75%,var(--kp-progress-fill-end));border-radius:99px;transition:width .32s ease}
+.ui-lab .lab-quiz-progress-track>span{display:block;height:100%;background:var(--kp-progress-fill);border-radius:99px;transition:width .32s ease}
 .ui-lab .lab-quiz-storage-note{font-size:12px;color:var(--text-secondary);line-height:1.5}
 .ui-lab .lab-quiz-runner{max-width:930px;margin-inline:auto;width:100%}
 .ui-lab .lab-quiz-run-header{display:grid;gap:8px;padding:14px 0}
@@ -123,8 +123,8 @@
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--kp-progress-fill-start), var(--kp-progress-fill-mid) 75%, var(--kp-progress-fill-end));
-  box-shadow: 0 0 9px var(--shadow-panel);
+  background: var(--kp-progress-fill);
+  box-shadow: 0 0 9px var(--kp-progress-glow);
   transition: width .32s ease;
 }
 .ui-lab .lab-quiz-question-top {
