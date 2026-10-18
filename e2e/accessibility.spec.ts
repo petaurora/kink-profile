@@ -45,6 +45,11 @@ test("card descriptions keep their full click area and separate accessible descr
   await activateDescription(page.getByText("No preferences or experience recorded in this Lab session.", { exact: true }));
   await expect(page).toHaveURL(/#\/ui-lab\/profile$/);
   await app.menu("Discover");
+  const ambient = page.locator(".lab-serendipity-card-main");
+  await expect(ambient).toHaveAccessibleDescription(/Editorial discovery · Not personalized/);
+  await activateDescription(page.locator(".lab-serendipity-card-description"));
+  await expect(page.locator(".lab-serendipity-preview")).toBeVisible();
+  await app.menu("Discover", "Overview");
   await activateDescription(page.getByText("Guided questions about dynamics, roles, restraint, and intensity.", { exact: true }));
   await expect(page).toHaveURL(/#\/ui-lab\/quizzes$/);
   const first = page.getByRole("region", { name: "Quiz selection", exact: true }).getByRole("button").first();

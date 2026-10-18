@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { AppIcon } from "../../components/ui/AppIcon";
 import type { LabArea } from "./LabNavigation";
 import { useLabCatalog } from "./LabCatalog";
@@ -32,6 +32,7 @@ export function SerendipityEntry({ go }: { go: Go }) {
 }
 
 export function AmbientSerendipityCard({ go }: { go: Go }) {
+  const descriptionId = useId();
   const { session, topics } = useDiscoveryPool();
   // One shared editorial time bucket per day. A refresh does not constitute a reroll.
   const day = Math.floor(Date.now() / 86400000);
@@ -42,14 +43,17 @@ export function AmbientSerendipityCard({ go }: { go: Go }) {
       <span aria-hidden="true">✧</span>
     </div>
     {topic ? <div className="lab-serendipity-card">
-      <button type="button" className="lab-serendipity-card-main"
-        onClick={() => go("Discover", "Discovery Preview", { topic: topic.id })} aria-label={`Explore ${topic.prompt}`}>
+      <div className="lab-serendipity-card-copy">
         <span className="lab-serendipity-kicker">A CURIOUS QUESTION</span>
+      <button type="button" className="lab-serendipity-card-main"
+        onClick={() => go("Discover", "Discovery Preview", { topic: topic.id })} aria-label={`Explore ${topic.prompt}`}
+        aria-describedby={`${descriptionId}-teaser ${descriptionId}-meta`}>
         <strong>{topic.prompt}</strong>
-        <span>{topic.teaser}</span>
-        <small>Editorial discovery · Not personalized</small>
         <span className="lab-serendipity-arrow" aria-hidden="true">↗</span>
       </button>
+        <span id={`${descriptionId}-teaser`} className="lab-serendipity-card-description">{topic.teaser}</span>
+        <small id={`${descriptionId}-meta`}>Editorial discovery · Not personalized</small>
+      </div>
       <button type="button" className="lab-serendipity-hide" onClick={() => session.dismiss(discoveryDismissalId(topic.id))}>Hide this suggestion</button>
     </div> : <p className="lab-serendipity-empty">No eligible editorial surprises are available right now. You can still browse the Catalog or manage hidden suggestions.</p>}
   </section>;

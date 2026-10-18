@@ -13,11 +13,16 @@
 .lab-serendipity-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;color:#eac6dc}
 .lab-serendipity-heading h2{font-size:17px;margin:0}.lab-serendipity-heading>span{font-size:22px}
 .lab-serendipity-card{border:1px solid #916b8b;border-radius:17px;background:linear-gradient(120deg,#292342,#1a1b39);overflow:hidden}
-.lab-serendipity-card-main{position:relative;display:flex;flex-direction:column;gap:10px;width:100%;text-align:left;border:0;background:transparent;color:#f0d3e7;padding:20px 48px 10px 20px}
+.lab-serendipity-card-copy{position:relative;display:flex;flex-direction:column;gap:10px;padding:20px 48px 10px 20px}
+.lab-serendipity-card-main{width:100%;text-align:left;border:0;background:transparent;color:#f0d3e7;padding:0}
+.lab-serendipity-card-main::after{content:"";position:absolute;inset:0}
+.lab-serendipity-card-copy>:not(button){pointer-events:none}
+.lab-serendipity-card-main:focus-visible{outline:none}
+.lab-serendipity-card:has(.lab-serendipity-card-main:focus-visible){outline:2px solid #f0d3e7;outline-offset:3px}
 .lab-serendipity-card-main strong{font-size:17px;line-height:1.4}
-.lab-serendipity-card-main>span:nth-of-type(2){font-size:13px;line-height:1.65;color:#dfcadb}
+.lab-serendipity-card-description{font-size:13px;line-height:1.65;color:#dfcadb}
 .lab-serendipity-kicker{color:#e8b0d1;font-size:10px;font-weight:700;letter-spacing:.11em}
-.lab-serendipity-card-main small{font-size:11px;color:#cdb6cf}
+.lab-serendipity-card-copy small{font-size:11px;color:#cdb6cf}
 .lab-serendipity-card-main .lab-serendipity-arrow{position:absolute;right:18px;top:18px}
 .lab-serendipity-hide{background:transparent;border:0;color:#d9b5cc;padding:11px 19px 13px;font-size:12px;text-decoration:underline}
 .lab-serendipity-empty{font-size:13px;color:#c6b8cb;line-height:1.6}
@@ -52,7 +57,7 @@
 @media(max-width:700px){
   .lab-serendipity-entry{min-height:70px;margin-bottom:16px}
   .lab-serendipity-ambient{margin-top:20px}
-  .lab-serendipity-card-main{padding:17px 43px 8px 17px}
+  .lab-serendipity-card-copy{padding:17px 43px 8px 17px}
   .lab-serendipity-paths>button{min-height:60px}
 }
 
