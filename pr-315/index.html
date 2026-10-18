@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0c25" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="A private, browser-based pet and kink preference profile." />
+    <title>Pet Profile</title>
+    <script type="module" crossorigin src="/kink-profile/pr-315/assets/index-BYGHEflt.js"></script>
+    <link rel="stylesheet" crossorigin href="/kink-profile/pr-315/assets/index-B3JHRrF1.css">
+    <script>(() => {
+    const presets = [{"id":"midnight","name":"Midnight","description":"Soft plum & pink glow","scheme":"dark","chrome":"#0b0c25"},{"id":"dusty-rose","name":"Dusty Rose","description":"Warm blush & rosewood","scheme":"light","chrome":"#f4e9e8"},{"id":"oxblood","name":"Oxblood","description":"Deep burgundy & dark velvet","scheme":"dark","chrome":"#170e13"}];
+    let saved;
+    try { saved = localStorage.getItem("kink-profile:preview:pr-315:kink-profile:appearance"); } catch {}
+    const preset = presets.find(p => p.id === saved) || presets[0];
+    const root = document.documentElement;
+    root.dataset.theme = preset.id;
+    root.style.colorScheme = preset.scheme;
+    root.style.backgroundColor = preset.chrome;
+    document.querySelector('meta[name="theme-color"]').content = preset.chrome;
+    document.querySelector('meta[name="color-scheme"]').content = preset.scheme;
+  })();</script>
+    <link rel="manifest" href="/kink-profile/pr-315/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/kink-profile/pr-315/icons/apple-touch-icon.png">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
