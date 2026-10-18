@@ -70,6 +70,8 @@ export interface EducationService {
 }
 
 export interface AppServices {
+  quizzes?: import("./quizContracts").QuizService;
+  discover?: import("./discoverContracts").DiscoverService;
   /** Optional until all injected adapters implement the Education capability. No silent fixture fallback. */
   education?: EducationService;
   catalog: { getReferenceData(options?: RequestOptions): Promise<CatalogReferenceData> };
