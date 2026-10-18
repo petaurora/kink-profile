@@ -74,6 +74,10 @@
           {
             "context": "Deployed preview smoke",
             "integration_id": 15368
+          },
+          {
+            "context": "preview",
+            "integration_id": 15368
           }
         ]
       }

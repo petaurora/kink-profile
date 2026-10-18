@@ -13,6 +13,7 @@ and `feat/ui-lab-foundation`. All npm installs use `npm ci`.
 | `CodeQL scan` | JavaScript/TypeScript source scanning with security-extended queries. |
 | `Dependency review` | Resolved lockfile changes fail for introduced high/critical advisories using npm audit. |
 | `Dependency audit` | The entire installed lockfile fails for high/critical advisories. |
+| `preview` | The preview publishing job must succeed as well, so a failed publisher cannot pass enforcement through a skipped smoke job. |
 | `Deployed preview smoke` | Expected hosted commit, assets, PWA manifest/icons, worker scope and rendered deep link after publishing. |
 
 Dependency review compares base/head lockfiles without running base-branch code. It
