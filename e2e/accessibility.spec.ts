@@ -197,7 +197,18 @@ test("320px reduced-motion text reflow keeps quiz controls reachable", { tag: "@
   await app.open("/ui-lab/quizzes/question?id=dominance-submission");
   // A user stylesheet tests text enlargement/spacing. Actual browser zoom and
   // OS font scaling still require the separate physical-device checklist.
-  await page.addStyleTag({ content: "html { font-size: 200% !important } p { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important }" });
+  const heading = page.getByRole("heading", { level: 2, name: /^Question 1 of/ });
+  const originalSize = await heading.evaluate(node => parseFloat(getComputedStyle(node).fontSize));
+  await page.evaluate(() => {
+    // Snapshot first so inherited sizes do not compound; root-only scaling
+    // would leave the app's explicit pixel-sized text unchanged.
+    const sizes = [...document.querySelectorAll("body, body *")]
+      .filter((node): node is HTMLElement => node instanceof HTMLElement)
+      .map(node => ({ node, size: parseFloat(getComputedStyle(node).fontSize) }));
+    for (const { node, size } of sizes) node.style.setProperty("font-size", `${size * 2}px`, "important");
+  });
+  await page.addStyleTag({ content: "* { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important } p { margin-bottom: 2em !important }" });
+  await expect(heading).toHaveCSS("font-size", `${originalSize * 2}px`);
   await auditAccessibility(page, testInfo, "quiz-320px-enlarged-text-reduced-motion");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   const first = page.getByRole("group", { name: "Answer question 1", exact: true }).getByRole("button", { name: /Nope/ });

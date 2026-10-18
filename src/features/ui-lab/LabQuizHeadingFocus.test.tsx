@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { createLocalQuizService } from "../../services/local/createLocalQuizService";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { MemoryRouter, useLocation, useNavigate } from "react-router-dom";
@@ -8,6 +9,7 @@ import { createEmptyProfile, loadProfile, saveProfile } from "../../lib/profileS
 import { LabQuizWorkspace } from "./LabQuizWorkspace";
 import { labPath, parseLabRoute, type LabArea } from "./LabNavigation";
 
+const quizService = createLocalQuizService();
 const quiz = quizzes.find(q => q.id === "dominance-submission")!;
 let root: Root;
 let host: HTMLDivElement;
@@ -17,16 +19,16 @@ function Screen() {
   const navigate = useNavigate();
   const route = parseLabRoute(location.pathname, location.search);
   const go = (area: LabArea, view = "", params?: Record<string,string>) => navigate(labPath(area,view,params));
-  return <LabQuizWorkspace view={route.workspace} quizId={route.params.get("id")} go={go}/>;
+  return <LabQuizWorkspace service={quizService} view={route.workspace} quizId={route.params.get("id")} go={go}/>;
 }
-function renderQuiz() {
-  act(()=>root.render(<MemoryRouter initialEntries={[labPath("Quizzes","Question",{id:quiz.id})]}><Screen/></MemoryRouter>));
+async function renderQuiz() {
+  await act(async()=>{root.render(<MemoryRouter initialEntries={[labPath("Quizzes","Question",{id:quiz.id})]}><Screen/></MemoryRouter>);});
 }
-const press=(text:string)=>{
+const press=async(text:string)=>{
   const button=[...host.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")]
     .find(el=>el.textContent?.startsWith(text));
   expect(button).toBeDefined();
-  act(()=>button!.click());
+  await act(async()=>{button!.click();});
 };
 const focusIndex=()=>document.activeElement?.getAttribute("data-quiz-question-index");
 beforeEach(()=>{
@@ -40,55 +42,55 @@ afterEach(()=>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:originalWidth});
   vi.unstubAllGlobals();
 });
-it("focuses each new mobile heading on answers and Back without skip controls",()=>{
+it("focuses each new mobile heading on answers and Back without skip controls",async () =>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
-  renderQuiz();
+  await renderQuiz();
   expect(focusIndex()).toBe("0");
   const heading=host.querySelector<HTMLElement>('[data-quiz-question-index="0"]')!;
   expect(heading.getAttribute("tabindex")).toBe("-1");
   expect(heading.getAttribute("aria-label")).toContain("Question 1 of");
-  act(()=>host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[1].click());
+  await act(async()=>{host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[1].click();});
   expect(focusIndex()).toBe("1");
   expect(host.querySelectorAll(".lab-quiz-options button.selected .lab-quiz-option-check")).toHaveLength(0);
-  press("← Back");
+  await press("← Back");
   expect(focusIndex()).toBe("0");
   expect(host.querySelector(".lab-quiz-options button.selected .lab-quiz-option-check")).not.toBeNull();
   expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:1});
   expect(host.textContent).not.toContain("Review unanswered");
   expect(host.textContent).not.toContain("Next question");
 });
-it("focuses the exact resumed desktop prompt and enables new batches only after answering each card",()=>{
+it("focuses the exact resumed desktop prompt and enables new batches only after answering each card",async () =>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:1100});
   const profile=createEmptyProfile();
   profile.quizzes[quiz.id]={quizVersion:quiz.version,answers:Object.fromEntries(quiz.questionIds.slice(0,4).map(id=>[id,3]))};
   saveProfile(profile);
-  renderQuiz();
+  await renderQuiz();
   expect(focusIndex()).toBe("4");
   expect(document.activeElement?.getAttribute("aria-label")).toContain("Question 5 of");
-  press("← Back");
+  await press("← Back");
   expect(focusIndex()).toBe("0");
   expect(host.querySelector<HTMLButtonElement>(".lab-quiz-run-actions button")?.disabled).toBe(true);
   const next=[...host.querySelectorAll<HTMLButtonElement>(".lab-quiz-run-actions button")]
     .find(el=>el.textContent?.startsWith("Next questions"))!;
   expect(next.disabled).toBe(false);
-  press("Next questions");
+  await press("Next questions");
   expect(focusIndex()).toBe("3");
   expect(host.textContent).not.toContain("Review unanswered");
   expect(loadProfile().quizzes[quiz.id]?.answers).toEqual(profile.quizzes[quiz.id]?.answers);
 });
 
-it("scrolls the full mobile question card into reading position on load and auto-advance",()=>{
+it("scrolls the full mobile question card into reading position on load and auto-advance",async () =>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
   const original=HTMLElement.prototype.scrollIntoView;
   const scroll=vi.fn();
   Object.defineProperty(HTMLElement.prototype,"scrollIntoView",{configurable:true,value:scroll});
   try {
-    renderQuiz();
+    await renderQuiz();
     const first=host.querySelector(".lab-quiz-question");
     expect(document.activeElement).toBe(first?.querySelector("h2"));
     expect(scroll).toHaveBeenCalledWith({block:"start",behavior:"instant"});
     expect(scroll.mock.contexts[0]).toBe(first);
-    act(()=>host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[2].click());
+    await act(async()=>{host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[2].click();});
     expect(focusIndex()).toBe("1");
     expect(scroll.mock.contexts.at(-1)).toBe(host.querySelector(".lab-quiz-question"));
     expect(scroll.mock.calls.at(-1)?.[0]).toEqual({block:"start",behavior:"instant"});
@@ -99,14 +101,14 @@ it("scrolls the full mobile question card into reading position on load and auto
 });
 
 
-it("confirms a selected answer with a check before transitioning, while persisting immediately",()=>{
+it("confirms a selected answer with a check before transitioning, while persisting immediately",async () =>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
   const existing=Object.getOwnPropertyDescriptor(window,"matchMedia");
   Object.defineProperty(window,"matchMedia",{configurable:true,value:()=>({matches:false})});
   vi.useFakeTimers();
   try {
-    renderQuiz();
-    act(()=>host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[3].click());
+    await renderQuiz();
+    await act(async()=>{host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[3].click();});
     expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:3});
     expect(focusIndex()).toBe("0");
     expect(host.querySelector(".lab-quiz-question.is-confirming")).not.toBeNull();
@@ -122,9 +124,9 @@ it("confirms a selected answer with a check before transitioning, while persisti
     expect(host.querySelector(".lab-quiz-options button.selected .lab-quiz-option-check")?.textContent).toBe("✓");
     expect(host.querySelector(".lab-quiz-saved-status")?.textContent).toBe("Answer saved");
     expect(host.querySelector(".lab-quiz-card-progress")?.getAttribute("aria-valuenow")).toBe("1");
-    act(()=>vi.advanceTimersByTime(389));
+    await act(async()=>{vi.advanceTimersByTime(389);});
     expect(focusIndex()).toBe("0");
-    act(()=>vi.advanceTimersByTime(1));
+    await act(async()=>{vi.advanceTimersByTime(1);});
     expect(focusIndex()).toBe("1");
     expect(host.querySelector(".lab-quiz-question.is-confirming")).toBeNull();
     expect(host.querySelector(".lab-quiz-saved-status")).toBeNull();
@@ -134,13 +136,13 @@ it("confirms a selected answer with a check before transitioning, while persisti
     else Reflect.deleteProperty(window,"matchMedia");
   }
 });
-it("respects reduced motion by moving on immediately after selection",()=>{
+it("respects reduced motion by moving on immediately after selection",async () =>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
   const existing=Object.getOwnPropertyDescriptor(window,"matchMedia");
   Object.defineProperty(window,"matchMedia",{configurable:true,value:()=>({matches:true})});
   try {
-    renderQuiz();
-    act(()=>host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[2].click());
+    await renderQuiz();
+    await act(async()=>{host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button")[2].click();});
     expect(focusIndex()).toBe("1");
     expect(host.querySelector(".lab-quiz-question.is-confirming")).toBeNull();
     expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:2});
@@ -150,24 +152,24 @@ it("respects reduced motion by moving on immediately after selection",()=>{
   }
 });
 
-it("locks repeated mobile taps before React commits and unlocks only on the next question",()=>{
+it("locks repeated mobile taps before React commits and unlocks only on the next question",async () =>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
   const previous=Object.getOwnPropertyDescriptor(window,"matchMedia");
   Object.defineProperty(window,"matchMedia",{configurable:true,value:()=>({matches:false})});
   vi.useFakeTimers();
   try {
-    renderQuiz();
+    await renderQuiz();
     const first=host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button");
     // Both clicks occur before React renders disabled controls.
-    act(()=>{first[1].click();first[4].click();});
+    await act(async()=>{first[1].click();first[4].click();});
     expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:1});
     expect(host.querySelector(".lab-quiz-question.is-confirming")).not.toBeNull();
     expect(first[4].disabled).toBe(true);
-    act(()=>vi.advanceTimersByTime(390));
+    await act(async()=>{vi.advanceTimersByTime(390);});
     expect(focusIndex()).toBe("1");
     const next=host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button");
     expect(next[4].disabled).toBe(false);
-    act(()=>next[4].click());
+    await act(async()=>{next[4].click();});
     expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({
       [quiz.questionIds[0]]:1,[quiz.questionIds[1]]:4,
     });
@@ -178,7 +180,7 @@ it("locks repeated mobile taps before React commits and unlocks only on the next
   }
 });
 
-it("keeps the final selected answer visible until results are ready, with no completion flash",()=>{
+it("keeps the final selected answer visible until results are ready, with no completion flash",async () =>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
   const previous=Object.getOwnPropertyDescriptor(window,"matchMedia");
   Object.defineProperty(window,"matchMedia",{configurable:true,value:()=>({matches:false})});
@@ -190,10 +192,10 @@ it("keeps the final selected answer visible until results are ready, with no com
       answers:Object.fromEntries(quiz.questionIds.slice(0,-1).map(id=>[id,2])),
     };
     saveProfile(profile);
-    renderQuiz();
+    await renderQuiz();
     expect(focusIndex()).toBe(String(quiz.questionIds.length-1));
     const options=host.querySelectorAll<HTMLButtonElement>(".lab-quiz-options button");
-    act(()=>{options[3].click();options[0].click();});
+    await act(async()=>{options[3].click();options[0].click();});
     expect(loadProfile().quizzes[quiz.id]?.answers[quiz.questionIds.at(-1)!]).toBe(3);
     expect(host.querySelector(".lab-quiz-question.is-confirming")).not.toBeNull();
     expect(host.querySelector(".lab-quiz-runner")).not.toBeNull();
@@ -203,9 +205,9 @@ it("keeps the final selected answer visible until results are ready, with no com
     expect(host.querySelectorAll(".lab-quiz-options button.selected .lab-quiz-option-check")).toHaveLength(1);
     expect(host.querySelectorAll('.lab-quiz-options button[data-quiz-feedback-hidden="true"]')).toHaveLength(4);
     expect(host.querySelectorAll('.lab-quiz-options button:not([data-quiz-feedback-hidden="true"])')).toHaveLength(1);
-    act(()=>vi.advanceTimersByTime(389));
+    await act(async()=>{vi.advanceTimersByTime(389);});
     expect(host.querySelector(".lab-quiz-runner")).not.toBeNull();
-    act(()=>vi.advanceTimersByTime(1));
+    await act(async()=>{vi.advanceTimersByTime(1);});
     expect(host.querySelector(".lab-quiz-results")).not.toBeNull();
     expect(host.querySelector(".lab-quiz-runner")).toBeNull();
   } finally {
@@ -215,7 +217,7 @@ it("keeps the final selected answer visible until results are ready, with no com
   }
 });
 
-it("opens results directly when a saved complete question route is revisited",()=>{
+it("opens results directly when a saved complete question route is revisited",async () =>{
   const profile=createEmptyProfile();
   profile.quizzes[quiz.id]={
     quizVersion:quiz.version,
@@ -223,7 +225,7 @@ it("opens results directly when a saved complete question route is revisited",()
     answers:Object.fromEntries(quiz.questionIds.map(id=>[id,2])),
   };
   saveProfile(profile);
-  renderQuiz();
+  await renderQuiz();
   expect(host.querySelector(".lab-quiz-results")).not.toBeNull();
   expect(host.textContent).not.toContain("This quiz is complete");
   expect(host.textContent).not.toContain("You've finished this quiz");

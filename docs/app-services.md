@@ -1,8 +1,7 @@
 # Application services
 
-The V2 app shell uses asynchronous services for its curated Catalog reference data
-and isolated session preferences. `src/services/contracts.ts` is the application-facing boundary;
-`src/features/ui-lab/services` contains the sample implementation and fixtures.
+The V2 app shell uses asynchronous services for Catalog, search, preferences, Education, Quizzes and Discover reflections. `src/services/contracts.ts` is the application-facing boundary;
+`src/services/local` contains the local implementations; `src/features/ui-lab/services` supplies sample fixtures at the composition root.
 These contracts describe the current Lab slice, not an approved production
 Catalog V2 schema or HTTP endpoint specification.
 
@@ -21,8 +20,8 @@ normalization used by service search. Filter, Sort, and Group remain presentatio
 concerns; disclosure, navigation, and search never record preference evidence.
 R/P classifications are read-only in this Lab slice and are not inferred from
 rating writes. Subject membership is explicit rather than reconstructed from
-navigation history. Placeholder Home/Profile/Discover/Tools tiles are shell copy,
-not live records or implemented domain services.
+navigation history. Unavailable identity/relationship/tool tiles are capability copy,
+not connected records or implemented domain services.
 
 ## Composition and replacement
 
@@ -86,8 +85,9 @@ separate backend contract.
 
 The local adapter clones its fixture inputs and returned snapshots, simulates
 request latency, checks write targets/values, and supports canceled requests
-without committing. Every factory call creates isolated in-memory state. It does
-not use fetch, accounts, localStorage, production profile data, or browsing logs.
+without committing. Catalog/preferences/Discover state is isolated per factory. Those adapters do
+not use fetch, accounts, production profile data or browsing logs. The Quiz
+adapter intentionally retains the existing browser-local profile bridge, described below.
 Confirmed ratings last through navigation within the mounted Lab, but reload or
 leaving/remounting the Lab starts a new sample session.
 
@@ -134,3 +134,29 @@ The local adapter loads Markdown from `education/**/*.md` (including `fundamenta
 **API migration:** implement this read interface in a remote adapter, validate/normalize server DTOs and links at the boundary, honor cancellation and error states, and inject it at the composition root. No article components need to change. HTTP routes, authentication, storage, editorial publication gating, cache invalidation, moderation, and sync are intentionally deferred. The current article versions are editorial drafts and require review before publication.
 
 Reading, searching, or following an article does not update Profile, Catalog, Tried/Comfort, or Discover attempts. There is no per-user reading history or automatic recommendation evidence in this slice.
+
+
+## Quiz and Discover operations
+
+`AppServices.quizzes` and `.discover` are optional for compatibility with older
+injected adapters. Missing capabilities show unavailable states without a local
+fallback. `QuizService` serves definitions/questions, lifecycle, attempt answers,
+resume position and resolved scores, and accepts targeted `answerQuestion` and
+`startRetake` commands. V2 Quiz React code does not read/write profile storage or
+calculate authoritative results. Its local adapter preserves the existing quiz
+profile keys and retake behavior shared with production.
+
+`DiscoverService` serves reflection definitions, suggestions, dismissals and
+attempts, and validates start/save/complete/remove/dismiss/restore/reset commands.
+The local adapter remains session-only. Completed attempts keep their versioned
+prompt definitions. React owns draft text/step, debounced saves and recovery;
+completion and start navigation follow service confirmation. No reflection writes
+ratings, quiz evidence, Tried/Comfort, bookmarks or browsing history.
+
+`useServiceResource` coordinates confirmed snapshots, serial command submission,
+Retry and cancellation/stale-result protection. Rendering/animation, focus, SVG
+geometry, sort/group controls and local draft input stay in the UI.
+
+See [Backend and application service boundaries](backend-service-boundaries.md)
+for the complete responsibility map, local persistence compatibility boundary and
+the older production consumers that still need asynchronous route migration.

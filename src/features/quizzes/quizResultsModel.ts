@@ -1,22 +1,11 @@
 import type { QuizDefinition } from "../../data/quizzes";
-import type { QuizQuestion } from "../../data/quizQuestions";
-import { isWeightedQuestion } from "../../data/quizQuestions";
-import type { AnswerMap } from "../../lib/profileStorage";
 import { dsSignals } from "../../data/dsQuiz";
-import { bondageDisciplineSignalIds, bondageRadarSignalIds, disciplineRadarSignalIds } from "../../data/bondageDisciplineQuiz";
-import { givingSmRadarSignalIds, receivingSmRadarSignalIds, sadismMasochismSignalIds } from "../../data/sadismMasochismQuiz";
-import { headspaceSignalIds, partnerPositionedRoleHeadspaceIds, roleHeadspaces, selfPositionedRoleHeadspaceIds } from "../../data/headspacesQuiz";
-import { getSignals } from "../../data/signals";
-import { scoreDsSignals, scoreHeadspaces, scoreSignals } from "../../lib/scoring";
+import { bondageRadarSignalIds, disciplineRadarSignalIds } from "../../data/bondageDisciplineQuiz";
+import { givingSmRadarSignalIds, receivingSmRadarSignalIds } from "../../data/sadismMasochismQuiz";
+import { partnerPositionedRoleHeadspaceIds, selfPositionedRoleHeadspaceIds } from "../../data/headspacesQuiz";
 
-export type QuizSignalScore = {
-  id: string;
-  label: string;
-  shortLabel: string;
-  description: string;
-  percentage: number;
-  coverage: number;
-};
+import type { QuizSignalScore } from "../../services/domain/quizScoring";
+export { scoreQuizAnswers, type QuizSignalScore } from "../../services/domain/quizScoring";
 
 export type QuizRadarView = {
   id: string;
@@ -24,29 +13,6 @@ export type QuizRadarView = {
   title: string;
   scores: QuizSignalScore[];
 };
-
-export function scoreQuizAnswers(quiz: QuizDefinition, questions: QuizQuestion[], answers: AnswerMap): QuizSignalScore[] {
-  const weighted = questions.filter(isWeightedQuestion);
-  if (quiz.id === "roles-headspaces") {
-    return scoreHeadspaces(
-      scoreSignals(weighted, answers, getSignals(headspaceSignalIds)),
-      roleHeadspaces,
-    ).sort((a, b) => b.percentage - a.percentage);
-  }
-  if (quiz.id === "bondage-discipline") {
-    return scoreSignals(weighted, answers, getSignals(bondageDisciplineSignalIds))
-      .sort((a, b) => b.percentage - a.percentage);
-  }
-  if (quiz.id === "sadism-masochism") {
-    return scoreSignals(weighted, answers, getSignals(sadismMasochismSignalIds))
-      .sort((a, b) => b.percentage - a.percentage);
-  }
-  if (quiz.id === "dominance-submission") {
-    return scoreDsSignals(weighted, answers, dsSignals)
-      .sort((a, b) => b.percentage - a.percentage);
-  }
-  return [];
-}
 
 export function quizRadarViews(quiz: QuizDefinition, scores: QuizSignalScore[]): QuizRadarView[] {
   const select = (ids: readonly string[]) =>
