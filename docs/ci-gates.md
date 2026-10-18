@@ -85,12 +85,15 @@ import `.github/rulesets/v2.json` and `.github/rulesets/main.json` via repositor
 **Settings → Rules → Rulesets → New ruleset → Import a ruleset**. Inspect the target
 branch and required checks before saving. The rules require PRs, resolved threads,
 passing checks against the latest target, and prevent deletion/force pushes. They
-require no extra human approval and define no bypass actors.
+require no extra human approval and define no bypass actors. Required checks are
+bound to the observed GitHub Actions app (ID 15368). A code-scanning rule also
+blocks CodeQL errors and high/critical security findings; the successful analysis
+job alone establishes that scanning completed, not that alerts were resolved.
 
 Activate each ruleset only after a PR targeting that branch reports every named
-check successfully. Do not apply the main ruleset to main-bound PRs that still lack
-these workflows. Confirm the observed check names and select GitHub Actions as
-their expected source in the editor. A skipped smoke because the publisher did not
+check successfully and CodeQL has uploaded results for both the proposed change
+and target branch. Do not apply the main ruleset to main-bound PRs that still lack
+these workflows. Confirm the observed check names and GitHub Actions source in the editor. A skipped smoke because the publisher did not
 publish is not deployment evidence; inspect the publishing job.
 
 Verify enforcement using a deliberately failing PR: merging must be blocked until
