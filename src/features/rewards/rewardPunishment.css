@@ -240,7 +240,7 @@
 }
 
 .rp-details summary {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   cursor: pointer;
   font-size: .8rem;
   font-weight: 800;
@@ -532,7 +532,7 @@
 }
 
 .rp-suggestion-top strong {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .rp-suggestion-card h3 {
@@ -559,7 +559,7 @@
 }
 
 .rp-proposal-hint {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .76rem;
   font-weight: 750;
 }

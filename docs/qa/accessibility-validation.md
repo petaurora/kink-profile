@@ -26,8 +26,10 @@ only at initial page load. Coverage includes:
 
 - Home, Catalog and classifications, Profile, Discover, Education, Quiz landing
   and questions, Settings, comparison, Scene Builder, recipes, randomizer and
-  ranking. Existing-app pages are sampled in both OS light and dark schemes.
-  The V2 Lab currently has one dark presentation.
+  ranking. Existing-app pages are sampled in Midnight, Dusty Rose, Oxblood, Crimson Depths and INFJ.
+  The appearance suite additionally samples all five presets in the V2 shell,
+  Catalog, Education/reader, quiz questions, Settings and the rating dialog.
+  App selection, rather than OS preference, controls the palette.
 - Open navigation/search, search results, nested refinement/rating sheets,
   rating guidance, failed-save recovery, experience guidance, classification
   filters, reflection notes/deletion confirmation and settings validation,

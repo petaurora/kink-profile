@@ -69,14 +69,14 @@
   height: 0.55rem;
   border-radius: 999px;
   overflow: hidden;
-  background: rgba(240, 211, 231, 0.12);
+  background: color-mix(in srgb, var(--text-primary) 12%, transparent);
 }
 
 .curation-progress-track span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #f0d3e7, #caa8ff);
+  background: linear-gradient(90deg, var(--accent-text), var(--accent-text));
 }
 
 .curation-scope,
@@ -110,7 +110,7 @@
 
 .curation-surface-list {
   display: grid;
-  border-top: 1px solid rgba(240, 211, 231, 0.1);
+  border-top: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
 }
 
 .curation-surface-row {
@@ -119,7 +119,7 @@
   gap: 1rem;
   align-items: start;
   padding: 0.85rem 1.15rem;
-  border-bottom: 1px solid rgba(240, 211, 231, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 8%, transparent);
 }
 
 .curation-surface-row p,
@@ -133,11 +133,11 @@
   border-radius: 999px;
   padding: 0.3rem 0.55rem;
   font-size: 0.76rem;
-  border: 1px solid rgba(240, 211, 231, 0.18);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 18%, transparent);
 }
 
 .curation-status.is-available {
-  background: rgba(121, 255, 194, 0.08);
+  background: color-mix(in srgb, var(--text-primary) 8%, transparent);
 }
 
 .curation-status.is-source-only,
@@ -155,7 +155,7 @@
 .curation-rubric-grid article {
   padding: 0.8rem;
   border-radius: 0.9rem;
-  background: rgba(240, 211, 231, 0.045);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
 .curation-controls {
@@ -175,8 +175,8 @@
 .curation-review-filter button {
   border-radius: 999px;
   padding: 0.5rem 0.7rem;
-  border: 1px solid rgba(240, 211, 231, 0.14);
-  background: rgba(240, 211, 231, 0.045);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 14%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
   color: inherit;
 }
 
@@ -191,8 +191,8 @@
 .curation-action-grid button.is-active,
 .curation-primary-actions button.is-active,
 .curation-lifecycle-actions button.is-active {
-  border-color: rgba(240, 211, 231, 0.48);
-  background: rgba(240, 211, 231, 0.12);
+  border-color: color-mix(in srgb, var(--text-primary) 48%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 12%, transparent);
 }
 
 .curation-control-row {
@@ -207,7 +207,7 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.55rem 0.7rem;
-  border: 1px solid rgba(240, 211, 231, 0.14);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 14%, transparent);
   border-radius: 0.8rem;
 }
 
@@ -223,8 +223,8 @@
   justify-self: start;
   border-radius: 999px;
   padding: 0.46rem 0.68rem;
-  border: 1px solid rgba(240, 211, 231, 0.14);
-  background: rgba(240, 211, 231, 0.045);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 14%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
   color: inherit;
   font-size: 0.86rem;
 }
@@ -260,8 +260,8 @@
 .curation-reviewed-badge {
   border-radius: 999px;
   padding: 0.35rem 0.6rem;
-  background: rgba(240, 211, 231, 0.11);
-  border: 1px solid rgba(240, 211, 231, 0.16);
+  background: color-mix(in srgb, var(--text-primary) 11%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 16%, transparent);
 }
 
 .curation-card-heading h2 {
@@ -278,13 +278,13 @@
   gap: 0.65rem;
   padding: 0.85rem;
   border-radius: 1rem;
-  background: rgba(0, 0, 0, 0.12);
+  background: var(--shadow-panel);
 }
 
 .curation-current-properties {
   display: grid;
   margin: 0;
-  border-top: 1px solid rgba(240, 211, 231, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--text-primary) 8%, transparent);
 }
 
 .curation-current-property {
@@ -293,7 +293,7 @@
   gap: 0.65rem;
   align-items: baseline;
   padding: 0.42rem 0;
-  border-bottom: 1px solid rgba(240, 211, 231, 0.07);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 7%, transparent);
 }
 
 .curation-current-property dt {
@@ -327,7 +327,7 @@
 }
 
 .curation-current-details {
-  border-top: 1px solid rgba(240, 211, 231, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--text-primary) 8%, transparent);
   padding-top: 0.4rem;
 }
 
@@ -380,7 +380,7 @@
   align-items: center;
   padding: 0.45rem 0.5rem;
   border-radius: 0.65rem;
-  background: rgba(240, 211, 231, 0.035);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
 .curation-current-mapping-row > div {
@@ -406,7 +406,7 @@
   text-align: center;
   padding: 0.22rem 0.4rem;
   border-radius: 999px;
-  background: rgba(240, 211, 231, 0.08);
+  background: color-mix(in srgb, var(--text-primary) 8%, transparent);
   font-weight: 700;
 }
 
@@ -418,7 +418,7 @@
 
 .curation-facet-affinity,
 .curation-facet-gap {
-  border-top: 1px solid rgba(240, 211, 231, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--text-primary) 8%, transparent);
   padding-top: 0.45rem;
 }
 
@@ -455,7 +455,7 @@
   align-items: center;
   padding: 0.38rem 0.5rem;
   border-radius: 0.65rem;
-  background: rgba(240, 211, 231, 0.035);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
 .curation-facet-affinity-row span {
@@ -502,7 +502,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   padding: 0.55rem;
   border-radius: 0.9rem;
-  background: rgba(240, 211, 231, 0.03);
+  background: color-mix(in srgb, var(--text-primary) 3%, transparent);
 }
 
 .curation-action-grid button,
@@ -510,8 +510,8 @@
 .curation-lifecycle-actions button {
   min-height: 2.65rem;
   border-radius: 0.85rem;
-  border: 1px solid rgba(240, 211, 231, 0.15);
-  background: rgba(240, 211, 231, 0.045);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 15%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
   color: inherit;
 }
 
@@ -530,7 +530,7 @@
   padding: 1rem;
   display: grid;
   gap: 0.85rem;
-  background: rgba(240, 211, 231, 0.035);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
 .curation-proposal-fields {
@@ -548,8 +548,8 @@
   width: 100%;
   box-sizing: border-box;
   border-radius: 0.75rem;
-  border: 1px solid rgba(240, 211, 231, 0.16);
-  background: rgba(0, 0, 0, 0.13);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 16%, transparent);
+  background: var(--shadow-panel);
   color: inherit;
   padding: 0.7rem 0.75rem;
 }
@@ -557,7 +557,7 @@
 .curation-saved-note {
   padding: 0.75rem 0.85rem;
   border-radius: 0.85rem;
-  background: rgba(240, 211, 231, 0.045);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
 .curation-danger-zone {
@@ -892,7 +892,7 @@
 
 .curation-field-help-button[aria-expanded="true"] {
   opacity: 1;
-  background: rgba(240, 211, 231, 0.08);
+  background: color-mix(in srgb, var(--text-primary) 8%, transparent);
 }
 
 .curation-field-help-copy {
@@ -900,7 +900,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: 0.45rem 0.55rem;
-  border-left: 2px solid rgba(240, 211, 231, 0.18);
+  border-left: 2px solid color-mix(in srgb, var(--text-primary) 18%, transparent);
   font-size: 0.72rem;
   line-height: 1.35;
   opacity: 0.72;
@@ -918,8 +918,8 @@
   width: 100%;
   box-sizing: border-box;
   border-radius: 0.75rem;
-  border: 1px solid rgba(240, 211, 231, 0.16);
-  background: rgba(0, 0, 0, 0.13);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 16%, transparent);
+  background: var(--shadow-panel);
   color: inherit;
   padding: 0.7rem 0.75rem;
 }
@@ -929,7 +929,7 @@
   align-items: start;
   padding: 0.75rem;
   border-radius: 0.8rem;
-  background: rgba(240, 211, 231, 0.04);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
 .curation-checkbox-field input {
@@ -949,7 +949,7 @@
 .curation-relation-field {
   padding: 0.85rem;
   border-radius: 0.9rem;
-  background: rgba(240, 211, 231, 0.035);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
 .curation-relation-list {
@@ -962,7 +962,7 @@
   gap: 0.45rem;
   padding: 0.5rem;
   border-radius: 0.75rem;
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--shadow-panel);
 }
 
 .curation-relation-card-top {
@@ -1021,22 +1021,22 @@
 .curation-facet-state button {
   min-height: 2.2rem;
   border-radius: 0.65rem;
-  border: 1px solid rgba(240, 211, 231, 0.12);
-  background: rgba(240, 211, 231, 0.035);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 12%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
   color: inherit;
   font-size: 0.72rem;
 }
 
 .curation-relation-polarity button.is-active,
 .curation-facet-state button.is-active {
-  border-color: rgba(240, 211, 231, 0.42);
-  background: rgba(240, 211, 231, 0.12);
+  border-color: color-mix(in srgb, var(--text-primary) 42%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 12%, transparent);
 }
 
 .curation-facet-matrix {
   padding: 0.85rem;
   border-radius: 0.9rem;
-  background: rgba(240, 211, 231, 0.035);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
 .curation-facet-matrix-list {
@@ -1049,7 +1049,7 @@
   gap: 0.45rem;
   padding: 0.55rem;
   border-radius: 0.75rem;
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--shadow-panel);
 }
 
 .curation-facet-matrix-row > strong {
@@ -1078,8 +1078,8 @@
   width: 100%;
   box-sizing: border-box;
   border-radius: 0.65rem;
-  border: 1px solid rgba(240, 211, 231, 0.16);
-  background: rgba(0, 0, 0, 0.13);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 16%, transparent);
+  background: var(--shadow-panel);
   color: inherit;
   padding: 0.55rem 0.45rem;
 }
@@ -1102,8 +1102,8 @@
   min-width: 2.55rem;
   min-height: 2.55rem;
   border-radius: 0.75rem;
-  border: 1px solid rgba(240, 211, 231, 0.14);
-  background: rgba(240, 211, 231, 0.045);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 14%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
   color: inherit;
 }
 
@@ -1119,8 +1119,8 @@
   gap: 0.45rem;
   padding: 0.5rem;
   border-radius: 0.75rem;
-  background: rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(240, 211, 231, 0.08);
+  background: var(--shadow-panel);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 8%, transparent);
 }
 
 .curation-relation-choice-header {
@@ -1141,8 +1141,8 @@
   min-width: 0;
   box-sizing: border-box;
   border-radius: 0.75rem;
-  border: 1px solid rgba(240, 211, 231, 0.16);
-  background: rgba(0, 0, 0, 0.13);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 16%, transparent);
+  background: var(--shadow-panel);
   color: inherit;
   padding: 0.62rem 0.7rem;
 }
@@ -1164,13 +1164,13 @@
   text-align: left;
   padding: 0.58rem 0.65rem;
   border-radius: 0.65rem;
-  border: 1px solid rgba(240, 211, 231, 0.08);
-  background: rgba(240, 211, 231, 0.035);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 8%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
   color: inherit;
 }
 
 .curation-relation-choice:active {
-  background: rgba(240, 211, 231, 0.12);
+  background: color-mix(in srgb, var(--text-primary) 12%, transparent);
 }
 
 .curation-relation-choice strong {
@@ -1197,7 +1197,7 @@
   gap: 0.5rem;
   padding: 0.7rem 0.8rem;
   border-radius: 0.8rem;
-  border: 1px solid rgba(240, 211, 231, 0.12);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 12%, transparent);
 }
 
 .curation-validation p {
@@ -1217,7 +1217,7 @@
 .curation-consequences {
   padding: 0.8rem;
   border-radius: 0.85rem;
-  background: rgba(240, 211, 231, 0.04);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
 .curation-consequences ul {
@@ -1228,8 +1228,8 @@
 }
 .curation-consequence-details {
   border-radius: 0.85rem;
-  background: rgba(240, 211, 231, 0.035);
-  border: 1px solid rgba(240, 211, 231, 0.1);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
   overflow: clip;
 }
 
@@ -1272,8 +1272,8 @@
 
 .curation-note-details {
   border-radius: 0.85rem;
-  background: rgba(240, 211, 231, 0.035);
-  border: 1px solid rgba(240, 211, 231, 0.1);
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
   overflow: clip;
 }
 
@@ -1300,8 +1300,8 @@
   margin: 0 0.7rem 0.7rem;
   box-sizing: border-box;
   border-radius: 0.75rem;
-  border: 1px solid rgba(240, 211, 231, 0.16);
-  background: rgba(0, 0, 0, 0.13);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 16%, transparent);
+  background: var(--shadow-panel);
   color: inherit;
   padding: 0.7rem 0.75rem;
 }

@@ -47,7 +47,10 @@ not a measured page-speed or Core Web Vitals score.
 
 `npm run test:visual` compares V2 home, partial quiz progress/selected answer,
 catalog refinement and settings in both supported OS themes on desktop and phone.
-The Lab currently has one dark presentation. Only the changing build label is
+These snapshots retain the default Midnight appearance under either OS preference;
+Settings' light/dark test labels describe the OS preference, not a selected app
+preset. The appearance suite separately checks all five explicit palettes,
+including Discover's Surprise Me states. Only the changing build label is
 masked. Each test uses fresh synthetic state, a fixed clock, disabled screenshot
 animations/caret, and an explicit locale/timezone.
 

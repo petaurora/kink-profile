@@ -3,8 +3,9 @@
 `src/components/ui` owns reusable presentation and interaction primitives. Each
 module imports its own CSS, with `kp-` classes and shared token defaults. Consumers
 do not need `uiLab.css`, `catalogComposite.css`, or any feature data to render them.
-Defaults preserve the navy, burgundy and pink palette; parent CSS may override
-`--kp-search-*`, `--kp-pink`, `--kp-burgundy` and other shared variables.
+Colors consume the semantic appearance tokens in `src/styles/theme.css`.
+Midnight, Dusty Rose and Oxblood share interaction/geometry contracts; `--kp-*`
+aliases inherit the active palette. See [Appearance](appearance.md).
 
 The UI Lab composes these primitives at `#/ui-lab`. Production features have not
 been migrated to the experimental treatments merely because the code is shared.

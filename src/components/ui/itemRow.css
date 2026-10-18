@@ -6,7 +6,7 @@
   gap: 0 7px;
   min-height: 46px;
   padding: 3px 0;
-  border-bottom: 1px solid #f0d3e71a;
+  border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
 }
 .kp-item-main {
   display: flex;
@@ -37,11 +37,11 @@
   font-size: 14px;
   line-height: 1.3;
 }
-.kp-item-supporting-text { flex: 1 1 100%; min-width: 0; padding: 0 3px 8px; color: var(--kp-muted, #b7adc5); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
+.kp-item-supporting-text { flex: 1 1 100%; min-width: 0; padding: 0 3px 8px; color: var(--kp-muted, var(--text-secondary)); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
 .kp-refine-toggle {
   border: 0;
   background: transparent;
-  color: #eac6da;
+  color: var(--accent-text);
   border-radius: 7px;
   padding: 7px 3px;
   min-height: 44px;
@@ -53,7 +53,7 @@
   white-space: nowrap;
 }
 .kp-refine-toggle:hover {
-  background: #f0d3e710;
+  background: color-mix(in srgb, var(--text-primary) 6%, transparent);
 }
 .kp-refine-toggle > span:first-child {
   font-size: 17px;
@@ -62,7 +62,7 @@
 .kp-refined-dot {
   width: 5px;
   height: 5px;
-  background: #ba819d;
+  background: var(--accent-text);
   border-radius: 50%;
   display: inline-block;
 }
@@ -82,4 +82,4 @@
 }
 
 .kp-refine-status { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; font-size: 12px; }
-.kp-refine-status--failed { border: 1px solid #ffa6b9; border-radius: 50%; color: #ffd4de; }
+.kp-refine-status--failed { border: 1px solid var(--accent-border); border-radius: 50%; color: var(--text-primary); }

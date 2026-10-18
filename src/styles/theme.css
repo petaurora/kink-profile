@@ -1,105 +1,208 @@
-:root {
+/* Shared semantic palette. Appearance changes colors, never feature behavior.
+   Nested data-theme scopes are used only by the Settings palette previews. */
+:root, [data-theme="midnight"] {
   color-scheme: dark;
-
-  /* Brand anchors — shared across both supported themes. */
   --palette-midnight: #101240;
-  --palette-plum: #520E25;
-  --palette-lavender: #F0D3E7;
-  --palette-orchid: #C949AC;
+  --palette-plum: #520e25;
+  --palette-lavender: #f0d3e7;
+  --palette-orchid: #c949ac;
   --palette-amethyst: #582673;
-
-  /* Dark mode: midnight / velvet / intimacy. */
-
-  /* Surfaces */
-  --bg-page: var(--palette-midnight);
-  --bg-surface: #191944;
-  --bg-surface-raised: #211B4D;
-  --bg-surface-emphasis: var(--palette-plum);
-  --bg-control: #24204F;
-  --bg-control-hover: #30245E;
-  --bg-track: rgba(240, 211, 231, .10);
-  --bg-accent-soft: rgba(201, 73, 172, .14);
-  --bg-muted: rgba(240, 211, 231, .07);
-  --ambient-glow: rgba(201, 73, 172, .16);
-
-  /* Text */
-  --text-primary: var(--palette-lavender);
-  --text-secondary: rgba(240, 211, 231, .74);
-  --text-muted: rgba(240, 211, 231, .62);
-  --text-on-accent: var(--palette-midnight);
-
-  /* Interaction */
-  /* Lift the interactive orchid above dark surfaces for small-text contrast. */
-  --accent-primary: #E07BC9;
-  --accent-secondary: var(--palette-amethyst);
-  --accent-border: rgba(201, 73, 172, .58);
-  --focus-ring: rgba(201, 73, 172, .42);
-
-  /* Structure */
-  --border-subtle: rgba(240, 211, 231, .12);
-  --border-strong: rgba(240, 211, 231, .20);
-  --shadow-panel: rgba(4, 3, 26, .34);
-
-  /* Status */
-  --status-muted-bg: rgba(240, 211, 231, .08);
-  --status-muted-text: rgba(240, 211, 231, .62);
-  --status-progress-bg: rgba(88, 38, 115, .48);
-  --status-progress-text: var(--palette-lavender);
-  --status-complete-bg: rgba(201, 73, 172, .16);
-  --status-complete-text: var(--palette-lavender);
-  --status-muted-dot: rgba(240, 211, 231, .34);
-  --status-progress-dot: var(--palette-amethyst);
-  --status-complete-dot: var(--palette-orchid);
+  --bg-page: #101240;
+  --bg-canvas: #0b0c25;
+  --bg-shell: #12132f;
+  --bg-inset: #0e1038;
+  --bg-surface: #1b1a39;
+  --bg-surface-raised: #211b4d;
+  --bg-surface-emphasis: #520e25;
+  --bg-control: #24204f;
+  --bg-control-hover: #30245e;
+  --bg-track: rgba(240,211,231,.10);
+  --bg-accent-soft: rgba(201,73,172,.14);
+  --bg-muted: rgba(240,211,231,.07);
+  --ambient-glow: rgba(201,73,172,.16);
+  --text-primary: #f0d3e7;
+  --text-secondary: #c2b6cf;
+  --text-muted: #b1a2be;
+  --accent-theme: #e07bc9;
+  --accent-secondary: #582673;
+  --accent-text: var(--brand-pink);
+  --accent-border: #95617c;
+  --focus-ring: #f0d3e7;
+  --border-subtle: rgba(240,211,231,.16);
+  --border-strong: #735d7e;
+  --border-control: #9c85a7;
+  --shadow-panel: rgba(4,3,26,.34);
+  --overlay-backdrop: rgba(5,5,21,.68);
+  --text-danger: #ffbdcb;
+  --text-success: #bce1cb;
+  --kp-progress-track: #302543;
+  --kp-progress-fill-start: #8d506e;
+  --kp-progress-fill-mid: #9d7299;
+  --kp-progress-fill-end: #7585af;
 }
-
-/*
- * Light mode is supported through the user's OS/browser preference.
- * There is intentionally no in-app theme toggle yet.
- */
-@media (prefers-color-scheme: light) {
-  :root {
-    color-scheme: light;
-
-    /* Light mode: paper / blush / daylight. */
-
-    /* Surfaces */
-    --bg-page: #FBF6F8;
-    --bg-surface: #FFFDFE;
-    --bg-surface-raised: #F8EDF3;
-    --bg-surface-emphasis: #F3DCE7;
-    --bg-control: #F1E4EB;
-    --bg-control-hover: #E8D4DF;
-    --bg-track: rgba(82, 14, 37, .10);
-    --bg-accent-soft: rgba(201, 73, 172, .12);
-    --bg-muted: rgba(82, 14, 37, .05);
-    --ambient-glow: rgba(201, 73, 172, .12);
-
-    /* Text */
-    --text-primary: #2A2035;
-    --text-secondary: #5C4B62;
-    --text-muted: #77677A;
-    --text-on-accent: #FFF9FC;
-
-    /* Interaction */
-    --accent-primary: #8F2B72;
-    --accent-secondary: var(--palette-amethyst);
-    --accent-border: rgba(143, 43, 114, .44);
-    --focus-ring: rgba(143, 43, 114, .46);
-
-    /* Structure */
-    --border-subtle: rgba(82, 14, 37, .12);
-    --border-strong: rgba(82, 14, 37, .22);
-    --shadow-panel: rgba(82, 14, 37, .10);
-
-    /* Status */
-    --status-muted-bg: rgba(16, 18, 64, .06);
-    --status-muted-text: #66596A;
-    --status-progress-bg: rgba(88, 38, 115, .12);
-    --status-progress-text: var(--palette-amethyst);
-    --status-complete-bg: rgba(143, 43, 114, .12);
-    --status-complete-text: #6E234F;
-    --status-muted-dot: rgba(42, 32, 53, .36);
-    --status-progress-dot: var(--palette-amethyst);
-    --status-complete-dot: #8F2B72;
-  }
+[data-theme="dusty-rose"] {
+  color-scheme: light;
+  --bg-page: #f4e9e8;
+  --bg-canvas: #f4e9e8;
+  --bg-shell: #ecdddc;
+  --bg-inset: #e9d9d8;
+  --bg-surface: #fbf4f1;
+  --bg-surface-raised: #f0dfdc;
+  --bg-surface-emphasis: #e6c9cb;
+  --bg-control: #ebd8d6;
+  --bg-control-hover: #e0c5c6;
+  --bg-track: rgba(91,45,58,.12);
+  --bg-accent-soft: rgba(136,66,86,.10);
+  --bg-muted: rgba(91,45,58,.06);
+  --ambient-glow: rgba(162,92,107,.09);
+  --text-primary: #3e2931;
+  --text-secondary: #6b4c56;
+  --text-muted: #795861;
+  --accent-theme: #874157;
+  --accent-secondary: #74546a;
+  --accent-text: #823d52;
+  --accent-border: #a46778;
+  --focus-ring: #823d52;
+  --border-subtle: rgba(91,45,58,.20);
+  --border-strong: #b38f96;
+  --border-control: #9d737f;
+  --shadow-panel: rgba(79,34,47,.14);
+  --overlay-backdrop: rgba(49,25,35,.42);
+  --text-danger: #942e45;
+  --text-success: #346548;
+  --kp-progress-track: color-mix(in srgb, var(--accent-theme) 12%, var(--bg-control));
+  --kp-progress-fill-start: var(--accent-theme);
+  --kp-progress-fill-mid: color-mix(in srgb, var(--accent-theme) 78%, var(--bg-surface));
+  --kp-progress-fill-end: color-mix(in srgb, var(--accent-theme) 62%, var(--bg-surface));
+}
+[data-theme="oxblood"] {
+  color-scheme: dark;
+  /* Black-cherry canvas and layered velvet surfaces give the burgundy room
+     to breathe; deep teal adds depth, luminous teal provides the highlight. */
+  --bg-page: #170e13;
+  --bg-canvas: #170e13;
+  --bg-shell: #201217;
+  --bg-inset: #160d12;
+  --bg-surface: #2a1721;
+  --bg-surface-raised: #361b28;
+  --bg-surface-emphasis: #044a4a;
+  --bg-control: #3b2230;
+  --bg-control-hover: #552a3e;
+  --bg-track: rgba(247,234,240,.10);
+  --bg-accent-soft: rgba(83,184,173,.18);
+  --bg-muted: rgba(247,234,240,.06);
+  --ambient-glow: rgba(116,36,63,.26);
+  --text-primary: #f7eaf0;
+  --text-secondary: #c8b5bf;
+  --text-muted: #c8afbb;
+  --accent-theme: #a94a65;
+  --accent-secondary: #044a4a;
+  --accent-text: var(--brand-pink);
+  --accent-border: #53b8ad;
+  --focus-ring: #85cfca;
+  --border-subtle: rgba(247,234,240,.16);
+  --border-strong: #815563;
+  --border-control: #aa7e8c;
+  --shadow-panel: rgba(9,2,6,.40);
+  --overlay-backdrop: rgba(10,3,7,.74);
+  --text-danger: #ffb5c2;
+  --text-success: #bcd1b9;
+  --kp-progress-track: color-mix(in srgb, var(--accent-theme) 14%, var(--bg-control));
+  --kp-progress-fill-start: #a94a65;
+  --kp-progress-fill-mid: #c2698f;
+  --kp-progress-fill-end: #53b8ad;
+}
+/* Palette anchors from the supplied Crimson Depths reference:
+   #4a0404, #044a4a, #4a0a25, #3e0404, #730404.
+   Lifted accent/text tones keep controls readable on the deep surfaces. */
+[data-theme="crimson-depths"] {
+  color-scheme: dark;
+  --bg-page: #240909;
+  --bg-canvas: #190707;
+  --bg-shell: #300909;
+  --bg-inset: #210607;
+  --bg-surface: #3e0404;
+  --bg-surface-raised: #4a0a25;
+  --bg-surface-emphasis: #044a4a;
+  --bg-control: #4a0a25;
+  --bg-control-hover: #730404;
+  --bg-track: rgba(246,231,224,.10);
+  --bg-accent-soft: rgba(4,74,74,.30);
+  --bg-muted: rgba(246,231,224,.06);
+  --ambient-glow: rgba(74,4,4,.28);
+  --text-primary: #f6e7e0;
+  --text-secondary: #d9bcb4;
+  --text-muted: #caa9a2;
+  --accent-theme: #a82f3c;
+  --accent-secondary: #044a4a;
+  --accent-text: var(--brand-pink);
+  --accent-border: #68a6a3;
+  --focus-ring: #85cfca;
+  --border-subtle: rgba(246,231,224,.18);
+  --border-strong: #99625f;
+  --border-control: #bd8880;
+  --shadow-panel: rgba(15,0,0,.45);
+  --overlay-backdrop: rgba(16,1,2,.76);
+  --text-danger: #ffb0a5;
+  --text-success: #a5d3bf;
+  --kp-progress-track: #4a0404;
+  --kp-progress-fill-start: color-mix(in srgb, var(--accent-theme) 82%, var(--text-primary));
+  --kp-progress-fill-mid: color-mix(in srgb, var(--bg-control) 58%, var(--text-primary));
+  --kp-progress-fill-end: color-mix(in srgb, var(--accent-secondary) 62%, var(--text-primary));
+}
+/* INFJ reference: teal #1f6f6b; sage, lavender, pine and ivory sampled
+   from the supplied screenshot. Ivory provides the light-mode foundation. */
+[data-theme="infj"] {
+  color-scheme: light;
+  --bg-page: #f4f1ea;
+  --bg-canvas: #f4f1ea;
+  --bg-shell: #e4e8de;
+  --bg-inset: #e7e5dc;
+  --bg-surface: #fcfaf5;
+  --bg-surface-raised: #e6e9e0;
+  --bg-surface-emphasis: #dbe7df;
+  --bg-control: #dde7df;
+  --bg-control-hover: #cadcd0;
+  --bg-track: rgba(23,59,59,.12);
+  --bg-accent-soft: rgba(31,111,107,.10);
+  --bg-muted: rgba(23,59,59,.06);
+  --ambient-glow: rgba(31,111,107,.07);
+  --text-primary: #173b3b;
+  --text-secondary: #41645e;
+  --text-muted: #45645b;
+  --accent-theme: #1f6f6b;
+  --accent-secondary: #74618c;
+  --accent-text: #195f5b;
+  --accent-border: #6b8d83;
+  --focus-ring: #1f6f6b;
+  --border-subtle: rgba(23,59,59,.20);
+  --border-strong: #94aaa0;
+  --border-control: #678477;
+  --shadow-panel: rgba(23,59,59,.14);
+  --overlay-backdrop: rgba(16,40,39,.42);
+  --text-danger: #9d364f;
+  --text-success: #316c47;
+  --kp-progress-track: color-mix(in srgb, var(--accent-theme) 12%, var(--bg-control));
+  --kp-progress-fill-start: var(--accent-theme);
+  --kp-progress-fill-mid: color-mix(in srgb, #9db8a5 65%, var(--accent-theme));
+  --kp-progress-fill-end: color-mix(in srgb, #aa9bc2 78%, var(--accent-secondary));
+}
+:root, [data-theme] {
+  /* KP's signature pink belongs to every palette. Theme accents remain
+     available for palette-specific gradients, surfaces and readable ink. */
+  --brand-pink: #f0d3e7;
+  --accent-primary: var(--brand-pink);
+  --text-on-accent: #101240;
+  --kp-progress-fill: linear-gradient(90deg, var(--kp-progress-fill-start), var(--kp-progress-fill-mid) 70%, var(--kp-progress-fill-end));
+  --kp-progress-loading-fill: linear-gradient(90deg, transparent, var(--kp-progress-fill-mid), transparent);
+  --kp-progress-glow: color-mix(in srgb, var(--kp-progress-fill-mid) 26%, transparent);
+  --status-muted-bg: var(--bg-muted);
+  --status-muted-text: var(--text-secondary);
+  --status-progress-bg: var(--bg-control);
+  --status-progress-text: var(--text-primary);
+  --status-complete-bg: var(--bg-accent-soft);
+  --status-complete-text: var(--text-primary);
+  --status-muted-dot: var(--text-muted);
+  --status-progress-dot: var(--accent-secondary);
+  --status-complete-dot: var(--accent-text);
 }

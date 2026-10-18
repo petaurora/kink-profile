@@ -100,7 +100,7 @@
 }
 
 .ranking-category-inline-actions .text-button:hover {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .ranking-activity-notice {

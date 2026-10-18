@@ -19,9 +19,9 @@
   font-size: 12px;
 }
 .kp-retry {
-  background: #4b203d;
-  color: #ffe0e7;
-  border: 1px solid #ee9cac88;
+  background: var(--bg-surface-emphasis);
+  color: var(--text-primary);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 53%, transparent);
   border-radius: 6px;
   padding: 7px;
   font-size: 11px !important;
@@ -34,7 +34,7 @@
 }
 .kp-sheet-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0 12px; }
 .kp-sheet-header small {
-  color: #d0abc4;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 .kp-sheet-header h3 {
@@ -60,10 +60,10 @@
   line-height: 1;
 }
 .kp-sheet-header > button:hover {
-  background: #f0d3e710;
+  background: color-mix(in srgb, var(--text-primary) 6%, transparent);
 }
 .kp-sheet-header > button:active {
-  background: #f0d3e71c;
+  background: color-mix(in srgb, var(--text-primary) 11%, transparent);
   transform: scale(0.94);
 }
 .kp-preference-help,
@@ -72,18 +72,18 @@
   width: 100%;
   background: transparent;
   border: 0;
-  color: #eec9dd;
+  color: var(--text-primary);
   text-align: left;
   padding: 15px 0 8px;
   font-size: 13px !important;
 }
 .kp-preference-clear {
-  border-top: 1px solid #f0d3e72b;
+  border-top: 1px solid color-mix(in srgb, var(--text-primary) 17%, transparent);
   margin-top: 12px;
 }
 .kp-preference-explanation {
   font-size: 12px;
-  color: #d6bfd2;
+  color: var(--text-secondary);
 }
 @media (prefers-reduced-motion: reduce) {
   .kp-sheet-header > button:active {
@@ -93,7 +93,7 @@
 
 .kp-preference-explanation dt { font-weight: 600; margin-top: 12px; }
 .kp-preference-explanation dd { margin: 4px 0; line-height: 1.5; }
-.kp-keyboard-hint { display: block; color: #c6b1ca; font-size: 12px; margin-bottom: 12px; }
+.kp-keyboard-hint { display: block; color: var(--text-secondary); font-size: 12px; margin-bottom: 12px; }
 .kp-rating, .kp-retry, .kp-preference-help, .kp-preference-clear { min-height: 44px; }
 .kp-sheet-header > div { min-width: 0; overflow-wrap: anywhere; }
 
@@ -106,11 +106,11 @@
   font-size: 12px; line-height: 1.3; vertical-align: middle;
 }
 .kp-preference-chip > span { min-width: 0; overflow-wrap: anywhere; }
-.kp-preference-chip:not([data-preference]) { color: var(--kp-muted, #b7adc5); }
+.kp-preference-chip:not([data-preference]) { color: var(--kp-muted, var(--text-secondary)); }
 .kp-preference-chip[data-preference="Hard Limit"] { font-weight: 650; }
 .kp-rating { appearance: none; border: 1px solid transparent; border-radius: 8px; background: transparent; color: inherit; display: inline-flex; align-items: center; justify-content: flex-end; min-height: 44px; min-width: 44px; padding: 2px 3px; }
 .kp-rating:hover .kp-preference-chip > span { text-decoration: underline; text-underline-offset: 3px; }
-.kp-rating:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 2px; }
+.kp-rating:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
 /* Stable floating frame: centered on phones and anchored on desktop. */
 .kp-preference-popover.kp-modal-layer { display: block; padding: 0; }
@@ -118,10 +118,10 @@
   position: fixed; display: flex; flex-direction: column; gap: 10px;
   box-sizing: border-box; min-width: 0; min-height: 0; height: auto;
   overflow: hidden; padding: 14px; border-radius: 16px;
-  background: #1a1b44; box-shadow: 0 14px 44px #0008;
+  background: var(--bg-surface); box-shadow: 0 14px 44px var(--shadow-panel);
 }
 .kp-preference-popover .kp-modal-backdrop,
-.kp-preference-popover.cc-rating-over-refine .kp-modal-backdrop { background: #07082030; }
+.kp-preference-popover.cc-rating-over-refine .kp-modal-backdrop { background: var(--shadow-panel); }
 .kp-preference-panel > .kp-sheet-header { flex: none; }
 .kp-preference-panel .kp-sheet-header h3 { margin-bottom: 0; font-size: 18px; }
 .kp-preference-panel .kp-sheet-header small { display: block; overflow-wrap: anywhere; }
@@ -131,13 +131,13 @@
 .kp-preference-options button {
   display: flex; align-items: center; gap: 10px; width: 100%;
   flex: none; min-height: 44px; padding: 10px; border: 1px solid transparent;
-  background: #f0d3e705; color: var(--kp-pink); border-radius: 9px; font: inherit; font-size: 13px; text-align: left;
+  background: color-mix(in srgb, var(--text-primary) 2%, transparent); color: var(--kp-pink); border-radius: 9px; font: inherit; font-size: 13px; text-align: left;
 }
 .kp-preference-option-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.kp-preference-options button.chosen { border-color: #efb9d0; background: #520e2559; }
-.kp-preference-options button:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 1px; }
+.kp-preference-options button.chosen { border-color: var(--accent-border); background: color-mix(in srgb, var(--accent-text) 35%, transparent); }
+.kp-preference-options button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
 .kp-preference-panel .kp-preference-help { padding: 10px 0; line-height: 1.5; }
 .kp-preference-panel > .kp-preference-clear { flex: none; margin: 0; padding: 10px 0 0; min-height: 44px; }
 .kp-preference-panel .kp-preference-help:focus-visible,
 .kp-preference-panel .kp-preference-clear:focus-visible,
-.kp-preference-panel .kp-sheet-header > button:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 1px; }
+.kp-preference-panel .kp-sheet-header > button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }

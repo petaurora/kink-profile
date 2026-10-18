@@ -28,6 +28,11 @@ The install asset set is:
 - `public/icons/pwa-maskable-512.png`
 - `public/icons/apple-touch-icon.png`
 
+Appearance preferences use the same PR namespace. The synchronous HTML-head
+bootstrap reads the scoped appearance key before React or the storage shim runs.
+Runtime browser metadata follows the selected preset; static manifest startup
+colors remain Midnight defaults. See [Appearance](appearance.md).
+
 ## Service worker and cache isolation
 
 The build emits `sw.js` beside the app shell. `src/pwa.ts` registers it only in production builds and explicitly requests the active Vite base as its scope.

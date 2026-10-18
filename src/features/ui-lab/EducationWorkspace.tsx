@@ -120,7 +120,7 @@ export function EducationWorkspace({view,articleId,go}:{view:string;articleId:st
       <label className="lab-education-search-label" htmlFor="lab-education-search">Search articles</label>
       <SearchRow>
         <SearchField mode="input" inputId="lab-education-search" ariaLabel="Search educational articles"
-          resultsId="lab-education-results" placeholder="Search articles and topics…"
+          resultsId="lab-education-content" placeholder="Search articles and topics…"
           value={query} onChange={setQuery} onClear={()=>setQuery("")}/>
         <SearchFilterButton onClick={()=>setSortOpen(true)} groupingAvailable={false} active={sort!=="default"} expanded={sortOpen}/>
       </SearchRow>
@@ -130,6 +130,7 @@ export function EducationWorkspace({view,articleId,go}:{view:string;articleId:st
       <SortGroupSheet open={sortOpen} onClose={()=>setSortOpen(false)} sort={sort} onSort={setSort}
         showGrouping={false} defaultSortLabel={searching?"Best match: title first":"Editorial order"}/>
     </div>
+    <div id="lab-education-content" aria-busy={list.loading}>
     {list.loading&&<p role="status">Loading educational articles…</p>}
     {list.error&&<section className="lab-section" role="alert"><p>Unable to load the Education library.</p><button type="button" onClick={list.retry}>Retry loading articles</button></section>}
     {!list.loading&&!list.error&&<>
@@ -157,5 +158,6 @@ export function EducationWorkspace({view,articleId,go}:{view:string;articleId:st
         </section>
       </>}
     </>}
+    </div>
   </div>;
 }

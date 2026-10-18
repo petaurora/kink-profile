@@ -112,7 +112,7 @@
 
 .catalog-row-open:hover .catalog-row-title,
 .catalog-row-open:focus-visible .catalog-row-title {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .catalog-row-copy {

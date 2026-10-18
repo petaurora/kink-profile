@@ -89,7 +89,7 @@
   border: 1px solid var(--accent-primary);
   border-radius: 999px;
   padding: 4px 8px;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .68rem;
   font-weight: 850;
 }
@@ -225,7 +225,7 @@
 }
 
 .rp-recipe-component-order {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .8rem;
   font-weight: 900;
   text-align: center;
@@ -319,7 +319,7 @@
 
 .rp-recipe-picker-row > span,
 .rp-recipe-proposal > span {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .72rem;
   font-weight: 850;
 }
@@ -351,7 +351,7 @@
 }
 
 .rp-recipe-validation > strong {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .rp-recipe-validation p {

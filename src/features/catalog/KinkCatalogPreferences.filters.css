@@ -58,7 +58,7 @@
   place-items: center;
   padding: 0 5px;
   background: var(--bg-accent-soft);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .68rem;
   font-weight: 900;
 }
@@ -138,7 +138,7 @@
 .catalog-clear-active-filters {
   flex: 0 0 auto;
   padding: 5px 2px;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .72rem;
 }
 

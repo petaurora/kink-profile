@@ -60,7 +60,7 @@
 }
 
 .catalog-workspace-tab:focus-visible {
-  outline: 2px solid var(--accent-primary);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 4px;
   border-radius: 4px;
 }

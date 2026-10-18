@@ -123,7 +123,7 @@
 }
 
 .catalog-boundary-card-heading > span {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: 1rem;
   font-weight: 900;
   font-variant-numeric: tabular-nums;

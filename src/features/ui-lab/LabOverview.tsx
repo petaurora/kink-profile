@@ -1,3 +1,4 @@
+import { AppearanceSettings } from "../settings/AppearanceSettings";
 import { PreferenceChip, isPreferenceRating } from "../../components/ui/PreferenceChip";
 import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
 import { useState } from "react";
@@ -53,6 +54,6 @@ export function LabOverview({area,workspace,go,shortcuts,onShortcuts}:{area:LabA
   if(area==="Creations")return <section className="lab-section"><p>No creations are stored in this Lab. Scene drafts are managed in the current Scene Builder.</p><a href={`#${sceneBuilderRoute.path}`}>Open Scene Builder</a></section>;
   if(area==="Learn")return <section className="lab-section"><h2>Understand the concepts</h2><p>Learning and curiosity are independent of participation, preference and consent.</p><button onClick={()=>go("Catalog","Concept Explorer")}>Browse concepts</button><button onClick={()=>go("Learn")}>Browse learning articles</button></section>;
   if(area==="Relationships")return <section className="lab-section"><p>No connected relationship workspace is available in this Lab.</p><p>Sharing is deliberate. Personal records and permissions are independent.</p><button onClick={()=>go("Profile","Sharing & Permissions")}>Review sharing</button></section>;
-  if(area==="Settings")return <section className="lab-section"><h2>Lab session</h2><p>Preferences, experience, activity notes and suggestion dismissals remain in memory. Reloading or leaving the Lab ends the session. Search queries are not persisted.</p><h2>App settings</h2><a href={`#${settingsRoute.path}`}>Open current app settings</a></section>;
+  if(area==="Settings")return <><AppearanceSettings/><section className="lab-section"><h2>Lab session</h2><p>Preferences, experience, activity notes and suggestion dismissals remain in memory. Reloading or leaving the Lab ends the session. Search queries are not persisted.</p><h2>App settings</h2><a href={`#${settingsRoute.path}`}>Open current app settings</a></section></>;
   return null;
 }
