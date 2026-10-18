@@ -171,6 +171,8 @@ export function CurationWorkbench({ onClose }: { onClose: () => void }) {
         currentChange?.action === "archive" ||
         currentChange?.action === "remove",
     );
+  // Only a new entity or committed revision resets the editor.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currentEntry?.entityId,
     currentEntry?.entityType,

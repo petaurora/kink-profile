@@ -12,3 +12,8 @@ src/data/kinkCatalog.generated.ts
 src/data/rewardPunishmentLibrary.generated.ts
 
 *.tsbuildinfo
+coverage/
+visual-report/
+visual-results/
+smoke-report/
+smoke-results/

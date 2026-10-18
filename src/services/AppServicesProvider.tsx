@@ -20,6 +20,8 @@ function ServiceData({services,children}: {services:AppServices;children:ReactNo
     return {referenceData,snapshot};
   }, [services]);
   const query = useServiceQuery(load);
+  // Replacing the service invalidates consumers while its old snapshot is retained.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const data = useMemo(() => query.data ? {referenceData:query.data.referenceData,snapshot:query.data.snapshot} : null,[query.data,services]);
   if (!data) return <section className="ui-lab kp-ui" aria-label="UI Lab data"><ServiceQueryStatus loading={query.loading} error={query.error} onRetry={query.retry} label="UI Lab data"/></section>;
   return <DataContext.Provider value={data}>{children}</DataContext.Provider>;

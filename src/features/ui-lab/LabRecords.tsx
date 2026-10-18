@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode, type SetStateAction } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type SetStateAction } from "react";
 import type { SaveState } from "../../components/ui/PreferenceControl";
 import { useOptionalServices, useOptionalServiceData } from "../../services/AppServicesProvider";
 import { ratingKey, type CatalogReferenceData, type PreferenceTarget, type PreferenceRating, type ExperienceValue } from "../../services/contracts";
@@ -24,7 +24,7 @@ function useSessionRecords(diagnostics?:UiLabAdapter) {
   const [standalone]=useState(()=>createUiLabServices({latencyMs:0}));
   const services=sharedServices??standalone.services;
   const data=loaded?.referenceData??labReferenceData;const snapshot=loaded?.snapshot??labInitialPreferences;
-  const targets=recordTargets(data);
+  const targets=useMemo(()=>recordTargets(data),[data]);
   const [values, setValues] = useState<Record<string, LabValue>>(()=>Object.fromEntries(Object.entries(targets).map(([key,target])=>[key,"rating" in target?snapshot.ratings[ratingKey(target.rating)]:snapshot.experience?.[target.itemId]?.[target.field]])));
   const queues=useRef<Record<string,Promise<unknown>>>({});
   const [saves, setSaves] = useState<Record<string, SaveState>>({});
@@ -58,7 +58,7 @@ function useSessionRecords(diagnostics?:UiLabAdapter) {
     const pending=queues.current[target];const task=pending?pending.then(write):write();queues.current[target]=task;
     void task.then(()=>{if(queues.current[target]===task)delete queues.current[target];});
     return version;
-  }, [services,data,diagnostics,sharedServices,standalone]);
+  }, [services,targets,diagnostics,sharedServices,standalone]);
   const retry = useCallback((target: string) => commit(target, current.current[target]), [commit]);
   const restore = useCallback((target: string, version: number, previous: LabValue) => {
     if (versions.current[target] !== version) return false;

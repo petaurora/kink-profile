@@ -28,6 +28,8 @@ export function ProfileBackupPanel() {
 
   const backup = useMemo(
     () => createProfileBackup(),
+    // This counter explicitly refreshes the external storage snapshot.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [refreshKey],
   );
   const summary = useMemo(

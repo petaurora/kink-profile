@@ -124,7 +124,7 @@ export function PreferenceSheet({
     if (panel && !panel.contains(document.activeElement)) {
       panel.querySelector<HTMLElement>("[data-dialog-initial-focus]")?.focus();
     }
-  }, [open, position.panelStyle.visibility]);
+  }, [open, position.panelStyle.visibility, position.panelRef]);
   useLayoutEffect(() => {
     if (!open || position.panelStyle.visibility !== "visible") return;
     const selected = choicesRef.current?.querySelector<HTMLElement>('[aria-pressed="true"]');

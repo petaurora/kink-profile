@@ -195,19 +195,19 @@ export function KinkThisOrThat({
       ? overallCandidates
       : eligibleCatalog.filter((item) => item.categoryId === categoryId);
 
-  const scope: RankingScope =
-    mode === "overall"
-      ? { type: "overall" }
-      : { type: "category", categoryId };
+  const scope = useMemo<RankingScope>(() =>
+    mode === "overall" ? { type: "overall" } : { type: "category", categoryId },
+    [mode, categoryId],
+  );
 
   const snapshot = useMemo(
     () => calculateRanking(activeCatalog, activeComparisons, scope),
-    [activeCatalog, activeComparisons, mode, categoryId],
+    [activeCatalog, activeComparisons, scope],
   );
 
   const previousComparableSnapshot = useMemo(
     () => getPreviousComparableRankingSnapshot(profile, scope),
-    [profile, mode, categoryId],
+    [profile, scope],
   );
 
   const visibleRankingItems = useMemo(
@@ -226,8 +226,12 @@ export function KinkThisOrThat({
 
   const basePair = useMemo(
     () => selectNextPair(activeCatalog, activeComparisons, scope),
-    [activeCatalog, activeComparisons, mode, categoryId, pairNonce],
+    // Skipping explicitly reruns the randomized selector.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeCatalog, activeComparisons, scope, pairNonce],
   );
+  // The nonce also reshuffles left/right when the selected pair stays the same.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const pair = useMemo(() => randomizePair(basePair), [basePair, pairNonce]);
 
   const totalInScope = comparisonCountForScope(activeComparisons, scope);
@@ -295,6 +299,8 @@ export function KinkThisOrThat({
           : { type: "category", categoryId },
       ),
     );
+  // Route changes reset the session; answering or choosing a mode does not.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialMode]);
 
   const changeRankingMode = (nextMode: RankingMode) => {

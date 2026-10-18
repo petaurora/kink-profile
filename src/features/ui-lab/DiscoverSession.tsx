@@ -28,22 +28,23 @@ function useDiscoverState() {
   const attempts = resource.data?.attempts.map(attempt => attempt.status === "draft" && drafts[attempt.id]
     ? {...attempt, ...drafts[attempt.id]} : attempt) ?? [];
   const dirty = Object.keys(drafts)[0];
-  const save = (id: string) => {
+  const run = resource.run;
+  const save = useCallback((id: string) => {
     const edit = latestDrafts.current[id];
     if (!service || !edit) return;
-    resource.run(options => service.saveAttempt(id, edit, options), () => {
+    run(options => service.saveAttempt(id, edit, options), () => {
       setDrafts(previous => {
         if (previous[id] !== edit) return previous;
         const next = {...previous}; delete next[id]; return next;
       });
     });
-  };
+  }, [run, service]);
   // Unsaved text remains UI-owned until confirmation; navigation inside the Lab keeps this provider.
   useEffect(() => {
     if (!dirty || resource.pending || resource.failed) return;
     const timer = setTimeout(() => save(dirty), 250);
     return () => clearTimeout(timer);
-  }, [drafts, dirty, resource.pending, resource.failed, service]);
+  }, [drafts, dirty, resource.pending, resource.failed, save]);
   const editFor = (id:string) => {
     const attempt = attempts.find(value => value.id === id);
     if (!attempt || attempt.status !== "draft") return undefined;

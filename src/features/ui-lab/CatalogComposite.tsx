@@ -66,6 +66,8 @@ export function CatalogComposite({initialItem,initialGroup,initialValue,onClose,
    setGroupsOpen({[found.id+":"+initialGroup]:true});setIssueTarget(null);
    setHighlightTarget(found.id+":"+initialGroup+":"+initialValue);
   }
+ // Preference updates must not reopen the route handoff sheet.
+ // eslint-disable-next-line react-hooks/exhaustive-deps
  },[initialItem,initialGroup,initialValue]);
  useEffect(()=>{
   if(!highlightTarget)return;
