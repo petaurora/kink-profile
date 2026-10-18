@@ -1,3 +1,4 @@
+import type { DiscoveryTheme } from "./Serendipity";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { useOptionalServices } from "../../services/AppServicesProvider";
 import { ServiceError, type RequestOptions } from "../../services/contracts";
@@ -16,6 +17,11 @@ function useDiscoverState() {
   const resource = useServiceResource(read);
   const [finishingId, setFinishingId] = useState<string>();
   const [drafts, setDrafts] = useState<Record<string, DiscoverAttemptEdit>>({});
+  // Serendipity only: ephemeral current-exploration steering and anti-repeat state.
+  // Editorial dismissals, unlike these values, are handled by DiscoverService.
+  const [seenTopics, setSeenTopics] = useState<string[]>([]);
+  const [theme, setTheme] = useState<DiscoveryTheme | null>(null);
+  const noteTopic = (id: string) => setSeenTopics(previous => previous.includes(id) ? previous : [...previous, id]);
   const latestDrafts = useRef(drafts);
   latestDrafts.current = drafts;
   useEffect(() => {setDrafts({});setFinishingId(undefined);}, [service]);
@@ -46,7 +52,7 @@ function useDiscoverState() {
   const clearDraft = (id:string) => setDrafts(previous => {const next={...previous};delete next[id];return next;});
   const command = (work:(options:RequestOptions)=>Promise<DiscoverSnapshot>, after?:()=>void) => resource.run(work,after);
   return {
-    ...resource, available:!!service, reflection:resource.data?.reflection,
+    ...resource, seenTopics, noteTopic, theme, setTheme, available:!!service, reflection:resource.data?.reflection,
     suggestions:resource.data?.suggestions ?? [], dismissed:resource.data?.dismissed ?? [], attempts,
     hasUnsaved:!!dirty, finishingId,
     start(previous:string|undefined, onStarted:(id:string)=>void) {
