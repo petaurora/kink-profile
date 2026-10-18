@@ -4,30 +4,30 @@
 .ui-lab-app .lab-education-page .ui-lab-app-lede { margin: 0 0 18px; max-width: 670px; }
 .lab-education-library, .lab-education-reader { max-width: 1040px; margin-inline: auto; }
 .lab-education-toolbar { margin-bottom: 8px; }
-.lab-education-search-label { display: block; font-size: 13px; margin: 0 0 8px; font-weight: 650; color: #e4c9db; }
+.lab-education-search-label { display: block; font-size: 13px; margin: 0 0 8px; font-weight: 650; color: var(--accent-text); }
 .lab-education-library .kp-search-row { width: 100%; }
 .lab-education-library .kp-search-field { min-height: var(--kp-search-height); }
 .lab-education-library .kp-search-chips { gap: 8px; margin: 12px 0 10px; }
-.lab-education-results { color: #c6b1ca; font-size: 13px; margin: 9px 0 16px; }
+.lab-education-results { color: var(--text-secondary); font-size: 13px; margin: 9px 0 16px; }
 .lab-education-section { margin-block: 14px 23px; }
 .lab-education-section > h2, .lab-education-more > h2 { font-size: 19px; margin: 0 0 13px; }
-.lab-education-section > h3 { font-size: 16px; margin: 0 0 12px; color: #efd5e4; }
+.lab-education-section > h3 { font-size: 16px; margin: 0 0 12px; color: var(--text-primary); }
 .lab-education-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 13px; flex-wrap: wrap; }
 .lab-education-section-heading h2 { font-size: 19px; margin: 0; }
-.lab-education-section-heading span { font-size: 12px; color: #bcb0c9; }
+.lab-education-section-heading span { font-size: 12px; color: var(--text-secondary); }
 .lab-education-starters { margin: 8px 0 26px; }
-.lab-education-more { margin: 26px 0; padding-top: 18px; border-top: 1px solid #f0d3e724; }
+.lab-education-more { margin: 26px 0; padding-top: 18px; border-top: 1px solid color-mix(in srgb, var(--text-primary) 14%, transparent); }
 .lab-education-more .lab-education-section { margin: 21px 0 24px; }
 .lab-education-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .lab-education-starters .lab-education-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .lab-education-grid .lab-card { min-height: 150px; height: 100%; padding: 17px 18px; }
 .lab-education-grid .lab-card strong { font-size: 15px; line-height: 1.35; }
 .lab-education-grid .lab-card small { font-size: 12px; line-height: 1.5; }
-.lab-education-grid .lab-card-status { color: #e9c9dc; font-size: 11px; margin-top: auto; }
+.lab-education-grid .lab-card-status { color: var(--text-primary); font-size: 11px; margin-top: auto; }
 .lab-education-grid .lab-card .ui-lab-app-tile-icon { font-size: 20px; }
 .lab-education-grid .lab-card .ui-lab-app-tile-arrow { right: 15px; bottom: 15px; }
-.lab-education-empty { background: #1b1a39; border: 1px solid #59415f; border-radius: 12px; padding: 16px; }
-.lab-education-empty button { min-height: 44px; border-radius: 9px; background: #520e25; color: #f0d3e7; border: 1px solid #f0d3e75c; padding: 8px 12px; }
+.lab-education-empty { background: var(--bg-surface); border: 1px solid var(--border-strong); border-radius: 12px; padding: 16px; }
+.lab-education-empty button { min-height: 44px; border-radius: 9px; background: var(--bg-surface-emphasis); color: var(--text-primary); border: 1px solid color-mix(in srgb, var(--text-primary) 36%, transparent); padding: 8px 12px; }
 @media (max-width: 800px) {
  .lab-education-starters .lab-education-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
  .lab-education-starters .lab-education-grid .lab-card:first-child { grid-column: 1 / -1; }
@@ -45,39 +45,39 @@
  .lab-education-grid .lab-card { min-height: 126px; padding: 15px 16px; }
  .lab-education-section-heading span { display: none; }
 }
-.lab-education-back { display: inline-flex; align-items: center; min-height: 44px; border: 0; background: transparent; color: #f0d3e7; padding: 8px 0; font: inherit; text-decoration: underline; }
-.lab-education-article-header { border-bottom: 1px solid #f0d3e735; padding: 8px 0 24px; margin-bottom: 30px; }
-.lab-education-overline { color: #f0b8d6; font-size: 13px; letter-spacing: .02em; font-weight: 650; }
-.lab-education-article-header h2 { font-size: clamp(25px, 3.2vw, 36px); line-height: 1.23; margin: 13px 0; color: #ffe8f5; }
-.lab-education-summary { font-size: 16px; line-height: 1.6; max-width: 720px; color: #eddae7; }
-.lab-education-status { font-size: 12px; color: #cdb6c9; }
-.lab-education-note { background: #520e2552; border-left: 3px solid #e9a9ce; padding: 13px 16px; border-radius: 0 8px 8px 0; line-height: 1.65; }
-.lab-education-prose { max-width: 780px; overflow-wrap: break-word; color: #eadbea; font-size: 16px; line-height: 1.78; }
-.lab-education-prose h2 { font-size: clamp(21px, 2.5vw, 26px); line-height: 1.35; color: #ffe7f1; margin: 36px 0 13px; scroll-margin-top: 100px; }
-.lab-education-prose h3 { font-size: 19px; color: #ffdeee; margin: 27px 0 12px; line-height: 1.35; scroll-margin-top: 100px; }
-.lab-education-prose h4 { font-size: 17px; margin: 23px 0 10px; color: #ffdeee; }
+.lab-education-back { display: inline-flex; align-items: center; min-height: 44px; border: 0; background: transparent; color: var(--text-primary); padding: 8px 0; font: inherit; text-decoration: underline; }
+.lab-education-article-header { border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 21%, transparent); padding: 8px 0 24px; margin-bottom: 30px; }
+.lab-education-overline { color: var(--accent-text); font-size: 13px; letter-spacing: .02em; font-weight: 650; }
+.lab-education-article-header h2 { font-size: clamp(25px, 3.2vw, 36px); line-height: 1.23; margin: 13px 0; color: var(--text-primary); }
+.lab-education-summary { font-size: 16px; line-height: 1.6; max-width: 720px; color: var(--text-primary); }
+.lab-education-status { font-size: 12px; color: var(--text-secondary); }
+.lab-education-note { background: color-mix(in srgb, var(--accent-text) 32%, transparent); border-left: 3px solid var(--accent-border); padding: 13px 16px; border-radius: 0 8px 8px 0; line-height: 1.65; }
+.lab-education-prose { max-width: 780px; overflow-wrap: break-word; color: var(--text-primary); font-size: 16px; line-height: 1.78; }
+.lab-education-prose h2 { font-size: clamp(21px, 2.5vw, 26px); line-height: 1.35; color: var(--text-primary); margin: 36px 0 13px; scroll-margin-top: 100px; }
+.lab-education-prose h3 { font-size: 19px; color: var(--text-primary); margin: 27px 0 12px; line-height: 1.35; scroll-margin-top: 100px; }
+.lab-education-prose h4 { font-size: 17px; margin: 23px 0 10px; color: var(--text-primary); }
 .lab-education-prose p { margin: 0 0 17px; }
 .lab-education-prose ul, .lab-education-prose ol { padding-left: 26px; margin: 10px 0 23px; }
 .lab-education-prose li { padding-left: 3px; margin-bottom: 8px; }
-.lab-education-prose strong { color: #ffe6f3; font-weight: 700; }
-.lab-education-prose a { color: #ffd3e8; text-decoration: underline; text-underline-offset: 3px; }
-.lab-education-prose code { background: #262449; padding: 1px 4px; border-radius: 4px; }
-.lab-education-prose hr { border: 0; border-top: 1px solid #f0d3e739; margin: 36px 0; }
-.lab-education-prose blockquote { margin: 24px 0; padding: 14px 18px; border-left: 3px solid #e6a9ce; background: #29172e; color: #ffe3ef; border-radius: 0 9px 9px 0; }
-.lab-education-related { border-top: 1px solid #f0d3e73a; padding-top: 24px; margin: 36px 0 12px; }
+.lab-education-prose strong { color: var(--text-primary); font-weight: 700; }
+.lab-education-prose a { color: var(--text-primary); text-decoration: underline; text-underline-offset: 3px; }
+.lab-education-prose code { background: var(--bg-control); padding: 1px 4px; border-radius: 4px; }
+.lab-education-prose hr { border: 0; border-top: 1px solid color-mix(in srgb, var(--text-primary) 22%, transparent); margin: 36px 0; }
+.lab-education-prose blockquote { margin: 24px 0; padding: 14px 18px; border-left: 3px solid var(--accent-border); background: var(--bg-surface-emphasis); color: var(--text-primary); border-radius: 0 9px 9px 0; }
+.lab-education-related { border-top: 1px solid color-mix(in srgb, var(--text-primary) 23%, transparent); padding-top: 24px; margin: 36px 0 12px; }
 .lab-education-related h2 { font-size: 21px; margin: 0 0 8px; }
-.lab-education-related p { color: #d6bfd2; }
+.lab-education-related p { color: var(--text-secondary); }
 .lab-education-related-links { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,250px),1fr)); gap: 10px; }
-.lab-education-related-links button { min-height: 48px; background: #1c1b43; border: 1px solid #f0d3e747; color: #ffe5f3; border-radius: 10px; text-align: left; padding: 12px 14px; display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+.lab-education-related-links button { min-height: 48px; background: var(--bg-surface); border: 1px solid color-mix(in srgb, var(--text-primary) 28%, transparent); color: var(--text-primary); border-radius: 10px; text-align: left; padding: 12px 14px; display: flex; gap: 10px; align-items: center; justify-content: space-between; }
 @media (max-width: 700px) {
   .lab-education-prose { font-size: 15px; line-height: 1.7; }
 }
 
 /* Practice articles may contain safety comparison tables; scroll within the page on small screens. */
-.lab-education-table-scroll { max-width: 100%; overflow-x: auto; margin: 18px 0 26px; border: 1px solid #f0d3e73c; border-radius: 10px; }
-.lab-education-table-scroll:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 3px; }
+.lab-education-table-scroll { max-width: 100%; overflow-x: auto; margin: 18px 0 26px; border: 1px solid color-mix(in srgb, var(--text-primary) 24%, transparent); border-radius: 10px; }
+.lab-education-table-scroll:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
 .lab-education-table-scroll table { border-collapse: collapse; width: 100%; min-width: 550px; font-size: 14px; line-height: 1.55; }
-.lab-education-table-scroll th { font-weight: 700; color: #ffe5f2; background: #292342; }
-.lab-education-table-scroll td { color: #e9d6e4; }
-.lab-education-table-scroll th, .lab-education-table-scroll td { text-align: left; vertical-align: top; border-bottom: 1px solid #f0d3e72c; padding: 12px 14px; }
+.lab-education-table-scroll th { font-weight: 700; color: var(--text-primary); background: var(--bg-control); }
+.lab-education-table-scroll td { color: var(--text-primary); }
+.lab-education-table-scroll th, .lab-education-table-scroll td { text-align: left; vertical-align: top; border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 17%, transparent); padding: 12px 14px; }
 .lab-education-table-scroll tr:last-child td { border-bottom: 0; }

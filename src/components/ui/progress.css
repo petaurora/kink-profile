@@ -1,13 +1,9 @@
+@import "./tokens.css";
+
 /* KP progress visual system — shared across legacy and V2 screens.
    A soft, symmetrical fade frames the bar while the fill reflects the actual
    saved progress; the style must not imply completion or fabricate values. */
-:root {
-  --kp-progress-track: #302543;
-  --kp-progress-fill-start: #8d506e;
-  --kp-progress-fill-mid: #9d7299;
-  --kp-progress-fill-end: #7585af;
-  --kp-progress-feather: 18px;
-}
+:root { --kp-progress-feather: 18px; }
 .progress-track,
 .card-progress,
 .kp-progress-track {

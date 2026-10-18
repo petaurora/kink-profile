@@ -33,7 +33,7 @@
   height: 42px;
   border-radius: 14px;
   background: var(--bg-accent-soft);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .shared-comparison-title h1 {
@@ -44,7 +44,7 @@
 }
 
 .shared-comparison-title h1 span {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-weight: 500;
 }
 
@@ -215,7 +215,7 @@
 }
 
 .shared-semantic-pair svg {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .shared-semantic-match p {
@@ -228,7 +228,7 @@
 
 .shared-more > summary {
   padding: 11px 2px;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   cursor: pointer;
   font-size: .76rem;
   font-weight: 800;

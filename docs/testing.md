@@ -23,7 +23,8 @@ Playwright type-checks its configuration and tests, builds the application, and
 starts Vite preview on `127.0.0.1:4173`. The build uses
 `/kink-profile/pr-0/` and preview storage namespace `0`, exercising nested asset
 paths, the loading preview gate and hash routes. No hosted preview or personal
-profile is used. An occupied port fails rather than reusing an unknown server.
+profile is used. An occupied port fails rather than reusing an unknown server. Set
+`PLAYWRIGHT_PORT` to run an isolated local suite on another port.
 
 The default projects are desktop Chromium, Pixel 7-emulated Chromium, and
 iPhone 13-emulated WebKit. Each test receives a fresh browser context, including
@@ -66,14 +67,22 @@ production lifecycle/scoring/persistence code must remain outside test actions.
 | Local data | Name validation/normalization/reload, actual JSON download and confirmed restore, malformed/unknown backup rejection, reset cancel and selective quiz reset, independent name preservation, developer-tools opt-in |
 | Comparison | Actual exported backup upload, session-only comparison and shared Scene Builder handoff, invalid-upload recovery, original quiz data preserved |
 | Tools | Reward and punishment recipe save/reload/edit/duplicate/delete, empty randomizer pool behavior and setup handoff, scene theme/empty evidence behavior, durable Catalog preference to saved scene/copy/confirmed deletion |
+| Appearance | Three presets in both Settings surfaces, keyboard selection, reload/OS independence, profile preservation, preview isolation, pre-bundle bootstrap, blocked storage and rendered contrast/reflow scans across all palettes |
 | Ranking & sharing | Pairwise choice/equal/skip reload persistence, ordering count distinct from skip history, independent explicit preferences and quizzes, actual standalone HTML export without raw answers |
-| Accessibility | Rendered axe A/AA scans with contrast, supported legacy light/dark themes, open/nested dialogs, errors/recovery, all four quiz result/retake states, keyboard-only journeys, card names/descriptions and full click area, 320px enlarged-text/reduced-motion reflow |
+| Accessibility | Rendered axe A/AA scans with contrast, Midnight, Dusty Rose and Oxblood themes, open/nested dialogs, errors/recovery, all four quiz result/retake states, keyboard-only journeys, card names/descriptions and full click area, 320px enlarged-text/reduced-motion reflow |
 
-The suite defines **81 distinct scenarios** in eleven spec files. Running three
-projects produces **243 scheduled browser cases**: 242 applicable runs and one
+The suite defines **93 distinct scenarios** in twelve spec files. Running three
+projects produces **279 scheduled browser cases**: 278 applicable runs and one
 intentional desktop skip for the phone-only repeated-tap behavior. These are
-separate counts, not 243 different journeys. Use `npx playwright test --list` to
+separate counts, not 279 different journeys. Use `npx playwright test --list` to
 inspect the current inventory as the suite evolves.
+
+Appearance startup/failure tests seed only appearance keys, block only appearance
+storage or abort application modules to verify the synchronous HTML bootstrap.
+The palette audit runs axe with rendered contrast in each browser project at
+desktop or 320px widths; it samples Settings, Home, Catalog, Education/reader,
+quiz questions and the rating dialog. These are representative scans, not a
+whole-product conformance claim.
 
 Browser tests supplement the source tests; they do not reimplement score math.
 Catalog/Discover Lab records are session-only, while quiz answers are persisted
@@ -100,8 +109,8 @@ scanner rather than copying configurations or suppressing failures.
 
 The [accessibility validation protocol](qa/accessibility-validation.md) defines
 the sampled automated coverage and the separate keyboard, screen-reader, visual,
-zoom and physical-device checks. The V2 Lab's planned light theme and full human
-assistive-technology review are not certified by automation.
+zoom and physical-device checks. All three palettes receive sampled rendered checks in both UI generations; full
+human assistive-technology review remains separate from automation.
 
 ## CI and diagnostics
 
@@ -117,6 +126,6 @@ by git. View a trace with `npx playwright show-trace path/to/trace.zip`. Browser
 artifacts include only synthetic test data.
 
 Emulation does not certify physical-device touch/keyboard behavior, screen-reader
-speech, visual contrast or product/editorial review. The separate
+speech, full-product contrast or product/editorial review. The separate
 [quiz validation checklist](qa/quiz-v2-validation.md) retains those manual gates.
 No automated run by itself closes a hands-on gate.

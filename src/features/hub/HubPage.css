@@ -45,7 +45,7 @@
   border: 0;
   border-radius: 50%;
   background: var(--bg-accent-soft);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   transform: rotate(8deg);
 }
 
@@ -119,7 +119,7 @@
 }
 
 .hub-home-signal-icon {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   filter: drop-shadow(0 0 .65rem color-mix(in srgb, var(--accent-primary) 18%, transparent));
 }
 
@@ -220,7 +220,7 @@
 }
 
 .hub-home-inline-action:hover {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .hub-home-inline-action:focus-visible,
@@ -265,7 +265,7 @@
   height: 2.65rem;
   border-radius: .9rem;
   background: var(--bg-accent-soft);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .hub-home-now .hub-home-inline-action {
@@ -329,7 +329,7 @@
 }
 
 .hub-home-door-icon {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .hub-home-door strong {
@@ -384,7 +384,7 @@
   height: 2.8rem;
   border-radius: 50%;
   background: var(--bg-surface);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .hub-home-playground-copy {

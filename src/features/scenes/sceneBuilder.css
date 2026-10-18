@@ -46,7 +46,7 @@
   border: 1px solid var(--accent-border);
   border-radius: 14px;
   background: var(--bg-surface-raised);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   display: grid;
   place-items: center;
 }
@@ -133,7 +133,7 @@
 .scene-theme-chip.selected {
   border-color: var(--accent-primary);
   background: var(--bg-surface-emphasis);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .scene-theme-chip:focus-visible,
@@ -256,7 +256,7 @@
 .scene-segmented button.selected {
   border-color: var(--accent-primary);
   background: var(--bg-surface-emphasis);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .scene-session-summary {
@@ -317,7 +317,7 @@
 }
 
 .scene-empty > svg {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .scene-empty h2 {
@@ -398,7 +398,7 @@
   border: 1px solid var(--accent-border);
   border-radius: 999px;
   background: var(--bg-surface-raised);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   padding: 4px 7px;
   font-size: .65rem;
   font-weight: 850;
@@ -415,7 +415,7 @@
 .scene-candidate-theme-chips span {
   border-radius: 999px;
   background: var(--bg-surface-emphasis);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   padding: 4px 7px;
   font-size: .67rem;
   font-weight: 800;
@@ -488,7 +488,7 @@
 .scene-tonight-control button.selected {
   border-color: var(--accent-primary);
   background: var(--bg-surface-emphasis);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .scene-suggested {
@@ -685,7 +685,7 @@
   border: 1px solid var(--accent-border);
   border-radius: 10px;
   background: var(--bg-surface-emphasis);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   padding: 8px 10px;
   display: inline-flex;
   align-items: center;
@@ -765,7 +765,7 @@
 
 .scene-composition-empty svg {
   grid-row: 1 / span 2;
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .scene-composition-empty strong {
@@ -816,7 +816,7 @@
   height: 28px;
   border-radius: 999px;
   background: var(--bg-surface-emphasis);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   display: grid;
   place-items: center;
   font-size: .72rem;
@@ -1171,7 +1171,7 @@
   border-color: var(--accent-border);
   border-style: dashed;
   background: var(--bg-surface-raised);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .scene-rp-control {
@@ -1242,12 +1242,12 @@
 .scene-rp-modes button.selected {
   border-color: var(--accent-primary);
   background: var(--bg-surface-emphasis);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .scene-rp-modes button.selected small {
   background: var(--bg-accent-soft);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .scene-rp-modes button:disabled {
@@ -1274,7 +1274,7 @@
   border: 1px solid var(--accent-border);
   border-radius: 999px;
   background: var(--bg-surface-emphasis);
-  color: var(--accent-primary) !important;
+  color: var(--accent-text) !important;
   padding: 5px 8px;
   font-size: .67rem !important;
   font-weight: 850 !important;
@@ -1382,7 +1382,7 @@
 
 .scene-save-bar > small {
   grid-column: 1 / -1;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .7rem;
   font-weight: 750;
 }
@@ -1505,7 +1505,7 @@
 .scene-review-badge {
   border: 1px solid var(--accent-border);
   background: var(--bg-surface-raised);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .scene-ready-badge {
@@ -1538,7 +1538,7 @@
 .scene-library-card-actions .scene-delete-confirm {
   padding: 0 8px;
   border-color: var(--accent-border);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .66rem;
   font-weight: 850;
 }
@@ -1551,7 +1551,7 @@
 
 .scene-review-details summary {
   cursor: pointer;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .68rem;
   font-weight: 800;
 }

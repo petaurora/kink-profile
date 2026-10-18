@@ -76,7 +76,7 @@
 }
 
 .shape-profile-section.is-complete .shape-profile-section-summary > svg {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .shape-profile-section.is-upcoming {

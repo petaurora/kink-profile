@@ -160,7 +160,7 @@
 }
 
 .rp-randomizer-source summary {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   cursor: pointer;
   font-size: .8rem;
   font-weight: 800;
@@ -214,7 +214,7 @@
 }
 
 .rp-randomizer-tap-hint strong {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .9rem;
 }
 

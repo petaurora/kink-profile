@@ -1,7 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
 // Exercise the actual bundled app and GitHub Pages-style nested assets/routes.
-const origin = "http://127.0.0.1:4173";
+const port = process.env.PLAYWRIGHT_PORT || "4173";
+const origin = `http://127.0.0.1:${port}`;
 const basePath = "/kink-profile/pr-0/";
 
 export default defineConfig({
@@ -26,7 +27,7 @@ export default defineConfig({
     { name: "mobile-webkit", use: { ...devices["iPhone 13"] } },
   ],
   webServer: {
-    command: "npm run build && npm run preview -- --host 127.0.0.1 --port 4173 --strictPort",
+    command: `npm run build && npm run preview -- --host 127.0.0.1 --port ${port} --strictPort`,
     url: origin + basePath,
     // Never accidentally validate an old build or a different checkout.
     reuseExistingServer: false,

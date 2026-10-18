@@ -62,7 +62,7 @@
 
 .pairwise-choice > small {
   margin-top: auto;
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .pairwise-or {

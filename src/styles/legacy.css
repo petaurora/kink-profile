@@ -114,7 +114,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 }
 
 .site-nav-menu button[aria-current="page"] {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .brand {
@@ -148,7 +148,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 }
 
 .hero { padding: clamp(28px, 6vw, 72px); }
-.eyebrow { color: var(--accent-primary); margin: 0 0 12px; }
+.eyebrow { color: var(--accent-text); margin: 0 0 12px; }
 
 .hero h1,
 .question-card h1,
@@ -406,7 +406,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .result-caption > span {
   flex: 0 0 auto;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .76rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -619,7 +619,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   aspect-ratio: 1;
   border-radius: 14px;
   background: var(--bg-accent-soft);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .quiz-icon svg,
@@ -649,7 +649,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .status-in-progress {
   background: var(--status-progress-bg);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .status-complete {
@@ -1024,7 +1024,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .profile-interest-area:hover strong,
 .profile-interest-area:focus-visible strong {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .profile-interest-area:focus-visible {
@@ -1389,7 +1389,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .profile-role-title > span,
 .profile-mode-card > div:first-child > span {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .85rem;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
@@ -1802,7 +1802,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 }
 
 .profile-explanation > summary:hover .profile-explanation-name > strong {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .profile-explanation summary {
@@ -1869,7 +1869,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .profile-explanation-limited .profile-evidence-state,
 .profile-explanation-growing .profile-evidence-state {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .profile-explanation-unknown .profile-evidence-state {
@@ -2231,7 +2231,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   justify-self: center;
   border: 0;
   background: transparent;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font: inherit;
   font-weight: 750;
   cursor: pointer;
@@ -2291,7 +2291,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .category-continue-arrow {
   font-size: 2rem;
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .category-map-section {
@@ -2368,7 +2368,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 }
 
 .category-card-meta span:last-child {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-weight: 750;
 }
 
@@ -2467,7 +2467,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 
 .overall-destination-arrow {
   flex: 0 0 auto;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-weight: 850;
   font-size: 1.35rem;
 }
@@ -2915,7 +2915,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 }
 
 .catalog-row-details summary {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   cursor: pointer;
   font-size: .82rem;
   font-weight: 750;
@@ -3264,7 +3264,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 .catalog-evidence-chip.inferred,
 .ranking-evidence-chip.inferred {
   border-color: var(--accent-border);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   background: var(--bg-surface-raised);
 }
 
@@ -3854,7 +3854,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
   border: 1px solid var(--accent-border);
   border-radius: 999px;
   background: var(--bg-control);
-  color: var(--accent-primary);
+  color: var(--accent-text);
   min-height: 28px;
   padding: .25rem .5rem;
   display: inline-flex;

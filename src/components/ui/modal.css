@@ -11,7 +11,7 @@
 .kp-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: #070820b9;
+  background: var(--overlay-backdrop);
   border: 0;
   cursor: default;
 }
@@ -20,11 +20,11 @@
   width: min(410px, 100%);
   max-height: 85dvh;
   overflow: auto;
-  background: #151741;
-  border: 1px solid #f0d3e75c;
+  background: var(--bg-surface);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 36%, transparent);
   border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 18px 60px #0009;
+  box-shadow: 0 18px 60px var(--shadow-panel);
 }
 .kp-modal-panel:focus {
   outline: none;

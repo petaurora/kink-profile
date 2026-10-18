@@ -28,7 +28,7 @@
   display: grid;
   place-items: center;
   background: var(--bg-accent-soft);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .comparison-upload-heading h1 {
@@ -59,7 +59,7 @@
 
 .comparison-upload-plus {
   align-self: center;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: 1.35rem;
   font-weight: 850;
 }
@@ -103,7 +103,7 @@
 
 .comparison-profile-chip.is-upload svg {
   margin-bottom: 3px;
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .comparison-upload-picker input {
@@ -131,7 +131,7 @@
 }
 
 .comparison-upload-safety-note svg {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .comparison-upload-safety-note > div {
@@ -231,7 +231,7 @@
 
 .comparison-upload-meta .comparison-upload-safety {
   margin-left: auto;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-weight: 800;
 }
 
@@ -374,7 +374,7 @@
 
 .participant-intent-selected-chip {
   padding: 6px 8px;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .7rem;
   font-weight: 800;
 }
@@ -415,7 +415,7 @@
   place-items: center;
   border-radius: 10px;
   background: var(--bg-accent-soft);
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .participant-intent-group > summary > span:nth-child(2) {
@@ -436,7 +436,7 @@
 
 .participant-intent-group-count {
   min-width: 22px;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .72rem;
   font-weight: 850;
   text-align: right;
@@ -462,7 +462,7 @@
 }
 
 .participant-intent-option.is-selected {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   box-shadow: 0 0 0 1px var(--accent-primary);
 }
 
@@ -480,7 +480,7 @@
 
 .participant-intent-pairings-heading > svg {
   margin-top: 1px;
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .participant-intent-pairings-heading > div {
@@ -547,7 +547,7 @@
 }
 
 .participant-intent-pairing svg {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .participant-intent-pairing p,
@@ -623,7 +623,7 @@
 .shared-scene-launch small {
   display: block;
   margin-top: 7px;
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .68rem;
   font-weight: 800;
 }
@@ -669,7 +669,7 @@
 }
 
 .comparison-privacy > summary svg {
-  color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 .comparison-privacy > summary > span {

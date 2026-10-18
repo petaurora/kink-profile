@@ -1,105 +1,126 @@
-:root {
+/* Shared semantic palette. Appearance changes colors, never feature behavior.
+   Nested data-theme scopes are used only by the Settings palette previews. */
+:root, [data-theme="midnight"] {
   color-scheme: dark;
-
-  /* Brand anchors — shared across both supported themes. */
   --palette-midnight: #101240;
-  --palette-plum: #520E25;
-  --palette-lavender: #F0D3E7;
-  --palette-orchid: #C949AC;
+  --palette-plum: #520e25;
+  --palette-lavender: #f0d3e7;
+  --palette-orchid: #c949ac;
   --palette-amethyst: #582673;
-
-  /* Dark mode: midnight / velvet / intimacy. */
-
-  /* Surfaces */
-  --bg-page: var(--palette-midnight);
-  --bg-surface: #191944;
-  --bg-surface-raised: #211B4D;
-  --bg-surface-emphasis: var(--palette-plum);
-  --bg-control: #24204F;
-  --bg-control-hover: #30245E;
-  --bg-track: rgba(240, 211, 231, .10);
-  --bg-accent-soft: rgba(201, 73, 172, .14);
-  --bg-muted: rgba(240, 211, 231, .07);
-  --ambient-glow: rgba(201, 73, 172, .16);
-
-  /* Text */
-  --text-primary: var(--palette-lavender);
-  --text-secondary: rgba(240, 211, 231, .74);
-  --text-muted: rgba(240, 211, 231, .62);
-  --text-on-accent: var(--palette-midnight);
-
-  /* Interaction */
-  /* Lift the interactive orchid above dark surfaces for small-text contrast. */
-  --accent-primary: #E07BC9;
-  --accent-secondary: var(--palette-amethyst);
-  --accent-border: rgba(201, 73, 172, .58);
-  --focus-ring: rgba(201, 73, 172, .42);
-
-  /* Structure */
-  --border-subtle: rgba(240, 211, 231, .12);
-  --border-strong: rgba(240, 211, 231, .20);
-  --shadow-panel: rgba(4, 3, 26, .34);
-
-  /* Status */
-  --status-muted-bg: rgba(240, 211, 231, .08);
-  --status-muted-text: rgba(240, 211, 231, .62);
-  --status-progress-bg: rgba(88, 38, 115, .48);
-  --status-progress-text: var(--palette-lavender);
-  --status-complete-bg: rgba(201, 73, 172, .16);
-  --status-complete-text: var(--palette-lavender);
-  --status-muted-dot: rgba(240, 211, 231, .34);
-  --status-progress-dot: var(--palette-amethyst);
-  --status-complete-dot: var(--palette-orchid);
+  --bg-page: #101240;
+  --bg-canvas: #0b0c25;
+  --bg-shell: #12132f;
+  --bg-inset: #0e1038;
+  --bg-surface: #1b1a39;
+  --bg-surface-raised: #211b4d;
+  --bg-surface-emphasis: #520e25;
+  --bg-control: #24204f;
+  --bg-control-hover: #30245e;
+  --bg-track: rgba(240,211,231,.10);
+  --bg-accent-soft: rgba(201,73,172,.14);
+  --bg-muted: rgba(240,211,231,.07);
+  --ambient-glow: rgba(201,73,172,.16);
+  --text-primary: #f0d3e7;
+  --text-secondary: #c2b6cf;
+  --text-muted: #b1a2be;
+  --text-on-accent: #101240;
+  --accent-primary: #e07bc9;
+  --accent-secondary: #582673;
+  --accent-text: #e5aacd;
+  --accent-border: #95617c;
+  --focus-ring: #f0d3e7;
+  --border-subtle: rgba(240,211,231,.16);
+  --border-strong: #735d7e;
+  --border-control: #9c85a7;
+  --shadow-panel: rgba(4,3,26,.34);
+  --overlay-backdrop: rgba(5,5,21,.68);
+  --text-danger: #ffbdcb;
+  --text-success: #bce1cb;
+  --kp-progress-track: #302543;
+  --kp-progress-fill-start: #8d506e;
+  --kp-progress-fill-mid: #9d7299;
+  --kp-progress-fill-end: #7585af;
 }
-
-/*
- * Light mode is supported through the user's OS/browser preference.
- * There is intentionally no in-app theme toggle yet.
- */
-@media (prefers-color-scheme: light) {
-  :root {
-    color-scheme: light;
-
-    /* Light mode: paper / blush / daylight. */
-
-    /* Surfaces */
-    --bg-page: #FBF6F8;
-    --bg-surface: #FFFDFE;
-    --bg-surface-raised: #F8EDF3;
-    --bg-surface-emphasis: #F3DCE7;
-    --bg-control: #F1E4EB;
-    --bg-control-hover: #E8D4DF;
-    --bg-track: rgba(82, 14, 37, .10);
-    --bg-accent-soft: rgba(201, 73, 172, .12);
-    --bg-muted: rgba(82, 14, 37, .05);
-    --ambient-glow: rgba(201, 73, 172, .12);
-
-    /* Text */
-    --text-primary: #2A2035;
-    --text-secondary: #5C4B62;
-    --text-muted: #77677A;
-    --text-on-accent: #FFF9FC;
-
-    /* Interaction */
-    --accent-primary: #8F2B72;
-    --accent-secondary: var(--palette-amethyst);
-    --accent-border: rgba(143, 43, 114, .44);
-    --focus-ring: rgba(143, 43, 114, .46);
-
-    /* Structure */
-    --border-subtle: rgba(82, 14, 37, .12);
-    --border-strong: rgba(82, 14, 37, .22);
-    --shadow-panel: rgba(82, 14, 37, .10);
-
-    /* Status */
-    --status-muted-bg: rgba(16, 18, 64, .06);
-    --status-muted-text: #66596A;
-    --status-progress-bg: rgba(88, 38, 115, .12);
-    --status-progress-text: var(--palette-amethyst);
-    --status-complete-bg: rgba(143, 43, 114, .12);
-    --status-complete-text: #6E234F;
-    --status-muted-dot: rgba(42, 32, 53, .36);
-    --status-progress-dot: var(--palette-amethyst);
-    --status-complete-dot: #8F2B72;
-  }
+[data-theme="dusty-rose"] {
+  color-scheme: light;
+  --bg-page: #f4e9e8;
+  --bg-canvas: #f4e9e8;
+  --bg-shell: #ecdddc;
+  --bg-inset: #e9d9d8;
+  --bg-surface: #fbf4f1;
+  --bg-surface-raised: #f0dfdc;
+  --bg-surface-emphasis: #e6c9cb;
+  --bg-control: #ebd8d6;
+  --bg-control-hover: #e0c5c6;
+  --bg-track: rgba(91,45,58,.12);
+  --bg-accent-soft: rgba(136,66,86,.10);
+  --bg-muted: rgba(91,45,58,.06);
+  --ambient-glow: rgba(162,92,107,.09);
+  --text-primary: #3e2931;
+  --text-secondary: #6b4c56;
+  --text-muted: #795861;
+  --text-on-accent: #fff7f3;
+  --accent-primary: #874157;
+  --accent-secondary: #74546a;
+  --accent-text: #823d52;
+  --accent-border: #a46778;
+  --focus-ring: #823d52;
+  --border-subtle: rgba(91,45,58,.20);
+  --border-strong: #b38f96;
+  --border-control: #9d737f;
+  --shadow-panel: rgba(79,34,47,.14);
+  --overlay-backdrop: rgba(49,25,35,.42);
+  --text-danger: #942e45;
+  --text-success: #346548;
+  --kp-progress-track: #decbcf;
+  --kp-progress-fill-start: #9b5069;
+  --kp-progress-fill-mid: #946f8e;
+  --kp-progress-fill-end: #64769c;
+}
+[data-theme="oxblood"] {
+  color-scheme: dark;
+  --bg-page: #170e13;
+  --bg-canvas: #170e13;
+  --bg-shell: #201217;
+  --bg-inset: #160d12;
+  --bg-surface: #29181f;
+  --bg-surface-raised: #342028;
+  --bg-surface-emphasis: #542332;
+  --bg-control: #3b232c;
+  --bg-control-hover: #4c2b37;
+  --bg-track: rgba(238,216,217,.10);
+  --bg-accent-soft: rgba(164,77,99,.19);
+  --bg-muted: rgba(238,216,217,.06);
+  --ambient-glow: rgba(120,35,57,.13);
+  --text-primary: #eed8d9;
+  --text-secondary: #c7adb2;
+  --text-muted: #b99aa2;
+  --text-on-accent: #fff0ed;
+  --accent-primary: #9c425b;
+  --accent-secondary: #71404e;
+  --accent-text: #d8a2ad;
+  --accent-border: #a46d7c;
+  --focus-ring: #e5b3bb;
+  --border-subtle: rgba(238,216,217,.16);
+  --border-strong: #815563;
+  --border-control: #aa7e8c;
+  --shadow-panel: rgba(9,2,6,.40);
+  --overlay-backdrop: rgba(10,3,7,.74);
+  --text-danger: #ffb5c2;
+  --text-success: #bcd1b9;
+  --kp-progress-track: #422730;
+  --kp-progress-fill-start: #9c425b;
+  --kp-progress-fill-mid: #ad7787;
+  --kp-progress-fill-end: #9d8b9d;
+}
+:root, [data-theme] {
+  --status-muted-bg: var(--bg-muted);
+  --status-muted-text: var(--text-secondary);
+  --status-progress-bg: var(--bg-control);
+  --status-progress-text: var(--text-primary);
+  --status-complete-bg: var(--bg-accent-soft);
+  --status-complete-text: var(--text-primary);
+  --status-muted-dot: var(--text-muted);
+  --status-progress-dot: var(--accent-secondary);
+  --status-complete-dot: var(--accent-text);
 }

@@ -15,10 +15,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #242047;
-  color: #f0d3e7;
-  box-shadow: 0 12px 35px #0008;
-  border: 1px solid #f0d3e74a;
+  background: var(--bg-control);
+  color: var(--text-primary);
+  box-shadow: 0 12px 35px var(--shadow-panel);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 29%, transparent);
   font-size: 13px;
   max-width: 100%;
   touch-action: pan-y;
@@ -33,10 +33,10 @@
 .kp-toast-rect {
   border-radius: 12px;
   padding: 12px 10px 12px 15px;
-  border-left: 3px solid #bc89a6;
+  border-left: 3px solid var(--accent-border);
 }
 .kp-toast-error {
-  border-left-color: #ffb4c2;
+  border-left-color: var(--accent-border);
 }
 .kp-toast-message {
   flex: 1;
@@ -44,9 +44,9 @@
 }
 .kp-toast-action {
   background: transparent;
-  color: #ffd1e4;
+  color: var(--text-primary);
   border: 0;
-  border-left: 1px solid #f0d3e750;
+  border-left: 1px solid color-mix(in srgb, var(--text-primary) 31%, transparent);
   padding: 6px 12px;
   font: inherit;
   font-weight: 600;
@@ -56,13 +56,13 @@
 .kp-toast-dismiss {
   border: 0;
   background: transparent;
-  color: #f0d3e7;
+  color: var(--text-primary);
   padding: 5px 9px;
   font-size: 19px;
   cursor: pointer;
 }
 .kp-toast button:focus-visible {
-  outline: 2px solid #f0d3e7;
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 @media (min-width: 800px) {
@@ -89,11 +89,11 @@
 }
 .kp-toast-action:hover,
 .kp-toast-dismiss:hover {
-  background: #f0d3e719;
+  background: color-mix(in srgb, var(--text-primary) 10%, transparent);
 }
 .kp-toast-action:active,
 .kp-toast-dismiss:active {
-  background: #f0d3e73b;
+  background: color-mix(in srgb, var(--text-primary) 23%, transparent);
   transform: scale(0.91);
 }
 .kp-toast-dismiss {

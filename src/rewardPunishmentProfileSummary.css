@@ -96,7 +96,7 @@
 }
 
 .profile-rp-category small {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .62rem;
   font-weight: 850;
 }
@@ -117,7 +117,7 @@
 }
 
 .profile-rp-rank {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .7rem;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
@@ -170,7 +170,7 @@
 }
 
 .profile-rp-suggestions-heading > span {
-  color: var(--accent-primary);
+  color: var(--accent-text);
   font-size: .68rem;
   font-weight: 850;
   text-transform: uppercase;

@@ -3,6 +3,7 @@ import { ProfileResetPanel } from "../../ProfileResetPanel";
 import { ProfileBackupPanel } from "../../ProfileBackupPanel";
 import { ProfileImportPanel } from "../../ProfileImportPanel";
 import { ProfileSharePanel } from "../../ProfileSharePanel";
+import { AppearanceSettings } from "./AppearanceSettings";
 import { ExperimentalFeaturesPanel } from "./ExperimentalFeaturesPanel";
 import {
   MAX_PROFILE_DISPLAY_NAME_LENGTH,
@@ -84,6 +85,8 @@ export function ProfileSettingsPage({
           </p>
         </div>
       </div>
+
+      <AppearanceSettings />
 
       <section className="settings-section" aria-labelledby="settings-profile-heading">
         <div className="settings-section-heading">

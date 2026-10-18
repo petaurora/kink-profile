@@ -1,3 +1,5 @@
+@import "./tokens.css";
+
 /* Feedback primitives: one family for measured progress and loading. */
 .kp-progress--hairline { height: 3px; }
 .kp-progress--regular { height: 5px; }
@@ -6,14 +8,14 @@
 .kp-step-progress { display: grid; gap: 9px; min-width: 0; }
 .kp-step-progress__meta {
   display: flex; align-items: baseline; justify-content: space-between;
-  gap: 12px; font-size: .78rem; font-weight: 650; color: var(--kp-pink, #f0d3e7);
+  gap: 12px; font-size: .78rem; font-weight: 650; color: var(--kp-pink, var(--text-primary));
 }
-.kp-step-progress__meta span:last-child { font-variant-numeric: tabular-nums; color: var(--kp-muted, #bba9c4); }
+.kp-step-progress__meta span:last-child { font-variant-numeric: tabular-nums; color: var(--kp-muted, var(--text-secondary)); }
 
 .kp-loading-bar { position: relative; }
 .kp-loading-bar > span {
   position: absolute; top: 0; left: 0; width: 38%; height: 100%;
-  background: linear-gradient(90deg, transparent, var(--kp-progress-fill-mid, #9d7299), transparent);
+  background: linear-gradient(90deg, transparent, var(--kp-progress-fill-mid, var(--accent-text)), transparent);
   box-shadow: none;
   animation: kp-loading-sweep 1.65s linear infinite;
   transition: none;
@@ -25,7 +27,7 @@
 
 .kp-loading-indicator {
   display: inline-grid; place-items: center; flex: 0 0 auto;
-  width: 34px; height: 34px; color: var(--kp-pink, #f0d3e7);
+  width: 34px; height: 34px; color: var(--kp-pink, var(--text-primary));
 }
 .kp-loading-indicator--small { width: 22px; height: 22px; }
 .kp-loading-indicator--large { width: 60px; height: 60px; }
@@ -33,23 +35,23 @@
 .kp-loading-indicator__art > * { display: block; max-width: 100%; max-height: 100%; }
 @keyframes kp-loading-spin { to { transform: rotate(360deg); } }
 
-.kp-loading-state { display: flex; align-items: center; gap: 13px; min-width: 0; color: var(--kp-pink, #f0d3e7); }
+.kp-loading-state { display: flex; align-items: center; gap: 13px; min-width: 0; color: var(--kp-pink, var(--text-primary)); }
 .kp-loading-state--panel {
   padding: 24px; border-radius: 16px;
-  border: 1px solid rgba(240, 211, 231, .18); background: rgba(240, 211, 231, .045);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 18%, transparent); background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 .kp-loading-state__copy { display: grid; gap: 7px; min-width: 0; flex: 1; }
 .kp-loading-state__copy strong { font-size: .91rem; font-weight: 700; }
-.kp-loading-state__copy > span { color: var(--kp-muted, #bba9c4); font-size: .8rem; line-height: 1.45; }
+.kp-loading-state__copy > span { color: var(--kp-muted, var(--text-secondary)); font-size: .8rem; line-height: 1.45; }
 .kp-loading-state__copy .kp-loading-bar { width: min(100%, 300px); margin-top: 4px; }
 
-.kp-skeleton { display: block; max-width: 100%; position: relative; overflow: hidden; background: rgba(240, 211, 231, .09); }
+.kp-skeleton { display: block; max-width: 100%; position: relative; overflow: hidden; background: color-mix(in srgb, var(--text-primary) 9%, transparent); }
 .kp-skeleton--small { border-radius: 5px; }
 .kp-skeleton--medium { border-radius: 13px; }
 .kp-skeleton--round { border-radius: 999px; }
 .kp-skeleton::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(240,211,231,.11) 48%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--text-primary) 11%, transparent) 48%, transparent 100%);
   transform: translateX(-100%); animation: kp-skeleton-shimmer 1.75s ease-in-out infinite;
 }
 @keyframes kp-skeleton-shimmer { to { transform: translateX(100%); } }

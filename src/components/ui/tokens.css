@@ -1,12 +1,14 @@
+@import "../../styles/theme.css";
+
 /* Defaults travel with shared components; override these variables at a parent
    to theme a composed view without importing any feature stylesheet. */
 :root {
-  --kp-navy: #101240;
-  --kp-burgundy: #520e25;
-  --kp-pink: #f0d3e7;
-  --kp-muted: #bba9c4;
-  --kp-search-bg: #17183f;
-  --kp-search-border: #f0d3e74a;
+  --kp-navy: var(--bg-page);
+  --kp-burgundy: var(--bg-surface-emphasis);
+  --kp-pink: var(--text-primary);
+  --kp-muted: var(--text-muted);
+  --kp-search-bg: var(--bg-surface-raised);
+  --kp-search-border: var(--border-control);
   --kp-search-radius: 12px;
   --kp-search-height: 52px;
 }
@@ -33,8 +35,8 @@
 
 /* Shared accessibility defaults stay local to consumers of the primitives. */
 :root {
-  --kp-control-border: #9c85a7;
-  --kp-search-border: var(--kp-control-border);
+  --kp-control-border: var(--border-control);
+  --kp-search-border: var(--border-control);
 }
 .kp-visually-hidden {
   position: absolute;
@@ -47,7 +49,7 @@
   white-space: nowrap;
   border: 0;
 }
-.kp-ui { color-scheme: dark; }
+.kp-ui { color-scheme: inherit; }
 .kp-ui button { overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) {
   .kp-ui *, .kp-ui *::before, .kp-ui *::after {

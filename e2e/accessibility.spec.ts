@@ -53,15 +53,17 @@ test("card descriptions keep their full click area and separate accessible descr
   await expect(page.getByRole("heading", { level: 2, name: /^Question 1 of/ })).toBeFocused();
 });
 
-// The existing app supports both OS color schemes. The V2 Lab currently has
-// one dark presentation, so duplicating its scans would add no theme coverage.
-for (const [name, route, readyText] of pages.filter(([, route]) => !route.startsWith("/ui-lab/"))) {
-  test(`${name}: dark-theme rendered WCAG A/AA scan`, { tag: "@a11y" }, async ({ app, page }, testInfo) => {
-    await page.emulateMedia({ colorScheme: "dark" });
-    await app.open(route);
-    await expect(page.getByText(readyText, { exact: false }).first()).toBeVisible();
-    await auditAccessibility(page, testInfo, `dark-${name.toLowerCase().replaceAll(" ", "-")}`);
-  });
+// The active app preset, rather than OS preference, owns both UI generations.
+for (const preset of ["Dusty Rose", "Oxblood"]) {
+  for (const [name, route, readyText] of pages.filter(([, route]) => !route.startsWith("/ui-lab/"))) {
+    test(`${name}: ${preset} rendered WCAG A/AA scan`, { tag: "@a11y" }, async ({ app, page }, testInfo) => {
+      await app.open("/settings");
+      await page.getByRole("radio", { name: new RegExp(preset) }).check();
+      await app.open(route);
+      await expect(page.getByText(readyText, { exact: false }).first()).toBeVisible();
+      await auditAccessibility(page, testInfo, `${preset.toLowerCase().replaceAll(" ", "-")}-${name.toLowerCase().replaceAll(" ", "-")}`);
+    });
+  }
 }
 
 test("keyboard skip link, drawer wrapping and focus restoration", { tag: "@a11y" }, async ({ app, page }, testInfo) => {

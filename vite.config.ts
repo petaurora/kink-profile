@@ -1,4 +1,5 @@
 import { defineConfig, type Plugin } from "vite";
+import { APPEARANCE_STORAGE_KEY, appearanceBootstrapScript } from "./src/lib/appearancePresets";
 import react from "@vitejs/plugin-react";
 import { execFileSync } from "node:child_process";
 
@@ -28,6 +29,7 @@ function pwaAssetsPlugin(): Plugin {
     name: "kink-profile-pwa-assets",
     transformIndexHtml() {
       return [
+        { tag: "script", children: appearanceBootstrapScript(previewPr ? `kink-profile:preview:pr-${previewPr}:${APPEARANCE_STORAGE_KEY}` : APPEARANCE_STORAGE_KEY), injectTo: "head" },
         {
           tag: "link",
           attrs: {
@@ -55,8 +57,8 @@ function pwaAssetsPlugin(): Plugin {
         start_url: base,
         scope: base,
         display: "standalone",
-        theme_color: "#08081d",
-        background_color: "#08081d",
+        theme_color: "#0b0c25",
+        background_color: "#0b0c25",
         icons: [
           {
             src: "icons/pwa-192.png",

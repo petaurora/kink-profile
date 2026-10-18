@@ -1,8 +1,8 @@
-.lab-search-sticky { position: sticky; top: 0; background: #101240; padding-top: 4px; z-index: 1; }
+.lab-search-sticky { position: sticky; top: 0; background: var(--bg-page); padding-top: 4px; z-index: 1; }
 .lab-search-scroll { max-height: 55dvh; overflow: auto; overscroll-behavior: contain; }
 .lab-search-destination > .cc { margin: 0; }
 .lab-search-destination > .cc > :not(.kp-modal-layer) { display: none; }
-.lab-search-loading { height: 2px; background: #f0d3e7; opacity: .65; }
+.lab-search-loading { height: 2px; background: var(--accent-text); opacity: .65; }
 @media (prefers-reduced-motion: no-preference) {
   .lab-search-loading { animation: lab-search-pulse 1s ease-in-out infinite alternate; }
   @keyframes lab-search-pulse { to { opacity: .25; } }

@@ -190,7 +190,7 @@
 }
 
 .share-radar-score {
-  fill: rgba(201, 73, 172, .16);
+  fill: var(--bg-accent-soft);
   stroke: var(--accent-primary);
   stroke-width: 2;
 }

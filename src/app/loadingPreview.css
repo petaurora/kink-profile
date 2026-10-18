@@ -1,6 +1,6 @@
 .kp-loading-preview {
-  background: radial-gradient(ellipse at 50% 40%, #291a48 0%, #101240 56%, #0b0c25 100%);
-  color: #f0d3e7;
+  background: radial-gradient(ellipse at 50% 40%, var(--bg-control) 0%, var(--bg-page) 56%, var(--bg-canvas) 100%);
+  color: var(--text-primary);
   min-height: 100dvh;
   width: 100%;
   display: grid;
@@ -18,23 +18,23 @@
 }
 .kp-loading-preview-eyebrow {
   margin: 0 0 8px;
-  color: #d3a0c4;
+  color: var(--accent-text);
   font-size: 11px;
   letter-spacing: .18em;
   font-weight: 650;
 }
 .kp-loading-preview-note {
-  color: #cec0d4;
+  color: var(--text-secondary);
   font-size: 13px;
   line-height: 1.65;
   max-width: 300px;
   margin: 0;
 }
 .kp-loading-preview-continue {
-  color: #f0d3e7;
+  color: var(--text-primary);
   border: 0;
   background: transparent;
-  border-bottom: 1px solid #de9bbe;
+  border-bottom: 1px solid var(--accent-border);
   padding: 12px 10px;
   min-width: 155px;
   min-height: 44px;
@@ -43,6 +43,6 @@
   cursor: pointer;
 }
 .kp-loading-preview-continue span { display: inline-block; margin-left: 6px; }
-.kp-loading-preview-continue:hover { color: #fff; border-color: #fff; }
-.kp-loading-preview-continue:focus-visible { outline: 2px solid #f0d3e7; outline-offset: 4px; border-radius: 4px; }
+.kp-loading-preview-continue:hover { color: var(--text-primary); border-color: var(--accent-border); }
+.kp-loading-preview-continue:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: 4px; }
 @media (prefers-reduced-motion: reduce) { .kp-loading-preview-continue span { transition: none; } }

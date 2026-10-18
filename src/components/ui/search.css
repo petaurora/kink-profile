@@ -16,7 +16,7 @@
   border-radius: var(--kp-search-radius);
   background: var(--kp-search-bg);
   box-shadow: none;
-  color: #f0d3e7;
+  color: var(--text-primary);
   font: inherit;
   font-size: 14px;
   font-weight: 400;
@@ -30,7 +30,7 @@ button.kp-search-field--launch {
   width: 20px;
   height: 20px;
   flex: none;
-  color: #bba9c4;
+  color: var(--text-secondary);
   pointer-events: none;
 }
 .kp-search-field__placeholder {
@@ -39,7 +39,7 @@ button.kp-search-field--launch {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: #bba9c4;
+  color: var(--text-secondary);
 }
 .kp-search-field input[type="search"] {
   appearance: none;
@@ -57,12 +57,12 @@ button.kp-search-field--launch {
   outline: 0;
   background: transparent;
   box-shadow: none;
-  color: #f0d3e7;
+  color: var(--text-primary);
   font: inherit;
   font-size: 14px;
 }
 .kp-search-field input[type="search"]::placeholder {
-  color: #bba9c4;
+  color: var(--text-secondary);
   opacity: 1;
 }
 .kp-search-field input[type="search"]::-webkit-search-cancel-button {
@@ -71,8 +71,8 @@ button.kp-search-field--launch {
 }
 .kp-search-field:focus-within,
 button.kp-search-field--launch:focus-visible {
-  border-color: #f0d3e7;
-  box-shadow: 0 0 0 1px #f0d3e775;
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 1px var(--shadow-panel);
   outline: 0;
 }
 .kp-search-field__clear {
@@ -89,7 +89,7 @@ button.kp-search-field--launch:focus-visible {
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: #f0d3e7;
+  color: var(--text-primary);
   cursor: pointer;
 }
 .kp-search-field__clear svg {
@@ -97,10 +97,10 @@ button.kp-search-field--launch:focus-visible {
   height: 18px;
 }
 .kp-search-field__clear:hover {
-  background: #f0d3e714;
+  background: color-mix(in srgb, var(--text-primary) 8%, transparent);
 }
 .kp-search-field__clear:focus-visible {
-  outline: 2px solid #f0d3e7;
+  outline: 2px solid var(--focus-ring);
   outline-offset: -3px;
 }
 @media (max-width: 680px) {
@@ -137,19 +137,19 @@ button.kp-search-field--launch:focus-visible {
   border: 1px solid var(--kp-search-border);
   border-radius: var(--kp-search-radius);
   background: var(--kp-search-bg);
-  color: #cbb4ca;
+  color: var(--text-secondary);
   cursor: pointer;
 }
 .kp-search-order-state { position: absolute; right: 3px; bottom: 3px; }
 .kp-search-filter-trigger:hover,
 .kp-search-filter-trigger.is-active {
-  border-color: #f0d3e7a6;
-  background: #520e254f;
-  color: #f0d3e7;
+  border-color: color-mix(in srgb, var(--text-primary) 65%, transparent);
+  background: color-mix(in srgb, var(--accent-text) 31%, transparent);
+  color: var(--text-primary);
 }
 .kp-search-filter-trigger:focus-visible {
-  border-color: #f0d3e7;
-  outline: 2px solid #f0d3e7;
+  border-color: var(--accent-border);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 .kp-search-chips {
@@ -167,10 +167,10 @@ button.kp-search-field--launch:focus-visible {
   min-height: 40px;
   padding: 8px 13px;
   margin: 0;
-  border: 1px solid #f0d3e74a;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 29%, transparent);
   border-radius: 999px;
-  background: #f0d3e708;
-  color: #f0d3e7;
+  background: color-mix(in srgb, var(--text-primary) 3%, transparent);
+  color: var(--text-primary);
   font: inherit;
   font-size: 12px;
   line-height: 1.2;
@@ -178,15 +178,15 @@ button.kp-search-field--launch:focus-visible {
   cursor: pointer;
 }
 .kp-search-chips .kp-search-chip.is-active {
-  background: #520e25;
-  border-color: #f0d3e7aa;
+  background: var(--bg-surface-emphasis);
+  border-color: color-mix(in srgb, var(--text-primary) 67%, transparent);
 }
 .kp-search-chips .kp-search-chip:hover {
-  border-color: #f0d3e78b;
+  border-color: color-mix(in srgb, var(--text-primary) 55%, transparent);
 }
 .kp-search-chips .kp-search-chip:focus-visible,
 .kp-search-chips .kp-search-chips-clear:focus-visible {
-  outline: 2px solid #f0d3e7;
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 .kp-search-chips .kp-search-chips-clear {
@@ -194,7 +194,7 @@ button.kp-search-field--launch:focus-visible {
   padding: 7px 4px;
   border: 0;
   background: transparent;
-  color: #d6b9ce;
+  color: var(--text-secondary);
   font: inherit;
   font-size: 12px;
   text-decoration: underline;
@@ -213,7 +213,7 @@ button.kp-search-field--launch:focus-visible {
   position: absolute;
   inset: 0;
   border: 0;
-  background: #06071cc9;
+  background: var(--overlay-backdrop);
   cursor: default;
 }
 .kp-order-sheet {
@@ -225,11 +225,11 @@ button.kp-search-field--launch:focus-visible {
   max-height: calc(100dvh - 24px);
   padding: 20px;
   overflow-y: auto;
-  border: 1px solid #f0d3e748;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 28%, transparent);
   border-radius: 19px;
-  background: #17183f;
-  color: #f0d3e7;
-  box-shadow: 0 18px 56px #0009;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  box-shadow: 0 18px 56px var(--shadow-panel);
 }
 .kp-order-header {
   display: flex;
@@ -241,7 +241,7 @@ button.kp-search-field--launch:focus-visible {
   margin: 0;
   font-size: 19px;
   font-weight: 650;
-  color: #f0d3e7;
+  color: var(--text-primary);
 }
 .kp-order-header h2:focus {
   outline: none;
@@ -256,7 +256,7 @@ button.kp-search-field--launch:focus-visible {
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: #f0d3e7;
+  color: var(--text-primary);
   font-size: 26px;
   cursor: pointer;
 }
@@ -273,7 +273,7 @@ button.kp-search-field--launch:focus-visible {
   padding: 0 0 10px;
   font-size: 13px;
   font-weight: 650;
-  color: #f0d3e7;
+  color: var(--text-primary);
 }
 .kp-order-section .kp-order-option {
   display: flex;
@@ -284,33 +284,33 @@ button.kp-search-field--launch:focus-visible {
   width: 100%;
   padding: 10px 4px;
   border: 0;
-  border-bottom: 1px solid #f0d3e721;
+  border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 13%, transparent);
   background: transparent;
-  color: #e6c9dc;
+  color: var(--accent-text);
   font: inherit;
   font-size: 13px;
   text-align: left;
   cursor: pointer;
 }
 .kp-order-section .kp-order-option.is-selected {
-  color: #f0d3e7;
+  color: var(--text-primary);
   font-weight: 650;
 }
 .kp-order-section .kp-order-option.is-selected span {
-  color: #bce1cb;
+  color: var(--text-success);
 }
 .kp-order-section .kp-order-option:focus-visible,
 .kp-order-sheet .kp-order-close:focus-visible,
 .kp-order-sheet .kp-order-done:focus-visible {
-  outline: 2px solid #f0d3e7;
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 .kp-order-sheet .kp-order-done {
   min-height: 44px;
-  border: 1px solid #f0d3e76b;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 42%, transparent);
   border-radius: 10px;
-  background: #520e25;
-  color: #f0d3e7;
+  background: var(--bg-surface-emphasis);
+  color: var(--text-primary);
   font: inherit;
   font-size: 13px;
   font-weight: 650;
