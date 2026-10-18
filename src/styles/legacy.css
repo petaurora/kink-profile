@@ -3879,7 +3879,7 @@ button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px
 }
 
 .ranking-movement:focus-visible {
-  outline: 2px solid var(--accent-primary);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 

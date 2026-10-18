@@ -24,7 +24,7 @@
 .appearance-preview-card { display: flex; flex-direction: column; justify-content: center; gap: 7px; align-self: center; width: 62%; padding: 12px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg-surface); }
 .appearance-preview-card i { width: 75%; height: 3px; background: var(--text-secondary); border-radius: 2px; }
 .appearance-preview-card i + i { width: 50%; opacity: .6; }
-.appearance-preview-card b { width: 38%; height: 7px; border-radius: 3px; background: var(--accent-text); }
+.appearance-preview-card b { width: 38%; height: 7px; border-radius: 3px; border: 1px solid var(--accent-border); background: var(--brand-pink); }
 @media (max-width: 520px) {
   .appearance-options { grid-template-columns: 1fr; gap: 12px; }
   .appearance-choice-content { display: grid; grid-template-columns: 96px 1fr; column-gap: 16px; padding: 12px; }

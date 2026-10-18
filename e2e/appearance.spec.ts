@@ -19,6 +19,11 @@ test("theme choices persist across reload and both UI generations without changi
     await radio.check();
     await expect(radio).toBeChecked();
     await expect(page.locator("html")).toHaveAttribute("data-theme", preset.id);
+    // The same signature pink remains visible in every palette; labels on
+    // that light fill use dark ink, including in the two light themes.
+    await expect(page.locator(".appearance-preview-card b").first()).toHaveCSS("background-color", "rgb(240, 211, 231)");
+    await expect(page.locator("button.primary").first()).toHaveCSS("background-color", "rgb(240, 211, 231)");
+    await expect(page.locator("button.primary").first()).toHaveCSS("color", "rgb(16, 18, 64)");
     await page.emulateMedia({ colorScheme: preset.scheme === "light" ? "dark" : "light" });
     await page.reload(); await app.continuePreview();
     await expect(page.getByRole("radio", { name: new RegExp(preset.name) })).toBeChecked();
