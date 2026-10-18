@@ -32,10 +32,17 @@ copy, controls and focus rings follow the active preset. Mobile navigation also
 pairs its foreground tokens with the selected surface instead of pinning
 Midnight ink inside a light palette.
 
-Oxblood pairs its burgundy foundation with Crimson Depths' deep teal (`#044a4a`)
-for emphasized surfaces, secondary accents and the progress gradient's end.
-Teal borders/focus highlights and lifted secondary/muted text preserve contrast.
-The shared pink remains the primary accent.
+Oxblood uses a near-black cherry canvas (`#170e13`), velvet burgundy
+surfaces (`#2a1721` and `#361b28`) and its own lifted oxblood accent
+(`#a94a65`). Crimson Depths' deep teal (`#044a4a`) remains the emphasized
+surface and secondary accent, while luminous teal (`#53b8ad`) handles
+highlight borders and the vivid end of progress gradients. Bars transition
+oxblood → rose → luminous teal with the existing feathered geometry. Light
+primary/secondary/muted text was checked against the darkest surfaces and teal
+emphasis. Focus rings use lighter `#85cfca` for legibility. KP's shared
+`#f0d3e7` brand pink remains the primary filled-action and accent-text color
+with dark labels on pink buttons; palette-specific hues create atmosphere
+rather than replacing that brand invariant.
 Crimson Depths uses the supplied crimson/teal/plum reference palette, with
 lifted text and accent tones for dark-surface contrast. INFJ uses the supplied
 teal/sage/lavender/pine/ivory palette with an ivory light foundation. Both are
