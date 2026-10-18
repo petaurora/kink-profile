@@ -23,7 +23,8 @@
     "check:bundle": "node scripts/check-bundle-budget.mjs",
     "pretest:visual": "npm run pretest",
     "test:visual": "tsc --project tsconfig.e2e.json && playwright test --config=playwright.visual.config.ts",
-    "test:smoke": "tsc --project tsconfig.e2e.json && playwright test --config=playwright.deployed.config.ts"
+    "test:smoke": "tsc --project tsconfig.e2e.json && playwright test --config=playwright.deployed.config.ts",
+    "pretest:smoke": "npm run pretest"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.46.0",

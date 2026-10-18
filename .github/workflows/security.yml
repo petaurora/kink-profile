@@ -35,10 +35,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/dependency-review-action@v4
         with:
-          fail-on-severity: high
-          comment-summary-in-pr: never
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Review added and changed lockfile dependencies
+        run: node scripts/review-dependencies.mjs
+        env:
+          DEPENDENCY_BASE_SHA: ${{ github.event.pull_request.base.sha }}
   audit:
     name: Dependency audit
     runs-on: ubuntu-latest

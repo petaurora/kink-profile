@@ -31,7 +31,7 @@ test("published commit, assets, PWA scope and deep link load", async ({ request,
   for (const route of ["/ui-lab/home", "/ui-lab/quizzes"]) {
     await page.goto(`${base.href}#${route}`);
     if (base.pathname.match(/\/pr-\d+\//) && route === "/ui-lab/home") await page.getByRole("button", { name: "Continue to KP", exact: true }).click();
-    await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: route.endsWith("home") ? "Your space." : "Explore quizzes.", exact: true })).toBeVisible();
   }
   const assets = await page.locator('script[type="module"][src], link[rel="stylesheet"][href]').evaluateAll(elements =>
     elements.map(element => element.getAttribute("src") ?? element.getAttribute("href")!));

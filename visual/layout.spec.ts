@@ -12,10 +12,16 @@ test("V2 home layout", async ({ app, page }) => {
   await expect(page.getByRole("button", { name: "Open full menu", exact: true })).toBeVisible();
   await snapshot(page, "home.png");
 });
-test("partial quiz progress and selected answer", async ({ app, page }) => {
+test("partial quiz progress and selected answer", async ({ app, page, isMobile }) => {
   await app.open("/ui-lab/quizzes/question?id=dominance-submission");
   await page.getByRole("group", { name: "Answer question 1", exact: true }).getByRole("button", { name: /Absolutely/ }).click();
   await expect(page.getByRole("button", { name: "Save & exit", exact: true })).toBeEnabled();
+  await expect(page.getByRole("progressbar", { name: "Quiz answers saved" })).toHaveAttribute("aria-valuenow", "1");
+  if (isMobile) {
+    await expect(page.getByRole("heading", { level: 2, name: /^Question 2 of/ })).toBeFocused();
+    await expect(page.getByRole("group", { name: "Answer question 2", exact: true }).getByRole("button", { name: /Absolutely/ })).toHaveAttribute("aria-pressed", "false");
+  }
+  await expect(page.locator(".lab-quiz-question.is-confirming")).toHaveCount(0);
   await snapshot(page, "quiz-progress.png");
 });
 test("catalog refinement dialog layout", async ({ app, page }) => {

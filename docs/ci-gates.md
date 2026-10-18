@@ -11,9 +11,13 @@ and `feat/ui-lab-foundation`. All npm installs use `npm ci`.
 | `Browser journeys and accessibility` | Three-project functional, keyboard and rendered axe matrix; see [testing.md](testing.md). |
 | `Visual regression` | Five representative states at desktop and phone sizes, compared with reviewed PNGs. |
 | `CodeQL scan` | JavaScript/TypeScript source scanning with security-extended queries. |
-| `Dependency review` | PR dependency changes fail for high/critical advisories. |
+| `Dependency review` | Resolved lockfile changes fail for introduced high/critical advisories using npm audit. |
 | `Dependency audit` | The entire installed lockfile fails for high/critical advisories. |
 | `Deployed preview smoke` | Expected hosted commit, assets, PWA manifest/icons, worker scope and rendered deep link after publishing. |
+
+Dependency review compares base/head lockfiles without running base-branch code. It
+uses npm registry advisories directly and does not depend on GitHub Dependency
+graph being enabled. The complete-lockfile audit also catches existing advisories.
 
 Test jobs have read-only contents access; CodeQL alone receives security-event write
 access. Publishing jobs have separate write permissions. Smoke jobs are read-only.
