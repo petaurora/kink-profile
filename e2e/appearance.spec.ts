@@ -36,6 +36,42 @@ test("theme choices persist across reload and both UI generations without changi
   }
 });
 
+test("Oxblood has layered velvet depth and a luminous teal finish while retaining KP pink", async ({ app, page }) => {
+  await app.open("/ui-lab/settings");
+  await page.getByRole("radio", { name: /Oxblood/ }).check();
+  const colors = await page.locator("html").evaluate(root => {
+    const style = getComputedStyle(root);
+    const token = (name: string) => style.getPropertyValue(name).trim();
+    return {
+      canvas: token("--bg-canvas"),
+      surface: token("--bg-surface"),
+      raised: token("--bg-surface-raised"),
+      tealSurface: token("--bg-surface-emphasis"),
+      oxblood: token("--accent-theme"),
+      tealHighlight: token("--accent-border"),
+      focus: token("--focus-ring"),
+      brand: token("--brand-pink"),
+      progressStart: token("--kp-progress-fill-start"),
+      progressMid: token("--kp-progress-fill-mid"),
+      progressEnd: token("--kp-progress-fill-end"),
+    };
+  });
+  expect(colors).toEqual({
+    canvas: "#170e13",
+    surface: "#2a1721",
+    raised: "#361b28",
+    tealSurface: "#044a4a",
+    oxblood: "#a94a65",
+    tealHighlight: "#53b8ad",
+    focus: "#85cfca",
+    brand: "#f0d3e7",
+    progressStart: "#a94a65",
+    progressMid: "#c2698f",
+    progressEnd: "#53b8ad",
+  });
+  await expect(page.locator(".appearance-preview-card b").first()).toHaveCSS("background-color", "rgb(240, 211, 231)");
+});
+
 test("theme selection supports keyboard arrows in V2 Settings", async ({ app, page }) => {
   await app.open("/ui-lab/settings");
   const midnight = page.getByRole("radio", { name: /Midnight/ });
