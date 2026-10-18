@@ -68,6 +68,8 @@ export function CurationStructuredEditor({
 
     setDraft(createCurationDraft(model, change?.changes));
     setNote(change?.note ?? "");
+  // Only a committed revision resets the draft.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry.entityId, entry.entityType, change?.reviewedAt, model]);
 
   if (!model) {

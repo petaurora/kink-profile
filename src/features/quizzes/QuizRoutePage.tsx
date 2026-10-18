@@ -664,7 +664,7 @@ function ResolvedQuizRoute({
   );
   const lifecycle = resolveQuizLifecycle(quiz, profile);
   const attemptAnswers = getQuizAttemptAnswers(quiz, profile);
-  const establishedAnswers = profile.quizzes[quiz.id]?.answers ?? {};
+  const establishedAnswers = useMemo(() => profile.quizzes[quiz.id]?.answers ?? {}, [profile.quizzes, quiz.id]);
   const answeredCount = getAnsweredCount(quiz, attemptAnswers);
   const currentQuestion = activeQuestions[questionIndex];
   const batchStart = Math.floor(questionIndex / 3) * 3;

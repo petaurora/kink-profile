@@ -1,5 +1,8 @@
 # Automated testing
 
+For lint, security, coverage floors, visual comparisons, bundle budgets and
+deployed smoke checks, see [CI gates](ci-gates.md).
+
 ## Component and domain tests
 
 ```bash

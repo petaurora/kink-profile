@@ -1,4 +1,4 @@
-import type { CatalogReferenceData, CatalogItem } from "../../services/contracts";
+import type { CatalogReferenceData } from "../../services/contracts";
 import { getItemSearchMatch, normalizeSearch } from "../../services/search";
 import { useOptionalServiceData } from "../../services/AppServicesProvider";
 import { labReferenceData, labInitialPreferences } from "./services/fixtures";

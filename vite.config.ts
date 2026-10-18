@@ -49,6 +49,7 @@ function pwaAssetsPlugin(): Plugin {
       ];
     },
     generateBundle(_options, bundle) {
+      this.emitFile({ type: "asset", fileName: "build-info.json", source: JSON.stringify({ commit: buildCommit, base, preview: previewPr ?? null }) });
       const manifest = {
         name: appName,
         short_name: shortName,
@@ -92,6 +93,7 @@ function pwaAssetsPlugin(): Plugin {
           base,
           `${base}index.html`,
           `${base}manifest.webmanifest`,
+          `${base}build-info.json`,
           `${base}icons/pwa-192.png`,
           `${base}icons/pwa-512.png`,
           `${base}icons/pwa-maskable-512.png`,

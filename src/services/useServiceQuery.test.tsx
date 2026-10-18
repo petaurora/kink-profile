@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { act } from "react";
 import { createRoot } from "react-dom/client";
-import { describe, expect, it, vi } from "vitest";
+import { expect, it, vi } from "vitest";
 import { useServiceQuery } from "./useServiceQuery";
 import type { RequestOptions } from "./contracts";
 function deferred(){let resolve!:(value:string)=>void;const promise=new Promise<string>(yes=>{resolve=yes;});return {promise,resolve};}

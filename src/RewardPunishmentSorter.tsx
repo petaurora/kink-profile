@@ -134,14 +134,6 @@ export function RewardPunishmentSorter({
   );
   const [checkpoint, setCheckpoint] = useState<number>();
 
-  const rewardCategories = useMemo(
-    () => buildRewardPunishmentCategoryProfile(profile, "reward"),
-    [profile],
-  );
-  const punishmentCategories = useMemo(
-    () => buildRewardPunishmentCategoryProfile(profile, "punishment"),
-    [profile],
-  );
   const rewardProposals = useMemo(
     () =>
       buildInferredContextProposals(

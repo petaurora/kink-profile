@@ -4,7 +4,7 @@ import type { LabArea } from "./LabNavigation";
 import { useLabCatalog } from "./LabCatalog";
 import { useLabRecords } from "./LabRecords";
 import { useDiscoverSession } from "./DiscoverSession";
-import { ambientTopic, discoveryDismissalId, discoveryThemes, discoveryTopics, eligibleDiscoveryTopics, explainedConnections, nextDiscoveryTopic, type DiscoveryTheme } from "./Serendipity";
+import { ambientTopic, discoveryDismissalId, discoveryThemes, eligibleDiscoveryTopics, explainedConnections, nextDiscoveryTopic, type DiscoveryTheme } from "./Serendipity";
 import "./serendipity.css";
 
 type Go = (area: LabArea, workspace?: string, params?: Record<string, string>) => void;

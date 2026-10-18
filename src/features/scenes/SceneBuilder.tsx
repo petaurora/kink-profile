@@ -289,7 +289,7 @@ export function SceneBuilder({
   );
 
   useEffect(() => {
-    if (!composition || activeSavedSceneId) return;
+    if (activeSavedSceneId) return;
 
     const eligibleIds = new Set(
       candidateView.confirmed.map((candidate) => candidate.catalogId),
