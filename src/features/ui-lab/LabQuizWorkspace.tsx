@@ -1,24 +1,19 @@
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { profileRoute } from "../../app/routes";
-import { quizzes, type QuizDefinition } from "../../data/quizzes";
 import { answerOptions } from "../../data/quizScale";
-import { loadProfile, saveProfile, type StoredProfile } from "../../lib/profileStorage";
 import { appIcons, appIconDefaults } from "../../components/ui/appIcons";
-import {
-  answerQuizQuestion, canViewQuizResults, getAnsweredCount, getQuestionsForQuiz,
-  getQuizAttemptAnswers, getQuizDataIssue, initialQuestionIndex,
-  resolveAvailableQuiz, resolveQuizDimensionState, resolveQuizLifecycle,
-  startQuizRetake,
-} from "../quizzes/quizRuntime";
+import { resolveQuizDimensionState } from "../../services/domain/quizRuntime";
+import type { QuizRecord, QuizService, QuizSnapshot } from "../../services/quizContracts";
+import { useOptionalServices, ServiceQueryStatus } from "../../services/AppServicesProvider";
+import { useServiceResource } from "../../services/useServiceResource";
 import { QuizGlyph } from "../quizzes/QuizCard";
-import { quizRadarViews, scoreQuizAnswers, type QuizSignalScore, type QuizRadarView } from "../quizzes/quizResultsModel";
+import { quizRadarViews, type QuizSignalScore, type QuizRadarView } from "../quizzes/quizResultsModel";
 import { labPath, type LabArea } from "./LabNavigation";
 import "./labQuiz.css";
 
 type Go = (area: LabArea, workspace?: string, params?: Record<string, string>) => void;
-type QuizView = "" | "Question" | "Results";
-type Props = { view: string; quizId: string | null; go: Go };
+type Props = { view: string; quizId: string | null; go: Go; service?: QuizService };
 
 function chartPoints(scores: QuizSignalScore[], multiplier = 1) {
   const measured = scores.filter(score => resolveQuizDimensionState(score.coverage).state !== "unexplored");
@@ -62,19 +57,17 @@ function NativeRadar({ view }: { view: QuizRadarView }) {
     </div>
   );
 }
-function QuizLanding({ go }: { go: Go }) {
+function QuizLanding({ go, snapshot }: { go: Go; snapshot: QuizSnapshot }) {
   const descriptionPrefix = useId();
-  const profile = loadProfile();
-  const available = quizzes.filter(quiz => quiz.contributesToOverall);
-  const completed = available.filter(quiz => resolveQuizLifecycle(quiz, profile).hasEstablishedResult).length;
+  const available = snapshot.quizzes;
+  const completed = available.filter(record => record.lifecycle.hasEstablishedResult).length;
   return (
     <section className="lab-quiz-landing" aria-label="Quiz selection">
       <div className="lab-quiz-intro">
         <span className="lab-quiz-progress-label">{completed} of {available.length} completed</span>
       </div>
       <div className="lab-quiz-grid">
-        {available.map(quiz => {
-          const status = resolveQuizLifecycle(quiz, profile);
+        {available.map(({definition:quiz,lifecycle:status}) => {
           const action = status.state === "complete" ? "View results"
             : status.state === "retake-in-progress" ? "Continue retake"
             : status.state === "in-progress" ? "Continue"
@@ -112,9 +105,10 @@ function QuizLanding({ go }: { go: Go }) {
   );
 }
 
-function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
-  const [profile, setProfile] = useState<StoredProfile>(loadProfile);
-  const resumeIndex = useRef(initialQuestionIndex(quiz, profile));
+type Resource = ReturnType<typeof useServiceResource<QuizSnapshot>>;
+function QuizQuestions({ record, go, service, resource }: { record: QuizRecord; go: Go; service: QuizService; resource: Resource }) {
+  const quiz = record.definition;
+  const resumeIndex = useRef(record.resumeIndex);
   const [index, setIndex] = useState(resumeIndex.current);
   const [wide, setWide] = useState(() => window.innerWidth > 700);
   const focused = useRef(false);
@@ -123,10 +117,9 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
   // Guard synchronously before React commits disabled controls.
   const answerTransitionLocked = useRef(false);
   const [confirmingQuestion, setConfirmingQuestion] = useState<string | null>(null);
-  const questions = useMemo(() => getQuestionsForQuiz(quiz), [quiz]);
-  const state = resolveQuizLifecycle(quiz, profile);
-  const answers = getQuizAttemptAnswers(quiz, profile);
-  const answered = getAnsweredCount(quiz, answers);
+  const {questions, lifecycle:state, attemptAnswers:answers} = record;
+  const answered = state.answeredCount;
+  const [selection, setSelection] = useState<{id:string;value:number} | null>(null);
   const start = Math.floor(index / 3) * 3;
   const visible = wide ? questions.slice(start, start + 3).map((q, n) => ({ q, i: start + n })) :
     questions[index] ? [{q: questions[index], i: index}] : [];
@@ -164,45 +157,38 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
 
   // A completed deep link goes straight to results. During final-answer
   // confirmation, retain the question until the timer navigates to results.
-  if (state.state === "complete" && confirmingQuestion === null) {
+  if (state.state === "complete" && confirmingQuestion === null && selection === null) {
     return <Navigate to={labPath("Quizzes", "Results", {id:quiz.id})} replace />;
   }
   function answer(questionId: string, questionIndex: number, choice: number) {
-    if (confirmingQuestion !== null || answerTransitionLocked.current) return;
-    // On desktop, three answers remain editable. Mobile accepts one tap per
-    // question, including consecutive taps before React disables the buttons.
-    if (!wide) answerTransitionLocked.current = true;
-    const next = answerQuizQuestion(quiz, profile, questionId, choice);
-    const complete = resolveQuizLifecycle(quiz, next).state === "complete";
-    const advance = () => {
-      if (complete) go("Quizzes", "Results", {id:quiz.id});
-      else if (!wide) setIndex(questionIndex < questions.length - 1
-        ? questionIndex + 1 : initialQuestionIndex(quiz, next));
-    };
-    const reducedMotion = typeof window.matchMedia !== "function" ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Confirm before re-rendering the saved last answer; no fallback flash.
-    if (!wide && !reducedMotion) setConfirmingQuestion(questionId);
-    // Persist immediately, independently of the visual confirmation.
-    saveProfile(next);
-    setProfile(next);
-    if (wide || reducedMotion) {
-      advance();
-      return;
-    }
-    transitionTimer.current = setTimeout(() => {
-      transitionTimer.current = null;
-      if (complete) {
-        // Do not clear confirmation before routing to results.
+    if (confirmingQuestion !== null || answerTransitionLocked.current || resource.pending || resource.failed) return;
+    answerTransitionLocked.current = true;
+    setSelection({id:questionId,value:choice});
+    resource.run(options => service.answerQuestion(quiz.id, questionId, choice, options), next => {
+      const nextRecord = next.quizzes.find(value => value.definition.id === quiz.id)!;
+      const complete = nextRecord.lifecycle.state === "complete";
+      const advance = () => {
+        if (complete) go("Quizzes", "Results", {id:quiz.id});
+        else if (!wide) setIndex(questionIndex < questions.length - 1 ? questionIndex + 1 : nextRecord.resumeIndex);
+      };
+      const reducedMotion = typeof window.matchMedia !== "function" || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (wide || reducedMotion) {
+        answerTransitionLocked.current = false;
+        setSelection(null);
         advance();
-      } else {
-        advance();
-        setConfirmingQuestion(null);
+        return;
       }
-    }, 390);
+      setConfirmingQuestion(questionId);
+      transitionTimer.current = setTimeout(() => {
+        transitionTimer.current = null;
+        advance();
+        if (!complete) {setConfirmingQuestion(null);setSelection(null);}
+      }, 390);
+    });
   }
   return (
     <section ref={container} className="lab-quiz-runner" aria-label={quiz.title}>
+      {resource.pending && <p role="status">Saving answer…</p>}
       <div className="lab-quiz-question-stack">
         {visible.map(({q,i},n) => (
           <article className={`lab-quiz-question${confirmingQuestion===q.id ? " is-confirming" : ""}`} key={q.id}>
@@ -218,11 +204,11 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
             <div className="lab-quiz-options" role="group" aria-label={`Answer question ${i+1}`}>
               {answerOptions.map(option => (
                 <button key={option.value} type="button"
-                  aria-pressed={answers[q.id] === option.value}
+                  aria-pressed={(selection?.id===q.id ? selection.value : answers[q.id]) === option.value}
                   aria-hidden={confirmingQuestion===q.id && answers[q.id] !== option.value ? true : undefined}
                   data-quiz-feedback-hidden={confirmingQuestion===q.id && answers[q.id] !== option.value ? "true" : undefined}
-                  disabled={confirmingQuestion!==null}
-                  className={answers[q.id] === option.value ? "selected" : ""}
+                  disabled={confirmingQuestion!==null || resource.pending || resource.failed}
+                  className={(selection?.id===q.id ? selection.value : answers[q.id]) === option.value ? "selected" : ""}
                   onClick={() => answer(q.id, i, option.value)}>
                   <span className="lab-quiz-option-number">{option.value}</span>
                   <span className="lab-quiz-option-label">{option.label}</span>
@@ -235,11 +221,11 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
         ))}
       </div>
       <nav className="lab-quiz-run-actions" aria-label="Quiz navigation">
-        <button type="button" className="lab-quiz-action-back" disabled={confirmingQuestion!==null || (wide ? start === 0 : index === 0)} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
-        <button type="button" className="lab-quiz-action-exit" disabled={confirmingQuestion!==null} onClick={() => go("Quizzes")}>Save & exit</button>
+        <button type="button" className="lab-quiz-action-back" disabled={confirmingQuestion!==null || resource.pending || resource.failed || (wide ? start === 0 : index === 0)} onClick={() => setIndex(wide ? Math.max(0,start-3) : Math.max(0,index-1))}>← Back</button>
+        <button type="button" className="lab-quiz-action-exit" disabled={confirmingQuestion!==null || resource.pending || resource.failed} onClick={() => go("Quizzes")}>Save & exit</button>
         {wide && start + 3 < questions.length && (
           <button type="button" className="lab-quiz-action-next"
-            disabled={!batchComplete || confirmingQuestion!==null}
+            disabled={!batchComplete || confirmingQuestion!==null || resource.pending || resource.failed}
             onClick={() => setIndex(Math.min(start+3,questions.length-1))}>
             Next questions →
           </button>
@@ -249,29 +235,24 @@ function QuizQuestions({ quiz, go }: { quiz: QuizDefinition; go: Go }) {
   );
 }
 
-function QuizResults({ quiz, go }: { quiz:QuizDefinition; go:Go }) {
+function QuizResults({ record, go, service, resource }: { record: QuizRecord; go: Go; service: QuizService; resource: Resource }) {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState(loadProfile);
+  const quiz = record.definition;
   const [activeView, setActiveView] = useState("");
-  const answers = profile.quizzes[quiz.id]?.answers ?? {};
-  const questions = useMemo(() => getQuestionsForQuiz(quiz), [quiz]);
-  const scores = useMemo(() => scoreQuizAnswers(quiz, questions, answers), [quiz, questions, answers]);
+  const scores = record.scores;
   const views = useMemo(() => quizRadarViews(quiz, scores), [quiz, scores]);
   const current = views.find(view => view.id === activeView) ?? views[0];
   const measured = scores.filter(score => resolveQuizDimensionState(score.coverage).state !== "unexplored");
   const top = [...measured].sort((a,b) => b.percentage-a.percentage).slice(0,3);
 
   function retake() {
-    const next = startQuizRetake(quiz, profile);
-    saveProfile(next);
-    setProfile(next);
-    go("Quizzes","Question",{id:quiz.id});
+    resource.run(options => service.startRetake(quiz.id, options), () => go("Quizzes","Question",{id:quiz.id}));
   }
   return (
     <section className="lab-quiz-results" aria-label={`${quiz.title} results`}>
       <header className="lab-quiz-results-intro">
         <p>This is a shape of the signals you shared, not a fixed identity or a list of permissions.</p>
-        {profile.quizzes[quiz.id]?.retake && <p className="lab-quiz-retake-note">A retake is in progress. These remain your last completed results until the new attempt is finished.</p>}
+        {record.lifecycle.state === "retake-in-progress" && <p className="lab-quiz-retake-note">A retake is in progress. These remain your last completed results until the new attempt is finished.</p>}
       </header>
       <div className="lab-quiz-results-overview" aria-label="Results at a glance">
         <article className="lab-quiz-panel">
@@ -333,24 +314,29 @@ function QuizResults({ quiz, go }: { quiz:QuizDefinition; go:Go }) {
         </div>
       </nav>
       <div className="lab-quiz-result-controls">
-        <button type="button" onClick={profile.quizzes[quiz.id]?.retake ? ()=>go("Quizzes","Question",{id:quiz.id}) : retake}>
-          {profile.quizzes[quiz.id]?.retake ? "Continue retake" : "Retake this quiz"}
+        <button type="button" disabled={resource.pending} onClick={record.lifecycle.state === "retake-in-progress" ? ()=>go("Quizzes","Question",{id:quiz.id}) : retake}>
+          {record.lifecycle.state === "retake-in-progress" ? "Continue retake" : "Retake this quiz"}
         </button>
       </div>
     </section>
   );
 }
 
-export function LabQuizWorkspace({ view, quizId, go }: Props) {
-  if (!view) return <QuizLanding go={go}/>;
-  const quiz = resolveAvailableQuiz(quizId ?? undefined);
-  if (!quiz) return <p role="alert">That quiz is unavailable. <button type="button" onClick={()=>go("Quizzes")}>Back to Quizzes</button></p>;
-  const issue = getQuizDataIssue(quiz);
-  if (issue) return <p role="alert">This quiz's question data is unavailable. Your saved answers have not changed. <button type="button" onClick={()=>go("Quizzes")}>Back to Quizzes</button></p>;
-  const profile = loadProfile();
-  if (view === "Results" && !canViewQuizResults(quiz, profile)) {
-    return <p role="alert">No completed results are available for this quiz yet. <button type="button" onClick={()=>go("Quizzes","Question",{id:quiz.id})}>Continue quiz</button></p>;
-  }
-  return view === "Results" ? <QuizResults key={quiz.id} quiz={quiz} go={go} /> :
-    view === "Question" ? <QuizQuestions key={quiz.id} quiz={quiz} go={go} /> : null;
+export function LabQuizWorkspace({ service: explicitService, ...props }: Props) {
+  const services = useOptionalServices();
+  const service = explicitService ?? services?.quizzes;
+  if (!service) return <p role="alert">Quizzes are unavailable with the current service connection.</p>;
+  return <ConnectedQuizWorkspace {...props} service={service}/>;
+}
+function ConnectedQuizWorkspace({ view, quizId, go, service }: Props & {service:QuizService}) {
+  const read = useCallback((options:import("../../services/contracts").RequestOptions) => service.getSnapshot(options), [service]);
+  const resource = useServiceResource(read);
+  if (!resource.data) return <ServiceQueryStatus loading={resource.loading} error={resource.loadError} onRetry={resource.retryLoad} label="quizzes"/>;
+  const recovery = resource.failed && <div role="alert"><p>Your change could not be saved. Your selection is kept here for retry.</p><button onClick={resource.retry}>Retry saving</button></div>;
+  if (!view) return <QuizLanding go={go} snapshot={resource.data}/>;
+  const record = resource.data.quizzes.find(value => value.definition.id === quizId && value.definition.availability === "available");
+  if (!record || record.lifecycle.state === "error") return <p role="alert">That quiz is unavailable. Your saved answers have not changed. <button onClick={()=>go("Quizzes")}>Back to Quizzes</button></p>;
+  if (view === "Results" && !record.lifecycle.hasEstablishedResult) return <p role="alert">No completed results are available for this quiz yet. <button onClick={()=>go("Quizzes","Question",{id:record.definition.id})}>Continue quiz</button></p>;
+  return <>{recovery}{view === "Results" ? <QuizResults key={record.definition.id} record={record} go={go} service={service} resource={resource}/> :
+    view === "Question" ? <QuizQuestions key={record.definition.id} record={record} go={go} service={service} resource={resource}/> : null}</>;
 }

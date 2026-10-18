@@ -21,6 +21,7 @@ A milestone document may be split across all three rather than moved wholesale.
 - [Application Architecture](application-architecture.md) — routing, shell/navigation ownership, feature organization, persistence hydration, style ownership, and GitHub Pages hosting
 - [Application Services](app-services.md) — injectable async reference, search and independent preference/experience writes
 - [Shared UI Components](shared-ui-components.md) — reusable controls, sheets, preference/disclosure boundaries, notification queues, and prototype limits
+- [Backend and application service boundaries](backend-service-boundaries.md) — ownership audit, replaceable V2 services, local persistence adapters and production compatibility limits
 - [Internal Feature Flags](feature-flags.md) — typed registry, browser-local overrides, Advanced Settings controls, shared UI/navigation/route gates, preview isolation, and flag lifecycle rules
 - [Semantic Data Model](semantic-data-model.md) — how evidence and semantic layers relate
 - [Signal + Channel Data Model](data-model/signal-channel-model.md) — canonical Signal identity, Overall/Receiving/Giving channels, compatibility boundaries, and aggregation semantics

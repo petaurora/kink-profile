@@ -26,6 +26,12 @@ fill tokens, and loading artwork uses the active accent text color. The shared
 base ink uses zero specificity so lazily loaded defaults cannot replace a
 component's theme color.
 
+Discover's Surprise Me entry, ambient card, teaser, direction chips, expanded
+details and empty state consume the same semantic palette. Their gradients,
+copy, controls and focus rings follow the active preset. Mobile navigation also
+pairs its foreground tokens with the selected surface instead of pinning
+Midnight ink inside a light palette.
+
 Oxblood pairs its burgundy foundation with Crimson Depths' deep teal (`#044a4a`)
 for emphasized surfaces, secondary accents and the progress gradient's end.
 Teal borders/focus highlights and lifted secondary/muted text preserve contrast.

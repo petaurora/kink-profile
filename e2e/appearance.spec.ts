@@ -159,3 +159,70 @@ test("each palette keeps representative screens and rating dialog readable and w
     await page.keyboard.press("Escape");
   }
 });
+
+for (const preset of presets) {
+  test(`Discover Surprise Me follows ${preset.name} through preview and details`, { tag: "@a11y" }, async ({ app, page }, testInfo) => {
+    test.setTimeout(90_000);
+    if (testInfo.project.name !== "desktop-chromium") await page.setViewportSize({ width: 320, height: 780 });
+    await app.open("/ui-lab/settings");
+    await page.getByRole("radio", { name: new RegExp(preset.name) }).check();
+    const colors = await page.evaluate(() => {
+      const probe = document.createElement("span");
+      document.body.append(probe);
+      const resolve = (token: string) => {
+        probe.style.color = `var(${token})`;
+        return getComputedStyle(probe).color;
+      };
+      const result = {
+        ink: resolve("--text-primary"), secondary: resolve("--text-secondary"),
+        emphasis: resolve("--bg-surface-emphasis"), raised: resolve("--bg-surface-raised"),
+        control: resolve("--bg-control"),
+      };
+      probe.remove();
+      return result;
+    });
+    async function audit(state: string) {
+      await auditAccessibility(page, testInfo, `${preset.id}-surprise-${state}`);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${state} fits`).toBe(true);
+    }
+    async function expectPaletteGradient(selector: string) {
+      const panel = page.locator(selector);
+      const background = await panel.evaluate(node => getComputedStyle(node).backgroundImage);
+      expect(background).toContain(colors.emphasis);
+      expect(background).toContain(colors.raised);
+    }
+
+    await app.open("/ui-lab/discover");
+    const entry = page.getByRole("button", { name: /^Surprise Me/ });
+    await expect(entry).toBeVisible();
+    await expect(entry).toHaveCSS("color", colors.ink);
+    await expectPaletteGradient(".lab-serendipity-entry");
+    await expect(page.locator(".lab-serendipity-card-description")).toHaveCSS("color", colors.secondary);
+    await audit("overview");
+
+    await entry.click();
+    await expect(page.getByRole("button", { name: "Explore this", exact: true })).toBeVisible();
+    await expectPaletteGradient(".lab-serendipity-preview--teaser");
+    await expect(page.locator(".lab-serendipity-teaser")).toHaveCSS("color", colors.secondary);
+    await expect(page.getByRole("button", { name: "Surprise me again", exact: true })).toHaveCSS("background-color", colors.control);
+    await audit("teaser");
+    await testInfo.attach(`${preset.id}-surprise-preview`, { body: await page.screenshot(), contentType: "image/png" });
+
+    await page.getByRole("button", { name: "Choose a theme ↓", exact: true }).click();
+    const direction = page.getByRole("region", { name: "Optional exploration themes" }).locator("button[aria-pressed]").first();
+    await direction.click();
+    await expect(direction).toHaveAttribute("aria-pressed", "true");
+    await expect(direction).toHaveCSS("background-color", colors.emphasis);
+    await audit("direction");
+
+    await page.getByRole("button", { name: "Explore this", exact: true }).click();
+    await expect(page.locator(".lab-serendipity-preview--detail")).toBeVisible();
+    await expectPaletteGradient(".lab-serendipity-preview--detail");
+    await expect(page.getByRole("region", { name: "Choose how to explore" }).getByRole("button").first()).toHaveCSS("background-color", colors.control);
+    await audit("details");
+
+    await app.open("/ui-lab/discover/surprise?topic=finished");
+    await expect(page.getByRole("heading", { name: "No new eligible topics right now", exact: true })).toBeVisible();
+    await audit("empty");
+  });
+}

@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { createLocalQuizService } from "../../services/local/createLocalQuizService";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import axe from "axe-core";
@@ -10,23 +11,24 @@ import { getQuestionsForQuiz, getQuizAttemptAnswers, initialQuestionIndex, resol
 import { LabQuizWorkspace } from "./LabQuizWorkspace";
 import { labPath, parseLabRoute, type LabArea } from "./LabNavigation";
 
+const quizService = createLocalQuizService();
 let root:Root, host:HTMLDivElement, originalWidth:number;
 function Driver() {
   const location=useLocation(), navigate=useNavigate();
   const {area,workspace,params}=parseLabRoute(location.pathname,location.search);
   return <>
     <button type="button" data-testid="browser-back" onClick={()=>navigate(-1)}>Browser Back</button>
-    {area==="Quizzes" && <LabQuizWorkspace key={workspace+":"+(params.get("id")??"")}
+    {area==="Quizzes" && <LabQuizWorkspace service={quizService} key={workspace+":"+(params.get("id")??"")}
       view={workspace} quizId={params.get("id")}
       go={(a:LabArea,w="",p?:Record<string,string>)=>navigate(labPath(a,w,p))}/>}
     {area==="Learn"&&<main>Learn destination</main>}
     <output data-testid="url">{location.pathname+location.search}</output>
   </>;
 }
-function mount(initial="/ui-lab/quizzes") {
-  act(()=>root.render(<MemoryRouter initialEntries={[initial]}><Driver/></MemoryRouter>));
+async function mount(initial="/ui-lab/quizzes") {
+  await act(async()=>{root.render(<MemoryRouter initialEntries={[initial]}><Driver/></MemoryRouter>);});
 }
-function click(el:HTMLElement) {act(()=>el.click());}
+async function click(el:HTMLElement) {await act(async()=>{el.click();});}
 const select=(q:string)=>host.querySelector<HTMLElement>(q)!;
 const route=()=>select('[data-testid="url"]').textContent??"";
 beforeEach(()=>{
@@ -42,26 +44,26 @@ afterEach(()=>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:originalWidth});
   vi.restoreAllMocks();vi.unstubAllGlobals();
 });
-it("keeps all four quizzes distinct through routing, Save & exit, browser Back and persisted resume",()=>{
+it("keeps all four quizzes distinct through routing, Save & exit, browser Back and persisted resume",async () =>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
-  mount();
+  await mount();
   for(const quiz of quizzes.filter(q=>q.availability==="available")) {
     const expectedPath=labPath("Quizzes","Question",{id:quiz.id});
-    click(select(`[aria-label^="${quiz.title}: Explore quiz"]`));
+    await click(select(`[aria-label^="${quiz.title}: Explore quiz"]`));
     expect(route()).toBe(expectedPath);
     expect(select(".lab-quiz-runner")).not.toBeNull();
     expect(select(".lab-quiz-question h2").getAttribute("data-quiz-question-index")).toBe("0");
-    click(host.querySelectorAll<HTMLElement>(".lab-quiz-options button")[4]);
+    await click(host.querySelectorAll<HTMLElement>(".lab-quiz-options button")[4]);
     const after=loadProfile();
     expect(after.quizzes[quiz.id]?.answers[quiz.questionIds[0]]).toBe(4);
-    click([...host.querySelectorAll<HTMLElement>(".lab-quiz-run-actions button")]
+    await click([...host.querySelectorAll<HTMLElement>(".lab-quiz-run-actions button")]
       .find(b=>b.textContent?.includes("Save & exit"))!);
     expect(route()).toBe(labPath("Quizzes"));
     expect(select(`[aria-label^="${quiz.title}: Continue"]`)).not.toBeNull();
-    click(select('[data-testid="browser-back"]'));
+    await click(select('[data-testid="browser-back"]'));
     expect(route()).toBe(expectedPath);
     expect(select(".lab-quiz-question h2").getAttribute("data-quiz-question-index")).toBe("1");
-    click([...host.querySelectorAll<HTMLElement>(".lab-quiz-run-actions button")]
+    await click([...host.querySelectorAll<HTMLElement>(".lab-quiz-run-actions button")]
       .find(b=>b.textContent?.includes("Save & exit"))!);
   }
   const profile=loadProfile();
@@ -72,7 +74,7 @@ it("keeps all four quizzes distinct through routing, Save & exit, browser Back a
     expect(initialQuestionIndex(quiz,profile)).toBe(1);
   }
 });
-it("reloads a sparse attempt with unknown answers and keeps existing unrelated evidence unchanged",()=>{
+it("reloads a sparse attempt with unknown answers and keeps existing unrelated evidence unchanged",async () =>{
   Object.defineProperty(window,"innerWidth",{configurable:true,value:390});
   const [quiz,other]=quizzes;
   const profile=createEmptyProfile();
@@ -83,11 +85,11 @@ it("reloads a sparse attempt with unknown answers and keeps existing unrelated e
   };
   saveProfile(profile);
   const unrelated=JSON.stringify(loadProfile().quizzes[other.id]);
-  mount(labPath("Quizzes","Question",{id:quiz.id}));
+  await mount(labPath("Quizzes","Question",{id:quiz.id}));
   expect(select("[role=progressbar]").getAttribute("aria-valuenow")).toBe("0");
   expect(host.textContent).not.toMatch(/Next question|Review unanswered|move ahead/i);
   expect(getQuizAttemptAnswers(quiz,loadProfile())).toEqual({});
-  click(host.querySelectorAll<HTMLElement>(".lab-quiz-options button")[1]);
+  await click(host.querySelectorAll<HTMLElement>(".lab-quiz-options button")[1]);
   expect(loadProfile().quizzes[quiz.id]?.answers).toEqual({[quiz.questionIds[0]]:1});
   expect(select(".lab-quiz-question h2").getAttribute("data-quiz-question-index")).toBe("1");
   expect(JSON.stringify(loadProfile().quizzes[other.id])).toBe(unrelated);
@@ -103,9 +105,9 @@ async function runAxe() {
   expect(results!.violations.map(v=>({rule:v.id,target:v.nodes.map(n=>n.target)}))).toEqual([]);
 }
 it("passes automated WCAG structural checks on quiz landing and focused question runner",async()=>{
-  mount();
+  await mount();
   await runAxe();
-  click(select(".lab-quiz-card-main"));
+  await click(select(".lab-quiz-card-main"));
   expect(select(".lab-quiz-question h2").getAttribute("tabindex")).toBe("-1");
   await runAxe();
 },15000);
@@ -118,10 +120,10 @@ it("passes automated WCAG structural checks on complete and in-progress-retake r
     retake:{quizVersion:quiz.version,answers:{[quiz.questionIds[0]]:1},startedAt:"2026-10-02T12:00:00Z"},
   };
   saveProfile(profile);
-  mount(labPath("Quizzes","Results",{id:quiz.id}));
+  await mount(labPath("Quizzes","Results",{id:quiz.id}));
   expect(select(".lab-quiz-results")).not.toBeNull();
   await runAxe();
-  click(select("details.lab-quiz-details summary"));
+  await click(select("details.lab-quiz-details summary"));
   expect(select("details.lab-quiz-details").hasAttribute("open")).toBe(true);
   await runAxe();
   expect(loadProfile().quizzes[quiz.id]?.answers).toEqual(profile.quizzes[quiz.id]?.answers);
