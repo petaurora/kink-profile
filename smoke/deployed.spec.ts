@@ -28,9 +28,10 @@ test("published commit, assets, PWA scope and deep link load", async ({ request,
   page.on("pageerror", error => errors.push(error.message));
   page.on("response", response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
   page.on("requestfailed", request => errors.push(`${request.failure()?.errorText} ${request.url()}`));
-  for (const route of ["/ui-lab/home", "/ui-lab/quizzes"]) {
-    await page.goto(`${base.href}#${route}`);
-    if (base.pathname.match(/\/pr-\d+\//) && route === "/ui-lab/home") await page.getByRole("button", { name: "Continue to KP", exact: true }).click();
+  // Start cold at the nested quiz route, then verify in-app hash navigation.
+  for (const route of ["/ui-lab/quizzes", "/ui-lab/home"]) {
+    const response = await page.goto(`${base.href}#${route}`);
+    if (base.pathname.match(/\/pr-\d+\//) && response) await page.getByRole("button", { name: "Continue to KP", exact: true }).click();
     await expect(page.getByRole("heading", { level: 1, name: route.endsWith("home") ? "Your space." : "Explore quizzes.", exact: true })).toBeVisible();
   }
   const assets = await page.locator('script[type="module"][src], link[rel="stylesheet"][href]').evaluateAll(elements =>
