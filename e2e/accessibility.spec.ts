@@ -54,7 +54,7 @@ test("card descriptions keep their full click area and separate accessible descr
 });
 
 // The active app preset, rather than OS preference, owns both UI generations.
-for (const preset of ["Dusty Rose", "Oxblood"]) {
+for (const preset of ["Dusty Rose", "Oxblood", "Crimson Depths", "INFJ"]) {
   for (const [name, route, readyText] of pages.filter(([, route]) => !route.startsWith("/ui-lab/"))) {
     test(`${name}: ${preset} rendered WCAG A/AA scan`, { tag: "@a11y" }, async ({ app, page }, testInfo) => {
       await app.open("/settings");

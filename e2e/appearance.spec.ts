@@ -6,6 +6,8 @@ const presets = [
   { name: "Dusty Rose", id: "dusty-rose", scheme: "light", chrome: "#f4e9e8" },
   { name: "Oxblood", id: "oxblood", scheme: "dark", chrome: "#170e13" },
   { name: "Midnight", id: "midnight", scheme: "dark", chrome: "#0b0c25" },
+  { name: "Crimson Depths", id: "crimson-depths", scheme: "dark", chrome: "#190707" },
+  { name: "INFJ", id: "infj", scheme: "light", chrome: "#f4f1ea" },
 ];
 
 test("theme choices persist across reload and both UI generations without changing saved profile data", async ({ app, page }) => {
@@ -33,13 +35,11 @@ test("theme selection supports keyboard arrows in V2 Settings", async ({ app, pa
   await app.open("/ui-lab/settings");
   const midnight = page.getByRole("radio", { name: /Midnight/ });
   await midnight.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("radio", { name: /Dusty Rose/ })).toBeChecked();
-  await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("radio", { name: /Oxblood/ })).toBeFocused();
-  await expect(page.getByRole("radio", { name: /Oxblood/ })).toBeChecked();
-  await page.keyboard.press("ArrowLeft");
-  await page.keyboard.press("ArrowLeft");
+  for (const name of ["Dusty Rose", "Oxblood", "Crimson Depths", "INFJ"]) {
+    await page.keyboard.press("ArrowRight");
+    await expect(page.getByRole("radio", { name: new RegExp(name) })).toBeChecked();
+  }
+  for (let i = 0; i < 4; i++) await page.keyboard.press("ArrowLeft");
   await expect(midnight).toBeChecked();
 });
 
@@ -129,13 +129,13 @@ test("mounted progress, loading and quiz bars use the selected theme's fills and
     expect(await quiz.locator("span").evaluate(node => getComputedStyle(node).backgroundImage)).toBe(sample.fill);
     await app.open("/ui-lab/settings");
   }
-  expect(new Set(gradients).size).toBe(3);
-  expect(new Set(sweeps).size).toBe(3);
-  expect(new Set(glows).size).toBe(3);
+  expect(new Set(gradients).size).toBe(presets.length);
+  expect(new Set(sweeps).size).toBe(presets.length);
+  expect(new Set(glows).size).toBe(presets.length);
 });
 
 test("each palette keeps representative screens and rating dialog readable and within the viewport", { tag: "@a11y" }, async ({ app, page }, testInfo) => {
-  test.setTimeout(180_000);
+  test.setTimeout(60_000 * presets.length);
   if (testInfo.project.name !== "desktop-chromium") await page.setViewportSize({ width: 320, height: 780 });
   for (const preset of presets) {
     await app.open("/ui-lab/settings");

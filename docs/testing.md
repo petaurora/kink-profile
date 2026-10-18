@@ -67,14 +67,14 @@ production lifecycle/scoring/persistence code must remain outside test actions.
 | Local data | Name validation/normalization/reload, actual JSON download and confirmed restore, malformed/unknown backup rejection, reset cancel and selective quiz reset, independent name preservation, developer-tools opt-in |
 | Comparison | Actual exported backup upload, session-only comparison and shared Scene Builder handoff, invalid-upload recovery, original quiz data preserved |
 | Tools | Reward and punishment recipe save/reload/edit/duplicate/delete, empty randomizer pool behavior and setup handoff, scene theme/empty evidence behavior, durable Catalog preference to saved scene/copy/confirmed deletion |
-| Appearance | Three presets in both Settings surfaces, keyboard selection, reload/OS independence, profile preservation, preview isolation, pre-bundle bootstrap, blocked storage and rendered contrast/reflow scans across all palettes |
+| Appearance | Five presets in both Settings surfaces, keyboard selection, reload/OS independence, profile preservation, preview isolation, pre-bundle bootstrap, blocked storage and rendered contrast/reflow scans across all palettes |
 | Ranking & sharing | Pairwise choice/equal/skip reload persistence, ordering count distinct from skip history, independent explicit preferences and quizzes, actual standalone HTML export without raw answers |
-| Accessibility | Rendered axe A/AA scans with contrast, Midnight, Dusty Rose and Oxblood themes, open/nested dialogs, errors/recovery, all four quiz result/retake states, keyboard-only journeys, card names/descriptions and full click area, 320px enlarged-text/reduced-motion reflow |
+| Accessibility | Rendered axe A/AA scans with contrast, Midnight, Dusty Rose, Oxblood, Crimson Depths and INFJ themes, open/nested dialogs, errors/recovery, all four quiz result/retake states, keyboard-only journeys, card names/descriptions and full click area, 320px enlarged-text/reduced-motion reflow |
 
-The suite defines **94 distinct scenarios** in twelve spec files. Running three
-projects produces **282 scheduled browser cases**: 281 applicable runs and one
+The suite defines **106 distinct scenarios** in twelve spec files. Running three
+projects produces **318 scheduled browser cases**: 317 applicable runs and one
 intentional desktop skip for the phone-only repeated-tap behavior. These are
-separate counts, not 282 different journeys. Use `npx playwright test --list` to
+separate counts, not 318 different journeys. Use `npx playwright test --list` to
 inspect the current inventory as the suite evolves.
 
 Appearance startup/failure tests seed only appearance keys, block only appearance

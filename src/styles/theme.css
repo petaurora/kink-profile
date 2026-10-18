@@ -113,6 +113,83 @@
   --kp-progress-fill-mid: color-mix(in srgb, var(--accent-primary) 78%, var(--text-primary));
   --kp-progress-fill-end: color-mix(in srgb, var(--accent-primary) 62%, var(--text-primary));
 }
+/* Palette anchors from the supplied Crimson Depths reference:
+   #4a0404, #044a4a, #4a0a25, #3e0404, #730404.
+   Lifted accent/text tones keep controls readable on the deep surfaces. */
+[data-theme="crimson-depths"] {
+  color-scheme: dark;
+  --bg-page: #240909;
+  --bg-canvas: #190707;
+  --bg-shell: #300909;
+  --bg-inset: #210607;
+  --bg-surface: #3e0404;
+  --bg-surface-raised: #4a0a25;
+  --bg-surface-emphasis: #044a4a;
+  --bg-control: #4a0a25;
+  --bg-control-hover: #730404;
+  --bg-track: rgba(246,231,224,.10);
+  --bg-accent-soft: rgba(4,74,74,.30);
+  --bg-muted: rgba(246,231,224,.06);
+  --ambient-glow: rgba(74,4,4,.28);
+  --text-primary: #f6e7e0;
+  --text-secondary: #d9bcb4;
+  --text-muted: #caa9a2;
+  --text-on-accent: #fff4ef;
+  --accent-primary: #a82f3c;
+  --accent-secondary: #044a4a;
+  --accent-text: #85cfca;
+  --accent-border: #68a6a3;
+  --focus-ring: #85cfca;
+  --border-subtle: rgba(246,231,224,.18);
+  --border-strong: #99625f;
+  --border-control: #bd8880;
+  --shadow-panel: rgba(15,0,0,.45);
+  --overlay-backdrop: rgba(16,1,2,.76);
+  --text-danger: #ffb0a5;
+  --text-success: #a5d3bf;
+  --kp-progress-track: #4a0404;
+  --kp-progress-fill-start: color-mix(in srgb, var(--accent-primary) 82%, var(--text-primary));
+  --kp-progress-fill-mid: color-mix(in srgb, var(--bg-control) 58%, var(--text-primary));
+  --kp-progress-fill-end: color-mix(in srgb, var(--accent-secondary) 62%, var(--text-primary));
+}
+/* INFJ reference: teal #1f6f6b; sage, lavender, pine and ivory sampled
+   from the supplied screenshot. Ivory provides the light-mode foundation. */
+[data-theme="infj"] {
+  color-scheme: light;
+  --bg-page: #f4f1ea;
+  --bg-canvas: #f4f1ea;
+  --bg-shell: #e4e8de;
+  --bg-inset: #e7e5dc;
+  --bg-surface: #fcfaf5;
+  --bg-surface-raised: #e6e9e0;
+  --bg-surface-emphasis: #dbe7df;
+  --bg-control: #dde7df;
+  --bg-control-hover: #cadcd0;
+  --bg-track: rgba(23,59,59,.12);
+  --bg-accent-soft: rgba(31,111,107,.10);
+  --bg-muted: rgba(23,59,59,.06);
+  --ambient-glow: rgba(31,111,107,.07);
+  --text-primary: #173b3b;
+  --text-secondary: #41645e;
+  --text-muted: #45645b;
+  --text-on-accent: #f4f1ea;
+  --accent-primary: #1f6f6b;
+  --accent-secondary: #74618c;
+  --accent-text: #195f5b;
+  --accent-border: #6b8d83;
+  --focus-ring: #1f6f6b;
+  --border-subtle: rgba(23,59,59,.20);
+  --border-strong: #94aaa0;
+  --border-control: #678477;
+  --shadow-panel: rgba(23,59,59,.14);
+  --overlay-backdrop: rgba(16,40,39,.42);
+  --text-danger: #9d364f;
+  --text-success: #316c47;
+  --kp-progress-track: color-mix(in srgb, var(--accent-primary) 12%, var(--bg-control));
+  --kp-progress-fill-start: var(--accent-primary);
+  --kp-progress-fill-mid: color-mix(in srgb, #9db8a5 65%, var(--accent-primary));
+  --kp-progress-fill-end: color-mix(in srgb, #aa9bc2 78%, var(--accent-secondary));
+}
 :root, [data-theme] {
   --kp-progress-fill: linear-gradient(90deg, var(--kp-progress-fill-start), var(--kp-progress-fill-mid) 70%, var(--kp-progress-fill-end));
   --kp-progress-loading-fill: linear-gradient(90deg, transparent, var(--kp-progress-fill-mid), transparent);

@@ -1,8 +1,9 @@
 # Appearance
 
-KP has three app-wide appearance presets: Midnight (default, dark), Dusty Rose
-(light) and Oxblood (dark). Settings in both the V2 shell and existing app exposes
-the same native radio picker with miniature previews. Changes apply immediately;
+KP has five app-wide appearance presets: Midnight (default, dark), Dusty Rose
+(light), Oxblood (dark), Crimson Depths (dark) and INFJ (light). Settings in both
+the V2 shell and existing app expose the same native radio picker with miniature
+previews. Changes apply immediately;
 keyboard arrows select adjacent choices. Appearance does not follow OS changes.
 
 `src/styles/theme.css` owns semantic surface, text, border, focus, status and
@@ -11,12 +12,18 @@ tokens. Keep color decisions here rather than creating per-feature palettes.
 `data-theme` is set on the document element; nested scopes are only for the
 appearance picker's decorative previews. Geometry, feature behavior and the
 shared progress bar's gradient/feather treatment are independent of the palette.
-Dusty Rose and Oxblood derive their bar stops and glow from their semantic
-accent/surface colors; Midnight retains its approved rose/lavender/blue stops.
+Dusty Rose, Oxblood, Crimson Depths and INFJ derive their bar stops and glow
+from their semantic palette colors; Midnight retains its approved
+rose/lavender/blue stops.
 Determinate bars, quiz bars and indeterminate sweeps consume the same shared
 fill tokens, and loading artwork uses the active accent text color. The shared
 base ink uses zero specificity so lazily loaded defaults cannot replace a
 component's theme color.
+
+Crimson Depths uses the supplied crimson/teal/plum reference palette, with
+lifted text and accent tones for dark-surface contrast. INFJ uses the supplied
+teal/sage/lavender/pine/ivory palette with an ivory light foundation. Both are
+explicit appearance choices and use the same metadata and persistence contract.
 
 `src/lib/appearancePresets.ts` owns stable IDs, display labels, color schemes and
 browser chrome colors. Its synchronous bootstrap script is injected in the HTML
