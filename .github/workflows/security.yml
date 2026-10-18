@@ -33,6 +33,7 @@ jobs:
     name: Dependency review
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,20 +41,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
+      # The review reads both lockfiles and runs npm audit --package-lock-only;
+      # it does not import application dependencies or execute install scripts.
       - name: Review added and changed lockfile dependencies
         run: node scripts/review-dependencies.mjs
         env:
           DEPENDENCY_BASE_SHA: ${{ github.event.pull_request.base.sha }}
   audit:
     name: Dependency audit
+    # V2 has an open integration PR, which already audits each updated commit.
+    # Keep the CodeQL branch scan above for its base-branch analysis database.
+    if: github.event_name != 'push' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm audit --audit-level=high
+      - run: npm audit --package-lock-only --audit-level=high

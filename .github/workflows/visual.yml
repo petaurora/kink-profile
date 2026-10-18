@@ -2,7 +2,7 @@ name: Visual regression
 on:
   pull_request:
   push:
-    branches: [main, feat/ui-lab-foundation]
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -33,4 +33,4 @@ jobs:
             visual-report/
             visual-results/
             visual/**/*-snapshots/
-          retention-days: 14
+          retention-days: 7

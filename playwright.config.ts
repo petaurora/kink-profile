@@ -16,9 +16,12 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL: origin + basePath,
-    trace: "retain-on-failure",
+    // Successful CI cases need no recording. A failed first attempt retains its
+    // screenshot; the diagnostic retry records a trace/video even if it passes.
+    // failOnFlakyTests still rejects a pass-on-retry.
+    trace: process.env.CI ? "on-first-retry" : "retain-on-failure",
     screenshot: "only-on-failure",
-    video: "retain-on-failure",
+    video: process.env.CI ? "on-first-retry" : "retain-on-failure",
   },
   projects: [
     { name: "desktop-chromium", use: { ...devices["Desktop Chrome"] } },

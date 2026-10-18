@@ -108,14 +108,22 @@ assistive-technology review are not certified by automation.
 
 ## CI and diagnostics
 
-`.github/workflows/e2e.yml` runs on pull requests, pushes to `main` and
-`feat/ui-lab-foundation`, and manual dispatch. It installs the locked dependencies
-and Chromium/WebKit with system libraries, then runs all projects with two
-workers. One CI retry records diagnostic context; a flaky pass still fails CI.
-Local runs have no retries.
+`.github/workflows/e2e.yml` runs on every pull request, pushes to `main`, and
+manual dispatch. V2 updates are validated through its open integration PR (#276),
+as described in [CI gates](ci-gates.md). It installs the locked dependencies and
+Chromium headless shell/WebKit with system libraries, then runs all projects with
+two workers. No project or accessibility scenario is deferred to a schedule.
 
-The HTML report is retained as a workflow artifact for 14 days, with screenshots,
-videos and traces for failures. Generated reports and browser state are ignored
+CI records traces and videos on the first retry instead of recording every
+successful case and discarding the files. A first-attempt failure still retains
+its screenshot and error/axe report; its retry retains trace/video even if it
+passes. The original attempt has no CI trace/video, so a non-reproducible failure
+may need a targeted rerun with `--trace=on`. A flaky pass still fails CI.
+Local runs have no retries and retain first-failure trace/video as before.
+Visual and deployed smoke have no retries and retain first-failure traces.
+
+The HTML report is retained as a workflow artifact for seven days, with the
+diagnostics described above. Generated reports and browser state are ignored
 by git. View a trace with `npx playwright show-trace path/to/trace.zip`. Browser
 artifacts include only synthetic test data.
 

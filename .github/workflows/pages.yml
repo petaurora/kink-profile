@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   deploy:
+    timeout-minutes: 10
     permissions:
       contents: write
     outputs:
@@ -65,7 +66,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps --only-shell chromium
       - name: Verify hosted build and deep link
         run: npm run test:smoke
         env:
@@ -79,4 +80,4 @@ jobs:
           path: |
             smoke-report/
             smoke-results/
-          retention-days: 14
+          retention-days: 7

@@ -1,7 +1,13 @@
 # Continuous integration gates
 
-Pull requests use the workflows in the proposed change. Push checks run on `main`
-and `feat/ui-lab-foundation`. All npm installs use `npm ci`.
+Pull requests use the workflows in the proposed change. Every PR runs the full
+quality gates below; there are no workflow-level path filters. Push validation
+runs on `main`. V2's open integration PR (#276) validates updates to
+`feat/ui-lab-foundation`, avoiding a second full suite on the same push. CodeQL
+still scans pushes to both branches to maintain branch analysis baselines.
+If that integration PR closes while V2 remains an active integration branch,
+restore its push validation before continuing development there.
+All dependency installs use `npm ci`.
 
 | Required check | Contract |
 | --- | --- |
@@ -22,8 +28,43 @@ graph being enabled. The complete-lockfile audit also catches existing advisorie
 
 Test jobs have read-only contents access; CodeQL alone receives security-event write
 access. Publishing jobs have separate write permissions. Smoke jobs are read-only.
-Reports and failure diagnostics expire after 14 days. A failing deployment smoke
+Reports and failure diagnostics expire after seven days. A failing deployment smoke
 reports the problem; it does not roll back the deployment.
+
+## Execution efficiency and measurement
+
+CI, browser, visual and security validation cancel superseded runs per PR/ref.
+Production publishing supersedes older production runs; preview publishing only
+supersedes the same PR. Keep these queues separate: sharing a single concurrency
+group between production, preview and cleanup can drop unrelated publications.
+The publisher retains its fast-forward retry loop for competing `gh-pages` writes.
+PR closure reconciles previews immediately. A daily 07:17 UTC recovery sweep
+handles missed/failed close events; scheduled runs can be delayed by GitHub.
+This schedule takes effect only after this workflow reaches `main`.
+
+Node setup caches npm's download cache by lockfile, never `node_modules`. The two
+dependency security jobs read the complete lockfile without an install; review
+still compares base/head resolved entries and fails on scanner errors. The audit
+uses `npm audit --package-lock-only --audit-level=high`, including dev dependencies.
+Headless E2E and hosted smoke install Chromium's headless shell with `--only-shell`;
+E2E still installs WebKit and both jobs still install required system libraries.
+The visual job retains its pinned browser container. Browser binary caching is
+deliberately absent: restoring it still requires system libraries and should be
+benchmarked before adding storage/restore overhead.
+
+For usage audits, export **all** run pages from the Actions REST API for a fixed
+UTC window, then fetch `/actions/runs/{id}/jobs?filter=all&per_page=100` for each
+run (paginate jobs too). Split run queries by day when a query exceeds GitHub's
+1,000-result ceiling. Include cancelled/failed jobs and previous attempts; exclude
+skipped jobs and queue time. Sum `completed_at - started_at` for runner time and
+report job count, workflow/event frequency, same-SHA push/PR duplication, and
+per-job setup/test durations. A failed workflow with no jobs consumes no runner
+time. A sum of job durations rounded up to minutes is only a pricing proxy, not
+an invoice. Keep the free built-in `pages build and deployment` workflow separate
+from custom build, preview, cleanup and smoke jobs. Public standard-runner usage
+is free; use the owner's billing export to establish actual private-repo charges.
+Parallel jobs reduce elapsed time only when they reduce the critical path; setup
+duplication and per-job rounding can increase total consumption.
 
 ## Coverage and bundle budgets
 
