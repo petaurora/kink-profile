@@ -26,6 +26,10 @@ fill tokens, and loading artwork uses the active accent text color. The shared
 base ink uses zero specificity so lazily loaded defaults cannot replace a
 component's theme color.
 
+Oxblood pairs its burgundy foundation with Crimson Depths' deep teal (`#044a4a`)
+for emphasized surfaces, secondary accents and the progress gradient's end.
+Teal borders/focus highlights and lifted secondary/muted text preserve contrast.
+The shared pink remains the primary accent.
 Crimson Depths uses the supplied crimson/teal/plum reference palette, with
 lifted text and accent tones for dark-surface contrast. INFJ uses the supplied
 teal/sage/lavender/pine/ivory palette with an ivory light foundation. Both are

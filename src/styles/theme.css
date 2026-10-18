@@ -83,21 +83,21 @@
   --bg-inset: #160d12;
   --bg-surface: #29181f;
   --bg-surface-raised: #342028;
-  --bg-surface-emphasis: #542332;
+  --bg-surface-emphasis: #044a4a;
   --bg-control: #3b232c;
   --bg-control-hover: #4c2b37;
   --bg-track: rgba(238,216,217,.10);
-  --bg-accent-soft: rgba(164,77,99,.19);
+  --bg-accent-soft: rgba(4,74,74,.30);
   --bg-muted: rgba(238,216,217,.06);
   --ambient-glow: rgba(120,35,57,.13);
   --text-primary: #eed8d9;
-  --text-secondary: #c7adb2;
-  --text-muted: #b99aa2;
+  --text-secondary: #d3b9be;
+  --text-muted: #caa9b0;
   --accent-theme: #9c425b;
-  --accent-secondary: #71404e;
+  --accent-secondary: #044a4a;
   --accent-text: var(--brand-pink);
-  --accent-border: #a46d7c;
-  --focus-ring: #e5b3bb;
+  --accent-border: #68a6a3;
+  --focus-ring: #85cfca;
   --border-subtle: rgba(238,216,217,.16);
   --border-strong: #815563;
   --border-control: #aa7e8c;
@@ -108,7 +108,7 @@
   --kp-progress-track: color-mix(in srgb, var(--accent-theme) 14%, var(--bg-control));
   --kp-progress-fill-start: var(--accent-theme);
   --kp-progress-fill-mid: color-mix(in srgb, var(--accent-theme) 78%, var(--text-primary));
-  --kp-progress-fill-end: color-mix(in srgb, var(--accent-theme) 62%, var(--text-primary));
+  --kp-progress-fill-end: color-mix(in srgb, var(--accent-secondary) 62%, var(--text-primary));
 }
 /* Palette anchors from the supplied Crimson Depths reference:
    #4a0404, #044a4a, #4a0a25, #3e0404, #730404.

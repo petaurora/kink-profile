@@ -3,7 +3,7 @@ export const APPEARANCE_STORAGE_KEY = "kink-profile:appearance";
 export const appearancePresets = [
   { id: "midnight", name: "Midnight", description: "Soft plum & pink glow", scheme: "dark", chrome: "#0b0c25" },
   { id: "dusty-rose", name: "Dusty Rose", description: "Warm blush & rosewood", scheme: "light", chrome: "#f4e9e8" },
-  { id: "oxblood", name: "Oxblood", description: "Deep burgundy & dark velvet", scheme: "dark", chrome: "#170e13" },
+  { id: "oxblood", name: "Oxblood", description: "Deep burgundy & teal", scheme: "dark", chrome: "#170e13" },
   { id: "crimson-depths", name: "Crimson Depths", description: "Crimson, plum & deep teal", scheme: "dark", chrome: "#190707" },
   { id: "infj", name: "INFJ", description: "Teal, sage & lavender", scheme: "light", chrome: "#f4f1ea" },
 ] as const;
