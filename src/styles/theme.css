@@ -77,28 +77,30 @@
 }
 [data-theme="oxblood"] {
   color-scheme: dark;
+  /* Black-cherry canvas and layered velvet surfaces give the burgundy room
+     to breathe; deep teal adds depth, luminous teal provides the highlight. */
   --bg-page: #170e13;
   --bg-canvas: #170e13;
   --bg-shell: #201217;
   --bg-inset: #160d12;
-  --bg-surface: #29181f;
-  --bg-surface-raised: #342028;
+  --bg-surface: #2a1721;
+  --bg-surface-raised: #361b28;
   --bg-surface-emphasis: #044a4a;
-  --bg-control: #3b232c;
-  --bg-control-hover: #4c2b37;
-  --bg-track: rgba(238,216,217,.10);
-  --bg-accent-soft: rgba(4,74,74,.30);
-  --bg-muted: rgba(238,216,217,.06);
-  --ambient-glow: rgba(120,35,57,.13);
-  --text-primary: #eed8d9;
-  --text-secondary: #d3b9be;
-  --text-muted: #caa9b0;
-  --accent-theme: #9c425b;
+  --bg-control: #3b2230;
+  --bg-control-hover: #552a3e;
+  --bg-track: rgba(247,234,240,.10);
+  --bg-accent-soft: rgba(83,184,173,.18);
+  --bg-muted: rgba(247,234,240,.06);
+  --ambient-glow: rgba(116,36,63,.26);
+  --text-primary: #f7eaf0;
+  --text-secondary: #c8b5bf;
+  --text-muted: #c8afbb;
+  --accent-theme: #a94a65;
   --accent-secondary: #044a4a;
   --accent-text: var(--brand-pink);
-  --accent-border: #68a6a3;
+  --accent-border: #53b8ad;
   --focus-ring: #85cfca;
-  --border-subtle: rgba(238,216,217,.16);
+  --border-subtle: rgba(247,234,240,.16);
   --border-strong: #815563;
   --border-control: #aa7e8c;
   --shadow-panel: rgba(9,2,6,.40);
@@ -106,9 +108,9 @@
   --text-danger: #ffb5c2;
   --text-success: #bcd1b9;
   --kp-progress-track: color-mix(in srgb, var(--accent-theme) 14%, var(--bg-control));
-  --kp-progress-fill-start: var(--accent-theme);
-  --kp-progress-fill-mid: color-mix(in srgb, var(--accent-theme) 78%, var(--text-primary));
-  --kp-progress-fill-end: color-mix(in srgb, var(--accent-secondary) 62%, var(--text-primary));
+  --kp-progress-fill-start: #a94a65;
+  --kp-progress-fill-mid: #c2698f;
+  --kp-progress-fill-end: #53b8ad;
 }
 /* Palette anchors from the supplied Crimson Depths reference:
    #4a0404, #044a4a, #4a0a25, #3e0404, #730404.
