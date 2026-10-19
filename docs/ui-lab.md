@@ -1,0 +1,231 @@
+# UI Lab
+
+`#/ui-lab` and its registered nested routes compose the experimental responsive shell and shared controls. It uses
+illustrative Catalog records. Production Catalog routes and durable profile data
+remain separate.
+
+## Records and explicit editing
+
+The Lab record provider owns independent item ratings, item-specific modifier
+ratings, Tried and Comfort. Navigation and disclosure do not create records.
+The preference vocabulary is Love, Like, Curious, Unsure, Not Interested, Hard
+Limit and Not Applicable. Contextual help describes these meanings. Help expansion
+is retained across selectors only within the mounted Lab session.
+
+The selector focuses its heading. Tab enters the choices; arrow keys/Home/End move
+focus without editing; Enter/Space explicitly commits; Escape cancels. Clear
+offers Undo for the exact preceding value. Version checks keep an older Undo from
+overwriting a newer explicit edit.
+
+Refine places the smaller, unboxed overall rating beside the Item title, with no
+separate Preference or Overall rating label. It opens the shared rating picker;
+long names let the rating wrap as a unit while keeping Close available. A small,
+unboxed Experienced toggle sits directly underneath, retaining its label and adding
+a confirmation badge only when marked. Every Item can open Refine, including Items
+without modifiers. Compact Catalog rows keep only preference and Refine.
+
+Unmarked Experienced means no affirmative record. It edits the existing `tried`
+field without renaming or migrating data, and remains independent of preference,
+is reversed by toggling again without a toast, and shows save feedback with Retry.
+Preference Clear retains version-safe Undo. Explanation and the
+latest Tried edit remain in the optional About experience disclosure in scrolling
+content. Edit timestamps are not dates of participation; opening controls or
+disclosures creates no record. The native toggle button exposes its stable,
+contextual name and `aria-pressed` state, supports Enter/Space and retains a visible
+keyboard-focus ring and a 44px target. Activating it again clears the marker.
+Successful saves are announced without a second visible icon; the toggle's badge
+always means marked, never merely saved. Saving and failure/Retry remain visible.
+
+Comfort UI is deferred in Refine. Existing semantic values (`uncomfortable`,
+`somewhat_comfortable`, `comfortable`) and service support remain intact; navigating
+or editing preference/Tried does not clear those records.
+
+## Local service save and recovery
+
+The latest edit wins per target. The record provider retains pending operations
+across feature mounts and writes through the async application services. Writes
+serialize per target and obsolete waiting edits coalesce. Only the latest confirmed
+operation becomes Saved; Saved clears after 1.25 seconds. The local adapter uses
+850 ms save latency.
+The test-failure checkbox fails the next rating operation and retains its value.
+Failures remain visible until retried or replaced with a newer edit.
+
+Failed modifiers take priority over saving and ordinary rated dots at item/group
+level. Opening the failed parent reveals the affected group, scrolls to the field
+and focuses Retry. Multiple failures offer Retry all and next-issue navigation.
+Other destinations retain a summary and Retry all. Fresh Refine opens keep groups
+collapsed unless revealing an explicit error or search destination.
+
+Search clear and classification-filter clear remain independent in R/P. Changes
+to R/P search results and classification chips/answer states return to the list
+start. Classification fixture values remain read-only; Refine classification
+editing is deferred.
+
+## Storage boundary
+
+All new records and revisions are memory-only. Reloading or leaving the mounted
+Lab ends the session. The local in-memory service confirmations do not establish a
+durable write, cross-device sync, permission or consent.
+
+## Global search and result handoff
+
+Global Search indexes the same sample Item/modifier records as local lists, plus
+illustrative concepts. Context changes suggestions, without applying a type filter.
+All indexed text is searchable, including short metadata substrings. Exact names,
+name prefixes and other name matches rank ahead of supporting-text matches.
+Queries process after a 200 ms debounce. Relevance order provides Best matches,
+then nonempty Item/Modifier/Concept sections without repeating target IDs. Type
+chips filter; the options sheet sorts only. Clear resets query and type filters,
+retains sorting and returns focus to the search field.
+
+Results open nested contextual layers while keeping the underlying Catalog and
+Search mounted. A modifier result opens its parent, expands its exact group,
+scrolls/focuses the matching value and briefly highlights it. Concept results open
+Concept Explorer detail with an independently keyed general-concept preference.
+Closing a result returns to the search query, filters, results and scroll position.
+Closing/reopening Search retains its state only within the mounted Lab session.
+
+Actual query processing exposes busy feedback. Obsolete requests cannot overwrite
+newer results. A failed update retains previous successful results with an explicit
+label and Retry; no fabricated network delay is added to the local index.
+Queries are not written to local/session storage or tracked as preference evidence.
+No autocomplete, aliases, automatic Recently Viewed or production index is implied.
+
+## Routed shell and feature foundations
+
+The Lab is lazy-loaded outside the production AppShell. Its destination registry
+contains Home, Catalog, Profile, Discover, Tools, Creations, Learn, Relationships
+and Settings. Primary navigation stays consistent across the desktop rail and
+mobile bar. Desktop supports compact/labeled rail modes; the full menu exposes all
+destinations. Nested pages have a clickable parent breadcrumb and one title.
+Unknown Lab destinations show a recoverable message within the Lab.
+
+Search and result layers have navigation entries. Browser Back returns first from
+result to Search and then to the exact underlying workspace. Query text stays in
+memory and is excluded from URLs/history state. Direct result URLs identify only
+the target and open it without creating a rating. Local list queries, classification
+filters and ordering also survive feature navigation as session view state, separate
+from profile records. Fresh Refine group-collapse rules are unchanged.
+
+Home shows only deliberately started unfinished activities (at most three Resume
+links) and explicit records, plus editable session shortcuts. Profile lists only
+explicit session records. Tools and Creations deliberately link existing app tools;
+Learn offers concept exploration. Relationships and sharing expose honest capability
+boundaries rather than fabricated people, accounts, permissions or drafts.
+The Lab view recovery boundary retries a failed view or returns Home without
+remounting the session providers. This does not alter the production error boundary.
+
+## Quizzes bridge and approved UX decisions — PR #300
+
+**Decision 1 — D, Hybrid access.** Quizzes keep one canonical `#/quizzes` route, linked from a permanent Discover card, secondary Home and Profile links, and a direct full-menu destination. The five V2 primary areas remain unchanged. Leaving the Lab unmounts its session-only records; the production quiz storage is independent and browser-local.
+
+**Decision 2 — B, Four visual cards.** All four quizzes appear as visual cards on the Quiz landing (two columns on larger screens, one per row on mobile). Each card derives progress and its action from the real quiz lifecycle, including unfinished retakes.
+
+**Decision 3 — B+D, Focused responsive runner.** Mobile shows a single centered question; wider viewports show a three-question batch of independently answerable focused cards. The existing five response choices, quiz question IDs, scoring and persistence contract do not change. Back, progress, and Save & exit stay available. Batch navigation never writes an implicit answer.
+
+**Decision 4 — A, Seamless resume.** Continue and Continue retake navigate directly into the existing quiz runner without a chooser. The initial position comes from the **earliest unanswered question in the persisted attempt**. A desktop batch displays the group containing that question and focuses its heading, including when the earliest unanswered question is the middle card. A mobile run focuses that single question. Previous completed results remain authoritative while an unfinished retake saves separately; the landing's completed count includes that established result.
+
+**Decision 5 — D, Layered results.** The results page leads with an At-a-glance summary of the strongest measured signals plus one compact radar preview. A native keyboard-accessible disclosure labeled Explore the full breakdown reveals alternative chart views and the existing expandable per-signal ranked results. The preview is not a new profile score: both views use existing section-local scoring, and dimensions without evidence are omitted rather than rendered as 0. The prior completed result remains authoritative while an unfinished retake is in progress.
+
+**Decision 6 — D, Equal post-results choices.** Results provide three matching, non-featured next-step cards: View Profile (`/profile`, the durable profile), Explore another quiz (`/ui-lab/quizzes`), and Learn (`/ui-lab/learn`). Each route is a deliberate navigation-only action, with no automatic enrollment, preference recording, or promotion of a supposedly optimal next step. The Learn destination opens the experimental education reader and signals that status accurately. Retake is separate from these forward actions. Decision 8 explicitly rejects quiz-specific reset/discard/delete controls. The three equal cards are laid out responsively and remain keyboard accessible.
+
+**Decision 8 — A, Retake only (no reset controls).** A completed quiz can be retaken, preserving the previous authoritative result while an unfinished retake is saved independently. A draft can be resumed without a chooser and without discarding earlier responses. No Quiz Home, runner, or results screen offers a reset, delete, discard-draft, or start-over control. The earlier `Reset this quiz` button was removed from the legacy component to avoid exposing an obsolete destructive action if that component is invoked again. The existing scoring and storage write logic is unchanged, and profile-wide management features are outside this quiz-screen UX decision.
+
+**Decision 9 — D, initially gentle skipping, superseded in part after phone review.** The earlier advance-without-answer and Review unanswered controls have been removed at the user's direction. Mobile advances only after explicitly choosing an answer; desktop three-card groups enable Next questions only once all three visible prompts have responses. Progress is shown on each question card and represents **only** saved answers; unanswered is never a zero, and the earliest unanswered question still governs resume. Back, Save & exit, historic retake authority and unknown/coverage semantics remain unchanged.
+
+**Decision 10 — A, Always focus the new question heading.** Whenever the active question changes—on initial entry or seamless resume, mobile automatic advancement after a chosen answer, explicit Next/Back/Review unanswered, or a mobile/desktop layout transition—the new visible question heading receives programmatic focus before paint. For desktop grouped questions, deliberate batch navigation focuses the first heading of the batch; seamless resume and Review unanswered focus the exact first unanswered prompt even when it is the second or third card. Heading `tabIndex=-1` preserves normal Tab order, while an accessible name includes the question number and total. Visible focus styling and scroll margins respect the sticky V2 header and mobile safe area. Focus/scroll are presentation only and never alter stored answers or retake evidence.
+
+**Decision 7 — C, Fully V2-native Quiz workspace.** The native route family is `#/ui-lab/quizzes`, `#/ui-lab/quizzes/question?id=<quizId>`, and `#/ui-lab/quizzes/results?id=<quizId>`. All three screens are implemented as purpose-built V2 UI components in `LabQuizWorkspace.tsx` and `labQuiz.css`, inside the existing responsive V2 shell and breadcrumbs. Quizzes remain reachable through Home, Profile, Discover and the full menu, **without a sixth primary tab**. Historical `#/quizzes` and `#/quizzes/:quizId[/results]` links redirect into the native V2 routes instead of mounting the old shell. The quiz definitions, answer scale, scored signals and the existing browser-local quiz profile remain the source of truth; the UI Lab's session-only demonstration record service is not used for quiz results.
+
+The native landing, runner, layered result charts and equal next-step cards replace the earlier interim legacy-quiz handoff in the V2 experience. Quiz-specific navigation reads real stored quiz lifecycle states and retains authoritative prior results through draft retakes. Quiz-specific reset/restart controls are closed as **not offered** under Decision 8; potential account-backed quiz data services, clarity/accessibility validation and a hands-on mobile visual audit remain separate decisions and follow-up work. Approved decisions and validation status are recorded in the Notion Quiz UX workshop.
+
+## Discover
+
+General suggestions carry reasons, not fabricated personalized claims. Dismissal
+uses stable content IDs throughout the Lab session. Manage Suggestions restores
+individual content; reset-all requires confirmation and changes only dismissals.
+
+The illustrative reflection activity establishes the focused workflow and saved
+activity lifecycle: deliberate start, optional prompts, retained draft notes and
+prompt position, Save and exit, Resume, and explicit Finish. Completion creates a
+read-only snapshot. Repeat starts a separate attempt linked to the original, using
+the current supported activity version; earlier answers stay unchanged. Saved
+activities can be removed with confirmation. Completion/repetition never writes
+Catalog ratings, Tried or Comfort. This content is not a validated assessment.
+
+These activities, dismissals and shortcuts remain memory-only. This implements the
+UI basis; durable retention, account sync, activity publication/version withdrawal,
+Recently Explored and production recommendation ranking are not implemented.
+
+## Workspace card presentation
+
+Home retains the original four styled cards: Continue, Your profile at a glance,
+Discover something and Your shortcuts. Continue uses the featured gradient but
+shows only real unfinished activity records, with an honest empty state otherwise.
+Profile counts come from explicit session records; shortcuts remain user-controlled.
+The cards navigate to real destinations and do not create activity/profile evidence.
+
+Profile, Discover and Tools reuse the same rounded cards, icons, corner arrows and
+featured gradient through `LabCard`. Profile's landing routes to explicit records,
+relationships, sharing and identity; its record list remains in My Profile.
+Unavailable relationship/identity/agreement capabilities are stated accurately.
+Tools retain deliberate links to existing Scene Builder, comparison, randomizer
+and recipe routes. Discover retains stable suggestion IDs, reasons, independent
+dismissal/management and real saved activities within the card presentation.
+Secondary controls are siblings of the card's navigation button, avoiding nested
+interactive elements. Cards stack on narrow screens and use two columns on wider
+screens. Catalog Item/modifier rows keep their compact list presentation.
+
+## Application service ownership
+
+The Lab receives reference data, subjects, concepts, search, classifications and
+initial explicit records through AppServicesProvider. LabRecordsProvider is the
+single mutable UI coordinator for ratings, concept preferences and experience;
+its writes use the typed async adapter. Standalone component tests use the same
+sample fixtures/local adapter without interpreting a failed API read as success.
+Inline Catalog queries search names, descriptions, categories and modifiers.
+Default search order puts name matches first, with small matching-field excerpts
+under supporting-text results. Clearing search restores ordinary browsing;
+explicit alphabetical sorting remains available. See [Application Services](app-services.md).
+
+The service, record and Discover providers remain mounted around the routed shell
+and its recovery boundary. Feature navigation retains confirmed/pending records,
+saved activities and separate browse state. Search result routes resolve stable
+Item/modifier/concept IDs against the loaded reference universe, including direct
+links; query text stays out of URLs. Profile record labels use that same loaded
+data. Home/cards, primary/full-menu navigation, breadcrumbs and tool links all
+invoke registered Lab or existing application routes.
+
+
+## Education reader vertical slice
+
+The **Learn** destination now exposes a compact read-only landing built on the shared SearchField/SearchRow and SortGroupSheet controls, topic chips, a foundational starting set, and themed article cards. Searching replaces grouped browsing with a single relevance-ranked result list: exact/prefix/other title matches rank ahead of description and topic matches; alphabetical sorting is explicit. Clear search restores the editorial order. The page supports stable article-ID links and a safe accessible Markdown reading view. Related-reading navigation uses unique, known article-to-article references and excludes the article currently open. Old static Continue Learning lists embedded in editorial Markdown are hidden in the reader (the sources are unchanged), while authored Further Reading citations remain visible. The same links work as direct routes: `#/ui-lab/learn/article?id=edu-collars`.
+
+All data arrives through the optional async `AppServices.education` read contract; the local adapter consumes fourteen registered sources: nine fundamentals, the shorter Impact Play overview (original ID `edu-impact`), three Impact deep dives, and the independently reviewed-for-sourcing but still editorial-draft breath play/choking/strangulation risk overview (`edu-breath-safety`). The Impact source was previously merged into this feature branch from PR #295. The Markdown glob spans the `education/` subtree, but a new source still needs explicit manifest registration; it is not silently published. The reader distinguishes initial load, an unavailable adapter, a failed request with Retry, and unknown article IDs. No mock content is substituted on adapter failure.
+
+No article view creates profile evidence, reading progress, consent, or a Discover activity. Catalog/Concept typed links are metadata-only while canonical cross-domain relationship rules remain under design. Article publication, editorial review, API deployment, learning paths and personalization are out of scope.
+
+**October 16 mobile visual QA refinement (PR #300):** Android phone screenshots exposed a question that was programmatically focused but still near the bottom of the initial viewport. The native runner now focuses the heading as approved by Decision 10 **and scrolls the entire question card into a readable top-of-viewport position** instead of relying on `block:nearest`. Mobile navigation was visually simplified: secondary Back and Save & exit, one emphasized Next action, and Review unanswered as a quiet independent text action beneath the primary row. No skipping, storage, retake, scoring or navigation semantics changed. Quiz pages no longer show the generic demo-data footer or developer Toast Playground; landing copy avoids duplicated guidance. The user approved the shared warm-and-natural affinity scale `Nope / A little / Somewhat / A lot / Absolutely` (numeric 0–4 unchanged); native V2 and legacy quiz runners share the updated labels through `src/data/quizScale.ts`. The desired-frequency idea remains a separate, unapproved measurement concept. Automated regressions guard focus scroll, action order, and absence of Lab-only elements, but manual mobile review still blocks Decision 11's release gate.
+
+**October 16 mobile QA follow-up — sequential answering and animated progress:** The user observed that automatic heading focus drew a distracting bright outline, answer selection gave no clear confirmation, and progress was offscreen after card scrolling. Programmatic h2 focus is retained without decorative outline; real clickable answer/navigation controls retain visible keyboard focus. A selected response saves *immediately*, shows a checkmark and accessible saved acknowledgement, then advances after a short 390ms delay on motion-enabled mobile devices. Reduced-motion preference skips the delay. The top of each question card carries a thin gradient progress divider in the style of the V2 shell header/bottom nav, showing the exact saved answer count; CSS animates the fill. The user **explicitly removed skip-ahead functionality** (no mobile Next, Review unanswered or skip message, desktop gated Next). Responsive desktop three-card batches and retake storage remain unchanged. Code/tests, Notion and PR #300 are reconciled. Manual phone and assistive-tech checks remain required before merge.
+
+**October 16 phone QA transition refinement:** Based on live Android review, mobile selected-answer feedback stays visible for **390ms** instead of 260ms; the answer still saves immediately and reduced-motion skips the delay. The question-card entrance now uses **opacity only** (no `translateY`), and the question stack opts out of browser scroll anchoring, reducing the chance that programmatic card alignment and CSS motion combine into a visible vertical bounce. Automated timing/focus checks and the Decision 11 manual phone/AT review must still pass.
+
+
+**Shared V2 progress visual system (October 16/17):** The quiz question-card progress divider is the canonical design for **progress indicators throughout KP**: a soft rose-to-blush gradient fill, dark muted track, rounded corners and a symmetrical short feather at both ends. The shared stylesheet `src/components/ui/progress.css` owns color/feather tokens and styles standard `.progress-track`, `.card-progress` and opt-in `.kp-progress-track` elements, including legacy quiz bars. Native V2 Quiz landing and question cards both use the shared `kp-progress-track` class, so they stay visually consistent. Existing bar heights, position, saved-answer values and percentages, animation/reduced-motion rules and screen-reader semantics remain context-specific and unchanged. **Rating/score tracks** express a different measurement and are not redefined as completion progress. Device contrast and small-fill review remains a visual QA gate.
+**Catalog experience toggle polish:** The Tried/experienced state can be reversed directly by toggling the control again. Removed the redundant Undo toast only for that control; save status and error/retry UI still work. Rating-clear Undo notifications retain their distinct recovery role. Regression tests cover reversibility without the toast.
+
+
+## Temporary KP loading placeholder (October 2026)
+
+`src/components/ui/KPLoading.tsx` contains a small original three-swirl SVG placeholder inspired by the supplied concept. It does **not** embed or ship the watermarked stock image and is not the commissioned final asset. A slow continuous rotation and gentle glow are CSS-only; prefers-reduced-motion stops both animations while retaining the status label. `KPLoading` accepts `label`, `size`, `compact`, and `className`. Replace the SVG artwork later without changing consumers or loading semantics.
+
+The reusable loader is mounted only while truly waiting: the UI Lab lazy-route Suspense fallback and the initial application-service reference load. Existing errors keep their explicit Retry UI; the loader never stands for a save confirmation, success, failure, or invented percentage. The UI Lab has an expandable **Loading Playground** below the existing Toast Playground to inspect three sizes, pause animation, and review the future art-swap boundary. This is an implementation prototype and remains stacked on the V2 shell PR.
+
+
+### Loading preview hold + motion refinement (October 17, 2026)
+The dedicated full-screen loading **preview** (on PR preview builds automatically, or on an explicit `?loading-preview=1` UI Lab query) holds the SVG until the reviewer activates **Continue to KP**. It is a design review aid, not a new loading timeout or a blocker for production users, and regular real-load success/error handling remains automatic. An explicit 0°–360° rotation now runs at constant linear velocity over 4.8 seconds on a wrapper separate from the SVG, avoiding art and filter transform interactions. The 360°/0° seam is identical, with no ease-out, hold, or reverse. Reduced-motion users see the static mark; the Playground pause action controls the same wrapper.
+
+
+### Preview routing correction
+The preview hold now wraps the entire PR-preview router so both the GitHub preview's bare root URL and direct `#/ui-lab/...` paths show **Continue to KP**. From a bare-root preview only, Continue sends the reviewer into `#/ui-lab/home` instead of the legacy hub; direct deep links retain their intended destinations. Ordinary production without an explicit preview flag remains unaffected. For stale installed PWA/browser copies, use a fresh network URL with a one-off query string before the hash.

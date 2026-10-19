@@ -1,0 +1,55 @@
+{
+  "description": "Initial Vitest 5 / V8 critical-module baseline, rounded down to whole percentages. Review budget changes explicitly.",
+  "groups": [
+    {
+      "name": "All measured production modules",
+      "prefix": "src/",
+      "minimum": {
+        "lines": 83,
+        "statements": 80,
+        "functions": 86,
+        "branches": 73
+      }
+    },
+    {
+      "name": "Scoring and quiz lifecycle",
+      "prefix": "src/services/domain/",
+      "minimum": {
+        "lines": 88,
+        "statements": 86,
+        "functions": 92,
+        "branches": 86
+      }
+    },
+    {
+      "name": "Local services and persistence",
+      "prefix": "src/services/local/",
+      "minimum": {
+        "lines": 85,
+        "statements": 80,
+        "functions": 86,
+        "branches": 75
+      }
+    },
+    {
+      "name": "Profile and domain utilities",
+      "prefix": "src/lib/",
+      "minimum": {
+        "lines": 83,
+        "statements": 80,
+        "functions": 87,
+        "branches": 72
+      }
+    },
+    {
+      "name": "Quiz presentation and runtime",
+      "prefix": "src/features/quizzes/",
+      "minimum": {
+        "lines": 75,
+        "statements": 70,
+        "functions": 70,
+        "branches": 69
+      }
+    }
+  ]
+}

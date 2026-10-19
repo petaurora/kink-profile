@@ -1,0 +1,43 @@
+@import "./tokens.css";
+.kp-modal-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.kp-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: #070820b9;
+  border: 0;
+  cursor: default;
+}
+.kp-modal-panel {
+  position: relative;
+  width: min(410px, 100%);
+  max-height: 85dvh;
+  overflow: auto;
+  background: #151741;
+  border: 1px solid #f0d3e75c;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 18px 60px #0009;
+}
+.kp-modal-panel:focus {
+  outline: none;
+}
+@media (max-width: 680px) {
+  .kp-modal-layer {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .kp-modal-panel {
+    width: 100%;
+    max-height: 80dvh;
+    border-radius: 20px 20px 0 0;
+    padding: 22px 18px max(24px, env(safe-area-inset-bottom));
+  }
+}

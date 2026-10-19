@@ -6,8 +6,36 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  lint:
+    name: Static checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+  workflows:
+    name: Workflow lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/install-actionlint.sh
+      - run: actionlint -color
   build:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,12 +54,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
       - name: Install
-        run: npm install
-      - name: Test
-        run: npm test
+        run: npm ci
+      - name: Test and enforce coverage budgets
+        run: npm run test:coverage
+      - name: Upload coverage reports
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
       - name: Build production base
         run: npm run build
+      - name: Enforce compressed production bundle budgets
+        run: npm run check:bundle
       - name: Build PR preview base
         env:
           VITE_BASE_PATH: /kink-profile/pr-ci/

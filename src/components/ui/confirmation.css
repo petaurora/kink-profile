@@ -1,0 +1,4 @@
+@import "./tokens.css";
+.kp-confirmation-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.kp-confirmation-actions button { min-height: 44px; background: #21214b; color: var(--kp-pink); border: 1px solid #f0d3e74a; border-radius: 8px; padding: 10px 14px; }
+.kp-confirmation-actions button:focus-visible { outline: 2px solid var(--kp-pink); outline-offset: 3px; }

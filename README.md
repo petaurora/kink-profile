@@ -88,6 +88,18 @@ npm run dev
 npm run build
 ```
 
+## Tests
+
+Run component/domain tests with `npm test`. For browser journeys:
+
+```bash
+npx playwright install --with-deps chromium webkit
+npm run test:e2e
+```
+
+See [Automated testing](docs/testing.md) for browser projects, coverage,
+interactive debugging and CI diagnostics.
+
 ## Deployment
 
 GitHub Pages publishes from the generated `gh-pages` branch.

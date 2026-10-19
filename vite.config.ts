@@ -1,5 +1,6 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import { execFileSync } from "node:child_process";
 
 function normalizeBase(value: string) {
   const withLeadingSlash = value.startsWith("/") ? value : `/${value}`;
@@ -8,6 +9,11 @@ function normalizeBase(value: string) {
     : `${withLeadingSlash}/`;
 }
 
+const buildCommit = process.env.VITE_BUILD_COMMIT?.trim() || (() => {
+  try { return execFileSync("git", ["rev-parse", "HEAD"], {encoding:"utf8"}).trim(); }
+  catch { return ""; }
+})();
+
 const base = normalizeBase(process.env.VITE_BASE_PATH ?? "/kink-profile/");
 const previewPr = process.env.VITE_PREVIEW_PR?.trim();
 const appName = previewPr ? `Kink Profile · PR ${previewPr}` : "Kink Profile";
@@ -15,6 +21,7 @@ const shortName = previewPr ? `KP · PR ${previewPr}` : "Kink Profile";
 const cachePrefix = previewPr
   ? `kink-profile-pr-${previewPr}`
   : "kink-profile-production";
+const cacheVersion = previewPr && buildCommit ? buildCommit.slice(0,12) : "v1";
 
 function pwaAssetsPlugin(): Plugin {
   return {
@@ -40,6 +47,7 @@ function pwaAssetsPlugin(): Plugin {
       ];
     },
     generateBundle(_options, bundle) {
+      this.emitFile({ type: "asset", fileName: "build-info.json", source: JSON.stringify({ commit: buildCommit, base, preview: previewPr ?? null }) });
       const manifest = {
         name: appName,
         short_name: shortName,
@@ -83,6 +91,7 @@ function pwaAssetsPlugin(): Plugin {
           base,
           `${base}index.html`,
           `${base}manifest.webmanifest`,
+          `${base}build-info.json`,
           `${base}icons/pwa-192.png`,
           `${base}icons/pwa-512.png`,
           `${base}icons/pwa-maskable-512.png`,
@@ -92,7 +101,7 @@ function pwaAssetsPlugin(): Plugin {
       );
 
       const serviceWorker = `const CACHE_PREFIX = ${JSON.stringify(cachePrefix)};
-const CACHE_NAME = \`${cachePrefix}-static-v1\`;
+const CACHE_NAME = \`${cachePrefix}-static-${cacheVersion}\`;
 const SCOPE_PATH = ${JSON.stringify(base)};
 const APP_SHELL = ${JSON.stringify(`${base}index.html`)};
 const PRECACHE_URLS = ${JSON.stringify(precacheUrls)};
@@ -161,5 +170,6 @@ self.addEventListener("fetch", (event) => {
 
 export default defineConfig({
   base,
+  define: { __KP_BUILD_SHA__: JSON.stringify(buildCommit.slice(0,7) || "dev") },
   plugins: [react(), pwaAssetsPlugin()],
 });

@@ -3,7 +3,7 @@
 *Understanding collaborative kink, sensory curiosity, and experiences that don't require someone to be in charge.*
 
 **Level:** Beginner  
-**Estimated reading time:** 9 minutes  
+**Estimated reading time:** 12 minutes  
 **Topics:** BDSM Fundamentals · Kink Exploration · Non-D/s Play · Consent · Sensation · Collaborative Scenes
 
 **Content note:** This article discusses adult kink activities, restraint, sensation, and roleplay in a non-graphic educational context.

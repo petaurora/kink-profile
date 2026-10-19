@@ -1,0 +1,36 @@
+name: Visual regression
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: visual-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  visual:
+    name: Visual regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:visual
+      - name: Upload visual comparisons and diagnostics
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-report
+          path: |
+            visual-report/
+            visual-results/
+            visual/**/*-snapshots/
+          retention-days: 7

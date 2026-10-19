@@ -3,14 +3,14 @@ import { quizzes, type QuizDefinition } from "../../data/quizzes";
 import { loadProfile } from "../../lib/profileStorage";
 import { quizResultsPath, quizRoutePath } from "../../app/routes";
 import { QuizCard } from "./QuizCard";
-import { getQuizState } from "./quizRuntime";
+import { getQuizState, resolveQuizLifecycle } from "./quizRuntime";
 
 export function QuizHomePage() {
   const profile = loadProfile();
   const navigate = useNavigate();
   const coreQuizzes = quizzes.filter((quiz) => quiz.contributesToOverall);
   const completedCount = coreQuizzes.filter(
-    (quiz) => getQuizState(quiz, profile) === "complete",
+    (quiz) => resolveQuizLifecycle(quiz, profile).hasEstablishedResult,
   ).length;
 
   const openQuiz = (quiz: QuizDefinition) => {

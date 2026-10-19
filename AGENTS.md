@@ -32,9 +32,9 @@ Do not recreate a roadmap/status ledger in Markdown. `ROADMAP.md` is intentional
    - Preserve explicit out-of-scope boundaries.
    - Add/update regression coverage where practical.
 5. **Validate before handoff.**
-   - Run `npm test`.
-   - Run `npm run build`.
-   - If generated reference data is involved, remember those commands already run the repository generation scripts through `pretest` / `prebuild`.
+   - Follow the testing and CI requirements below and the canonical [CI gates](docs/ci-gates.md) and [testing protocol](docs/testing.md).
+   - For application changes, run `npm run lint`, `npm run test:coverage`, `npm run build` and `npm run check:bundle`. The coverage command runs the full source suite, so a second `npm test` run is unnecessary unless something changes or fails.
+   - Report the checked commit, commands and relevant CI results. Distinguish pending, skipped and failed checks from passing checks.
 6. **Open a PR that closes the loop.**
    - Link or close the owning Issue (`Closes #123`).
    - Use `Related: #123` for context-only relationships.
@@ -72,6 +72,25 @@ Every non-trivial PR should include:
 - **Related work** — `Closes #...`, `Related: #...`, and safe product-context links where applicable.
 
 Do not invent a different Definition of Done in the PR. The Issue defines what completion means; the PR demonstrates that those conditions were met.
+
+## Testing and CI requirements
+
+Read [docs/ci-gates.md](docs/ci-gates.md) for the gate contracts, budgets, snapshot environment and deployment/enforcement prerequisites. Read [docs/testing.md](docs/testing.md) for browser fixtures, covered journeys and manual accessibility responsibilities. Keep detailed inventories and thresholds in those owning files rather than duplicating them here.
+
+- Use `npm ci` for a clean checkout and CI installs. Commit `package-lock.json` with intentional dependency changes; keep the test runner/coverage provider and Playwright package/container versions aligned.
+- Reference generation runs through the `pretest*` and `prebuild` hooks. Use the npm scripts so fresh checkouts generate data before type-checking or running tests.
+- For UI, navigation, persistence or service-boundary changes, exercise affected browser journeys while iterating and require the full `npm run test:e2e` matrix in CI before declaring the change ready. Preserve desktop Chromium, mobile Chromium and mobile WebKit coverage.
+- For accessibility changes, use `npm run test:a11y` while iterating; the full browser suite also includes these checks. Keep contrast and the configured axe rules enabled. Inspect incomplete findings and retain the separate human assistive-technology, zoom and physical-device checks; automated passes do not certify WCAG conformance.
+- For layout, theme or component presentation changes, run `npm run test:visual`. Generate intentional baseline updates in the pinned CI container, inspect every changed PNG and commit it with the corresponding design change. CI must compare snapshots without automatically accepting them.
+- For workflow changes, install the checksum-pinned actionlint with `bash scripts/install-actionlint.sh /tmp/kp-ci-bin`, then run `PATH="/tmp/kp-ci-bin:$PATH" npm run lint:workflows`.
+- Keep every required PR check reachable without workflow-level path filters. V2 uses its open integration PR (#276) for full validation; restore push validation if that PR closes while the branch stays active. Keep CodeQL branch baselines, separate publishing queues, immediate close-event preview cleanup and the daily recovery sweep. See [CI gates](docs/ci-gates.md) for measurement and setup contracts.
+- Browser CI records trace/video on the diagnostic retry and keeps reports seven days; first-attempt failures retain screenshots and errors. A pass-on-retry still fails. Preserve full browser/a11y coverage and use a targeted `--trace=on` rerun when first-attempt recording is needed.
+- For dependency changes, run `npm audit --audit-level=high` and inspect the PR's dependency-review result. Do not suppress scanner errors or advisories to make the job green.
+- For deployment, asset-base or PWA changes, run `npm run test:smoke` against the local nested build. Hosted smoke requires both `SMOKE_BASE_URL` and the full `SMOKE_EXPECTED_SHA`; use the post-publish CI jobs to verify the expected deployed build. A skipped smoke or a failed publishing job is not successful deployment evidence.
+- Use isolated synthetic browser state and app-visible actions. Do not use personal profiles/backups, inject scores or call production domain functions to bypass the behavior a browser journey is meant to verify. Preserve the distinction between session-only Lab records and durable browser-local quiz/profile data.
+- Investigate coverage, bundle and visual regressions before changing budgets, exclusions or comparison tolerances. Explain intentional baseline changes in the PR and review the corresponding reports; do not weaken a gate merely to pass CI.
+- For documentation-only changes, verify referenced commands and links and run `git diff --check`. Reuse clearly identified validation of unchanged application code instead of rerunning application suites solely for prose edits.
+- Workflow files and importable rulesets do not establish active branch enforcement. Verify repository settings when reporting enforcement, and distinguish prepared rules from activated rules. Follow the activation prerequisites in `docs/ci-gates.md`; report unavailable administration access explicitly.
 
 ## Notion ↔ GitHub linking
 

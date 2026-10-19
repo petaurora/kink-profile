@@ -14,8 +14,6 @@ import {
 } from "./rewardPunishmentProfile";
 import {
   createEmptyRewardPunishmentRankingState,
-  loadRewardPunishmentRankingState,
-  saveRewardPunishmentRankingState,
   type RewardPunishmentRankingState,
 } from "./rewardPunishmentRankingStorage";
 import {
@@ -24,14 +22,6 @@ import {
   type RewardPunishmentRecipeComponent,
   type RewardPunishmentRecipeState,
 } from "./rewardPunishmentRecipes";
-import {
-  loadRewardPunishmentRecipeState,
-  saveRewardPunishmentRecipeState,
-} from "./rewardPunishmentRecipeStorage";
-import {
-  loadRewardPunishmentProfile,
-  saveRewardPunishmentProfile,
-} from "./rewardPunishmentProfileStorage";
 import type { RewardPunishmentComparison } from "./rewardPunishmentRanking";
 
 export const REWARD_PUNISHMENT_AUTHORITATIVE_SCHEMA_VERSION = 1 as const;
@@ -48,9 +38,6 @@ export type RewardPunishmentLifecycleStorageLike = Pick<
   "getItem" | "setItem"
 >;
 
-function browserStorage(): RewardPunishmentLifecycleStorageLike {
-  return localStorage;
-}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -342,25 +329,7 @@ export function createEmptyRewardPunishmentAuthoritativeState(): RewardPunishmen
   };
 }
 
-export function loadRewardPunishmentAuthoritativeState(
-  storage: RewardPunishmentLifecycleStorageLike = browserStorage(),
-): RewardPunishmentAuthoritativeState {
-  return {
-    schemaVersion: REWARD_PUNISHMENT_AUTHORITATIVE_SCHEMA_VERSION,
-    profile: loadRewardPunishmentProfile(storage),
-    ranking: loadRewardPunishmentRankingState(storage),
-    recipes: loadRewardPunishmentRecipeState(storage),
-  };
-}
-
-export function saveRewardPunishmentAuthoritativeState(
-  state: RewardPunishmentAuthoritativeState,
-  storage: RewardPunishmentLifecycleStorageLike = browserStorage(),
-) {
-  saveRewardPunishmentProfile(state.profile, storage);
-  saveRewardPunishmentRankingState(state.ranking, storage);
-  saveRewardPunishmentRecipeState(state.recipes, storage);
-}
+export { loadRewardPunishmentAuthoritativeState, saveRewardPunishmentAuthoritativeState } from "../services/local/legacy/rewardPunishmentState";
 
 export function parseRewardPunishmentAuthoritativeState(
   value: unknown,

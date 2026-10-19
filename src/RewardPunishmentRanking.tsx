@@ -111,6 +111,8 @@ export function RewardPunishmentRanking({
         rankingState.comparisons,
         context,
       ),
+    // Skipping explicitly rerolls the randomized selector.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [context, pairNonce, profile, rankingState.comparisons],
   );
 

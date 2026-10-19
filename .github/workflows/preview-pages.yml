@@ -8,9 +8,7 @@ on:
       - synchronize
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+  contents: read
 
 # Only supersede older builds for the same still-open PR. gh-pages writes are
 # protected by the publisher's fast-forward retry loop instead of one lossy
@@ -21,6 +19,13 @@ concurrency:
 
 jobs:
   preview:
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      published: ${{ steps.publish.outputs.published }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,9 +35,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install
-        run: npm install
+        run: npm ci
 
       - name: Build preview
         run: npm run build
@@ -103,3 +109,34 @@ jobs:
                 body,
               });
             }
+
+  smoke:
+    name: Deployed preview smoke
+    needs: preview
+    if: needs.preview.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps --only-shell chromium
+      - name: Verify hosted build and deep link
+        run: npm run test:smoke
+        env:
+          SMOKE_BASE_URL: https://petaurora.github.io/kink-profile/pr-${{ github.event.number }}/
+          SMOKE_EXPECTED_SHA: ${{ github.sha }}
+      - name: Upload deployment smoke diagnostics
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployed-preview-smoke
+          path: |
+            smoke-report/
+            smoke-results/
+          retention-days: 7

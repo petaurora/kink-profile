@@ -5,7 +5,9 @@ on:
     types:
       - closed
   schedule:
-    - cron: "*/15 * * * *"
+    # PR closure handles immediate cleanup. This is a recovery sweep for missed
+    # events and failed publishers, not a 96-run/day polling loop.
+    - cron: "17 7 * * *"
   workflow_dispatch:
 
 permissions:
@@ -16,6 +18,7 @@ permissions:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout cleanup tooling
         uses: actions/checkout@v4

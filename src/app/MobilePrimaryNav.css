@@ -25,6 +25,12 @@
   }
 
   .mobile-primary-nav-shell {
+    /* This navigation keeps a dark surface in both OS themes. Keep its
+       foregrounds paired with that surface instead of inheriting light text tokens. */
+    --text-primary: #F0D3E7;
+    --text-muted: #B7A9C3;
+    --accent-primary: #E07BC9;
+    --focus-ring: #F0D3E7;
     display: block;
     position: fixed;
     inset: 0;
