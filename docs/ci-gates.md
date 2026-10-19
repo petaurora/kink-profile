@@ -7,6 +7,11 @@ Browser/accessibility, visual and security PR runners wait until the PR is marke
 **ready for review**. There are no workflow-level path filters. Every ready PR
 must pass all the quality gates below on its latest change before merging.
 
+Preview delivery and feedback iterations stay draft. Agents mark ready when the
+user asks to mark ready, run full CI, or merge; a merge request includes waiting
+for all required gates and does not need a separate confirmation. Merely ending
+a coding turn or sharing a preview is not a reason to start the full suite.
+
 The full workflows listen for `ready_for_review` as well as opened/reopened and
 `synchronize` events. A push to a ready PR reruns the full gates. Return to draft
 before another editing batch; `converted_to_draft` supersedes its older full runs

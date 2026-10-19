@@ -37,7 +37,7 @@ Do not recreate a roadmap/status ledger in Markdown. `ROADMAP.md` is intentional
    - Report the checked commit, commands and relevant CI results. Distinguish pending, skipped and failed checks from passing checks.
 6. **Open a PR that closes the loop.**
    - Use a **draft PR while iterating**. Draft updates run lint, workflow lint, source coverage/build/bundle checks and the preview with hosted smoke. Full browser/accessibility, visual and security PR runners are deferred.
-   - Mark the PR **ready for review** when the implementation is ready for its full validation. This event starts all deferred required gates; subsequent updates to a ready PR rerun them. Return to draft before another editing batch. Never merge based on deferred/skipped draft statuses.
+   - Keep preview delivery and feedback iterations in draft. Mark the PR **ready for review** when the user asks to mark it ready, run full CI, or merge. A merge request authorizes marking ready and waiting for all required gates without another confirmation. Subsequent updates to a ready PR rerun the full gates, so return to draft before another editing batch. Never merge based on deferred/skipped draft statuses.
    - Link or close the owning Issue (`Closes #123`).
    - Use `Related: #123` for context-only relationships.
    - Summarize what changed and explicitly list meaningful non-goals / intentionally unchanged behavior.
