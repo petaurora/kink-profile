@@ -2,6 +2,7 @@ name: Playwright E2E
 
 on:
   pull_request:
+    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
   push:
     branches: [main]
   workflow_dispatch:
@@ -15,7 +16,9 @@ concurrency:
 
 jobs:
   e2e:
-    name: Browser journeys and accessibility
+    # A deferred draft check must not satisfy the required full-gate name.
+    name: ${{ github.event_name == 'pull_request' && github.event.pull_request.draft && 'Draft - browser validation deferred' || 'Browser journeys and accessibility' }}
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

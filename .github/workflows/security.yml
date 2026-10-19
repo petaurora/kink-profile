@@ -1,6 +1,7 @@
 name: Security
 on:
   pull_request:
+    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft]
   push:
     branches: [main, feat/ui-lab-foundation]
   schedule:
@@ -13,7 +14,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   codeql:
-    name: CodeQL scan
+    name: ${{ github.event_name == 'pull_request' && github.event.pull_request.draft && 'Draft - CodeQL validation deferred' || 'CodeQL scan' }}
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -30,8 +32,8 @@ jobs:
         with:
           category: /language:javascript-typescript
   dependencies:
-    name: Dependency review
-    if: github.event_name == 'pull_request'
+    name: ${{ github.event_name == 'pull_request' && github.event.pull_request.draft && 'Draft - dependency review deferred' || 'Dependency review' }}
+    if: github.event_name == 'pull_request' && !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -48,10 +50,10 @@ jobs:
         env:
           DEPENDENCY_BASE_SHA: ${{ github.event.pull_request.base.sha }}
   audit:
-    name: Dependency audit
+    name: ${{ github.event_name == 'pull_request' && github.event.pull_request.draft && 'Draft - dependency audit deferred' || 'Dependency audit' }}
     # V2 has an open integration PR, which already audits each updated commit.
     # Keep the CodeQL branch scan above for its base-branch analysis database.
-    if: github.event_name != 'push' || github.ref == 'refs/heads/main'
+    if: (github.event_name != 'push' || github.ref == 'refs/heads/main') && (github.event_name != 'pull_request' || !github.event.pull_request.draft)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
