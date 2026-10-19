@@ -3,7 +3,7 @@ name: Playwright E2E
 on:
   pull_request:
   push:
-    branches: [main, feat/ui-lab-foundation]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Install browsers
-        run: npx playwright install --with-deps chromium webkit
+        run: npx playwright install --with-deps --only-shell chromium webkit
       - name: Run browser journeys and accessibility checks against bundled app
         run: npm run test:e2e
       - name: Upload browser report and failure diagnostics
@@ -38,4 +38,4 @@ jobs:
           path: |
             playwright-report/
             test-results/
-          retention-days: 14
+          retention-days: 7
