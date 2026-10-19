@@ -1,10 +1,25 @@
 # Continuous integration gates
 
-Pull requests use the workflows in the proposed change. Every PR runs the full
-quality gates below; there are no workflow-level path filters. Push validation
-runs on `main`. V2's open integration PR (#276) validates updates to
-`feat/ui-lab-foundation`, avoiding a second full suite on the same push. CodeQL
-still scans pushes to both branches to maintain branch analysis baselines.
+Pull requests use the workflows in the proposed change. Use **draft PRs while
+iterating**: updates run static checks, workflow lint, source tests/coverage,
+production/nested builds, bundle budgets and the preview with hosted smoke.
+Browser/accessibility, visual and security PR runners wait until the PR is marked
+**ready for review**. There are no workflow-level path filters. Every ready PR
+must pass all the quality gates below on its latest change before merging.
+
+The full workflows listen for `ready_for_review` as well as opened/reopened and
+`synchronize` events. A push to a ready PR reruns the full gates. Return to draft
+before another editing batch; `converted_to_draft` supersedes its older full runs
+through the existing per-PR concurrency groups. Deferred draft jobs have distinct
+`Draft - ... deferred` names, so a skipped placeholder cannot satisfy a required
+full-gate name. Required full checks can appear as expected/missing while a PR is
+draft; marking ready launches them. A draft PR itself cannot be merged.
+
+Push validation runs on `main`. V2's open integration PR (#276) can stay draft
+during integration and runs full validation when ready, avoiding a second full
+suite on each V2 push. CodeQL still scans pushes to both branches to maintain
+branch analysis baselines. Manual full-suite dispatch and scheduled security
+validation remain available independently of PR draft state.
 If that integration PR closes while V2 remains an active integration branch,
 restore its push validation before continuing development there.
 All dependency installs use `npm ci`.
@@ -18,7 +33,7 @@ All dependency installs use `npm ci`.
 | `Visual regression` | Five representative states at desktop and phone sizes, compared with reviewed PNGs. |
 | `CodeQL scan` | JavaScript/TypeScript source scanning with security-extended queries. |
 | `Dependency review` | Resolved lockfile changes fail for introduced high/critical advisories using npm audit. |
-| `Dependency audit` | The entire installed lockfile fails for high/critical advisories. |
+| `Dependency audit` | The complete resolved lockfile fails for high/critical advisories. |
 | `preview` | The preview publishing job must succeed as well, so a failed publisher cannot pass enforcement through a skipped smoke job. |
 | `Deployed preview smoke` | Expected hosted commit, assets, PWA manifest/icons, worker scope and rendered deep link after publishing. |
 

@@ -108,9 +108,14 @@ assistive-technology review are not certified by automation.
 
 ## CI and diagnostics
 
-`.github/workflows/e2e.yml` runs on every pull request, pushes to `main`, and
-manual dispatch. V2 updates are validated through its open integration PR (#276),
-as described in [CI gates](ci-gates.md). It installs the locked dependencies and
+`.github/workflows/e2e.yml` allocates browser runners for ready-for-review PRs,
+pushes to `main`, and manual dispatch. Draft PR updates defer browser/accessibility
+and visual/security runners while retaining fast checks and the hosted preview.
+Marking ready explicitly starts the full gates; any later update to that ready PR
+reruns them. Deferred draft statuses have different names from required full gates
+and do not establish test coverage. Return to draft before another editing batch.
+V2's integration PR (#276) follows the same cadence, as described in
+[CI gates](ci-gates.md). The E2E job installs the locked dependencies and
 Chromium headless shell/WebKit with system libraries, then runs all projects with
 two workers. No project or accessibility scenario is deferred to a schedule.
 
